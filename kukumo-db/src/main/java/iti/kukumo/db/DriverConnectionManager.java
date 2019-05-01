@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import iti.commons.jext.Extension;
 
-@Extension(provider="iti.kukumo", name="kukumo-db-driver-connection", version="1.0-SNAPSHOT")
+@Extension(provider="iti.kukumo", name="kukumo-db-driver-connection", version="1.0.0")
 public class DriverConnectionManager implements ConnectionManager {
 
     
