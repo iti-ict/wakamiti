@@ -1,0 +1,911 @@
+<html><head><title>Resultados del Plan de Pruebas</title><meta charset="UTF-8"><style>body {
+     font-family: sans-serif; margin: 5px;
+}
+h1 {
+     padding: 5px;
+     text-align: center;
+     margin: 5px;
+     font-size: large;
+}
+
+h2 {
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px;
+}
+
+
+h2.ERROR {
+    border: 1px solid #b70606;
+    background: #fbebeb;
+}
+h2.PASSED {
+    border: 1px solid #248423;
+    background: #e6ffe6;
+}
+
+
+
+.icon_PASSED::before {
+  content: '\02714'; color: green; font-weight: bold;
+}
+.icon_SKIPPED::before {
+  content: '\02607'; color: gray; font-weight: bold;
+}
+.icon_UNDEFINED::before {
+  content: '\02205'; color: #c39644; font-weight: bold;
+}
+.icon_FAILED::before {
+  content: '\02622'; color: blue; font-weight: bold;
+}
+.icon_ERROR::before {
+  content: '\02622'; color: red; font-weight: bold;
+}
+
+
+.expandIcon::before {
+      content: '\02636';
+      font-size: smaller;
+}
+
+
+.clickable:hover {
+  cursor: hand;
+      background: #e8e8e8;
+}
+
+
+.resultStatistics {
+  font-size: x-small;
+}
+
+
+
+li {
+  list-style: none;
+}
+li.testCase {
+  /* margin-top: 20px; */
+}
+
+ul.testCase {
+    padding-left: 20px;
+    border-left: 5px solid black;
+    margin-left: 8;
+    margin-bottom: 20px;
+}
+
+span {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+
+.tag {
+    color: white;
+    font-size: x-small;
+    border-radius: 3px;
+    padding-top: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+
+
+.nodeName { font-size: small; }
+.nodeName.PASSED    { color: black;    }
+.nodeName.ERROR     { color: #880000;  }
+.nodeName.SKIPPED   { color: gray;     }
+.nodeName.UNDEFINED { color: #c39644;  }
+
+
+
+.keyword {
+  font-weight: bold;
+}
+
+
+
+
+.errorMessage {
+    font-style: italic;
+    color: #880000;
+    background: #fbebeb;
+    padding: 5px;
+    padding-left: 20px;
+    margin-right: 10px;
+    margin-top: 5px;
+    font-size: small;
+    border-top: 1px solid #880000;
+}
+
+.errorTrace {
+    font-family: monospace;
+    font-size: small;
+    border: 1px solid gray;
+    border-left: 5px solid gray;
+    padding: 5px;
+    background: #3a3939;
+    margin: 10px;
+    color: white;
+    max-height: 200;
+    overflow: auto;
+    white-space: pre-line;
+}
+
+
+div.document {
+    font-family: monospace;
+    font-size: small;
+    border: 1px solid #b6c32f;
+    border-left: 5px solid #b6c32f;
+    padding: 5px;
+    background: #fbffd0;
+    margin: 10px;
+    color: black;
+    max-height: 200;
+    overflow: auto;
+    white-space: pre-line;
+}
+
+table.document {
+    font-family: monospace;
+    font-size: small;
+    border: 1px solid #80b0b1;;
+    border-left: 5px solid #80b0b1;;
+    padding: 5px;
+    background: #ecfdfd;
+    margin: 10px;
+    color: black;
+    max-height: 200;
+    border-spacing:0px;
+}
+
+
+table.document thead td{
+    font-weight: bold;
+    border-bottom: 1px solid black;
+}
+table.document td {
+    border-right: 1px solid black;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+
+.description {
+    font-size: small;
+    color: #655f5f;
+    border-left: 4px solid gray;
+    padding-left: 5px;
+    margin: 5px;
+    text-align: justify;
+}
+
+.tags {
+   flex-grow: 2;
+   display: flex;
+   justify-content: flex-end;
+}
+.tags span {
+    font-size: x-small;
+    color: white;
+    padding: 4px;
+    border-radius: 6px;
+    margin: 1px;
+}
+.tag0 { background: red; }
+.tag1 { background: blue; }
+.tag2 { background: green; }
+.tag3 { background: brown; }
+.tag4 { background: orange; }
+.tag5 { background: purple; }
+ 
+
+
+.mark_PASSED_before::before {
+  content: '\02713  '; color: green;
+}
+.mark_ERROR_before::before {
+  content: '\02715  '; color: red;
+}
+
+
+span.duration::before {
+    content: '\0231A';
+    vertical-align: middle;
+    font-size: medium;
+    padding-right: 5px;
+}
+span.duration {
+    font-size: x-small;
+    color: #a4aecc;
+    padding-left: 10px;
+}</style><script>function switchVisibility(ids,displayValues) {
+   for (i in ids) {
+       console.log('switch visibility for id ',ids[i]);
+       let e = document.getElementById(ids[i]);
+       if (e) {
+         if( e.style.display === 'none' ) {
+           e.style.display = displayValues[i];
+         } else {
+           e.style.display = 'none';
+         }
+       }
+   }
+}</script></head><body><h1>Resultados del Plan de Pruebas</h1><div><div class="overallResult _ERROR"><h2 class="ERROR"><span class="icon_ERROR"></span><span>martes 9 de abril de 2019 18:26:28</span></h2><table><tr><td>Tiempo total: 3 segundos </td></tr><tr><td><span>1 / 7 test cases</span><span class="_PASSED">PASSED</span></td><td><span>2 / 7 test cases</span><span class="_UNDEFINED">UNDEFINED</span></td><td><span>4 / 7 test cases</span><span class="_ERROR">ERROR</span></td></tr></table></div></div><ul><li class=""><div><div class="node clickable" id="2" onclick="switchVisibility([&#x27;2_children&#x27;,&#x27;2_expand&#x27;,&#x27;2_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR"></span><span class="expandIcon" id="2_expand" style="visibility:visible; display: none"></span></div><div><div style="display:flex"><div class="resultStatistics"><span>1</span><span class="icon_PASSED"></span></div><div class="resultStatistics"><span>2</span><span class="icon_UNDEFINED"></span></div><div class="resultStatistics"><span>4</span><span class="icon_ERROR"></span></div></div><span class="duration">3 segundos </span></div><div class="tags"></div></div></div><div></div><div></div><ul id="2_children" class=""><li class=""><div><div class="node clickable" id="3" onclick="switchVisibility([&#x27;3_children&#x27;,&#x27;3_expand&#x27;,&#x27;3_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR">Prueba rápida de servicios</span><span class="expandIcon" id="3_expand" style="visibility:visible; display: none"></span></div><div><div style="display:flex"><div class="resultStatistics"><span>3</span><span class="icon_ERROR"></span></div></div><span class="duration">2 segundos </span></div><div class="tags"><span class="tag3">definition</span></div></div></div><div></div><div></div><ul id="3_children" class=""><li class=""><div><div class="node clickable" id="4" onclick="switchVisibility([&#x27;4_children&#x27;,&#x27;4_expand&#x27;,&#x27;4_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id">ID-1</span><span class="keyword nodeName ERROR">Esquema del escenario</span><span class="nodeName ERROR">Buscar paises según una IP</span><span class="expandIcon" id="4_expand" style="visibility:visible; display: none"></span></div><div><div style="display:flex"><div class="resultStatistics"><span>3</span><span class="icon_ERROR"></span></div></div><span class="duration">2 segundos </span></div><div class="tags"><span class="tag3">definition</span></div></div></div><div></div><div></div><ul id="4_children" class=""><li class="testCase"><div><div class="node clickable" id="5" onclick="switchVisibility([&#x27;5_children&#x27;,&#x27;5_expand&#x27;,&#x27;5_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id">ID-1_1</span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR">Buscar paises según una IP [1]</span><span class="expandIcon" id="5_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">2 segundos </span></div><div class="tags"><span class="tag0">ID-1</span><span class="tag3">definition</span></div></div></div><div></div><div></div><ul id="5_children" class="testCase"><li class=""><div><div class="node clickable" id="6" onclick="switchVisibility([&#x27;6_children&#x27;,&#x27;6_expand&#x27;,&#x27;6_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">*</span><span class="nodeName UNDEFINED">&lt;background&gt;</span><span class="expandIcon" id="6_expand" style="visibility:visible; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="6_children" class=""><li class=""><div><div class="node" id="7" onclick="switchVisibility([&#x27;7_children&#x27;,&#x27;7_expand&#x27;,&#x27;7_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Given</span><span class="nodeName UNDEFINED">the base URL http://api.ip2country.info</span><span class="expandIcon" id="7_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="7_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="8" onclick="switchVisibility([&#x27;8_children&#x27;,&#x27;8_expand&#x27;,&#x27;8_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Dada</span><span class="nodeName PASSED">la IP 5.6.7.8</span><span class="expandIcon" id="8_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="8_children" class=""><li class=""><div><div class="node" id="9" onclick="switchVisibility([&#x27;9_children&#x27;,&#x27;9_expand&#x27;,&#x27;9_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the IP identified by &#x27;ip?5.6.7.8&#x27;</span><span class="expandIcon" id="9_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="9_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="10" onclick="switchVisibility([&#x27;10_children&#x27;,&#x27;10_expand&#x27;,&#x27;10_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Cuando</span><span class="nodeName ERROR">se consulta a qué país corresponde</span><span class="expandIcon" id="10_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">2 segundos </span></div><div class="tags"></div></div></div><div></div><div></div><ul id="10_children" class=""><li class=""><div><div class="node" id="11" onclick="switchVisibility([&#x27;11_children&#x27;,&#x27;11_expand&#x27;,&#x27;11_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">When</span><span class="nodeName ERROR">the IP is requested</span><span class="expandIcon" id="11_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">2 segundos </span></div><div class="tags"></div></div></div><div></div><div><div class="errorMessage clickable" onclick="switchVisibility([&#x27;11_errorTrace&#x27;],[&#x27;block&#x27;])"><span>Connection refused (Connection refused)</span><span class="expandIcon"></span></div><div style="display:none" class="errorTrace" id="11_errorTrace" onclick="switchVisibility([&#x27;11_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.net.ConnectException: Connection refused (Connection refused)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at org.apache.http.conn.scheme.PlainSocketFactory.connectSocket(PlainSocketFactory.java:117)
+	at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:177)
+	at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:304)
+	at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:611)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:446)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:863)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at org.apache.http.client.HttpClient$execute$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:136)
+	at io.restassured.internal.RequestSpecificationImpl$RestAssuredHttpBuilder.doRequest(RequestSpecificationImpl.groovy:2141)
+	at io.restassured.internal.http.HTTPBuilder.doRequest(HTTPBuilder.java:494)
+	at io.restassured.internal.http.HTTPBuilder.request(HTTPBuilder.java:451)
+	at io.restassured.internal.http.HTTPBuilder$request$2.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:152)
+	at io.restassured.internal.RequestSpecificationImpl.sendHttpRequest(RequestSpecificationImpl.groovy:1544)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:157)
+	at io.restassured.internal.RequestSpecificationImpl.sendRequest(RequestSpecificationImpl.groovy:1293)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:152)
+	at io.restassured.internal.filter.SendRequestFilter.filter(SendRequestFilter.groovy:30)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.time.TimingFilter.filter(TimingFilter.java:56)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.StatusCodeBasedLoggingFilter.filter(StatusCodeBasedLoggingFilter.java:93)
+	at io.restassured.filter.log.ResponseLoggingFilter.filter(ResponseLoggingFilter.java:31)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:144)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.FilterContext$next.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:136)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1744)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:157)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1750)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:157)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:171)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:157)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:169)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:199)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at iti.kukumo.rest.RestStepContributor.executeRequest(RestStepContributor.java:100)
+	at iti.kukumo.rest.RestStepContributor.executeGetSubject(RestStepContributor.java:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="11_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="12" onclick="switchVisibility([&#x27;12_children&#x27;,&#x27;12_expand&#x27;,&#x27;12_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Entonces</span><span class="nodeName ERROR">responde el país Germany</span><span class="expandIcon" id="12_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="12_children" class=""><li class=""><div><div class="node" id="13" onclick="switchVisibility([&#x27;13_children&#x27;,&#x27;13_expand&#x27;,&#x27;13_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Then</span><span class="nodeName ERROR">the response HTTP code is 200</span><span class="expandIcon" id="13_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div style="display:none" class="errorTrace" id="13_errorTrace" onclick="switchVisibility([&#x27;13_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.lang.NullPointerException
+	at iti.kukumo.rest.RestStepContributor.assertHttpCode(RestStepContributor.java:304)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="13_children" class=""></ul></li></ul></li></ul></li><li class="testCase"><div><div class="node clickable" id="14" onclick="switchVisibility([&#x27;14_children&#x27;,&#x27;14_expand&#x27;,&#x27;14_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id">ID-1_2</span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR">Buscar paises según una IP [2]</span><span class="expandIcon" id="14_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"><span class="tag0">ID-1</span><span class="tag3">definition</span></div></div></div><div></div><div></div><ul id="14_children" class="testCase"><li class=""><div><div class="node clickable" id="15" onclick="switchVisibility([&#x27;15_children&#x27;,&#x27;15_expand&#x27;,&#x27;15_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">*</span><span class="nodeName UNDEFINED">&lt;background&gt;</span><span class="expandIcon" id="15_expand" style="visibility:visible; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="15_children" class=""><li class=""><div><div class="node" id="16" onclick="switchVisibility([&#x27;16_children&#x27;,&#x27;16_expand&#x27;,&#x27;16_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Given</span><span class="nodeName UNDEFINED">the base URL http://api.ip2country.info</span><span class="expandIcon" id="16_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="16_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="17" onclick="switchVisibility([&#x27;17_children&#x27;,&#x27;17_expand&#x27;,&#x27;17_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Dada</span><span class="nodeName PASSED">la IP 14.2.3.4</span><span class="expandIcon" id="17_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="17_children" class=""><li class=""><div><div class="node" id="18" onclick="switchVisibility([&#x27;18_children&#x27;,&#x27;18_expand&#x27;,&#x27;18_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the IP identified by &#x27;ip?14.2.3.4&#x27;</span><span class="expandIcon" id="18_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="18_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="19" onclick="switchVisibility([&#x27;19_children&#x27;,&#x27;19_expand&#x27;,&#x27;19_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Cuando</span><span class="nodeName ERROR">se consulta a qué país corresponde</span><span class="expandIcon" id="19_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="19_children" class=""><li class=""><div><div class="node" id="20" onclick="switchVisibility([&#x27;20_children&#x27;,&#x27;20_expand&#x27;,&#x27;20_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">When</span><span class="nodeName ERROR">the IP is requested</span><span class="expandIcon" id="20_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div class="errorMessage clickable" onclick="switchVisibility([&#x27;20_errorTrace&#x27;],[&#x27;block&#x27;])"><span>Connection refused (Connection refused)</span><span class="expandIcon"></span></div><div style="display:none" class="errorTrace" id="20_errorTrace" onclick="switchVisibility([&#x27;20_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.net.ConnectException: Connection refused (Connection refused)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at org.apache.http.conn.scheme.PlainSocketFactory.connectSocket(PlainSocketFactory.java:117)
+	at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:177)
+	at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:304)
+	at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:611)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:446)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:863)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at org.apache.http.client.HttpClient$execute$0.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl$RestAssuredHttpBuilder.doRequest(RequestSpecificationImpl.groovy:2141)
+	at io.restassured.internal.http.HTTPBuilder.doRequest(HTTPBuilder.java:494)
+	at io.restassured.internal.http.HTTPBuilder.request(HTTPBuilder.java:451)
+	at io.restassured.internal.http.HTTPBuilder$request$2.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.sendHttpRequest(RequestSpecificationImpl.groovy:1544)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at io.restassured.internal.RequestSpecificationImpl.sendRequest(RequestSpecificationImpl.groovy:1293)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:152)
+	at io.restassured.internal.filter.SendRequestFilter.filter(SendRequestFilter.groovy:30)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.time.TimingFilter.filter(TimingFilter.java:56)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.StatusCodeBasedLoggingFilter.filter(StatusCodeBasedLoggingFilter.java:93)
+	at io.restassured.filter.log.ResponseLoggingFilter.filter(ResponseLoggingFilter.java:31)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.FilterContext$next.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1744)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1750)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:171)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:169)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:199)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at iti.kukumo.rest.RestStepContributor.executeRequest(RestStepContributor.java:100)
+	at iti.kukumo.rest.RestStepContributor.executeGetSubject(RestStepContributor.java:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="20_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="21" onclick="switchVisibility([&#x27;21_children&#x27;,&#x27;21_expand&#x27;,&#x27;21_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Entonces</span><span class="nodeName ERROR">responde el país Australia</span><span class="expandIcon" id="21_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="21_children" class=""><li class=""><div><div class="node" id="22" onclick="switchVisibility([&#x27;22_children&#x27;,&#x27;22_expand&#x27;,&#x27;22_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Then</span><span class="nodeName ERROR">the response HTTP code is 200</span><span class="expandIcon" id="22_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div style="display:none" class="errorTrace" id="22_errorTrace" onclick="switchVisibility([&#x27;22_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.lang.NullPointerException
+	at iti.kukumo.rest.RestStepContributor.assertHttpCode(RestStepContributor.java:304)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="22_children" class=""></ul></li></ul></li></ul></li><li class="testCase"><div><div class="node clickable" id="23" onclick="switchVisibility([&#x27;23_children&#x27;,&#x27;23_expand&#x27;,&#x27;23_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id">ID-1_3</span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR">Buscar paises según una IP [3]</span><span class="expandIcon" id="23_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"><span class="tag0">ID-1</span><span class="tag3">definition</span></div></div></div><div></div><div></div><ul id="23_children" class="testCase"><li class=""><div><div class="node clickable" id="24" onclick="switchVisibility([&#x27;24_children&#x27;,&#x27;24_expand&#x27;,&#x27;24_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">*</span><span class="nodeName UNDEFINED">&lt;background&gt;</span><span class="expandIcon" id="24_expand" style="visibility:visible; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="24_children" class=""><li class=""><div><div class="node" id="25" onclick="switchVisibility([&#x27;25_children&#x27;,&#x27;25_expand&#x27;,&#x27;25_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Given</span><span class="nodeName UNDEFINED">the base URL http://api.ip2country.info</span><span class="expandIcon" id="25_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="25_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="26" onclick="switchVisibility([&#x27;26_children&#x27;,&#x27;26_expand&#x27;,&#x27;26_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Dada</span><span class="nodeName PASSED">la IP 27.1.1.7</span><span class="expandIcon" id="26_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="26_children" class=""><li class=""><div><div class="node" id="27" onclick="switchVisibility([&#x27;27_children&#x27;,&#x27;27_expand&#x27;,&#x27;27_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the IP identified by &#x27;ip?27.1.1.7&#x27;</span><span class="expandIcon" id="27_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="27_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="28" onclick="switchVisibility([&#x27;28_children&#x27;,&#x27;28_expand&#x27;,&#x27;28_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Cuando</span><span class="nodeName ERROR">se consulta a qué país corresponde</span><span class="expandIcon" id="28_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="28_children" class=""><li class=""><div><div class="node" id="29" onclick="switchVisibility([&#x27;29_children&#x27;,&#x27;29_expand&#x27;,&#x27;29_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">When</span><span class="nodeName ERROR">the IP is requested</span><span class="expandIcon" id="29_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div class="errorMessage clickable" onclick="switchVisibility([&#x27;29_errorTrace&#x27;],[&#x27;block&#x27;])"><span>Connection refused (Connection refused)</span><span class="expandIcon"></span></div><div style="display:none" class="errorTrace" id="29_errorTrace" onclick="switchVisibility([&#x27;29_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.net.ConnectException: Connection refused (Connection refused)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at org.apache.http.conn.scheme.PlainSocketFactory.connectSocket(PlainSocketFactory.java:117)
+	at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:177)
+	at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:304)
+	at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:611)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:446)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:863)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at org.apache.http.client.HttpClient$execute$0.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl$RestAssuredHttpBuilder.doRequest(RequestSpecificationImpl.groovy:2141)
+	at io.restassured.internal.http.HTTPBuilder.doRequest(HTTPBuilder.java:494)
+	at io.restassured.internal.http.HTTPBuilder.request(HTTPBuilder.java:451)
+	at io.restassured.internal.http.HTTPBuilder$request$2.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.sendHttpRequest(RequestSpecificationImpl.groovy:1544)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at io.restassured.internal.RequestSpecificationImpl.sendRequest(RequestSpecificationImpl.groovy:1293)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:152)
+	at io.restassured.internal.filter.SendRequestFilter.filter(SendRequestFilter.groovy:30)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.time.TimingFilter.filter(TimingFilter.java:56)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.StatusCodeBasedLoggingFilter.filter(StatusCodeBasedLoggingFilter.java:93)
+	at io.restassured.filter.log.ResponseLoggingFilter.filter(ResponseLoggingFilter.java:31)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.FilterContext$next.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1744)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1750)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:171)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:169)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:199)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at iti.kukumo.rest.RestStepContributor.executeRequest(RestStepContributor.java:100)
+	at iti.kukumo.rest.RestStepContributor.executeGetSubject(RestStepContributor.java:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="29_children" class=""></ul></li></ul></li><li class=""><div><div class="node clickable" id="30" onclick="switchVisibility([&#x27;30_children&#x27;,&#x27;30_expand&#x27;,&#x27;30_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Entonces</span><span class="nodeName ERROR">responde el país Spain</span><span class="expandIcon" id="30_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="30_children" class=""><li class=""><div><div class="node" id="31" onclick="switchVisibility([&#x27;31_children&#x27;,&#x27;31_expand&#x27;,&#x27;31_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Then</span><span class="nodeName ERROR">the response HTTP code is 200</span><span class="expandIcon" id="31_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div style="display:none" class="errorTrace" id="31_errorTrace" onclick="switchVisibility([&#x27;31_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.lang.NullPointerException
+	at iti.kukumo.rest.RestStepContributor.assertHttpCode(RestStepContributor.java:304)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="31_children" class=""></ul></li></ul></li></ul></li></ul></li></ul></li><li class=""><div><div class="node clickable" id="32" onclick="switchVisibility([&#x27;32_children&#x27;,&#x27;32_expand&#x27;,&#x27;32_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR"></span><span class="nodeName ERROR">REST Test Feature</span><span class="expandIcon" id="32_expand" style="visibility:visible; display: none"></span></div><div><div style="display:flex"><div class="resultStatistics"><span>1</span><span class="icon_PASSED"></span></div><div class="resultStatistics"><span>2</span><span class="icon_UNDEFINED"></span></div><div class="resultStatistics"><span>1</span><span class="icon_ERROR"></span></div></div><span class="duration">menos de 1 segundo</span></div><div class="tags"><span class="tag4">report-test</span></div></div></div><p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.<br/>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><div></div><div></div><ul id="32_children" class=""><li class="testCase"><div><div class="node clickable" id="33" onclick="switchVisibility([&#x27;33_children&#x27;,&#x27;33_expand&#x27;,&#x27;33_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Scenario</span><span class="nodeName PASSED">Success test case</span><span class="expandIcon" id="33_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"><span class="tag1">CP-1</span><span class="tag4">report-test</span><span class="tag0">tag1</span></div></div></div><div></div><div></div><ul id="33_children" class="testCase"><li class=""><div><div class="node" id="34" onclick="switchVisibility([&#x27;34_children&#x27;,&#x27;34_expand&#x27;,&#x27;34_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the host localhost:8888</span><span class="expandIcon" id="34_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="34_children" class=""></ul></li><li class=""><div><div class="node" id="35" onclick="switchVisibility([&#x27;35_children&#x27;,&#x27;35_expand&#x27;,&#x27;35_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST service &#x27;/users&#x27;</span><span class="expandIcon" id="35_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="35_children" class=""></ul></li><li class=""><div><div class="node" id="36" onclick="switchVisibility([&#x27;36_children&#x27;,&#x27;36_expand&#x27;,&#x27;36_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST content type JSON</span><span class="expandIcon" id="36_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="36_children" class=""></ul></li><li class=""><div><div class="node" id="37" onclick="switchVisibility([&#x27;37_children&#x27;,&#x27;37_expand&#x27;,&#x27;37_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">a user identified by &#x27;user2&#x27;</span><span class="expandIcon" id="37_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="37_children" class=""></ul></li></ul></li><li class="testCase"><div><div class="node clickable" id="38" onclick="switchVisibility([&#x27;38_children&#x27;,&#x27;38_expand&#x27;,&#x27;38_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">Scenario</span><span class="nodeName ERROR">Get a user from a service</span><span class="expandIcon" id="38_expand" style="visibility:visible; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"><span class="tag2">CP-2</span><span class="tag4">report-test</span><span class="tag0">tag1</span><span class="tag1">tag2</span></div></div></div><div></div><div></div><ul id="38_children" class="testCase"><li class=""><div><div class="node" id="39" onclick="switchVisibility([&#x27;39_children&#x27;,&#x27;39_expand&#x27;,&#x27;39_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the host localhost:8888</span><span class="expandIcon" id="39_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="39_children" class=""></ul></li><li class=""><div><div class="node" id="40" onclick="switchVisibility([&#x27;40_children&#x27;,&#x27;40_expand&#x27;,&#x27;40_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST service &#x27;/users&#x27;</span><span class="expandIcon" id="40_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="40_children" class=""></ul></li><li class=""><div><div class="node" id="41" onclick="switchVisibility([&#x27;41_children&#x27;,&#x27;41_expand&#x27;,&#x27;41_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST content type JSON</span><span class="expandIcon" id="41_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="41_children" class=""></ul></li><li class=""><div><div class="node" id="42" onclick="switchVisibility([&#x27;42_children&#x27;,&#x27;42_expand&#x27;,&#x27;42_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">a user identified by &#x27;user1&#x27;</span><span class="expandIcon" id="42_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="42_children" class=""></ul></li><li class=""><div><div class="node" id="43" onclick="switchVisibility([&#x27;43_children&#x27;,&#x27;43_expand&#x27;,&#x27;43_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_ERROR" title="ERROR"></span><span class="id"></span><span class="keyword nodeName ERROR">When</span><span class="nodeName ERROR">the user is requested</span><span class="expandIcon" id="43_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div><div class="errorMessage clickable" onclick="switchVisibility([&#x27;43_errorTrace&#x27;],[&#x27;block&#x27;])"><span>Connection refused (Connection refused)</span><span class="expandIcon"></span></div><div style="display:none" class="errorTrace" id="43_errorTrace" onclick="switchVisibility([&#x27;43_errorTrace&#x27;],[&#x27;block&#x27;])"><pre>java.net.ConnectException: Connection refused (Connection refused)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at org.apache.http.conn.scheme.PlainSocketFactory.connectSocket(PlainSocketFactory.java:117)
+	at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:177)
+	at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:304)
+	at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:611)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:446)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:863)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at org.apache.http.client.HttpClient$execute$0.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl$RestAssuredHttpBuilder.doRequest(RequestSpecificationImpl.groovy:2141)
+	at io.restassured.internal.http.HTTPBuilder.doRequest(HTTPBuilder.java:494)
+	at io.restassured.internal.http.HTTPBuilder.request(HTTPBuilder.java:451)
+	at io.restassured.internal.http.HTTPBuilder$request$2.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.sendHttpRequest(RequestSpecificationImpl.groovy:1544)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at io.restassured.internal.RequestSpecificationImpl.sendRequest(RequestSpecificationImpl.groovy:1293)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:152)
+	at io.restassured.internal.filter.SendRequestFilter.filter(SendRequestFilter.groovy:30)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.time.TimingFilter.filter(TimingFilter.java:56)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.StatusCodeBasedLoggingFilter.filter(StatusCodeBasedLoggingFilter.java:93)
+	at io.restassured.filter.log.ResponseLoggingFilter.filter(ResponseLoggingFilter.java:31)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.log.RequestLoggingFilter.filter(RequestLoggingFilter.java:122)
+	at io.restassured.filter.Filter$filter.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at io.restassured.filter.Filter$filter$0.call(Unknown Source)
+	at io.restassured.internal.filter.FilterContextImpl.next(FilterContextImpl.groovy:72)
+	at io.restassured.filter.FilterContext$next.call(Unknown Source)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1744)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.applyPathParamsAndSendRequest(RequestSpecificationImpl.groovy:1750)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:171)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:822)
+	at io.restassured.internal.RequestSpecificationImpl.invokeMethod(RequestSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.call(PogoInterceptableSite.java:47)
+	at org.codehaus.groovy.runtime.callsite.PogoInterceptableSite.callCurrent(PogoInterceptableSite.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:169)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy:199)
+	at io.restassured.internal.RequestSpecificationImpl.get(RequestSpecificationImpl.groovy)
+	at iti.kukumo.rest.RestStepContributor.executeRequest(RestStepContributor.java:100)
+	at iti.kukumo.rest.RestStepContributor.executeGetSubject(RestStepContributor.java:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at iti.kukumo.core.backend.DefaultBackendFactory.lambda$0(DefaultBackendFactory.java:229)
+	at iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:94)
+	at iti.kukumo.core.backend.DefaultBackend.performRunStep(DefaultBackend.java:95)
+	at iti.kukumo.core.backend.DefaultBackend.runStep(DefaultBackend.java:65)
+	at iti.kukumo.core.runner.PlanNodeRunner.lambda$1(PlanNodeRunner.java:114)
+	at java.util.Optional.ifPresent(Optional.java:159)
+	at iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:114)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:83)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:100)
+	at iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:81)
+	at iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:46)
+	at iti.kukumo.api.Kukumo.executePlan(Kukumo.java:167)
+	at iti.kukumo.launcher.KukumoVerifier.verify(KukumoVerifier.java:32)
+	at iti.kukumo.launcher.Arguments.verify(Arguments.java:147)
+	at iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:42)
+</pre></div></div><ul id="43_children" class=""></ul></li><li class=""><div><div class="node" id="44" onclick="switchVisibility([&#x27;44_children&#x27;,&#x27;44_expand&#x27;,&#x27;44_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_SKIPPED" title="SKIPPED"></span><span class="id"></span><span class="keyword nodeName SKIPPED">Then</span><span class="nodeName SKIPPED">the response HTTP code is greater than or equals to 200</span><span class="expandIcon" id="44_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="44_children" class=""></ul></li><li class=""><div><div class="node" id="45" onclick="switchVisibility([&#x27;45_children&#x27;,&#x27;45_expand&#x27;,&#x27;45_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_SKIPPED" title="SKIPPED"></span><span class="id"></span><span class="keyword nodeName SKIPPED">And</span><span class="nodeName SKIPPED">the response HTTP code is less than 500</span><span class="expandIcon" id="45_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="45_children" class=""></ul></li><li class=""><div><div class="node" id="46" onclick="switchVisibility([&#x27;46_children&#x27;,&#x27;46_expand&#x27;,&#x27;46_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_SKIPPED" title="SKIPPED"></span><span class="id"></span><span class="keyword nodeName SKIPPED">And</span><span class="nodeName SKIPPED">the response content type is JSON</span><span class="expandIcon" id="46_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="46_children" class=""></ul></li><li class=""><div><div class="node" id="47" onclick="switchVisibility([&#x27;47_children&#x27;,&#x27;47_expand&#x27;,&#x27;47_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_SKIPPED" title="SKIPPED"></span><span class="id"></span><span class="keyword nodeName SKIPPED">And</span><span class="nodeName SKIPPED">the response is equal to the file &#x27;features/json1.json&#x27;</span><span class="expandIcon" id="47_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="47_children" class=""></ul></li><li class=""><div><div class="node clickable" id="48" onclick="switchVisibility([&#x27;48_children&#x27;,&#x27;48_expand&#x27;,&#x27;48_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_SKIPPED" title="SKIPPED"></span><span class="id"></span><span class="keyword nodeName SKIPPED">And</span><span class="nodeName SKIPPED">the response contains:</span><span class="expandIcon" id="48_expand" style="visibility:visible; display: inline"></span></div><div></div><div class="tags"></div></div></div><div><div onclick="switchVisibility([&#x27;48_data&#x27;],[&#x27;block&#x27;])" style="display:none" class="document" id="48_data"><pre> { &quot;name&quot;: &quot;User One&quot; }</pre></div></div><div></div><ul id="48_children" class=""></ul></li></ul></li><li class="testCase"><div><div class="node clickable" id="49" onclick="switchVisibility([&#x27;49_children&#x27;,&#x27;49_expand&#x27;,&#x27;49_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Scenario</span><span class="nodeName UNDEFINED">This scenario use undefined steps</span><span class="expandIcon" id="49_expand" style="visibility:visible; display: none"></span></div><div></div><div class="tags"><span class="tag3">CP-3</span><span class="tag4">report-test</span><span class="tag1">tag2</span></div></div></div><div></div><div></div><ul id="49_children" class="testCase"><li class=""><div><div class="node" id="50" onclick="switchVisibility([&#x27;50_children&#x27;,&#x27;50_expand&#x27;,&#x27;50_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the host localhost:8888</span><span class="expandIcon" id="50_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="50_children" class=""></ul></li><li class=""><div><div class="node" id="51" onclick="switchVisibility([&#x27;51_children&#x27;,&#x27;51_expand&#x27;,&#x27;51_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST service &#x27;/users&#x27;</span><span class="expandIcon" id="51_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="51_children" class=""></ul></li><li class=""><div><div class="node" id="52" onclick="switchVisibility([&#x27;52_children&#x27;,&#x27;52_expand&#x27;,&#x27;52_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST content type JSON</span><span class="expandIcon" id="52_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="52_children" class=""></ul></li><li class=""><div><div class="node clickable" id="53" onclick="switchVisibility([&#x27;53_children&#x27;,&#x27;53_expand&#x27;,&#x27;53_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Given</span><span class="nodeName UNDEFINED">the following data table with no logic whatsoever:</span><span class="expandIcon" id="53_expand" style="visibility:visible; display: inline"></span></div><div></div><div class="tags"></div></div></div><div><table onclick="switchVisibility([&#x27;53_data&#x27;],[&#x27;block&#x27;])" style="display:none" class="document" id="53_data"><thead><td>column one</td><td>column two</td><td>column three</td></thead><tr><td>A</td><td>B</td><td>C</td></tr><tr><td>Lorem ipsum dolor sit amet, consectetur adipiscing elit</td><td>12313213</td><td>XXXxx</td></tr><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>1</td><td>2</td><td>3</td></tr></table></div><div></div><ul id="53_children" class=""></ul></li></ul></li><li class="testCase"><div><div class="node clickable" id="54" onclick="switchVisibility([&#x27;54_children&#x27;,&#x27;54_expand&#x27;,&#x27;54_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Scenario</span><span class="nodeName UNDEFINED">Get a user from a service</span><span class="expandIcon" id="54_expand" style="visibility:visible; display: none"></span></div><div></div><div class="tags"><span class="tag4">CP-4</span><span class="tag4">report-test</span><span class="tag0">tag1</span><span class="tag1">tag2</span></div></div></div><div></div><div></div><ul id="54_children" class="testCase"><li class=""><div><div class="node" id="55" onclick="switchVisibility([&#x27;55_children&#x27;,&#x27;55_expand&#x27;,&#x27;55_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">Given</span><span class="nodeName PASSED">the host localhost:8888</span><span class="expandIcon" id="55_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="55_children" class=""></ul></li><li class=""><div><div class="node" id="56" onclick="switchVisibility([&#x27;56_children&#x27;,&#x27;56_expand&#x27;,&#x27;56_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST service &#x27;/users&#x27;</span><span class="expandIcon" id="56_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="56_children" class=""></ul></li><li class=""><div><div class="node" id="57" onclick="switchVisibility([&#x27;57_children&#x27;,&#x27;57_expand&#x27;,&#x27;57_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_PASSED" title="PASSED"></span><span class="id"></span><span class="keyword nodeName PASSED">And</span><span class="nodeName PASSED">the REST content type JSON</span><span class="expandIcon" id="57_expand" style="visibility:hidden; display: none"></span></div><div><span class="duration">menos de 1 segundo</span></div><div class="tags"></div></div></div><div></div><div></div><ul id="57_children" class=""></ul></li><li class=""><div><div class="node" id="58" onclick="switchVisibility([&#x27;58_children&#x27;,&#x27;58_expand&#x27;,&#x27;58_data&#x27;],[&#x27;block&#x27;,&#x27;inline&#x27;,&#x27;block&#x27;])" style="display:flex;justify-content:space-between"><div><span class="icon_UNDEFINED" title="UNDEFINED"></span><span class="id"></span><span class="keyword nodeName UNDEFINED">Given</span><span class="nodeName UNDEFINED">a user identified by 9999</span><span class="expandIcon" id="58_expand" style="visibility:hidden; display: none"></span></div><div></div><div class="tags"></div></div></div><div></div><div></div><ul id="58_children" class=""></ul></li></ul></li></ul></li></ul></li></ul></body></html>

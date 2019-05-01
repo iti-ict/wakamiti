@@ -1,0 +1,13 @@
+mavenFetcher:
+    remoteRepositories: http://repo1.maven.org/maven2;https://raw.github.com/luiinge/maven-repo/master
+kukumo:
+    launcher:
+        modules:
+           - iti.kukumo:kukumo-gherkin:0.1.0
+           - iti.kukumo:kukumo-rest:0.1.0
+           - iti.kukumo:kukumo-html-report:0.1.0
+    htmlReport:
+        css: style.css
+        output: kukumo-report.html
+        locale: es-ES
+    

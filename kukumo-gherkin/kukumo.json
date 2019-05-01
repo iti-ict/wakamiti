@@ -1,0 +1,1558 @@
+{
+  "nodeType" : "plan",
+  "startInstant" : [ 2019, 3, 18, 17, 36, 18, 258000000 ],
+  "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+  "duration" : 1206,
+  "children" : [ {
+    "nodeType" : "feature",
+    "name" : "Test 2 - Scenario Outline",
+    "language" : "en",
+    "source" : "test2_scenarioOutline.feature[2,1]",
+    "displayName" : "Test 2 - Scenario Outline",
+    "tags" : [ "Test2" ],
+    "startInstant" : [ 2019, 3, 18, 17, 36, 18, 258000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 847000000 ],
+    "duration" : 589,
+    "children" : [ {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-ScenarioOutline1",
+      "name" : "Test Scenario Outline",
+      "keyword" : "Scenario Outline",
+      "language" : "en",
+      "source" : "test2_scenarioOutline.feature[7,1]",
+      "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
+      "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+      "properties" : {
+        "propertyScenarioOutline" : "A"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 18, 258000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 847000000 ],
+      "duration" : 589,
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_1",
+        "name" : "Test Scenario Outline [1]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_1] Test Scenario Outline [1]",
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 258000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 761000000 ],
+        "duration" : 503,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 1.0 and another number with value 2",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 1.0 and another number with value 2",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 258000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 358000000 ],
+          "duration" : 100
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 401000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 425000000 ],
+          "duration" : 24
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 2.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 2.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 428000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 761000000 ],
+          "duration" : 333
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_2",
+        "name" : "Test Scenario Outline [2]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_2] Test Scenario Outline [2]",
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 765000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 801000000 ],
+        "duration" : 36,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 2.0 and another number with value 3",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 2.0 and another number with value 3",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 765000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 773000000 ],
+          "duration" : 8
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 774000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 785000000 ],
+          "duration" : 11
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 6.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 6.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 787000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 801000000 ],
+          "duration" : 14
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_3",
+        "name" : "Test Scenario Outline [3]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_3] Test Scenario Outline [3]",
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 807000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 847000000 ],
+        "duration" : 40,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 5.0 and another number with value 4",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 5.0 and another number with value 4",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 807000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 820000000 ],
+          "duration" : 13
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 821000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 835000000 ],
+          "duration" : 14
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 20.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 20.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 18, 839000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 847000000 ],
+          "duration" : 8
+        } ]
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 1 - Simple Scenario",
+    "language" : "en",
+    "source" : "test1_simpleScenario.feature[4,1]",
+    "displayName" : "Test 1 - Simple Scenario",
+    "description" : [ "This is a simple scenario feature without additional behaviour.", "And this is the second line of comments." ],
+    "tags" : [ "Test1" ],
+    "properties" : {
+      "featureProperty" : "A"
+    },
+    "startInstant" : [ 2019, 3, 18, 17, 36, 18, 855000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 901000000 ],
+    "duration" : 46,
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-Test1_Scenario1",
+      "name" : "Test Scenario",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test1_simpleScenario.feature[11,1]",
+      "displayName" : "[ID-Test1_Scenario1] Scenario: Test Scenario",
+      "tags" : [ "Test1", "ID-Test1_Scenario1" ],
+      "properties" : {
+        "featureProperty" : "A",
+        "scenarioProperty" : "B"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 18, 855000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 901000000 ],
+      "duration" : 46,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[14,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "properties" : {
+          "featureProperty" : "A",
+          "stepProperty" : "C",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 855000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 875000000 ],
+        "duration" : 20
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[15,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "featureProperty" : "A",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 878000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 885000000 ],
+        "duration" : 7
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[16,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "properties" : {
+          "featureProperty" : "A",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 889000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 901000000 ],
+        "duration" : 12
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 3 - Backgrounds",
+    "language" : "en",
+    "source" : "test3_background.feature[3,1]",
+    "displayName" : "Test 3 - Backgrounds",
+    "tags" : [ "Test3" ],
+    "properties" : {
+      "encoding" : "UTF-8"
+    },
+    "startInstant" : [ 2019, 3, 18, 17, 36, 18, 910000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 37000000 ],
+    "duration" : 127,
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario1",
+      "name" : "Test Scenario 1",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[10,1]",
+      "displayName" : "[ID-Test3_Scenario1] Scenario: Test Scenario 1",
+      "tags" : [ "ID-Test3_Scenario1", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 18, 910000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 943000000 ],
+      "duration" : 33,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 910000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 918000000 ],
+        "duration" : 8
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[11,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 921000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 926000000 ],
+        "duration" : 5
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[12,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 929000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 934000000 ],
+        "duration" : 5
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[13,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 938000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 943000000 ],
+        "duration" : 5
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario2",
+      "name" : "Test Scenario 2",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[16,1]",
+      "displayName" : "[ID-Test3_Scenario2] Scenario: Test Scenario 2",
+      "tags" : [ "ID-Test3_Scenario2", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 18, 953000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 999000000 ],
+      "duration" : 46,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 953000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 962000000 ],
+        "duration" : 9
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 7.02 and another number with value 8",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[17,3]",
+        "displayName" : "Given a number with value 7.02 and another number with value 8",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 965000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 969000000 ],
+        "duration" : 4
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[18,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 970000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 978000000 ],
+        "duration" : 8
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 56.16",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[19,3]",
+        "displayName" : "Then the result is equals to 56.16",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 18, 996000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 18, 999000000 ],
+        "duration" : 3
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario3",
+      "name" : "Test Scenario 3",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[22,1]",
+      "displayName" : "[ID-Test3_Scenario3] Scenario: Test Scenario 3",
+      "tags" : [ "ID-Test3_Scenario3", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 1000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 37000000 ],
+      "duration" : 36,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 1000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 12000000 ],
+        "duration" : 11
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 8.09 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[23,3]",
+        "displayName" : "Given a number with value 8.09 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 13000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 16000000 ],
+        "duration" : 3
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[24,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 31000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 33000000 ],
+        "duration" : 2
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.81",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[25,3]",
+        "displayName" : "Then the result is equals to 72.81",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 34000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 37000000 ],
+        "duration" : 3
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test Spanish",
+    "language" : "es",
+    "source" : "gherkinDocument.feature[3,1]",
+    "displayName" : "Test Spanish",
+    "description" : [ "Esto es una prueba de definición de característica en Español.", "Los casos son triviales." ],
+    "properties" : {
+      "charset" : "UTF-8"
+    },
+    "startInstant" : [ 2019, 3, 18, 17, 36, 19, 57000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 211000000 ],
+    "duration" : 154,
+    "children" : [ {
+      "nodeType" : "scenario",
+      "name" : "Escenario de test",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[10,1]",
+      "displayName" : "Escenario: Escenario de test",
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 57000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 76000000 ],
+      "duration" : 19,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 57000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 65000000 ],
+        "duration" : 8
+      }, {
+        "nodeType" : "step",
+        "name" : "un número con valor 6,1 y otro número con valor 3",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[11,2]",
+        "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 66000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 69000000 ],
+        "duration" : 3
+      }, {
+        "nodeType" : "step",
+        "name" : "se multiplican ambos números",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[12,2]",
+        "displayName" : "Cuando se multiplican ambos números",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 70000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 72000000 ],
+        "duration" : 2
+      }, {
+        "nodeType" : "step",
+        "name" : "el resultado es 18,3",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[13,2]",
+        "displayName" : "Entonces el resultado es 18,3",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 73000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 76000000 ],
+        "duration" : 3
+      } ]
+    }, {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-1",
+      "name" : "Esquema de escenario de test",
+      "keyword" : "Esquema del escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[16,1]",
+      "displayName" : "[ID-1] Esquema del escenario: Esquema de escenario de test",
+      "tags" : [ "ID-1" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 82000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 123000000 ],
+      "duration" : 41,
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-1_1",
+        "name" : "Esquema de escenario de test [1]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_1] Esquema de escenario de test [1]",
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 82000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 96000000 ],
+        "duration" : 14,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 82000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 85000000 ],
+          "duration" : 3
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 1,0 y otro número con valor 2",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 1,0 y otro número con valor 2",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 86000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 89000000 ],
+          "duration" : 3
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 90000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 92000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 2,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 2,0",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 93000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 96000000 ],
+          "duration" : 3
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-1_2",
+        "name" : "Esquema de escenario de test [2]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_2] Esquema de escenario de test [2]",
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 97000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 109000000 ],
+        "duration" : 12,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 97000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 100000000 ],
+          "duration" : 3
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 2,0 y otro número con valor 3",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 2,0 y otro número con valor 3",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 101000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 103000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 104000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 106000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 6,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 6,0",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 107000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 109000000 ],
+          "duration" : 2
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-1_3",
+        "name" : "Esquema de escenario de test [3]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_3] Esquema de escenario de test [3]",
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 111000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 123000000 ],
+        "duration" : 12,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 111000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 113000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 5,0 y otro número con valor 4",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 5,0 y otro número con valor 4",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 115000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 117000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 118000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 120000000 ],
+          "duration" : 2
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 20,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 20,0",
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 121000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 123000000 ],
+          "duration" : 2
+        } ]
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-2",
+      "name" : "Escenario de test con tabla",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[27,1]",
+      "displayName" : "[ID-2] Escenario: Escenario de test con tabla",
+      "tags" : [ "ID-2" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 126000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 178000000 ],
+      "duration" : 52,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 126000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 129000000 ],
+        "duration" : 3
+      }, {
+        "nodeType" : "step",
+        "name" : "un número con valor 3,1 y los siguientes datos:",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[28,2]",
+        "displayName" : "Dado un número con valor 3,1 y los siguientes datos:",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 129000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 134000000 ],
+        "duration" : 5,
+        "dataTable" : {
+          "values" : [ [ "1,1" ], [ "2,1" ], [ "3,1" ] ]
+        }
+      }, {
+        "nodeType" : "step",
+        "name" : "se multiplica la tabla por el número",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[32,2]",
+        "displayName" : "Cuando se multiplica la tabla por el número",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 135000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 146000000 ],
+        "duration" : 11
+      }, {
+        "nodeType" : "step",
+        "name" : "los resultados son los siguientes:",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[33,2]",
+        "displayName" : "Entonces los resultados son los siguientes:",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 147000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 178000000 ],
+        "duration" : 31,
+        "dataTable" : {
+          "values" : [ [ "3,41" ], [ "6,51" ], [ "9,61" ] ]
+        }
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-3",
+      "name" : "Escenario de test con texto",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[39,1]",
+      "displayName" : "[ID-3] Escenario: Escenario de test con texto",
+      "tags" : [ "ID-3" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 179000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 211000000 ],
+      "duration" : 32,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 179000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 181000000 ],
+        "duration" : 2
+      }, {
+        "nodeType" : "step",
+        "name" : "la palabra pepino y el siguiente párafro:",
+        "keyword" : "Dada",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[40,2]",
+        "displayName" : "Dada la palabra pepino y el siguiente párafro:",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 183000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 195000000 ],
+        "duration" : 12,
+        "document" : {
+          "content" : "pepinos y calabazas, dulces vegetables,\npepinos a pares,\npepinos en bares"
+        }
+      }, {
+        "nodeType" : "step",
+        "name" : "cada línea empieza por la palabra dada",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[46,2]",
+        "displayName" : "Entonces cada línea empieza por la palabra dada",
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 196000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 211000000 ],
+        "duration" : 15
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 4 - Tag Expressions",
+    "language" : "en",
+    "source" : "test4_tagExpression.feature[3,1]",
+    "displayName" : "Test 4 - Tag Expressions",
+    "tags" : [ "Test4" ],
+    "properties" : {
+      "encoding" : "UTF-8"
+    },
+    "startInstant" : [ 2019, 3, 18, 17, 36, 19, 219000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 343000000 ],
+    "duration" : 124,
+    "children" : [ {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[7,1]",
+      "displayName" : "Scenario: Test Scenario A",
+      "tags" : [ "A", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 219000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 239000000 ],
+      "duration" : 20,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[8,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 219000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 223000000 ],
+        "duration" : 4
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[9,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 232000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 234000000 ],
+        "duration" : 2
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[10,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 235000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 239000000 ],
+        "duration" : 4
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario A B",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[13,1]",
+      "displayName" : "Scenario: Test Scenario A B",
+      "tags" : [ "A", "B", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 241000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 297000000 ],
+      "duration" : 56,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 7.02 and another number with value 8",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[14,3]",
+        "displayName" : "Given a number with value 7.02 and another number with value 8",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 241000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 253000000 ],
+        "duration" : 12
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[15,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 257000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 259000000 ],
+        "duration" : 2
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 56.16",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[16,3]",
+        "displayName" : "Then the result is equals to 56.16",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 260000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 297000000 ],
+        "duration" : 37
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario B C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[19,1]",
+      "displayName" : "Scenario: Test Scenario B C",
+      "tags" : [ "B", "C", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 298000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 343000000 ],
+      "duration" : 45,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.09 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[20,3]",
+        "displayName" : "Given a number with value 8.09 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 298000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 321000000 ],
+        "duration" : 23
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[21,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 323000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 324000000 ],
+        "duration" : 1
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.81",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[22,3]",
+        "displayName" : "Then the result is equals to 72.81",
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 326000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 343000000 ],
+        "duration" : 17
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test Redefined feature - Definition",
+    "language" : "en",
+    "source" : "redefining/definition.feature[3,1]",
+    "displayName" : "Test Redefined feature - Definition",
+    "tags" : [ "definition" ],
+    "startInstant" : [ 2019, 3, 18, 17, 36, 19, 362000000 ],
+    "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+    "duration" : 102,
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-1",
+      "name" : "Test scenario",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "redefining/definition.feature[6,1]",
+      "displayName" : "[ID-1] Scenario: Test scenario",
+      "tags" : [ "definition", "ID-1" ],
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 362000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 385000000 ],
+      "duration" : 23,
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "<background>",
+        "keyword" : "*",
+        "displayName" : "* <background>",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 362000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 367000000 ],
+        "duration" : 5,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 362000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 367000000 ],
+          "duration" : 5
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "two numbers",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "redefining/definition.feature[7,2]",
+        "displayName" : "Given two numbers",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 371000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 375000000 ],
+        "duration" : 4,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "un número con valor 6,1 y otro número con valor 3",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[12,2]",
+          "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 371000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 375000000 ],
+          "duration" : 4
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "they are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "redefining/definition.feature[8,2]",
+        "displayName" : "When they are multiplied",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 379000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 381000000 ],
+        "duration" : 2,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[13,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 379000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 381000000 ],
+          "duration" : 2
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is the product",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "redefining/definition.feature[9,2]",
+        "displayName" : "Then the result is the product",
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 382000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 385000000 ],
+        "duration" : 3,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el resultado es 18,3",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[14,2]",
+          "displayName" : "Entonces el resultado es 18,3",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 382000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 385000000 ],
+          "duration" : 3
+        } ]
+      } ]
+    }, {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-2",
+      "name" : "Test scenario outline",
+      "keyword" : "Scenario Outline",
+      "language" : "en",
+      "source" : "redefining/definition.feature[12,1]",
+      "displayName" : "[ID-2] Scenario Outline: Test scenario outline",
+      "tags" : [ "ID-2", "definition" ],
+      "startInstant" : [ 2019, 3, 18, 17, 36, 19, 389000000 ],
+      "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+      "duration" : 75,
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-2_1",
+        "name" : "Test scenario outline [1]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_1] Test scenario outline [1]",
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 389000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 408000000 ],
+        "duration" : 19,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 389000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 392000000 ],
+          "duration" : 3,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 389000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 392000000 ],
+            "duration" : 3
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 1.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 1.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 393000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 393000000 ],
+          "duration" : 0,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 393000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 393000000 ],
+            "duration" : 0
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 2",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 2",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 395000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 399000000 ],
+          "duration" : 4,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 1.0 y otro número con valor 2",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 395000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 399000000 ],
+            "duration" : 4
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 401000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 403000000 ],
+          "duration" : 2,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 401000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 403000000 ],
+            "duration" : 2
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 2.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 2.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 405000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 408000000 ],
+          "duration" : 3,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 2.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 2.0",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 405000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 408000000 ],
+            "duration" : 3
+          } ]
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-2_2",
+        "name" : "Test scenario outline [2]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_2] Test scenario outline [2]",
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 412000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 438000000 ],
+        "duration" : 26,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 412000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 414000000 ],
+          "duration" : 2,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 412000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 414000000 ],
+            "duration" : 2
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 2.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 2.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 426000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 426000000 ],
+          "duration" : 0,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 426000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 426000000 ],
+            "duration" : 0
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 4",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 4",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 428000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 431000000 ],
+          "duration" : 3,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 2.0 y otro número con valor 4",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 428000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 431000000 ],
+            "duration" : 3
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 433000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 434000000 ],
+          "duration" : 1,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 433000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 434000000 ],
+            "duration" : 1
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 8.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 8.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 436000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 438000000 ],
+          "duration" : 2,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 8.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 8.0",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 436000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 438000000 ],
+            "duration" : 2
+          } ]
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-2_3",
+        "name" : "Test scenario outline [3]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_3] Test scenario outline [3]",
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : [ 2019, 3, 18, 17, 36, 19, 441000000 ],
+        "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+        "duration" : 23,
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 441000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 448000000 ],
+          "duration" : 7,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 441000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 448000000 ],
+            "duration" : 7
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 3.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 3.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 450000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 450000000 ],
+          "duration" : 0,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 450000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 450000000 ],
+            "duration" : 0
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 6",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 6",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 452000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 456000000 ],
+          "duration" : 4,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 3.0 y otro número con valor 6",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 452000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 456000000 ],
+            "duration" : 4
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 458000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 461000000 ],
+          "duration" : 3,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 458000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 461000000 ],
+            "duration" : 3
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 18.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 18.0",
+          "startInstant" : [ 2019, 3, 18, 17, 36, 19, 462000000 ],
+          "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+          "duration" : 2,
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 18.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 18.0",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : [ 2019, 3, 18, 17, 36, 19, 462000000 ],
+            "finishInstant" : [ 2019, 3, 18, 17, 36, 19, 464000000 ],
+            "duration" : 2
+          } ]
+        } ]
+      } ]
+    } ]
+  } ]
+}

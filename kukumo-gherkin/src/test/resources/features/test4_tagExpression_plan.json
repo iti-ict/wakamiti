@@ -1,0 +1,64 @@
+{
+  "nodeType" : "plan",
+  "testCase" : false,
+  "children" : [ {
+    "nodeType" : "feature",
+    "name" : "Test 4 - Tag Expressions",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "src/test/resources/features/test4_tagExpression.feature[3,1]",
+    "displayName" : "Feature: Test 4 - Tag Expressions",
+    "testCase" : false,
+    "tags" : [ "Test4" ],
+    "properties" : {
+      "encoding" : "UTF-8"
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario B C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "src/test/resources/features/test4_tagExpression.feature[19,1]",
+      "displayName" : "Scenario: Test Scenario B C",
+      "testCase" : true,
+      "tags" : [ "B", "C", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.09 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "src/test/resources/features/test4_tagExpression.feature[20,3]",
+        "displayName" : "Given a number with value 8.09 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        }
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "src/test/resources/features/test4_tagExpression.feature[21,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        }
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.81",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "src/test/resources/features/test4_tagExpression.feature[22,3]",
+        "displayName" : "Then the result is equals to 72.81",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        }
+      } ]
+    } ]
+  } ]
+}

@@ -6,3 +6,5 @@
 *.iml
 *.classpath
 /.project
+.factorypath
+.attach_pid*

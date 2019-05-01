@@ -1,0 +1,16 @@
+<data>
+    <id>user1</id>
+    <name>User One</name>
+    <age>11</age>
+    <vegetables>
+        <id>1</id>
+        <description>Cucumber</description>
+    </vegetables>
+    <vegetables>
+        <id>2</id>
+        <description>Gherkin</description>
+    </vegetables>
+    <contact>
+        <email>user1@mail</email>
+    </contact>
+</data>

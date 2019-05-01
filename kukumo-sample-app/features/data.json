@@ -1,0 +1,34 @@
+{
+    "users": [
+        {
+            "id" : "user1",
+            "name" : "User One",
+            "age" : 11,
+            "vegetables": [
+                { "id": 1, "description": "Cucumber" },
+                { "id": 2, "description": "Gherkin" }
+            ]
+        },
+        {
+            "id" : "user2",
+            "name" : "User Two",
+            "age" : 12,
+            "vegetables": [
+               { "id": 1, "description": "Cucumber" },
+               { "id": 3, "description": "Pickle" }
+            ]
+        },
+        {
+            "id" : "user3",
+            "name" : "User Three",
+            "age" : 13,
+            "vegetables": []
+        }
+    ],
+
+    "vegetables": [
+        { "id": 1, "description": "Cucumber" },
+        { "id": 2, "description": "Gherkin" },
+        { "id": 3, "description": "Pickle" }
+    ]
+}

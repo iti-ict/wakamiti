@@ -1,0 +1,1897 @@
+{
+  "nodeType" : "plan",
+  "testCase" : false,
+  "startInstant" : "2019-03-22T13:43:52.684",
+  "finishInstant" : "2019-03-22T13:43:52.872",
+  "duration" : 186546548,
+  "result" : "FAILED",
+  "testCaseResults" : {
+    "PASSED" : 20,
+    "FAILED": 1,
+    "ERROR": 1,
+    "UNDEFINED": 2,
+    "SKIPPED": 3
+  },
+  "children" : [ {
+    "nodeType" : "feature",
+    "name" : "Test 4 - Tag Expressions",
+    "language" : "en",
+    "source" : "test4_tagExpression.feature[3,1]",
+    "displayName" : "Test 4 - Tag Expressions",
+    "testCase" : false,
+    "tags" : [ "Test4" ],
+    "properties" : {
+      "encoding" : "UTF-8"
+    },
+    "startInstant" : "2019-03-22T13:43:52.684",
+    "finishInstant" : "2019-03-22T13:43:52.737",
+    "duration" : 53,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 3,
+      "FAILED": 2,
+      "ERROR": 1
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[7,1]",
+      "displayName" : "Scenario: Test Scenario A",
+      "testCase" : true,
+      "tags" : [ "A", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.684",
+      "finishInstant" : "2019-03-22T13:43:52.728",
+      "duration" : 44,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[8,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.684",
+        "finishInstant" : "2019-03-22T13:43:52.694",
+        "duration" : 10,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[9,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.699",
+        "finishInstant" : "2019-03-22T13:43:52.701",
+        "duration" : 2,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[10,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.701",
+        "finishInstant" : "2019-03-22T13:43:52.728",
+        "duration" : 27,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario A B",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[13,1]",
+      "displayName" : "Scenario: Test Scenario A B",
+      "testCase" : true,
+      "tags" : [ "A", "B", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.729",
+      "finishInstant" : "2019-03-22T13:43:52.733",
+      "duration" : 4,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 7.02 and another number with value 8",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[14,3]",
+        "displayName" : "Given a number with value 7.02 and another number with value 8",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.729",
+        "finishInstant" : "2019-03-22T13:43:52.731",
+        "duration" : 2,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[15,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.731",
+        "finishInstant" : "2019-03-22T13:43:52.732",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 56.16",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[16,3]",
+        "displayName" : "Then the result is equals to 56.16",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.732",
+        "finishInstant" : "2019-03-22T13:43:52.733",
+        "duration" : 1,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "name" : "Test Scenario B C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test4_tagExpression.feature[19,1]",
+      "displayName" : "Scenario: Test Scenario B C",
+      "testCase" : true,
+      "tags" : [ "B", "C", "Test4" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.734",
+      "finishInstant" : "2019-03-22T13:43:52.737",
+      "duration" : 3,
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "PASSED" : 1,
+        "FAILED": 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.09 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[20,3]",
+        "displayName" : "Given a number with value 8.09 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.734",
+        "finishInstant" : "2019-03-22T13:43:52.735",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[21,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.736",
+        "finishInstant" : "2019-03-22T13:43:52.736",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.81",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test4_tagExpression.feature[22,3]",
+        "displayName" : "Then the result is equals to 72.81",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.737",
+        "finishInstant" : "2019-03-22T13:43:52.737",
+        "duration" : 0,
+        "result" : "FAILED"
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test Spanish",
+    "language" : "es",
+    "source" : "gherkinDocument.feature[3,1]",
+    "displayName" : "Test Spanish",
+    "testCase" : false,
+    "description" : [ "Esto es una prueba de definición de característica en Español.", "Los casos son triviales." ],
+    "properties" : {
+      "charset" : "UTF-8"
+    },
+    "startInstant" : "2019-03-22T13:43:52.740",
+    "finishInstant" : "2019-03-22T13:43:52.792",
+    "duration" : 52,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 6
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "name" : "Escenario de test",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[10,1]",
+      "displayName" : "Escenario: Escenario de test",
+      "testCase" : true,
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.740",
+      "finishInstant" : "2019-03-22T13:43:52.744",
+      "duration" : 4,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.740",
+        "finishInstant" : "2019-03-22T13:43:52.742",
+        "duration" : 2,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "un número con valor 6,1 y otro número con valor 3",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[11,2]",
+        "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.742",
+        "finishInstant" : "2019-03-22T13:43:52.743",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "se multiplican ambos números",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[12,2]",
+        "displayName" : "Cuando se multiplican ambos números",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.743",
+        "finishInstant" : "2019-03-22T13:43:52.744",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "el resultado es 18,3",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[13,2]",
+        "displayName" : "Entonces el resultado es 18,3",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.744",
+        "finishInstant" : "2019-03-22T13:43:52.744",
+        "duration" : 0,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-1",
+      "name" : "Esquema de escenario de test",
+      "keyword" : "Esquema del escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[16,1]",
+      "displayName" : "[ID-1] Esquema del escenario: Esquema de escenario de test",
+      "testCase" : false,
+      "tags" : [ "ID-1" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.751",
+      "finishInstant" : "2019-03-22T13:43:52.772",
+      "duration" : 21,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-1_1",
+        "name" : "Esquema de escenario de test [1]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_1] Esquema de escenario de test [1]",
+        "testCase" : true,
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.751",
+        "finishInstant" : "2019-03-22T13:43:52.756",
+        "duration" : 5,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.751",
+          "finishInstant" : "2019-03-22T13:43:52.752",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 1,0 y otro número con valor 2",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 1,0 y otro número con valor 2",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.752",
+          "finishInstant" : "2019-03-22T13:43:52.753",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.754",
+          "finishInstant" : "2019-03-22T13:43:52.754",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 2,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 2,0",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.755",
+          "finishInstant" : "2019-03-22T13:43:52.756",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-1_2",
+        "name" : "Esquema de escenario de test [2]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_2] Esquema de escenario de test [2]",
+        "testCase" : true,
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.758",
+        "finishInstant" : "2019-03-22T13:43:52.764",
+        "duration" : 6,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.758",
+          "finishInstant" : "2019-03-22T13:43:52.759",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 2,0 y otro número con valor 3",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 2,0 y otro número con valor 3",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.759",
+          "finishInstant" : "2019-03-22T13:43:52.760",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.761",
+          "finishInstant" : "2019-03-22T13:43:52.762",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 6,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 6,0",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.763",
+          "finishInstant" : "2019-03-22T13:43:52.764",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-1_3",
+        "name" : "Esquema de escenario de test [3]",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[16,1]",
+        "displayName" : "[ID-1_3] Esquema de escenario de test [3]",
+        "testCase" : true,
+        "tags" : [ "ID-1" ],
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.766",
+        "finishInstant" : "2019-03-22T13:43:52.772",
+        "duration" : 6,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.766",
+          "finishInstant" : "2019-03-22T13:43:52.767",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 5,0 y otro número con valor 4",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[17,2]",
+          "displayName" : "Dado un número con valor 5,0 y otro número con valor 4",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.768",
+          "finishInstant" : "2019-03-22T13:43:52.769",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[18,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.770",
+          "finishInstant" : "2019-03-22T13:43:52.770",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 20,0",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "gherkinDocument.feature[19,2]",
+          "displayName" : "Entonces el resultado es 20,0",
+          "testCase" : false,
+          "properties" : {
+            "charset" : "UTF-8"
+          },
+          "startInstant" : "2019-03-22T13:43:52.771",
+          "finishInstant" : "2019-03-22T13:43:52.772",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-2",
+      "name" : "Escenario de test con tabla",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[27,1]",
+      "displayName" : "[ID-2] Escenario: Escenario de test con tabla",
+      "testCase" : true,
+      "tags" : [ "ID-2" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.775",
+      "finishInstant" : "2019-03-22T13:43:52.783",
+      "duration" : 8,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.775",
+        "finishInstant" : "2019-03-22T13:43:52.775",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "un número con valor 3,1 y los siguientes datos:",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[28,2]",
+        "displayName" : "Dado un número con valor 3,1 y los siguientes datos:",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.776",
+        "finishInstant" : "2019-03-22T13:43:52.777",
+        "duration" : 1,
+        "dataTable" : [ [ "1,1" ], [ "2,1" ], [ "3,1" ] ],
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "se multiplica la tabla por el número",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[32,2]",
+        "displayName" : "Cuando se multiplica la tabla por el número",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.778",
+        "finishInstant" : "2019-03-22T13:43:52.778",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "los resultados son los siguientes:",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[33,2]",
+        "displayName" : "Entonces los resultados son los siguientes:",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.779",
+        "finishInstant" : "2019-03-22T13:43:52.783",
+        "duration" : 4,
+        "dataTable" : [ [ "3,41" ], [ "6,51" ], [ "9,61" ] ],
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-3",
+      "name" : "Escenario de test con texto",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "gherkinDocument.feature[39,1]",
+      "displayName" : "[ID-3] Escenario: Escenario de test con texto",
+      "testCase" : true,
+      "tags" : [ "ID-3" ],
+      "properties" : {
+        "charset" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.786",
+      "finishInstant" : "2019-03-22T13:43:52.792",
+      "duration" : 6,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "el conjunto de números reales ℝ",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[8,3]",
+        "displayName" : "Dado el conjunto de números reales ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.786",
+        "finishInstant" : "2019-03-22T13:43:52.786",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "la palabra pepino y el siguiente párafro:",
+        "keyword" : "Dada",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[40,2]",
+        "displayName" : "Dada la palabra pepino y el siguiente párafro:",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.787",
+        "finishInstant" : "2019-03-22T13:43:52.788",
+        "duration" : 1,
+        "document" : "pepinos y calabazas, dulces vegetables,\npepinos a pares,\npepinos en bares",
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "cada línea empieza por la palabra dada",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "gherkinDocument.feature[46,2]",
+        "displayName" : "Entonces cada línea empieza por la palabra dada",
+        "testCase" : false,
+        "properties" : {
+          "charset" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.788",
+        "finishInstant" : "2019-03-22T13:43:52.792",
+        "duration" : 4,
+        "result" : "PASSED"
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 3 - Backgrounds",
+    "language" : "en",
+    "source" : "test3_background.feature[3,1]",
+    "displayName" : "Test 3 - Backgrounds",
+    "testCase" : false,
+    "tags" : [ "Test3" ],
+    "properties" : {
+      "encoding" : "UTF-8"
+    },
+    "startInstant" : "2019-03-22T13:43:52.796",
+    "finishInstant" : "2019-03-22T13:43:52.821",
+    "duration" : 25,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 3
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario1",
+      "name" : "Test Scenario 1",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[10,1]",
+      "displayName" : "[ID-Test3_Scenario1] Scenario: Test Scenario 1",
+      "testCase" : true,
+      "tags" : [ "ID-Test3_Scenario1", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.796",
+      "finishInstant" : "2019-03-22T13:43:52.799",
+      "duration" : 3,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.796",
+        "finishInstant" : "2019-03-22T13:43:52.796",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[11,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.797",
+        "finishInstant" : "2019-03-22T13:43:52.797",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[12,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.798",
+        "finishInstant" : "2019-03-22T13:43:52.798",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[13,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.798",
+        "finishInstant" : "2019-03-22T13:43:52.799",
+        "duration" : 1,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario2",
+      "name" : "Test Scenario 2",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[16,1]",
+      "displayName" : "[ID-Test3_Scenario2] Scenario: Test Scenario 2",
+      "testCase" : true,
+      "tags" : [ "ID-Test3_Scenario2", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.801",
+      "finishInstant" : "2019-03-22T13:43:52.815",
+      "duration" : 14,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.801",
+        "finishInstant" : "2019-03-22T13:43:52.801",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 7.02 and another number with value 8",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[17,3]",
+        "displayName" : "Given a number with value 7.02 and another number with value 8",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.802",
+        "finishInstant" : "2019-03-22T13:43:52.802",
+        "duration" : 0,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[18,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.803",
+        "finishInstant" : "2019-03-22T13:43:52.814",
+        "duration" : 11,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 56.16",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[19,3]",
+        "displayName" : "Then the result is equals to 56.16",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.814",
+        "finishInstant" : "2019-03-22T13:43:52.815",
+        "duration" : 1,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "scenario",
+      "id" : "ID-Test3_Scenario3",
+      "name" : "Test Scenario 3",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test3_background.feature[22,1]",
+      "displayName" : "[ID-Test3_Scenario3] Scenario: Test Scenario 3",
+      "testCase" : true,
+      "tags" : [ "ID-Test3_Scenario3", "Test3" ],
+      "properties" : {
+        "encoding" : "UTF-8"
+      },
+      "startInstant" : "2019-03-22T13:43:52.818",
+      "finishInstant" : "2019-03-22T13:43:52.821",
+      "duration" : 3,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "the set of real numbers ℝ",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[6,3]",
+        "displayName" : "Given the set of real numbers ℝ",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.818",
+        "finishInstant" : "2019-03-22T13:43:52.819",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "a number with value 8.09 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test3_background.feature[23,3]",
+        "displayName" : "Given a number with value 8.09 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.819",
+        "finishInstant" : "2019-03-22T13:43:52.820",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test3_background.feature[24,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.820",
+        "finishInstant" : "2019-03-22T13:43:52.821",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.81",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test3_background.feature[25,3]",
+        "displayName" : "Then the result is equals to 72.81",
+        "testCase" : false,
+        "properties" : {
+          "encoding" : "UTF-8"
+        },
+        "startInstant" : "2019-03-22T13:43:52.821",
+        "finishInstant" : "2019-03-22T13:43:52.821",
+        "duration" : 0,
+        "result" : "PASSED"
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test Redefined feature - Definition",
+    "language" : "en",
+    "source" : "redefining/definition.feature[3,1]",
+    "displayName" : "Test Redefined feature - Definition",
+    "testCase" : false,
+    "tags" : [ "definition" ],
+    "startInstant" : "2019-03-22T13:43:52.826",
+    "finishInstant" : "2019-03-22T13:43:52.853",
+    "duration" : 27,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 4
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-1",
+      "name" : "Test scenario",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "redefining/definition.feature[6,1]",
+      "displayName" : "[ID-1] Scenario: Test scenario",
+      "testCase" : true,
+      "tags" : [ "definition", "ID-1" ],
+      "startInstant" : "2019-03-22T13:43:52.826",
+      "finishInstant" : "2019-03-22T13:43:52.831",
+      "duration" : 5,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "<background>",
+        "keyword" : "*",
+        "displayName" : "* <background>",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.826",
+        "finishInstant" : "2019-03-22T13:43:52.827",
+        "duration" : 1,
+        "result" : "PASSED",
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.826",
+          "finishInstant" : "2019-03-22T13:43:52.827",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "two numbers",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "redefining/definition.feature[7,2]",
+        "displayName" : "Given two numbers",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.828",
+        "finishInstant" : "2019-03-22T13:43:52.828",
+        "duration" : 0,
+        "result" : "PASSED",
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "un número con valor 6,1 y otro número con valor 3",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[12,2]",
+          "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.828",
+          "finishInstant" : "2019-03-22T13:43:52.828",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "they are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "redefining/definition.feature[8,2]",
+        "displayName" : "When they are multiplied",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.830",
+        "finishInstant" : "2019-03-22T13:43:52.830",
+        "duration" : 0,
+        "result" : "PASSED",
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[13,2]",
+          "displayName" : "Cuando se multiplican ambos números",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.830",
+          "finishInstant" : "2019-03-22T13:43:52.830",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is the product",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "redefining/definition.feature[9,2]",
+        "displayName" : "Then the result is the product",
+        "testCase" : false,
+        "startInstant" : "2019-03-22T13:43:52.830",
+        "finishInstant" : "2019-03-22T13:43:52.831",
+        "duration" : 1,
+        "result" : "PASSED",
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "el resultado es 18,3",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "redefining/implementation.feature[14,2]",
+          "displayName" : "Entonces el resultado es 18,3",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.830",
+          "finishInstant" : "2019-03-22T13:43:52.831",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      } ]
+    }, {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-2",
+      "name" : "Test scenario outline",
+      "keyword" : "Scenario Outline",
+      "language" : "en",
+      "source" : "redefining/definition.feature[12,1]",
+      "displayName" : "[ID-2] Scenario Outline: Test scenario outline",
+      "testCase" : false,
+      "tags" : [ "ID-2", "definition" ],
+      "startInstant" : "2019-03-22T13:43:52.834",
+      "finishInstant" : "2019-03-22T13:43:52.853",
+      "duration" : 19,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-2_1",
+        "name" : "Test scenario outline [1]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_1] Test scenario outline [1]",
+        "testCase" : true,
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : "2019-03-22T13:43:52.834",
+        "finishInstant" : "2019-03-22T13:43:52.838",
+        "duration" : 4,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.834",
+          "finishInstant" : "2019-03-22T13:43:52.834",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.834",
+            "finishInstant" : "2019-03-22T13:43:52.834",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 1.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 1.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.835",
+          "finishInstant" : "2019-03-22T13:43:52.835",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.835",
+            "finishInstant" : "2019-03-22T13:43:52.835",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 2",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 2",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.835",
+          "finishInstant" : "2019-03-22T13:43:52.836",
+          "duration" : 1,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 1.0 y otro número con valor 2",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.835",
+            "finishInstant" : "2019-03-22T13:43:52.836",
+            "duration" : 1,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.837",
+          "finishInstant" : "2019-03-22T13:43:52.837",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.837",
+            "finishInstant" : "2019-03-22T13:43:52.837",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 2.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 2.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.838",
+          "finishInstant" : "2019-03-22T13:43:52.838",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 2.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 2.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.838",
+            "finishInstant" : "2019-03-22T13:43:52.838",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-2_2",
+        "name" : "Test scenario outline [2]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_2] Test scenario outline [2]",
+        "testCase" : true,
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : "2019-03-22T13:43:52.841",
+        "finishInstant" : "2019-03-22T13:43:52.845",
+        "duration" : 4,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.841",
+          "finishInstant" : "2019-03-22T13:43:52.842",
+          "duration" : 1,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.841",
+            "finishInstant" : "2019-03-22T13:43:52.842",
+            "duration" : 1,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 2.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 2.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.842",
+          "finishInstant" : "2019-03-22T13:43:52.842",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.842",
+            "finishInstant" : "2019-03-22T13:43:52.842",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 4",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 4",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.843",
+          "finishInstant" : "2019-03-22T13:43:52.843",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 2.0 y otro número con valor 4",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.843",
+            "finishInstant" : "2019-03-22T13:43:52.843",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.844",
+          "finishInstant" : "2019-03-22T13:43:52.844",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.844",
+            "finishInstant" : "2019-03-22T13:43:52.844",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 8.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 8.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.845",
+          "finishInstant" : "2019-03-22T13:43:52.845",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 8.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 8.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.845",
+            "finishInstant" : "2019-03-22T13:43:52.845",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-2_3",
+        "name" : "Test scenario outline [3]",
+        "language" : "en",
+        "source" : "redefining/definition.feature[12,1]",
+        "displayName" : "[ID-2_3] Test scenario outline [3]",
+        "testCase" : true,
+        "tags" : [ "ID-2", "definition" ],
+        "startInstant" : "2019-03-22T13:43:52.848",
+        "finishInstant" : "2019-03-22T13:43:52.853",
+        "duration" : 5,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "<background>",
+          "keyword" : "*",
+          "displayName" : "* <background>",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.848",
+          "finishInstant" : "2019-03-22T13:43:52.849",
+          "duration" : 1,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[3,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.848",
+            "finishInstant" : "2019-03-22T13:43:52.849",
+            "duration" : 1,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "a number with value 3.0",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "redefining/definition.feature[13,2]",
+          "displayName" : "Given a number with value 3.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.849",
+          "finishInstant" : "2019-03-22T13:43:52.849",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "void",
+            "displayName" : "void",
+            "testCase" : false,
+            "startInstant" : "2019-03-22T13:43:52.849",
+            "finishInstant" : "2019-03-22T13:43:52.849",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "another number with value 6",
+          "keyword" : "And",
+          "language" : "en",
+          "source" : "redefining/definition.feature[14,2]",
+          "displayName" : "And another number with value 6",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.850",
+          "finishInstant" : "2019-03-22T13:43:52.851",
+          "duration" : 1,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "un número con valor 3.0 y otro número con valor 6",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.850",
+            "finishInstant" : "2019-03-22T13:43:52.851",
+            "duration" : 1,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "they are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "redefining/definition.feature[15,2]",
+          "displayName" : "When they are multiplied",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.852",
+          "finishInstant" : "2019-03-22T13:43:52.852",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Cuando se multiplican ambos números",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.852",
+            "finishInstant" : "2019-03-22T13:43:52.852",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is 18.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "redefining/definition.feature[16,2]",
+          "displayName" : "Then the result is 18.0",
+          "testCase" : false,
+          "startInstant" : "2019-03-22T13:43:52.853",
+          "finishInstant" : "2019-03-22T13:43:52.853",
+          "duration" : 0,
+          "result" : "PASSED",
+          "children" : [ {
+            "nodeType" : "step",
+            "name" : "el resultado es 18.0",
+            "keyword" : "Entonces",
+            "language" : "es",
+            "source" : "redefining/implementation.feature[21,1]",
+            "displayName" : "Entonces el resultado es 18.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-1"
+            },
+            "startInstant" : "2019-03-22T13:43:52.853",
+            "finishInstant" : "2019-03-22T13:43:52.853",
+            "duration" : 0,
+            "result" : "PASSED"
+          } ]
+        } ]
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 1 - Simple Scenario",
+    "language" : "en",
+    "source" : "test1_simpleScenario.feature[4,1]",
+    "displayName" : "Test 1 - Simple Scenario",
+    "testCase" : false,
+    "description" : [ "This is a simple scenario feature without additional behaviour.", "And this is the second line of comments." ],
+    "tags" : [ "Test1" ],
+    "properties" : {
+      "featureProperty" : "A"
+    },
+    "startInstant" : "2019-03-22T13:43:52.858",
+    "finishInstant" : "2019-03-22T13:43:52.860",
+    "duration" : 2,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 1
+    },
+    "children" : [ {
+      "nodeType" : "scenario",
+      "id" : "ID-Test1_Scenario1",
+      "name" : "Test Scenario",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "test1_simpleScenario.feature[11,1]",
+      "displayName" : "[ID-Test1_Scenario1] Scenario: Test Scenario",
+      "testCase" : true,
+      "tags" : [ "Test1", "ID-Test1_Scenario1" ],
+      "properties" : {
+        "featureProperty" : "A",
+        "scenarioProperty" : "B"
+      },
+      "startInstant" : "2019-03-22T13:43:52.858",
+      "finishInstant" : "2019-03-22T13:43:52.860",
+      "duration" : 2,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "nodeType" : "step",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[14,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "testCase" : false,
+        "properties" : {
+          "featureProperty" : "A",
+          "stepProperty" : "C",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : "2019-03-22T13:43:52.858",
+        "finishInstant" : "2019-03-22T13:43:52.859",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[15,3]",
+        "displayName" : "When both numbers are multiplied",
+        "testCase" : false,
+        "properties" : {
+          "featureProperty" : "A",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : "2019-03-22T13:43:52.859",
+        "finishInstant" : "2019-03-22T13:43:52.860",
+        "duration" : 1,
+        "result" : "PASSED"
+      }, {
+        "nodeType" : "step",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "test1_simpleScenario.feature[16,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "testCase" : false,
+        "properties" : {
+          "featureProperty" : "A",
+          "scenarioProperty" : "B"
+        },
+        "startInstant" : "2019-03-22T13:43:52.860",
+        "finishInstant" : "2019-03-22T13:43:52.860",
+        "duration" : 0,
+        "result" : "PASSED"
+      } ]
+    } ]
+  }, {
+    "nodeType" : "feature",
+    "name" : "Test 2 - Scenario Outline",
+    "language" : "en",
+    "source" : "test2_scenarioOutline.feature[2,1]",
+    "displayName" : "Test 2 - Scenario Outline",
+    "testCase" : false,
+    "tags" : [ "Test2" ],
+    "startInstant" : "2019-03-22T13:43:52.862",
+    "finishInstant" : "2019-03-22T13:43:52.872",
+    "duration" : 10,
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 3
+    },
+    "children" : [ {
+      "nodeType" : "scenarioOutline",
+      "id" : "ID-ScenarioOutline1",
+      "name" : "Test Scenario Outline",
+      "keyword" : "Scenario Outline",
+      "language" : "en",
+      "source" : "test2_scenarioOutline.feature[7,1]",
+      "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
+      "testCase" : false,
+      "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+      "properties" : {
+        "propertyScenarioOutline" : "A"
+      },
+      "startInstant" : "2019-03-22T13:43:52.862",
+      "finishInstant" : "2019-03-22T13:43:52.872",
+      "duration" : 10,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_1",
+        "name" : "Test Scenario Outline [1]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_1] Test Scenario Outline [1]",
+        "testCase" : true,
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : "2019-03-22T13:43:52.862",
+        "finishInstant" : "2019-03-22T13:43:52.865",
+        "duration" : 3,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 1.0 and another number with value 2",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 1.0 and another number with value 2",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.862",
+          "finishInstant" : "2019-03-22T13:43:52.863",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.863",
+          "finishInstant" : "2019-03-22T13:43:52.863",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 2.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 2.0",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.864",
+          "finishInstant" : "2019-03-22T13:43:52.865",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_2",
+        "name" : "Test Scenario Outline [2]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_2] Test Scenario Outline [2]",
+        "testCase" : true,
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : "2019-03-22T13:43:52.866",
+        "finishInstant" : "2019-03-22T13:43:52.868",
+        "duration" : 2,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 2.0 and another number with value 3",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 2.0 and another number with value 3",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.866",
+          "finishInstant" : "2019-03-22T13:43:52.867",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.867",
+          "finishInstant" : "2019-03-22T13:43:52.868",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 6.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 6.0",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.868",
+          "finishInstant" : "2019-03-22T13:43:52.868",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "nodeType" : "scenario",
+        "id" : "ID-ScenarioOutline1_3",
+        "name" : "Test Scenario Outline [3]",
+        "language" : "en",
+        "source" : "test2_scenarioOutline.feature[7,1]",
+        "displayName" : "[ID-ScenarioOutline1_3] Test Scenario Outline [3]",
+        "testCase" : true,
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A"
+        },
+        "startInstant" : "2019-03-22T13:43:52.870",
+        "finishInstant" : "2019-03-22T13:43:52.872",
+        "duration" : 2,
+        "result" : "PASSED",
+        "testCaseResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "nodeType" : "step",
+          "name" : "a number with value 5.0 and another number with value 4",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[8,2]",
+          "displayName" : "Given a number with value 5.0 and another number with value 4",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.870",
+          "finishInstant" : "2019-03-22T13:43:52.871",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[9,2]",
+          "displayName" : "When both numbers are multiplied",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.871",
+          "finishInstant" : "2019-03-22T13:43:52.871",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "nodeType" : "step",
+          "name" : "the result is equals to 20.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "source" : "test2_scenarioOutline.feature[10,2]",
+          "displayName" : "Then the result is equals to 20.0",
+          "testCase" : false,
+          "properties" : {
+            "propertyScenarioOutline" : "A"
+          },
+          "startInstant" : "2019-03-22T13:43:52.872",
+          "finishInstant" : "2019-03-22T13:43:52.872",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      } ]
+    } ]
+  } ]
+}

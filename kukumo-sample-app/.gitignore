@@ -1,0 +1,14 @@
+# Java
+**/target
+
+# IntelliJ
+**/.idea
+*.iml
+**/out
+/.classpath
+/.project
+/.settings/
+.factorypath
+/logFile.log
+
+.kukumo
