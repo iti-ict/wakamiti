@@ -251,7 +251,7 @@ public class DatabaseStepContributor implements StepContributor {
         }
     }
     
-    @Step(value="db.assert.table.exists.xls", args= {"csv:file","table:word"})
+    @Step(value="db.assert.table.exists.csv", args= {"csv:file","table:word"})
     public void assertCSVFileExists(File file, String table) throws IOException, SQLException {
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
             helper.assertDataSetExists(dataSet);
@@ -334,7 +334,7 @@ public class DatabaseStepContributor implements StepContributor {
         }
     }
     
-    @Step(value="db.assert.table.not.exists.xls", args= {"csv:file","table:word"})
+    @Step(value="db.assert.table.not.exists.csv", args= {"csv:file","table:word"})
     public void assertCSVFileNotExists(File file, String table) throws IOException, SQLException {
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
             helper.assertDataSetNotExists(dataSet);
