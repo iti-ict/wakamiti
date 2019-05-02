@@ -39,4 +39,17 @@
     </dependencies>
 
 
+    <profiles>
+        <profile>
+            <id>snapshot</id>
+            <distributionManagement>
+                <repository>
+                    <id>snapshot</id>
+                    <url>file://${project.basedir}/../../maven-repo</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
+
 </project>

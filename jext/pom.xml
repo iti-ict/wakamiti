@@ -106,7 +106,6 @@
                 <repository>
                     <id>snapshot</id>
                     <url>file://${project.basedir}/../../maven-repo</url>
-
                 </repository>
             </distributionManagement>
         </profile>

@@ -34,7 +34,7 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.ThrowableRunnable;
 
-@Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0-SNAPSHOT")
+@Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0.0")
 public class DefaultBackendFactory implements BackendFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBackendFactory.class);

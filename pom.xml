@@ -22,6 +22,7 @@
         <module>kukumo-core-l10n</module>
         <module>kukumo-rest-l10n</module>
         <module>kukumo-db</module>
+        <module>kukumo-db-l10n</module>
         <module>testing-embedded-db</module>
     </modules>
 
