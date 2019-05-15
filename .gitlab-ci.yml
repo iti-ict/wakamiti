@@ -85,7 +85,7 @@ pages:
     # you might need to use `mv target/staging/YOUR_ARTIFACT_ID public` instead.
     - cp -r web public
   dependencies:
-    - deploy:jdk8
+    - verify:jdk8
   artifacts:
     paths:
     - public
