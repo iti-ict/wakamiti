@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Component that provides operations in order to retrieve instances of classes annotated with
@@ -39,11 +40,14 @@ public class ExtensionManager {
     }
 
 
-    private Map<Class<?>,Set<Class<?>>> invalidExtensions = new HashMap<>();
     private final ClassLoader[] loaders;
     private final List<ExtensionMetadata> whiteList = new ArrayList<>();
     private final List<ExtensionMetadata> blackList = new ArrayList<>();
+    private final List<ExtensionLoader> externalLoaders = StreamSupport.stream(
+            ServiceLoader.load(ExtensionLoader.class).spliterator(), false
+        ).collect(Collectors.toList());
 
+    private Map<Class<?>,Set<Class<?>>> invalidExtensions = new HashMap<>();
 
     public ExtensionManager() {
         this(Thread.currentThread().getContextClassLoader());
@@ -190,9 +194,17 @@ public class ExtensionManager {
         }
         List<T> validExtensions = new ArrayList<>();
         this.invalidExtensions.computeIfAbsent(extensionPoint, x->new HashSet<>());
+
         for (ClassLoader loader : loaders) {
-            find(extensionPoint,condition,extensionPointData,validExtensions,loader);
+            collectValidExtensions(extensionPoint,condition,extensionPointData,validExtensions,loader,ServiceLoader::load,false);
         }
+
+        for (ExtensionLoader externalResolver : externalLoaders) {
+            for (ClassLoader loader : loaders) {
+                collectValidExtensions(extensionPoint,condition,extensionPointData,validExtensions,loader,externalResolver,true);
+            }
+        }
+
         return filterOverriddenExtensions(validExtensions);
     }
 
@@ -215,19 +227,26 @@ public class ExtensionManager {
     }
 
 
-    private <T> void find(
+
+
+    private <T> void collectValidExtensions(
             Class<T> extensionPoint,
             Predicate<T> condition,
             ExtensionPoint extensionPointData,
             List<T> validExtensions,
-            ClassLoader loader
+            ClassLoader loader,
+            ExtensionLoader extensionLoader,
+            boolean externallyManaged
     ) {
-        for (T extension : ServiceLoader.load(extensionPoint, loader)) {
+        for (T extension : extensionLoader.load(extensionPoint, loader)) {
             boolean skip = false;
             if (this.invalidExtensions.get(extensionPoint).contains(extension.getClass())) {
                 skip = true;
             }
             Extension extensionData = extension.getClass().getAnnotation(Extension.class);
+            if (!skip && extensionData.externallyManaged() != externallyManaged) {
+                skip = true;
+            }
             if (!skip && extensionData == null) {
                 LOGGER.warn("Class {} is not annotated with @Extension and will be ignored",extension.getClass());
                 this.invalidExtensions.get(extensionPoint).add(extension.getClass());

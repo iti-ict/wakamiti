@@ -10,6 +10,7 @@
     <version>0.0.1</version>
     <modules>
         <module>jext</module>
+        <module>jext-spring</module>
         <module>configurer</module>
         <module>maven-fetcher</module>
         <module>kukumo-core</module>

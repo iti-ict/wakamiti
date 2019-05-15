@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ServiceLoader;
 
 /**
  * This annotation allows to mark a class as an extension managed by the {@link ExtensionManager}.<br/>
@@ -48,7 +49,13 @@ public @interface Extension {
     /**
      * The class name of another extension for the same extension point. Whenever there is an alternative
      * between this extension and the overriden one, the extension manager will pick this extension.
-     * @return
      */
     String overrides() default "";
+
+
+    /**
+     * Extensions marked as externally managed will not resolved using the {@link ServiceLoader} mechanism.
+     * Instead, custom {@link ExtensionLoader} will be used to retrieve the instance of the extension.
+     */
+    boolean externallyManaged() default false;
 }

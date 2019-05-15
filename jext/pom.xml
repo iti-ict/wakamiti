@@ -7,8 +7,8 @@
     <!-- coordinates -->
     <groupId>iti.commons</groupId>
     <artifactId>jext</artifactId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-
 
     <!-- additional information -->
     <name>jExt</name>

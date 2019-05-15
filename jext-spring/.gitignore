@@ -1,0 +1,11 @@
+# Java
+**/target
+
+# IntelliJ
+**/.idea
+*.iml
+**/out
+/.classpath
+/.project
+/.settings/
+/.attach_pid*
