@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo</artifactId>
+        <version>RELEASE</version>
+    </parent>
+
+    <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
-    <artifactId>kukumo-plugin-starter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>kukumo-plugins</artifactId>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <modules>
+        <module>kukumo-rest</module>
+        <module>kukumo-gherkin</module>
+        <module>kukumo-html-report</module>
+        <module>kukumo-core-l10n</module>
+        <module>kukumo-rest-l10n</module>
+        <module>kukumo-db</module>
+        <module>kukumo-db-l10n</module>
+    </modules>
+
 
     <dependencies>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.9.0</version>
-            <scope>test</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+            <version>4.12</version>
         </dependency>
-
     </dependencies>
-
 
     <build>
         <plugins>
@@ -59,34 +70,12 @@
                     <dependency>
                         <groupId>iti.commons</groupId>
                         <artifactId>jext</artifactId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>1.0.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-            </plugin>
-
         </plugins>
     </build>
-
-
-    <profiles>
-        <profile>
-            <id>snapshot</id>
-            <distributionManagement>
-                <repository>
-                    <id>snapshot</id>
-                    <url>file://${project.basedir}/../../maven-repo</url>
-
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
 
 
 </project>

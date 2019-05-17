@@ -2,87 +2,67 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-plugins</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <!-- coordinates -->
 	<groupId>iti.kukumo</groupId>
 	<artifactId>kukumo-rest</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo: REST Steps</name>
     <description>REST steps for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
 
-    <parent>
-        <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-plugin-starter</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../kukumo-plugin-starter</relativePath>
-    </parent>
-
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-
+    <!-- dependencies -->
 	<dependencies>
-		<dependency>
-			<groupId>iti.kukumo</groupId>
-			<artifactId>kukumo-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
+
+        <!-- RestAssured -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<version>3.2.0</version>
 		</dependency>
+
+        <!-- JSON assertions -->
 		<dependency>
 		    <groupId>org.skyscreamer</groupId>
 		    <artifactId>jsonassert</artifactId>
 		    <version>1.5.0</version>
 		</dependency>
+
+        <!-- XML assertions -->
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
             <version>2.6.2</version>
         </dependency>
 
-
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
-            <scope>compile</scope>
-        </dependency>
-
-		<!-- testing -->
+		<!-- testing with gherkin -->
 		<dependency>
 			<groupId>iti.kukumo</groupId>
 			<artifactId>kukumo-gherkin</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<scope>test</scope>
 		</dependency>
+
+        <!-- virtual server for testing-->
 		<dependency>
 			<groupId>com.sun.net.httpserver</groupId>
 			<artifactId>http</artifactId>
 			<version>20070405</version>
 			<scope>test</scope>
 		</dependency>
+
+        <!-- JSON/XML mapping for server testing -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
@@ -90,10 +70,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
-
 	</dependencies>
-
-
 
 </project>

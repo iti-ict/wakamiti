@@ -7,38 +7,174 @@
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>RELEASE</version>
+
+    <name>Kukumo</name>
+    <description>Kukumo is a testing tool that allows to execute human-readable specifications</description>
+    <inceptionYear>2019</inceptionYear>
+
     <modules>
         <module>jext</module>
         <module>jext-spring</module>
         <module>configurer</module>
         <module>maven-fetcher</module>
+        <module>kukumo-maven-plugin</module>
         <module>kukumo-core</module>
         <module>kukumo-launcher</module>
-        <module>kukumo-maven-plugin</module>
-        <module>kukumo-plugin-starter</module>
-        <module>kukumo-rest</module>
-        <module>kukumo-gherkin</module>
-        <module>kukumo-html-report</module>
-        <module>kukumo-core-l10n</module>
-        <module>kukumo-rest-l10n</module>
-        <module>kukumo-db</module>
-        <module>kukumo-db-l10n</module>
         <module>testing-embedded-db</module>
+        <module>kukumo-plugins</module>
     </modules>
+
+
+    <!--
+      =============================================================
+      The following configuration will be inherited by every module
+      =============================================================
+    -->
+
+    <organization>
+        <name>ITI - Instituto Tecnológico de Informática</name>
+        <url>https://www.iti.es</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
+
+
+    <!-- basic dependencies -->
+    <dependencies>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.6</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <!-- JUnit testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+            <version>4.12</version>
+        </dependency>
+
+        <!-- generic test assertions -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JSON test assertions -->
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.5.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- simple log for testing -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+
+
+            <!-- specific version of maven compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+            </plugin>
+
+
+            <!-- generate additional jar with sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- maven site -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+<!--
+    <reporting>
+        <plugins>
+            --><!-- including javadoc in maven site --><!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
+-->
 
 
     <profiles>
         <profile>
-            <id>snapshot</id>
+            <id>local-deploy</id>
             <distributionManagement>
                 <repository>
-                    <id>snapshot</id>
-                    <url>file://${project.basedir}/../maven-repo</url>
-
+                    <id>local</id>
+                    <url>file://${env.HOME}/.m2/kukumo-repository</url>
                 </repository>
+                <snapshotRepository>
+                    <id>local-snapshots</id>
+                    <url>file://${env.HOME}/.m2/kukumo-repository-snapshots</url>
+                </snapshotRepository>
             </distributionManagement>
         </profile>
     </profiles>
+
 
 </project>

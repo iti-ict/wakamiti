@@ -53,6 +53,9 @@ public class ExtensionProcessor extends AbstractProcessor {
         TypeElement extensionClassElement = (TypeElement) element;
 
         Extension extensionAnnotation = element.getAnnotation(Extension.class);
+        if (extensionAnnotation.externallyManaged()) { // not handling externally managed extensions
+            return;
+        }
         String extensionPoint = extensionAnnotation.extensionPoint();
         if (extensionPoint.isEmpty()) {
             for (TypeMirror implementedInterface : extensionClassElement.getInterfaces()) {
@@ -61,7 +64,6 @@ public class ExtensionProcessor extends AbstractProcessor {
                 extensionPoint = extensionPoint.replaceAll("\\<[^\\>]*\\>", "");
             }
         }
-        
 
         String extension = extensionClassElement.getQualifiedName().toString();
 

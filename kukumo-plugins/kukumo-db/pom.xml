@@ -5,76 +5,61 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>iti.kukumo</groupId>
-    <artifactId>kukumo-db</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <!-- inherited configuration -->
     <parent>
-        <artifactId>kukumo-plugin-starter</artifactId>
         <groupId>iti.kukumo</groupId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../kukumo-plugin-starter</relativePath>
+        <artifactId>kukumo-plugins</artifactId>
+        <version>1.0.0</version>
     </parent>
 
+    <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
+    <artifactId>kukumo-db</artifactId>
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo: DB Steps</name>
     <description>Database steps for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
 
     <dependencies>
-        <dependency>
-            <groupId>iti.kukumo</groupId>
-            <artifactId>kukumo-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+
+        <!-- XML reader -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>4.1.0</version>
-        </dependency>        
+        </dependency>
+
+        <!-- CSV reader -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.6</version>
-        </dependency>        
+        </dependency>
+
+        <!-- Assertions -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.11.1</version>
         </dependency>
         
-        <!-- testing -->
+        <!-- testing cases with Gherkin -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-gherkin</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.9.0</version>
-            <scope>test</scope>
-        </dependency>
+
+        <!-- testing database support -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>testing-embedded-db</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0</version>
             <scope>test</scope>
         </dependency>
-
-
 
     </dependencies>
 

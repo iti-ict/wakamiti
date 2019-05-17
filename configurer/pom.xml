@@ -3,33 +3,24 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo</artifactId>
+        <version>RELEASE</version>
+    </parent>
 
+    <!-- coordinates -->
     <groupId>iti.commons</groupId>
     <artifactId>configurer</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Configurer</name>
     <description>Configuration utility</description>
     <inceptionYear>2019</inceptionYear>
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
 
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <cucumber.version>3.0.2</cucumber.version>
-    </properties>
+    <!-- dependencies -->
     <dependencies>
 
         <!-- configuration input -->
@@ -38,18 +29,21 @@
             <artifactId>commons-configuration2</artifactId>
             <version>2.2</version>
         </dependency>
+
         <!-- for property file -->
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.3</version>
         </dependency>
+
         <!-- for JSON/XML -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.9.8</version>
         </dependency>
+
         <!-- for YAML -->
         <dependency>
             <groupId>org.yaml</groupId>
@@ -62,8 +56,6 @@
             <version>2.9.8</version>
         </dependency>
 
-
-
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -71,42 +63,14 @@
             <version>1.7.25</version>
         </dependency>
 
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.8.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- test system rules  -->
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
             <version>1.18.0</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
-
-
-    <profiles>
-        <profile>
-            <id>snapshot</id>
-            <distributionManagement>
-                <repository>
-                    <id>snapshot</id>
-                    <url>file://${project.basedir}/../../maven-repo</url>
-
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
-
 
 </project>

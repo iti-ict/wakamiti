@@ -3,16 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo</artifactId>
+        <version>RELEASE</version>
+    </parent>
+
 
     <groupId>iti.commons</groupId>
     <artifactId>testing-embedded-db</artifactId>
-    <version>0.1-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <version>0.1.0</version>
 
     <dependencies>
         <dependency>
@@ -35,8 +36,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
         </dependency>
-        
     </dependencies>
-
 
 </project>

@@ -2,49 +2,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo</artifactId>
+        <version>RELEASE</version>
+    </parent>
+
+    <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo: Standalone Launcher</name>
     <description>Standalone laucher for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aetherVersion>1.1.0</aetherVersion>
         <mavenVersion>3.3.9</mavenVersion>
     </properties>
 
 
     <dependencies>
+
+        <!-- Kukumo Core -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
+
+        <!-- Maven dependency fetcher -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>maven-fetcher</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
-
+        <!-- Log4j 2 -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -61,17 +61,13 @@
             <version>2.11.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.10.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
+
+            <!-- customize the name of the jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -80,6 +76,8 @@
                     <finalName>kukumo</finalName>
                 </configuration>
             </plugin>
+
+            <!-- assemble fat jar and folder distribution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -99,24 +97,9 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
-
-
-    <profiles>
-        <profile>
-            <id>snapshot</id>
-            <distributionManagement>
-                <repository>
-                    <id>snapshot</id>
-                    <url>file://${project.basedir}/../../maven-repo</url>
-
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
-
 
 
 </project>

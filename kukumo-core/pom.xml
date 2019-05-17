@@ -3,31 +3,22 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo</artifactId>
+        <version>RELEASE</version>
+    </parent>
+
+    <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo: CORE</name>
     <description>Testing utility</description>
     <inceptionYear>2019</inceptionYear>
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
-
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
 
@@ -35,21 +26,14 @@
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>configurer</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
+
         <!-- plugin support -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>jext</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
-            <scope>compile</scope>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- hamcrest matchers -->
@@ -58,6 +42,7 @@
             <artifactId>java-hamcrest</artifactId>
             <version>2.0.0.0</version>
         </dependency>
+
         <!-- junit 4 -->
         <dependency>
             <groupId>junit</groupId>
@@ -79,12 +64,7 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-        <!-- logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
+
         <!--json -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -104,26 +84,13 @@
             <version>1.1.0</version>
         </dependency>
 
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.10.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.9.0</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- json asserts for testing -->
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <version>1.5.0</version>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 
@@ -155,34 +122,12 @@
                     <dependency>
                         <groupId>iti.commons</groupId>
                         <artifactId>jext</artifactId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>1.0.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-            </plugin>
-
         </plugins>
     </build>
-
-
-    <profiles>
-        <profile>
-            <id>snapshot</id>
-            <distributionManagement>
-                <repository>
-                    <id>snapshot</id>
-                    <url>file://${project.basedir}/../../maven-repo</url>
-
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
 
 
 </project>
