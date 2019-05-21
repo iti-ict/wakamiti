@@ -8,30 +8,18 @@
         <version>1.7</version>
     </skin>
 
-
     <bannerRight>
         <name>ITI</name>
         <src>https://www.iti.es/wp-content/uploads/logo-iti.svg</src>
         <width>170</width>
         <height>40</height>
     </bannerRight>
+
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="usage.html"/>
-            <item name="Dependency Information" href="dependency-info.html"/>
             <item name="Configuration" href="configuration.html"/>
-            <item name="License" href="licenses.html"/>
+            <item name="License" href="http://www.opensource.org/licenses/mit-license.php"/>
         </menu>
-        <menu name="Plugins">
-            <item name="Gherkin" href="gherkin.html"/>
-        </menu>
-        <menu name="Build Details">
-            <item name="Summary" href="summary.html"/>
-            <item name="Dependencies" href="dependencies.html"/>
-            <item name="Maven Plugins" href="plugins.html"/>
-        </menu>
-        <menu ref="reports"/>
-
     </body>
 </project>

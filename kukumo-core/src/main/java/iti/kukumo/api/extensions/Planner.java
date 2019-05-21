@@ -27,8 +27,8 @@ public interface Planner extends Contributor {
     PlanNode createPlan(List<Resource<?>> resources);
 
     /**
-     * Returns a special step that will be used for redefining steps that do nothing.<br/>
-     * This step satisfies that the method {@link PlanStep#isVoid} always returns <tt>true</tt>.
+     * Returns a special step that will be used for redefining steps that do nothing.
+     * <p>This step satisfies that the method {@link PlanStep#isVoid} always returns <tt>true</tt>.</p>
      * @return A step with no definition and no implementation
      */
     PlanStep voidStep();
