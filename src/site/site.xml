@@ -8,28 +8,58 @@
         <version>1.7</version>
     </skin>
 
+    <custom>
+        <fluidoSkin>
+            <topBarEnabled>true</topBarEnabled>
+            <sideBarEnabled>false</sideBarEnabled>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+            <profile>production</profile>
+        </fluidoSkin>
+    </custom>
 
     <bannerRight>
         <name>ITI</name>
         <src>https://www.iti.es/wp-content/uploads/logo-iti.svg</src>
+        <href>https://www.iti.es</href>
         <width>170</width>
         <height>40</height>
     </bannerRight>
+
+
+
+
+
     <body>
+
+
+        <!-- Workaround for https://issues.apache.org/jira/browse/DOXIA-571 -->
+        <head>
+            <![CDATA[
+             <script type="text/javascript">
+             $(document).ready(function () {
+                $(".source").addClass("prettyprint");
+                prettyPrint();
+            });
+            </script>
+        ]]>
+        </head>
+
+
+        <breadcrumbs>
+            <item name="Kukumo" href="index.html"/>
+        </breadcrumbs>
+
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="usage.html"/>
-            <item name="Dependency Information" href="dependency-info.html"/>
-            <item name="Configuration" href="configuration.html"/>
-            <item name="License" href="licenses.html"/>
+            <item name="Usage" href="#Usage"/>
+            <item name="License" href="#License"/>
         </menu>
+        <menu ref="modules"/>
         <menu name="Plugins">
-            <item name="Gherkin" href="gherkin.html"/>
-        </menu>
-        <menu name="Build Details">
-            <item name="Summary" href="summary.html"/>
-            <item name="Dependencies" href="dependencies.html"/>
-            <item name="Maven Plugins" href="plugins.html"/>
+            <item name="Gherkin Support" href="kukumo-plugins/kukumo-gherkin/kukumo-plugins/kukumo-gherkin/index.html"/>
+            <item name="REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
+            <item name="Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
+            <item name="HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
         </menu>
         <menu ref="reports"/>
 

@@ -128,7 +128,55 @@
 
 
     <build>
+
         <plugins>
+
+
+            <!-- Use any markdown file from /docs as a site resource -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/site/markdown</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/docs</directory>
+                                    <includes>
+                                        <include>*.md</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Uses README.md as the main page of the site -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${basedir}/README.md</sourceFile>
+                            <destinationFile>${basedir}/src/site/markdown/index.md</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 
 
             <!-- specific version of maven compiler -->
@@ -138,7 +186,6 @@
                 <version>3.8.0</version>
             </plugin>
 
-
             <!-- generate additional jar with sources -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -146,7 +193,6 @@
                 <version>3.0.1</version>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -160,32 +206,52 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
             </plugin>
+
+            <!-- Directory plugin to find parent root directory absolute path -->
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>0.1</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <configuration>
+                            <property>site.root</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
 
     <reporting>
         <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>3.0.0</version>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8</version>
-            <configuration>
-                <failOnError>false</failOnError>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.6</version>
-        </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
         </plugins>
     </reporting>
+
 
 
     <profiles>
@@ -193,7 +259,7 @@
             <id>local-deploy</id>
             <distributionManagement>
                 <repository>
-                    <id>local</id>
+                    <id>local-repo</id>
                     <url>file://${env.HOME}/.m2/kukumo-repository</url>
                 </repository>
                 <snapshotRepository>

@@ -6,3 +6,4 @@
 *.iml
 *.classpath
 /.project
+/src/site/markdown/
