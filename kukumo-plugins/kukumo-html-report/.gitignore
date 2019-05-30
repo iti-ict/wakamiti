@@ -10,3 +10,4 @@
 /.settings/
 .factorypath
 /logFile.log
+/src/site/markdown/*

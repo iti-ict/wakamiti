@@ -69,7 +69,9 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.repo.local>${env.HOME}/.m2/repository</maven.repo.local>
     </properties>
+
 
 
     <!-- basic dependencies -->
@@ -128,11 +130,8 @@
 
 
     <build>
-
         <plugins>
-
-
-            <!-- Use any markdown file from /docs as a site resource -->
+            <!-- Use any markdown file from  /* and /docs/* as a site resource -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
@@ -147,7 +146,13 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/src/docs</directory>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>*.md</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/docs</directory>
                                     <includes>
                                         <include>*.md</include>
                                     </includes>
@@ -207,24 +212,6 @@
                 <version>3.7.1</version>
             </plugin>
 
-            <!-- Directory plugin to find parent root directory absolute path -->
-            <plugin>
-                <groupId>org.commonjava.maven.plugins</groupId>
-                <artifactId>directory-maven-plugin</artifactId>
-                <version>0.1</version>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                        <configuration>
-                            <property>site.root</property>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
@@ -254,25 +241,20 @@
 
 
 
-    <profiles>
-        <profile>
-            <id>local-deploy</id>
-            <distributionManagement>
-                <repository>
-                    <id>local-repo</id>
-                    <url>file://${env.HOME}/.m2/kukumo-repository</url>
-                </repository>
-                <snapshotRepository>
-                    <id>local-snapshots</id>
-                    <url>file://${env.HOME}/.m2/kukumo-repository-snapshots</url>
-                </snapshotRepository>
-                <site>
-                    <id>local-site</id>
-                    <url>${project.baseUri}</url>
-                </site>
-            </distributionManagement>
-        </profile>
-    </profiles>
+    <distributionManagement>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${maven.repo.local}/../kukumo-repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>local-snapshots</id>
+            <url>file://${maven.repo.local}/../kukumo-snapshot-repository</url>
+        </snapshotRepository>
+        <site>
+            <id>local-site</id>
+            <url>${project.baseUri}</url>
+        </site>
+    </distributionManagement>
 
 
 </project>

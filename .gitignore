@@ -7,3 +7,5 @@
 *.classpath
 /.project
 /src/site/markdown/
+**/.attach_pid*
+**/*.swp

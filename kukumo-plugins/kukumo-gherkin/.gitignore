@@ -9,3 +9,4 @@
 .factorypath
 .attach_pid*
 kukumo.json
+/src/site/markdown/*
