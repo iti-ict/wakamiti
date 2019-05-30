@@ -1,5 +1,9 @@
 package iti.kukumo.db.dataset;
 
+import iti.kukumo.api.KukumoException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,28 +11,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import iti.kukumo.api.KukumoException;
-
+@Slf4j
 public class OoxmlDataSet extends MultiDataSet {
     
     private final File file;
     private final String ignoreSheetRegex;
-    private final XSSFWorkbook workbook;
+    private final Workbook workbook;
     private final String nullSymbol;
 
 
     public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {
-        try {
-			this.workbook = new XSSFWorkbook(file);
-		} catch (InvalidFormatException e) {
-			throw new IOException(e);
-		}
+
+        this.workbook = WorkbookFactory.create(file,null,true);
         this.file = file;
         this.ignoreSheetRegex = ignoreSheetRegex;
         try {
@@ -43,7 +37,7 @@ public class OoxmlDataSet extends MultiDataSet {
                 addDataSet(new OoxmlSheetDataSet(sheet,file));
             }
         } catch (Exception e) {
-            this.workbook.close();
+            close();
             throw new KukumoException(e);
         }
     }
@@ -51,9 +45,12 @@ public class OoxmlDataSet extends MultiDataSet {
     
     
     @Override
-    public void close() throws IOException {
-        this.workbook.close();
-                
+    public void close() {
+        try {
+            this.workbook.close();
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
     }
     
     
