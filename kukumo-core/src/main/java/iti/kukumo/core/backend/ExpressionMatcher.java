@@ -63,15 +63,16 @@ public class ExpressionMatcher {
 
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
+        // * -> any value
+        regex = regex.replaceAll("(?<!\\/)\\*", "(.*)");
         // _(...)_ -> _(..._)
         regex = regex.replaceAll(" \\(([^\\)]*)\\) ", " ($1 )");
         regex = regex.replaceAll("^\\(([^\\)]*)\\) ", "($1 )");
-        // * -> any value
-        regex = regex.replaceAll("(?<!\\/)\\*", "(?:.*)");
         // | -> alternative
-        regex = regex.replaceAll("[^ ]+\\|[^ ]+(\\|[^ ]+)*","(?:$0)");
+        /* notice that the '\' symbol must be encoded as '\\\\' in the replaceAll method */
+        regex = regex.replaceAll("[^ )]+\\|[^ ]+(\\|[^ ]+)*","\\\\b"+"($0)"+"\\\\b");
         // ( ) -> optional
-        regex = regex.replaceAll("(?<!\\/)(\\([^\\)]*\\))","(?:$1)?");
+        regex = regex.replaceAll("(?<!\\/)\\(([^\\)]*)\\)","(?:$1)?");
         return regex;
     }
 
