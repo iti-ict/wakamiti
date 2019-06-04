@@ -137,6 +137,7 @@
                 <version>2.7</version>
                 <executions>
                     <execution>
+                        <id>copy-markdown-docs</id>
                         <phase>pre-site</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -160,6 +161,31 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-asciidoc-docs</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/site/asciidoc</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>*.adoc</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/docs</directory>
+                                    <includes>
+                                        <include>*.adoc</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -169,7 +195,9 @@
                 <artifactId>copy-rename-maven-plugin</artifactId>
                 <version>1.0.1</version>
                 <executions>
+                    <!--
                     <execution>
+                        <id>copy-markdown-index</id>
                         <phase>pre-site</phase>
                         <goals>
                             <goal>copy</goal>
@@ -179,6 +207,20 @@
                             <destinationFile>${basedir}/src/site/markdown/index.md</destinationFile>
                         </configuration>
                     </execution>
+                    -->
+                    <!--
+                    <execution>
+                        <id>copy-asciidoc-index</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${basedir}/README.asciidoc</sourceFile>
+                            <destinationFile>${basedir}/src/site/asciidoc/index.asciidoc</destinationFile>
+                        </configuration>
+                    </execution>
+                    -->
                 </executions>
             </plugin>
 
@@ -210,6 +252,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>
