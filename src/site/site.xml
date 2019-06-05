@@ -41,6 +41,7 @@
                 prettyPrint();
             });
             </script>
+            <link rel="stylesheet" href="https://asciidoctor.org/stylesheets/styles.css">
         ]]>
         </head>
 
