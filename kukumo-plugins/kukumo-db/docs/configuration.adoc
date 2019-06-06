@@ -1,0 +1,26 @@
+`database.connection.url`::
+
+ The JDBC database connection URL. The driver used to access the database will be determined by the URL format.
+
+`database.connection.username`::
+The connection username.
+
+`database.connection.password`::
+The connection password.
+
+`database.csv.format` = `DEFAULT`::
+The format used to parse CSV files. Accepted values are:
+`DEFAULT`, `INFORMIX_UNLOAD`, `INFORMIX_UNLOAD_CSV`, `MYSQL`, `ORACLE`, `POSTGRESQL_CSV`,
+`POSTGRESQL_TEXT`, `RFC4180`. Check the https://commons.apache.org/proper/commons-csv/[Commons CSV]
+project for detailed explanation of each format.
+
+`database.xls.ignoreSheetPattern` = `#.*` ::
+Regex pattern used to determine what sheets to be ignored when loading XLSX files.
+
+`database.xls.nullSymbol` = `<null>` ::
+Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files.
+
+`database.enableCleanupUponCompletion` = `true | [false]` ::
+The default behaviour does not perform any clean-up operation following the test plan execution so that
+you can check the resulting data afterwards. Switching this parameter to `true` will force
+clean-up operations so no test data will remain in the database after the execution of the tests.

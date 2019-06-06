@@ -26,112 +26,17 @@ CAUTION: Regarding the multiple database implementations existing, this plugin _
 any specific driver. In order to work properly, remember to include the module with the JDBC driver(s)
 that your database connection would require.
 
+---
 
-== Configuration properties
+== Usage
+
+=== Configuration properties
 
 CAUTION:  These properties must have the `kukumo.` prefix when defined in an external configuration file.
 
-=== `database.connection.url`
-The JDBC database connection URL. The driver used to access the database will be determined by the URL format.
+include::configuration.adoc[]
 
-=== `database.connection.username`
-The connection username.
+=== Steps
 
-=== `database.connection.password`
-The connection password.
+include::steps.adoc[]
 
-=== `database.csv.format` = `DEFAULT`
-The format used to parse CSV files. Accepted values are:
-`DEFAULT`, `INFORMIX_UNLOAD`, `INFORMIX_UNLOAD_CSV`, `MYSQL`, `ORACLE`, `POSTGRESQL_CSV`,
-`POSTGRESQL_TEXT`, `RFC4180`. Check the <<Commons CSV>> project for detailed explanation of each format.
-
-=== `database.xls.ignoreSheetPattern` = `#.*`
-Regex pattern used to determine what sheets to be ignored when loading XLSX files.
-
-=== `database.xls.nullSymbol` = `<null>`
-Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files.
-
-=== `database.enableCleanupUponCompletion` = `true | [false]`
-The default behaviour does not perform any clean-up operation following the test plan execution so that
-you can check the resulting data afterwards. Switching this parameter to `true` will force
-clean-up operations so no test data will remain in the database after the execution of the tests.
-
-
-== Steps
-
-- _the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}_`
-- _the database schema `{word}_`
-- _(that) the following SQL script is executed:_
-- _(that) the SQL script file `{file}` is executed_
-- _(that) the database table `{word}` is cleared_
-- _(that) * in the database table `{table:word}` having column `{column:word}` = `{value:text}` is|are cleared_
-- _(that) * in the database table `{table:word}` having column `{column1:word}` = `{value1:text}` and column `{column2:word}` = `{value2:text}` is|are cleared_
-- _(that) the following * is|are inserted in the database table `{word}`:_
-- _(that) the content of the XLS file `{file}` is inserted in the database _
-- _(that) the content of the CSV file `{csv:file}` is inserted in the database table `{table:word}_`_
-- _(that) the following * is|are deleted from the database table `{word}`:_
-- _(that) the content of the XLS file `{file}` is deleted from the database _
-- _(that) the content of the CSV file `{csv:file}` is deleted from the database table `{table:word}_`
-- _exists * identified by `{id:text}` in the database table `{table:word}_`
-- _ `{value:text}_`
-- _exists * in the database table `{table:word}` having column `{column1:word}` = `{value1:text}` and column `{column2:word}` = `{value2:text}` _
-- _exists * in the database table `{table:word}` satisfying the SQL clause `{sql:text}_`
-- _the following * exist(s) in the database table `{word}`:_
-- _the content of the XLS file `{file}` exists in the database_
-- _the content of the CSV file `{csv:file}` exists in the database table `{table:word}_`
-- _does not exist * identified by `{id:text}` in the database table `{table:word}_`
-- _does not exist * in the database table `{table:word}` having column `{column:word}` = `{value:text}_`
-- _does not exist * in the database table `{table:word}` having column `{column1:word}` = `{value1:text}` and column `{column2:word}` = `{value2:text}_`
-- _does not exist * in the database table `{table:word}` satisfying the SQL clause `{sql:text}_`
-- _the following * do(es) not exist in the database table `{word}`:_
-- _the content of the XLS file `{file}` does not exist in the database_
-- _the content of the CSV file `{csv:file}` does not exist in the database table `{table:word}_`
-- _the number of * identified by `{id:text}` in the database table `{table:word}` `{matcher:long-assertion}_`
-- _the number of * in the database table `{table:word}` having column `{column:word}` = `{value:text}` `{matcher:long-assertion}_`
-- _the number of * in the database table `{table:word}` having column `{column1:word}` = `{value1:text}` and column `{column2:word}` = `{value2:text}` `{matcher:long-assertion}_`
-- _the number of * in the database table `{table:word}` satisfying the SQL clause `{sql:text}` `{matcher:long-assertion}_`
-- _the number of * satisfying the following * in the database table `{table:word}` `{matcher:long-assertion}`:_
-- _the database table `{word}` is empty_
-- _the database table `{word}` is not empty_
-
-
-
-
-
-|===
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| (that) the following SQL script is executed:
-```gherkin
-"""
-  ...
-"""
-```
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-a| the database connection URL `{url:text}` using the user `{username:text}` and the password `{password:text}`
-a| the database schema `{word}`
-
-|===
-
-
-
-[bibliography]
-
-- [[Commons CSV]] https://commons.apache.org/proper/commons-csv/

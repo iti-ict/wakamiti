@@ -25,7 +25,6 @@
         <module>kukumo-plugins</module>
     </modules>
 
-
     <!--
       =============================================================
       The following configuration will be inherited by every module

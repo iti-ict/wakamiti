@@ -1,17 +1,20 @@
+= Kukumo
+--------
+:icons: fonts
 
-# Kukumo
+
 
 Kukumo is Cucumber-based automatic testing framework
 
-## Usage
+== Usage
 
-### Configuration
+==== Configuration
 
-### Runners
+==== Runners
 
 Kukumo can be executed using three different mechanisms, regarding the nature of the project.
 
-#### JUnit runner
+===== JUnit runner
 
 For Java projects, you can create an empty testing class to be run as a normal JUnit test suite, 
 setting the custom JUnit runner ```KukumoJUnitRunner```. For example:
@@ -38,7 +41,7 @@ public class TestKukumoRunner {
 }
 ```
 
-#### Maven plugin
+===== Maven plugin
 
 For non-Java Maven projects, you can execute Kukumo attaching the ```kukumo-maven-plugin``` plugin to the 
 Maven lifecycle.  Simply add something like the following to your ```pom.xml``` :
@@ -92,8 +95,8 @@ Maven lifecycle.  Simply add something like the following to your ```pom.xml``` 
   </build>
 ```
 
-#### Standalone launcher
+===== Standalone launcher
 
-## License
+== License
 
-## Authors
+== Authors
