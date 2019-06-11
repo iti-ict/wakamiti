@@ -11,9 +11,9 @@
     <custom>
         <fluidoSkin>
             <topBarEnabled>true</topBarEnabled>
+            <navBarStyle>navbar-inverse</navBarStyle>
             <sideBarEnabled>false</sideBarEnabled>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
-            <profile>production</profile>
         </fluidoSkin>
     </custom>
 
@@ -62,7 +62,6 @@
             <item name="Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
             <item name="HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
         </menu>
-        <menu ref="reports"/>
 
     </body>
 </project>
