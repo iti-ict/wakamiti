@@ -17,7 +17,7 @@
 
     <!-- additional information -->
     <name>Configurer</name>
-    <description>Configuration utility</description>
+    <description>Configuration utility library</description>
     <inceptionYear>2019</inceptionYear>
 
     <!-- dependencies -->

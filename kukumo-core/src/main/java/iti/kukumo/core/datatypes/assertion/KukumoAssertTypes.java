@@ -98,13 +98,9 @@ public class KukumoAssertTypes implements DataTypeContributor {
 
 
     protected static KukumoDataTypeBase.LocaleHintProvider hintProvider(AbstractAssertProvider[] assertProviders) {
-        return locale -> {
-            StringBuilder string = new StringBuilder();
-            for (AbstractAssertProvider assertProvider : assertProviders) {
-                assertProvider.printAllExpressions(locale, string);
-            }
-            return string.toString();
-        };
+        return locale ->
+            AbstractAssertProvider.printAllExpressions(locale, new StringBuilder()).toString()
+        ;
     }
 
 

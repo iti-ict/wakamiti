@@ -4,6 +4,9 @@ import org.apache.commons.configuration2.BaseConfiguration;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,29 +37,49 @@ public class Configuration {
     }
      
     
+    public Configuration appendFromAnnotation(Configurator configurer) throws ConfigurationException {
+        return append(builder.buildFromAnnotation(configurer));
+    }
+
     public Configuration appendFromAnnotation(Class<?> configuredClass) throws ConfigurationException {
         return append(builder.buildFromAnnotation(configuredClass));
     }
 
-    public Configuration appendFromAnnotation(Configurator configurer) throws ConfigurationException {
-        return append(builder.buildFromAnnotation(configurer));    
+
+    public Configuration appendFromEnvironment(boolean includeSystemProperties) {
+        return append(builder.buildFromEnvironment(includeSystemProperties));
     }
-      
-    public Configuration appendFromPath(String path) throws ConfigurationException {
+
+
+    public Configuration appendFromEnvironment() {
+        return append(builder.buildFromEnvironment());
+    }
+
+
+    public Configuration appendFromMap(Map<String,String> map) {
+        return append(builder.buildFromMap(map));
+    }
+
+    public Configuration appendFromPath(Path path) throws ConfigurationException {
         return append(builder.buildFromPath(path));
-    }
-    
-    public Configuration appendFromPath(String path, String innerKeyPrefix) throws ConfigurationException {
-        return append(builder.buildFromPath(path).inner(innerKeyPrefix));
     }
 
     public Configuration appendFromProperties(Properties properties) {
         return append(builder.buildFromProperties(properties));
     }
 
-    public Configuration appendFromMap(Map<String,?> properties) {
-        return append(builder.buildFromMap(properties));
+    public Configuration appendFromResource(String resource) throws ConfigurationException {
+        return append(builder.buildFromResource(resource));
     }
+
+    public Configuration appendFromURI(URI uri) throws ConfigurationException {
+        return append(builder.buildFromURI(uri));
+    }
+
+    public Configuration appendFromURL(URL url) throws ConfigurationException {
+        return append(builder.buildFromURL(url));
+    }
+
 
     public Configuration appendPrefix(String keyPrefix) {
         BaseConfiguration innerConf = new BaseConfiguration();

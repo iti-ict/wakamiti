@@ -15,6 +15,7 @@ import org.junit.Test;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.core.datatypes.assertion.KukumoAssertTypes;
 
+@SuppressWarnings("rawtypes")
 public class TestkukumoAssertTypesEs {
 
     private Locale locale = Locale.forLanguageTag("es");

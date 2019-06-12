@@ -20,23 +20,53 @@ public class ConfigurationBuilder {
     private final Configurations factory = new Configurations();
 
 
+    /**
+     * Create a new configuration composed of other configurations
+     */
+    public Configuration compose(Configuration... configurations) {
+        if (configurations == null || configurations.length == 0) {
+            throw new IllegalArgumentException("No configurations to compose");
+        }
+        Configuration configuration = configurations[0];
+        for (int i=1; i<configurations.length; i++) {
+            configuration = configuration.append(configurations[i]);
+        }
+        return configuration;
+    }
+
+
+
+    /**
+     * Create a new empty configuration
+     */
     public Configuration empty() {
         return new Configuration(new BaseConfiguration());
     }
 
 
+    /**
+     * Create a new configuration from a class annotated with {@link Configurator}
+     * @param configuredClass Class annotated with {@link Configurator}
+     * @throws ConfigurationException if the configuration was not loaded
+     */
     public Configuration buildFromAnnotation(Class<?> configuredClass) throws ConfigurationException {
         final Configurator configurator = configuredClass.getAnnotation(Configurator.class);
         if (configurator == null) {
-            throw new IllegalArgumentException(configuredClass+" is not annotated with @Configurator");
+            throw new ConfigurationException(configuredClass+" is not annotated with @Configurator");
         }
         return buildFromAnnotation(configurator);
     }
 
 
-    public Configuration buildFromAnnotation(Configurator configurer) throws ConfigurationException {
+
+    /**
+     * Create a new configuration from a {@link Configurator} annotation
+     * @param annotation
+     * @throws ConfigurationException if the configuration was not loaded
+     */
+    public Configuration buildFromAnnotation(Configurator annotation) throws ConfigurationException {
         final BaseConfiguration configuration = new BaseConfiguration();
-        for (final Property property : configurer.properties()) {
+        for (final Property property : annotation.properties()) {
             final String[] value = property.value();
             if (value.length == 1) {
                 configuration.addProperty(property.key(), value[0]);
@@ -44,15 +74,20 @@ public class ConfigurationBuilder {
                 configuration.addProperty(property.key(), value);
             }
         }
-        if (configurer.path() != null && !configurer.path().isEmpty()) {
-            return new Configuration(configuration).append(buildFromPath(configurer.path()));
+        if (annotation.path() != null && !annotation.path().isEmpty()) {
+            return new Configuration(configuration).append(buildFromPath(annotation.path()));
         } else {
             return new Configuration(configuration);
         }
         
     }
-    
 
+
+    /**
+     * Create a new configuration from the environment properties
+     * @param includeSystemProperties When the value is <tt>true</tt>, the configuration will include
+     * also every system variable.
+     */
     public Configuration buildFromEnvironment(boolean includeSystemProperties) {
         final CompositeConfiguration configuration = new CompositeConfiguration();
         if (includeSystemProperties ) {
@@ -64,7 +99,16 @@ public class ConfigurationBuilder {
 
 
 
-  
+    /**
+     * Create a new configuration from the environment properties
+     */
+    public Configuration buildFromEnvironment() {
+        return buildFromEnvironment(false);
+    }
+
+
+
+
     public Configuration buildFromPath(String path) throws ConfigurationException {
         if (path.startsWith("classpath:")) {
             return buildFromResource(path);
@@ -92,58 +136,33 @@ public class ConfigurationBuilder {
     }
 
     
-    private Configuration buildFromResource(String path) throws ConfigurationException {
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String classpathPrefix = "classpath:";
-            if (path.startsWith(classpathPrefix)) {
-                Configuration conf = empty();
-                List<Configuration> urlConfs = buildFromURLEnum(
-                    classLoader.getResources(path.substring(classpathPrefix.length())),
-                    path
-                );
-                for (Configuration urlConf : urlConfs) {
-                    conf = conf.append(urlConf);
-                }
-                return conf;
-            } else {
-                URL url = new File(path).toURI().toURL();
-                return buildFromURL(url);
-            }
-        } catch (final IOException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-
-
-
-
-    private List<Configuration> buildFromURLEnum(Enumeration<URL> urls, String resourcePath)
+    
+    public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader) 
     throws ConfigurationException {
-        final List<Configuration> configurations = new ArrayList<>();
-        if (!urls.hasMoreElements()) {
-            throw new ConfigurationException("Cannot find resource "+resourcePath);
-        } else {
-            while (urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
-                configurations.add(buildFromURL(url));
-            }
+        try {
+	    	Configuration conf = empty();
+	        List<Configuration> urlConfs = buildFromURLEnum(
+	            classLoader.getResources(resourcePath),
+	            resourcePath
+	        );
+	        for (Configuration urlConf : urlConfs) {
+	            conf = conf.append(urlConf);
+	        }
+	        return conf;
+        } catch (IOException e) {
+        	throw new ConfigurationException(e);
         }
-        return configurations;
+    }
+    
+    
+    
+    public Configuration buildFromClasspathResource(String resourcePath) throws ConfigurationException {
+        return buildFromClasspathResource(resourcePath,getClass().getClassLoader());
     }
 
+    
 
-    private Configuration buildFromURI(String uri) throws ConfigurationException {
-        if (!uri.contains(":")) {
-            return buildFromURI(new File(uri).toURI());
-        }
-        return buildFromURI(URI.create(uri));
-    }
-
-
-    private Configuration buildFromURI(URI uri) throws ConfigurationException {
+    public Configuration buildFromURI(URI uri) throws ConfigurationException {
         try {
             return buildFromURL(uri.toURL());
         } catch (final MalformedURLException e) {
@@ -152,7 +171,7 @@ public class ConfigurationBuilder {
     }
 
 
-    private Configuration buildFromURL(URL url) throws ConfigurationException {
+    public Configuration buildFromURL(URL url) throws ConfigurationException {
         Configuration configuration;
         if (url.getFile().endsWith(".properties")) {
             configuration = buildFromPropertiesFile(url);
@@ -169,6 +188,23 @@ public class ConfigurationBuilder {
     }
 
 
+
+
+
+
+    private List<Configuration> buildFromURLEnum(Enumeration<URL> urls, String resourcePath)
+            throws ConfigurationException {
+        final List<Configuration> configurations = new ArrayList<>();
+        if (!urls.hasMoreElements()) {
+            throw new ConfigurationException("Cannot find resource "+resourcePath);
+        } else {
+            while (urls.hasMoreElements()) {
+                final URL url = urls.nextElement();
+                configurations.add(buildFromURL(url));
+            }
+        }
+        return configurations;
+    }
 
     private Configuration buildFromJSON(URL url) throws ConfigurationException {
         try (InputStream stream = url.openStream()) {

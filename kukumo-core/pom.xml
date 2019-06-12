@@ -11,13 +11,12 @@
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: CORE</name>
-    <description>Testing utility</description>
+    <name>Kukumo::CORE</name>
+    <description>Core functionality of Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 
     <dependencies>

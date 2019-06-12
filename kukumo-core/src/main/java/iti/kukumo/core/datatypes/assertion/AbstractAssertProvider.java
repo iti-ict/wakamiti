@@ -96,11 +96,12 @@ public abstract class AbstractAssertProvider {
     }
 
 
-    public static void printAllExpressions(Locale locale, StringBuilder string) {
+    public static StringBuilder printAllExpressions(Locale locale, StringBuilder string) {
         ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
         for (String key : bundle.keySet()) {
             string.append("\t").append(bundle.getString(key)).append("\n");
         }
+        return string;
     }
 
 }
