@@ -21,5 +21,14 @@
     <description>Localization for DB steps</description>
     <inceptionYear>2019</inceptionYear>
 
+    <!-- dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

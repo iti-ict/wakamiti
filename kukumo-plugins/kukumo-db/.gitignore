@@ -2,5 +2,5 @@
 .factorypath
 **/.~lock*
 kukumo.json
-/src/site/markdown/*
+/src/site/asciidoc/*
 /src/site/asciidoc/*

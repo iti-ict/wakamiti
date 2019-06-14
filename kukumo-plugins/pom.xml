@@ -5,6 +5,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+       This is the root project of the Kukumo plugins, so every plugin will
+       inherit basic required dependencies and build configuration.
+       However, each child project is still considered as a standalone project.
+       The version number will be always RELEASE regardless the versions of the children.
+   -->
+
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
@@ -15,7 +22,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-plugins</artifactId>
-    <version>1.0.0</version>
+    <version>RELEASE</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -28,20 +35,31 @@
         <module>kukumo-db-l10n</module>
     </modules>
 
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+        <jext.version>1.0.1</jext.version>
+        <assertj.version>3.11.1</assertj.version>
+    </properties>
+
 
     <dependencies>
+
+        <!-- Kukumo -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${project.version}</version>
+            <version>${kukumo.version}</version>
         </dependency>
+
+        <!-- Assertions -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
-            <version>4.12</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
         </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
@@ -70,7 +88,7 @@
                     <dependency>
                         <groupId>iti.commons</groupId>
                         <artifactId>jext</artifactId>
-                        <version>1.0.1</version>
+                        <version>${jext.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

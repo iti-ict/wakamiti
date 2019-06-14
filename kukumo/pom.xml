@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+        This is the root project of the Kukumo project itself
+        (aside from external utility projects created along).
+        The child project should be aligned inheriting the version number
+        of this POM
+    -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>RELEASE</version>
+    </parent>
+
+
+    <groupId>iti.kukumo</groupId>
+    <artifactId>kukumo</artifactId>
+    <version>1.0.0</version>
+
+    <modules>
+        <module>kukumo-core</module>
+        <module>kukumo-launcher</module>
+        <module>kukumo-maven-plugin</module>
+    </modules>
+    
+
+</project>

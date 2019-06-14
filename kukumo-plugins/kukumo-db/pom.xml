@@ -9,18 +9,27 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>1.0.0</version>
+        <version>RELEASE</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-db</artifactId>
     <version>1.0.0</version>
+
 
     <!-- additional information -->
     <name>Kukumo: DB Steps</name>
     <description>Database steps for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
+
+    <!-- dependency versions -->
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+        <jext.version>1.0.1</jext.version>
+        <poi-ooxml.version>4.1.0</poi-ooxml.version>
+        <commons-csv.version>1.6</commons-csv.version>
+    </properties>
+
 
     <dependencies>
 
@@ -28,23 +37,16 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.0</version>
+            <version>${poi-ooxml.version}</version>
         </dependency>
 
         <!-- CSV reader -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.6</version>
+            <version>${commons-csv.version}</version>
         </dependency>
 
-        <!-- Assertions -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.11.1</version>
-        </dependency>
-        
         <!-- testing cases with Gherkin -->
         <dependency>
             <groupId>iti.kukumo</groupId>

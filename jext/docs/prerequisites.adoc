@@ -1,4 +1,0 @@
-== Prerequisites
-- Java 8 or later
-
-

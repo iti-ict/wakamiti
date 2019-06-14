@@ -8,11 +8,10 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>1.0.0</version>
+        <version>RELEASE</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core-l10n</artifactId>
     <version>1.0.0</version>
 
@@ -21,5 +20,9 @@
     <description>Localization of Kukumo CORE</description>
     <inceptionYear>2019</inceptionYear>
 
-
+    <!-- dependency versions -->
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+    </properties>
+    
 </project>

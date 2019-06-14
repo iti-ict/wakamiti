@@ -9,7 +9,7 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>1.0.0</version>
+        <version>RELEASE</version>
     </parent>
 
     <!-- coordinates -->
@@ -23,6 +23,14 @@
     <inceptionYear>2019</inceptionYear>
 
 
+    <!-- dependency versions -->
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+        <jext.version>1.0.1</jext.version>
+        <gherkin.version>5.1.0</gherkin.version>
+    </properties>
+
+
     <!-- dependencies -->
     <dependencies>
 
@@ -30,7 +38,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>gherkin</artifactId>
-            <version>5.1.0</version>
+            <version>${gherkin.version}</version>
         </dependency>
 
     </dependencies>

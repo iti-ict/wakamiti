@@ -9,7 +9,7 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>1.0.0</version>
+        <version>RELEASE</version>
     </parent>
 
     <!-- coordinates -->
@@ -22,6 +22,15 @@
     <description>HTML Report generator for Kukumo results</description>
     <inceptionYear>2019</inceptionYear>
 
+
+    <!-- dependency versions -->
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+        <jext.version>1.0.1</jext.version>
+        <j2html.version>1.4.0</j2html.version>
+    </properties>
+
+
     <!-- dependencies -->
     <dependencies>
 
@@ -29,7 +38,7 @@
         <dependency>
             <groupId>com.j2html</groupId>
             <artifactId>j2html</artifactId>
-            <version>1.4.0</version>
+            <version>${j2html.version}</version>
         </dependency>
 
     </dependencies>

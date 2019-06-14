@@ -1,12 +1,14 @@
-**/.idea
-**/.settings
-**/bin
-**/out
+# Java
 **/target
+
+# IntelliJ
+**/.idea
 *.iml
-*.classpath
+**/out
+/.classpath
 /.project
+/.settings/
 .factorypath
+/logFile.log
 .attach_pid*
-kukumo.json
 /src/site/asciidoc/*
