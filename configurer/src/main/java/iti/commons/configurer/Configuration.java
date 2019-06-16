@@ -63,13 +63,17 @@ public class Configuration {
     public Configuration appendFromPath(Path path) throws ConfigurationException {
         return append(builder.buildFromPath(path));
     }
+    
+    public Configuration appendFromPath(String path) throws ConfigurationException {
+        return append(builder.buildFromPath(path));
+    }
 
     public Configuration appendFromProperties(Properties properties) {
         return append(builder.buildFromProperties(properties));
     }
 
-    public Configuration appendFromResource(String resource) throws ConfigurationException {
-        return append(builder.buildFromResource(resource));
+    public Configuration appendFromClasspathResource(String resource) throws ConfigurationException {
+        return append(builder.buildFromClasspathResource(resource));
     }
 
     public Configuration appendFromURI(URI uri) throws ConfigurationException {

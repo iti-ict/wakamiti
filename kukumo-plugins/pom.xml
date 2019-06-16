@@ -15,15 +15,15 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>RELEASE</version>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-plugins</artifactId>
-    <version>RELEASE</version>
     <packaging>pom</packaging>
+
+    <name>Kukumo Plugins</name>
 
     <modules>
         <module>kukumo-rest</module>
@@ -39,6 +39,7 @@
         <kukumo.version>1.0.0</kukumo.version>
         <jext.version>1.0.1</jext.version>
         <assertj.version>3.11.1</assertj.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
 
@@ -50,6 +51,14 @@
             <artifactId>kukumo-core</artifactId>
             <version>${kukumo.version}</version>
         </dependency>
+
+         <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+
 
         <!-- Assertions -->
         <dependency>

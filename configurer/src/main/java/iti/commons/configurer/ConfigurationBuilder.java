@@ -1,16 +1,26 @@
 package iti.commons.configurer;
 
-import org.apache.commons.configuration2.*;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
+
+import org.apache.commons.configuration2.BaseConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
+import org.apache.commons.configuration2.EnvironmentConfiguration;
+import org.apache.commons.configuration2.JSONConfiguration;
+import org.apache.commons.configuration2.SystemConfiguration;
+import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
 
 
 
@@ -107,13 +117,16 @@ public class ConfigurationBuilder {
     }
 
 
+    public Configuration buildFromPath(Path path) throws ConfigurationException {
+        return buildFromURI(path.toUri());
+    }
 
 
     public Configuration buildFromPath(String path) throws ConfigurationException {
         if (path.startsWith("classpath:")) {
-            return buildFromResource(path);
+            return buildFromClasspathResource(path.substring("classpath:".length()));
         } else {
-            return buildFromURI(path);
+            return buildFromURI(URI.create(path));
         }
     }
 
@@ -140,17 +153,17 @@ public class ConfigurationBuilder {
     public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader) 
     throws ConfigurationException {
         try {
-	    	Configuration conf = empty();
-	        List<Configuration> urlConfs = buildFromURLEnum(
-	            classLoader.getResources(resourcePath),
-	            resourcePath
-	        );
-	        for (Configuration urlConf : urlConfs) {
-	            conf = conf.append(urlConf);
-	        }
-	        return conf;
+            Configuration conf = empty();
+            List<Configuration> urlConfs = buildFromURLEnum(
+                classLoader.getResources(resourcePath),
+                resourcePath
+            );
+            for (Configuration urlConf : urlConfs) {
+                conf = conf.append(urlConf);
+            }
+            return conf;
         } catch (IOException e) {
-        	throw new ConfigurationException(e);
+            throw new ConfigurationException(e);
         }
     }
     
@@ -164,6 +177,10 @@ public class ConfigurationBuilder {
 
     public Configuration buildFromURI(URI uri) throws ConfigurationException {
         try {
+            if (uri.getScheme() == null) {
+                Path path = Paths.get(uri.getPath());
+                return buildFromPath(path);
+            }
             return buildFromURL(uri.toURL());
         } catch (final MalformedURLException e) {
             throw new ConfigurationException(e);

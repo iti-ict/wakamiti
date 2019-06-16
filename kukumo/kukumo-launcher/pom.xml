@@ -16,11 +16,12 @@
     <artifactId>kukumo-launcher</artifactId>
 
     <!-- additional information -->
-    <name>Kukumo: Standalone Launcher</name>
+    <name>Kukumo::Launcher</name>
     <description>Standalone laucher for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 
     <properties>
+        <maven-fetcher.version>1.0.0</maven-fetcher.version>
         <aetherVersion>1.1.0</aetherVersion>
         <mavenVersion>3.3.9</mavenVersion>
     </properties>
@@ -32,14 +33,14 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>1.0.0</version>
+            <version>${parent.version}</version>
         </dependency>
 
         <!-- Maven dependency fetcher -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>maven-fetcher</artifactId>
-            <version>1.0.0</version>
+            <version>${maven-fetcher.version}</version>
         </dependency>
 
     </dependencies>

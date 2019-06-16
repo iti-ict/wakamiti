@@ -3,16 +3,18 @@ package iti.kukumo.report.html;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.extensions.Configurator;
 import iti.kukumo.util.LocaleLoader;
 
-@Extension(provider="iti.kukumo", name="html-report-config", version="1.0.0", extensionPoint="iti.kukumo.api.extensions.Configurator")
+@Extension(
+    provider="iti.kukumo",
+    name="html-report-config", 
+    version="1.0.0", 
+    extensionPoint="iti.kukumo.api.extensions.Configurator"
+)
 public class HtmlReportGeneratorConfig implements Configurator<HtmlReportGenerator> {
 
     public static final String OUTPUT_FILE = "htmlReport.output";

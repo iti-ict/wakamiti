@@ -15,7 +15,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
 

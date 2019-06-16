@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author ITI
@@ -34,8 +35,9 @@ public class KukumoFetcher {
             KukumoLauncher.logger().info("Fetching dependencies...");
             Configuration conf = new ConfigurationBuilder().buildFromMap(arguments.mavenFetcherProperties());
 
-            if (arguments.confFile().isPresent()) {
-                conf = conf.appendFromPath(arguments.confFile().get(),"mavenFetcher");
+            Optional<String> confFile = arguments.confFile();
+            if (confFile.isPresent()) {
+                conf = conf.appendFromPath(confFile.get()).inner("mavenFetcher");
             }
             
             if (arguments.mustClean()) {

@@ -17,34 +17,44 @@
     <description>Core functionality of Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 
+    
+    <properties>
+        <!--  dependency versions -->
+        <configurer.version>1.0.0</configurer.version>
+        <jext.version>1.0.1</jext.version>
+        <hamcrest.version>2.0.0.0</hamcrest.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+
     <dependencies>
 
         <!-- configuration input -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>configurer</artifactId>
-            <version>1.0.0</version>
+            <version>${configurer.version}</version>
         </dependency>
 
         <!-- plugin support -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>jext</artifactId>
-            <version>1.0.1</version>
+            <version>${jext.version}</version>
         </dependency>
 
         <!-- hamcrest matchers -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>java-hamcrest</artifactId>
-            <version>2.0.0.0</version>
+            <version>${hamcrest.version}</version>
         </dependency>
 
         <!-- junit 4 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
         </dependency>
 
 

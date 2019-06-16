@@ -14,13 +14,15 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
 
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo</artifactId>
     <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Kukumo</name>
 
     <modules>
         <module>kukumo-core</module>

@@ -9,16 +9,15 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-html-report</artifactId>
     <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: HTML Report</name>
+    <name>Kukumo::HTML Report</name>
     <description>HTML Report generator for Kukumo results</description>
     <inceptionYear>2019</inceptionYear>
 

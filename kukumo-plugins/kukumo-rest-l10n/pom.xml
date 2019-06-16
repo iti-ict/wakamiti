@@ -9,16 +9,15 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-rest-l10n</artifactId>
     <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: REST Steps (localization)</name>
+    <name>Kukumo::REST Steps (localization)</name>
     <description>Localization for REST steps</description>
     <inceptionYear>2019</inceptionYear>
 

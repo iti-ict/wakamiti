@@ -8,16 +8,15 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>1.0.0</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-db-l10n</artifactId>
     <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: DB Steps (localization)</name>
+    <name>Kukumo::Database Steps (localization)</name>
     <description>Localization for DB steps</description>
     <inceptionYear>2019</inceptionYear>
 

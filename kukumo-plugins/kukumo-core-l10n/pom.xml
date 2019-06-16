@@ -8,7 +8,7 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
@@ -16,7 +16,7 @@
     <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: CORE (localization)</name>
+    <name>Kukumo::CORE (localization)</name>
     <description>Localization of Kukumo CORE</description>
     <inceptionYear>2019</inceptionYear>
 

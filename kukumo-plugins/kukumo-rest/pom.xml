@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-	<groupId>iti.kukumo</groupId>
-	<artifactId>kukumo-rest</artifactId>
-	<version>1.0.0</version>
+    <artifactId>kukumo-rest</artifactId>
+    <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: REST Steps</name>
+    <name>Kukumo::REST Steps</name>
     <description>REST steps for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 
@@ -32,21 +31,24 @@
     </properties>
 
     <!-- dependencies -->
-	<dependencies>
+    <dependencies>
+
+  
+        
 
         <!-- RestAssured -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>${rest-assured.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
 
         <!-- JSON assertions -->
-		<dependency>
-		    <groupId>org.skyscreamer</groupId>
-		    <artifactId>jsonassert</artifactId>
-		    <version>${jsonassert.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
+        </dependency>
 
         <!-- XML assertions -->
         <dependency>
@@ -55,30 +57,30 @@
             <version>${xmlunit.version}</version>
         </dependency>
 
-		<!-- testing with gherkin -->
-		<dependency>
-			<groupId>iti.kukumo</groupId>
-			<artifactId>kukumo-gherkin</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- testing with gherkin -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-gherkin</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- virtual server for testing-->
-		<dependency>
-			<groupId>com.sun.net.httpserver</groupId>
-			<artifactId>http</artifactId>
-			<version>20070405</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.sun.net.httpserver</groupId>
+            <artifactId>http</artifactId>
+            <version>20070405</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- JSON/XML mapping for server testing -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.9.8</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.9.8</version>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

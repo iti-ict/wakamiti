@@ -6,8 +6,8 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>RELEASE</version>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->

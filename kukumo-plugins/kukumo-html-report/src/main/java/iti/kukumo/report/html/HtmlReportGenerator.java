@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -122,7 +123,7 @@ public class HtmlReportGenerator implements Reporter {
         String domIdData = domIDs.get(node)+"_data";
         String domIdDesc = domIDs.get(node)+"_desc";
         boolean expandable = (node.getChildren() != null || node.getDataTable() != null || node.getDocument() != null);
-        boolean childrenExpanded = (node.getResult() != Result.PASSED);//(node.getResult() != Result.PASSED || !(node.getDataTable() != null || node.getDocument() != null));
+        boolean childrenExpanded = (node.getResult() != Result.PASSED);
         boolean sortNextChildren = (sortChildren && node.isTestCase()) ? false : sortChildren;
         
         return li(
@@ -223,7 +224,6 @@ public class HtmlReportGenerator implements Reporter {
             description = node.getDescription().stream().collect(Collectors.joining("\n")).replace("\n\n", "<br/>");
         }
         return hasDescription ? p(rawHtml(description)).withClass("description") : div();
-                //.withStyle(node.getDescription()==null?"display:none":"");
     }
 
     
@@ -276,7 +276,7 @@ public class HtmlReportGenerator implements Reporter {
 
 
 
-    private Tag overallResult(PlanNodeDescriptor plan) {
+    private Tag<?> overallResult(PlanNodeDescriptor plan) {
         return div(
            h2(
               div(
@@ -291,32 +291,16 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private Tag divPercentage(PlanNodeDescriptor node) {
+    private Tag<?> divPercentage(PlanNodeDescriptor node) {
         float total = node.getTestCaseResults().values().stream().mapToLong(Long::longValue).sum();
-        Map<Result, Float> percentages = node.getTestCaseResults().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().floatValue() * 100f / total));
+        Map<Result, Float> percentages = node.getTestCaseResults().entrySet().stream()
+            .collect(Collectors.toMap(Entry<Result, Long>::getKey, e -> e.getValue().floatValue() * 100f / total));
         return div (
         Stream.of(Result.values()).sorted(Comparator.reverseOrder())
                 .map(result -> div().withClass("percentage_"+result).withStyle("width: "+percentages.get(result)+"%"))
                 .toArray(Tag[]::new)
         ).withClass("percentage");
     }
-
-
-    private Tag[] tdCountTestCases(PlanNodeDescriptor node) {
-        List<Tag> tags = new ArrayList<>();
-        long total = node.getTestCaseResults().values().stream().mapToLong(Long::longValue).sum();
-        for (Result result : Result.values()) {
-            Long numResults = node.getTestCaseResults().get(result);
-            if (numResults != null) {
-                tags.add(td(
-                  span(numResults+" / "+total+" test cases"),
-                  span(result.toString()).withClass("_"+result))
-                );
-            }
-        }
-        return tags.toArray(new Tag[0]);
-    }
-
 
 
     
@@ -343,18 +327,12 @@ public class HtmlReportGenerator implements Reporter {
 
 
 
-    private Tag tab(String tabName) {
-        return div( span(tabName).withClasses("width100","center") ).withClass("tab");
-    }
-
-
-
     
     private String css() throws IOException {
         InputStream inputStream = 
             cssFile == null ?         
             Thread.currentThread().getContextClassLoader().getResourceAsStream("style.css") :
-            new FileInputStream(cssFile);
+            new FileInputStream(cssFile)
         ;
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
            return reader.lines().collect(Collectors.joining("\n"));

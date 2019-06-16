@@ -8,19 +8,19 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo</artifactId>
-        <version>RELEASE</version>
+        <version>1.0.0</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-maven-plugin</artifactId>
-    <version>1.0.0</version>
     <packaging>maven-plugin</packaging>
 
     <!-- additional information -->
-    <name>Kukumo: Maven Plugin</name>
+    <name>Kukumo::Maven Plugin</name>
     <description>Maven Plugin for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
+
+
 
     <!-- dependencies -->
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>1.0.0</version>
+            <version>${parent.version}</version>
         </dependency>
 
         <!-- Maven plugin API -->

@@ -9,16 +9,15 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-plugins</artifactId>
-        <version>RELEASE</version>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-gherkin</artifactId>
     <version>1.0.0</version>
 
     <!-- additional information -->
-    <name>Kukumo: Gherkin Support</name>
+    <name>Kukumo::Gherkin Support</name>
     <description>Gherkin discoverer and planner for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 

@@ -1,15 +1,9 @@
 package iti.kukumo.db.test.dialect;
 
 import org.junit.Rule;
-import org.junit.runner.RunWith;
 
-import iti.commons.configurer.Configurator;
-import iti.commons.configurer.Property;
 import iti.commons.testing.embeddeddb.EmbeddedDatabaseRule;
 import iti.commons.testing.embeddeddb.EmbeddedDatabaseTemplates;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.db.DatabaseStepConfiguration;
-import iti.kukumo.junit.KukumoJUnitRunner;
 
 /*@RunWith(KukumoJUnitRunner.class)
 @Configurator(properties = { 

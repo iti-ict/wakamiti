@@ -16,7 +16,7 @@ public interface KukumoConfigurable {
         Configuration configuration = KukumoConfiguration.defaultConfiguration();
         if (confFiles != null) {
             for (String confFile : confFiles) {
-                configuration = configuration.appendFromPath(confFile, "kukumo");
+                configuration = configuration.appendFromPath(confFile).inner("kukumo");
             }
         }
         if (properties != null) {
