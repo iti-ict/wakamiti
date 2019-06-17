@@ -34,7 +34,7 @@ import iti.kukumo.db.dataset.OoxmlDataSet;
  * @author ITI
  * Created by ITI on 18/04/19
  */
-@Extension(provider="iti.kukumo", name="kukumo-db-steps", version="1.0-SNAPSHOT")
+@Extension(provider="iti.kukumo", name="kukumo-db-steps", version="1.0.0")
 @I18nResource("iti_kukumo_kukumo-db")
 public class DatabaseStepContributor implements StepContributor {
 

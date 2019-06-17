@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * @author ITI
  *         Created by ITI on 9/01/19
  */
-@Extension(provider="iti.kukumo", name= GherkinResourceType.NAME, version = "1.0-SNAPSHOT",
+@Extension(provider="iti.kukumo", name= GherkinResourceType.NAME, version = "1.0.0",
         extensionPoint = "iti.kukumo.api.extensions.ResourceType",
         extensionPointVersion = "1"
 )
