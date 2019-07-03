@@ -2,3 +2,4 @@
 .factorypath
 **/.~lock*
 /src/site/asciidoc/*
+/src/site/markdown/*
