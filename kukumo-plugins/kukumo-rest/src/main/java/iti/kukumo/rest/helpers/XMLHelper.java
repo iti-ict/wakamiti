@@ -25,7 +25,7 @@ import iti.kukumo.util.ResourceLoader;
  * @author ITI
  * Created by ITI on 17/04/19
  */
-@Extension(provider="iti.kukumo",name="rest-xml-helper", version="1.0-SNAPSHOT", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
+@Extension(provider="iti.kukumo",name="rest-xml-helper", version="1.0.0", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class XMLHelper implements ContentTypeHelper {
 
     private static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();

@@ -47,7 +47,7 @@ import iti.kukumo.gherkin.parser.CommentedNode;
 @Extension(
         provider = "iti.kukumo",
         name="kukumo-gherkin",
-        version = "1.0-SNAPSHOT",
+        version = "1.0.0",
         extensionPoint = "iti.kukumo.api.extensions.Planner",
         extensionPointVersion = "1"
 )

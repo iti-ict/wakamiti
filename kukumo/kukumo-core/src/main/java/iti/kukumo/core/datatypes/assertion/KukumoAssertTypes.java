@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Extension(provider="iti.kukumo", name="assertion-types", version="1.0-SNAPSHOT")
+@Extension(provider="iti.kukumo", name="assertion-types", version="1.0.0")
 public class KukumoAssertTypes implements DataTypeContributor {
 
 
