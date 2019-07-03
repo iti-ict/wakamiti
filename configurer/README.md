@@ -1,10 +1,10 @@
-= Configurer
--------------------------------------------
-:icons: fonts
+# Configurer
 
 This library is a convenient wrapper around
-https://commons.apache.org/proper/commons-configuration[Apache Commons Configuration]
+[Apache Commons Configuration](https://commons.apache.org/proper/commons-configuration)
 with some extra tweaks/features:
+
+
 
 - The `Configuration` class is immutable
 - Configurations can be attach directly to Java classes using the `@Configurator`
@@ -14,29 +14,21 @@ with some extra tweaks/features:
 - Configuration builders can detect automatically the type of content of a file
 (regarding its extension)
 
-[.badges]
+---
+
+[Requirements] | [Usage] | [Contributing] | [Authors] | [Acknowledgment] | [License]
 
 ---
 
-=== Summary
-- <<Requirements>>
-- <<Usage>>
-- <<Contributing>>
-- <<Authors>>
-- <<Acknowledgment>>
-- <<License>>
-
----
-
-== Requirements
+## Requirements
 
 - Java 8 or later.
 
-== Usage
+## Usage
 
-=== Importing dependency
+### Importing dependency
 
-==== Maven
+#### Maven
 
 ```xml
 <dependency>
@@ -46,11 +38,11 @@ with some extra tweaks/features:
 </dependency>
 ```
 
-=== Configuring via annotations
+### Configuring via annotations
 
+TODO
 
-
-=== Loading configurations
+### Loading configurations
 
 In order to obtain a `Configuration` object, first an instance of `ConfigurationBuilder`
 must be created. Then, use any of the methods available to load the configuration from
@@ -77,15 +69,15 @@ or, more fluently:
      .appendFromURI("file://home/user/myConfig.yaml");
 ```
 
-== Contributing
+## Contributing
 
-== Authors
+## Authors
 
-- Luis Iñesta Gelabert  - mailto:linesta@iti.es[linesta@iti.es]
+- Luis Iñesta Gelabert  | :email: <linesta@iti.es> | :email: <luiinge@gmail.com>
 
 
-== Acknowledgment
+## Acknowledgment
 
-== License
+## License
 
 

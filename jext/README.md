@@ -1,18 +1,16 @@
-= jExt
-------
-:icons: font
+# jExt
 
 jExt is a simple library that allows you to define a *plug-in* architecture detecting the
 Java classes that implements a specific interface. It mostly relies on the standard
-https://docs.oracle.com/javase/tutorial/ext/basics/spi.html[extension mechanism provided]
-by Java by means of the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]
+[extension mechanism provided](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html)
+by Java by means of the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html)
 class, but it simplifies and enhances the usage.
 
 The key concepts are:
 
-- *Extension points* (interfaces annotated with `@ExtensionPoint`) which define the contract
-- *Extensions* (classes annotated with `@Extension` and implementing the extension point class)
-- *Extension managers* that are responsible of retrieve extensions for an specific extension point
+- **Extension points** (interfaces annotated with `@ExtensionPoint`) which define the contract
+- **Extensions** (classes annotated with `@Extension` and implementing the extension point class)
+- **Extension managers** that are responsible of retrieve extensions for an specific extension point
 
 What is the extra value then?
 
@@ -25,19 +23,21 @@ automatically registered as services by the compiler
 - When extending an extension via inheritance, you may either override the parent class or use both superclass and
 subclass independently
 
-<<prerequisites>> | <<usage>> | <<license>> | <<contributing>> | <<authors>>
+---
+
+[Prerequisites] | [Usage]
 
 ---
 
-== Prerequisites
+## Prerequisites
 - Java 8 or later
 
 
-== Usage
+## Usage
 
-=== Dependency
+### Dependency
 
-==== Maven
+#### Maven
 Include the following within the `<dependencies>` section of your `pom.xml` file:
 ```xml
 <dependency>
@@ -48,7 +48,7 @@ Include the following within the `<dependencies>` section of your `pom.xml` file
 ```
 
 
-== License
+## License
 ```
     MIT License
 
@@ -74,11 +74,11 @@ Include the following within the `<dependencies>` section of your `pom.xml` file
 ```
 
 
-== Contributing
+## Contributing
 TODO
 
-== Authors
-- Luis Iñesta Gelabert - mailto:linesta@iti.es[linesta@iti.es] | mailto:luiinge@gmail.com[luiinge@gmail.com]
+## Authors
+- Luis Iñesta Gelabert  |  :email: <linesta@iti.es> | :email: <luiinge@gmail.com>
 
 
 

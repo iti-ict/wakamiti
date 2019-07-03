@@ -24,68 +24,48 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
+
+stages:
+  - build_and_verify
+  - publish
+
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
+  key: one-key-to-rule-them-all
   paths:
     - .m2/repository
+    - target
+    - "*/target"
 
-.compile: &compile
-  stage: build
-  script:
-    - 'mvn $MAVEN_CLI_OPTS install'
+.maven: &maven
+  image: maven:3.3.9-jdk-8
 
-.test: &test
-  stage: test
+build:master:
+  <<: *maven
+  stage: build_and_verify
   script:
-    - 'mvn $MAVEN_CLI_OPTS test-compile'
-
-.verify: &verify
-  stage: test
-  script:
-    - 'mvn $MAVEN_CLI_OPTS verify'
-  except:
-    - master
-
-.deploy: &deploy
-  stage: deploy
-  script:
-    - 'mvn $MAVEN_CLI_OPTS site site:stage'
+    - 'mvn clean install verify site site:stage $MAVEN_CLI_OPTS'
   only:
     - master
 
-
-# Using JDK8
-
-compile:jdk8:
-  <<: *compile
-  image: maven:3.3.9-jdk-8
-
-test:jdk8:
-  <<: *test
-  image: maven:3.3.9-jdk-8
-
-verify:jdk8:
-  <<: *verify
-  image: maven:3.3.9-jdk-8
-
-deploy:jdk8:
-  <<: *deploy
-  image: maven:3.3.9-jdk-8
-
+build:dev:
+  <<: *maven
+  stage: build_and_verify
+  script:
+    - 'mvn clean install verify $MAVEN_CLI_OPTS'
+  except:
+    - master
 
 
 pages:
   image: busybox:latest
-  stage: deploy
+  stage: publish
   script:
-    # Because Maven appends the artifactId automatically to the staging path if you did define a parent pom,
-    # you might need to use `mv target/staging/YOUR_ARTIFACT_ID public` instead.
-    - cp -r target/staging public
-  dependencies:
-    - deploy:jdk8
+    - cp -rf target/staging/* public/
   artifacts:
     paths:
       - public
   only:
     - master
+  allow_failure: true

@@ -154,25 +154,25 @@
     <build>
         <plugins>
 
-            <!-- Use any .adoc file from  /* and /docs/* as a site resource -->
+            <!-- Use any .md file from  /* and /docs/* as a site resource -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
                     <execution>
-                        <id>copy-asciidoc-docs</id>
+                        <id>copy-markdown-docs</id>
                         <phase>pre-site</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/src/site/asciidoc</outputDirectory>
+                            <outputDirectory>${basedir}/src/site/markdown</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/docs</directory>
                                     <includes>
-                                        <include>*.adoc</include>
+                                        <include>*.md</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -181,21 +181,21 @@
                 </executions>
             </plugin>
 
-            <!-- Uses README.adoc as the main page of the site -->
+            <!-- Uses README.md as the main page of the site -->
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
                 <version>1.0.1</version>
                 <executions>
                     <execution>
-                        <id>copy-asciidoc-index</id>
+                        <id>copy-markdown-index</id>
                         <phase>pre-site</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>${basedir}/README.adoc</sourceFile>
-                            <destinationFile>${basedir}/src/site/asciidoc/index.adoc</destinationFile>
+                            <sourceFile>${basedir}/README.md</sourceFile>
+                            <destinationFile>${basedir}/src/site/markdown/index.md</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
