@@ -27,6 +27,7 @@ variables:
 
 stages:
   - build_and_verify
+  - generate_doc
   - publish
 
 # Cache downloaded dependencies and plugins between builds.
@@ -41,22 +42,20 @@ cache:
 .maven: &maven
   image: maven:3.3.9-jdk-8
 
-build:master:
+build:
   <<: *maven
   stage: build_and_verify
   script:
-    - 'mvn install verify site site:stage $MAVEN_CLI_OPTS'
+    - 'mvn clean install verify $MAVEN_CLI_OPTS'
+
+generate_site:
+  <<: *maven
+  stage: generate_doc
+  script:
+    - 'mvn site site:stage $MAVEN_CLI_OPTS'
   only:
     - master
-
-build:dev:
-  <<: *maven
-  stage: build_and_verify
-  script:
-    - 'mvn install verify $MAVEN_CLI_OPTS'
-  except:
-    - master
-
+  allow_failure: true    
 
 pages:
   image: busybox:latest
