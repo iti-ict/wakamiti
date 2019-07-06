@@ -10,5 +10,5 @@
 /.settings/
 .factorypath
 /logFile.log
-/src/site/asciidoc/*
+/src/site/markdown/
 

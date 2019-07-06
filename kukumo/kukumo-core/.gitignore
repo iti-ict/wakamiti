@@ -11,4 +11,4 @@
 .factorypath
 /logFile.log
 .attach_pid*
-/src/site/asciidoc/*
+/src/site/markdown/

@@ -228,22 +228,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.7.1</version>
-                <configuration>
-                    <asciidoc>
-                        <attributes>
-                            <source-highlighter>coderay</source-highlighter>
-                            <coderay-css>style</coderay-css>
-                        </attributes>
-                    </asciidoc>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctor-maven-plugin</artifactId>
-                        <version>1.6.0</version>
-                    </dependency>
-                </dependencies>
+                <version>3.7.1</version>        
             </plugin>
 
         </plugins>
