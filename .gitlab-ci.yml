@@ -55,7 +55,7 @@ generate_site:
   <<: *maven
   stage: generate_doc
   script:
-    - 'mvn site site:stage $MAVEN_CLI_OPTS'
+    - 'mvn install site site:stage $MAVEN_CLI_OPTS'
   only:
     - master
   allow_failure: true    
