@@ -41,6 +41,9 @@ cache:
 
 .maven: &maven
   image: maven:3.3.9-jdk-8
+  artifacts:
+    paths:
+      - target
 
 build:
   <<: *maven
@@ -65,6 +68,7 @@ pages:
   artifacts:
     paths:
       - public
+      - target
   only:
     - master
   allow_failure: true

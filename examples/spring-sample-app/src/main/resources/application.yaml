@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Spring Sample App
+  datasource:
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    data: classpath:initial-data.sql
+    hibernate:
+        ddl-auto: create
+        
+server:
+  port: 9191   
