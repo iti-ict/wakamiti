@@ -64,6 +64,7 @@ pages:
   image: busybox:latest
   stage: publish
   script:
+    - mkdir public
     - cp -rf target/staging/* public/
   artifacts:
     paths:
