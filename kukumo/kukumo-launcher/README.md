@@ -1,1 +1,120 @@
-# TODO
+# Kukumo::Launcher
+
+This project is a stand-alone, command-line tool to execute Kukumo test plans. It does not require Maven present to be 
+launched, although a Maven repository is still required in order to obtain libraries dependencies. 
+
+
+
+## Requirements
+
+- Java 8 or newer installed in the O.S.
+- Access to a Maven repository
+
+## Usage
+
+### Installation
+1. Download the `kukumo-launcher-x.x.x.zip` file and extract it in a folder of your choice
+2. Add the installation folder to your `PATH` system variable in order to run the executable from any folder
+3. Optionally, modify the `launcher.properties` file from the installation folder with custom values
+
+> **INFO**  
+> By default, a ready-to-use public Maven repository is configured. You can add more repositories editing 
+> the `mavenFetcher.remoteRepositories` line, each repository separated with `;` . For further explanation of 
+> any possible repository configuration please check the _Maven Fetcher_ project.
+
+> **TIP**  
+> At this current stage of the project, it is possible that the own Kukumo libraries are not published yet.  
+> However, you can clone or download the entire project and install it in your local repository by typing 
+> `mvn install` (Maven must be installed to do that). The compiled libraries will be located at `{HOME}/.m2/repository`,
+> so simple add that folder as a repository using the `file:///` protocol instead of `https://`.
+
+### Command line
+
+The more basic usage of the launcher is simply typing the following in your terminal:
+
+```
+kukumo
+```
+
+The launcher will search for any suitable test according the attached plugins and will proceed to execute the resulting 
+test plan. However, bear in mind that Kukumo do nothing by itself, so we need to, at least, provide a test discovery 
+plugin and a step library plugin in order to get a successful execution.
+
+A proper example would be the following:
+```
+kukumo -modules iti.kukumo:kukumo-gherkin:1.0.0 iti.kukumo:kukumo-rest:1.0.0
+```
+This way, Kukumo will search for any Gherkin (`.feature`) file in the current folder and sub-folders, and it will try to
+build and execute a test plan with REST-related steps.
+
+> **INFO**  
+> The Kukumo Launcher will create a folder named `.kukumo` in the current folder in order to store libraries and pass 
+> them to the Java classpath. You can delete this folder safely, but it will be recreated every time the launcher is 
+> executed.
+
+There is an alternative to typing the required modules every time: use a local configuration file. If you create a file 
+in the current folder using the default name `kukumo.yaml`, you can configure every Kukumo property inside instead of 
+passing them as command-line arguments:
+
+###### kukumo.yaml
+```yaml
+kukumo:
+  launcher:
+     modules:
+       - iti.kukumo:kukumo-gherkin:1.0.0
+       - iti.kukumo:kukumo-rest:1.0.0
+```  
+
+> **IMPORTANT**  
+> The `modules` property accepts not only the plugins used directly by Kukumo but any other Maven artifact.  
+> For example, if you use the database steps plugin, you will require as well a library with the proper JDBC driver. 
+> Just declare the corresponding Maven artifact as a regular module and it will be obtained and attached to the 
+> execution.
+
+### Arguments
+The following is a list of accepted arguments:
+
+| Command line argument  | Configuration file property | Definition |
+| --------------------- | --------------------------- | ---------- |
+|`-modules <module1> [module2 ...]` | `kukumo.modules` | Set a list of required artifacts |
+|`-conf <filename>` | *not applicable* | Set a custom file to be used as configuration file |
+|`-clean` | *not applicable* | Force the recreation of the `.kukumo`folder prior to execution |
+|`-M<argument>` | `mavenFetcher.<property>` | Set a custom *Maven Fetcher* property |
+|`-K<argument>` | `kukumo.<property>` | Set a custom *Kukumo* property |
+
+
+
+
+## License
+```
+    MIT License
+
+    Copyright (c) 2019  Instituto Tecnológico de Informática www.iti.es
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+```
+
+
+## Contributing
+Currently the project is closed to external contributions but this may change in the future.
+
+
+## Authors
+- Luis Iñesta Gelabert  |  :email: <linesta@iti.es> | :email: <luiinge@gmail.com>
+
