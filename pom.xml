@@ -154,6 +154,13 @@
     <build>
         <plugins>
 
+            <!-- JaCoCo coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+            </plugin>
+
             <!-- Use any .md file from  /* and /docs/* as a site resource -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -265,20 +272,41 @@
 
 
 
-    <distributionManagement>
-        <repository>
-            <id>local-repo</id>
-            <url>file://${maven.repo.local}/../kukumo-repository</url>
-        </repository>
-        <snapshotRepository>
-            <id>local-snapshots</id>
-            <url>file://${maven.repo.local}/../kukumo-snapshot-repository</url>
-        </snapshotRepository>
-        <site>
-            <id>local-site</id>
-            <url>${project.baseUri}</url>
-        </site>
-    </distributionManagement>
+    <profiles>
+        <!-- Local profile: upload artifacts to local folder -->
+        <profile>
+            <id>publish-local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <site>
+                    <id>local-site</id>
+                    <url>${project.baseUri}</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <!-- Publish profile: upload artifacts to public maven repo -->
+        <profile>
+            <id>publish-remote</id>
+            <distributionManagement>
+                <repository>
+                    <id>public-repo</id>
+                    <url>https://mymavenrepo.com/repo/SziQkCm84TfEtYWzF4W3/</url>
+                </repository>
+                <site>
+                    <id>local-site</id>
+                    <url>${project.baseUri}</url>
+                </site>
+
+            </distributionManagement>
+        </profile>
+
+    </profiles>
+
+
+
+
 
 
 </project>
