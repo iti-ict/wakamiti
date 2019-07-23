@@ -15,7 +15,7 @@ public class MavenFetcherConfig {
     public static final String LOCAL_REPOSITORY = "localRepository";
     public static final String PROXY_URL = "proxy.url";
     public static final String PROXY_USERNAME = "proxy.username";
-    public static final String PROXY_PASSWORD = "proxy.username";
+    public static final String PROXY_PASSWORD = "proxy.password";
     public static final String PROXY_EXCEPTIONS = "proxy.exceptions";
     
     private final Properties properties; 
