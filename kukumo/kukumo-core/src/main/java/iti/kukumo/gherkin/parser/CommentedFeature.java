@@ -1,28 +1,25 @@
 package iti.kukumo.gherkin.parser;
 
+import gherkin.ast.*;
+
 import java.util.Collections;
 import java.util.List;
 
-import gherkin.ast.Comment;
-import gherkin.ast.Location;
-import gherkin.ast.Scenario;
-import gherkin.ast.Step;
-import gherkin.ast.Tag;
-
-public class CommentedScenario extends Scenario implements CommentedNode {
+public class CommentedFeature extends Feature implements CommentedNode  {
 
     private final List<Comment> comments;
 
-    public CommentedScenario(
+    public CommentedFeature(
             List<Tag> tags,
             Location location,
+            String language,
             String keyword,
             String name,
             String description,
-            List<Step> steps,
+            List<ScenarioDefinition> children,
             List<Comment> comments
     ) {
-        super(tags, location, keyword, name, description, steps);
+        super(tags, location, language, keyword, name, description, children);
         this.comments = comments == null ? Collections.emptyList() : comments;
     }
 

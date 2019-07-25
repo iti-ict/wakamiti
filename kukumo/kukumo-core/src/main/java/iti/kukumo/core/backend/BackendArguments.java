@@ -99,33 +99,33 @@ public class BackendArguments implements Iterable<Pair<String,String>> {
 
         
     protected void validateArguments() {
-        boolean error = false;
+        String error = null;
         int i;
         for (i = 0; i<argumentMap.size(); i++) {
             error = validateArgument(i);
-            if (error) {
+            if (error != null) {
                 break;
             }
         }
-        if (error) {
+        if (error != null) {
             throwWrongStepDefinitionException(
-                "Argument '{}:{}' does not match implementation argument type {}",
-                argumentMap.get(i).key(),argumentMap.get(i).value(),methodArgTypes[i]
+                "Argument '{}:{}' does not match implementation argument type {} {}",
+                argumentMap.get(i).key(),argumentMap.get(i).value(),methodArgTypes[i],error
             );
         }
     }
 
 
 
-    protected boolean validateArgument(int index) {
-        boolean error = false;
+    protected String validateArgument(int index) {
+        String error = null;
         if (argumentMap.get(index).value().equals(DOCUMENT_ARG)) {
             if (!methodArgTypes[index].equals(Document.class)) {
-                error = true;
+                error = "(expected "+Document.class+")";
             }
         } else if (argumentMap.get(index).value().equals(DATATABLE_ARG)) {
             if (!methodArgTypes[index].equals(DataTable.class)) {
-                error = true;
+                error = "(expected "+DataTable.class+")";
             }
         } else {
             final String typeName = argumentMap.get(index).value();
@@ -134,7 +134,7 @@ public class BackendArguments implements Iterable<Pair<String,String>> {
                 throwWrongStepDefinitionException("Type {} not registered.", typeName);
             }
             if (!type.getJavaType().equals(methodArgTypes[index])) {
-                error = true;
+                error = "(expected "+type.getJavaType()+")";
             }
         }
         return error;

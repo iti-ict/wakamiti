@@ -1,17 +1,4 @@
-package iti.kukumo.gherkin.test.plan;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-
-import org.json.JSONException;
-import org.junit.ComparisonFailure;
-import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONCompare;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.JSONCompareResult;
-import org.skyscreamer.jsonassert.comparator.DefaultComparator;
-import org.skyscreamer.jsonassert.comparator.JSONComparator;
+package iti.kukumo.test.gherkin;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
@@ -22,6 +9,18 @@ import iti.kukumo.api.extensions.Planner;
 import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.util.ResourceLoader;
+import org.json.JSONException;
+import org.junit.ComparisonFailure;
+import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONCompare;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.JSONCompareResult;
+import org.skyscreamer.jsonassert.comparator.DefaultComparator;
+import org.skyscreamer.jsonassert.comparator.JSONComparator;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 public class TestPlanFactory {
 

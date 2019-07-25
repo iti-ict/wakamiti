@@ -1,13 +1,4 @@
-package iti.kukumo.gherkin.test.steps;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.text.ParseException;
-import java.util.Locale;
-
-import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
+package iti.kukumo.test.gherkin;
 
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.annotations.I18nResource;
@@ -16,6 +7,16 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.core.backend.KukumoStepRunContext;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
+import org.hamcrest.Matcher;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.text.ParseException;
+import java.util.Locale;
+
 
 @I18nResource("steps/test-kukumo-steps")
 public class KukumoSteps implements StepContributor {
@@ -101,6 +102,11 @@ public class KukumoSteps implements StepContributor {
         }
     }
 
+
+    @Step(value="simple.step.with.multiple.asserts", args={"a:integer-assertion","b:integer","c:text-assertion"})
+    public void simpleStepWithMultipleAsserts(Matcher<Integer> a, Long b, Matcher<String> c) {
+        // nothing
+    }
 
 
     private float parseFloat(String string) {

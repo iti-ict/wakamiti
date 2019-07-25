@@ -39,7 +39,7 @@ regarding the nature of the project.
 #### JUnit runner
 
 For Java projects, you can create an empty testing class to be run as a normal JUnit test suite, 
-setting the custom JUnit runner ```KukumoJUnitRunner```. This way, the Kukumo test plan is treated 
+setting the custom JUnit runner ```KukumoJUnitRunner```. This way, the Kukumo test iti.kukumo.test.gherkin.plan is treated 
 as a normal JUnit test and will be executed along any other JUnit test existing.
 
 > **NOTE**  
@@ -47,7 +47,7 @@ as a normal JUnit test and will be executed along any other JUnit test existing.
 
 #### Maven plugin
 
-If your project uses Maven, and you prefer to execute the Kukumo test plan in a separate stage,
+If your project uses Maven, and you prefer to execute the Kukumo test iti.kukumo.test.gherkin.plan in a separate stage,
 you can execute Kukumo attaching the ```kukumo-maven-plugin``` plugin to the 
 Maven lifecycle.  Simply configure the Maven plugin and the desired additional Kukumo plugins 
 in your POM `build` section.
@@ -60,7 +60,7 @@ in your POM `build` section.
 #### Stand-alone launcher
 
 If your project does not use neither JUnit nor Maven, Kukumo provides a stand-alone command-line
-based launcher. Once installed, you can launch the test plan execution simply by typing
+based launcher. Once installed, you can launch the test iti.kukumo.test.gherkin.plan execution simply by typing
 the command `kukumo` from the folder where your test specifications are placed.
 
 > **NOTE**  
@@ -163,8 +163,8 @@ in the POM file:
           <groupId>kukumo-core</groupId> 
           <version>1.0.0</version>
        </dependency>
-       <!-- Plugin that reads and create a test plan from Gherkin resources -->         
-       <dependency>
+       iti.kukumo.test.gherkin.plan         
+   iti.kukumo.test.gherkin.plan<dependency>
           <artifactId>iti.kukumo</artifactId>
           <groupId>kukumo-gherkin</groupId>
           <version>1.0.0</version>

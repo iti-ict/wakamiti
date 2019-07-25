@@ -1,4 +1,4 @@
-package iti.kukumo.gherkin.test.runner;
+package iti.kukumo.test.gherkin;
 
 import iti.commons.configurer.Configurator;
 import iti.commons.configurer.Property;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
    @Property(key=KukumoConfiguration.RESOURCE_TYPE, value= GherkinResourceType.NAME),
    @Property(key=KukumoConfiguration.RESOURCE_PATH, value="src/test/resources/features"),
    @Property(key=KukumoConfiguration.OUTPUT_FILE_PATH, value="target/kukumo.json"),
-   @Property(key=KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "iti.kukumo.gherkin.test.steps.KukumoSteps"),
+   @Property(key=KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "iti.kukumo.test.gherkin.KukumoSteps"),
 })
 @RunWith(KukumoJUnitRunner.class)
 public class TestKukumoRunner {

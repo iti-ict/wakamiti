@@ -27,7 +27,6 @@
 
     <modules>
         <module>kukumo-rest</module>
-        <module>kukumo-gherkin</module>
         <module>kukumo-html-report</module>
         <module>kukumo-core-l10n</module>
         <module>kukumo-rest-l10n</module>

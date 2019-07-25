@@ -15,6 +15,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DefaultBackend implements Backend {
@@ -211,14 +212,13 @@ public class DefaultBackend implements Backend {
 
     public String getHint(String wrongStep, Locale locale) {
         StringBuilder hint = new StringBuilder("Perhaps you mean one of the following:\n\t----------\n\t");
-        List<String> stepHints = new ArrayList<>();
+        Set<String> stepHints = new HashSet<>();
+        Map<? extends KukumoDataType<?>, Pattern> types = typeRegistry.getTypes().stream()
+                .collect(Collectors.toMap(x -> x, type -> Pattern.compile("\\{[^:]*:?" + type.getName() + "\\}")));
+
         for (RunnableStep runnableStep : runnableSteps) {
             String stepHint = runnableStep.getTranslatedDefinition(locale);
-            for (KukumoDataType<?> type : typeRegistry.getTypes()) {
-                stepHint = stepHint.replace("{"+type.getName()+"}", "["+type.getHint(locale)+"]");
-                stepHint = stepHint.replaceAll("\\{([^:]+):"+type.getName()+"\\}", "["+type.getHint(locale)+"]");
-            }
-            stepHints.add(stepHint);
+            stepHints.addAll( populateStepHintWithTypeHints(stepHint,locale,types));
         }
         for (String stepHint : StringDistance.closerStrings(wrongStep, stepHints,5)) {
             hint.append(stepHint).append("\n\t");
@@ -226,6 +226,27 @@ public class DefaultBackend implements Backend {
 
         return hint.toString();
     }
+
+
+
+
+    private List<String> populateStepHintWithTypeHints(String stepHint, Locale locale, Map<? extends KukumoDataType<?>, Pattern> types) {
+        List<String> variants = new ArrayList<>();
+        for (Map.Entry<? extends KukumoDataType<?>,Pattern> type : types.entrySet()) {
+            if (type.getValue().matcher(stepHint).find()) {
+                for (String typeHint : type.getKey().getHints(locale)) {
+                    String variant = stepHint.replaceFirst(type.getValue().pattern(),typeHint);
+                    variants.addAll( populateStepHintWithTypeHints(variant,locale,types));
+                }
+            }
+        }
+        if (variants.isEmpty()) {
+            variants.add(stepHint);
+        }
+        return variants;
+    }
+
+
 
 
 

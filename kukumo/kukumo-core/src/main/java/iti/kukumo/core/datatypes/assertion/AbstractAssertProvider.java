@@ -1,19 +1,14 @@
 package iti.kukumo.core.datatypes.assertion;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-
-import org.hamcrest.Matcher;
-
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.core.backend.ExpressionMatcher;
 import iti.kukumo.util.ResourceLoader;
+import org.hamcrest.Matcher;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public abstract class AbstractAssertProvider {
 
@@ -89,19 +84,11 @@ public abstract class AbstractAssertProvider {
 
 
 
-    public static String printAllExpressions(Locale locale) {
-        StringBuilder string = new StringBuilder();
-        printAllExpressions(locale, string);
-        return string.toString();
-    }
-
-
-    public static StringBuilder printAllExpressions(Locale locale, StringBuilder string) {
+    public static List<String> getAllExpressions(Locale locale) {
         ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
-        for (String key : bundle.keySet()) {
-            string.append("\t").append(bundle.getString(key)).append("\n");
-        }
-        return string;
+        return bundle.keySet().stream().map(bundle::getString).collect(Collectors.toList());
     }
+
+
 
 }

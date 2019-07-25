@@ -1,17 +1,5 @@
 package iti.kukumo.gherkin;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -22,6 +10,13 @@ import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeTypes;
 import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanStep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 

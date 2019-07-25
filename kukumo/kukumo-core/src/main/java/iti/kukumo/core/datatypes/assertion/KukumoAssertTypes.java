@@ -89,19 +89,12 @@ public class KukumoAssertTypes implements DataTypeContributor {
                     name,
                     Matcher.class,
                     locale -> ".*",
-                    hintProvider(matcherProviders),
+                    AbstractAssertProvider::getAllExpressions,
                     parseProvider(matcherProviders)
             );
         }
     }
 
-
-
-    protected static KukumoDataTypeBase.LocaleHintProvider hintProvider(AbstractAssertProvider[] assertProviders) {
-        return locale ->
-            AbstractAssertProvider.printAllExpressions(locale, new StringBuilder()).toString()
-        ;
-    }
 
 
     @SuppressWarnings("rawtypes")

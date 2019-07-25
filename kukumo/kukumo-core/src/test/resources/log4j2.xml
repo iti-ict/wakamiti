@@ -11,7 +11,7 @@
             <AppenderRef ref="Console"/>
         </Root>
         <Logger name="iti.kukumo.logs" level="info"/>
-        <Logger name="iti.kukumo.core.backend.ExpressionMatcher" level="error"/>
-        <Logger name="iti.kukumo.core.backend.DefaultBackendFactory" level="error"/>
+        <Logger name="iti.kukumo.core.backend.ExpressionMatcher" level="info"/>
+        <Logger name="iti.kukumo.core.backend.DefaultBackendFactory" level="info"/>
     </Loggers>
 </Configuration>

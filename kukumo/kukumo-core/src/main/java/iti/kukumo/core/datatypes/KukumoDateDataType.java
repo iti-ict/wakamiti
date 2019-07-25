@@ -1,5 +1,7 @@
 package iti.kukumo.core.datatypes;
 
+import iti.kukumo.util.TokenParser;
+
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -7,19 +9,9 @@ import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import iti.kukumo.util.TokenParser;
 
 public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTypeBase<T> {
 
@@ -164,7 +156,7 @@ public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTy
 
 
 
-    private static String dateTimePatterns(Locale locale, boolean withDate, boolean withTime) {
+    private static List<String> dateTimePatterns(Locale locale, boolean withDate, boolean withTime) {
         final List<String> patterns = new ArrayList<>();
         if (withDate && withTime) {
             patterns.addAll(Arrays.asList(ISO_8601_DATETIME_FORMATS));
@@ -180,7 +172,7 @@ public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTy
             }
         }
 
-        return patterns.stream().collect(Collectors.joining(" | "));
+        return patterns;
     }
 
 

@@ -1,8 +1,8 @@
 package iti.kukumo.gherkin.parser;
 
-import java.util.List;
-
 import gherkin.ast.Comment;
+
+import java.util.List;
 
 public interface CommentedNode {
 

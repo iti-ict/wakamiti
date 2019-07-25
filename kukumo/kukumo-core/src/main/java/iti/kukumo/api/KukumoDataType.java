@@ -1,5 +1,6 @@
 package iti.kukumo.api;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -11,7 +12,7 @@ public interface KukumoDataType<T> {
 
     String getRegex(Locale locale);
 
-    String getHint(Locale locale);
+    List<String> getHints(Locale locale);
 
     T parse(Locale locale, String value);
 

@@ -5,6 +5,7 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.util.ThrowableFunction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
     }
 
     public interface LocaleHintProvider {
-        String hint(Locale locale);
+        List<String> hints(Locale locale);
     }
 
 
@@ -39,7 +40,7 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
     private final LocaleHintProvider hintProvider;
     private final LocaleTypeParser<T> parserProvider;
     private final Map<Locale,String> regexByLocale = new HashMap<>();
-    private final Map<Locale,String> hintByLocale = new HashMap<>();
+    private final Map<Locale,List<String>> hintsByLocale = new HashMap<>();
     private final Map<Locale,TypeParser<T>> parserByLocale = new HashMap<>();
 
 
@@ -65,7 +66,7 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
             return parserForLocale(locale).parse(value);
         } catch (final Exception e) {
             throw new KukumoException("Error parsing type {} using language {}: '{}'\n\tExpected {}",
-                    name,locale,value,getHint(locale),e) ;
+                    name,locale,value,getHints(locale),e) ;
         }
     }
 
@@ -97,8 +98,8 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
 
 
     @Override
-    public String getHint(Locale locale) {
-        return hintForLocale(locale);
+    public List<String> getHints(Locale locale) {
+        return hintsForLocale(locale);
     }
 
 
@@ -113,9 +114,9 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
         return regexByLocale.get(locale);
     }
 
-    protected String hintForLocale(Locale locale) {
-        hintByLocale.computeIfAbsent(locale, hintProvider::hint);
-        return hintByLocale.get(locale);
+    protected List<String> hintsForLocale(Locale locale) {
+        hintsByLocale.computeIfAbsent(locale, hintProvider::hints);
+        return hintsByLocale.get(locale);
     }
 
 

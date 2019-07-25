@@ -1,14 +1,9 @@
 package iti.kukumo.gherkin.parser;
 
+import gherkin.ast.*;
+
 import java.util.Collections;
 import java.util.List;
-
-import gherkin.ast.Comment;
-import gherkin.ast.Examples;
-import gherkin.ast.Location;
-import gherkin.ast.ScenarioOutline;
-import gherkin.ast.Step;
-import gherkin.ast.Tag;
 
 public class CommentedScenarioOutline extends ScenarioOutline implements CommentedNode {
 

@@ -24,6 +24,7 @@
         <jext.version>1.0.1</jext.version>
         <hamcrest.version>2.0.0.0</hamcrest.version>
         <junit.version>4.12</junit.version>
+        <gherkin.version>5.1.0</gherkin.version>
     </properties>
 
 
@@ -55,6 +56,14 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+
+
+        <!-- gherkin parser -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>gherkin</artifactId>
+            <version>${gherkin.version}</version>
         </dependency>
 
 

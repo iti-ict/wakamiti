@@ -1,12 +1,12 @@
 package iti.kukumo.gherkin.parser;
 
-import java.util.Collections;
-import java.util.List;
-
 import gherkin.ast.Comment;
 import gherkin.ast.Location;
 import gherkin.ast.Node;
 import gherkin.ast.Step;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CommentedStep extends Step implements CommentedNode  {
 

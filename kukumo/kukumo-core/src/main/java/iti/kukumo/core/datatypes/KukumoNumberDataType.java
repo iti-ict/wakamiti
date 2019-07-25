@@ -1,11 +1,12 @@
 package iti.kukumo.core.datatypes;
 
+import iti.kukumo.util.ThrowableFunction;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 import java.util.Locale;
-
-import iti.kukumo.util.ThrowableFunction;
 
 public class KukumoNumberDataType<T> extends KukumoDataTypeBase<T> {
 
@@ -22,7 +23,7 @@ public class KukumoNumberDataType<T> extends KukumoDataTypeBase<T> {
     protected KukumoNumberDataType(String name, Class<T> javaType, boolean includeDecimals, boolean useBigDecimal, ThrowableFunction<Number,T> converter) {
         super(name, javaType,
                 locale -> numericRegexPattern(locale, includeDecimals),
-                locale -> decimalFormat(locale,useBigDecimal).toLocalizedPattern(),
+                locale -> Arrays.asList(decimalFormat(locale,useBigDecimal).toLocalizedPattern()),
                 locale -> parser(locale, includeDecimals, converter)
                 );
     }

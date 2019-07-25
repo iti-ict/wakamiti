@@ -37,7 +37,7 @@ kukumo
 ```
 
 The launcher will search for any suitable test according the attached plugins and will proceed to execute the resulting 
-test plan. However, bear in mind that Kukumo do nothing by itself, so we need to, at least, provide a test discovery 
+test iti.kukumo.test.gherkin.plan. However, bear in mind that Kukumo do nothing by itself, so we need to, at least, provide a test discovery 
 plugin and a step library plugin in order to get a successful execution.
 
 A proper example would be the following:
@@ -45,7 +45,7 @@ A proper example would be the following:
 kukumo -modules iti.kukumo:kukumo-gherkin:1.0.0 iti.kukumo:kukumo-rest:1.0.0
 ```
 This way, Kukumo will search for any Gherkin (`.feature`) file in the current folder and sub-folders, and it will try to
-build and execute a test plan with REST-related steps.
+build and execute a test iti.kukumo.test.gherkin.plan with REST-related steps.
 
 > **INFO**  
 > The Kukumo Launcher will create a folder named `.kukumo` in the current folder in order to store libraries and pass 

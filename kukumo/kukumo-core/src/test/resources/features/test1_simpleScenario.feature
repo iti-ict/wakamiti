@@ -14,3 +14,4 @@ Scenario: Test Scenario
   Given a number with value 8.02 and another number with value 9
   When both numbers are multiplied
   Then the result is equals to 72.18
+  * this stepo has an integer cool, a value 3, and the string starts with 'pen'

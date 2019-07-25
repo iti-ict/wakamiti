@@ -8,7 +8,7 @@ import iti.kukumo.api.plan.PlanStep;
 import java.util.List;
 
 /**
- * This interface defines the methods required in order to instantiate a Kukumo model plan from a set of Gherkin
+ * This interface defines the methods required in order to instantiate a Kukumo model iti.kukumo.test.gherkin.plan from a set of Gherkin
  * resources.
  * @author luinge@gmail.com
  *
@@ -20,9 +20,9 @@ public interface Planner extends Contributor {
     boolean acceptResourceType(ResourceType<?> resourceType);
 
     /**
-     * Instantiate a new Kukumo model plan according the resources provided.
+     * Instantiate a new Kukumo model iti.kukumo.test.gherkin.plan according the resources provided.
      * @param resources A list of resources
-     * @return A new Kukumo model plan, without any execution data
+     * @return A new Kukumo model iti.kukumo.test.gherkin.plan, without any execution data
      */
     PlanNode createPlan(List<Resource<?>> resources);
 

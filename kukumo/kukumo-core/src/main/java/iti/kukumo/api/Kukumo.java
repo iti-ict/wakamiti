@@ -61,10 +61,10 @@ public class Kukumo {
 
 
     /**
-     * Attempt to create a plan using the resource type and the feature path defined in then received configuration.
+     * Attempt to create a iti.kukumo.test.gherkin.plan using the resource type and the feature path defined in then received configuration.
      * @param configuration
-     * @return A new plan ready to be executed
-     * @throws KukumoException if the plan couldn't be created
+     * @return A new iti.kukumo.test.gherkin.plan ready to be executed
+     * @throws KukumoException if the iti.kukumo.test.gherkin.plan couldn't be created
      */
     public static PlanNode createPlanFromConfiguration(Configuration configuration) throws KukumoException {
 

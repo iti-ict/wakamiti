@@ -18,7 +18,7 @@ import iti.kukumo.util.ThrowableFunction;
 public interface PlanSerializer {
 
     /**
-     * Serialize the given plan or plan node into a string
+     * Serialize the given iti.kukumo.test.gherkin.plan or iti.kukumo.test.gherkin.plan node into a string
      */
     String serialize(PlanNode node) throws IOException;
 

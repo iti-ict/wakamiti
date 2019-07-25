@@ -1,30 +1,8 @@
 package iti.kukumo.core.backend;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.*;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.SetUp;
 import iti.kukumo.api.annotations.Step;
@@ -33,6 +11,15 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.ThrowableRunnable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.Clock;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0.0")
 public class DefaultBackendFactory implements BackendFactory {
@@ -197,7 +184,9 @@ public class DefaultBackendFactory implements BackendFactory {
                     LOGGER.warn("Class {} does not implement {}", nonRegisteredContributorClass, StepContributor.class);
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER.warn("Cannot find non-registered step provider class: {}", nonRegisteredContributorClass);
+                LOGGER.warn("Cannot find non-registered step provider class: {}\n\t{}",
+                        nonRegisteredContributorClass,
+                        "Ensure the class exists, is fully qualified, and its accesible from the main class loader");
             } catch (NoSuchMethodException e) {
                 LOGGER.warn("Non-registered step provider class {} requieres empty constructor", nonRegisteredContributorClass);
             } catch (ReflectiveOperationException e) {

@@ -33,12 +33,12 @@ public class KukumoVerifier {
         Configuration configuration;
          try {
              configuration = readConfiguration(arguments); 
-             KukumoLauncher.logger().info("building test plan");
+             KukumoLauncher.logger().info("building test iti.kukumo.test.gherkin.plan");
              PlanNode plan = Kukumo.createPlanFromConfiguration(configuration);
              if (!plan.hasChildren()) {
                  KukumoLauncher.logger().warn("Test Plan is empty!");
              } else {
-                 KukumoLauncher.logger().info("running test plan");
+                 KukumoLauncher.logger().info("running test iti.kukumo.test.gherkin.plan");
                  Optional<Result> result = Kukumo.executePlan(plan, configuration).computeResult();
                  if (result.isPresent()) {
                      if (result.get() == Result.PASSED) {

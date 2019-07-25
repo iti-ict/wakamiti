@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * A test <tt>PlanNode</tt> object is any of the parts that form a test plan
+ * A test <tt>PlanNode</tt> object is any of the parts that form a test iti.kukumo.test.gherkin.plan
  */
 public interface PlanNode {
 
@@ -22,10 +22,10 @@ public interface PlanNode {
     String displayName();
 
     
-    /** @return An unambiguous identifier within the plan */  
+    /** @return An unambiguous identifier within the iti.kukumo.test.gherkin.plan */
     String id();
     
-    /** @return The human language in which the plan node was written */
+    /** @return The human language in which the iti.kukumo.test.gherkin.plan node was written */
     String language();
     
     /** @return The type of this node, preferably one from {@link PlanNodeTypes} */

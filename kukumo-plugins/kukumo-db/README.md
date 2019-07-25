@@ -58,7 +58,7 @@ Regex pattern used to determine what sheets to be ignored when loading XLSX file
 Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files.
 
 `database.enableCleanupUponCompletion` = `true | [false]` ::
-The default behaviour does not perform any clean-up operation following the test plan execution so that
+The default behaviour does not perform any clean-up operation following the test iti.kukumo.test.gherkin.plan execution so that
 you can check the resulting data afterwards. Switching this parameter to `true` will force
 clean-up operations so no test data will remain in the database after the execution of the tests.
 

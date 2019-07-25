@@ -12,7 +12,7 @@ package iti.kukumo.gherkin.test.runner;
 import iti.commons.configurer.Configurator;
 import iti.commons.configurer.Property;
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.gherkin.GherkinResourceType;
+import iti.kukumo.iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.junit.KukumoJUnitRunner;
 import org.junit.runner.RunWith;
 

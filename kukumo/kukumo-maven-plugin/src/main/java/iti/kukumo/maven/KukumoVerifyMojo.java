@@ -32,12 +32,12 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
         Configuration configuration;
         try {
             configuration = readConfiguration(configurationfiles, properties);
-            info("building test plan");
+            info("building test iti.kukumo.test.gherkin.plan");
             PlanNode plan = Kukumo.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 warn("Test Plan is empty!");
             } else {
-                info("running test plan");
+                info("running test iti.kukumo.test.gherkin.plan");
                 Optional<Result> result = Kukumo.executePlan(plan, configuration).computeResult();
                 if (result.isPresent()) {
                     if (result.get() == Result.PASSED) {
