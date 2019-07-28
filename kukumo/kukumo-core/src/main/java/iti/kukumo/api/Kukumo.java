@@ -1,6 +1,7 @@
 package iti.kukumo.api;
 
 import iti.commons.configurer.Configuration;
+import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.event.EventDispatcher;
 import iti.kukumo.api.extensions.*;
@@ -41,22 +42,6 @@ public class Kukumo {
     private static final PlanSerializer planSerializer = new DefaultPlanSerializer();
 
 
-    /**
-     * Restrict the modules that can be used
-     * @param modules List of modules in the form 'group:artifact:version'
-     */
-    public static void restrictModules(Collection<String> modules) {
-        for (String module : modules) {
-            String[] parts = module.split(":");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException("Restricted modules must be in the form <group>:<artifact>:version");
-            }
-            extensionManager.addWhiteListEntry(parts[0],parts[1],parts[2]);
-        }
-    }
-
-
-
 
 
 
@@ -74,7 +59,7 @@ public class Kukumo {
             resourceType = nonOptional(getResourceTypeByName(resourceTypeName.get()),
                 "Resource type '{}' is not provided by any contributor",resourceTypeName.get());
         } else {
-            resourceType = nonOptional(extensionManager.findFirstExtension(ResourceType.class),
+            resourceType = nonOptional(extensionManager.getExtension(ResourceType.class),
                 "No resource types are provided by any contributor");
         }
 
@@ -93,14 +78,14 @@ public class Kukumo {
 
     public static Optional<Planner> getPlannerFor(ResourceType<?> resourceType) {
         Predicate<Planner> filter = planner->planner.acceptResourceType(resourceType);
-        return extensionManager.findFirstExtensionThatSatisfies(Planner.class, filter);
+        return extensionManager.getExtensionThatSatisfy(Planner.class, filter);
     }
 
 
 
     @SuppressWarnings({ "rawtypes" })
     public static List<ResourceType<?>> availableResourceTypes() {
-        List<ResourceType> resourceTypes = extensionManager.findExtensions(ResourceType.class);
+        List<ResourceType> resourceTypes = extensionManager.getExtensions(ResourceType.class);
         return resourceTypes.stream().map(x->(ResourceType<?>)x).collect(Collectors.toList());
     }
 
@@ -113,23 +98,27 @@ public class Kukumo {
 
 
     public static List<DataTypeContributor> getSpecificDataTypeContributors(List<String> modules) {
-        return extensionManager.findExtensionsFromNames(DataTypeContributor.class, modules);
+        Predicate<Extension> condition = extension -> modules.contains(extension.name());
+        return extensionManager.getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition);
     }
 
 
     public static List<DataTypeContributor> getAllDataTypeContributors() {
-        return extensionManager.findExtensions(DataTypeContributor.class);
+        return extensionManager.getExtensions(DataTypeContributor.class);
     }
 
 
     public static List<StepContributor> loadSpecificStepContributors(List<String> modules, Configuration configuration) {
-        return extensionManager.loadExtensionsFromNames(StepContributor.class, modules,
-                stepContributor->configure(stepContributor,configuration));
+        Predicate<Extension> condition = extension -> modules.contains(extension.name());
+        List<StepContributor> stepContributors = extensionManager.getExtensionsThatSatisfyMetadata(StepContributor.class,condition);
+        stepContributors.forEach(c->configure(c,configuration));
+        return stepContributors;
     }
 
     public static List<StepContributor> loadAllStepContributors(Configuration configuration) {
-        return extensionManager.loadExtensions(StepContributor.class,
-                stepContributor->configure(stepContributor,configuration));
+        List<StepContributor> stepContributors = extensionManager.getExtensions(StepContributor.class);
+        stepContributors.forEach(c->configure(c,configuration));
+        return stepContributors;
     }
 
 
@@ -147,11 +136,15 @@ public class Kukumo {
     }
 
     public static BackendFactory getBackendFactory() {
-        return nonOptional(extensionManager.get(BackendFactory.class),"Cannot get an instance of BackendFactory");
+        return nonOptional(extensionManager.getExtension(BackendFactory.class),"Cannot get an instance of BackendFactory");
     }
 
     public static PlanSerializer getPlanSerializer() {
         return planSerializer;
+    }
+    
+    public static ExtensionManager getExtensionManager() {
+        return extensionManager;
     }
 
     private static <T> T nonOptional(Optional<T> optional, String errorMessage, Object... messageArgs) {
@@ -164,7 +157,7 @@ public class Kukumo {
 
     @SuppressWarnings("unchecked")
     public static <T> T configure( T contributor, Configuration configuration) {
-        for (Configurator<T> configurator : extensionManager.findExtensions(Configurator.class)) {
+        for (Configurator<T> configurator : extensionManager.getExtensions(Configurator.class)) {
             if (configurator.accepts(contributor)) {
                 configurator.configure(contributor, configuration);
             }
@@ -177,7 +170,7 @@ public class Kukumo {
     private static EventDispatcher getEventDispatcher() {
         if (eventDispatcher == null) {
             eventDispatcher = new EventDispatcher();
-            extensionManager.findExtensions(EventObserver.class).forEach(eventDispatcher::addObserver);
+            extensionManager.getExtensions(EventObserver.class).forEach(eventDispatcher::addObserver);
         }
         return eventDispatcher;
     }
@@ -205,7 +198,7 @@ public class Kukumo {
 
 
     public static void report(Configuration configuration) throws IOException {
-        List<Reporter> reporters = extensionManager.findExtensions(Reporter.class);
+        List<Reporter> reporters = extensionManager.getExtensions(Reporter.class);
         if (reporters.isEmpty()) {
             return;
         }

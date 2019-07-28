@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Extension(provider="iti.kukumo", name="core-types", version="1.0.0")
+@Extension(provider="iti.kukumo", name="core-types", version="1.0")
 public class KukumoCoreTypes implements DataTypeContributor {
 
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";

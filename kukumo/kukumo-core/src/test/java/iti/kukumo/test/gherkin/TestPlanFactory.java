@@ -6,6 +6,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.Resource;
 import iti.kukumo.api.extensions.Planner;
+import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.util.ResourceLoader;
@@ -58,7 +59,8 @@ public class TestPlanFactory {
         Configuration configuration = KukumoConfiguration.defaultConfiguration().appendFromProperties(properties);
         Planner planner = Kukumo.getPlannerFor(GherkinResourceType.INSTANCE).get();
         Kukumo.configure(planner, configuration);
-        String plan = planSerializer.serialize(planner.createPlan(gherkinDocuments));
+        PlanNode testPlan = planner.createPlan(gherkinDocuments);
+        String plan = planSerializer.serialize(testPlan);
         String result = resourceLoader.readResourceAsString(resultFilename);
         JSONComparator comparator = new DefaultComparator(JSONCompareMode.STRICT);
         JSONCompareResult comparison = JSONCompare.compareJSON(result, plan, comparator);

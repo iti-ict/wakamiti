@@ -16,7 +16,7 @@ import java.io.File;
  * @author ITI
  * Created by ITI on 17/04/19
  */
-@Extension(provider="iti.kukumo",name="rest-text-helper", version="1.0.0", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
+@Extension(provider="iti.kukumo",name="rest-text-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class TextHelper implements ContentTypeHelper {
 
     private static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();

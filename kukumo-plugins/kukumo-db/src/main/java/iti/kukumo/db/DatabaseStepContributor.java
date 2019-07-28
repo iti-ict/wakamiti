@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
+import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
@@ -41,8 +42,8 @@ public class DatabaseStepContributor implements StepContributor {
     private static final Logger LOGGER = LoggerFactory.getLogger("kukumo.logs");
     
         
-    private static ConnectionManager connectionManager = new ExtensionManager()
-            .findFirstExtension(ConnectionManager.class)
+    private static ConnectionManager connectionManager = Kukumo.getExtensionManager()
+            .getExtension(ConnectionManager.class)
             .orElseThrow(()->new KukumoException("Cannot find a connection manager"));
     
     private DatabaseHelper helper = new DatabaseHelper(this::connection);

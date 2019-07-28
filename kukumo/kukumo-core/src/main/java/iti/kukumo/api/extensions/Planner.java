@@ -1,6 +1,7 @@
 package iti.kukumo.api.extensions;
 
 import iti.commons.jext.ExtensionPoint;
+import iti.commons.jext.LoadStrategy;
 import iti.kukumo.api.Resource;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanStep;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author luinge@gmail.com
  *
  */
-@ExtensionPoint
+@ExtensionPoint(loadStrategy = LoadStrategy.FRESH)
 public interface Planner extends Contributor {
 
 

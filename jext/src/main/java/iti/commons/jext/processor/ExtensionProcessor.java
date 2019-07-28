@@ -31,8 +31,29 @@ public class ExtensionProcessor extends AbstractProcessor {
         for (Element element : roundEnv.getElementsAnnotatedWith(Extension.class)) {
             validateAndRegisterExtension(element,serviceImplementations);
         }
+        for (Element element : roundEnv.getElementsAnnotatedWith(ExtensionPoint.class)) {
+            validateExtensionPoint(element);
+        }
         writeOutputFiles(serviceImplementations);
         return false;
+    }
+
+
+
+
+
+
+
+    private void validateExtensionPoint(Element element) {
+        if (element.getKind() != ElementKind.CLASS && element.getKind() != ElementKind.INTERFACE) {
+            log(Kind.ERROR,element,"@ExtensionPoint not valid for {} (only processed for classes or interfaces)",
+                    element.getSimpleName());
+            return;
+        }
+        ExtensionPoint extensionPointAnnotation = element.getAnnotation(ExtensionPoint.class);
+        if (!validateVersionFormat(extensionPointAnnotation.version())) {
+            log(Kind.ERROR, element, "Content of field version must be in form '<major>.<minor>'");
+        }
     }
 
 
@@ -56,6 +77,15 @@ public class ExtensionProcessor extends AbstractProcessor {
         if (extensionAnnotation.externallyManaged()) { // not handling externally managed extensions
             return;
         }
+        if (!validateVersionFormat(extensionAnnotation.version())) {
+            log(Kind.ERROR, element, "Content of field version must be in form '<major>.<minor>'");
+            return;
+        }
+        if (!validateVersionFormat(extensionAnnotation.extensionPointVersion())) {
+            log(Kind.ERROR, element, "Content of field extensionPointVersion must be in form '<major>.<minor>'");
+            return;
+        }
+        
         String extensionPoint = extensionAnnotation.extensionPoint();
         if (extensionPoint.isEmpty()) {
             for (TypeMirror implementedInterface : extensionClassElement.getInterfaces()) {
@@ -96,6 +126,12 @@ public class ExtensionProcessor extends AbstractProcessor {
 
     }
 
+    
+    private boolean validateVersionFormat(String version) {
+        return version.matches("\\d+\\.\\d+");
+    }
+    
+    
     private boolean isAssignable(TypeMirror type, TypeMirror typeTo) {
         if (nameWithoutGeneric(type).equals(nameWithoutGeneric(typeTo))) {
             return true;
@@ -175,12 +211,12 @@ public class ExtensionProcessor extends AbstractProcessor {
 
     private void log(Kind kind, String message, Object...messageArgs) {
         processingEnv.getMessager().printMessage(kind,
-                "[JPlugin] :: "+String.format(message.replace("{}","%s"),messageArgs));
+                "[jext] :: "+String.format(message.replace("{}","%s"),messageArgs));
     }
 
     private void log(Kind kind, Element element, String message, Object...messageArgs) {
         processingEnv.getMessager().printMessage(kind,
-                "[JPlugin] at "+element.asType().toString()+" :: "+String.format(message.replace("{}","%s"),messageArgs));
+                "[jext] at "+element.asType().toString()+" :: "+String.format(message.replace("{}","%s"),messageArgs));
     }
 
 

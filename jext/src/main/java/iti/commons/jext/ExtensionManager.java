@@ -1,13 +1,20 @@
 package iti.commons.jext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Component that provides operations in order to retrieve instances of classes annotated with
@@ -16,336 +23,353 @@ import java.util.stream.StreamSupport;
 public class ExtensionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionManager.class);
+    
+    
+    private final ClassLoader[] classLoaders;
+    private final List<ExtensionLoader> extensionLoaders = extensionLoaders();
 
-    /*
-      Replicate the data of @Extension, due to the impossibility of adding methods to @interface
-     */
-    private static class ExtensionMetadata {
-        private String provider;
-        private String name;
-        private String version;
-
-        public ExtensionMetadata(String provider, String name, String version) {
-            this.provider = provider;
-            this.name = name;
-            this.version = version;
-        }
-
-        public boolean matches(Extension extension) {
-            return
-                (this.provider.equals("*") || this.provider.equals(extension.provider())) &&
-                (this.name.equals("*") || this.name.equals(extension.name())) &&
-                (this.version.equals("*") || this.version.equals(extension.version()));
-        }
-    }
-
-
-    private final ClassLoader[] loaders;
-    private final List<ExtensionMetadata> whiteList = new ArrayList<>();
-    private final List<ExtensionMetadata> blackList = new ArrayList<>();
-    private final List<ExtensionLoader> externalLoaders = StreamSupport.stream(
-            ServiceLoader.load(ExtensionLoader.class).spliterator(), false
-        ).collect(Collectors.toList());
-
+    private Map<Class<?>,Object> singletons = new HashMap<>();
     private Map<Class<?>,Set<Class<?>>> invalidExtensions = new HashMap<>();
-
+    private Map<Class<?>,Set<Class<?>>> validExtensions = new HashMap<>();
+    private Map<Object,Extension> extensionMetadata = new HashMap<>();   
+    private Map<Class<?>,List<Object>> cachedValidExtensionInstances = new HashMap<>();
+      
+      
+    /**
+     * Creates a new extension manager using the default class loader of the current thread
+     */
     public ExtensionManager() {
         this(Thread.currentThread().getContextClassLoader());
     }
 
+    
+    /**
+     * Creates a new extension manager restricted to a specific set of class loaders
+     * @param loaders The class loaders used for loading extension classes
+     */
     public ExtensionManager(ClassLoader... loaders) {
-        this.loaders = loaders;
+        this.classLoaders = loaders;
     }
 
+    
+    /**
+     * Get the extension annotated metadata for a given extension
+     * @param extension A extension instance
+     * @return The extension metadata, or <code>null</code> if passed object is not an extension
+     */
+    public <T> Extension getExtensionMetadata(T extension) {
+        return extensionMetadata.computeIfAbsent(extension, 
+            e->e.getClass().getAnnotation(Extension.class));
+    }
+    
 
+    /**
+     * Retrieves an instance for the given extension point, if any exists.
+     * In the case of existing multiple alternatives, the one with highest priority will
+     * be used.
+     * @param extensionPoint The extension point type
+     * @return An optional object either empty or wrapping the instance
+     */
+    public <T> Optional<T> getExtension(Class<T> extensionPoint) {
+        return loadFirst(ExtensionLoadContext.all(extensionPoint));
+    }
 
 
     /**
-     * Add a metadata entry for the white list. If the white list contains one or more entry,
-     * the extension manager only will retrieve extensions that are registered in the white list.
-     * @param provider Provider identifier (can be <pre>*</pre> to match everything)
-     * @param name Name identifier (can be <pre>*</pre> to match everything)
-     * @param version Version identifier (can be <pre>*</pre> to match everything)
+     * Retrieves the instance for the given extension point that satisfies the specified condition,
+     * if any exists.
+     * In the case of existing multiple alternatives, the one with highest priority will
+     * be used.
+     * @param extensionPoint The extension point type
+     * @param condition Only extensions satisfying this condition will be returned 
+     * @return An optional object either empty or wrapping the instance
      */
-    public ExtensionManager addWhiteListEntry(String provider, String name, String version) {
-        this.whiteList.add(new ExtensionMetadata(provider,name,version));
-        return this;
+    public <T> Optional<T> getExtensionThatSatisfy(
+        Class<T> extensionPoint, 
+        Predicate<T> condition
+    ) {
+        return loadFirst(ExtensionLoadContext.satisfying(extensionPoint,condition));
+    }
+    
+    
+    /**
+     * Retrieves the instance for the given extension point that satisfies the specified condition,
+     * if any exists.
+     * In the case of existing multiple alternatives, the one with highest priority will
+     * be used.
+    * @param extensionPoint The extension point type
+    * @param condition Only extensions which their metadata satisfies this condition will be 
+    *                  returned
+     * @return An optional object either empty or wrapping the instance
+    */
+    public <T> Optional<T> getExtensionThatSatisfyMetadata(
+        Class<T> extensionPoint, 
+        Predicate<Extension> condition
+    ) {
+        return loadFirst(ExtensionLoadContext.satisfyingData(extensionPoint, condition));
+    }
+    
+    
+    
+    
+    /**
+     * Retrieves a priority-ordered list with all extensions for the given extension point.
+     * @param extensionPoint The extension point type
+     * @return A list with the extensions, empty if none was found
+     */
+    public <T> List<T> getExtensions(Class<T> extensionPoint) {
+        return loadAll(ExtensionLoadContext.all(extensionPoint));
     }
 
 
     /**
-     * Add a metadata entry for the black list. If the black list contains an extension, it will be
-     * never retrieved by the extension manager (even if the same entry is in the white list).
-     * @param provider Provider identifier (can be <pre>*</pre> to match everything)
-     * @param name Name identifier (can be <pre>*</pre> to match everything)
-     * @param version Version identifier (can be <pre>*</pre> to match everything)
+     * Retrieves a priority-ordered list with all then extensions for the given extension point
+     * that satisfies the specified condition.
+     * @param extensionPoint The extension point type
+     * @param condition Only extensions satisfying this condition will be returned
+     * @return A list with the extensions, empty if none was found
      */
-    public ExtensionManager addBlackListEntry(String provider, String name, String version) {
-        this.blackList.add(new ExtensionMetadata(provider,name,version));
-        return this;
+    public <T> List<T> getExtensionsThatSatisfy(Class<T> extensionPoint, Predicate<T> condition) {
+        return loadAll(ExtensionLoadContext.satisfying(extensionPoint, condition));
     }
 
 
-    public <T> Optional<T> get(Class<T> extensionPoint) {
-        return findFirst(extensionPoint, x->true);
-    }
-
-
-
-    public <T> List<T> findExtensions(Class<T> extensionPoint) {
-        return find(extensionPoint, x->true);
-    }
-
-
-
-
-    public <T> List<T> findExtensionsThatSatisfy(Class<T> extensionPoint, Predicate<T> condition) {
-        return find(extensionPoint, condition);
-    }
-
-
-    public <T> List<T> findExtensionsThatSatisfyAnnotation(Class<T> extensionPoint, Predicate<Extension> condition) {
-        return find(extensionPoint, conditionFromAnnotation(condition));
-    }
-
-
-    public <T> List<T> findExtensionsFromNames(Class<T> extensionPoint, List<String> names) {
-        return find(extensionPoint, conditionFromNames(names));
+    /**
+    * Retrieves a priority-ordered list with all then extensions for the given extension point
+    * that satisfies the specified condition.
+    * @param extensionPoint The extension point type
+    * @param condition Only extensions which their metadata satisfies this condition will be 
+    *                  returned
+    * @return A list with the extensions, empty if none was found
+    */
+    public <T> List<T> getExtensionsThatSatisfyMetadata(
+        Class<T> extensionPoint, 
+        Predicate<Extension> condition
+    ) {
+        return loadAll(ExtensionLoadContext.satisfyingData(extensionPoint, condition));
     }
 
 
 
-    public <T> Optional<T> findFirstExtension(Class<T> extensionPoint) {
-        return findFirst(extensionPoint, x->true);
+    protected <T> List<T> loadAll(ExtensionLoadContext<T> context) {
+        return obtainCachedValidExtensions(context).stream()
+        .filter(context.condition())
+        .sorted(sortByPriority())
+        .map(extension -> resolveInstance(extension,context))
+        .collect(Collectors.toList());
     }
 
-
-    public <T> Optional<T> findFirstExtensionThatSatisfies(Class<T> extensionPoint, Predicate<T> condition) {
-        return findFirst(extensionPoint, condition);
+    
+    protected <T> Optional<T> loadFirst(ExtensionLoadContext<T> context) {
+        return obtainCachedValidExtensions(context).stream()
+        .filter(context.condition())
+        .sorted(sortByPriority())
+        .findFirst()
+        .map(extension -> resolveInstance(extension,context));
     }
-
-    public <T> Optional<T> findFirstExtensionFromName(Class<T> extensionPoint, String name) {
-        return findFirst(extensionPoint, conditionFromNames(Arrays.asList(name)));
-    }
-
-
-
-
-    public <T> List<T> loadExtensions(Class<T> extensionPoint, Consumer<T> initializer) {
-        return load(extensionPoint, initializer, x->true);
-    }
-
-
-    public <T> List<T> loadExtensionsThatSatisfy(Class<T> extensionPoint, Predicate<T> condition, Consumer<T> initializer) {
-        return load(extensionPoint, initializer, condition);
-    }
-
-
-
-    public <T> List<T> loadExtensionsThatSatisfyAnnotation(Class<T> extensionPoint, Predicate<Extension> condition, Consumer<T> initializer) {
-        return load(extensionPoint, initializer, conditionFromAnnotation(condition));
-    }
-
-
-
-    public <T> List<T> loadExtensionsFromNames(Class<T> extensionPoint, List<String> names, Consumer<T> initializer) {
-        return load(extensionPoint, initializer, conditionFromNames(names));
-    }
-
-
-    public <T> Optional<T> loadFirstExtension(Class<T> extensionPoint, Consumer<T> initializer) {
-        return loadFirst(extensionPoint, initializer, x->true);
-    }
-
-
-
-    public <T> Optional<T> loadFirstThatSatisfies(Class<T> extensionPoint,  Predicate<T> condition, Consumer<T> initializer) {
-        return loadFirst(extensionPoint, initializer, condition);
-    }
-
-
-
-
-
-
-    protected <T> Optional<T> findFirst(Class<T> extensionPoint, Predicate<T> condition) {
-        List<T> extensions = find(extensionPoint, condition);
-        if (extensions.isEmpty()) {
-            LOGGER.warn("No extension for extension point {} found", extensionPoint.getCanonicalName());
-            return Optional.empty();
+    
+    
+    
+    protected <T> T resolveInstance(T extension, ExtensionLoadContext<T> context) {
+        T instance = null;
+        switch (context.extensionPointData().loadStrategy()) {
+        case SINGLETON:
+            instance = singleton(extension);
+            break;
+        case FRESH:
+            instance = newInstance(extension);
+            break;
+        default:
+            instance = extension;
         }
-        if (extensions.size() > 1 && LOGGER.isWarnEnabled()) {
-            String classpathOrder = extensions.stream()
-                    .map(extension -> " - "+extension.getClass())
-                    .collect(Collectors.joining("\n"));
-            LOGGER.warn("More than one extension for extension point {} found\nClasspath order is: \n{}",
-                    extensionPoint, classpathOrder);
-        }
-        return Optional.of(extensions.get(0));
+        return instance;
     }
-
-
-
-
-    protected <T> List<T> find(Class<T> extensionPoint, Predicate<T> condition) {
-        ExtensionPoint extensionPointData = extensionPoint.getAnnotation(ExtensionPoint.class);
-        if (extensionPointData == null) {
-            throw new IllegalArgumentException(extensionPoint+" must be annotated with @ExtensionPoint");
+    
+    
+    @SuppressWarnings("unchecked")
+    protected <T> List<T> obtainCachedValidExtensions(ExtensionLoadContext<T> context) {
+        List<Object> cache = cachedValidExtensionInstances.get(context.extensionPoint());
+        if (cache != null) {
+            return (List<T>) cache;
         }
-        List<T> validExtensions = new ArrayList<>();
-        this.invalidExtensions.computeIfAbsent(extensionPoint, x->new HashSet<>());
+        List<T> extensions = obtainValidExtensions(context);
+        cachedValidExtensionInstances.put(context.extensionPoint(),(List<Object>) extensions);
+        return extensions;
+    }
+    
+    
+    
+    protected <T> List<T> obtainValidExtensions(ExtensionLoadContext<T> context) {
+        
+        this.validExtensions.putIfAbsent(context.extensionPoint(), new HashSet<>());
+        this.invalidExtensions.putIfAbsent(context.extensionPoint(), new HashSet<>());
 
-        for (ClassLoader loader : loaders) {
-            collectValidExtensions(extensionPoint,condition,extensionPointData,validExtensions,loader,ServiceLoader::load,false);
-        }
-
-        for (ExtensionLoader externalResolver : externalLoaders) {
-            for (ClassLoader loader : loaders) {
-                collectValidExtensions(extensionPoint,condition,extensionPointData,validExtensions,loader,externalResolver,true);
+        List<T> collectedExtensions = new ArrayList<>();
+        for (ClassLoader classLoader : classLoaders) {
+            collectValidExtensions(
+                context.withInternalLoader(classLoader, internalExtensionLoader()),
+                collectedExtensions
+            );
+            for (ExtensionLoader extensionLoader : extensionLoaders) {
+                collectValidExtensions(
+                    context.withExternalLoader(classLoader, extensionLoader),
+                    collectedExtensions
+                );
             }
         }
-
-        return filterOverriddenExtensions(validExtensions);
+        filterOverridenExtensions(collectedExtensions);
+        return collectedExtensions;
     }
-
-
-
-
-    private <T> List<T> filterOverriddenExtensions(List<T> validExtensions) {
-        List<String> overriddenExtensions = validExtensions.stream()
-                .map(this::getExtensionMetadata)
-                .map(Extension::overrides)
-                .filter(s->!s.isEmpty())
-                .collect(Collectors.toList());
-        Predicate<T> isNotOverridden = extension -> !overriddenExtensions.contains(extension.getClass().getCanonicalName());
-        return validExtensions.stream().filter(isNotOverridden).collect(Collectors.toList());
-    }
-
-
-    private <T> Extension getExtensionMetadata(T extension) {
-        return extension.getClass().getAnnotation(Extension.class);
-    }
-
-
-
+    
+    
+    
 
     private <T> void collectValidExtensions(
-            Class<T> extensionPoint,
-            Predicate<T> condition,
-            ExtensionPoint extensionPointData,
-            List<T> validExtensions,
-            ClassLoader loader,
-            ExtensionLoader extensionLoader,
-            boolean externallyManaged
+        ExtensionLoadContext<T> context,
+        List<T> collectedExtensions 
     ) {
-        for (T extension : extensionLoader.load(extensionPoint, loader)) {
-            boolean skip = false;
-            if (this.invalidExtensions.get(extensionPoint).contains(extension.getClass())) {
-                skip = true;
+        Class<T> extensionPoint = context.extensionPoint();
+        for (T extension : context.load()) {
+            if (hasBeenInvalidated(extensionPoint, extension)) {
+                break;
             }
-            Extension extensionData = extension.getClass().getAnnotation(Extension.class);
-            if (!skip && extensionData.externallyManaged() != externallyManaged) {
-                skip = true;
+            if (!hasBeenValidated(extensionPoint, extension)) {
+                boolean valid = validateExtension(context,extension);
+                if (valid) {
+                    collectedExtensions.add(extension);
+                }
             }
-            if (!skip && extensionData == null) {
-                LOGGER.warn("Class {} is not annotated with @Extension and will be ignored",extension.getClass());
-                this.invalidExtensions.get(extensionPoint).add(extension.getClass());
-                skip = true;
-            }
-            if (!skip && !areCompatible(extensionPointData,extensionData)) {
-                LOGGER.warn("Extension point version of {} is not compatible with expected version {}",
-                        id(extensionData), extensionPointData.version());
-                this.invalidExtensions.get(extensionPoint).add(extension.getClass());
-                skip = true;
-            }
-            if (!skip && !condition.test(extension)) {
-                skip = true;
-            }
-            if (!skip && !testBlackWhiteList(extensionData)) {
-                skip = true;
-            }
-            if (!skip) {
-                validExtensions.add(extension);
+        }
+    }
+    
+
+    
+    protected <T> boolean validateExtension(ExtensionLoadContext<T> context, T extension) {
+        Class<T> extensionPoint = context.extensionPoint();
+        ExtensionPoint extensionPointData = context.extensionPointData();
+        Extension extensionData = getExtensionMetadata(extension);
+                
+        if (extensionData == null) {
+            LOGGER.warn("Class {} is not annotated with @Extension and will be ignored",
+                extension.getClass());
+            this.invalidExtensions.get(extensionPoint).add(extension.getClass());
+            return false;
+        }
+        
+        if (extensionData.externallyManaged() != context.externallyManaged()) {
+            this.invalidExtensions.get(extensionPoint).add(extension.getClass());
+            return false;
+        }
+        
+        if (!areCompatible(extensionPointData,extensionData)) {
+            LOGGER.warn(
+                "Extension point version of {} ({}) is not compatible with expected version {}",
+                id(extensionData),
+                extensionData.extensionPointVersion(),
+                extensionPointData.version()
+            );
+            this.invalidExtensions.get(extensionPoint).add(extension.getClass());
+            return false;
+        }
+        
+        this.validExtensions.get(extensionPoint).add(extension.getClass());
+        return true;
+    }
+    
+
+    
+    private <T> void filterOverridenExtensions(List<T> extensions) {
+        
+        List<T> overridableExtensions = extensions.stream()
+           .filter(extension -> getExtensionMetadata(extension).overridable())
+           .collect(Collectors.toList());
+        
+        Map<String,T> overridableExtensionClassNames = overridableExtensions.stream()
+           .collect(Collectors.toMap(
+               extension -> extension.getClass().getCanonicalName(),
+               Function.identity()
+            ));
+        
+        for (T extension : extensions) {
+            Extension metadata = getExtensionMetadata(extension);
+            T overridable = overridableExtensionClassNames.get(metadata.overrides());
+            if (overridable != null) {
+                extensions.remove(overridable);
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Extension {} overrides extension {}", 
+                        id(getExtensionMetadata(extension)),
+                        id(getExtensionMetadata(overridable))
+                    );
+                }
             }
         }
     }
 
+    
 
-
-
-
-    protected <T> List<T> load(Class<T> extensionPoint, Consumer<T> initializer, Predicate<T> condition) {
-        List<T> loadedExtensions = new ArrayList<>();
-        for (T extension : findExtensionsThatSatisfy(extensionPoint, condition)) {
-            T initiatedExtension = init(extension,initializer);
-            if (initiatedExtension != null){
-                loadedExtensions.add(initiatedExtension);
-            }
-        }
-        return loadedExtensions;
+    private boolean areCompatible(ExtensionPoint extensionPointData, Extension extensionData) {
+        return new ExtensionVersion(extensionData.extensionPointVersion())
+            .isCompatibleWith(new ExtensionVersion(extensionPointData.version()));
     }
 
-
-    protected <T> Optional<T> loadFirst(Class<T> extensionPoint, Consumer<T> initializer, Predicate<T> condition) {
-        Optional<T> extension = findFirst(extensionPoint,condition);
-        return extension.map(e->init(e,initializer));
-    }
-
-
-
+    
     @SuppressWarnings("unchecked")
-    private <T> T init(T extension, Consumer<T> initializer) {
+    private <T> T newInstance(T extension) {
         try {
-            extension = (T) extension.getClass().getConstructor().newInstance();
-            initializer.accept(extension);
-            return extension;
+            return (T) extension.getClass().getConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
-            LOGGER.error("Error loading new instance of {} : {}", extension.getClass(), e.getMessage(), e);
+            LOGGER.error(
+                "Error loading new instance of {} : {}", 
+                extension.getClass(), 
+                e.getMessage(), 
+                e
+            );
             return null;
         }
     }
 
-
-
-    private boolean areCompatible(ExtensionPoint extensionPoint, Extension extension) {
-        // assuming format major.minor...., compare the major segment
-        String extensionPointVersion = new StringTokenizer(extensionPoint.version(),".").nextToken();
-        String extensionVersion = new StringTokenizer(extension.extensionPointVersion(),".").nextToken();
-        return extensionPointVersion.equals(extensionVersion);
+    private int getExtensionPriority(Object extension) {
+        return getExtensionMetadata(extension).priority();
     }
 
-
-
-    private boolean testBlackWhiteList(Extension extension) {
-        Predicate<ExtensionMetadata> matcher = extensionMetadata -> extensionMetadata.matches(extension);
-        if (!blackList.isEmpty() && blackList.stream().anyMatch(matcher)) {
-            return false;
-        }
-        if (!whiteList.isEmpty()) {
-            return whiteList.stream().anyMatch(matcher);
-        }
-        return true;
+    
+    @SuppressWarnings("unchecked")
+    private <T> T singleton(T extension) {
+        return (T) singletons.computeIfAbsent(extension.getClass(), x->extension);
     }
 
+    
+    protected <T> boolean hasBeenValidated(Class<T> extensionPoint, T extension) {
+        return validExtensions.get(extensionPoint).contains(extension.getClass());
+    }
+    
+    
+    protected <T> boolean hasBeenInvalidated(Class<T> extensionPoint, T extension) {
+        return invalidExtensions.get(extensionPoint).contains(extension.getClass());
+    }
 
-
+    
+    protected Comparator<Object> sortByPriority() {
+        return Comparator.comparingInt(this::getExtensionPriority);
+    }
+    
+    
+        
     private static String id(Extension extension) {
         return extension.provider()+":"+extension.name()+":"+extension.version();
     }
-
-
-
-    private static <T> Predicate<T> conditionFromAnnotation(Predicate<Extension> condition) {
-        return extension -> condition.test(extension.getClass().getAnnotation(Extension.class));
+    
+    
+    private static List<ExtensionLoader> extensionLoaders() {
+        List<ExtensionLoader> loaders = new ArrayList<>();
+        ServiceLoader.load(ExtensionLoader.class).forEach(loaders::add);
+        return loaders;
     }
 
-
-    private static <T> Predicate<T> conditionFromNames(List<String> names) {
-        return extension -> names.contains(extension.getClass().getAnnotation(Extension.class).name());
+    
+    private static ExtensionLoader internalExtensionLoader() {
+        return ServiceLoader::load;
     }
-
-
-
 
 
 

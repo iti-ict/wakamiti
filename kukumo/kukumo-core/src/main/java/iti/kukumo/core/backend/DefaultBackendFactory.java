@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0.0")
+@Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0")
 public class DefaultBackendFactory implements BackendFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBackendFactory.class);

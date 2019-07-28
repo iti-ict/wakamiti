@@ -9,3 +9,4 @@
 /src/site/markdown/
 **/.attach_pid*
 **/*.swp
+**/.factorypath

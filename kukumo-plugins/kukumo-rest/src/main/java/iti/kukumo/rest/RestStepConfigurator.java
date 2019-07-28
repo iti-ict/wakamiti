@@ -15,7 +15,11 @@ import java.net.URL;
  * @author ITI
  *         Created by ITI on 12/03/19
  */
-@Extension(provider = "iti.kukumo", name="rest-configurator", version="1.0.0", extensionPoint = "iti.kukumo.api.extensions.Configurator")
+@Extension(
+    provider = "iti.kukumo", 
+    name ="rest-configurator", 
+    extensionPoint = "iti.kukumo.api.extensions.Configurator"
+)
 public class RestStepConfigurator implements Configurator<RestStepContributor> {
 
     @Override

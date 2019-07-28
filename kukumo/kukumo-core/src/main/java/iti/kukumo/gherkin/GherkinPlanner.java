@@ -25,11 +25,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Extension(
-        provider = "iti.kukumo",
-        name="kukumo-gherkin",
-        version = "1.0.0",
-        extensionPoint = "iti.kukumo.api.extensions.Planner",
-        extensionPointVersion = "1"
+    provider = "iti.kukumo",
+    name="kukumo-gherkin",
+    extensionPoint = "iti.kukumo.api.extensions.Planner"
 )
 public class GherkinPlanner implements Planner {
 

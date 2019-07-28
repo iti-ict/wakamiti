@@ -1,25 +1,6 @@
 package iti.kukumo.rest;
 
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
-import iti.commons.jext.Extension;
-import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.annotations.I18nResource;
-import iti.kukumo.api.annotations.Step;
-import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.ResourceLoader;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -33,15 +14,34 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.util.ResourceLoader;
+
 @I18nResource("iti_kukumo_kukumo-rest")
-@Extension(provider = "iti.kukumo", name = "rest", version = "1.0.0")
+@Extension(provider = "iti.kukumo", name = "rest")
 public class RestStepContributor implements StepContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
     public static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
 
-    private Map<ContentType,ContentTypeHelper> contentTypeValidators = new ExtensionManager()
-            .findExtensions(ContentTypeHelper.class).stream()
+    private Map<ContentType,ContentTypeHelper> contentTypeValidators = Kukumo.getExtensionManager()
+            .getExtensions(ContentTypeHelper.class).stream()
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 
     private URL baseURL;
