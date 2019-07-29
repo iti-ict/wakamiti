@@ -41,17 +41,18 @@ public class ExtensionProcessor extends AbstractProcessor {
 
 
 
-
-
-
     private void validateExtensionPoint(Element element) {
         if (element.getKind() != ElementKind.CLASS && element.getKind() != ElementKind.INTERFACE) {
-            log(Kind.ERROR,element,"@ExtensionPoint not valid for {} (only processed for classes or interfaces)",
-                    element.getSimpleName());
-            return;
+            log(
+                Kind.ERROR,
+                element,
+                "@ExtensionPoint not valid for {} (only processed for classes or interfaces)",
+                element.getSimpleName()
+            );
+        } else {
+            ExtensionPoint extensionPointAnnotation = element.getAnnotation(ExtensionPoint.class);
+            validateVersionFormat(extensionPointAnnotation.version(), element, "version");
         }
-        ExtensionPoint extensionPointAnnotation = element.getAnnotation(ExtensionPoint.class);
-        validateVersionFormat(extensionPointAnnotation.version(),element,"version");
     }
 
 
@@ -60,7 +61,10 @@ public class ExtensionProcessor extends AbstractProcessor {
 
 
 
-    private void validateAndRegisterExtension(Element element, Map<String,List<String>> serviceImplementations) {
+    private void validateAndRegisterExtension(
+        Element element,
+        Map<String,List<String>> serviceImplementations
+    ) {
 
         boolean hasError = false;
 
@@ -72,13 +76,12 @@ public class ExtensionProcessor extends AbstractProcessor {
         TypeElement extensionClassElement = (TypeElement) element;
 
         Extension extensionAnnotation = element.getAnnotation(Extension.class);
-        if (extensionAnnotation.externallyManaged()) { // not handling externally managed extensions
-            return;
-        }
-        if (!validateVersionFormat(extensionAnnotation.version(),element,"version")) {
-            return;
-        }
-        if (!validateVersionFormat(extensionAnnotation.extensionPointVersion(),element,"extensionPointVersion")) {
+
+        if (extensionAnnotation.externallyManaged() || // not handling externally managed extensions
+            !validateVersionFormat(extensionAnnotation.version(),element,"version") ||
+            !validateVersionFormat(
+                extensionAnnotation.extensionPointVersion(),element,"extensionPointVersion")
+        ) {
             return;
         }
         
@@ -97,27 +100,41 @@ public class ExtensionProcessor extends AbstractProcessor {
                 .getTypeElement(extensionPoint);
 
         if (extensionPointClassElement == null) {
-            log(Kind.ERROR,element,"Cannot find extension point class '{}'",
-                    extensionPoint);
+            log(
+                Kind.ERROR,
+                element,
+                "Cannot find extension point class '{}'",
+                extensionPoint
+            );
             hasError = true;
         }
 
         if (!hasError && extensionPointClassElement.getAnnotation(ExtensionPoint.class) ==  null) {
-            log(Kind.ERROR,element,"Expected extension point type '{}' is not annotated with @ExtensionPoint",
-                    extensionPoint);
+            log(
+                Kind.ERROR,
+                element,
+                "Expected extension point type '{}' is not annotated with @ExtensionPoint",
+                extensionPoint
+            );
             hasError = true;
         }
 
         if (!hasError &&
             !isAssignable(extensionClassElement.asType(), extensionPointClassElement.asType())) {
-            log(Kind.ERROR,element,"{} must implement or extend the extension point type {}",
-                    extension,
-                    extensionPoint);
+            log(
+                Kind.ERROR,
+                element,
+                "{} must implement or extend the extension point type {}",
+                extension,
+                extensionPoint
+            );
             hasError = true;
         }
 
         if (!hasError) {
-            serviceImplementations.computeIfAbsent(extensionPoint, x->new ArrayList<>()).add(extension);
+            serviceImplementations
+                .computeIfAbsent(extensionPoint, x->new ArrayList<>())
+                .add(extension);
         }
 
     }
@@ -126,7 +143,13 @@ public class ExtensionProcessor extends AbstractProcessor {
     private boolean validateVersionFormat(String version, Element element, String fieldName) {
         boolean valid = version.matches("\\d+\\.\\d+");
         if (!valid) {
-            log(Kind.ERROR, element, "Content of field {} ('{}') must be in form '<major>.<minor>'",fieldName,version);
+            log(
+                Kind.ERROR,
+                element,
+                "Content of field {} ('{}') must be in form '<major>.<minor>'",
+                fieldName,
+                version
+            );
         }
         return valid;
     }
@@ -158,18 +181,24 @@ public class ExtensionProcessor extends AbstractProcessor {
             String extension = mapEntry.getKey();
             String resourcePath = "META-INF/services/"+extension;
             try {
-                FileObject resourceFile = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
-                Set<String> oldExtensions = read(resourceFile);
-                Set<String> allExtensions = new LinkedHashSet<>();
-                allExtensions.addAll(oldExtensions);
-                allExtensions.addAll(mapEntry.getValue());
-                resourceFile = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
-                write(allExtensions,resourceFile);
+                writeFile(filer,resourcePath,mapEntry);
             } catch (IOException e) {
                 log(Kind.ERROR,"UNEXPECTED ERROR: {}", e.getMessage());
             }
         }
+    }
 
+
+    private void writeFile(Filer filer, String resourcePath, Entry<String,List<String>> entry)
+    throws IOException
+    {
+        FileObject resourceFile = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
+        Set<String> oldExtensions = read(resourceFile);
+        Set<String> allExtensions = new LinkedHashSet<>();
+        allExtensions.addAll(oldExtensions);
+        allExtensions.addAll(entry.getValue());
+        resourceFile = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
+        write(allExtensions,resourceFile);
     }
 
 

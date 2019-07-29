@@ -13,8 +13,8 @@ public class KukumoConfiguration {
     
     // basic configuration
 
-    /** Type of resources to be discovered and processed */
-    public static final String RESOURCE_TYPE = "resourceType";
+    /** Types of resources to be discovered and processed */
+    public static final String RESOURCE_TYPES = "resourceTypes";
 
     /** Language used by a resource */
     public static final String LANGUAGE = "language";

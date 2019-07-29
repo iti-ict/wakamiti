@@ -8,6 +8,7 @@ import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
 import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanSerializer;
 import iti.kukumo.core.runner.PlanRunner;
 import iti.kukumo.util.ResourceLoader;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -53,25 +54,46 @@ public class Kukumo {
      */
     public static PlanNode createPlanFromConfiguration(Configuration configuration) throws KukumoException {
 
-        Optional<String> resourceTypeName = configuration.getString(KukumoConfiguration.RESOURCE_TYPE);
-        ResourceType<?> resourceType;
-        if (resourceTypeName.isPresent()) {
-            resourceType = nonOptional(getResourceTypeByName(resourceTypeName.get()),
-                "Resource type '{}' is not provided by any contributor",resourceTypeName.get());
-        } else {
-            resourceType = nonOptional(extensionManager.getExtension(ResourceType.class),
-                "No resource types are provided by any contributor");
+        List<String> resourceTypeNames = configuration.getStringList(KukumoConfiguration.RESOURCE_TYPES);
+        if (resourceTypeNames.isEmpty()) {
+            throw new KukumoException("No resource types configured");
         }
-
         List<String> discoveryPaths = configuration.getStringList(KukumoConfiguration.RESOURCE_PATH);
+        List<PlanNode> plans = new ArrayList<>();
+        for (String resourceTypeName : resourceTypeNames) {
+            plans.add( createPlanForResourceType(resourceTypeName, discoveryPaths, configuration));
+        }
+        return mergePlans(plans);
+    }
 
 
+
+    private static PlanNode mergePlans(List<PlanNode> plans) {
+        if (plans.isEmpty()) {
+            return null;
+        }
+        if (plans.size() == 1) {
+            return plans.get(0);
+        }
+        PlanNode root = new DefaultPlanNode<>("root");
+        plans.forEach(root::addChild);
+        return root;
+    }
+
+
+
+    public static PlanNode createPlanForResourceType(String resourceTypeName, List<String> discoveryPaths, Configuration configuration) {
+        ResourceType<?> resourceType = nonOptional(getResourceTypeByName(resourceTypeName),
+                "Resource type '{}' is not provided by any contributor",resourceTypeName);
         List<Resource<?>> resources = getResourceLoader().discoverResources(discoveryPaths, resourceType);
         Planner planner = nonOptional(getPlannerFor(resourceType),
                 "No planner suitable for resource type {} has been found",resourceType);
 
         return configure(planner,configuration).createPlan(resources);
     }
+
+
+
 
 
 

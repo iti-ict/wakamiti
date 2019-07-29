@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  *         Created by ITI on 6/03/19
  */
 @Configurator(properties = {
-        @Property(key= KukumoConfiguration.RESOURCE_TYPE, value= GherkinResourceType.NAME),
+        @Property(key= KukumoConfiguration.RESOURCE_TYPES, value= GherkinResourceType.NAME),
         @Property(key=KukumoConfiguration.RESOURCE_PATH, value="src/test/resources/test-rest-json.feature"),
         @Property(key=KukumoConfiguration.OUTPUT_FILE_PATH, value="target/kukumo.json")
 })
