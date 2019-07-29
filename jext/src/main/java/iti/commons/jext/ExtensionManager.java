@@ -1,20 +1,12 @@
 package iti.commons.jext;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Component that provides operations in order to retrieve instances of classes annotated with
@@ -308,8 +300,14 @@ public class ExtensionManager {
     
 
     private boolean areCompatible(ExtensionPoint extensionPointData, Extension extensionData) {
-        return new ExtensionVersion(extensionData.extensionPointVersion())
-            .isCompatibleWith(new ExtensionVersion(extensionPointData.version()));
+        ExtensionVersion extensionPointVersion = new ExtensionVersion(extensionPointData.version());
+        try {
+            ExtensionVersion extensionDataPointVersion = new ExtensionVersion(extensionData.extensionPointVersion());
+            return extensionDataPointVersion.isCompatibleWith(extensionPointVersion);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Bad extensionPointVersion in {}",id(extensionData));
+            throw e;
+        }
     }
 
     

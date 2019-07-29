@@ -20,9 +20,7 @@ import java.nio.charset.Charset;
 @Extension(
     provider="iti.kukumo", 
     name = GherkinResourceType.NAME, 
-    version = "1.0",
-    extensionPoint = "iti.kukumo.api.extensions.ResourceType",
-    extensionPointVersion = "1.0"
+    extensionPoint = "iti.kukumo.api.extensions.ResourceType"
 )
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 

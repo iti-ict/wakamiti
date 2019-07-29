@@ -1,12 +1,12 @@
 package iti.kukumo.db;
 
+import iti.commons.jext.Extension;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import iti.commons.jext.Extension;
-
-@Extension(provider="iti.kukumo", name="kukumo-db-driver-connection", version="1.0.0")
+@Extension(provider="iti.kukumo", name="kukumo-db-driver-connection", version="1.0")
 public class DriverConnectionManager implements ConnectionManager {
 
     

@@ -1,21 +1,6 @@
 package iti.kukumo.db;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import iti.commons.jext.Extension;
-import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
@@ -24,18 +9,22 @@ import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.db.dataset.CsvDataSet;
-import iti.kukumo.db.dataset.DataSet;
-import iti.kukumo.db.dataset.DataTableDataSet;
-import iti.kukumo.db.dataset.InlineDataSet;
-import iti.kukumo.db.dataset.MultiDataSet;
-import iti.kukumo.db.dataset.OoxmlDataSet;
+import iti.kukumo.db.dataset.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author ITI
  * Created by ITI on 18/04/19
  */
-@Extension(provider="iti.kukumo", name="kukumo-db-steps", version="1.0.0")
+@Extension(provider="iti.kukumo", name="kukumo-db-steps", version="1.0")
 @I18nResource("iti_kukumo_kukumo-db")
 public class DatabaseStepContributor implements StepContributor {
 

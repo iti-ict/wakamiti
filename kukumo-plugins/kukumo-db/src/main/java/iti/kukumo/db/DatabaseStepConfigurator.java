@@ -1,16 +1,16 @@
 package iti.kukumo.db;
 
-import java.util.Optional;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.Configurator;
+
+import java.util.Optional;
 
 /**
  * @author ITI
  * Created by ITI on 18/04/19
  */
-@Extension(provider="iti.kukumo", name="kukumo-db-step-config", version="1.0.0")
+@Extension(provider="iti.kukumo", name="kukumo-db-step-config", version="1.0")
 public class DatabaseStepConfigurator implements Configurator<DatabaseStepContributor> {
 
     

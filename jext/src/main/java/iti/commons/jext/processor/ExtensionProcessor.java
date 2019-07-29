@@ -51,9 +51,7 @@ public class ExtensionProcessor extends AbstractProcessor {
             return;
         }
         ExtensionPoint extensionPointAnnotation = element.getAnnotation(ExtensionPoint.class);
-        if (!validateVersionFormat(extensionPointAnnotation.version())) {
-            log(Kind.ERROR, element, "Content of field version must be in form '<major>.<minor>'");
-        }
+        validateVersionFormat(extensionPointAnnotation.version(),element,"version");
     }
 
 
@@ -77,12 +75,10 @@ public class ExtensionProcessor extends AbstractProcessor {
         if (extensionAnnotation.externallyManaged()) { // not handling externally managed extensions
             return;
         }
-        if (!validateVersionFormat(extensionAnnotation.version())) {
-            log(Kind.ERROR, element, "Content of field version must be in form '<major>.<minor>'");
+        if (!validateVersionFormat(extensionAnnotation.version(),element,"version")) {
             return;
         }
-        if (!validateVersionFormat(extensionAnnotation.extensionPointVersion())) {
-            log(Kind.ERROR, element, "Content of field extensionPointVersion must be in form '<major>.<minor>'");
+        if (!validateVersionFormat(extensionAnnotation.extensionPointVersion(),element,"extensionPointVersion")) {
             return;
         }
         
@@ -127,8 +123,12 @@ public class ExtensionProcessor extends AbstractProcessor {
     }
 
     
-    private boolean validateVersionFormat(String version) {
-        return version.matches("\\d+\\.\\d+");
+    private boolean validateVersionFormat(String version, Element element, String fieldName) {
+        boolean valid = version.matches("\\d+\\.\\d+");
+        if (!valid) {
+            log(Kind.ERROR, element, "Content of field {} ('{}') must be in form '<major>.<minor>'",fieldName,version);
+        }
+        return valid;
     }
     
     

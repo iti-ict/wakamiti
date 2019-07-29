@@ -1,18 +1,18 @@
 package iti.kukumo.report.html;
 
-import java.util.Locale;
-import java.util.Optional;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.extensions.Configurator;
 import iti.kukumo.util.LocaleLoader;
 
+import java.util.Locale;
+import java.util.Optional;
+
 @Extension(
     provider="iti.kukumo",
     name="html-report-config", 
-    version="1.0.0", 
+    version="1.0",
     extensionPoint="iti.kukumo.api.extensions.Configurator"
 )
 public class HtmlReportGeneratorConfig implements Configurator<HtmlReportGenerator> {

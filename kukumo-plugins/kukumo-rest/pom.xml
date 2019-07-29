@@ -33,8 +33,8 @@
     <!-- dependencies -->
     <dependencies>
 
-  
-        
+
+
 
         <!-- RestAssured -->
         <dependency>
@@ -55,14 +55,6 @@
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
             <version>${xmlunit.version}</version>
-        </dependency>
-
-        <!-- testing with gherkin -->
-        <dependency>
-            <groupId>iti.kukumo</groupId>
-            <artifactId>kukumo-gherkin</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- virtual server for testing-->

@@ -47,14 +47,6 @@
             <version>${commons-csv.version}</version>
         </dependency>
 
-        <!-- testing cases with Gherkin -->
-        <dependency>
-            <groupId>iti.kukumo</groupId>
-            <artifactId>kukumo-gherkin</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- testing database support -->
         <dependency>
             <groupId>iti.commons</groupId>

@@ -29,7 +29,7 @@ import static j2html.TagCreator.*;
  * @author ITI
  *         Created by ITI on 14/03/19
  */
-@Extension(provider = "iti.kukumo", name = "html-report", version ="1.0.0")
+@Extension(provider = "iti.kukumo", name = "html-report")
 public class HtmlReportGenerator implements Reporter {
 
     private static final String INLINE = "inline";
