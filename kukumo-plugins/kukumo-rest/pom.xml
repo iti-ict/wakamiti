@@ -8,11 +8,12 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-plugins</artifactId>
+        <artifactId>kukumo-project</artifactId>
         <version>1</version>
     </parent>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-rest</artifactId>
     <version>1.0.0</version>
 
@@ -28,12 +29,19 @@
         <rest-assured.version>3.2.0</rest-assured.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <xmlunit.version>2.6.2</xmlunit.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <!-- dependencies -->
     <dependencies>
 
-
+        <!-- Kukumo CORE -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <version>${kukumo.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
 
         <!-- RestAssured -->
@@ -41,6 +49,7 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- JSON assertions -->
@@ -48,6 +57,7 @@
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <version>${jsonassert.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- XML assertions -->
@@ -55,6 +65,14 @@
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
             <version>${xmlunit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- virtual server for testing-->

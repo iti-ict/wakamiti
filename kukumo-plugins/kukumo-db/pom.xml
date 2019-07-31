@@ -8,11 +8,12 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-plugins</artifactId>
+        <artifactId>kukumo-project</artifactId>
         <version>1</version>
     </parent>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-db</artifactId>
     <version>1.0.0</version>
 
@@ -33,6 +34,13 @@
 
     <dependencies>
 
+        <!-- Kukumo CORE -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <version>${kukumo.version}</version>
+        </dependency>
+
         <!-- XML reader -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -45,6 +53,14 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>${commons-csv.version}</version>
+        </dependency>
+
+        <!-- generic test assertions -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.10.0</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- testing database support -->

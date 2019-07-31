@@ -10,9 +10,9 @@
 
     <custom>
         <fluidoSkin>
-            <topBarEnabled>true</topBarEnabled>
+            <topBarEnabled>false</topBarEnabled>
             <navBarStyle>navbar-inverse</navBarStyle>
-            <sideBarEnabled>false</sideBarEnabled>
+            <sideBarEnabled>true</sideBarEnabled>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
         </fluidoSkin>
     </custom>
@@ -29,8 +29,9 @@
 
 
 
-    <body>
 
+
+    <body>
 
         <!-- Workaround for https://issues.apache.org/jira/browse/DOXIA-571 -->
         <head>
@@ -45,23 +46,30 @@
         ]]>
         </head>
 
-
         <breadcrumbs>
-            <item name="Kukumo" href="index.html"/>
         </breadcrumbs>
 
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="#Usage"/>
-            <item name="License" href="#License"/>
+            <item name="Usage" href="index.html#Usage"/>
+            <item name="License" href="index.html#License"/>
         </menu>
-        <menu ref="modules"/>
+        <menu name="Components">
+            <item name="Kukumo::CORE" href="kukumo/kukumo-core/kukumo/kukumo-core/index.html"/>
+            <item name="Kukumo::Maven Plugin" href="kukumo/kukumo-maven-plugin/kukumo/kukumo-maven-plugin/index.html"/>
+            <item name="Kukumo::Launcher" href="kukumo/kukumo-launcher/kukumo/kukumo-launcher/index.html"/>
+        </menu>
         <menu name="Plugins">
-            <item name="Gherkin Support" href="kukumo-plugins/kukumo-gherkin/kukumo-plugins/kukumo-gherkin/index.html"/>
-            <item name="REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
-            <item name="Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
-            <item name="HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
+            <item name="Kukumo::REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
+            <item name="Kukumo::Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
+            <item name="Kukumo::HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
         </menu>
+        <menu name="Tools">
+            <item name="jExt" href="jext/jext/index.html"/>
+            <item name="Configurer" href="configurer/configurer/index.html"/>
+            <item name="Maven Fetcher" href="maven-fetcher/maven-fetcher/index.html"/>
+        </menu>
+
 
     </body>
 </project>

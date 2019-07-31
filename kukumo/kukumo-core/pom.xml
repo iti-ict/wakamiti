@@ -6,11 +6,13 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>1.0.0</version>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
     </parent>
 
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -35,6 +37,7 @@
             <groupId>iti.commons</groupId>
             <artifactId>configurer</artifactId>
             <version>${configurer.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- plugin support -->
@@ -42,6 +45,7 @@
             <groupId>iti.commons</groupId>
             <artifactId>jext</artifactId>
             <version>${jext.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- hamcrest matchers -->
@@ -49,6 +53,7 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>java-hamcrest</artifactId>
             <version>${hamcrest.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- junit 4 -->
@@ -56,6 +61,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -64,6 +70,7 @@
             <groupId>io.cucumber</groupId>
             <artifactId>gherkin</artifactId>
             <version>${gherkin.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -72,6 +79,7 @@
             <groupId>io.cucumber</groupId>
             <artifactId>tag-expressions</artifactId>
             <version>1.1.1</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- generic I/O util -->
@@ -79,6 +87,7 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--json -->
@@ -86,11 +95,14 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.9.8</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.9.8</version>
+            <scope>compile</scope>
         </dependency>
         
         <!-- string distance -->
@@ -98,7 +110,9 @@
             <groupId>info.debatty</groupId>
             <artifactId>java-string-similarity</artifactId>
             <version>1.1.0</version>
+            <scope>compile</scope>
         </dependency>
+
 
         <!-- json asserts for testing -->
         <dependency>

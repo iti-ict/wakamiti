@@ -18,17 +18,29 @@
     <packaging>pom</packaging>
     <version>1</version>
 
-    <name>Kukumo Project</name>
+    <name>Kukumo</name>
     <description>Project containing Kukumo as well as other useful tools</description>
 
     <modules>
-        <module>jext</module>
-        <module>jext-spring</module>
-        <module>configurer</module>
-        <module>maven-fetcher</module>
-        <module>testing-embedded-db</module>
-        <module>kukumo</module>
-        <module>kukumo-plugins</module>
+        <!-- tools -->
+        <module>kukumo-tools/jext</module>
+        <module>kukumo-tools/jext-spring</module>
+        <module>kukumo-tools/configurer</module>
+        <module>kukumo-tools/maven-fetcher</module>
+        <module>kukumo-tools/testing-embedded-db</module>
+        <!-- kukumo -->
+        <module>kukumo/kukumo-core</module>
+        <module>kukumo/kukumo-launcher</module>
+        <module>kukumo/kukumo-maven-plugin</module>
+        <module>kukumo/kukumo-plugin-archetype</module>
+        <!-- plugins -->
+        <module>kukumo-plugins/kukumo-rest</module>
+        <module>kukumo-plugins/kukumo-html-report</module>
+        <module>kukumo-plugins/kukumo-core-l10n</module>
+        <module>kukumo-plugins/kukumo-rest-l10n</module>
+        <module>kukumo-plugins/kukumo-db</module>
+        <module>kukumo-plugins/kukumo-db-l10n</module>
+
     </modules>
 
 
@@ -45,29 +57,7 @@
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <comments>
-                MIT License -
-                Copyright (c) ${project.inceptionYear} ${project.organization.name}.
-
-                Permission is hereby granted, free of charge, to any person obtaining a copy
-                of this software and associated documentation files (the "Software"), to deal
-                in the Software without restriction, including without limitation the rights
-                to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-                copies of the Software, and to permit persons to whom the Software is
-                furnished to do so, subject to the following conditions:
-
-                The above copyright notice and this permission notice shall be included in all
-                copies or substantial portions of the Software.
-
-                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-                SOFTWARE.
-            </comments>
+            <url>http://repository.jboss.org/licenses/mit.txt</url>
         </license>
     </licenses>
 
@@ -84,6 +74,7 @@
         <lombok.version>1.18.6</lombok.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.11.2</log4j.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
 
@@ -91,6 +82,9 @@
     <!-- basic dependencies -->
     <dependencies>
 
+        <!-- ====================================== -->
+        <!-- compile -->
+        <!-- ====================================== -->
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -98,7 +92,6 @@
             <version>${lombok.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- SLF4J API -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -106,32 +99,35 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-        <!-- Log4j 2 -->
+        <!-- ====================================== -->
+        <!-- test -->
+        <!-- ====================================== -->
+        <!-- Log4j 2 over SLF4J -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>${log4j.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
+            <scope>test</scope>
         </dependency>
-
-
         <!-- JUnit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
-            <version>4.12</version>
         </dependency>
-
         <!-- generic test assertions -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -139,7 +135,6 @@
             <version>3.10.0</version>
             <scope>test</scope>
         </dependency>
-
         <!-- JSON test assertions -->
         <dependency>
             <groupId>org.skyscreamer</groupId>

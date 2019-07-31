@@ -7,12 +7,15 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>1.0.0</version>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-maven-plugin</artifactId>
+    <version>1.0.0</version>
+
     <packaging>maven-plugin</packaging>
 
     <!-- additional information -->
@@ -29,7 +32,7 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Maven plugin API -->

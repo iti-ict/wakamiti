@@ -13,25 +13,18 @@
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
-    <artifactId>kukumo-html-report</artifactId>
-    <version>1.0.0</version>
-
-    <!-- additional information -->
-    <name>Kukumo::HTML Report</name>
-    <description>HTML Report generator for Kukumo results</description>
-    <inceptionYear>2019</inceptionYear>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
 
 
     <!-- dependency versions -->
     <properties>
         <kukumo.version>1.0.0</kukumo.version>
         <jext.version>1.0.1</jext.version>
-        <j2html.version>1.4.0</j2html.version>
     </properties>
 
 
-    <!-- dependencies -->
     <dependencies>
 
         <!-- Kukumo CORE -->
@@ -41,13 +34,15 @@
             <version>${kukumo.version}</version>
         </dependency>
 
-        <!-- HTML generator -->
+        <!-- generic test assertions -->
         <dependency>
-            <groupId>com.j2html</groupId>
-            <artifactId>j2html</artifactId>
-            <version>${j2html.version}</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.10.0</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
+
 
 </project>

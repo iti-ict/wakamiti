@@ -5,14 +5,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
-    <parent>
-        <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-plugins</artifactId>
-        <version>1</version>
-    </parent>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-rest-l10n</artifactId>
     <version>1.0.0</version>
 
@@ -20,15 +15,6 @@
     <name>Kukumo::REST Steps (localization)</name>
     <description>Localization for REST steps</description>
     <inceptionYear>2019</inceptionYear>
-
-    <!-- dependencies -->
-    <dependencies>
-        <dependency>
-            <groupId>iti.kukumo</groupId>
-            <artifactId>kukumo-rest</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 
 
 </project>

@@ -8,12 +8,15 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>1.0.0</version>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
     </parent>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
+    <version>1.0.0</version>
+
 
     <!-- additional information -->
     <name>Kukumo::Launcher</name>
@@ -33,7 +36,7 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Maven dependency fetcher -->
@@ -42,6 +45,27 @@
             <artifactId>maven-fetcher</artifactId>
             <version>${maven-fetcher.version}</version>
         </dependency>
+
+        <!-- Log4j 2 over SLF4J -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
 
     </dependencies>
 
