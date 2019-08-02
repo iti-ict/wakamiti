@@ -1,57 +1,44 @@
 package iti.commons.configurer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-
-import org.apache.commons.configuration2.BaseConfiguration;
-import org.apache.commons.configuration2.CompositeConfiguration;
-import org.apache.commons.configuration2.EnvironmentConfiguration;
-import org.apache.commons.configuration2.JSONConfiguration;
-import org.apache.commons.configuration2.SystemConfiguration;
-import org.apache.commons.configuration2.YAMLConfiguration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
+import java.util.ServiceLoader;
 
 
+/**
+ * <p>
+ * A configuration builder is responsible of creating new instances of {@link Configuration}
+ * via multiple alternative sources such as URL, URI, classpath resources, maps, and properties
+ * objects.
+ * </p>
+ * <p>
+ * When building a configuration from a external resource, the builder would autodetect the
+ * resource type (usually looking at its file extension) and treat the content properly,
+ * accepting multiple formats as JSON, YAML, XML, and .properties files.
+ * </p>
+ */
+public interface ConfigurationBuilder {
 
-public class ConfigurationBuilder {
 
+    static ConfigurationBuilder instance() {
+        return ServiceLoader.load(ConfigurationBuilder.class).iterator().next();
+    }
 
-    private final Configurations factory = new Configurations();
 
 
     /**
      * Create a new configuration composed of other configurations
      */
-    public Configuration compose(Configuration... configurations) {
-        if (configurations == null || configurations.length == 0) {
-            throw new IllegalArgumentException("No configurations to compose");
-        }
-        Configuration configuration = configurations[0];
-        for (int i=1; i<configurations.length; i++) {
-            configuration = configuration.append(configurations[i]);
-        }
-        return configuration;
-    }
-
+    Configuration compose(Configuration... configurations);
 
 
     /**
      * Create a new empty configuration
      */
-    public Configuration empty() {
-        return new Configuration(new BaseConfiguration());
-    }
+    Configuration empty();
 
 
     /**
@@ -59,14 +46,7 @@ public class ConfigurationBuilder {
      * @param configuredClass Class annotated with {@link Configurator}
      * @throws ConfigurationException if the configuration was not loaded
      */
-    public Configuration buildFromAnnotation(Class<?> configuredClass) throws ConfigurationException {
-        final Configurator configurator = configuredClass.getAnnotation(Configurator.class);
-        if (configurator == null) {
-            throw new ConfigurationException(configuredClass+" is not annotated with @Configurator");
-        }
-        return buildFromAnnotation(configurator);
-    }
-
+    Configuration buildFromAnnotation(Class<?> configuredClass);
 
 
     /**
@@ -74,23 +54,13 @@ public class ConfigurationBuilder {
      * @param annotation
      * @throws ConfigurationException if the configuration was not loaded
      */
-    public Configuration buildFromAnnotation(Configurator annotation) throws ConfigurationException {
-        final BaseConfiguration configuration = new BaseConfiguration();
-        for (final Property property : annotation.properties()) {
-            final String[] value = property.value();
-            if (value.length == 1) {
-                configuration.addProperty(property.key(), value[0]);
-            } else {
-                configuration.addProperty(property.key(), value);
-            }
-        }
-        if (annotation.path() != null && !annotation.path().isEmpty()) {
-            return new Configuration(configuration).append(buildFromPath(annotation.path()));
-        } else {
-            return new Configuration(configuration);
-        }
-        
-    }
+    Configuration buildFromAnnotation(Configurator annotation);
+
+
+    /**
+     * Create a new configuration from the environment properties
+     */
+    Configuration buildFromEnvironment();
 
 
     /**
@@ -98,178 +68,59 @@ public class ConfigurationBuilder {
      * @param includeSystemProperties When the value is <tt>true</tt>, the configuration will include
      * also every system variable.
      */
-    public Configuration buildFromEnvironment(boolean includeSystemProperties) {
-        final CompositeConfiguration configuration = new CompositeConfiguration();
-        if (includeSystemProperties ) {
-            configuration.addConfiguration(new SystemConfiguration());
-        }
-        configuration.addConfiguration(new EnvironmentConfiguration());
-        return new Configuration(configuration);
-    }
-
+    Configuration buildFromEnvironment(boolean includeSystemProperties);
 
 
     /**
-     * Create a new configuration from the environment properties
+     * Create a new configuration from the resource of the specified path
      */
-    public Configuration buildFromEnvironment() {
-        return buildFromEnvironment(false);
-    }
+    Configuration buildFromPath(Path path);
 
 
-    public Configuration buildFromPath(Path path) throws ConfigurationException {
-        return buildFromURI(path.toUri());
-    }
+    /**
+     * Create a new configuration from the specified URL
+     */
+    Configuration buildFromURL(URL url);
 
 
-    public Configuration buildFromPath(String path) throws ConfigurationException {
-        if (path.startsWith("classpath:")) {
-            return buildFromClasspathResource(path.substring("classpath:".length()));
-        } else {
-            return buildFromURI(URI.create(path));
-        }
-    }
+    /**
+     * Create a new configuration from the specified URI
+     */
+    Configuration buildFromURI(URI uri);
 
 
-    public Configuration buildFromProperties(Properties properties) {
-        final BaseConfiguration configuration = new BaseConfiguration();
-        for (final Entry<Object, Object> property : properties.entrySet()) {
-            configuration.addProperty(property.getKey().toString(), property.getValue());
-        }
-        return new Configuration(configuration);
-    }
+    /**
+     * Create a new configuration from either a Java classpath resource (if the path starts with the
+     * pseudo-schema <code>classpath:</code>) or a regular URI resource
+     */
+    Configuration buildFromClasspathResourceOrURI(String path);
 
 
-    public Configuration buildFromMap(Map<String,?> properties) {
-        final BaseConfiguration configuration = new BaseConfiguration();
-        for (final Entry<String, ?> property : properties.entrySet()) {
-            configuration.addProperty(property.getKey(), property.getValue());
-        }
-        return new Configuration(configuration);
-    }
+    /**
+     * Create a new configuration from a {@link Properties} object
+     */
+    Configuration buildFromProperties(Properties properties);
 
+
+    /**
+     * Create a new configuration from a {@link Map} object
+     */
+    Configuration buildFromMap(Map<String,?> propertyMap);
+
+
+    /**
+     * Create a new configuration from one or several Java class resources resolved using the
+     * {@link ClassLoader#getResources(String)} method of the thread default class loader
+     */
+    Configuration buildFromClasspathResource(String resourcePath);
+
+
+    /**
+     * Create a new configuration from one or several Java class resources resolved using the
+     * {@link ClassLoader#getResources(String)} method of the specified class loader
+     */
+    Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader);
     
     
-    public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader) 
-    throws ConfigurationException {
-        try {
-            Configuration conf = empty();
-            List<Configuration> urlConfs = buildFromURLEnum(
-                classLoader.getResources(resourcePath),
-                resourcePath
-            );
-            for (Configuration urlConf : urlConfs) {
-                conf = conf.append(urlConf);
-            }
-            return conf;
-        } catch (IOException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-    
-    
-    
-    public Configuration buildFromClasspathResource(String resourcePath) throws ConfigurationException {
-        return buildFromClasspathResource(resourcePath,getClass().getClassLoader());
-    }
-
-    
-
-    public Configuration buildFromURI(URI uri) throws ConfigurationException {
-        try {
-            if (uri.getScheme() == null) {
-                Path path = Paths.get(uri.getPath());
-                return buildFromPath(path);
-            }
-            return buildFromURL(uri.toURL());
-        } catch (final MalformedURLException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-    public Configuration buildFromURL(URL url) throws ConfigurationException {
-        Configuration configuration;
-        if (url.getFile().endsWith(".properties")) {
-            configuration = buildFromPropertiesFile(url);
-        } else if (url.getFile().endsWith(".json")) {
-            configuration = buildFromJSON(url);
-        } else if (url.getFile().endsWith(".xml")) {
-            configuration = buildFromXML(url);
-        } else if (url.getFile().endsWith(".yaml")) {
-            configuration = buildFromYAML(url);
-        } else {
-            throw new ConfigurationException("Cannot determine resource type of "+ url);
-        }
-        return configuration;
-    }
-
-
-
-
-
-
-    private List<Configuration> buildFromURLEnum(Enumeration<URL> urls, String resourcePath)
-            throws ConfigurationException {
-        final List<Configuration> configurations = new ArrayList<>();
-        if (!urls.hasMoreElements()) {
-            throw new ConfigurationException("Cannot find resource "+resourcePath);
-        } else {
-            while (urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
-                configurations.add(buildFromURL(url));
-            }
-        }
-        return configurations;
-    }
-
-    private Configuration buildFromJSON(URL url) throws ConfigurationException {
-        try (InputStream stream = url.openStream()) {
-            JSONConfiguration json = new JSONConfiguration();
-            json.read(stream);
-            return new Configuration(json);
-        } catch (IOException | org.apache.commons.configuration2.ex.ConfigurationException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-
-    private Configuration buildFromYAML(URL url) throws ConfigurationException {
-        try (InputStream stream = url.openStream()) {
-            YAMLConfiguration yaml = new YAMLConfiguration();
-            yaml.read(stream);
-            return new Configuration(yaml);
-        } catch (IOException | org.apache.commons.configuration2.ex.ConfigurationException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-
-    private Configuration buildFromPropertiesFile(URL url) throws ConfigurationException {
-        try {
-            return new Configuration(factory.properties(url));
-        } catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-
-    private Configuration buildFromXML(URL url) throws ConfigurationException {
-        try {
-            return new Configuration(factory.xml(url));
-        } catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
-            throw new ConfigurationException(e);
-        }
-    }
-
-
-
-
-   
-
-
 
 }

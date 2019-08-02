@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
 >
-    <skin>
+   <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.7</version>
@@ -10,12 +10,23 @@
 
     <custom>
         <fluidoSkin>
-            <topBarEnabled>false</topBarEnabled>
+            <topBarEnabled>true</topBarEnabled>
+            <topBarIcon>
+                <name>Kukumo</name>
+                <alt>Kukumo</alt>
+                <src>/images/kukumo.png</src>
+                <href>/index.html</href>
+            </topBarIcon>
             <navBarStyle>navbar-inverse</navBarStyle>
             <sideBarEnabled>true</sideBarEnabled>
-            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+            <sourceLineNumbersEnabled>false</sourceLineNumbersEnabled>
+            <leftColumnClass>span3</leftColumnClass>
+            <bodyColumnClass>span9</bodyColumnClass>
         </fluidoSkin>
     </custom>
+
+
+
 
     <bannerRight>
         <name>ITI</name>
@@ -33,18 +44,26 @@
 
     <body>
 
-        <!-- Workaround for https://issues.apache.org/jira/browse/DOXIA-571 -->
+        <!-- Add this to every site.xml -->
         <head>
             <![CDATA[
              <script type="text/javascript">
              $(document).ready(function () {
                 $(".source").addClass("prettyprint");
                 prettyPrint();
+                var linkAbout = $('a').filter(function(index) { return $(this).text() === "About"; });
+                var projectInformationMenu = $('a').filter(function(index) { return $(this).text() === "Project Information"; });
+                linkAbout.hide();
+                if (!projectInformationMenu.parent().hasClass('active')) {
+                    projectInformationMenu.parent().children('ul').hide();
+                    projectInformationMenu.children('span').removeClass('icon-chevron-down').addClass('icon-chevron-right');
+                }
             });
             </script>
             <link rel="stylesheet" href="https://asciidoctor.org/stylesheets/styles.css">
         ]]>
         </head>
+
 
         <breadcrumbs>
         </breadcrumbs>
@@ -58,6 +77,7 @@
             <item name="Kukumo::CORE" href="kukumo/kukumo-core/kukumo/kukumo-core/index.html"/>
             <item name="Kukumo::Maven Plugin" href="kukumo/kukumo-maven-plugin/kukumo/kukumo-maven-plugin/index.html"/>
             <item name="Kukumo::Launcher" href="kukumo/kukumo-launcher/kukumo/kukumo-launcher/index.html"/>
+            <item name="Kukumo::Plugin Archetype" href="kukumo/kukumo-plugin-archetype/kukumo/kukumo-plugin-archetype/index.html"/>
         </menu>
         <menu name="Plugins">
             <item name="Kukumo::REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
@@ -65,9 +85,9 @@
             <item name="Kukumo::HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
         </menu>
         <menu name="Tools">
-            <item name="jExt" href="jext/jext/index.html"/>
-            <item name="Configurer" href="configurer/configurer/index.html"/>
-            <item name="Maven Fetcher" href="maven-fetcher/maven-fetcher/index.html"/>
+            <item name="jExt" href="kukumo-tools/jext/kukumo-tools/jext/index.html"/>
+            <item name="Configurer" href="kukumo-tools/configurer/kukumo-tools/configurer/index.html"/>
+            <item name="Maven Fetcher" href="kukumo-tools/maven-fetcher/kukumo-tools/maven-fetcher/index.html"/>
         </menu>
 
 

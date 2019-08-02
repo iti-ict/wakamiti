@@ -1,5 +1,6 @@
 # Kukumo
 
+## Overview
 
 Kukumo is Cucumber-inspired automatic testing tool written in Java. 
 
@@ -27,9 +28,9 @@ but it is not internally bound to Kukumo; any plugin can provide other ways to c
 > Kukumo is a _tool_, not a _testing framework_. Use it when fits the circumstances. It is not either 
 a replacement for Cucumber: according your necessities, you can use _both_!    
 
-## Usage
+## Usage  
  
-There are several aspects to consider in order to use Kukumo: 
+There are several aspects to consider in order to use Kukumo:
  
 ### Runners
 
@@ -118,6 +119,7 @@ kukumo:
 > **CAUTION**   
 > When readed from a file, Kukumo properties root must be the segment ```kukumo```.
 
+[[back to top](#Overview)] 
 
 ## Example
 
@@ -197,9 +199,14 @@ public class KukumoTestPlan {
 }
 ```
 
+[[back to top](#Overview)]
+
 ## Contributing
 
 Currently the project is closed to external contributions but this may change in the future.
+
+[[back to top](#Overview)]
+
 
 ## License
 
@@ -228,6 +235,12 @@ SOFTWARE.
 
 ```
 
+[[back to top](#Overview)]
+
+
 ## Authors
 
-- Luis Iñesta Gelabert  | :email: <linesta@iti.es> | :email: <luiinge@gmail.com>
+- **Luis Iñesta Gelabert**
+
+    - linesta@iti.es
+    - luiinge@gmail.com

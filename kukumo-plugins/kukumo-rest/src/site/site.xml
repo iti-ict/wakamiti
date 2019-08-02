@@ -2,7 +2,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
 >
-
     <custom>
         <fluidoSkin>
             <topBarIcon>
@@ -15,7 +14,7 @@
 
     <body>
 
-        <!-- Workaround for https://issues.apache.org/jira/browse/DOXIA-571 -->
+        <!-- Add this to every site.xml -->
         <head>
             <![CDATA[
              <script type="text/javascript">
@@ -35,21 +34,17 @@
         ]]>
         </head>
 
-
         <breadcrumbs>
             <item name="Kukumo" href="../../../../index.html"/>
         </breadcrumbs>
 
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Prerequisites" href="index.html#prerequisites"/>
-            <item name="Usage" href="index.html#usage"/>
-            <item name="License" href="index.html#license"/>
-            <item name="Contributing" href="index.html#contributing"/>
-            <item name="Authors" href="index.html#authors"/>
+            <item name="Usage" href="index.html#Usage"/>
+            <item name="License" href="index.html#License"/>
         </menu>
         <menu ref="reports"/>
-
-
     </body>
+
+
 </project>

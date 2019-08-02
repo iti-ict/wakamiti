@@ -1,232 +1,76 @@
 package iti.commons.configurer;
 
-import org.apache.commons.configuration2.BaseConfiguration;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-public class Configuration {
+public interface Configuration {
 
-    private static final ConfigurationBuilder builder = new ConfigurationBuilder();
+    /** Create a new configuration resulting the merge the current configuration with another one */
+    Configuration mergedWith (Configuration otherConfiguration);
     
-    private final org.apache.commons.configuration2.Configuration conf;
-    private final String prefix;
-    
-    
-    protected Configuration(org.apache.commons.configuration2.Configuration conf) {
-        this.conf = conf;
-        this.prefix = "";
-    }
-    
-    protected Configuration(org.apache.commons.configuration2.Configuration conf, String prefix) {
-        this.conf = conf;
-        this.prefix = prefix;
-    }
-    
-    public Configuration append (Configuration otherConf) {
-        BaseConfiguration newConf = new BaseConfiguration();
-        newConf.append(conf);
-        newConf.copy(otherConf.conf);
-        return new Configuration(newConf);
-    }
-     
-    
-    public Configuration appendFromAnnotation(Configurator configurer) throws ConfigurationException {
-        return append(builder.buildFromAnnotation(configurer));
-    }
+    /** Creates a new configuration resulting of adding the given prefix to every key*/
+    Configuration withPrefix(String keyPrefix);
 
-    public Configuration appendFromAnnotation(Class<?> configuredClass) throws ConfigurationException {
-        return append(builder.buildFromAnnotation(configuredClass));
-    }
+    /**
+     * Creates a new configuration resulting of filtering the properties starting with the given 
+     * prefix
+     */
+    Configuration filtered(String keyPrefix);
 
+    /**
+     * Creates a new configuration resulting of filtering the properties starting with the given
+     * prefix, and the removing it
+     */
+    Configuration inner(String keyPrefix);
 
-    public Configuration appendFromEnvironment(boolean includeSystemProperties) {
-        return append(builder.buildFromEnvironment(includeSystemProperties));
-    }
+    /** @return <code>true</code> if there is no properties in this configuration */
+    boolean isEmpty();
 
+    /** @return <code>true</code> if there is a property with the given key */
+    boolean hasProperty(String key);
 
-    public Configuration appendFromEnvironment() {
-        return append(builder.buildFromEnvironment());
-    }
+    /** @return An iteratable object over all the keys of the configuration */
+    Iterable<String> keys();
 
+    /** @return An iterator over all the keys of the configuration */
+    Iterator<String> keyIterator();
 
-    public Configuration appendFromMap(Map<String,String> map) {
-        return append(builder.buildFromMap(map));
-    }
+    /** @return A stream from all the keys of the configuration */
+    Stream<String> keyStream();
 
-    public Configuration appendFromPath(Path path) throws ConfigurationException {
-        return append(builder.buildFromPath(path));
-    }
-    
-    public Configuration appendFromPath(String path) throws ConfigurationException {
-        return append(builder.buildFromPath(path));
-    }
+    /** @return An optional value of the specified type, empty if the key does not exist  */
+    <T> Optional<T> get(String key, Class<T> type);
 
-    public Configuration appendFromProperties(Properties properties) {
-        return append(builder.buildFromProperties(properties));
-    }
+    /** @return A list with values of the specified type, empty if the key does not exist  */
+    <T> List<T> getList(String key, Class<T> type);
 
-    public Configuration appendFromClasspathResource(String resource) throws ConfigurationException {
-        return append(builder.buildFromClasspathResource(resource));
-    }
+    /** @return A set with values of the specified type, empty if the key does not exist  */
+    <T> Set<T> getSet(String key, Class<T> type);
 
-    public Configuration appendFromURI(URI uri) throws ConfigurationException {
-        return append(builder.buildFromURI(uri));
-    }
+    /** @return A stream with values of the specified type, empty if the key does not exist */
+    <T> Stream<T> getStream(String key, Class<T> type);
 
-    public Configuration appendFromURL(URL url) throws ConfigurationException {
-        return append(builder.buildFromURL(url));
-    }
+    /** @return A stream with double values, empty if the key does not exist */
+    DoubleStream getDoubleStream(String key);
+
+    /** @return A stream with int values, empty if the key does not exist */
+    IntStream getIntegerStream(String key);
+
+    /** @return A stream with long values, empty if the key does not exist */
+    LongStream getLongStream(String key);
+
+    /** @return The configuration represented as a {@link Properties} object  */
+    Properties asProperties();
+
+    /** @return The configuration represented as a {@link Map} object */
+    Map<String,String> asMap();
+
+    /** Perform an action for each pair <code>[key,value]</code> */
+    void forEach(BiConsumer<String,String> consumer);
 
 
-    public Configuration appendPrefix(String keyPrefix) {
-        BaseConfiguration innerConf = new BaseConfiguration();
-        conf.getKeys().forEachRemaining(key -> 
-            innerConf.addProperty(keyPrefix+"."+key, conf.getProperty(key))
-        );
-        return new Configuration(innerConf,keyPrefix);
-    }
-    
-    
-    public Configuration filter(String keyPrefix) {
-        BaseConfiguration innerConf = new BaseConfiguration();
-        conf.getKeys(keyPrefix).forEachRemaining(key -> {
-            if (key.startsWith(keyPrefix)) {
-                innerConf.addProperty(key, conf.getProperty(key));
-            }
-        });
-        return new Configuration(innerConf,keyPrefix);
-    }
-    
-    public Configuration inner(String keyPrefix) {
-        return new Configuration(conf.subset(keyPrefix));
-    }
-    
-    
-    public String prefix() {
-        return prefix;
-    }
-    
-    public boolean isEmpty() {
-        return conf.isEmpty();
-    }
-
-    public int size() {
-        return conf.size();
-    }
-
-    
-    public boolean hasProperty(String key) {
-        return conf.containsKey(key);
-    }
-
-       
-    
-    public Iterator<String> keys() {
-        return conf.getKeys();
-    }
-
-
-    public Optional<Boolean> getBoolean(String key) {
-        return Optional.ofNullable(conf.getBoolean(key,null));
-    }
-    
-    public Optional<Double> getDouble(String key) {
-        return Optional.ofNullable(conf.getDouble(key,null));
-    }
-
-    public Optional<Float> getFloat(String key) {
-        return Optional.ofNullable(conf.getFloat(key,null));
-    }
-    
-    public Optional<Integer> getInteger(String key) {
-        return Optional.ofNullable(conf.getInteger(key,null));
-    }
-       
-    public Optional<Long> getLong(String key) {
-        return Optional.ofNullable(conf.getLong(key,null));
-    }
-    
-    public Optional<BigDecimal> getBigDecimal(String key) {
-        return Optional.ofNullable(conf.getString(key,null)).map(BigDecimal::new);
-    }
-
-    public Optional<BigInteger> getBigInteger(String key) {
-        return Optional.ofNullable(conf.getBigInteger(key,null));
-    }
-
-    public Optional<String> getString(String key) {
-        return Optional.ofNullable(conf.getString(key,null));
-    }
-
-    
-    public List<Boolean> getBooleanList(String key) {
-        return Optional.ofNullable(conf.getList(Boolean.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<Double> getDoubleList(String key) {
-        return Optional.ofNullable(conf.getList(Double.class, key)).orElse(Collections.emptyList());
-    }
-
-    public List<Float> getFloatList(String key) {
-        return Optional.ofNullable(conf.getList(Float.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<Integer> getIntegerList(String key) {
-        return Optional.ofNullable(conf.getList(Integer.class, key)).orElse(Collections.emptyList());
-    }
-       
-    public List<Long> getLongList(String key) {
-        return Optional.ofNullable(conf.getList(Long.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<BigDecimal> getBigDecimalList(String key) {
-        return Stream.of(conf.getStringArray(key)).map(BigDecimal::new).collect(Collectors.toList());
-    }
-
-    public List<BigInteger> getBigIntegerList(String key) {
-        return Optional.ofNullable(conf.getList(BigInteger.class, key)).orElse(Collections.emptyList());
-    }
-
-    public List<String> getStringList(String key) {
-        return Optional.ofNullable(conf.getList(String.class, key)).orElse(Collections.emptyList());
-    }
-
-    
-    public String toString() {
-        StringBuilder string = new StringBuilder("configuration:\n---------------\n");
-        if (!prefix.isEmpty()) {
-            string.append("[ inherited from ").append(prefix).append(" ]\n");
-        }
-        conf.getKeys().forEachRemaining( key -> {
-            final String[] values = conf.getStringArray(key);
-            string
-            .append(key)
-            .append(" : ")
-            .append(values.length > 1 ? Arrays.toString(values): values[0])
-            .append("\n");
-        });
-        return string.append("---------------").toString();
-    }
-
-    
-    
-    public Properties asProperties() {
-        Properties properties = new Properties();
-        conf.getKeys().forEachRemaining(key -> properties.put(key, conf.getString(key)));
-        return properties;
-    }
-
-
-    public Map<String,String> asMap() {
-        Map<String,String> map = new HashMap<>();
-        conf.getKeys().forEachRemaining(key -> map.put(key, conf.getString(key)));
-        return map;
-    }
 }
