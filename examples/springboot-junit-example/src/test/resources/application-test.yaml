@@ -1,0 +1,19 @@
+local.server.port: 0
+kukumo:
+  resourceTypes: gherkin
+  resourcePath: src/test/resources
+  outputFilePath: target/kukumo/kukumo.json
+  database:
+    useSpringDataSource: true
+  rest:
+    useSpringLocalServerPort: true
+
+
+logging:
+  level:
+    root: ERROR
+    org.springframework: ERROR
+    iti.kukumo: INFO
+  #pattern.console:  "[%level] [%location] %message%n"
+  pattern.console:  "%message%n"
+spring.output.ansi.enabled: DETECT

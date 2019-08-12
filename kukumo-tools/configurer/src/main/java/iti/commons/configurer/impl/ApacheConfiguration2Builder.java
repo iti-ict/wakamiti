@@ -1,69 +1,83 @@
 package iti.commons.configurer.impl;
 
-import iti.commons.configurer.*;
-import iti.commons.configurer.Configuration;
-import org.apache.commons.configuration2.*;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Properties;
 
+import org.apache.commons.configuration2.AbstractConfiguration;
+import org.apache.commons.configuration2.BaseConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
+import org.apache.commons.configuration2.EnvironmentConfiguration;
+import org.apache.commons.configuration2.JSONConfiguration;
+import org.apache.commons.configuration2.MapConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.SystemConfiguration;
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.configuration2.convert.ConversionHandler;
+
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
+import iti.commons.configurer.ConfigurationException;
+import iti.commons.configurer.Configurator;
+import iti.commons.configurer.Property;
 
 public class ApacheConfiguration2Builder implements ConfigurationBuilder {
 
 
-    private final Configurations factory = new Configurations();
+
+    private final ConversionHandler conversionHandler = new ApacheConfiguration2ConversionHandler();
+
 
     @Override
     public Configuration compose(Configuration... configurations) {
         if (configurations == null || configurations.length == 0) {
-            throw new IllegalArgumentException("No configurations to compose");
+            return empty();
         }
-        Configuration configuration = configurations[0];
-        for (int i=1; i<configurations.length; i++) {
-            configuration = configuration.append(configurations[i]);
+        AbstractConfiguration configuration = configure(new BaseConfiguration());
+        for (int i=0; i<configurations.length; i++) {
+            configuration.copy(toImpl(configurations[i]));
         }
-        return configuration;
+        return new ApacheConfiguration2(this,configuration);
     }
 
 
     @Override
     public Configuration empty() {
-        return new ApacheConfiguration2(new BaseConfiguration());
+        return new ApacheConfiguration2(this,new BaseConfiguration());
     }
 
 
-    /**
-     * Create a new configuration from a class annotated with {@link Configurator}
-     * @param configuredClass Class annotated with {@link Configurator}
-     * @throws ConfigurationException if the configuration was not loaded
-     */
-    public Configuration buildFromAnnotation(Class<?> configuredClass) throws ConfigurationException {
-        final Configurator configurator = configuredClass.getAnnotation(Configurator.class);
-        if (configurator == null) {
-            throw new ConfigurationException(configuredClass+" is not annotated with @Configurator");
-        }
-        return buildFromAnnotation(configurator);
+    @Override
+    public Configuration buildFromAnnotation(Class<?> configuredClass) {
+        return
+            Optional.ofNullable(configuredClass.getAnnotation(Configurator.class))
+            .map(this::buildFromAnnotation)
+            .orElseThrow(()->
+                new ConfigurationException(configuredClass+" is not annotated with @Configurator")
+            );
     }
 
 
-
-    /**
-     * Create a new configuration from a {@link Configurator} annotation
-     * @param annotation
-     * @throws ConfigurationException if the configuration was not loaded
-     */
-    public Configuration buildFromAnnotation(Configurator annotation) throws ConfigurationException {
-        final BaseConfiguration configuration = new BaseConfiguration();
-        for (final Property property : annotation.properties()) {
-            final String[] value = property.value();
+    @Override
+    public Configuration buildFromAnnotation(Configurator annotation) {
+        BaseConfiguration configuration = configure(new BaseConfiguration());
+        for (Property property : annotation.properties()) {
+            String[] value = property.value();
             if (value.length == 1) {
                 configuration.addProperty(property.key(), value[0]);
             } else {
@@ -71,44 +85,40 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
             }
         }
         if (annotation.path() != null && !annotation.path().isEmpty()) {
-            return new Configuration(configuration).append(buildFromPath(annotation.path()));
-        } else {
-            return new Configuration(configuration);
+        	Configuration pathConfiguration = buildFromClasspathResourceOrURI(annotation.path());
+        	pathConfiguration = pathConfiguration.inner(annotation.pathPrefix());
+            configuration.copy(toImpl(pathConfiguration));
         }
+        return new ApacheConfiguration2(this,configuration);
 
     }
 
 
-    /**
-     * Create a new configuration from the environment properties
-     * @param includeSystemProperties When the value is <tt>true</tt>, the configuration will include
-     * also every system variable.
-     */
+    @Override
     public Configuration buildFromEnvironment(boolean includeSystemProperties) {
-        final CompositeConfiguration configuration = new CompositeConfiguration();
+        final CompositeConfiguration configuration = configure(new CompositeConfiguration());
         if (includeSystemProperties ) {
             configuration.addConfiguration(new SystemConfiguration());
         }
         configuration.addConfiguration(new EnvironmentConfiguration());
-        return new Configuration(configuration);
+        return new ApacheConfiguration2(this,configuration);
     }
 
 
-
-    /**
-     * Create a new configuration from the environment properties
-     */
+    @Override
     public Configuration buildFromEnvironment() {
         return buildFromEnvironment(false);
     }
 
 
-    public Configuration buildFromPath(Path path) throws ConfigurationException {
+    @Override
+    public Configuration buildFromPath(Path path) {
         return buildFromURI(path.toUri());
     }
 
 
-    public Configuration buildFromPath(String path) throws ConfigurationException {
+    @Override
+    public Configuration buildFromClasspathResourceOrURI(String path) {
         if (path.startsWith("classpath:")) {
             return buildFromClasspathResource(path.substring("classpath:".length()));
         } else {
@@ -117,51 +127,52 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
     }
 
 
+    @Override
     public Configuration buildFromProperties(Properties properties) {
-        final BaseConfiguration configuration = new BaseConfiguration();
+        final BaseConfiguration configuration = configure(new BaseConfiguration());
         for (final Entry<Object, Object> property : properties.entrySet()) {
             configuration.addProperty(property.getKey().toString(), property.getValue());
         }
-        return new Configuration(configuration);
+        return new ApacheConfiguration2(this,configuration);
     }
 
 
+    @Override
     public Configuration buildFromMap(Map<String,?> properties) {
-        final BaseConfiguration configuration = new BaseConfiguration();
+        final BaseConfiguration configuration = configure(new BaseConfiguration());
         for (final Entry<String, ?> property : properties.entrySet()) {
             configuration.addProperty(property.getKey(), property.getValue());
         }
-        return new Configuration(configuration);
+        return new ApacheConfiguration2(this,configuration);
     }
 
 
-
-    public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader)
-    throws ConfigurationException {
+    @Override
+    public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader) {
         try {
-            Configuration conf = empty();
+            BaseConfiguration configuration = configure(new BaseConfiguration());
             List<Configuration> urlConfs = buildFromURLEnum(
                 classLoader.getResources(resourcePath),
                 resourcePath
             );
             for (Configuration urlConf : urlConfs) {
-                conf = conf.append(urlConf);
+                configuration.append(toImpl(urlConf));
             }
-            return conf;
+            return new ApacheConfiguration2(this,configuration);
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
     }
 
 
-
-    public Configuration buildFromClasspathResource(String resourcePath) throws ConfigurationException {
+    @Override
+    public Configuration buildFromClasspathResource(String resourcePath) {
         return buildFromClasspathResource(resourcePath,getClass().getClassLoader());
     }
 
 
-
-    public Configuration buildFromURI(URI uri) throws ConfigurationException {
+    @Override
+    public Configuration buildFromURI(URI uri) {
         try {
             if (uri.getScheme() == null) {
                 Path path = Paths.get(uri.getPath());
@@ -174,7 +185,8 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
     }
 
 
-    public Configuration buildFromURL(URL url) throws ConfigurationException {
+    @Override
+    public Configuration buildFromURL(URL url) {
         Configuration configuration;
         if (url.getFile().endsWith(".properties")) {
             configuration = buildFromPropertiesFile(url);
@@ -191,12 +203,7 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
     }
 
 
-
-
-
-
-    private List<Configuration> buildFromURLEnum(Enumeration<URL> urls, String resourcePath)
-            throws ConfigurationException {
+    private List<Configuration> buildFromURLEnum(Enumeration<URL> urls, String resourcePath) {
         final List<Configuration> configurations = new ArrayList<>();
         if (!urls.hasMoreElements()) {
             throw new ConfigurationException("Cannot find resource "+resourcePath);
@@ -209,33 +216,46 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
         return configurations;
     }
 
-    private Configuration buildFromJSON(URL url) throws ConfigurationException {
+
+
+
+    private Configuration buildFromJSON(URL url) {
         try (InputStream stream = url.openStream()) {
-            JSONConfiguration json = new JSONConfiguration();
+            JSONConfiguration json = configure(new JSONConfiguration());
             json.read(stream);
-            return new Configuration(json);
+            return new ApacheConfiguration2(this,json);
         } catch (IOException | org.apache.commons.configuration2.ex.ConfigurationException e) {
             throw new ConfigurationException(e);
         }
     }
 
 
-
-    private Configuration buildFromYAML(URL url) throws ConfigurationException {
+    private Configuration buildFromYAML(URL url) {
         try (InputStream stream = url.openStream()) {
-            YAMLConfiguration yaml = new YAMLConfiguration();
+            YAMLConfiguration yaml = configure(new YAMLConfiguration());
             yaml.read(stream);
-            return new Configuration(yaml);
+            return new ApacheConfiguration2(this,yaml);
         } catch (IOException | org.apache.commons.configuration2.ex.ConfigurationException e) {
             throw new ConfigurationException(e);
         }
     }
 
 
+    private Configuration buildFromPropertiesFile(URL url) {
+        try (InputStream stream = url.openStream(); Reader reader = new InputStreamReader(stream)) {
+            PropertiesConfiguration properties = configure(new PropertiesConfiguration());
+            properties.read(reader);
+            return new ApacheConfiguration2(this,properties);
+        } catch (IOException | org.apache.commons.configuration2.ex.ConfigurationException e) {
+            throw new ConfigurationException(e);
+        }
+    }
 
-    private Configuration buildFromPropertiesFile(URL url) throws ConfigurationException {
+
+    private Configuration buildFromXML(URL url) {
         try {
-            return new Configuration(factory.properties(url));
+            XMLConfiguration xml = configure(new Configurations().xml(url));
+            return new ApacheConfiguration2(this,xml);
         } catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
             throw new ConfigurationException(e);
         }
@@ -243,19 +263,22 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
 
 
 
-    private Configuration buildFromXML(URL url) throws ConfigurationException {
-        try {
-            return new Configuration(factory.xml(url));
-        } catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
-            throw new ConfigurationException(e);
+    private AbstractConfiguration toImpl(Configuration configuration) {
+        if (configuration instanceof ApacheConfiguration2) {
+            org.apache.commons.configuration2.Configuration impl =
+                ((ApacheConfiguration2) configuration).conf;
+            if (impl instanceof AbstractConfiguration) {
+                return (AbstractConfiguration) impl;
+            }
         }
+        return new MapConfiguration(configuration.asMap());
     }
 
 
-
-
-   
-
+    private <T extends AbstractConfiguration> T configure (T configuration) {
+        configuration.setConversionHandler(conversionHandler );
+        return configuration;
+    }
 
 
 }

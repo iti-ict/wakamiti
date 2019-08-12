@@ -1,46 +1,45 @@
 package iti.commons.configurer.impl;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import org.apache.commons.configuration2.BaseConfiguration;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-public class ApacheConfiguration2 implements Configuration {
+import org.apache.commons.configuration2.BaseConfiguration;
 
-    private final org.apache.commons.configuration2.Configuration conf;
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
 
-    protected ApacheConfiguration2(org.apache.commons.configuration2.Configuration conf) {
+public class ApacheConfiguration2 extends AbstractConfiguration {
+
+    final org.apache.commons.configuration2.Configuration conf;
+
+    protected ApacheConfiguration2(
+        ConfigurationBuilder builder,
+        org.apache.commons.configuration2.Configuration conf
+    ) {
+        super(builder);
         this.conf = conf;
     }
 
-
-    @Override
-    public Configuration mergedWith(Configuration otherConfiguration) {
-        BaseConfiguration newConf = new BaseConfiguration();
-        newConf.append(conf);
-        newConf.copy(((ApacheConfiguration2)otherConfiguration).conf);
-        return new ApacheConfiguration2(newConf);
-    }
 
 
     @Override
     public Configuration withPrefix(String keyPrefix) {
         BaseConfiguration innerConf = new BaseConfiguration();
-        conf.getKeys().forEachRemaining(key -> 
+        conf.getKeys().forEachRemaining(key ->
             innerConf.addProperty(keyPrefix+"."+key, conf.getProperty(key))
         );
-        return new ApacheConfiguration2(innerConf);
-    }
-
-
-    @Override
-    public Configuration inner(String keyPrefix) {
-        return new ApacheConfiguration2(conf.subset(keyPrefix));
+        return new ApacheConfiguration2(builder,innerConf);
     }
 
 
@@ -52,7 +51,16 @@ public class ApacheConfiguration2 implements Configuration {
                 innerConf.addProperty(key, conf.getProperty(key));
             }
         });
-        return new ApacheConfiguration2(innerConf);
+        return new ApacheConfiguration2(builder,innerConf);
+    }
+
+
+    @Override
+    public Configuration inner(String keyPrefix) {
+        if (keyPrefix == null || keyPrefix.isEmpty()) {
+            return this;
+        }
+        return new ApacheConfiguration2(builder,conf.subset(keyPrefix));
     }
 
 
@@ -67,7 +75,7 @@ public class ApacheConfiguration2 implements Configuration {
         return conf.containsKey(key);
     }
 
-       
+
     @Override
     public Iterable<String> keys() {
         return keyList();
@@ -115,67 +123,6 @@ public class ApacheConfiguration2 implements Configuration {
     }
 
 
-    public Optional<BigDecimal> getBigDecimal(String key) {
-        return Optional.ofNullable(conf.getString(key,null)).map(BigDecimal::new);
-    }
-
-    public Optional<BigInteger> getBigInteger(String key) {
-        return Optional.ofNullable(conf.getBigInteger(key,null));
-    }
-
-    public Optional<String> getString(String key) {
-        return Optional.ofNullable(conf.getString(key,null));
-    }
-
-    
-    public List<Boolean> getBooleanList(String key) {
-        return Optional.ofNullable(conf.getList(Boolean.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<Double> getDoubleList(String key) {
-        return Optional.ofNullable(conf.getList(Double.class, key)).orElse(Collections.emptyList());
-    }
-
-    public List<Float> getFloatList(String key) {
-        return Optional.ofNullable(conf.getList(Float.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<Integer> getIntegerList(String key) {
-        return Optional.ofNullable(conf.getList(Integer.class, key)).orElse(Collections.emptyList());
-    }
-       
-    public List<Long> getLongList(String key) {
-        return Optional.ofNullable(conf.getList(Long.class, key)).orElse(Collections.emptyList());
-    }
-    
-    public List<BigDecimal> getBigDecimalList(String key) {
-        return Stream.of(conf.getStringArray(key)).map(BigDecimal::new).collect(Collectors.toList());
-    }
-
-    public List<BigInteger> getBigIntegerList(String key) {
-        return Optional.ofNullable(conf.getList(BigInteger.class, key)).orElse(Collections.emptyList());
-    }
-
-    public List<String> getStringList(String key) {
-        return Optional.ofNullable(conf.getList(String.class, key)).orElse(Collections.emptyList());
-    }
-
-    
-    public String toString() {
-        StringBuilder string = new StringBuilder("configuration:\n---------------\n");
-        conf.getKeys().forEachRemaining( key -> {
-            final String[] values = conf.getStringArray(key);
-            string
-            .append(key)
-            .append(" : ")
-            .append(values.length > 1 ? Arrays.toString(values): values[0])
-            .append("\n");
-        });
-        return string.append("---------------").toString();
-    }
-
-    
-
     @Override
     public Properties asProperties() {
         Properties properties = new Properties();
@@ -192,6 +139,25 @@ public class ApacheConfiguration2 implements Configuration {
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder("configuration:\n---------------\n");
+        conf.getKeys().forEachRemaining( key -> {
+            final String[] values = conf.getStringArray(key);
+            string
+            .append(key)
+            .append(" : ")
+            .append(values.length > 1 ? Arrays.toString(values): values[0])
+            .append("\n");
+        });
+        return string.append("---------------").toString();
+    }
+
+
+    @Override
+    public void forEach(BiConsumer<String, String> consumer) {
+        conf.getKeys().forEachRemaining(key -> consumer.accept(key, conf.get(String.class, key)));
+    }
 
 
 }

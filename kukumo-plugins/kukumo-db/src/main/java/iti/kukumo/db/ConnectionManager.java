@@ -33,7 +33,6 @@ public interface ConnectionManager {
      * Obtain a valid connection according to an existing connection. If the current connection is
      * closed or invalid, a new one will be retrieved; otherwise, the current connection is returned.
      * @param connection The current connection
-     * @param parameters The original connection parameters
      * @return A valid connection
      * @throws SQLException when the connection was not successfully retrieved     * 
      */

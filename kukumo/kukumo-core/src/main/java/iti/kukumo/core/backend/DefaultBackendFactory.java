@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0")
 public class DefaultBackendFactory implements BackendFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBackendFactory.class);
+    private static final Logger LOGGER = Kukumo.LOGGER;
     private static final List<String> DEFAULT_MODULES = Collections.unmodifiableList(Arrays.asList(
             "core-types",
             "assertion-types"
@@ -73,7 +73,7 @@ public class DefaultBackendFactory implements BackendFactory {
         List<StepContributor> stepContributors;
         List<DataTypeContributor> dataTypeContributors;
 
-        List<String> restrictedModules = new ArrayList<>(configuration.getStringList(KukumoConfiguration.MODULES));
+        List<String> restrictedModules = new ArrayList<>(configuration.getList(KukumoConfiguration.MODULES,String.class));
         if (restrictedModules.isEmpty()) {
             stepContributors = Kukumo.loadAllStepContributors(configuration);
             dataTypeContributors = Kukumo.getAllDataTypeContributors();
@@ -87,7 +87,7 @@ public class DefaultBackendFactory implements BackendFactory {
             LOGGER.warn("No data type contributors found!");
         }
 
-        List<String> nonRegisteredContributorClasses = configuration.getStringList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS);
+        List<String> nonRegisteredContributorClasses = configuration.getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,String.class);
         if (LOGGER.isTraceEnabled()) {
             String nonRegisteredContributorInfo = nonRegisteredContributorClasses.stream().collect(Collectors.joining(", "));
             LOGGER.trace("using configuration (restrictedModules={}, additionalStepProviders={} )...", restrictedModules, nonRegisteredContributorInfo);

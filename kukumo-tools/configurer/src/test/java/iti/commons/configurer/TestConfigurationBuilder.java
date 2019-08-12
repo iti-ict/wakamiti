@@ -12,14 +12,17 @@ import iti.commons.configurer.ConfigurationException;
 import iti.commons.configurer.Configurator;
 import iti.commons.configurer.Property;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 
 public class TestConfigurationBuilder {
 
     private static final String KEY_ENV = "test.env.key";
     private static final String VAL_ENV = "Test Environment Value";
-    
+
     private static final String KEY_STRING = "properties.test.key.string";
     private static final String KEY_STRINGS = "properties.test.key.strings";
     private static final String KEY_BOOL = "properties.test.key.bool";
@@ -36,7 +39,7 @@ public class TestConfigurationBuilder {
     private static final String KEY_BIGDECIMALS = "properties.test.key.bigdecimals";
     private static final String KEY_BIGINTEGER = "properties.test.key.biginteger";
     private static final String KEY_BIGINTEGERS = "properties.test.key.bigintegers";
-    
+
     private static final String VAL_STRING = "Properties Test String Value";
     private static final String VAL_STRINGS_1 = "Properties Array Value 1";
     private static final String VAL_STRINGS_2 = "Properties Array Value 2";
@@ -68,8 +71,8 @@ public class TestConfigurationBuilder {
     private static final String VAL_BIGINTEGERS_1 = "123456789";
     private static final String VAL_BIGINTEGERS_2 = "543987532";
     private static final String VAL_BIGINTEGERS_3 = "549874348";
-    
-   
+
+
     @Rule
     public final EnvironmentVariables env = new EnvironmentVariables();
 
@@ -106,9 +109,17 @@ public class TestConfigurationBuilder {
         @Property(key=KEY_DOUBLE,value=VAL_DOUBLE),
         @Property(key=KEY_DOUBLES,value= {VAL_DOUBLES_1,VAL_DOUBLES_2,VAL_DOUBLES_3}),
         @Property(key=KEY_BIGDECIMAL,value=VAL_BIGDECIMAL),
-        @Property(key=KEY_BIGDECIMALS,value= {VAL_BIGDECIMALS_1,VAL_BIGDECIMALS_2,VAL_BIGDECIMALS_3}),
+        @Property(key=KEY_BIGDECIMALS,value= {
+            VAL_BIGDECIMALS_1,
+            VAL_BIGDECIMALS_2,
+            VAL_BIGDECIMALS_3
+        }),
         @Property(key=KEY_BIGINTEGER,value=VAL_BIGINTEGER),
-        @Property(key=KEY_BIGINTEGERS,value= {VAL_BIGINTEGERS_1, VAL_BIGINTEGERS_2, VAL_BIGINTEGERS_3}),
+        @Property(key=KEY_BIGINTEGERS,value= {
+            VAL_BIGINTEGERS_1,
+            VAL_BIGINTEGERS_2,
+            VAL_BIGINTEGERS_3
+        }),
         @Property(key="properties2.test2.key.string",value=VAL_STRING)
     })
     public static class ConfAnnotatedProps { }
@@ -123,7 +134,7 @@ public class TestConfigurationBuilder {
 
     @Before
     public void prepare() {
-        builder = new ConfigurationBuilder();
+        builder = ConfigurationBuilder.instance();
         env.set(KEY_ENV, VAL_ENV);
     }
 
@@ -138,35 +149,50 @@ public class TestConfigurationBuilder {
 
     @Test
     public void testPropertyFileConfiguration() throws ConfigurationException  {
-        Configuration conf = builder.buildFromEnvironment(false).appendFromAnnotation(ConfProperties.class);
+        Configuration conf = builder.compose(
+            builder.buildFromEnvironment(false),
+            builder.buildFromAnnotation(ConfProperties.class)
+        );
         assertProperties(conf);
         assertEnvProperties(conf);
     }
 
     @Test
     public void testJSONConfiguration() throws ConfigurationException {
-        Configuration conf = builder.buildFromEnvironment(false).appendFromAnnotation(ConfJSON.class);
+        Configuration conf = builder.compose(
+            builder.buildFromEnvironment(false),
+            builder.buildFromAnnotation(ConfJSON.class)
+        );
         assertProperties(conf);
         assertEnvProperties(conf);
     }
 
     @Test
     public void testYAMLConfiguration() throws ConfigurationException {
-        Configuration conf = builder.buildFromEnvironment(false).appendFromAnnotation(ConfYAML.class);
+        Configuration conf = builder.compose(
+            builder.buildFromEnvironment(false),
+            builder.buildFromAnnotation(ConfYAML.class)
+        );
         assertProperties(conf);
         assertEnvProperties(conf);
     }
 
     @Test
     public void testXMLConfiguration() throws ConfigurationException {
-        Configuration conf =builder.buildFromEnvironment(false).appendFromAnnotation(ConfXML.class);
+        Configuration conf = builder.compose(
+            builder.buildFromEnvironment(false),
+            builder.buildFromAnnotation(ConfXML.class)
+        );
         assertProperties(conf);
         assertEnvProperties(conf);
     }
 
     @Test
     public void testAnnotatedPropertiesConfiguration() throws ConfigurationException {
-        Configuration conf = builder.buildFromEnvironment(false).appendFromAnnotation(ConfAnnotatedProps.class);
+        Configuration conf = builder.compose(
+            builder.buildFromEnvironment(false),
+            builder.buildFromAnnotation(ConfAnnotatedProps.class)
+        );
         assertProperties(conf);
         assertEnvProperties(conf);
     }
@@ -192,74 +218,111 @@ public class TestConfigurationBuilder {
         builder.buildFromAnnotation(ConfNoFile.class);
     }
 
-    
+
     @Test
     public void testToString() throws ConfigurationException {
         Assertions.assertThat(builder.buildFromAnnotation(ConfAnnotatedProps.class).toString())
         .isEqualTo(
-            "configuration:\n" + 
-            "---------------\n" + 
-            "test.env.key : Test Environment Value\n" + 
-            "properties.test.key.string : Properties Test String Value\n" + 
-            "properties.test.key.strings : [Properties Array Value 1, Properties Array Value 2]\n" + 
-            "properties.test.key.bool : true\n" + 
-            "properties.test.key.bools : [true, false, true]\n" + 
-            "properties.test.key.integer : 77\n" + 
-            "properties.test.key.integers : [77, 79, 83]\n" + 
-            "properties.test.key.long : 54353\n" + 
-            "properties.test.key.longs : [54353, 65256, 98432]\n" + 
-            "properties.test.key.float : 6.98\n" + 
-            "properties.test.key.floats : [6.98, 2.23, 1.24]\n" + 
-            "properties.test.key.double : 3.45\n" + 
-            "properties.test.key.doubles : [3.45, 6.76, 9.32]\n" + 
-            "properties.test.key.bigdecimal : 755.87\n" + 
-            "properties.test.key.bigdecimals : [755.87, 876.43, 908.32]\n" + 
-            "properties.test.key.biginteger : 123456789\n" + 
-            "properties.test.key.bigintegers : [123456789, 543987532, 549874348]\n" + 
-            "properties2.test2.key.string : Properties Test String Value\n" + 
+            "configuration:\n" +
+            "---------------\n" +
+            "test.env.key : Test Environment Value\n" +
+            "properties.test.key.string : Properties Test String Value\n" +
+            "properties.test.key.strings : [Properties Array Value 1, Properties Array Value 2]\n" +
+            "properties.test.key.bool : true\n" +
+            "properties.test.key.bools : [true, false, true]\n" +
+            "properties.test.key.integer : 77\n" +
+            "properties.test.key.integers : [77, 79, 83]\n" +
+            "properties.test.key.long : 54353\n" +
+            "properties.test.key.longs : [54353, 65256, 98432]\n" +
+            "properties.test.key.float : 6.98\n" +
+            "properties.test.key.floats : [6.98, 2.23, 1.24]\n" +
+            "properties.test.key.double : 3.45\n" +
+            "properties.test.key.doubles : [3.45, 6.76, 9.32]\n" +
+            "properties.test.key.bigdecimal : 755.87\n" +
+            "properties.test.key.bigdecimals : [755.87, 876.43, 908.32]\n" +
+            "properties.test.key.biginteger : 123456789\n" +
+            "properties.test.key.bigintegers : [123456789, 543987532, 549874348]\n" +
+            "properties2.test2.key.string : Properties Test String Value\n" +
             "---------------"
         );
     }
-    
-    
+
+
     @Test
     public void testFilter() throws ConfigurationException {
-        Configuration conf = builder.buildFromAnnotation(ConfAnnotatedProps.class).filter("properties2");
+        Configuration conf = builder
+            .buildFromAnnotation(ConfAnnotatedProps.class)
+            .filtered("properties2");
         System.out.println(conf);
-        Assertions.assertThat(conf.prefix()).isEqualTo("properties2");
-        Assertions.assertThat(conf.getString("properties.test.key.string")).isEmpty();
-        Assertions.assertThat(conf.getString("properties2.test2.key.string").get()).isEqualTo(VAL_STRING);
+        Assertions.assertThat(conf.get("properties.test.key.string",String.class)).isEmpty();
+        Assertions.assertThat(
+            conf.get("properties2.test2.key.string",String.class).get()
+        ).isEqualTo(VAL_STRING);
+    }
+
+
+    @Test
+    public void testCompose() {
+        HashMap<String,String> map1 = new HashMap<>();
+        map1.put("property.a","a");
+        map1.put("property.b","b");
+        HashMap<String,String> map2 = new HashMap<>();
+        map2.put("property.a","aa");
+        map2.put("property.c","c");
+
+        Configuration conf1 = builder.buildFromMap(map1).appendFromMap(map2);
+        assertThat(conf1.get("property.a",String.class)).contains("aa");
+        assertThat(conf1.get("property.b",String.class)).contains("b");
+        assertThat(conf1.get("property.c",String.class)).contains("c");
+        assertThat(conf1.getList("property.a", String.class)).hasSize(1);
+
+        Configuration conf2 = builder.buildFromMap(map2).appendFromMap(map1);
+        assertThat(conf2.get("property.a",String.class)).contains("a");
+        assertThat(conf2.get("property.b",String.class)).contains("b");
+        assertThat(conf2.get("property.c",String.class)).contains("c");
+        assertThat(conf2.getList("property.a", String.class)).hasSize(1);
+
     }
 
 
     private void assertProperties(Configuration conf) {
-        Assertions.assertThat(conf.getString(KEY_STRING).get()).isEqualTo(VAL_STRING);
-        Assertions.assertThat(conf.getStringList(KEY_STRINGS)).containsExactlyInAnyOrder(
+
+        Assertions.assertThat(conf.get(KEY_STRING,String.class).get()).isEqualTo(VAL_STRING);
+        Assertions.assertThat(conf.getList(KEY_STRINGS,String.class)).containsExactlyInAnyOrder(
             VAL_STRINGS_1,
             VAL_STRINGS_2
         );
-        Assertions.assertThat(conf.getBoolean(KEY_BOOL).get()).isEqualTo(true);
-        Assertions.assertThat(conf.getBooleanList(KEY_BOOLS)).containsExactlyInAnyOrder(true,false,true);
-        Assertions.assertThat(conf.getInteger(KEY_INTEGER).get()).isEqualTo(77);
-        Assertions.assertThat(conf.getIntegerList(KEY_INTEGERS)).containsExactlyInAnyOrder(77,79,83);
-        Assertions.assertThat(conf.getLong(KEY_LONG).get()).isEqualTo(54353L);
-        Assertions.assertThat(conf.getLongList(KEY_LONGS)).containsExactlyInAnyOrder(54353L,65256L,98432L);
-        Assertions.assertThat(conf.getDouble(KEY_DOUBLE).get()).isEqualTo(3.45);
-        Assertions.assertThat(conf.getDoubleList(KEY_DOUBLES)).containsExactlyInAnyOrder(3.45,6.76,9.32);
-        Assertions.assertThat(conf.getFloat(KEY_FLOAT).get()).isEqualTo(6.98f);
-        Assertions.assertThat(conf.getFloatList(KEY_FLOATS)).containsExactlyInAnyOrder(6.98f,2.23f,1.24f);
-        Assertions.assertThat(conf.getBigDecimal(KEY_BIGDECIMAL).get()).isEqualByComparingTo(new BigDecimal(VAL_BIGDECIMAL));
-        Assertions.assertThat(conf.getBigDecimalList(KEY_BIGDECIMALS)).containsExactlyInAnyOrder(
-            new BigDecimal(VAL_BIGDECIMALS_1),
-            new BigDecimal(VAL_BIGDECIMALS_2), 
-            new BigDecimal(VAL_BIGDECIMALS_3)
-        );
-        Assertions.assertThat(conf.getBigInteger(KEY_BIGINTEGER).get()).isEqualByComparingTo(new BigInteger(VAL_BIGINTEGER));
-        Assertions.assertThat(conf.getBigIntegerList(KEY_BIGINTEGERS)).containsExactlyInAnyOrder(
-            new BigInteger(VAL_BIGINTEGERS_1),
-            new BigInteger(VAL_BIGINTEGERS_2), 
-            new BigInteger(VAL_BIGINTEGERS_3)
-        );
+        Assertions.assertThat(conf.get(KEY_BOOL,Boolean.class).get()).isEqualTo(true);
+        Assertions.assertThat(conf.getList(KEY_BOOLS,Boolean.class))
+            .containsExactlyInAnyOrder(true,false,true);
+        Assertions.assertThat(conf.get(KEY_INTEGER,Integer.class).get()).isEqualTo(77);
+        Assertions.assertThat(conf.getList(KEY_INTEGERS,Integer.class))
+            .containsExactlyInAnyOrder(77,79,83);
+        Assertions.assertThat(conf.get(KEY_LONG,Long.class).get()).isEqualTo(54353L);
+        Assertions.assertThat(conf.getList(KEY_LONGS,Long.class))
+            .containsExactlyInAnyOrder(54353L,65256L,98432L);
+        Assertions.assertThat(conf.get(KEY_DOUBLE,Double.class).get()).isEqualTo(3.45);
+        Assertions.assertThat(conf.getList(KEY_DOUBLES,Double.class))
+            .containsExactlyInAnyOrder(3.45,6.76,9.32);
+        Assertions.assertThat(conf.get(KEY_FLOAT,Float.class).get()).isEqualTo(6.98f);
+        Assertions.assertThat(conf.getList(KEY_FLOATS,Float.class))
+            .containsExactlyInAnyOrder(6.98f,2.23f,1.24f);
+        Assertions.assertThat(conf.get(KEY_BIGDECIMAL,BigDecimal.class).get())
+            .isEqualByComparingTo(new BigDecimal(VAL_BIGDECIMAL));
+        Assertions.assertThat(conf.getList(KEY_BIGDECIMALS,BigDecimal.class))
+            .containsExactlyInAnyOrder(
+                new BigDecimal(VAL_BIGDECIMALS_1),
+                new BigDecimal(VAL_BIGDECIMALS_2),
+                new BigDecimal(VAL_BIGDECIMALS_3)
+            );
+        Assertions.assertThat(conf.get(KEY_BIGINTEGER,BigInteger.class).get())
+            .isEqualByComparingTo(new BigInteger(VAL_BIGINTEGER));
+        Assertions.assertThat(conf.getList(KEY_BIGINTEGERS,BigInteger.class))
+            .containsExactlyInAnyOrder(
+                new BigInteger(VAL_BIGINTEGERS_1),
+                new BigInteger(VAL_BIGINTEGERS_2),
+                new BigInteger(VAL_BIGINTEGERS_3)
+            );
 
         assertNullProperties(conf);
     }
@@ -268,28 +331,14 @@ public class TestConfigurationBuilder {
 
     private void assertNullProperties(Configuration conf) {
         String nonExistingKey = "xxx";
-        Assertions.assertThat(conf.getString(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getStringList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBoolean(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBooleanList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getInteger(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getIntegerList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getLong(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getLongList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getDouble(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getDoubleList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getFloat(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getFloatList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBigDecimal(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBigDecimalList(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBigInteger(nonExistingKey)).isEmpty();
-        Assertions.assertThat(conf.getBigIntegerList(nonExistingKey)).isEmpty();
+        Assertions.assertThat(conf.get(nonExistingKey,String.class)).isEmpty();
+        Assertions.assertThat(conf.getList(nonExistingKey,String.class)).isEmpty();
     }
 
 
 
     private void assertEnvProperties(Configuration conf) {
-        Assertions.assertThat(conf.getString(KEY_ENV).get()).isEqualTo(VAL_ENV);
+        Assertions.assertThat(conf.get(KEY_ENV,String.class).get()).isEqualTo(VAL_ENV);
     }
 
 }

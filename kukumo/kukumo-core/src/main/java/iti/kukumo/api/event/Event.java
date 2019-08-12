@@ -13,6 +13,8 @@ public class Event<T> {
     public static final String PLAN_RUN_FINISHED = "PLAN_RUN_FINISHED";
     public static final String NODE_RUN_STARTED = "NODE_RUN_STARTED";
     public static final String NODE_RUN_FINISHED = "NODE_RUN_FINISHED";
+    public static final String BEFORE_RUN_BACKEND_STEP = "BEFORE_RUN_BACKEND_STEP";
+    public static final String AFTER_RUN_BACKEND_STEP = "AFTER_RUN_BACKEND_STEP";
 
     private final String type;
     private final Instant instant;

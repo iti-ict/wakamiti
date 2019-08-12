@@ -21,8 +21,8 @@ import iti.kukumo.api.plan.PlanNode;
 
 public class PlanRunner  {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlanRunner.class);
-    private static final ConfigurationBuilder confBuilder = new ConfigurationBuilder();
+    private static final Logger LOGGER = Kukumo.LOGGER;
+    private static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
 
     private final String uniqueId;
     private final Configuration configuration;
@@ -57,7 +57,7 @@ public class PlanRunner  {
 
 
     private void writeOutputFile() {
-        Optional<String> outputPath = configuration.getString(KukumoConfiguration.OUTPUT_FILE_PATH);
+        Optional<String> outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class);
         if (outputPath.isPresent()) {
             try(Writer writer = new FileWriter(outputPath.get())) {
                 Kukumo.getPlanSerializer().write(writer, plan);

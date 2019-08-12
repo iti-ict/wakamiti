@@ -1,5 +1,7 @@
 package iti.commons.jext.spring;
 
+import java.util.Collections;
+
 import iti.commons.jext.ExtensionLoader;
 
 /**
@@ -10,6 +12,10 @@ public class SpringExtensionLoader implements ExtensionLoader  {
 
     @Override
     public <T> Iterable<T> load(Class<T> type, ClassLoader loader) {
-        return ApplicationContextProvider.applicationContext().getBeansOfType(type).values();
+    	if (ApplicationContextProvider.hasContext()) {
+    		return ApplicationContextProvider.applicationContext().getBeansOfType(type).values();
+    	} else {
+    		return Collections.emptyList();
+    	}
     }
 }

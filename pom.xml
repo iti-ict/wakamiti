@@ -28,6 +28,7 @@
         <module>kukumo-tools/configurer</module>
         <module>kukumo-tools/maven-fetcher</module>
         <module>kukumo-tools/testing-embedded-db</module>
+        <module>kukumo-tools/slf4j-jansi</module>
         <!-- kukumo -->
         <module>kukumo/kukumo-core</module>
         <module>kukumo/kukumo-launcher</module>
@@ -40,6 +41,7 @@
         <module>kukumo-plugins/kukumo-rest-l10n</module>
         <module>kukumo-plugins/kukumo-db</module>
         <module>kukumo-plugins/kukumo-db-l10n</module>
+        <module>kukumo-plugins/kukumo-spring</module>
 
     </modules>
 
@@ -98,6 +100,8 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
+
 
         <!-- ====================================== -->
         <!-- test -->

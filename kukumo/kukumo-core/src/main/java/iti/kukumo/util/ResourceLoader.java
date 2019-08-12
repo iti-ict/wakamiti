@@ -1,5 +1,6 @@
 package iti.kukumo.util;
 
+import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.Resource;
 import iti.kukumo.api.extensions.ResourceType;
@@ -27,7 +28,7 @@ public class ResourceLoader {
     private static final String CLASSPATH_PROTOCOL = "classpath:";
     private static final String FILE_PROTOCOL = "file";
     private static final File APPLICATION_FOLDER = new File(System.getProperty("user.dir"));
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceLoader.class);
+    private static final Logger LOGGER = Kukumo.LOGGER;
 
 
     // this specific ResourceBundle Control allows read bundles with different charsets
@@ -50,7 +51,6 @@ public class ResourceLoader {
             String resourceName = toResourceName(bundleName, "properties");
             List<URL> urls = Collections.list(loader.getResources(resourceName));
             if (urls.isEmpty()) {
-                //throw new IOException("Resource " + resourceName + " is not found in classpath");
                 return null;
             }
             List<ResourceBundle> alternativeResourceBundles = new ArrayList<>();
@@ -191,6 +191,12 @@ public class ResourceLoader {
         List<Resource<?>> discovered = new ArrayList<>();
         for (String path : paths) {
             discovered.addAll(discoverResources(path, filenameFilter, parser));
+        }
+        if (LOGGER.isInfoEnabled() ) {
+            discovered.forEach(resource -> LOGGER.info(
+                "Discovered resource {}",
+                resource.absolutePath()
+            ));
         }
         return discovered;
     }

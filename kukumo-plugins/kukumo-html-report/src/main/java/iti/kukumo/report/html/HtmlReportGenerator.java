@@ -36,7 +36,7 @@ public class HtmlReportGenerator implements Reporter {
     private static final String BLOCK = "block";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlReportGenerator.class);
-    
+
     private static final int MILLIS_IN_SEC = 1000;
     private static final int MILLIS_IN_MINUTE = 60000;
     private static final int MILLIS_IN_HOUR = 3600000;
@@ -51,7 +51,7 @@ public class HtmlReportGenerator implements Reporter {
 
     @Override
     public void report(PlanNodeDescriptor root) {
-        
+
         File outputFileFolder = outputFile.getParentFile();
         if (outputFileFolder != null && !outputFileFolder.exists()) {
             outputFileFolder.mkdirs();
@@ -68,18 +68,18 @@ public class HtmlReportGenerator implements Reporter {
     public void setOutputFile(String outputFile) {
         this.outputFile = new File(outputFile);
     }
-    
+
     public void setReportLocale(Locale reportLocale) {
         this.resourceBundle = Kukumo.getResourceLoader().resourceBundle("messages", reportLocale);
         this.formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL,FormatStyle.MEDIUM).withLocale(reportLocale);
     }
-    
+
     public void setCssFile(String cssFile) {
         this.cssFile = cssFile;
     }
 
-    
-    
+
+
     public void generate(PlanNodeDescriptor plan, Writer writer) throws IOException {
         this.domIDs = new HashMap<>();
         registerIDs(plan, domIDs, 0);
@@ -125,9 +125,9 @@ public class HtmlReportGenerator implements Reporter {
         boolean expandable = (node.getChildren() != null || node.getDataTable() != null || node.getDocument() != null);
         boolean childrenExpanded = (node.getResult() != Result.PASSED);
         boolean sortNextChildren = (sortChildren && node.isTestCase()) ? false : sortChildren;
-        
+
         return li(
-            div(    
+            div(
             attachSwitchVisibility(div(div(
                 span().withClass("icon_"+node.getResult()).withTitle(node.getResult().toString()),
                 span(emptyIfNull(node.getId())).withClass("id"),
@@ -145,7 +145,7 @@ public class HtmlReportGenerator implements Reporter {
               .withId(domIDs.get(node))
              ,domIdChildren,BLOCK,domIdExpandIcon,INLINE, domIdData, BLOCK, domIdDesc, BLOCK)
             .withStyle("display:flex;justify-content:space-between")
-            
+
                     )
                 ,
             divDescription(node)
@@ -160,9 +160,9 @@ public class HtmlReportGenerator implements Reporter {
         ).withClass(node.isTestCase()?"testCase":"");
     }
 
-    
-    
-    
+
+
+
     private ContainerTag divStatistics(PlanNodeDescriptor node, boolean includeText) {
         List<Tag<?>> tags = new ArrayList<>();
         if (containsTestCases(node) && !node.isTestCase()) {
@@ -185,9 +185,9 @@ public class HtmlReportGenerator implements Reporter {
         return div(tags.toArray(new ContainerTag[0])).withStyle("display:flex;align-items: center");
     }
 
-    
-    
-    
+
+
+
     private boolean containsTestCases(PlanNodeDescriptor node) {
         if (node.isTestCase() || node.getChildren() == null) {
             return node.isTestCase();
@@ -216,7 +216,7 @@ public class HtmlReportGenerator implements Reporter {
          }
          return div(tags.toArray(new ContainerTag[0])).withClass("tags");
     }
-    
+
     private Tag<?> divDescription(PlanNodeDescriptor node) {
         boolean hasDescription = (node.getDescription() != null && !node.getDescription().isEmpty());
         String description = "";
@@ -226,7 +226,7 @@ public class HtmlReportGenerator implements Reporter {
         return hasDescription ? p(rawHtml(description)).withClass("description") : div();
     }
 
-    
+
     private ContainerTag divErrorDetails(PlanNodeDescriptor node) {
         List<Tag<?>> tags = new ArrayList<>();
         if (node.getResult() == Result.ERROR || node.getResult() == Result.FAILED) {
@@ -282,7 +282,7 @@ public class HtmlReportGenerator implements Reporter {
               div(
                 span().withClass("icon_"+plan.getResult()),
                 span( plan.getResult() == Result.PASSED ? msg("plan.PASSED") : msg("plan.NOT_PASSED"))
-              ),  
+              ),
               span(datetime(plan.getStartInstant()))
             ).withClass(plan.getResult().toString()),
            divPercentage(plan),
@@ -303,7 +303,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    
+
     private String formatDuration(long timeInMillis) {
         long hours = timeInMillis / MILLIS_IN_HOUR;
         timeInMillis -= hours * MILLIS_IN_HOUR;
@@ -327,10 +327,10 @@ public class HtmlReportGenerator implements Reporter {
 
 
 
-    
+
     private String css() throws IOException {
-        InputStream inputStream = 
-            cssFile == null ?         
+        InputStream inputStream =
+            cssFile == null ?
             Thread.currentThread().getContextClassLoader().getResourceAsStream("style.css") :
             new FileInputStream(cssFile)
         ;
@@ -348,8 +348,8 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    
-    
+
+
 
 
     private <T> Collection<T> emptyIfNull(Collection<T> collection) {
@@ -364,8 +364,8 @@ public class HtmlReportGenerator implements Reporter {
         return formatter.format(LocalDateTime.parse(dateTimeISO));
     }
 
-    
-    
+
+
     private String msg(String message, Object...args) {
         String translatedMessage = resourceBundle.getString(message);
         if (translatedMessage == null) {
@@ -405,8 +405,8 @@ public class HtmlReportGenerator implements Reporter {
     private <T> DomContent foreach(T[] array, Function<? super T,DomContent> function) {
         return TagCreator.each(Arrays.asList(array),function);
     }
-    
-    
+
+
     private Collection<PlanNodeDescriptor> sortByResult(boolean sort, Collection<PlanNodeDescriptor> nodes) {
         if (!sort) {
             return nodes;

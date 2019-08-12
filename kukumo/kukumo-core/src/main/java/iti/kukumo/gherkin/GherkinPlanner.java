@@ -55,7 +55,7 @@ public class GherkinPlanner implements Planner {
 
 
     protected void configureFilterFromTagExpression(Configuration configuration) {
-        String tagFilterExpression = configuration.getString(KukumoConfiguration.TAG_FILTER).orElse("");
+        String tagFilterExpression = configuration.get(KukumoConfiguration.TAG_FILTER,String.class).orElse("");
         if (tagFilterExpression != null && !tagFilterExpression.isEmpty()) {
             this.scenarioFilter = Kukumo.getTagFilter(tagFilterExpression)::filter;
         }
@@ -63,7 +63,7 @@ public class GherkinPlanner implements Planner {
 
 
     protected void configureIdTagPattern(Configuration configuration) {
-        this.idTagPattern = configuration.getString(KukumoConfiguration.ID_TAG_PATTERN)
+        this.idTagPattern = configuration.get(KukumoConfiguration.ID_TAG_PATTERN,String.class)
                 .map(this::nullIfEmpty)
                 .map(Pattern::compile)
                 .orElse(null);
@@ -422,8 +422,8 @@ public class GherkinPlanner implements Planner {
         }
         return suffix == null ? idTags.get(0) : idTags.get(0) + suffix;
     }
-    
-    
+
+
     protected String id(List<Tag> tags, String nodeName) {
         return id(tags,nodeName,null);
     }

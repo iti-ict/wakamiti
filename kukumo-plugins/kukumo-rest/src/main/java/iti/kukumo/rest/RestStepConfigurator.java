@@ -16,8 +16,8 @@ import java.net.URL;
  *         Created by ITI on 12/03/19
  */
 @Extension(
-    provider = "iti.kukumo", 
-    name ="rest-configurator", 
+    provider = "iti.kukumo",
+    name ="rest-configurator",
     extensionPoint = "iti.kukumo.api.extensions.Configurator"
 )
 public class RestStepConfigurator implements Configurator<RestStepContributor> {
@@ -35,17 +35,17 @@ public class RestStepConfigurator implements Configurator<RestStepContributor> {
             RestAssured.config().logConfig(new LogConfig().defaultStream(new RestAssuredLogger(logger).getPrintStream()));
 
 
-            contributor.setBaseURL(new URL(configuration.getString(
-                    RestConfiguration.BASE_URL).orElse(
+            contributor.setBaseURL(new URL(configuration.get(
+                    RestConfiguration.BASE_URL,String.class).orElse(
                     RestConfiguration.DefaultValues.BASE_URL)
             ));
-            contributor.setContentType(configuration.getString(
-                    RestConfiguration.CONTENT_TYPE).orElse(
+            contributor.setContentType(configuration.get(
+                    RestConfiguration.CONTENT_TYPE,String.class).orElse(
                     RestConfiguration.DefaultValues.CONTENT_TYPE)
             );
 
-            contributor.setFailureHttpCodeAssertion(Matchers.lessThan(configuration.getInteger(
-                    RestConfiguration.FAILURE_HTTP_CODE_THRESHOLD).orElse(
+            contributor.setFailureHttpCodeAssertion(Matchers.lessThan(configuration.get(
+                    RestConfiguration.FAILURE_HTTP_CODE_THRESHOLD,Integer.class).orElse(
                     RestConfiguration.DefaultValues.FAILURE_HTTP_CODE_THRESHOLD)
             ));
 

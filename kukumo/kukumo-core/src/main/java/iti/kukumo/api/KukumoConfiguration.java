@@ -10,7 +10,7 @@ import iti.commons.configurer.Property;
 public class KukumoConfiguration {
 
     public static final String PREFIX = "kukumo";
-    
+
     // basic configuration
 
     /** Types of resources to be discovered and processed */
@@ -18,7 +18,7 @@ public class KukumoConfiguration {
 
     /** Language used by a resource */
     public static final String LANGUAGE = "language";
-    
+
     /** Path (file-based or classpath-based) where the resource files are located */
     public static final String RESOURCE_PATH = "resourcePath";
 
@@ -30,13 +30,13 @@ public class KukumoConfiguration {
 
     /** Output file path */
     public static final String OUTPUT_FILE_PATH = "outputFilePath";
-    
+
     /** Report sources */
     public static final String REPORT_SOURCE = "report.source";
-    
+
     /** Enable / disable the report generation */
     public static final String REPORT_GENERATION = "report.generation";
-    
+
     /** Tag Expression filter */
     public static final String TAG_FILTER = "tagFilter";
 
@@ -58,12 +58,12 @@ public class KukumoConfiguration {
     /** Tag used for annotate a feature as an implementation */
     public static final String REDEFINITION_IMPLEMENTATION_TAG = "redefinition.implementationTag";
 
-    
-
-    
 
 
-    
+
+
+
+
     @Configurator(properties={
         @Property(key=RESOURCE_PATH,value="."),
         @Property(key=OUTPUT_FILE_PATH,value=Defaults.DEFAULT_OUTPUT_FILE_PATH),
@@ -85,15 +85,16 @@ public class KukumoConfiguration {
     }
 
 
-    
+
     public static Configuration defaultConfiguration() throws ConfigurationException {
-        return new ConfigurationBuilder()
-                .buildFromEnvironment(false).filter(PREFIX)
+        return ConfigurationBuilder.instance()
+                .buildFromEnvironment(false)
+                .filtered(PREFIX)
                 .appendFromAnnotation(Defaults.class);
         // TODO append from file
     }
 
-    
+
     private KukumoConfiguration() {
         // avoid instantation
     }

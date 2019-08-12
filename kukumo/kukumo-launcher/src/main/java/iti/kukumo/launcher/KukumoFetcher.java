@@ -18,6 +18,8 @@ import java.util.Optional;
  */
 public class KukumoFetcher {
 
+	private final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
+	
 
     public void fetch(Arguments arguments) {
         try  {
@@ -33,11 +35,11 @@ public class KukumoFetcher {
             arguments.mavenFetcherProperties().put("localRepository",mavenRepo.toString());
 
             KukumoLauncher.logger().info("Fetching dependencies...");
-            Configuration conf = new ConfigurationBuilder().buildFromMap(arguments.mavenFetcherProperties());
+            Configuration conf = confBuilder.buildFromMap(arguments.mavenFetcherProperties());
 
             Optional<String> confFile = arguments.confFile();
             if (confFile.isPresent()) {
-                conf = conf.appendFromPath(confFile.get()).inner("mavenFetcher");
+                conf = confBuilder.buildFromClasspathResourceOrURI(confFile.get()).inner("mavenFetcher");
             }
             
             if (arguments.mustClean()) {
@@ -77,8 +79,8 @@ public class KukumoFetcher {
     private void addModulesFromConfigFile(Arguments arguments) throws ConfigurationException {
         File confFile = new File(arguments.confFile().orElse("kukumo.yaml"));
         if (confFile.exists()) {
-            Configuration conf = new ConfigurationBuilder().buildFromPath(confFile.getPath());
-            arguments.modules().addAll(conf.getStringList("kukumo.launcher.modules"));
+            Configuration conf = confBuilder.buildFromClasspathResourceOrURI(confFile.getPath());
+            arguments.modules().addAll(conf.getList("kukumo.launcher.modules",String.class));
         }
     }
     

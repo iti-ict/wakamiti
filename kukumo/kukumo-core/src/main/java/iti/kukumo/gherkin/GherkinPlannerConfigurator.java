@@ -26,7 +26,7 @@ public class GherkinPlannerConfigurator implements Configurator<GherkinPlanner> 
     public void configure(GherkinPlanner contributor, Configuration configuration) {
         contributor.configureFilterFromTagExpression(configuration);
         contributor.configureIdTagPattern(configuration);
-        contributor.setRedefinitionEnabled(configuration.getBoolean(KukumoConfiguration.REDEFINITION_ENABLED)
+        contributor.setRedefinitionEnabled(configuration.get(KukumoConfiguration.REDEFINITION_ENABLED,Boolean.class)
             .orElse(Boolean.TRUE));
         contributor.setRedefinitionHelper(new GherkinPlanRedefiner(configuration,contributor));
     }

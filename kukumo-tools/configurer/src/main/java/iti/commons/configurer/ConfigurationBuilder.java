@@ -30,7 +30,9 @@ public interface ConfigurationBuilder {
 
 
     /**
-     * Create a new configuration composed of other configurations
+     * Create a new configuration composed of other configurations.
+     * When the same property is present in two or more configurations,
+     * the value from the outer configuration will prevail.
      */
     Configuration compose(Configuration... configurations);
 
@@ -65,26 +67,29 @@ public interface ConfigurationBuilder {
 
     /**
      * Create a new configuration from the environment properties
-     * @param includeSystemProperties When the value is <tt>true</tt>, the configuration will include
-     * also every system variable.
+     * @param includeSystemProperties When the value is <tt>true</tt>, the configuration will
+     * include also every system variable.
      */
     Configuration buildFromEnvironment(boolean includeSystemProperties);
 
 
     /**
      * Create a new configuration from the resource of the specified path
+     * @throws ConfigurationException if the configuration was not loaded
      */
     Configuration buildFromPath(Path path);
 
 
     /**
      * Create a new configuration from the specified URL
+     * @throws ConfigurationException if the configuration was not loaded
      */
     Configuration buildFromURL(URL url);
 
 
     /**
      * Create a new configuration from the specified URI
+     * @throws ConfigurationException if the configuration was not loaded
      */
     Configuration buildFromURI(URI uri);
 
@@ -120,7 +125,7 @@ public interface ConfigurationBuilder {
      * {@link ClassLoader#getResources(String)} method of the specified class loader
      */
     Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader);
-    
-    
+
+
 
 }

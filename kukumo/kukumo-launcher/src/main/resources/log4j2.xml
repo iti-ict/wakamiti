@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+    <Properties>
+        <Property name="log4j.skipJansi">false</Property>
+    </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
-            <PatternLayout
-                    pattern="%highlight{[%level]}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green bold, DEBUG=white bold, TRACE=cyan} %msg%n"/>
+            <PatternLayout pattern="%m%n"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
         </Root>
+        <Logger name="iti.kukumo.logs" level="info"/>
+        <Logger name="iti.kukumo.core.backend.ExpressionMatcher" level="info"/>
+        <Logger name="iti.kukumo.core.backend.DefaultBackendFactory" level="info"/>
     </Loggers>
 </Configuration>

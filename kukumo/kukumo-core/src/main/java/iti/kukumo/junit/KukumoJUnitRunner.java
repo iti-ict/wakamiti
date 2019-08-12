@@ -7,6 +7,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +21,6 @@ import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
@@ -32,17 +34,17 @@ import iti.kukumo.api.plan.PlanNode;
 
 public class KukumoJUnitRunner extends Runner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.logs");
-    private static final ConfigurationBuilder confBuilder = new ConfigurationBuilder();
-    
-    private final String uniqueId;
-    private final Configuration configuration;
-    private final Class<?> configurationClass;
+    protected static final Logger LOGGER = Kukumo.LOGGER;
+    protected static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
+
+    protected final String uniqueId;
+    protected final Configuration configuration;
+    protected final Class<?> configurationClass;
     private PlanNode plan;
     private List<JUnitPlanNodeRunner> children;
     private Description description;
 
-    
+
 
 
     public KukumoJUnitRunner(Class<?> configurationClass) throws InitializationError {
@@ -54,15 +56,15 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-   
+
 
 
     @Override
     public void run(RunNotifier notifier) {
         Kukumo.configureEventObservers(configuration);
-        Kukumo.publishEvent(Event.PLAN_RUN_FINISHED,getPlan().obtainDescriptor());
+        Kukumo.publishEvent(Event.PLAN_RUN_STARTED,getPlan().obtainDescriptor());
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
-        
+
         for (JUnitPlanNodeRunner child: getChildren()) {
             try {
                 child.runNode(notifier,false);
@@ -70,15 +72,15 @@ public class KukumoJUnitRunner extends Runner {
                 LOGGER.error("{}",e.getMessage(),e);
             }
         }
-        
+
         // refactor this line in the future when multithreading is supported
         executeAnnotatedMethod(configurationClass, AfterClass.class);
-        
+
         Kukumo.publishEvent(Event.PLAN_RUN_FINISHED,getPlan().obtainDescriptor());
         writeOutputFile();
     }
 
-    
+
     public List<JUnitPlanNodeRunner> getChildren() {
         if (children == null) {
             children = buildRunners();
@@ -107,7 +109,7 @@ public class KukumoJUnitRunner extends Runner {
         return plan;
     }
 
-    
+
     protected List<JUnitPlanNodeRunner> buildRunners()  {
         return getPlan().children().map(node -> {
             Configuration featureConfiguration = configuration.append(
@@ -125,15 +127,15 @@ public class KukumoJUnitRunner extends Runner {
         try {
             return KukumoConfiguration.defaultConfiguration().appendFromAnnotation(testedClass);
         } catch (ConfigurationException e) {
-            LOGGER.error("Error loading configuration from class {}", testedClass);
+            LOGGER.error("Error loading configuration from {} : {}", testedClass, e.getMessage(), e);
             throw new InitializationError(e);
         }
     }
 
 
-    
-    
-    private void validateAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation) 
+
+
+    private void validateAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation)
     throws InitializationError {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
@@ -148,7 +150,7 @@ public class KukumoJUnitRunner extends Runner {
             }
         }
     }
-    
+
     private void executeAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation) {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
@@ -160,18 +162,22 @@ public class KukumoJUnitRunner extends Runner {
             }
         }
     }
-    
-    
-    
+
+
+
     private void writeOutputFile() {
-        Optional<String> outputPath = configuration.getString(KukumoConfiguration.OUTPUT_FILE_PATH);
+        Optional<String> outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class);
         if (outputPath.isPresent()) {
-            try(Writer writer = new FileWriter(outputPath.get())) {
-                Kukumo.getPlanSerializer().write(writer, plan);
+            try {
+                Path path = Paths.get(outputPath.get()).toAbsolutePath();
+                Files.createDirectories(path.getParent());
+                try(Writer writer = new FileWriter(outputPath.get())) {
+                    Kukumo.getPlanSerializer().write(writer, plan);
+                }
             } catch (IOException e) {
                 LOGGER.error("Error writing output file {} : {}", outputPath.get(), e.getMessage(), e);
             }
         }
     }
-    
+
 }

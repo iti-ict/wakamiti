@@ -4,6 +4,7 @@ import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
 import iti.commons.configurer.Configuration;
+import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GherkinPlanRedefiner.class);
+    private static final Logger LOGGER = Kukumo.LOGGER;
 
     private final String definitionTag;
     private final String implementationTag;
@@ -29,10 +30,10 @@ public class GherkinPlanRedefiner {
     public GherkinPlanRedefiner(Configuration configuration, GherkinPlanner factory) {
         this.factory = factory;
         this.definitionTag = configuration
-                .getString(KukumoConfiguration.REDEFINITION_DEFINITION_TAG)
+                .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
                 .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG);
         this.implementationTag = configuration
-                .getString(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG)
+                .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG,String.class)
                 .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
     }
 

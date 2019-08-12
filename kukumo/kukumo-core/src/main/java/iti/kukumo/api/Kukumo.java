@@ -3,6 +3,7 @@ package iti.kukumo.api;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
+import iti.commons.slf4jjansi.AnsiLogger;
 import iti.kukumo.api.event.EventDispatcher;
 import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.plan.PlanNode;
@@ -29,11 +30,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static iti.kukumo.api.KukumoConfiguration.*;
+
 
 
 public class Kukumo {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("kukumo.logs");
+    public static final Logger LOGGER = AnsiLogger.of(LoggerFactory.getLogger(Kukumo.class));
 
     private static final ExtensionManager extensionManager =
             new ExtensionManager(Thread.currentThread().getContextClassLoader());
@@ -47,22 +50,28 @@ public class Kukumo {
 
 
     /**
-     * Attempt to create a iti.kukumo.test.gherkin.plan using the resource type and the feature path defined in then received configuration.
+     * Attempt to create a iti.kukumo.test.gherkin.plan using the resource type and the feature
+     * path defined in then received configuration.
      * @param configuration
      * @return A new iti.kukumo.test.gherkin.plan ready to be executed
      * @throws KukumoException if the iti.kukumo.test.gherkin.plan couldn't be created
      */
-    public static PlanNode createPlanFromConfiguration(Configuration configuration) throws KukumoException {
+    public static PlanNode createPlanFromConfiguration(Configuration configuration) {
 
-        List<String> resourceTypeNames = configuration.getStringList(KukumoConfiguration.RESOURCE_TYPES);
+        List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES,String.class);
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
         }
-        List<String> discoveryPaths = configuration.getStringList(KukumoConfiguration.RESOURCE_PATH);
+        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH,String.class);
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {
-            plans.add( createPlanForResourceType(resourceTypeName, discoveryPaths, configuration));
+            Optional<PlanNode> plan = createPlanForResourceType(resourceTypeName, discoveryPaths, configuration);
+            plan.ifPresent(plans::add);
         }
+        if (plans.isEmpty()) {
+            throw new KukumoException("No test plans created");
+        }
+        AnsiLogger.setAnsiEnabled();
         return mergePlans(plans);
     }
 
@@ -82,14 +91,23 @@ public class Kukumo {
 
 
 
-    public static PlanNode createPlanForResourceType(String resourceTypeName, List<String> discoveryPaths, Configuration configuration) {
-        ResourceType<?> resourceType = nonOptional(getResourceTypeByName(resourceTypeName),
-                "Resource type '{}' is not provided by any contributor",resourceTypeName);
-        List<Resource<?>> resources = getResourceLoader().discoverResources(discoveryPaths, resourceType);
-        Planner planner = nonOptional(getPlannerFor(resourceType),
-                "No planner suitable for resource type {} has been found",resourceType);
-
-        return configure(planner,configuration).createPlan(resources);
+    public static Optional<PlanNode> createPlanForResourceType(String resourceTypeName, List<String> discoveryPaths, Configuration configuration) {
+        Optional<ResourceType<?>> resourceType = getResourceTypeByName(resourceTypeName);
+        if (!resourceType.isPresent()) {
+            LOGGER.warn("Resource type {} is not provided by any contributor",resourceTypeName);
+            return Optional.empty();
+        }
+        List<Resource<?>> resources = getResourceLoader().discoverResources(discoveryPaths, resourceType.get());
+        if (resources.isEmpty()) {
+            LOGGER.warn("No resources of type {}",resourceTypeName);
+            return Optional.empty();
+        }
+        Optional<Planner> planner = getPlannerFor(resourceType.get());
+        if (!planner.isPresent()) {
+            LOGGER.warn("No planner suitable for resource type {} has been found",resourceType);
+            return Optional.empty();
+        }
+        return Optional.of(configure(planner.get(),configuration).createPlan(resources));
     }
 
 
@@ -164,7 +182,7 @@ public class Kukumo {
     public static PlanSerializer getPlanSerializer() {
         return planSerializer;
     }
-    
+
     public static ExtensionManager getExtensionManager() {
         return extensionManager;
     }
@@ -202,15 +220,24 @@ public class Kukumo {
         getEventDispatcher().observers().forEach(observer -> configure(observer,configuration));
     }
 
+    public static void addEventDispatcherObserver(EventObserver observer) {
+        getEventDispatcher().addObserver(observer);
+    }
+
+    public static void removeEventDispatcherObserver(EventObserver observer) {
+        getEventDispatcher().removeObserver(observer);
+    }
+
 
     public static <T> void publishEvent(String eventType, T data) {
         getEventDispatcher().publishEvent(eventType, data);
     }
 
 
-    public static PlanNode executePlan(PlanNode plan, Configuration configuration) throws IOException {
+    public static PlanNode executePlan(PlanNode plan, Configuration configuration)
+    throws IOException {
         PlanNode result = new PlanRunner(plan, configuration).run();
-        if (configuration.getBoolean(KukumoConfiguration.REPORT_GENERATION).orElse(true)) {
+        if (configuration.get(KukumoConfiguration.REPORT_GENERATION,Boolean.class).orElse(true)) {
             Kukumo.report(configuration);
         }
         return result;
@@ -225,7 +252,7 @@ public class Kukumo {
             return;
         }
         Path sourceFolder = Paths.get(nonOptional(
-            configuration.getString(KukumoConfiguration.REPORT_SOURCE),
+            configuration.get(KukumoConfiguration.REPORT_SOURCE,String.class),
             "Report source is not defined. Please configure property {}",
             KukumoConfiguration.REPORT_SOURCE
         ));

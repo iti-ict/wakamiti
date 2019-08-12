@@ -1,5 +1,13 @@
 package iti.kukumo.core.runner;
 
+import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
@@ -7,19 +15,12 @@ import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.api.plan.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class PlanNodeRunner  {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.logs");
-    private static final String LOG_SEPARATOR = "-------------------------------------------";
+    private static final Logger LOGGER = Kukumo.LOGGER;
 
-    protected enum State {PREPARED, RUNNING, FINISHED};
+    protected enum State {PREPARED, RUNNING, FINISHED}
 
     private final PlanNode node;
     private final String uniqueId;
@@ -78,18 +79,22 @@ public class PlanNodeRunner  {
         Kukumo.publishEvent(Event.NODE_RUN_STARTED, node.obtainDescriptor());
         Result result;
         if (!getChildren().isEmpty()) {
-            if (node.isTestCase() && LOGGER.isInfoEnabled()) {
-                LOGGER.info(LOG_SEPARATOR);
-                LOGGER.info("{} {}", node.keyword(), node.name());
-                LOGGER.info(LOG_SEPARATOR);
+
+            if (node.isTestCase()) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("");
+                    LOGGER.info("@|bold,white,underline {} {}|@", emptyIfNull(node.keyword()), emptyIfNull(node.name()));
+                }
+                getBackend().ifPresent(Backend::setUp);
             }
-            if (node.isTestCase() && getBackend().isPresent()) {
-                getBackend().get().setUp();
+
+            result = runChildren();
+
+            if (node.isTestCase()) {
+                getBackend().ifPresent(Backend::tearDown);
+                LOGGER.info("");
             }
-            result = runChildren();    
-            if (node.isTestCase() && getBackend().isPresent()) {
-                getBackend().get().tearDown();
-            }
+
         } else if (node instanceof PlanStep){
             result = runStep(forceSkip);
         } else {
@@ -131,14 +136,39 @@ public class PlanNodeRunner  {
 
 
     protected void notifyAndLogStepResult(PlanStep step) {
-        if (step.getError().isPresent()) {
-            LOGGER.error("[{}] {} : {} {}\n\t{}", step.getResult(), step.source(), step.keyword(), step.name(), step.getError().get().getLocalizedMessage());
-        } else if (step.getResult() == Result.PASSED) {
-            LOGGER.info("[{}] {} : {} {}", step.getResult(), step.source(), step.keyword(), step.name());
-        } else {
-            LOGGER.warn("[{}] {} : {} {}", step.getResult(), step.source(), step.keyword(), step.name());
+        if (step.isVoid()) {
+            return;
         }
-        step.getError().ifPresent(error->LOGGER.debug("{}",error.getLocalizedMessage(), error));
+        String duration = (
+           step.getResult() == Result.SKIPPED ? "" :
+           "("+ String.valueOf(Duration.between(step.getStartInstant(),step.getFinishInstant()).toMillis() / 1000f) + ")"
+        );
+        String errorMsg = step.getError().map(Throwable::getLocalizedMessage).orElse("");
+        String messageColor;
+        BiConsumer<String,Object[]> logger;
+        switch (step.getResult()) {
+            case PASSED:
+                messageColor = "green";
+                logger = LOGGER::info;
+                break;
+            case ERROR:
+            case FAILED:
+                messageColor = "red";
+                logger = LOGGER::info;
+                break;
+            case SKIPPED:
+                messageColor = "faint";
+                logger = LOGGER::info;
+                break;
+            case UNDEFINED:
+                messageColor = "yellow,faint";
+                logger = LOGGER::info;
+                break;
+            default: throw new IllegalStateException();
+        }
+        String message = "[@|bold,"+messageColor+" {}|@] @|faint {}|@ : @|cyan {}|@ {} @|faint {}|@ @|"+messageColor+" {}|@";
+        logger.accept(message, new Object[]{step.getResult(), step.source(), emptyIfNull(step.keyword()), step.name(), duration, errorMsg});
+        step.getError().ifPresent(error->LOGGER.debug("stack trace:", error));
     }
 
 
@@ -169,6 +199,11 @@ public class PlanNodeRunner  {
         return node;
     }
 
+
+
+    private static Object emptyIfNull(Object value) {
+        return value == null ? "" : value;
+    }
 
 
 

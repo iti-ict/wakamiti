@@ -13,7 +13,7 @@ import java.util.Optional;
 @Extension(provider="iti.kukumo", name="kukumo-db-step-config", version="1.0")
 public class DatabaseStepConfigurator implements Configurator<DatabaseStepContributor> {
 
-    
+
     @Override
     public boolean accepts(Object contributor) {
         return contributor instanceof DatabaseStepContributor;
@@ -23,33 +23,33 @@ public class DatabaseStepConfigurator implements Configurator<DatabaseStepContri
     @Override
     public void configure(DatabaseStepContributor contributor, Configuration configuration) {
 
-        Optional<String> url = configuration.getString(DatabaseStepConfiguration.DATABASE_CONNECTION_URL);
+        Optional<String> url = configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_URL,String.class);
         if (url.isPresent()) {
-            String user = configuration.getString(DatabaseStepConfiguration.DATABASE_CONNECTION_USERNAME).orElse("");
-            String password = configuration.getString(DatabaseStepConfiguration.DATABASE_CONNECTION_PASSWORD).orElse("");
+            String user = configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_USERNAME,String.class).orElse("");
+            String password = configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_PASSWORD,String.class).orElse("");
             contributor.setConnectionParameters(new ConnectionParameters(url.get(),user,password));
         }
 
         contributor.setXlsIgnoreSheetRegex(
-            configuration.getString(DatabaseStepConfiguration.DATABASE_XLS_IGNORE_SHEET_PATTERN)
+            configuration.get(DatabaseStepConfiguration.DATABASE_XLS_IGNORE_SHEET_PATTERN,String.class)
             .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_XLS_IGNORE_SHEET_PATTERN)
         );
-        
+
         contributor.setXlsNullSymbol(
-            configuration.getString(DatabaseStepConfiguration.DATABASE_XLS_NULL_SYMBOL)
+            configuration.get(DatabaseStepConfiguration.DATABASE_XLS_NULL_SYMBOL,String.class)
             .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_XLS_NULL_SYMBOL)
         );
 
         contributor.setCsvFormat(
-            configuration.getString(DatabaseStepConfiguration.DATABASE_CSV_FORMAT)
+            configuration.get(DatabaseStepConfiguration.DATABASE_CSV_FORMAT,String.class)
             .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_CSV_FORMAT)
         );
-        
+
         contributor.setEnableCleanupUponCompletion(
-             configuration.getBoolean(DatabaseStepConfiguration.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION)
+             configuration.get(DatabaseStepConfiguration.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION,Boolean.class)
              .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_ENABLE_CLEANUP_UPON_COMPLETION)
         );
-        
+
     }
 
 

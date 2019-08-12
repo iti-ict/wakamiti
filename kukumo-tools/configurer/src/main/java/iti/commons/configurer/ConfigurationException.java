@@ -1,7 +1,7 @@
 package iti.commons.configurer;
 
-public class ConfigurationException extends Exception {
-    
+public class ConfigurationException extends RuntimeException {
+
     private static final long serialVersionUID = 7175876124782335084L;
 
     public ConfigurationException(Throwable throwable) {

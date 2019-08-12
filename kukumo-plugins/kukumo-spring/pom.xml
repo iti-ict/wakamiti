@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
+    </parent>
+
+    <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
+    <artifactId>kukumo-spring</artifactId>
+    <version>1.0.0</version>
+
+    <name>Kukumo::SpringBoot support</name>
+
+
+    <!-- dependency versions -->
+    <properties>
+        <kukumo.version>1.0.0</kukumo.version>
+        <jext.version>1.0.1</jext.version>
+        <spring.version>[2.0.5.RELEASE,)</spring.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+
+    <dependencies>
+
+        <!-- Kukumo CORE -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <version>${kukumo.version}</version>
+        </dependency>
+
+         <!-- junit 4 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- jExt - Spring -->
+        <dependency>
+            <groupId>iti.commons</groupId>
+            <artifactId>jext-spring</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+        <!-- Kukumo DB -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db</artifactId>
+            <version>1.0.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Kukumo Rest -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest</artifactId>
+            <version>1.0.0</version>
+            <optional>true</optional>
+        </dependency>
+
+
+        <!-- generic test assertions -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.10.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Spring Boot dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>

@@ -1,23 +1,28 @@
 package iti.kukumo.core.backend;
 
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanStep;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanStep;
+
 public class ExpressionMatcher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionMatcher.class);
+    private static final Logger LOGGER = Kukumo.LOGGER;
 
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w+)\\:(\\w+\\-?\\w+)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+\\-?\\w+)\\}";
+    private static final String AUX_OP_START = "~S~B~OP";
+    private static final String AUX_OP_END = "~S~B~CP";
 
 
     private final String translatedDefinition;
@@ -65,16 +70,16 @@ public class ExpressionMatcher {
         String regex = sourceExpression;
         // * -> any value
         regex = regex.replaceAll("(?<!\\/)\\*", "(.*)");
-        // _(...)_ -> _(..._)
-        regex = regex.replaceAll(" \\(([^\\)]*)\\) ", " ($1 )");
-        regex = regex.replaceAll("^\\(([^\\)]*)\\) ", "($1 )");
-        // | -> alternative
-        /* notice that the '\' symbol must be encoded as '\\\\' in the replaceAll method */
-        regex = regex.replaceAll("[^ )]+\\|[^ ]+(\\|[^ ]+)*","\\\\b"+"($0)"+"\\\\b");
+        // | -> alternative (wrap between \b)
+        regex = regex.replaceAll("[^ ][^\\|]\\|[^ \\)]+","\\\\b$0\\\\b");
         // ( ) -> optional
         regex = regex.replaceAll("(?<!\\/)\\(([^\\)]*)\\)","(?:$1)?");
+        // (...)?_  -> (?:(...)?_)?
+        regex = regex.replaceAll("\\(\\?\\:[^\\)]+\\)\\? ", "(?:$0)?");
         return regex;
     }
+
+
 
 
 
@@ -120,64 +125,6 @@ public class ExpressionMatcher {
         throw new KukumoException("Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}",
                 translatedDefinition, type, typeRegistry.allTypeNames().sorted().collect(Collectors.joining(", ")));
     }
-
-
-
-
-/*
-
-
-
-
-
-
-
-
-    private static ArgumentInfo argumentInfoFromExpression(
-        String sourceExpression,
-        List<String> expectedArgNames,
-        boolean withDataTable,
-        boolean withDocString,
-        ParameterTypeRegistry typeRegistry
-        ) {
-
-        List<String> foundArgNames = new ArrayList<>();
-        List<ParameterType<?>> argTypes = new ArrayList<>();
-
-        Matcher namedArgs = Pattern.compile(TYPED_ARGUMENT_REGEX).assertion(sourceExpression);
-        while (namedArgs.find()) {
-            String name = namedArgs.group(1);
-            String type = namedArgs.group(2);
-            try {
-                ParameterType<?> registeredType = typeRegistry.lookupByTypeName(type);
-                if (registeredType == null) {
-                    throw new NullPointerException();
-                }
-                foundArgNames.add(name+":"+type);
-                argTypes.add(registeredType);
-            } catch (RuntimeException e) {
-                throwTypeNotRegistered(type);
-            }
-        }
-
-        if (expectedArgNames.isEmpty() && !foundArgNames.isEmpty()) {
-            throw new IllegalArgumentException("Expected no arguments in _expression");
-        }
-        if (!foundArgNames.containsAll(expectedArgNames) || !expectedArgNames.containsAll(foundArgNames)) {
-            throw new IllegalArgumentException(
-                "Wrong expected arguments in _expression, should be: "+expectedArgNames);
-        }
-
-        return new ArgumentInfo(expectedArgNames,foundArgNames,argTypes,withDataTable,withDocString);
-    }
-
-*/
-
-
-
-
-
-
 
 
 }

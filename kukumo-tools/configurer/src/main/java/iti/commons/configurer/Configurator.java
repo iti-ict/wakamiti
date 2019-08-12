@@ -11,10 +11,14 @@ public @interface Configurator {
 
     String path() default "";
 
+    String pathPrefix() default "";
+
     Property[] properties() default {};
 
     boolean systemProperties() default false;
 
     boolean environmentProperties() default false;
+
+
 
 }

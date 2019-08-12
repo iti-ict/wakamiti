@@ -1,26 +1,38 @@
 package iti.kukumo.core.backend;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.*;
+import iti.kukumo.api.Backend;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.util.LocaleLoader;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.StringDistance;
 import iti.kukumo.util.ThrowableRunnable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class DefaultBackend implements Backend {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo");
+    public static final Logger LOGGER = Kukumo.LOGGER;
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
@@ -119,10 +131,13 @@ public class DefaultBackend implements Backend {
 
     protected void performRunStep(PlanStep modelStep, RunnableStep runnableStep, Map<String,Object> invokingArguments) {
         try {
+            Kukumo.publishEvent(Event.BEFORE_RUN_BACKEND_STEP, this);
             runnableStep.run(invokingArguments);
             modelStep.markPassed(clock.instant());
         } catch (Throwable e) {
             fillErrorState(modelStep, e);
+        } finally {
+            Kukumo.publishEvent(Event.AFTER_RUN_BACKEND_STEP, this);
         }
     }
 
@@ -163,7 +178,7 @@ public class DefaultBackend implements Backend {
 
         if (locatedSteps.isEmpty()) {
             throw new UndefinedStepException(
-                modelStep, 
+                modelStep,
                 "Cannot match step with any defined step",
                 getHint(modelStep.name(),dataLocale)
             );
@@ -172,7 +187,7 @@ public class DefaultBackend implements Backend {
             String locatedStepsInfo =  locatedSteps.stream().map(Pair::key)
                     .map(step -> step.getTranslatedDefinition(stepLocale)).collect(Collectors.joining("\n\t"));
             throw new UndefinedStepException(
-                modelStep,    
+                modelStep,
                 "Step matches more than one defined step",
                 locatedStepsInfo
             );
@@ -253,7 +268,7 @@ public class DefaultBackend implements Backend {
     protected Locale dataLocale(PlanStep modelStep, Locale fallbackLocale) {
         String dataFormatLocale = modelStep.properties().getOrDefault(
                 KukumoConfiguration.DATA_FORMAT_LANGUAGE,
-                configuration.getString(KukumoConfiguration.DATA_FORMAT_LANGUAGE).orElse(null)
+                configuration.get(KukumoConfiguration.DATA_FORMAT_LANGUAGE,String.class).orElse(null)
         );
         return dataFormatLocale == null ? fallbackLocale : LocaleLoader.forLanguage(dataFormatLocale);
 

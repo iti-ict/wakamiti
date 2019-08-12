@@ -21,15 +21,15 @@ public class Arguments {
     private final Map<String,String> mavenFetcherProperties = new HashMap<>();
     private Optional<String> confFile = Optional.empty();
     private final List<String> modules = new ArrayList<>();
-    private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+    private final ConfigurationBuilder configurationBuilder = ConfigurationBuilder.instance();
     private Runnable command;
 
 
     public Arguments (Path localConfigFile, String[] args) throws ConfigurationException {
 
         if (localConfigFile.toFile().exists()) {
-            kukumoProperties.putAll(configurationBuilder.buildFromPath(localConfigFile.toString()).inner("kukumo").asMap());
-            mavenFetcherProperties.putAll(configurationBuilder.buildFromPath(localConfigFile.toString()).inner("mavenFetcher").asMap());
+            kukumoProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(localConfigFile.toString()).inner("kukumo").asMap());
+            mavenFetcherProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(localConfigFile.toString()).inner("mavenFetcher").asMap());
         }
 
         if (args == null || args.length == 0) {
@@ -76,8 +76,8 @@ public class Arguments {
         
         Path kukumoConfFile = Paths.get(this.confFile.orElse("kukumo.yaml"));
         if (kukumoConfFile.toFile().exists()) {
-            kukumoProperties.putAll(configurationBuilder.buildFromPath(kukumoConfFile.toString()).inner("kukumo").asMap());
-            mavenFetcherProperties.putAll(configurationBuilder.buildFromPath(kukumoConfFile.toString()).inner("mavenFetcher").asMap());
+            kukumoProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(kukumoConfFile.toString()).inner("kukumo").asMap());
+            mavenFetcherProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(kukumoConfFile.toString()).inner("mavenFetcher").asMap());
         }
     }
 

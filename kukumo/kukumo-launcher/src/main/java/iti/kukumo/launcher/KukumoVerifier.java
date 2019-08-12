@@ -61,7 +61,7 @@ public class KukumoVerifier {
         Configuration configuration = KukumoConfiguration.defaultConfiguration();
         File confFile = arguments.confFile().map(File::new).orElse(DEFAULT_CONF_FILE);
         if (confFile.exists()) {
-            configuration = configuration.appendFromPath(confFile.getAbsolutePath()).inner("kukumo");
+            configuration = configuration.appendFromClasspathResourceOrURI(confFile.getAbsolutePath()).inner("kukumo");
         }
         if (!arguments.kukumoProperties().isEmpty()) {
             configuration = configuration.appendFromMap(arguments.kukumoProperties());
