@@ -14,7 +14,7 @@ public class SimpleAnsiLogger implements Logger {
     }
 
 
-    private static String ansi(String message) {
+    protected String ansi(String message) {
         return Ansi.ansi().render(message).toString();
     }
 

@@ -1,18 +1,18 @@
 package iti.kukumo.core.backend;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.ThrowableRunnable;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.regex.Matcher;
 
 public class RunnableStep {
 
@@ -59,7 +59,7 @@ public class RunnableStep {
 
     public Matcher matcher(PlanStep modelStep, Locale stepLocale, Locale dataLocale, KukumoDataTypeRegistry typeRegistry) {
         String translatedDefinition = getTranslatedDefinition(stepLocale);
-        return new ExpressionMatcher(translatedDefinition,typeRegistry,dataLocale).matcher(modelStep);
+        return ExpressionMatcher.matcherFor(translatedDefinition,typeRegistry,dataLocale,modelStep);
     }
 
 

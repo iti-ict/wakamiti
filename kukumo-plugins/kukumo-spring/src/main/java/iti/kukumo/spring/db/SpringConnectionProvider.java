@@ -1,11 +1,10 @@
 package iti.kukumo.spring.db;
 
 import iti.commons.jext.Extension;
-import iti.kukumo.db.ConnectionManager;
-import iti.kukumo.db.ConnectionParameters;
+import iti.kukumo.database.ConnectionManager;
+import iti.kukumo.database.ConnectionParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -14,10 +13,10 @@ import java.sql.SQLException;
 
 @Extension(
     provider="iti.kukumo",
-    name="kukumo-db-springboot-datasource",
+    name="kukumo-database-springboot-datasource",
     version="1.0",
     externallyManaged = true, // because Spring bean infrastructure will managed the lifecycle
-    overrides = "iti.kukumo.db.DriverConnectionManager"
+    overrides = "iti.kukumo.database.DriverConnectionManager"
 )
 @Component
 @ConditionalOnProperty(SpringConnectionProvider.USE_SPRING_DATASOURCE)

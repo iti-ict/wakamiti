@@ -12,11 +12,11 @@ import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanSerializer;
 import iti.kukumo.core.runner.PlanRunner;
+import iti.kukumo.util.KukumoLogger;
 import iti.kukumo.util.ResourceLoader;
 import iti.kukumo.util.TagFilter;
 import iti.kukumo.util.ThrowableFunction;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import static iti.kukumo.api.KukumoConfiguration.*;
 
 public class Kukumo {
 
-    public static final Logger LOGGER = AnsiLogger.of(LoggerFactory.getLogger(Kukumo.class));
+    public static final Logger LOGGER = KukumoLogger.forClass(Kukumo.class);
 
     private static final ExtensionManager extensionManager =
             new ExtensionManager(Thread.currentThread().getContextClassLoader());
@@ -46,6 +46,20 @@ public class Kukumo {
     private static final PlanSerializer planSerializer = new DefaultPlanSerializer();
 
 
+    static {
+        LOGGER.info(KukumoLogger.logo());
+    }
+
+
+    /**
+     * Enable / disable Ansi characters in logs according the given configuration
+     * @param configuration
+     */
+    public static void setAnsiFromConfiguration(Configuration configuration) {
+        AnsiLogger.setAnsiEnabled(
+           configuration.get(LOGS_ANSI_ENABLED,Boolean.class).orElse(true)
+        );
+    }
 
 
 
@@ -58,6 +72,7 @@ public class Kukumo {
      */
     public static PlanNode createPlanFromConfiguration(Configuration configuration) {
 
+        LOGGER.info("{message}","Creating the Test Plan...");
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES,String.class);
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
@@ -71,7 +86,6 @@ public class Kukumo {
         if (plans.isEmpty()) {
             throw new KukumoException("No test plans created");
         }
-        AnsiLogger.setAnsiEnabled();
         return mergePlans(plans);
     }
 
@@ -94,17 +108,18 @@ public class Kukumo {
     public static Optional<PlanNode> createPlanForResourceType(String resourceTypeName, List<String> discoveryPaths, Configuration configuration) {
         Optional<ResourceType<?>> resourceType = getResourceTypeByName(resourceTypeName);
         if (!resourceType.isPresent()) {
-            LOGGER.warn("Resource type {} is not provided by any contributor",resourceTypeName);
+            LOGGER.warn("{warn} {resourceType} {warn}","Resource type",resourceTypeName,"is not provided by any contributor");
             return Optional.empty();
         }
+        LOGGER.debug("Creating plan for resources of type {resourceType} provided by {contributor}...", resourceTypeName, resourceType.get().info());
         List<Resource<?>> resources = getResourceLoader().discoverResources(discoveryPaths, resourceType.get());
         if (resources.isEmpty()) {
-            LOGGER.warn("No resources of type {}",resourceTypeName);
+            LOGGER.warn("{warn} {resourceType}","No resources of type",resourceTypeName);
             return Optional.empty();
         }
         Optional<Planner> planner = getPlannerFor(resourceType.get());
         if (!planner.isPresent()) {
-            LOGGER.warn("No planner suitable for resource type {} has been found",resourceType);
+            LOGGER.warn("{warn} {resourceType} {warn}","No planner suitable for resource type",resourceType," has been found");
             return Optional.empty();
         }
         return Optional.of(configure(planner.get(),configuration).createPlan(resources));
@@ -234,6 +249,7 @@ public class Kukumo {
     }
 
 
+
     public static PlanNode executePlan(PlanNode plan, Configuration configuration)
     throws IOException {
         PlanNode result = new PlanRunner(plan, configuration).run();
@@ -251,11 +267,17 @@ public class Kukumo {
         if (reporters.isEmpty()) {
             return;
         }
-        Path sourceFolder = Paths.get(nonOptional(
-            configuration.get(KukumoConfiguration.REPORT_SOURCE,String.class),
-            "Report source is not defined. Please configure property {}",
-            KukumoConfiguration.REPORT_SOURCE
-        ));
+        LOGGER.info("{message}","Generating reports...");
+        String reportSource = configuration.get(REPORT_SOURCE, String.class)
+             .orElse( configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null) );
+        Path sourceFolder = Paths.get(reportSource).toAbsolutePath();
+        if (!Files.exists(sourceFolder)) {
+            throw new KukumoException(
+                "The report source file/folder "+sourceFolder+" does not exist.\n"+
+                "Perhaps you may set the property "+REPORT_SOURCE+" to the path defined by the property "+OUTPUT_FILE_PATH+": "+
+                configuration.get(OUTPUT_FILE_PATH,String.class).orElse("<undefined>")
+            );
+        }
         PlanSerializer deserializer = getPlanSerializer();
         PlanNodeDescriptor[] plans;
         try ( Stream<Path> walker = Files.walk(sourceFolder)) {
@@ -269,9 +291,10 @@ public class Kukumo {
         PlanNodeDescriptor rootNode = PlanNodeDescriptor.group(plans);
         for (Reporter reporter : reporters) {
             try {
+                LOGGER.debug("Generating report provided by plugin {contributor}...",reporter.info());
                 configure(reporter,configuration).report(rootNode);
             } catch (Exception e) {
-                LOGGER.error("Error running reporter {} : {}", reporter.info(), e.getMessage(), e);
+                LOGGER.error("{error} {contributor} : {error}","Error running reporter", reporter.info(), e.getMessage(), e);
             }
         }
 

@@ -1,6 +1,12 @@
 package iti.kukumo.test.core.types;
 
-import static org.junit.Assert.assertTrue;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.extensions.DataTypeContributor;
+import iti.kukumo.core.backend.ExpressionMatcher;
+import iti.kukumo.core.plan.DefaultPlanStep;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -8,14 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
-
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.core.plan.DefaultPlanStep;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author ITI
@@ -42,13 +41,13 @@ public class TestExpressionMatcher {
 
     @Test
     public void testExpressionStep() {
-        ExpressionMatcher expressionMatcher = new ExpressionMatcher(
+        String step = "the following data inserted in the database table USER:";
+        Matcher matcher = ExpressionMatcher.matcherFor(
             "(that) the following * (is|are) inserted in the database table {word}:",
             coreTypes(),
-            Locale.ENGLISH
+            Locale.ENGLISH,
+            new DefaultPlanStep().setName(step)
         );
-        String step = "the following data inserted in the database table USER:";
-        Matcher matcher = expressionMatcher.matcher(new DefaultPlanStep().setName(step));
         assertTrue(matcher.matches());
     }
 

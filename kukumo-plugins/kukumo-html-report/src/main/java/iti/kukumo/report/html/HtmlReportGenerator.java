@@ -5,12 +5,12 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
 import iti.kukumo.api.plan.Result;
+import iti.kukumo.util.KukumoLogger;
 import j2html.TagCreator;
 import j2html.tags.ContainerTag;
 import j2html.tags.DomContent;
 import j2html.tags.Tag;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.text.MessageFormat;
@@ -35,7 +35,7 @@ public class HtmlReportGenerator implements Reporter {
     private static final String INLINE = "inline";
     private static final String BLOCK = "block";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HtmlReportGenerator.class);
+    private static final Logger LOGGER = KukumoLogger.forClass(HtmlReportGenerator.class);
 
     private static final int MILLIS_IN_SEC = 1000;
     private static final int MILLIS_IN_MINUTE = 60000;
@@ -52,14 +52,16 @@ public class HtmlReportGenerator implements Reporter {
     @Override
     public void report(PlanNodeDescriptor root) {
 
+        LOGGER.info("Generating HTML report...");
         File outputFileFolder = outputFile.getParentFile();
         if (outputFileFolder != null && !outputFileFolder.exists()) {
             outputFileFolder.mkdirs();
         }
         try (FileWriter writer = new FileWriter(outputFile)) {
             generate(root,writer);
+            LOGGER.info("Report generated: {uri}", outputFile);
         } catch (IOException e) {
-            LOGGER.error("Error generating Kukumo HTML report: {}", e.getMessage(), e);
+            LOGGER.error("{error} {error}", "Error generating Kukumo HTML report: ", e.getMessage(), e);
         }
     }
 

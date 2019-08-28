@@ -6,7 +6,6 @@ import iti.kukumo.api.Resource;
 import iti.kukumo.api.extensions.ResourceType;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URI;
@@ -100,7 +99,7 @@ public class ResourceLoader {
             CharBuffer resourceBuffer = decoder.decode(ByteBuffer.wrap(bytes));
             return new CharArrayReader(resourceBuffer.array());
         } catch (CharacterCodingException e) {
-            LOGGER.error("ERROR CHECKING CHARSET {} IN RESOURCE {} : {}", charset, url, e.getMessage(), e);
+            LOGGER.error("ERROR CHECKING CHARSET {} IN RESOURCE {uri} : {error}", charset, url, e.getMessage(), e);
             throw e;
         }
     }
@@ -172,7 +171,7 @@ public class ResourceLoader {
 
 
     public <T> List<Resource<?>> discoverResources(List<String> paths, ResourceType<T> resourceType) {
-        LOGGER.info("Discovering resources of type {} in paths: {} ...", resourceType.extensionMetadata().name(), paths);
+        LOGGER.info("Discovering resources of type {resourceType} in paths: {uri} ...", resourceType.extensionMetadata().name(), paths);
         return discoverResources(paths,  resourceType::acceptsFilename, resourceType::parse);
     }
 
@@ -194,7 +193,7 @@ public class ResourceLoader {
         }
         if (LOGGER.isInfoEnabled() ) {
             discovered.forEach(resource -> LOGGER.info(
-                "Discovered resource {}",
+                "Discovered resource {uri}",
                 resource.absolutePath()
             ));
         }
@@ -228,7 +227,7 @@ public class ResourceLoader {
                 discoverResourcesInURL(path, url, filenameFilter, parser, discovered);
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(),e);
+            LOGGER.error("{error}",e.getMessage(),e);
         }
         return discovered;
     }
@@ -249,13 +248,13 @@ public class ResourceLoader {
             try {
                 discoverResouresInFile(startPath, new File(url.toURI()), filenameFilter, parser, discovered);
             } catch (URISyntaxException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOGGER.error("{error}",e.getMessage(), e);
             }
         } else {
             try {
                 discovered.add(new Resource<T>(url.toString(),  url.toString(), parser.parse(url.openStream(),charset)));
             } catch (IOException e) {
-                LOGGER.error(e.getMessage(),e);
+                LOGGER.error("{error}",e.getMessage(),e);
             }
         }
     }
@@ -286,7 +285,7 @@ public class ResourceLoader {
                         parser.parse(stream, charset))
                 );
             } catch (IOException e) {
-                LOGGER.error(e.getMessage(),e);
+                LOGGER.error("{error}",e.getMessage(),e);
             }
         }
 
@@ -313,12 +312,12 @@ public class ResourceLoader {
                                 relative(startPath, file.getAbsolutePath()) + "!/" + zipEntry.getName(),
                                 parser.parse(stream, charset)));
                     } catch (IOException e) {
-                        LOGGER.error(e.getMessage(),e);
+                        LOGGER.error("{error}",e.getMessage(),e);
                     }
                 }
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(),e);
+            LOGGER.error("{error}",e.getMessage(),e);
         }
     }
 
@@ -341,7 +340,7 @@ public class ResourceLoader {
         try {
             return classLoader.getResources(classPath);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(),e);
+            LOGGER.error("{error}",e.getMessage(),e);
             return Collections.emptyEnumeration();
         }
     }

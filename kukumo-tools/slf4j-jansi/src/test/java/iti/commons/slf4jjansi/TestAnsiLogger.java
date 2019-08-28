@@ -1,17 +1,17 @@
 package iti.commons.slf4jjansi;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestAnsiLogger {
 
 
     @Test
     public void testEnabled() {
-        System.setProperty(AnsiLogger.ANSI_ENABLED, "true");
+        AnsiLogger.setAnsiEnabled(true);
         StringLogger string = new StringLogger();
         Logger logger = AnsiLogger.of(string);
         logger.info("@|red red|@ regular @|blue blue|@");
@@ -21,7 +21,7 @@ public class TestAnsiLogger {
 
     @Test
     public void testDisabled() {
-        System.setProperty(AnsiLogger.ANSI_ENABLED, "false");
+        AnsiLogger.setAnsiEnabled(false);
         StringLogger string = new StringLogger();
         Logger logger = AnsiLogger.of(string);
         logger.info("@|red red|@ regular @|blue blue|@");

@@ -1,13 +1,12 @@
 package iti.kukumo.maven;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.maven.plugin.logging.Log;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.KukumoConfiguration;
+import org.apache.maven.plugin.logging.Log;
+
+import java.util.List;
+import java.util.Map;
 
 public interface KukumoConfigurable {
 
@@ -24,22 +23,16 @@ public interface KukumoConfigurable {
         }
         if (configuration.isEmpty()) {
             warn("configuration is empty");
-        } else {
-            info("configured properties:\n" + configuration);
         }
         return configuration;
     }
 
     default void info(String message) {
-        getLog().info(format(message));
+        getLog().info(message);
     }
 
     default void warn(String message) {
-        getLog().warn(format(message));
-    }
-
-    default String format(String message) {
-        return "[kukumo] " + message;
+        getLog().warn(message);
     }
 
     Log getLog();

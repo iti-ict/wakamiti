@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>iti.kukumo</groupId>
+    <artifactId>spring-verify-example</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <skipExampleTests>false</skipExampleTests>
+        <kukumoLog>info</kukumoLog>
+    </properties>
+
+    <!-- Just regular Spring Boot configuration -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.5.RELEASE</version>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+    </dependencies>
+
+
+
+
+    <build>
+        <plugins>
+
+            <!-- Start Spring Boot application prior to integration tests and stop it afterwards -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Attach Kukumo to the verify phase of the project -->
+            <plugin>
+                <groupId>iti.kukumo</groupId>
+                <artifactId>kukumo-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <!-- Executed at integration-test phase -->
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Enable/disable tests execution (enabled by default) -->
+                    <skipTests>${skipExampleTests}</skipTests>
+                    <!-- Set log level for the plugin (info by default) -->
+                    <logLevel>${kukumoLog}</logLevel>
+                    <!-- Kukumo configuration -->
+                    <properties>
+                        <resourceTypes>gherkin</resourceTypes>
+                        <resourcePath>src/test/resources</resourcePath>
+                        <outputFilePath>target/kukumo/kukumo.json</outputFilePath>
+                        <logs.showStepSource>false</logs.showStepSource>
+                        <rest.baseURL>http://localhost:9191</rest.baseURL>
+                        <htmlReport.output>target/kukumo/kukumo.html</htmlReport.output>
+                        <database.connection.driver>org.h2.Driver</database.connection.driver>
+                        <database.connection.url>jdbc:h2:tcp://localhost:9092/~/test</database.connection.url>
+                        <database.connection.username>sa</database.connection.username>
+                        <database.connection.password></database.connection.password>
+                    </properties>
+                </configuration>
+                <dependencies>
+                    <!-- Kukumo plugins -->
+                    <dependency>
+                        <groupId>iti.kukumo</groupId>
+                        <artifactId>kukumo-rest</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.197</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>iti.kukumo</groupId>
+                        <artifactId>kukumo-db</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>iti.kukumo</groupId>
+                        <artifactId>kukumo-html-report</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

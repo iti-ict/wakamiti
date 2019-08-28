@@ -4,13 +4,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
-    <parent>
-        <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-project</artifactId>
-        <version>1</version>
-    </parent>
-
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-maven-plugin</artifactId>
@@ -23,6 +16,14 @@
     <description>Maven Plugin for Kukumo</description>
     <inceptionYear>2019</inceptionYear>
 
+    <properties>
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- build versions -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
 
 
     <!-- dependencies -->
@@ -39,7 +40,12 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.0</version>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
         </dependency>
 
         <!-- Maven plugin annotation support -->
@@ -50,25 +56,165 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Allow use SLF4J as the maven logger  -->
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-maven-slf4j</artifactId>
-            <version>0.8</version>
-        </dependency>
-
     </dependencies>
 
 
     <build>
         <plugins>
+
+            <!-- Maven Plugin Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.6.0</version>
             </plugin>
+
+
+            <!-- Use any .md file from  /* and /docs/* as a site resource -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-markdown-docs</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/site/markdown</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/docs</directory>
+                                    <includes>
+                                        <include>*.md</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Uses README.md as the main page of the site -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-markdown-index</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${basedir}/README.md</sourceFile>
+                            <destinationFile>${basedir}/src/site/markdown/index.md</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+            <!-- specific version of maven compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+            </plugin>
+
+            <!-- generate additional jar with sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- maven site -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+
+
+
         </plugins>
     </build>
+
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+
+    <profiles>
+        <!-- Local profile: upload artifacts to local folder -->
+        <profile>
+            <id>publish-local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <site>
+                    <id>local-site</id>
+                    <url>${project.baseUri}</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <!-- Publish profile: upload artifacts to public maven repo -->
+        <profile>
+            <id>publish-remote</id>
+            <distributionManagement>
+                <repository>
+                    <id>public-repo</id>
+                    <url>https://mymavenrepo.com/repo/SziQkCm84TfEtYWzF4W3/</url>
+                </repository>
+                <site>
+                    <id>local-site</id>
+                    <url>${project.baseUri}</url>
+                </site>
+
+            </distributionManagement>
+        </profile>
+
+    </profiles>
+
 
 
 </project>

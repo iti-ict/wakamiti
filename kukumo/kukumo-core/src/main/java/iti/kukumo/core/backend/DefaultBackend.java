@@ -1,27 +1,7 @@
 package iti.kukumo.core.backend;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.*;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.api.plan.Result;
@@ -29,6 +9,14 @@ import iti.kukumo.util.LocaleLoader;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.StringDistance;
 import iti.kukumo.util.ThrowableRunnable;
+import org.slf4j.Logger;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DefaultBackend implements Backend {
 
@@ -107,11 +95,7 @@ public class DefaultBackend implements Backend {
     @Override
     public void setUp() {
         for (ThrowableRunnable setUpOperation : setUpOperations) {
-            try {
-                setUpOperation.run();
-            } catch (Exception e) {
-                LOGGER.error("Error running set-up operation", e);
-            }
+            runMethod(setUpOperation, "set-up");
         }
     }
 
@@ -119,11 +103,19 @@ public class DefaultBackend implements Backend {
     @Override
     public void tearDown() {
         for (ThrowableRunnable tearDownOperation : tearDownOperations) {
-            try {
-                tearDownOperation.run();
-            } catch (Exception e) {
-                LOGGER.error("Error running tear-down operation", e);
+            runMethod(tearDownOperation,"tear-down");
+        }
+    }
+
+
+    private void runMethod(ThrowableRunnable operation, String type) {
+        try {
+            operation.run();
+        } catch (Exception e) {
+            if (e.getCause() != null && e.getCause() != e) {
+                e = (Exception) e.getCause();
             }
+            LOGGER.error("Error running "+type+" operation", e);
         }
     }
 
@@ -159,7 +151,7 @@ public class DefaultBackend implements Backend {
             result = Result.FAILED;
         } else if (e instanceof UndefinedStepException) {
             result = Result.UNDEFINED;
-        } else if (e instanceof KukumoException) {
+        } else if (e instanceof KukumoSkippedException) {
             result = Result.SKIPPED;
         } else {
             result = Result.ERROR;

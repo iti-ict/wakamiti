@@ -1,19 +1,19 @@
 package iti.kukumo.core.backend;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanStep;
+import org.slf4j.Logger;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ExpressionMatcher {
 
@@ -21,16 +21,28 @@ public class ExpressionMatcher {
 
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w+)\\:(\\w+\\-?\\w+)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+\\-?\\w+)\\}";
-    private static final String AUX_OP_START = "~S~B~OP";
-    private static final String AUX_OP_END = "~S~B~CP";
 
+    private static final Map<ExpressionMatcher,String> cache = new HashMap<>();
 
     private final String translatedDefinition;
     private final KukumoDataTypeRegistry typeRegistry;
     private final Locale locale;
 
 
-    public ExpressionMatcher(
+
+    public static Matcher matcherFor(
+        String translatedDefinition,
+        KukumoDataTypeRegistry typeRegistry,
+        Locale locale,
+        PlanStep modelStep
+    ) {
+        ExpressionMatcher matcher = new ExpressionMatcher(translatedDefinition,typeRegistry,locale);
+        String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
+        return Pattern.compile(regex).matcher(modelStep.name());
+    }
+
+
+    private ExpressionMatcher(
             String translatedDefinition,
             KukumoDataTypeRegistry typeRegistry,
             Locale locale)
@@ -42,16 +54,10 @@ public class ExpressionMatcher {
 
 
 
-
-    public Matcher matcher(PlanStep modelStep) {
-         return Pattern.compile(computeRegularExpression()).matcher(modelStep.name());
-    }
-
-
     public static String computeRegularExpression(String translatedExpression) {
         String regex = regexPriorAdjustments(translatedExpression);
         regex = regexFinalAdjustments(regex);
-        LOGGER.trace("{}==>{}", translatedExpression, regex);
+        LOGGER.trace("Expression Matcher: {} ==> {}", translatedExpression, regex);
         return regex;
     }
 
@@ -60,7 +66,7 @@ public class ExpressionMatcher {
         String regex = regexPriorAdjustments(translatedDefinition);
         regex = regexArgumentSubstitution(regex);
         regex = regexFinalAdjustments(regex);
-        LOGGER.trace("{}==>{}", translatedDefinition, regex);
+        LOGGER.trace("Expression Matcher: {} ==> {}", translatedDefinition, regex);
         return regex;
     }
 
@@ -127,4 +133,22 @@ public class ExpressionMatcher {
     }
 
 
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(translatedDefinition,typeRegistry,locale);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ExpressionMatcher) {
+            ExpressionMatcher other = (ExpressionMatcher) obj;
+            return other.typeRegistry == this.typeRegistry &&
+                   other.locale.equals(this.locale) &&
+                   other.translatedDefinition.equals(this.translatedDefinition);
+        }
+        return false;
+    }
 }

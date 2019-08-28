@@ -17,6 +17,11 @@ public enum Result {
     FAILED,
     
     /** The node or any of its children has experienced a fatal error */
-    ERROR
+    ERROR;
+
+
+    public boolean isPassed() {
+        return this == PASSED;
+    }
     
 }

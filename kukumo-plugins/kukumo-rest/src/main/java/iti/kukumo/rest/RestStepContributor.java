@@ -1,24 +1,6 @@
 package iti.kukumo.rest;
 
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -32,6 +14,23 @@ import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.util.ResourceLoader;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @I18nResource("iti_kukumo_kukumo-rest")
 @Extension(provider = "iti.kukumo", name = "rest")
@@ -74,9 +73,6 @@ public class RestStepContributor implements StepContributor {
         if (LOGGER.isDebugEnabled()) {
             request.log().all(true);
             request.expect().log().all(true);
-        } else if (LOGGER.isInfoEnabled()) {
-            request.log().method().log().uri();
-            request.expect().log().status();
         } else {
             request.log().ifValidationFails();
             request.expect().log().ifValidationFails();
@@ -138,6 +134,9 @@ public class RestStepContributor implements StepContributor {
 
     protected ContentTypeHelper contentTypeHelper() {
         ContentType contentType = ContentType.fromContentType(response.contentType());
+        if (contentType == null) {
+            throw new KukumoException("The content type of the response is undefined");
+        }
         ContentTypeHelper helper = contentTypeValidators.get(contentType);
         if (helper == null) {
             throw new KukumoException("There is no content type helper for "+contentType);

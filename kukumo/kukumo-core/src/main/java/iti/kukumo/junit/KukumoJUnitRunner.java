@@ -1,5 +1,22 @@
 package iti.kukumo.junit;
 
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
+import iti.commons.configurer.ConfigurationException;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.core.runner.PlanNodeLogger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -14,23 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
-import org.slf4j.Logger;
-
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
-import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.plan.PlanNode;
-
 
 public class KukumoJUnitRunner extends Runner {
 
@@ -40,6 +40,7 @@ public class KukumoJUnitRunner extends Runner {
     protected final String uniqueId;
     protected final Configuration configuration;
     protected final Class<?> configurationClass;
+    protected final PlanNodeLogger planNodeLogger;
     private PlanNode plan;
     private List<JUnitPlanNodeRunner> children;
     private Description description;
@@ -51,6 +52,7 @@ public class KukumoJUnitRunner extends Runner {
         this.uniqueId = "kukumo";
         this.configurationClass = configurationClass;
         this.configuration = retrieveConfiguration(configurationClass);
+        this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,getPlan().numTestCases());
         validateAnnotatedMethod(configurationClass, BeforeClass.class);
         validateAnnotatedMethod(configurationClass, AfterClass.class);
     }
@@ -61,21 +63,24 @@ public class KukumoJUnitRunner extends Runner {
 
     @Override
     public void run(RunNotifier notifier) {
+        Kukumo.setAnsiFromConfiguration(configuration);
         Kukumo.configureEventObservers(configuration);
         Kukumo.publishEvent(Event.PLAN_RUN_STARTED,getPlan().obtainDescriptor());
+        planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
         for (JUnitPlanNodeRunner child: getChildren()) {
             try {
                 child.runNode(notifier,false);
             } catch (Exception e) {
-                LOGGER.error("{}",e.getMessage(),e);
+                LOGGER.error("{error}",e.getMessage(),e);
             }
         }
 
         // refactor this line in the future when multithreading is supported
         executeAnnotatedMethod(configurationClass, AfterClass.class);
 
+        planNodeLogger.logTestPlanResult(plan);
         Kukumo.publishEvent(Event.PLAN_RUN_FINISHED,getPlan().obtainDescriptor());
         writeOutputFile();
     }
@@ -116,7 +121,7 @@ public class KukumoJUnitRunner extends Runner {
                 confBuilder.buildFromMap(node.properties())
             );
             BackendFactory backendFactory = Kukumo.getBackendFactory().setConfiguration(featureConfiguration);
-            return new JUnitPlanNodeRunner(uniqueId, node, backendFactory);
+            return new JUnitPlanNodeRunner(uniqueId, node, backendFactory,planNodeLogger);
         }).collect(Collectors.toList());
     }
 

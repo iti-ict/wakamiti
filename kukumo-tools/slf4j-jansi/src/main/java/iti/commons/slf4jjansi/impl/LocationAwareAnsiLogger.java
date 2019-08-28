@@ -1,21 +1,16 @@
 package iti.commons.slf4jjansi.impl;
 
-import static org.slf4j.spi.LocationAwareLogger.DEBUG_INT;
-import static org.slf4j.spi.LocationAwareLogger.ERROR_INT;
-import static org.slf4j.spi.LocationAwareLogger.INFO_INT;
-import static org.slf4j.spi.LocationAwareLogger.TRACE_INT;
-import static org.slf4j.spi.LocationAwareLogger.WARN_INT;
-
-import java.util.Arrays;
-
 import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
+import java.util.Arrays;
+
+import static org.slf4j.spi.LocationAwareLogger.*;
+
 public class LocationAwareAnsiLogger implements Logger {
 
-    private static final String FQCN = LocationAwareAnsiLogger.class.getName();
 
     private final LocationAwareLogger delegate;
 
@@ -24,9 +19,12 @@ public class LocationAwareAnsiLogger implements Logger {
     }
 
 
-    private static String ansi(String message) {
+    protected String ansi(String message) {
         return Ansi.ansi().render(message).toString();
     }
+
+    private String fqnc() { return this.getClass().getName(); }
+
 
     @Override
     public String getName() {
@@ -47,7 +45,7 @@ public class LocationAwareAnsiLogger implements Logger {
                 throwable = (Throwable) args[args.length-1];
                 args = Arrays.copyOf(args, args.length-1);
             }
-            delegate.log(marker, FQCN, level, ansi(message), args, throwable);
+            delegate.log(marker, fqnc(), level, ansi(message), args, throwable);
         }
     }
 

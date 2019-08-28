@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Spring Sample App
+  datasource:
+    url: jdbc:h2:tcp://localhost:9092/~/test
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    data: classpath:initial-data.sql
+    hibernate:
+        ddl-auto: create
+        
+server:
+  port: 9191
+
+logging:
+  pattern.console: "[application] %m%n"
+  level:
+    root: ERROR
+
+

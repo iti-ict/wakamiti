@@ -58,17 +58,23 @@ public class KukumoConfiguration {
     /** Tag used for annotate a feature as an implementation */
     public static final String REDEFINITION_IMPLEMENTATION_TAG = "redefinition.implementationTag";
 
+    /** Use Ansi characters in the logs */
+    public static final String LOGS_ANSI_ENABLED = "logs.ansiEnabled";
 
+    /** Show the Kukumo logo in the logs */
+    public static final String LOGS_SHOW_LOGO = "logs.showLogo";
 
+    /** Show the source for each step in the logs */
+    public static final String LOGS_SHOW_STEP_SOURCE = "logs.showStepSource";
 
-
+    /** Show the elapsed time for each step in the logs */
+    public static final String LOGS_SHOW_ELAPSED_TIME = "logs.showElapsedTime";
 
 
     @Configurator(properties={
         @Property(key=RESOURCE_PATH,value="."),
         @Property(key=OUTPUT_FILE_PATH,value=Defaults.DEFAULT_OUTPUT_FILE_PATH),
         @Property(key=REPORT_GENERATION,value="true"),
-        @Property(key=REPORT_SOURCE,value=Defaults.DEFAULT_OUTPUT_FILE_PATH),
         @Property(key=ID_TAG_PATTERN,value=Defaults.DEFAULT_ID_TAG_PATTERN),
         @Property(key=REDEFINITION_ENABLED,value=Defaults.DEFAULT_REDEFINITION_ENABLED),
         @Property(key=REDEFINITION_DEFINITION_TAG,value=Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG),

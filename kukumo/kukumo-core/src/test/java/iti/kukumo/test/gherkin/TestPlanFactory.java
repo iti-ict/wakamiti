@@ -23,34 +23,36 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class TestPlanFactory {
 
     private final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
     private final PlanSerializer planSerializer = Kukumo.getPlanSerializer();
 
 
-    private void assertFilePlan(String filename) throws IOException, JSONException, ConfigurationException {
+    private void assertFilePlan(String filename, int testCases) throws IOException, JSONException, ConfigurationException {
         String featureFilename = "src/test/resources/features/"+filename+".feature";
         String resultFilename = "src/test/resources/features/"+filename+"_plan.json";
-        assertFilePlan(featureFilename,resultFilename,null);
+        assertFilePlan(featureFilename,resultFilename,null,testCases);
     }
 
 
-    private void assertFilePlan(String featureFilename, String resultFilename, String tagExpression) 
+    private void assertFilePlan(String featureFilename, String resultFilename, String tagExpression, int testCases)
     throws IOException, JSONException, ConfigurationException {
         List<Resource<?>> resources = resourceLoader.discoverResources(featureFilename, GherkinResourceType.INSTANCE);
-        assertPlan(resources, resultFilename, tagExpression);
+        assertPlan(resources, resultFilename, tagExpression, testCases);
     }
 
 
-    private void assertPathPlan(String featurePath, String resultFilename, String tagExpression) 
+    private void assertPathPlan(String featurePath, String resultFilename, String tagExpression, int testCases)
     throws IOException, JSONException, ConfigurationException {
         List<Resource<?>> resources = resourceLoader.discoverResources(featurePath, GherkinResourceType.INSTANCE);
-        assertPlan(resources, resultFilename, tagExpression);
+        assertPlan(resources, resultFilename, tagExpression, testCases);
     }
 
     
-    private void assertPlan(List<Resource<?>> gherkinDocuments, String resultFilename, String tagExpression) 
+    private void assertPlan(List<Resource<?>> gherkinDocuments, String resultFilename, String tagExpression, int testCases)
     throws JSONException, IOException, ConfigurationException {
         Properties properties = new Properties();
         if (tagExpression != null) {
@@ -60,6 +62,8 @@ public class TestPlanFactory {
         Planner planner = Kukumo.getPlannerFor(GherkinResourceType.INSTANCE).get();
         Kukumo.configure(planner, configuration);
         PlanNode testPlan = planner.createPlan(gherkinDocuments);
+
+        assertThat(testPlan.numTestCases()).isEqualTo(testCases);
         String plan = planSerializer.serialize(testPlan);
         String result = resourceLoader.readResourceAsString(resultFilename);
         JSONComparator comparator = new DefaultComparator(JSONCompareMode.STRICT);
@@ -74,28 +78,28 @@ public class TestPlanFactory {
 
     @Test
     public void test1_simpleScenario() throws IOException, JSONException, ConfigurationException {
-        assertFilePlan("test1_simpleScenario");
+        assertFilePlan("test1_simpleScenario",1);
     }
 
     @Test
     public void test2_scenarioOutline() throws IOException, JSONException, ConfigurationException {
-        assertFilePlan("test2_scenarioOutline");
+        assertFilePlan("test2_scenarioOutline",3);
     }
 
     @Test
     public void test3_background() throws IOException, JSONException, ConfigurationException {
-        assertFilePlan("test3_background");
+        assertFilePlan("test3_background",3);
     }
 
     @Test
     public void test4_tagExpression() throws IOException, JSONException, ConfigurationException {
-        assertFilePlan("src/test/resources/features/test4_tagExpression.feature", "src/test/resources/features/test4_tagExpression_plan.json","Test4 and (B and (C or D))");
+        assertFilePlan("src/test/resources/features/test4_tagExpression.feature", "src/test/resources/features/test4_tagExpression_plan.json","Test4 and (B and (C or D))",1);
     }
 
 
     @Test
     public void testRedefining() throws IOException, JSONException, ConfigurationException {
-        assertPathPlan("src/test/resources/features/redefining","src/test/resources/features/redefining/redefining_plan.json", null);
+        assertPathPlan("src/test/resources/features/redefining","src/test/resources/features/redefining/redefining_plan.json", null,4);
     }
 
 

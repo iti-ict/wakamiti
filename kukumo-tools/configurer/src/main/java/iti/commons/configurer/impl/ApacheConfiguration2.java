@@ -1,23 +1,12 @@
 package iti.commons.configurer.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Stream;
-
-import org.apache.commons.configuration2.BaseConfiguration;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
+import org.apache.commons.configuration2.BaseConfiguration;
+
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 public class ApacheConfiguration2 extends AbstractConfiguration {
 
@@ -144,10 +133,16 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
         StringBuilder string = new StringBuilder("configuration:\n---------------\n");
         conf.getKeys().forEachRemaining( key -> {
             final String[] values = conf.getStringArray(key);
+            String value = "";
+            if (values.length == 1) {
+                value = values[0];
+            } else if (values.length > 1) {
+                value = Arrays.toString(values);
+            }
             string
             .append(key)
             .append(" : ")
-            .append(values.length > 1 ? Arrays.toString(values): values[0])
+            .append(value)
             .append("\n");
         });
         return string.append("---------------").toString();

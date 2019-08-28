@@ -42,6 +42,8 @@
         <module>kukumo-plugins/kukumo-db</module>
         <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
+        <!-- examples -->
+        <module>kukumo-examples</module>
 
     </modules>
 
@@ -107,18 +109,6 @@
         <!-- test -->
         <!-- ====================================== -->
         <!-- Log4j 2 over SLF4J -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>

@@ -12,7 +12,6 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.ThrowableRunnable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -57,10 +56,8 @@ public class DefaultBackendFactory implements BackendFactory {
         if (configuration == null) {
             throw new IllegalStateException("Configuration must be set first");
         }
-        LOGGER.debug("----------------------------------------------------------------------");
-        LOGGER.debug("creating backend for {}::'{}'", node.source(), node.displayName());
+        LOGGER.debug("Creating backend for Test Case {}::'{}'", node.source(), node.displayName());
         Backend backend =  createBackend(configuration.appendFromMap(node.properties()));
-        LOGGER.debug("----------------------------------------------------------------------");
         return backend;
     }
 
@@ -84,7 +81,7 @@ public class DefaultBackendFactory implements BackendFactory {
         }
 
         if (dataTypeContributors.isEmpty()) {
-            LOGGER.warn("No data type contributors found!");
+            LOGGER.warn("{warn}","No data type contributors found!");
         }
 
         List<String> nonRegisteredContributorClasses = configuration.getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,String.class);
@@ -132,11 +129,11 @@ public class DefaultBackendFactory implements BackendFactory {
         for (DataTypeContributor contributor: contributors) {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("using type {}:{} ({})", contributor.info(), type.getName(), type.getJavaType());
+                    LOGGER.trace("using type {resourceType}({}) provided by {contributor}", type.getName(), type.getJavaType(), contributor.info());
                 }
                 KukumoDataType<?> replacedType = types.put(type.getName(), type);
                 if (replacedType != null && LOGGER.isDebugEnabled()) {
-                    LOGGER.warn("Module {} overrides type {}", contributor.info(), replacedType.getName());
+                    LOGGER.warn("Module {contributor} overrides type {resourceType}", contributor.info(), replacedType.getName());
                 }
             }
         }

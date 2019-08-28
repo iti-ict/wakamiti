@@ -134,4 +134,26 @@ public interface PlanNode {
     }
 
 
+    default Stream<PlanNode> descendants() {
+        return hasChildren() ? Stream.concat(children(), children().flatMap(PlanNode::descendants)) : Stream.empty();
+    }
+
+
+    default Stream<PlanNode> testCases() {
+        return descendants().filter(PlanNode::isTestCase);
+    }
+
+
+    default int numTestCases() {
+        return (int) testCases().count();
+    }
+
+    default int numTestCassesPassed() {
+        return (int) testCases()
+           .map(PlanNode::computeResult)
+           .filter(Optional::isPresent)
+           .map(Optional::get)
+           .filter(Result::isPassed)
+           .count();
+    }
 }
