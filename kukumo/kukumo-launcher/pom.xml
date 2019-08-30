@@ -46,6 +46,14 @@
             <version>${maven-fetcher.version}</version>
         </dependency>
 
+        <!-- AppDirs -->
+        <dependency>
+            <groupId>net.harawata</groupId>
+            <artifactId>appdirs</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+
         <!-- Log4j 2 over SLF4J -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -73,13 +81,21 @@
     <build>
         <plugins>
 
-            <!-- customize the name of the jar -->
+            <!-- customize the name of the jar and add a manifest -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.0.0</version>
                 <configuration>
-                    <finalName>kukumo</finalName>
+                    <finalName>kukumo-launcher</finalName>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>iti.kukumo.launcher.KukumoLauncher</Main-Class>
+                            <Launcher-Agent-Class>iti.kukumo.launcher.ClasspathAgent</Launcher-Agent-Class>
+                            <Agent-Class>iti.kukumo.launcher.ClasspathAgent</Agent-Class>
+                            <Premain-Class>iti.kukumo.launcher.ClasspathAgent</Premain-Class>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 

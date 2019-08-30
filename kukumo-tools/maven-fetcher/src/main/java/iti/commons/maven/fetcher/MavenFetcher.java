@@ -3,6 +3,7 @@ package iti.commons.maven.fetcher;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
@@ -23,8 +24,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ITI
@@ -132,40 +133,81 @@ public class MavenFetcher {
     
     
     /**
-     * Retrieve the specified artifacts and their dependencies
-     * @param artifacts
+     * Retrieve the specified artifacts and their dependencies from the remote repositories
+     * @param request
      * @throws DependencyCollectionException 
      * @throws ArtifactResolutionException 
      */
-    public int fetchArtifacts(Collection<String> artifacts, Collection<String> scopes, boolean retrieveOptionals) 
-    throws DependencyCollectionException {
+    public MavenFetchResult fetchArtifacts(MavenFetchRequest request) throws DependencyCollectionException {
         if (remoteRepositories.isEmpty()) {
             throw new IllegalArgumentException("Remote repositories not specified");
         }
-        CollectResult result = new MavenDependencyFetcher(
+        MavenFetchResult result = new MavenDependencyFetcher(
             system, 
             remoteRepositories, 
             newSession(), 
-            artifacts, 
-            scopes, 
-            retrieveOptionals,
+            request,
             logger
          )
         .fetch();
-        if (!result.getExceptions().isEmpty()) {
+        if (!result.hasErrors()) {
             logger.warn("Some dependencies were not fetched!");
         }
-        return countFetchedArtifacts(result.getRoot(), new AtomicInteger());
+        return result;
     }
-    
-    
-    
-    private int countFetchedArtifacts(DependencyNode dependencyNode, AtomicInteger counter) {
-        if (dependencyNode.getArtifact() != null && dependencyNode.getArtifact().getFile() != null) {
-            counter.incrementAndGet();
+
+
+
+
+/*
+
+   private List<Path> resolveLocalArtifacts(MavenFetchResult result) throws DependencyCollectionException {
+        DefaultRepositorySystemSession session = newSession();
+        CollectResult result = new MavenDependencyFetcher(
+            system,
+            localRepositoryAsRemote(newSession().getLocalRepository()),
+            session,
+            request,
+            logger
+        )
+        .fetch();
+        return resolveLocalArtifact(result.getRoot(), session.getLocalRepositoryManager(), new ArrayList<>());
+    }
+
+*/
+
+    /**
+     * Locate the specified artifacts and their dependencies in the local repository
+     * @param result
+     * @throws DependencyCollectionException
+     * @throws ArtifactResolutionException
+     */
+    public List<Path> resolveLocalArtifacts(CollectResult result) throws DependencyCollectionException {
+        DefaultRepositorySystemSession session = newSession();
+        logger.info("Dependency tree\n--------------\n{}" + collectResultTree(result.getRoot(), new StringBuilder(), 0));
+        return resolveLocalArtifact(result.getRoot(), session.getLocalRepositoryManager(), new ArrayList<>());
+    }
+
+
+
+
+    private static List<RemoteRepository> localRepositoryAsRemote(LocalRepository localRepository) {
+        return Arrays.asList(new RemoteRepository.Builder(
+                localRepository.getId(),
+                "default",
+                localRepository.getBasedir().toURI().toString()
+        ).build());
+    }
+
+
+    private List<Path> resolveLocalArtifact(DependencyNode dependencyNode, LocalRepositoryManager localRepositoryManager, List<Path> paths) {
+        Path repositoryPath = localRepositoryManager.getRepository().getBasedir().toPath();
+        if (dependencyNode.getArtifact() != null) {
+            Path local = Paths.get(localRepositoryManager.getPathForLocalArtifact(dependencyNode.getArtifact()));
+            paths.add(repositoryPath.resolve(local));
         }
-        dependencyNode.getChildren().forEach(child -> countFetchedArtifacts(child, counter));
-        return counter.get();
+        dependencyNode.getChildren().forEach(child -> resolveLocalArtifact(child, localRepositoryManager, paths));
+        return paths;
     }
 
 

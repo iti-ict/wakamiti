@@ -21,6 +21,17 @@
     <description>Simple plug-in extension support for Java</description>
     <inceptionYear>2019</inceptionYear>
 
+
+    <!-- dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
     <!-- building process -->
     <build>
         <plugins>

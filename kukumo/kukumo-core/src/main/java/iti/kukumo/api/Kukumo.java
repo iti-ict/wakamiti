@@ -77,7 +77,10 @@ public class Kukumo {
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
         }
-        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH,String.class);
+        List<String> discoveryPaths = new ArrayList<>(configuration.getList(RESOURCE_PATH,String.class));
+        if (discoveryPaths.isEmpty()) {
+            discoveryPaths.add(".");
+        }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {
             Optional<PlanNode> plan = createPlanForResourceType(resourceTypeName, discoveryPaths, configuration);
@@ -174,6 +177,10 @@ public class Kukumo {
         List<StepContributor> stepContributors = extensionManager.getExtensions(StepContributor.class);
         stepContributors.forEach(c->configure(c,configuration));
         return stepContributors;
+    }
+
+    public static List<Extension> getAllStepContributorMetadata() {
+        return extensionManager.getExtensionMetadata(StepContributor.class);
     }
 
 

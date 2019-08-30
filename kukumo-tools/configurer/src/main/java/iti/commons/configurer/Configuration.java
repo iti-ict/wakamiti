@@ -169,5 +169,13 @@ public interface Configuration {
     /** Create a new configuration resulting the merge the current configuration with another one */
     Configuration append (Configuration otherConfiguration);
 
-    
+
+    /**
+     *  Create a new configuration resulting of adding or replacing a property
+     *  to the current configuration.
+     *  Since this method creates a new object each time, it should not be used as the primary
+     *  way to create large configurations but rather to tweak existing ones.
+     */
+    Configuration appendProperty(String localRepository, String toString);
+
 }

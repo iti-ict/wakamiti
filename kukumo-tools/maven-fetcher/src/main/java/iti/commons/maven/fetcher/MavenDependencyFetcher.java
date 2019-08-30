@@ -10,6 +10,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -34,29 +35,29 @@ public class MavenDependencyFetcher implements DependencySelector {
         RepositorySystem system,
         List<RemoteRepository> remoteRepositories,
         DefaultRepositorySystemSession session,
-        Collection<String> artifacts,
-        Collection<String> scopes,
-        boolean retrieveOptionals,
+        MavenFetchRequest fetchRequest,
         Logger logger
     ) {
         this.system = system;
         this.remoteRepositories = remoteRepositories;
         this.session = session.setDependencySelector(this);
-        this.scopes = scopes;
-        this.retrieveOptionals = retrieveOptionals;
-        this.dependencies = artifacts.stream()
+        this.scopes = fetchRequest.scopes();
+        this.retrieveOptionals = fetchRequest.retrieveOptionals();
+        this.dependencies = fetchRequest.artifacts().stream()
                 .map(DefaultArtifact::new)
                 .map(artifact->new Dependency(artifact,null))
                 .collect(Collectors.toList());
         this.logger = logger;
     }
     
-    public CollectResult fetch() throws DependencyCollectionException {
+    public MavenFetchResult fetch() throws DependencyCollectionException {
+        logger.info("Searching in the following repositories: {}", remoteRepositories);
         this.retrievedArtifacts = new HashSet<>();
         CollectRequest request = new CollectRequest(dependencies,null,remoteRepositories);
         CollectResult result = system.collectDependencies(session, request);
         retrieveDependency(result.getRoot());
-        return result;
+        resolveLocalPath(result.getRoot());
+        return new MavenFetchResult(result);
     }
 
     
@@ -67,7 +68,9 @@ public class MavenDependencyFetcher implements DependencySelector {
                 ArtifactRequest request = new ArtifactRequest(node.getArtifact(), remoteRepositories, null);
                 system.resolveArtifact(session, request);
             } catch (ArtifactResolutionException e) {
-                logger.debug("<caused by>",e);
+                if (!(e.getCause() instanceof ArtifactNotFoundException)) {
+                    logger.debug("<caused by>", e);
+                }
             }
         }
         for (DependencyNode child : node.getChildren()) {

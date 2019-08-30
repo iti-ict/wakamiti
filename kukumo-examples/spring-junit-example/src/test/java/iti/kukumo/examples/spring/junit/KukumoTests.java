@@ -1,4 +1,4 @@
-package iti.kukumo.springboot.junit.example;
+package iti.kukumo.examples.spring.junit;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

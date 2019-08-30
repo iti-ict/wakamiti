@@ -41,7 +41,10 @@ public class TestMavenFetcher
             .addRemoteRepository("central", "http://repo1.maven.org/maven2")
             .addRemoteRepository("kukumo", "https://raw.github.com/luiinge/maven-repo/master")
             .logger(LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
-            .fetchArtifacts(Arrays.asList("junit:junit:4.12","iti.kukumo:kukumo-gherkin:0.1.0"), Arrays.asList("compile"),false);
+            .fetchArtifacts(
+               new MavenFetchRequest(Arrays.asList("junit:junit:4.12","iti.kukumo:kukumo-gherkin:0.1.0"))
+               .scopes("compile")
+            );
     }
     
     

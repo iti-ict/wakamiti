@@ -3,6 +3,7 @@ package iti.kukumo.maven;
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
 import org.apache.maven.plugin.AbstractMojo;
@@ -64,6 +65,8 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
                     }
                 }
             }
+        } catch (KukumoException e) {
+            throw new MojoFailureException(e.getMessage());
         } catch (IOException e) {
             throw new MojoExecutionException("Kukumo reporting error: " + e.getMessage(), e);
         } catch (ConfigurationException e) {

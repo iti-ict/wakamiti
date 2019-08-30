@@ -1,14 +1,16 @@
 package iti.kukumo.launcher;
 
 
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
+import iti.commons.configurer.ConfigurationException;
+
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
 
 /**
  * @author ITI
@@ -16,69 +18,81 @@ import iti.commons.configurer.ConfigurationException;
  */
 public class Arguments {
 
-    private boolean mustClean;
-    private final Map<String,String> kukumoProperties = new HashMap<>();
-    private final Map<String,String> mavenFetcherProperties = new HashMap<>();
     private Optional<String> confFile = Optional.empty();
     private final List<String> modules = new ArrayList<>();
     private final ConfigurationBuilder configurationBuilder = ConfigurationBuilder.instance();
-    private Runnable command;
+
+    private final Configuration kukumoConfiguration;
+    private final Configuration mavenFetcherConfiguration;
+
 
 
     public Arguments (Path localConfigFile, String[] args) throws ConfigurationException {
 
-        if (localConfigFile.toFile().exists()) {
-            kukumoProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(localConfigFile.toString()).inner("kukumo").asMap());
-            mavenFetcherProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(localConfigFile.toString()).inner("mavenFetcher").asMap());
-        }
+        Map<String,String> kukumoProperties = new HashMap<>();
+        Map<String,String> mavenFetcherProperties = new HashMap<>();
 
-        if (args == null || args.length == 0) {
-            throw new IllegalArgumentException();
-        }
-        args = trim(args);
-        
-        if (args[0].equals("fetch")) {
-            command = this::fetch;
-        } else if (args[0].equals("verify")) {
-            command = this::verify;
-        } else {
-            throw new IllegalArgumentException();
-        }
+        if (args != null && args.length > 0) {
+            args = trim(args);
 
-        for (int i=1; i<args.length; i++) {
-            String arg = args[i].trim();
-            if (!arg.startsWith("-")) {
-                throw new IllegalArgumentException();
-            }
-            arg = arg.substring(1);
-            if (!mappedArgumennt(arg, "K", kukumoProperties) &&
-                !mappedArgumennt(arg, "M", mavenFetcherProperties)
-            ) { 
-                if (arg.equals("modules")) {
-                    if (i == args.length -1) {
-                        throw new IllegalArgumentException();
-                    }
-                    i++;
-                    int j;
-                    for (j = i; j<args.length; j++) {
-                        if (args[j].startsWith("-")) {
-                            break;
+            for (int i=0; i<args.length; i++) {
+                String arg = args[i].trim();
+                if (!arg.startsWith("-")) {
+                    throw new IllegalArgumentException();
+                }
+                arg = arg.substring(1);
+                if (!mappedArgumennt(arg, "K", kukumoProperties) &&
+                    !mappedArgumennt(arg, "M", mavenFetcherProperties)
+                ) {
+                    if (arg.equals("modules")) {
+                        if (i == args.length -1) {
+                            throw new IllegalArgumentException();
                         }
-                        modules.add(args[j]);
+                        i++;
+                        int j;
+                        for (j = i; j<args.length; j++) {
+                            if (args[j].startsWith("-")) {
+                                break;
+                            }
+                            modules.add(args[j]);
+                        }
+                        i = j-1;
+                    } else {
+                        i = singleValuedArgument(args,i,"-conf", value -> confFile = Optional.of(value));
                     }
-                    i = j-1;
-                  } else {
-                      i = singleValuedArgument(args,i,"-conf", value -> confFile = Optional.of(value));
-                      i = flagArgument(args,i,"-clean", () -> mustClean = true);
-                  }
+                }
             }
+
         }
+
         
-        Path kukumoConfFile = Paths.get(this.confFile.orElse("kukumo.yaml"));
-        if (kukumoConfFile.toFile().exists()) {
-            kukumoProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(kukumoConfFile.toString()).inner("kukumo").asMap());
-            mavenFetcherProperties.putAll(configurationBuilder.buildFromClasspathResourceOrURI(kukumoConfFile.toString()).inner("mavenFetcher").asMap());
-        }
+
+        kukumoConfiguration = buildConfiguration(
+            localConfigFile,
+            Paths.get(confFile.orElse("kukumo.yaml")),
+            kukumoProperties,
+            "kukumo"
+        );
+        mavenFetcherConfiguration = buildConfiguration(
+                localConfigFile,
+                Paths.get(confFile.orElse("kukumo.yaml")),
+                mavenFetcherProperties,
+                "mavenFetcher"
+        );
+
+
+    }
+
+
+    private Configuration buildConfiguration(Path localFile, Path projectFile, Map<String,String> arguments, String qualifier) {
+        Configuration localFileConf = (Files.exists(localFile)) ?
+            configurationBuilder.buildFromPath(localFile).inner(qualifier) :
+            configurationBuilder.empty();
+        Configuration projectFileConf = (Files.exists(projectFile)) ?
+                configurationBuilder.buildFromPath(projectFile).inner(qualifier) :
+                configurationBuilder.empty();
+        Configuration argumentConf = configurationBuilder.buildFromMap(arguments);
+        return localFileConf.append(projectFileConf).append(argumentConf);
     }
 
 
@@ -131,35 +145,17 @@ public class Arguments {
         return modules;
     }
 
-    public Map<String, String> kukumoProperties() {
-        return kukumoProperties;
+    public Configuration kukumoConfiguration() {
+        return kukumoConfiguration;
     }
 
-    public Map<String, String> mavenFetcherProperties() {
-        return mavenFetcherProperties;
+    public Configuration mavenFetcherConfiguration() {
+        return mavenFetcherConfiguration;
     }
     
     public Optional<String> confFile() {
         return confFile;
     }
-
-    public Runnable command() {
-        return command;
-    }
-    
-    
-    public void fetch() {
-        new KukumoFetcher().fetch(this);
-    }
-    
-    public void verify() {
-        new KukumoVerifier().verify(this);
-    }
-
-    public boolean mustClean() {
-        return this.mustClean;
-    }
-    
 
 
 }

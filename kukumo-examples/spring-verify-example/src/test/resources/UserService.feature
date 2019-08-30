@@ -1,4 +1,4 @@
-#modules: kukumo-database, kukumo-rest
+#modules: database-steps, rest-steps
 Feature: User service operations
 
    Background:
@@ -11,7 +11,6 @@ Feature: User service operations
         | 3  | Samuel L.  | Jackson   |
       When the user is requested
       Then the response HTTP code is 200
-      And bla bla bala bala
       And the response contains:
       """
       { "firstName": "Samuel L." }

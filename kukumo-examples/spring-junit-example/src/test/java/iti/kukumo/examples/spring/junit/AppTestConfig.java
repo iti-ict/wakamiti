@@ -1,6 +1,5 @@
-package iti.kukumo.springboot.junit.example;
+package iti.kukumo.examples.spring.junit;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 

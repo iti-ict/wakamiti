@@ -56,6 +56,19 @@ public class ExtensionManager {
 
 
     /**
+     * Get all the extension annotated metadata for a given extension point
+     * @param extensionPoint A extension point
+     * @return The extension metadata, or <code>null</code> if passed object is not an extension
+     */
+    public <T> List<Extension> getExtensionMetadata(Class<T> extensionPoint) {
+        return getExtensions(extensionPoint).stream()
+               .map(this::getExtensionMetadata)
+               .collect(Collectors.toList());
+    }
+
+
+
+    /**
      * Retrieves an instance for the given extension point, if any exists.
      * In the case of existing multiple alternatives, the one with highest priority will
      * be used.

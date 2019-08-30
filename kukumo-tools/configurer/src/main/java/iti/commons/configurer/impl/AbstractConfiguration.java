@@ -1,14 +1,15 @@
 package iti.commons.configurer.impl;
 
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Properties;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.Configurator;
+
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public abstract class AbstractConfiguration implements Configuration {
 
@@ -81,5 +82,12 @@ public abstract class AbstractConfiguration implements Configuration {
     @Override
     public Configuration appendFromURL(URL url) {
         return builder.compose(this,builder.buildFromURL(url));
+    }
+
+    @Override
+    public Configuration appendProperty(String property, String value) {
+        Map<String, String> singlePropertyMap = new HashMap<>();
+        singlePropertyMap.put(property,value);
+        return builder.compose(this,builder.buildFromMap(singlePropertyMap));
     }
 }

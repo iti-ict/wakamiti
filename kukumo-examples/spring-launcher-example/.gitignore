@@ -1,0 +1,12 @@
+**/.idea
+**/.settings
+**/bin
+**/out
+**/target
+*.iml
+*.classpath
+/.project
+/src/site/markdown/
+**/.attach_pid*
+**/*.swp
+kukumo/.kukumo

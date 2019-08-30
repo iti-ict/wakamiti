@@ -1,14 +1,19 @@
 package iti.kukumo.launcher;
 
+import iti.kukumo.api.KukumoException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
+import java.util.jar.JarFile;
 
 /**
  * @author ITI
@@ -42,7 +47,12 @@ public class KukumoLauncher {
             System.exit(-1);
         }
         try {
-            arguments.command().run();
+            List<Path> fetchedArtifacts = new KukumoFetcher(arguments).fetch();
+            updateClasspath(fetchedArtifacts);
+            new KukumoVerifier(arguments).verify();
+        } catch (KukumoException e) {
+            logger.error(e.getMessage());
+            System.exit(-1);
         } catch (Exception e) {
             logger.error("Fatal error: {}",e.getLocalizedMessage(),e);
             System.exit(-1);
@@ -53,9 +63,9 @@ public class KukumoLauncher {
 
     private static Logger createLogger(boolean debug) {
         if (debug) {
-            Configurator.setLevel("iti", Level.DEBUG);
+            Configurator.setLevel("iti.kukumo", Level.DEBUG);
         }
-        return LoggerFactory.getLogger("iti");
+        return LoggerFactory.getLogger("iti.kukumo");
     }
 
 
@@ -108,6 +118,23 @@ public class KukumoLauncher {
         ;
         logger.error("{}",string);
         System.exit(-1);
+    }
+
+
+    private static void updateClasspath(List<Path> artifacts) {
+        System.out.println("FETCHED::\n"+artifacts);
+        for (Path artifact : artifacts) {
+            if (artifact.toString().endsWith(".jar") && Files.exists(artifact)) {
+                try {
+                    JarFile jarFile = new JarFile(artifact.toFile());
+                    ClasspathAgent.appendJarFile(jarFile);
+                    logger.debug("Added JAR {} to the classpath", artifact);
+                } catch (IOException e) {
+                    logger.error("Cannot include {} in the classpath", artifact);
+                    logger.debug(e.getMessage(),e);
+                }
+            }
+        }
     }
 
 

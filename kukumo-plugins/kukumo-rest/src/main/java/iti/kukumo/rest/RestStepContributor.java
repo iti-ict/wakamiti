@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @I18nResource("iti_kukumo_kukumo-rest")
-@Extension(provider = "iti.kukumo", name = "rest")
+@Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor implements StepContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");

@@ -1,4 +1,4 @@
-#modules: kukumo-database, kukumo-rest
+#modules: database-steps, kukumo-rest
 Feature: User service operations
 
    Background:

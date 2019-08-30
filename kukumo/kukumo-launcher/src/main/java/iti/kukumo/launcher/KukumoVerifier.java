@@ -4,11 +4,8 @@ import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.Result;
-
-import java.io.File;
-import java.util.Optional;
 
 /**
  * @author ITI
@@ -16,56 +13,41 @@ import java.util.Optional;
  */
 public class KukumoVerifier {
 
-    private static final File DEFAULT_CONF_FILE = new File("kukumo.yaml");
-    
-    public void verify(Arguments arguments) {
+    private final Arguments arguments;
 
-        /*
-          Restrict modules that will be located by Kukumo.
-          (this is only necessary from the launcher; when executed by Maven, the dependencies are already
-          configured in the pom)
-         */
-        // TODO instead of restrict modules by name, we should restrit by jar, otherwise the plugin architecture will be
-        // way to rigid
-        // Kukumo.restrictModules(arguments.modules());
+    public KukumoVerifier(Arguments arguments) {
+        this.arguments = arguments;
+    }
 
 
-        Configuration configuration;
+
+    public void verify() {
+    Configuration configuration;
          try {
-             configuration = readConfiguration(arguments); 
-             KukumoLauncher.logger().info("building test iti.kukumo.test.gherkin.plan");
+             configuration = readConfiguration(arguments);
              PlanNode plan = Kukumo.createPlanFromConfiguration(configuration);
              if (!plan.hasChildren()) {
                  KukumoLauncher.logger().warn("Test Plan is empty!");
              } else {
-                 KukumoLauncher.logger().info("running test iti.kukumo.test.gherkin.plan");
-                 Optional<Result> result = Kukumo.executePlan(plan, configuration).computeResult();
-                 if (result.isPresent()) {
-                     if (result.get() == Result.PASSED) {
-                         KukumoLauncher.logger().info("Test Plan passed");
-                     } else {
-                         KukumoLauncher.logger().error("Test Plan not passed");
-                     }
-                 }
+                 Kukumo.executePlan(plan, configuration).computeResult();
              }
          } catch (ConfigurationException e) {
-             KukumoLauncher.logger().error("Error reading configuration: {}",e.getLocalizedMessage(),e);
+             KukumoLauncher.logger().error("Error reading configuration: {}", e.getLocalizedMessage(), e);
+         } catch (KukumoException e) {
+             KukumoLauncher.logger().error(e.getMessage());
          } catch (Exception e) {
              KukumoLauncher.logger().error("Fatal error: {}",e.getLocalizedMessage(),e);
          }
     }
 
-    
-    
+
+
     private Configuration readConfiguration(Arguments arguments) throws ConfigurationException {
-        Configuration configuration = KukumoConfiguration.defaultConfiguration();
-        File confFile = arguments.confFile().map(File::new).orElse(DEFAULT_CONF_FILE);
-        if (confFile.exists()) {
-            configuration = configuration.appendFromClasspathResourceOrURI(confFile.getAbsolutePath()).inner("kukumo");
+        Configuration argumentConfiguration = arguments.kukumoConfiguration();
+        Configuration configuration = KukumoConfiguration.defaultConfiguration().append(argumentConfiguration);
+        if (KukumoLauncher.logger().isDebugEnabled()) {
+            KukumoLauncher.logger().debug("Using the following {}", configuration);
         }
-        if (!arguments.kukumoProperties().isEmpty()) {
-            configuration = configuration.appendFromMap(arguments.kukumoProperties());
-        }    
         return configuration;
     }
 
