@@ -10,6 +10,7 @@
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>1</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->

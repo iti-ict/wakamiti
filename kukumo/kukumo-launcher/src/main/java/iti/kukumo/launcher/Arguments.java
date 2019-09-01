@@ -132,14 +132,6 @@ public class Arguments {
     }
     
     
-    
-    private int flagArgument(String[] args, int index, String name, Runnable action) {
-        if (args[index].equals(name)) {
-            action.run();
-        }
-        return index;
-    }
-
 
     public List<String> modules() {
         return modules;

@@ -8,6 +8,7 @@
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>1</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>iti.kukumo</groupId>
@@ -105,19 +106,10 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- string distance -->
-        <dependency>
-            <groupId>info.debatty</groupId>
-            <artifactId>java-string-similarity</artifactId>
-            <version>1.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- json asserts for testing -->
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>1.5.0</version>
             <scope>test</scope>
         </dependency>
 

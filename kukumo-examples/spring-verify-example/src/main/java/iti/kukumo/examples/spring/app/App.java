@@ -1,20 +1,18 @@
 package iti.kukumo.examples.spring.app;
 
+import java.sql.SQLException;
+
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import java.sql.SQLException;
 
 @SpringBootApplication
 public class App {
-    
+
     public static void main( String[] args ) throws SQLException {
-        Server server = Server.createTcpServer("-tcpPort","9092").start();
-        ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
-        //context.addApplicationListener(event -> server.stop());
+        Server.createTcpServer("-tcpPort","9092").start();
+        SpringApplication.run(App.class, args);
     }
-    
-    
+
+
 }

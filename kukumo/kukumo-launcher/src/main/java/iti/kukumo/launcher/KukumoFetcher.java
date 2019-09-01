@@ -1,18 +1,24 @@
 package iti.kukumo.launcher;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
-import iti.commons.maven.fetcher.MavenFetchRequest;
-import iti.commons.maven.fetcher.MavenFetcher;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
-
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.slf4j.Logger;
+
+import iti.commons.configurer.Configuration;
+import iti.commons.maven.fetcher.MavenFetchRequest;
+import iti.commons.maven.fetcher.MavenFetchResult;
+import iti.commons.maven.fetcher.MavenFetchResult.FetchedArtifact;
+import iti.commons.maven.fetcher.MavenFetcher;
+import iti.kukumo.api.KukumoException;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
 
 /**
  * @author ITI
@@ -20,16 +26,18 @@ import java.util.List;
  */
 public class KukumoFetcher {
 
-	private final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
-	private final Arguments arguments;
+    private final Arguments arguments;
 
 
-	public KukumoFetcher(Arguments arguments) {
-	    this.arguments = arguments;
+    public KukumoFetcher(Arguments arguments) {
+        this.arguments = arguments;
     }
-	
+
 
     public List<Path> fetch() {
+
+        Logger logger = KukumoLauncher.logger();
+
         try  {
 
             AppDirs appDirs = AppDirsFactory.getInstance();
@@ -42,30 +50,40 @@ public class KukumoFetcher {
 
             Path mavenRepo = Paths.get(appDirs.getUserDataDir("kukumo", "repository", "iti"));
             Files.createDirectories(mavenRepo);
-            Configuration conf = arguments.mavenFetcherConfiguration().appendProperty("localRepository",mavenRepo.toString());
+            Configuration conf = arguments
+                .mavenFetcherConfiguration()
+                .appendProperty("localRepository",mavenRepo.toString());
 
-            KukumoLauncher.logger().info("Fetching dependencies...");
+            logger.info("Fetching dependencies...");
             MavenFetcher mavenFetcher = new MavenFetcher()
-                .logger(KukumoLauncher.logger())
+                .logger(logger)
                 .config(conf.asProperties());
             MavenFetchRequest fetchRequest = new MavenFetchRequest(arguments.modules())
                     .scopes("compile","provided")
                     .retrieveOptionals(false);
-            mavenFetcher.fetchArtifacts(fetchRequest);
-            return mavenFetcher.resolveLocalArtifacts(fetchRequest);
-        } catch (Exception e) {
-            KukumoLauncher.logger().error("Error fetching dependencies: {}", e.getLocalizedMessage());
-            KukumoLauncher.logger().debug("<error>",e);
-            throw new RuntimeException(e);
+            MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("{}",fetchedArtifacts);
+            }
+            return fetchedArtifacts
+                .allDepedencies()
+                .map(FetchedArtifact::path)
+                .collect(Collectors.toList());
+
+        } catch (RuntimeException | DependencyCollectionException | IOException e) {
+            logger.error("Error fetching dependencies: {}", e.getLocalizedMessage());
+            logger.debug("<error>",e);
+            throw new KukumoException(e);
         }
     }
 
 
 
-    private void addModulesFromConfigFile(Arguments arguments) throws ConfigurationException {
+    private void addModulesFromConfigFile(Arguments arguments) {
         Configuration conf = arguments.kukumoConfiguration();
         arguments.modules().addAll(conf.getList("launcher.modules",String.class));
     }
 
-    
+
 }

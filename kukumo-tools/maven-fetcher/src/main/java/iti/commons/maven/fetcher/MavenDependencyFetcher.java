@@ -28,9 +28,9 @@ public class MavenDependencyFetcher implements DependencySelector {
     private final List<RemoteRepository> remoteRepositories;
     private final RepositorySystem system;
     private final Logger logger;
-    
+
     private Set<String> retrievedArtifacts;
-    
+
     public MavenDependencyFetcher(
         RepositorySystem system,
         List<RemoteRepository> remoteRepositories,
@@ -49,19 +49,18 @@ public class MavenDependencyFetcher implements DependencySelector {
                 .collect(Collectors.toList());
         this.logger = logger;
     }
-    
+
     public MavenFetchResult fetch() throws DependencyCollectionException {
         logger.info("Searching in the following repositories: {}", remoteRepositories);
         this.retrievedArtifacts = new HashSet<>();
         CollectRequest request = new CollectRequest(dependencies,null,remoteRepositories);
         CollectResult result = system.collectDependencies(session, request);
         retrieveDependency(result.getRoot());
-        resolveLocalPath(result.getRoot());
-        return new MavenFetchResult(result);
+        return new MavenFetchResult(result,session);
     }
 
-    
-    
+
+
     private void retrieveDependency(DependencyNode node) {
         if (node.getArtifact() != null) {
             try {
@@ -93,17 +92,17 @@ public class MavenDependencyFetcher implements DependencySelector {
     }
 
 
-    
+
     @Override
     public DependencySelector deriveChildSelector(DependencyCollectionContext context) {
         return this;
     }
 
-    
-       
+
+
     private static String key(Artifact artifact) {
         return artifact.getGroupId()+":"+artifact.getArtifactId()+":"+artifact.getVersion();
     }
-    
-    
+
+
 }

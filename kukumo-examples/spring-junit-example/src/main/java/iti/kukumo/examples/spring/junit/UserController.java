@@ -1,7 +1,5 @@
-package iti.kukumo.examples.spring.junit.web;
+package iti.kukumo.examples.spring.junit;
 
-import iti.kukumo.examples.spring.junit.model.User;
-import iti.kukumo.examples.spring.junit.model.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
