@@ -74,14 +74,18 @@ public class ExpressionMatcher {
 
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
+        // a|b|c -> (a|b|c)
+        regex = regex.replaceAll("[^ |(]*(\\|[^ |)]+)+","\\($0\\)");
+        // (( -> (  and )) -> (
+        regex = regex.replace("((","(").replace("))",")");
         // * -> any value
-        regex = regex.replaceAll("(?<!\\/)\\*", "(.*)");
-        // | -> alternative (wrap between \b)
-        regex = regex.replaceAll("[^ ][^\\|]\\|[^ \\)]+","\\\\b$0\\\\b");
+        regex = regex.replaceAll("(?<!/)\\*", "(.*)");
         // ( ) -> optional
-        regex = regex.replaceAll("(?<!\\/)\\(([^\\)]*)\\)","(?:$1)?");
+        regex = regex.replaceAll("(?<!/)\\(([^)]*)\\)","(?:$1)?");
         // (...)?_  -> (?:(...)?_)?
-        regex = regex.replaceAll("\\(\\?\\:[^\\)]+\\)\\? ", "(?:$0)?");
+        regex = regex.replaceAll("\\(\\?:[^)]+\\)\\? ", "(?:$0)?");
+        // _(?:.*)? -> (?:.*)?
+        regex = regex.replace(" (?:.*)?","(?:.*)?");
         return regex;
     }
 

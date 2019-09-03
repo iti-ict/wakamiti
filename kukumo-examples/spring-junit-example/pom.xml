@@ -105,6 +105,26 @@
             <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Localization -->
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core-l10n</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest-l10n</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db-l10n</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- Logj2 dependencies -->
         <dependency>

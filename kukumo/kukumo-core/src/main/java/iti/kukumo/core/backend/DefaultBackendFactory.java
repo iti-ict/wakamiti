@@ -68,6 +68,7 @@ public class DefaultBackendFactory implements BackendFactory {
         // each backend uses a new instance of each step contributor in order to ease parallelization
         List<String> restrictedModules = new ArrayList<>(configuration.getList(KukumoConfiguration.MODULES,String.class));
         List<StepContributor> stepContributors = resolveStepContributors(restrictedModules);
+        stepContributors.forEach(stepContributor -> Kukumo.configure(stepContributor,configuration));
         List<DataTypeContributor> dataTypeContributors = resolveDataTypeContributors(restrictedModules);
         KukumoDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
         List<RunnableStep> steps = loadSteps(stepContributors, typeRegistry);

@@ -1,18 +1,19 @@
 package iti.kukumo.spring.rest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.Configurator;
 import iti.kukumo.rest.RestStepContributor;
+import iti.kukumo.util.KukumoLogger;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Extension(
         provider = "iti.kukumo",
@@ -26,6 +27,7 @@ import iti.kukumo.rest.RestStepContributor;
 public class SpringLocalPortConfigurer implements Configurator<RestStepContributor> {
 
 
+    private static final Logger LOGGER = KukumoLogger.forClass(SpringLocalPortConfigurer.class);
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "kukumo.rest.useSpringLocalServerPort";
 
     @Autowired
@@ -41,10 +43,13 @@ public class SpringLocalPortConfigurer implements Configurator<RestStepContribut
     public void configure(RestStepContributor contributor, Configuration configuration) {
         try {
             String localServerPort = environment.getProperty("local.server.port");
-            contributor.setBaseURL(new URL("http://localhost:"+localServerPort));
+            URL baseURL = new URL("http://localhost:" + localServerPort);
+            contributor.setBaseURL(baseURL);
+            LOGGER.debug("Using Spring local server URL: {uri}",baseURL);
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e);
         }
     }
+
 
 }

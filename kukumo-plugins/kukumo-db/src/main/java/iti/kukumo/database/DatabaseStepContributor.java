@@ -10,6 +10,7 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.database.dataset.*;
+import iti.kukumo.util.KukumoLogger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -28,7 +29,7 @@ import java.sql.SQLException;
 @I18nResource("iti_kukumo_kukumo-database")
 public class DatabaseStepContributor implements StepContributor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.database");
+    private static final Logger LOGGER = KukumoLogger.of(LoggerFactory.getLogger("iti.kukumo.database"));
 
 
     private static ConnectionManager connectionManager = Kukumo.getExtensionManager()
@@ -51,6 +52,8 @@ public class DatabaseStepContributor implements StepContributor {
         } else {
             connection = connectionManager.refreshConnection(connection,connectionParameters);
         }
+        LOGGER.debug("Using database connection of type {} provided by {contributor}",
+                connection.getClass().getSimpleName(), connectionManager.info());
         return connection;
     }
 

@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,34 +22,93 @@ import static org.junit.Assert.assertTrue;
 public class TestExpressionMatcher {
 
     @Test
-    public void testExpression() {
-        String readableExpression = "(que) (el|la|lo|los|las) siguiente(s) * se inserta(n) en la tabla de BBDD:";
-        String regularExpression = ExpressionMatcher.computeRegularExpression(readableExpression);
-        Pattern regex = Pattern.compile(regularExpression);
-        System.out.println(regex.toString());
-        assertTrue(regex.matcher("que los siguientes datos se insertan en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("que el siguiente dato se inserta en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("que lo siguiente se inserta en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("los siguientes datos se insertan en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("el siguiente dato se inserta en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("lo siguiente se inserta en la tabla de BBDD:").matches());
-        assertTrue(regex.matcher("que siguiente se inserta en la tabla de BBDD:").matches());
+    public void testExpressionStep1() {
+        assertExpression(
+            new Locale("es"),
+           "(que) el|la|lo|los|las siguiente(s) * se inserta(n) en la tabla de BBDD {word}:",
+            "que los siguientes datos se insertan en la tabla de BBDD USER:",
+            "que el siguiente dato se inserta en la tabla de BBDD USER:",
+            "que lo siguiente se inserta en la tabla de BBDD USER:",
+            "los siguientes datos se insertan en la tabla de BBDD USER:",
+            "lo siguiente se inserta en la tabla de BBDD USER:",
+            "que siguiente se inserta en la tabla de BBDD USER:"
+        );
 
     }
 
 
     @Test
-    public void testExpressionStep() {
-        String step = "the following data inserted in the database table USER:";
-        Matcher matcher = ExpressionMatcher.matcherFor(
-            "(that) the following * (is|are) inserted in the database table {word}:",
-            coreTypes(),
+    public void testExpressionStep2() {
+        assertExpression(
             Locale.ENGLISH,
-            new DefaultPlanStep().setName(step)
+            "(that) the following * (is|are) inserted in the database table {word}:",
+            "the following data is inserted in the database table USER:",
+            "the following data are inserted in the database table USER:",
+            "the following data inserted in the database table USER:",
+            "the following is inserted in the database table USER:",
+            "the following are inserted in the database table USER:",
+            "the following inserted in the database table USER:",
+            "the following inserted in the database table USER:"
         );
-        assertTrue(matcher.matches());
     }
 
+
+    @Test
+    public void testExpressionStep3() {
+        assertExpression(
+            new Locale("es"),
+            "* identificad(o|a|os|as) por {text}",
+            "un usuario identificado por '3'",
+            "una usuaria identificada por '3'",
+            "unos usuarios identificados por '3'",
+            "unas usuarias identificadas por '3'",
+            "identificado por '3'"
+        );
+    }
+
+
+    @Test
+    public void testExpressionStep4() {
+        assertExpression(
+            new Locale("es"),
+            "(que) el|la|lo|los|las siguiente(s) * se inserta(n) en la tabla de BBDD {word}:",
+            "que el siguiente dato se inserta en la tabla de BBDD USER:",
+            "que la siguiente cosa se inserta en la tabla de BBDD USER:",
+            "que lo siguiente se inserta en la tabla de BBDD USER:",
+            "que los siguientes datos se insertan en la tabla de BBDD USER:",
+            "que las siguientes cosas se insertan en la tabla de BBDD USER:",
+            "el siguiente dato se inserta en la tabla de BBDD USER:",
+            "la siguiente cosa se inserta en la tabla de BBDD USER:",
+            "lo siguiente se inserta en la tabla de BBDD USER:",
+            "los siguientes datos se insertan en la tabla de BBDD USER:",
+            "las siguientes cosas se insertan en la tabla de BBDD USER:"
+        );
+    }
+
+
+    @Test
+    public void testExpressionStep5() {
+        assertExpression(
+             new Locale("es"),
+             "se realiza la búsqueda *",
+             "se realiza la búsqueda",
+             "se realiza la búsqueda de algo"
+        );
+    }
+
+
+
+    private void assertExpression(Locale locale, String expression, String... steps) {
+        for (String step : steps) {
+            Matcher matcher = ExpressionMatcher.matcherFor(
+                    expression,
+                    coreTypes(),
+                    locale,
+                    new DefaultPlanStep().setName(step)
+            );
+            assertTrue("<<"+step+">> not matching <<"+expression+">>",matcher.matches());
+        }
+    }
 
 
 

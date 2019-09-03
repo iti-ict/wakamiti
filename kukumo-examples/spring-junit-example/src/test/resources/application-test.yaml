@@ -13,9 +13,8 @@ kukumo:
 
 logging:
   level:
-    root: ERROR
+    root: INFO
     org.springframework: ERROR
     iti.kukumo: INFO
-  #pattern.console:  "[%level] [%location] %message%n"
-  pattern.console:  "%message%n"
+    iti.commons.jext: ERROR
 spring.output.ansi.enabled: DETECT

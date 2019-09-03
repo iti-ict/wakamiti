@@ -1,4 +1,4 @@
-#modules: database-steps, kukumo-rest
+#modules: database-steps, rest-steps
 Feature: User service operations
 
    Background:
@@ -13,5 +13,5 @@ Feature: User service operations
       Then the response HTTP code is 200
       And the response contains:
       """
-      { "firstName": "Pepe" }
+      { "firstName": "Samuel L." }
       """

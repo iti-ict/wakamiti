@@ -1,13 +1,13 @@
 package iti.commons.jext;
 
-import java.util.function.Predicate;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
+
+import java.util.function.Predicate;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -75,7 +75,23 @@ class ExtensionLoadContext<T> {
         return extensionLoader.load(extensionPoint, classLoader);
     }
 
-    
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder("[Extensions of type ").append(extensionPoint);
+        if (externallyManaged) {
+            string.append(" (externally managed) ");
+        }
+        if (extensionLoader != null) {
+            string.append(" loaded by ").append(extensionLoader);
+        }
+        if (classLoader != null) {
+            string.append(" using class loader ").append(classLoader);
+        }
+        return string.append("]").toString();
+    }
+
+
     private static <T> Predicate<T> selectAll() {
         return x->true;
     }
@@ -95,6 +111,8 @@ class ExtensionLoadContext<T> {
     }
 
     
-  
+
+
+
     
 }

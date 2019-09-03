@@ -1,16 +1,17 @@
 package iti.kukumo.database;
 
+import iti.commons.jext.ExtensionPoint;
+import iti.kukumo.api.extensions.Contributor;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import iti.commons.jext.ExtensionPoint;
 
 @ExtensionPoint
 /**
  * The <tt>ConnectionManager</tt> is a simply interface that provides a valid database connection.
  * Implementations can use any mechanism: connection pools, manually creation, etc. 
  */
-public interface ConnectionManager {
+public interface ConnectionManager extends Contributor {
 
     /**
      * Obtain a valid connection ready to accept requests

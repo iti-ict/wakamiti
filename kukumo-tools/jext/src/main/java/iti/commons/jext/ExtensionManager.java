@@ -18,6 +18,7 @@ public class ExtensionManager {
 
 
     private final ClassLoader[] classLoaders;
+    private final ExtensionLoader builtInExtensionLoader = new InternalExtensionLoader();
     private final List<ExtensionLoader> extensionLoaders = extensionLoaders();
 
     private Map<Class<?>,Object> singletons = new HashMap<>();
@@ -25,6 +26,7 @@ public class ExtensionManager {
     private Map<Class<?>,Set<Class<?>>> validExtensions = new HashMap<>();
     private Map<Object,Extension> extensionMetadata = new HashMap<>();
     private Map<Class<?>,List<Object>> cachedValidExtensionInstances = new HashMap<>();
+
 
 
     /**
@@ -195,6 +197,7 @@ public class ExtensionManager {
     protected <T> List<T> obtainCachedValidExtensions(ExtensionLoadContext<T> context) {
         List<Object> cache = cachedValidExtensionInstances.get(context.extensionPoint());
         if (cache != null) {
+            LOGGER.trace("{} :: Retrieved from cache [{}]", context, cache);
             return (List<T>) cache;
         }
         List<T> extensions = obtainValidExtensions(context);
@@ -212,7 +215,7 @@ public class ExtensionManager {
         List<T> collectedExtensions = new ArrayList<>();
         for (ClassLoader classLoader : classLoaders) {
             collectValidExtensions(
-                context.withInternalLoader(classLoader, internalExtensionLoader()),
+                context.withInternalLoader(classLoader, builtInExtensionLoader),
                 collectedExtensions
             );
             for (ExtensionLoader extensionLoader : extensionLoaders) {
@@ -234,14 +237,19 @@ public class ExtensionManager {
         List<T> collectedExtensions
     ) {
         Class<T> extensionPoint = context.extensionPoint();
+        LOGGER.trace("{} :: Searching...", context);
         for (T extension : context.load()) {
             if (hasBeenInvalidated(extensionPoint, extension)) {
+                LOGGER.trace("{} :: Found {} but ignored (it is marked as invalid)", context, extension);
                 break;
             }
             if (!hasBeenValidated(extensionPoint, extension)) {
                 boolean valid = validateExtension(context,extension);
                 if (valid) {
+                    LOGGER.trace("{} :: Found {}", context, extension);
                     collectedExtensions.add(extension);
+                } else {
+                    LOGGER.trace("{} :: Found {} but ignored (marked as invalid)", context, extension);
                 }
             }
         }
@@ -378,9 +386,6 @@ public class ExtensionManager {
     }
 
 
-    private static ExtensionLoader internalExtensionLoader() {
-        return ServiceLoader::load;
-    }
 
 
 
