@@ -63,7 +63,7 @@ public class KukumoJUnitRunner extends Runner {
 
     @Override
     public void run(RunNotifier notifier) {
-        Kukumo.setAnsiFromConfiguration(configuration);
+        Kukumo.configureLogger(configuration);
         Kukumo.configureEventObservers(configuration);
         Kukumo.publishEvent(Event.PLAN_RUN_STARTED,getPlan().obtainDescriptor());
         planNodeLogger.logTestPlanHeader(plan);
@@ -73,7 +73,7 @@ public class KukumoJUnitRunner extends Runner {
             try {
                 child.runNode(notifier,false);
             } catch (Exception e) {
-                LOGGER.error("{error}",e.getMessage(),e);
+                LOGGER.error(e.getMessage(),e);
             }
         }
 

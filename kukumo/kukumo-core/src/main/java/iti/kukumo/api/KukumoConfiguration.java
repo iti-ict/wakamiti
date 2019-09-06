@@ -59,7 +59,10 @@ public class KukumoConfiguration {
     public static final String REDEFINITION_IMPLEMENTATION_TAG = "redefinition.implementationTag";
 
     /** Use Ansi characters in the logs */
-    public static final String LOGS_ANSI_ENABLED = "logs.ansiEnabled";
+    public static final String LOGS_ANSI_ENABLED = "logs.ansi.enabled";
+
+    /** Use Ansi styles in the logs */
+    public static final String LOGS_ANSI_STYLES = "logs.ansi.styles";
 
     /** Show the Kukumo logo in the logs */
     public static final String LOGS_SHOW_LOGO = "logs.showLogo";
@@ -78,7 +81,16 @@ public class KukumoConfiguration {
         @Property(key=ID_TAG_PATTERN,value=Defaults.DEFAULT_ID_TAG_PATTERN),
         @Property(key=REDEFINITION_ENABLED,value=Defaults.DEFAULT_REDEFINITION_ENABLED),
         @Property(key=REDEFINITION_DEFINITION_TAG,value=Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG),
-        @Property(key=REDEFINITION_IMPLEMENTATION_TAG,value=Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG)
+        @Property(key=REDEFINITION_IMPLEMENTATION_TAG,value=Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG),
+        @Property(key="logs.ansi.styles.logo",value="bold,green"),
+        @Property(key="logs.ansi.styles.keyword",value="blue"),
+        @Property(key="logs.ansi.styles.source",value="faint"),
+        @Property(key="logs.ansi.styles.time",value="faint"),
+        @Property(key="logs.ansi.styles.stepResult.PASSED",value="green,bold"),
+        @Property(key="logs.ansi.styles.stepResult.SKIPPED",value="faint"),
+        @Property(key="logs.ansi.styles.stepResult.UNDEFINED",value="yellow"),
+        @Property(key="logs.ansi.styles.stepResult.FAILED",value="red,bold"),
+        @Property(key="logs.ansi.styles.stepResult.ERROR",value="red,bold")
     })
     public static class Defaults {
         public static final String DEFAULT_OUTPUT_FILE_PATH = "kukumo.json";

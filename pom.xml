@@ -121,6 +121,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- maven site -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -188,10 +194,9 @@
         <profile>
             <id>build-site</id>
             <activation>
-                <property>
-                    <name>buildSite</name>
-                    <value>true</value>
-                </property>
+                <file>
+                    <exists>src/site/site.xml</exists>
+                </file>
             </activation>
             <build>
                 <plugins>
@@ -227,12 +232,6 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
-                    <!-- maven site -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>${maven.site.version}</version>
                     </plugin>
                 </plugins>
             </build>

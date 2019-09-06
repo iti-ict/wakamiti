@@ -1,6 +1,5 @@
 package iti.commons.slf4jjansi.impl;
 
-import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
@@ -10,18 +9,15 @@ import java.util.Arrays;
 import static org.slf4j.spi.LocationAwareLogger.*;
 
 public class LocationAwareAnsiLogger implements Logger {
-
-
+    private static final String[] stringLevel = {"trace","debug","info","warn","error"};
     private final LocationAwareLogger delegate;
+    private final JAnsiSupport jAnsi = JAnsiSupport.instance;
 
     public LocationAwareAnsiLogger(LocationAwareLogger delegate) {
         this.delegate = delegate;
     }
 
 
-    protected String ansi(String message) {
-        return Ansi.ansi().render(message).toString();
-    }
 
     private String fqnc() { return this.getClass().getName(); }
 
@@ -45,7 +41,7 @@ public class LocationAwareAnsiLogger implements Logger {
                 throwable = (Throwable) args[args.length-1];
                 args = Arrays.copyOf(args, args.length-1);
             }
-            delegate.log(marker, fqnc(), level, ansi(message), args, throwable);
+            delegate.log(marker, fqnc(), level, jAnsi.ansi(stringLevel[level/10],message), args, throwable);
         }
     }
 

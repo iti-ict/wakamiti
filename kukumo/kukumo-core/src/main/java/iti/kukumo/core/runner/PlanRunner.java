@@ -40,7 +40,7 @@ public class PlanRunner  {
 
     
     public PlanNode run() {
-        Kukumo.setAnsiFromConfiguration(configuration);
+        Kukumo.configureLogger(configuration);
         Kukumo.configureEventObservers(configuration);
         Kukumo.publishEvent(Event.PLAN_RUN_STARTED,plan.obtainDescriptor());
         planNodeLogger.logTestPlanHeader(plan);

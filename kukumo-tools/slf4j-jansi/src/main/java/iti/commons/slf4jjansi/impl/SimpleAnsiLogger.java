@@ -1,22 +1,21 @@
 package iti.commons.slf4jjansi.impl;
 
-import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 public class SimpleAnsiLogger implements Logger {
 
 
+
+
+
     private final Logger delegate;
+    private final JAnsiSupport jAnsi = JAnsiSupport.instance;
 
     public SimpleAnsiLogger(Logger delegate) {
         this.delegate = delegate;
     }
 
-
-    protected String ansi(String message) {
-        return Ansi.ansi().render(message).toString();
-    }
 
     @Override
     public String getName() {
@@ -32,21 +31,21 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(String msg) {
         if (delegate.isTraceEnabled()) {
-            delegate.trace(ansi(msg));
+            delegate.trace(jAnsi.ansi("trace",msg));
         }
     }
 
     @Override
     public void trace(String format, Object arg) {
         if (delegate.isTraceEnabled()) {
-            delegate.trace(ansi(format),arg);
+            delegate.trace(jAnsi.ansi("trace",format),arg);
         }
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
         if (delegate.isTraceEnabled()) {
-            delegate.trace(ansi(format),arg1,arg2);
+            delegate.trace(jAnsi.ansi("trace",format),arg1,arg2);
         }
     }
 
@@ -54,7 +53,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(String format, Object... arguments) {
         if (delegate.isTraceEnabled()) {
-            delegate.trace(ansi(format), arguments);
+            delegate.trace(jAnsi.ansi("trace",format), arguments);
         }
     }
 
@@ -62,7 +61,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(String msg, Throwable t) {
         if (delegate.isTraceEnabled()) {
-            delegate.trace(ansi(msg),t);
+            delegate.trace(jAnsi.ansi("trace",msg),t);
         }
     }
 
@@ -76,14 +75,14 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(Marker marker, String msg) {
         if (delegate.isTraceEnabled(marker)) {
-            delegate.trace(marker,ansi(msg));
+            delegate.trace(marker,jAnsi.ansi("trace",msg));
         }
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg) {
         if (delegate.isTraceEnabled(marker)) {
-            delegate.trace(marker,ansi(format),arg);
+            delegate.trace(marker,jAnsi.ansi("trace",format),arg);
         }
     }
 
@@ -91,7 +90,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
         if (delegate.isTraceEnabled(marker)) {
-            delegate.trace(marker,ansi(format),arg1,arg2);
+            delegate.trace(marker,jAnsi.ansi("trace",format),arg1,arg2);
         }
     }
 
@@ -99,7 +98,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(Marker marker, String format, Object... argArray) {
         if (delegate.isTraceEnabled(marker)) {
-            delegate.trace(marker,ansi(format),argArray);
+            delegate.trace(marker,jAnsi.ansi("trace",format),argArray);
         }
     }
 
@@ -107,7 +106,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void trace(Marker marker, String msg, Throwable t) {
         if (delegate.isTraceEnabled(marker)) {
-            delegate.trace(marker,ansi(msg),t);
+            delegate.trace(marker,jAnsi.ansi("trace",msg),t);
         }
     }
 
@@ -122,14 +121,14 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(String msg) {
         if (delegate.isDebugEnabled() ) {
-            delegate.debug(ansi(msg));
+            delegate.debug(jAnsi.ansi("debug",msg));
         }
     }
 
     @Override
     public void debug(String format, Object arg) {
         if (delegate.isDebugEnabled() ) {
-            delegate.debug(ansi(format),arg);
+            delegate.debug(jAnsi.ansi("debug",format),arg);
         }
     }
 
@@ -137,7 +136,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(String format, Object arg1, Object arg2) {
         if (delegate.isDebugEnabled() ) {
-            delegate.debug(ansi(format),arg1,arg2);
+            delegate.debug(jAnsi.ansi("debug",format),arg1,arg2);
         }
     }
 
@@ -145,7 +144,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(String format, Object... arguments) {
         if (delegate.isDebugEnabled() ) {
-            delegate.debug(ansi(format), arguments);
+            delegate.debug(jAnsi.ansi("debug",format), arguments);
         }
     }
 
@@ -153,7 +152,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(String msg, Throwable t) {
         if (delegate.isDebugEnabled() ) {
-            delegate.debug(ansi(msg),t);
+            delegate.debug(jAnsi.ansi("debug",msg),t);
         }
     }
 
@@ -167,7 +166,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(Marker marker, String msg) {
         if (delegate.isDebugEnabled(marker) ) {
-            delegate.debug(marker,ansi(msg));
+            delegate.debug(marker,jAnsi.ansi("debug",msg));
         }
     }
 
@@ -175,7 +174,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(Marker marker, String format, Object arg) {
         if (delegate.isDebugEnabled(marker) ) {
-            delegate.debug(marker,ansi(format),arg);
+            delegate.debug(marker,jAnsi.ansi("debug",format),arg);
         }
     }
 
@@ -183,7 +182,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
         if (delegate.isDebugEnabled(marker) ) {
-            delegate.debug(marker,ansi(format),arg1,arg2);
+            delegate.debug(marker,jAnsi.ansi("debug",format),arg1,arg2);
         }
     }
 
@@ -191,7 +190,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(Marker marker, String format, Object... argArray) {
         if (delegate.isDebugEnabled(marker) ) {
-            delegate.debug(marker,ansi(format),argArray);
+            delegate.debug(marker,jAnsi.ansi("debug",format),argArray);
         }
     }
 
@@ -199,7 +198,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void debug(Marker marker, String msg, Throwable t) {
         if (delegate.isDebugEnabled(marker) ) {
-            delegate.debug(marker,ansi(msg),t);
+            delegate.debug(marker,jAnsi.ansi("debug",msg),t);
         }
     }
 
@@ -215,7 +214,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(String msg) {
         if (delegate.isInfoEnabled() ) {
-            delegate.info(ansi(msg));
+            delegate.info(jAnsi.ansi("info",msg));
         }
     }
 
@@ -223,7 +222,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(String format, Object arg) {
         if (delegate.isInfoEnabled() ) {
-            delegate.info(ansi(format),arg);
+            delegate.info(jAnsi.ansi("info",format),arg);
         }
     }
 
@@ -231,7 +230,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(String format, Object arg1, Object arg2) {
         if (delegate.isInfoEnabled() ) {
-            delegate.info(ansi(format),arg1,arg2);
+            delegate.info(jAnsi.ansi("info",format),arg1,arg2);
         }
     }
 
@@ -239,7 +238,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(String format, Object... arguments) {
         if (delegate.isInfoEnabled() ) {
-            delegate.info(ansi(format), arguments);
+            delegate.info(jAnsi.ansi("info",format), arguments);
         }
     }
 
@@ -247,7 +246,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(String msg, Throwable t) {
         if (delegate.isInfoEnabled() ) {
-            delegate.info(ansi(msg),t);
+            delegate.info(jAnsi.ansi("info",msg),t);
         }
     }
 
@@ -261,7 +260,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(Marker marker, String msg) {
         if (delegate.isInfoEnabled(marker) ) {
-            delegate.info(marker,ansi(msg));
+            delegate.info(marker,jAnsi.ansi("info",msg));
         }
     }
 
@@ -269,7 +268,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(Marker marker, String format, Object arg) {
         if (delegate.isInfoEnabled(marker) ) {
-            delegate.info(marker,ansi(format),arg);
+            delegate.info(marker,jAnsi.ansi("info",format),arg);
         }
     }
 
@@ -277,7 +276,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
         if (delegate.isInfoEnabled(marker) ) {
-            delegate.info(marker,ansi(format),arg1,arg2);
+            delegate.info(marker,jAnsi.ansi("info",format),arg1,arg2);
         }
     }
 
@@ -285,7 +284,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(Marker marker, String format, Object... argArray) {
         if (delegate.isInfoEnabled(marker) ) {
-            delegate.info(marker,ansi(format),argArray);
+            delegate.info(marker,jAnsi.ansi("info",format),argArray);
         }
     }
 
@@ -293,7 +292,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void info(Marker marker, String msg, Throwable t) {
         if (delegate.isInfoEnabled(marker) ) {
-            delegate.info(marker,ansi(msg),t);
+            delegate.info(marker,jAnsi.ansi("info",msg),t);
         }
     }
 
@@ -309,7 +308,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(String msg) {
         if (delegate.isWarnEnabled()) {
-            delegate.warn(ansi(msg));
+            delegate.warn(jAnsi.ansi("warn",msg));
         }
     }
 
@@ -317,7 +316,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(String format, Object arg) {
         if (delegate.isWarnEnabled()) {
-            delegate.warn(ansi(format),arg);
+            delegate.warn(jAnsi.ansi("warn",format),arg);
         }
     }
 
@@ -325,7 +324,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(String format, Object arg1, Object arg2) {
         if (delegate.isWarnEnabled()) {
-            delegate.warn(ansi(format),arg1,arg2);
+            delegate.warn(jAnsi.ansi("warn",format),arg1,arg2);
         }
     }
 
@@ -333,14 +332,14 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(String format, Object... arguments) {
         if (delegate.isWarnEnabled()) {
-            delegate.warn(ansi(format), arguments);
+            delegate.warn(jAnsi.ansi("warn",format), arguments);
         }
     }
 
     @Override
     public void warn(String msg, Throwable t) {
         if (delegate.isWarnEnabled()) {
-            delegate.warn(ansi(msg),t);
+            delegate.warn(jAnsi.ansi("warn",msg),t);
         }
     }
 
@@ -352,7 +351,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(Marker marker, String msg) {
         if (delegate.isWarnEnabled(marker)) {
-            delegate.warn(marker,ansi(msg));
+            delegate.warn(marker,jAnsi.ansi("warn",msg));
         }
     }
 
@@ -360,7 +359,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(Marker marker, String format, Object arg) {
         if (delegate.isWarnEnabled(marker)) {
-            delegate.warn(marker,ansi(format),arg);
+            delegate.warn(marker,jAnsi.ansi("warn",format),arg);
         }
     }
 
@@ -368,21 +367,21 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
         if (delegate.isWarnEnabled(marker)) {
-            delegate.warn(marker,ansi(format),arg1,arg2);
+            delegate.warn(marker,jAnsi.ansi("warn",format),arg1,arg2);
         }
     }
 
     @Override
     public void warn(Marker marker, String format, Object... argArray) {
         if (delegate.isWarnEnabled(marker)) {
-            delegate.warn(marker,ansi(format),argArray);
+            delegate.warn(marker,jAnsi.ansi("warn",format),argArray);
         }
     }
 
     @Override
     public void warn(Marker marker, String msg, Throwable t) {
         if (delegate.isWarnEnabled(marker)) {
-            delegate.warn(marker,ansi(msg),t);
+            delegate.warn(marker,jAnsi.ansi("warn",msg),t);
         }
     }
 
@@ -398,7 +397,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(String msg) {
         if (delegate.isErrorEnabled()) {
-            delegate.error(ansi(msg));
+            delegate.error(jAnsi.ansi("error",msg));
         }
     }
 
@@ -406,7 +405,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(String format, Object arg) {
         if (delegate.isErrorEnabled()) {
-            delegate.error(ansi(format),arg);
+            delegate.error(jAnsi.ansi("error",format),arg);
         }
     }
 
@@ -414,7 +413,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(String format, Object arg1, Object arg2) {
         if (delegate.isErrorEnabled()) {
-            delegate.error(ansi(format),arg1,arg2);
+            delegate.error(jAnsi.ansi("error",format),arg1,arg2);
         }
     }
 
@@ -422,7 +421,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(String format, Object... arguments) {
         if (delegate.isErrorEnabled()) {
-            delegate.error(ansi(format), arguments);
+            delegate.error(jAnsi.ansi("error",format), arguments);
         }
     }
 
@@ -430,7 +429,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(String msg, Throwable t) {
         if (delegate.isErrorEnabled()) {
-            delegate.error(ansi(msg),t);
+            delegate.error(jAnsi.ansi("error",msg),t);
         }
     }
 
@@ -444,7 +443,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(Marker marker, String msg) {
         if (delegate.isErrorEnabled(marker)) {
-            delegate.error(marker,ansi(msg));
+            delegate.error(marker,jAnsi.ansi("error",msg));
         }
     }
 
@@ -452,7 +451,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(Marker marker, String format, Object arg) {
         if (delegate.isErrorEnabled(marker)) {
-            delegate.error(marker,ansi(format),arg);
+            delegate.error(marker,jAnsi.ansi("error",format),arg);
         }
     }
 
@@ -460,7 +459,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
         if (delegate.isErrorEnabled(marker)) {
-            delegate.error(marker,ansi(format),arg1,arg2);
+            delegate.error(marker,jAnsi.ansi("error",format),arg1,arg2);
         }
     }
 
@@ -468,7 +467,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(Marker marker, String format, Object... argArray) {
         if (delegate.isErrorEnabled(marker)) {
-            delegate.error(marker,ansi(format),argArray);
+            delegate.error(marker,jAnsi.ansi("error",format),argArray);
         }
     }
 
@@ -476,7 +475,7 @@ public class SimpleAnsiLogger implements Logger {
     @Override
     public void error(Marker marker, String msg, Throwable t) {
         if (delegate.isErrorEnabled(marker)) {
-            delegate.error(marker,ansi(msg),t);
+            delegate.error(marker,jAnsi.ansi("error",msg),t);
         }
     }
 }

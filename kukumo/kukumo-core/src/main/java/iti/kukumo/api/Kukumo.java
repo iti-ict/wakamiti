@@ -3,7 +3,6 @@ package iti.kukumo.api;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
-import iti.commons.slf4jjansi.AnsiLogger;
 import iti.kukumo.api.event.EventDispatcher;
 import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.plan.PlanNode;
@@ -47,7 +46,8 @@ public class Kukumo {
 
 
     static {
-        LOGGER.info(KukumoLogger.logo());
+        KukumoLogger.configure(KukumoConfiguration.defaultConfiguration());
+        LOGGER.info("{logo}",KukumoLogger.logo());
     }
 
 
@@ -55,10 +55,8 @@ public class Kukumo {
      * Enable / disable Ansi characters in logs according the given configuration
      * @param configuration
      */
-    public static void setAnsiFromConfiguration(Configuration configuration) {
-        AnsiLogger.setAnsiEnabled(
-           configuration.get(LOGS_ANSI_ENABLED,Boolean.class).orElse(true)
-        );
+    public static void configureLogger(Configuration configuration) {
+        KukumoLogger.configure(configuration);
     }
 
 

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-import static iti.kukumo.util.KukumoLogger.resultColor;
 
 /**
  * @author ITI
@@ -42,15 +41,14 @@ public class PlanNodeLogger {
 
     public void logTestPlanHeader(PlanNode plan) {
         if (logger.isInfoEnabled()) {
-            logger.info("{message}","Running Test Plan with "+plan.numTestCases()+" Test Cases...");
+            logger.info("{!important} Running Test Plan with {} Test Cases...", plan.numTestCases());
         }
     }
 
     public void logTestPlanResult(PlanNode plan) {
         if (logger.isInfoEnabled()) {
             Result result = plan.computeResult().orElse(Result.ERROR);
-            String extraInfo = result.isPassed() ? "" : "  ({} of {} test cases not passed)";
-            logger.info("@|bold,"+resultColor(result)+" Test Plan {}"+extraInfo+"|@",
+            logger.info("Test Plan {}"+(result.isPassed() ? "" : "  ({} of {} test cases not passed)"),
                 result,
                 plan.numTestCases() - plan.numTestCassesPassed(),
                 plan.numTestCases()
@@ -68,9 +66,9 @@ public class PlanNodeLogger {
                 name.add(node.keyword());
             }
             name.add(node.name());
-            logger.info("@|bold,white {}|@", StringUtils.repeat("-",name.length()+4));
-            logger.info("@|bold,white | {} ||@  (Test Case {}/{})", name, currentTestCaseNumber, totalNumberTestCases);
-            logger.info("@|bold,white {}|@", StringUtils.repeat("-",name.length()+4));
+            logger.info("{highlight}", StringUtils.repeat("-",name.length()+4));
+            logger.info("{highlight} (Test Case {}/{})", "| "+name+" |", currentTestCaseNumber, totalNumberTestCases);
+            logger.info("{highlight}", StringUtils.repeat("-",name.length()+4));
         }
     }
 
@@ -84,24 +82,26 @@ public class PlanNodeLogger {
 
 
     private String buildMessage(PlanStep step) {
-        String messageColor = resultColor(step.getResult());
+        String resultStyle = "stepResult."+step.getResult();
         StringBuilder message = new StringBuilder();
-        message.append("@|bold,white [|@@|bold,"+messageColor+" {}|@@|bold,white ]|@ ");
+        message.append("{highlight} {"+resultStyle+"} {highlight}");
         if (showStepSource) {
-            message.append("@|faint {}|@ :");
+            message.append("{source} :");
         }
-        message.append(" @|bold,cyan {}|@ {}");
+        message.append(" {keyword} {}");
         if (showElapsedTime) {
-            message.append(" @|faint {}|@ ");
+            message.append(" {time} ");
         }
-        message.append("@|"+messageColor+" {}|@");
+        message.append("{"+resultStyle+"}");
         return message.toString();
     }
 
 
     private Object[] buildMessageArgs(PlanStep step) {
         List<Object> args = new ArrayList<>();
+        args.add("[");
         args.add(step.getResult());
+        args.add("]");
         if (showStepSource) {
             args.add(step.source());
         }
