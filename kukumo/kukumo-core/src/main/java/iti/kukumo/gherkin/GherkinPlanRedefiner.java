@@ -1,16 +1,5 @@
 package iti.kukumo.gherkin;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -22,6 +11,12 @@ import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeTypes;
 import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanStep;
+import org.slf4j.Logger;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 
@@ -201,7 +196,7 @@ public class GherkinPlanRedefiner {
                 DefaultPlanNode<?> redefinedChild = nonBackgroundDefSteps.get(i).copyAsNode();
                 for (int j = visitedSteps; j < visitedSteps + stepMap[i]; j++) {
                     // avoid getting and error if the map expects more implementation steps than actually exist
-                    if (nonBackgroundDefSteps.size() >= j) {
+                    if (nonBackgroundImplSteps.size() > j) {
                         redefinedChild.addChild(nonBackgroundImplSteps.get(j));
                     }
                 }
@@ -275,17 +270,21 @@ public class GherkinPlanRedefiner {
 
 
     protected int[] computeStepMap(int numDefChildren, PlanNode implNode) {
-        int[] stepMap  = new int[numDefChildren];
+        int[] stepMap = new int[numDefChildren];
         String stepMapProperty = implNode.properties().get(KukumoConfiguration.REDEFINITION_STEP_MAP);
-        if (stepMapProperty != null) {
-            String[] stepMapArray = stepMapProperty.split("-");
-            for (int i=0; i<stepMapArray.length; i++) {
-                stepMap[i] = Integer.valueOf(stepMapArray[i]);
+        try {
+            if (stepMapProperty != null) {
+                String[] stepMapArray = stepMapProperty.split("-");
+                for (int i = 0; i < stepMapArray.length; i++) {
+                    stepMap[i] = Integer.valueOf(stepMapArray[i]);
+                }
+            } else {
+                Arrays.fill(stepMap, 1);
             }
-        } else {
-            Arrays.fill(stepMap, 1);
+            return stepMap;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new KukumoException("Bad definition of step map in {} : {}",implNode.source(),stepMapProperty,e);
         }
-        return stepMap;
     }
 
 

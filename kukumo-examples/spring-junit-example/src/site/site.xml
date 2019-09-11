@@ -1,7 +1,8 @@
 <project xmlns="http://maven.apache.org/DECORATION/1.6.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
->
+         combine.self="override"> <!-- combine.self = "override" in order to not search for the parent site -->
+
 
     <custom>
         <fluidoSkin>

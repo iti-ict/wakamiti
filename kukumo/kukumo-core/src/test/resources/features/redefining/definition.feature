@@ -19,4 +19,3 @@ Scenario Outline: Test scenario outline
  | 1.0 | 2 | 2.0  |
  | 2.0 | 4 | 8.0  |
  | 3.0 | 6 | 18.0 |
-

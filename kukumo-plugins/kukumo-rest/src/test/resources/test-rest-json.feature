@@ -1,5 +1,5 @@
 # language: en
-# modules: rest
+# modules: rest-steps
 Feature: REST Test Feature
 
 Background:

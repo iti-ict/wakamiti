@@ -48,9 +48,23 @@
           "name" : "un número con valor 6,1 y otro número con valor 3",
           "keyword" : "Dado",
           "language" : "es",
-          "source" : "implementation.feature[12,2]",
+          "source" : "implementation.feature[13,2]",
           "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
-          "testCase" : false
+          "testCase" : false,
+          "properties" : {
+            "redefinition.stepMap" : "2-1-2"
+          }
+        }, {
+          "nodeType" : "step",
+          "name" : "un número con valor 6,1 y otro número con valor 3",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "implementation.feature[14,2]",
+          "displayName" : "Y un número con valor 6,1 y otro número con valor 3",
+          "testCase" : false,
+          "properties" : {
+            "redefinition.stepMap" : "2-1-2"
+          }
         } ]
       }, {
         "nodeType" : "step",
@@ -65,9 +79,12 @@
           "name" : "se multiplican ambos números",
           "keyword" : "Cuando",
           "language" : "es",
-          "source" : "implementation.feature[13,2]",
+          "source" : "implementation.feature[15,2]",
           "displayName" : "Cuando se multiplican ambos números",
-          "testCase" : false
+          "testCase" : false,
+          "properties" : {
+            "redefinition.stepMap" : "2-1-2"
+          }
         } ]
       }, {
         "nodeType" : "step",
@@ -82,9 +99,23 @@
           "name" : "el resultado es 18,3",
           "keyword" : "Entonces",
           "language" : "es",
-          "source" : "implementation.feature[14,2]",
+          "source" : "implementation.feature[16,2]",
           "displayName" : "Entonces el resultado es 18,3",
-          "testCase" : false
+          "testCase" : false,
+          "properties" : {
+            "redefinition.stepMap" : "2-1-2"
+          }
+        }, {
+          "nodeType" : "step",
+          "name" : "el resultado es 18,3",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "implementation.feature[17,2]",
+          "displayName" : "Y el resultado es 18,3",
+          "testCase" : false,
+          "properties" : {
+            "redefinition.stepMap" : "2-1-2"
+          }
         } ]
       } ]
     }, {
@@ -148,12 +179,12 @@
             "name" : "un número con valor 1.0 y otro número con valor 2",
             "keyword" : "Dado",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -169,12 +200,12 @@
             "name" : "se multiplican ambos números",
             "keyword" : "Cuando",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -190,12 +221,24 @@
             "name" : "el resultado es 2.0",
             "keyword" : "Entonces",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 2.0",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          }, {
+            "nodeType" : "step",
+            "name" : "el resultado es 2.0",
+            "keyword" : "Y",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Y el resultado es 2.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         } ]
@@ -250,12 +293,12 @@
             "name" : "un número con valor 2.0 y otro número con valor 4",
             "keyword" : "Dado",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -271,12 +314,12 @@
             "name" : "se multiplican ambos números",
             "keyword" : "Cuando",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -292,12 +335,24 @@
             "name" : "el resultado es 8.0",
             "keyword" : "Entonces",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 8.0",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          }, {
+            "nodeType" : "step",
+            "name" : "el resultado es 8.0",
+            "keyword" : "Y",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Y el resultado es 8.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         } ]
@@ -352,12 +407,12 @@
             "name" : "un número con valor 3.0 y otro número con valor 6",
             "keyword" : "Dado",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -373,12 +428,12 @@
             "name" : "se multiplican ambos números",
             "keyword" : "Cuando",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         }, {
@@ -394,12 +449,24 @@
             "name" : "el resultado es 18.0",
             "keyword" : "Entonces",
             "language" : "es",
-            "source" : "implementation.feature[21,1]",
+            "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 18.0",
             "testCase" : false,
             "properties" : {
               "dataFormatLanguage" : "en",
-              "redefinition.stepMap" : "0-1-1-1"
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          }, {
+            "nodeType" : "step",
+            "name" : "el resultado es 18.0",
+            "keyword" : "Y",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Y el resultado es 18.0",
+            "testCase" : false,
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "redefinition.stepMap" : "0-1-1-2"
             }
           } ]
         } ]
