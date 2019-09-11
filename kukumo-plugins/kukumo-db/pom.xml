@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-db</artifactId>
-    <version>1.0.0</version>
+    <version>0.9.0</version>
 
 
     <!-- additional information -->
@@ -26,8 +26,7 @@
 
     <!-- dependency versions -->
     <properties>
-        <kukumo.version>1.0.0</kukumo.version>
-        <jext.version>1.0.1</jext.version>
+        <jext.version>1.0.0</jext.version>
         <poi-ooxml.version>4.1.0</poi-ooxml.version>
         <commons-csv.version>1.6</commons-csv.version>
     </properties>

@@ -17,8 +17,11 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -171,7 +174,10 @@ public class ResourceLoader {
 
 
     public <T> List<Resource<?>> discoverResources(List<String> paths, ResourceType<T> resourceType) {
-        LOGGER.info("Discovering resources of type {resourceType} in paths: {uri} ...", resourceType.extensionMetadata().name(), paths);
+        if (LOGGER.isInfoEnabled()) {
+            List<Path> absolutePaths = paths.stream().map(Paths::get).map(Path::toAbsolutePath).collect(Collectors.toList());
+            LOGGER.info("Discovering resources of type {resourceType} in paths: {uri} ...", resourceType.extensionMetadata().name(), absolutePaths);
+        }
         return discoverResources(paths,  resourceType::acceptsFilename, resourceType::parse);
     }
 
@@ -219,15 +225,15 @@ public class ResourceLoader {
                 }
             } else {
                 URL url;
-                if (path.contains(":")) {
-                    url = new URL(path);
+                if (Paths.get(path).isAbsolute()) {
+                    url = Paths.get(path).toUri().toURL();
                 } else {
                     url = new File(APPLICATION_FOLDER,path).toURI().toURL();
                 }
                 discoverResourcesInURL(path, url, filenameFilter, parser, discovered);
             }
         } catch (IOException e) {
-            LOGGER.error("{error}",e.getMessage(),e);
+            LOGGER.debug("{!error} Error discovering resource: {}",e.getMessage(),e);
         }
         return discovered;
     }
@@ -248,13 +254,13 @@ public class ResourceLoader {
             try {
                 discoverResouresInFile(startPath, new File(url.toURI()), filenameFilter, parser, discovered);
             } catch (URISyntaxException e) {
-                LOGGER.error("{error}",e.getMessage(), e);
+                LOGGER.debug("{!error} Error discovering resource: {}",e.getMessage(),e);
             }
         } else {
             try {
                 discovered.add(new Resource<T>(url.toString(),  url.toString(), parser.parse(url.openStream(),charset)));
             } catch (IOException e) {
-                LOGGER.error("{error}",e.getMessage(),e);
+                LOGGER.debug("{!error} Error discovering resource: {}",e.getMessage(),e);
             }
         }
     }

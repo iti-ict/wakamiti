@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.0.0</version>
+    <version>0.9.0</version>
 
 
     <!-- additional information -->
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>1.0.0</version>
+            <version>${kukumo.version}</version>
         </dependency>
 
         <!-- Maven dependency fetcher -->

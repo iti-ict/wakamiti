@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>iti.commons</groupId>
-    <artifactId>slf4j-jansi</artifactId>
+    <artifactId>slf4j-ansi</artifactId>
     <version>1.0.0</version>
-    <name>SLF4J-JAnsi</name>
+    <name>SLF4J-Ansi</name>
 
     <properties>
         <java.version>1.8</java.version>

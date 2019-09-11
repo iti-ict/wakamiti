@@ -1,6 +1,6 @@
-package iti.commons.slf4jjansi.impl;
+package iti.commons.slf4jansi.impl;
 
-import iti.commons.slf4jjansi.AnsiLogger;
+import iti.commons.slf4jansi.AnsiLogger;
 import org.fusesource.jansi.Ansi;
 
 import java.util.HashMap;
@@ -16,6 +16,7 @@ final class JAnsiSupport {
 
     public static final JAnsiSupport instance = new JAnsiSupport();
     private static final Pattern globalStylePattern = Pattern.compile("^\\{!([^}]*)\\}.*");
+    private static final Pattern stylePattern = Pattern.compile("\\{([^}]*)\\}");
 
     private Map<String,String> styles;
 
@@ -33,9 +34,13 @@ final class JAnsiSupport {
             globalStyle = globalStyleMatcher.group(1);
             message = message.substring(message.indexOf('}')+1).trim();
         }
-        for (Map.Entry<String,String> style : styles.entrySet()) {
-            message = message.replace(style.getKey(),style.getValue());
+        Matcher styleMatcher = stylePattern.matcher(message);
+        while (styleMatcher.find()) {
+            String foundStyle = "{"+styleMatcher.group(1)+"}";
+            String style = styles.getOrDefault(foundStyle,"{}");
+            message = message.replace(foundStyle,style);
         }
+
         if (globalStyle != null) {
             globalStyle = AnsiLogger.styles().getProperty(globalStyle);
         }

@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-rest-l10n</artifactId>
-    <version>1.0.0</version>
+    <version>0.9.0</version>
 
     <!-- additional information -->
     <name>Kukumo::REST Steps (localization)</name>

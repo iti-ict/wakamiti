@@ -20,8 +20,7 @@
 
     <!-- dependency versions -->
     <properties>
-        <kukumo.version>1.0.0</kukumo.version>
-        <jext.version>1.0.1</jext.version>
+        <kukumo.version>0.9.0</kukumo.version>
     </properties>
 
 

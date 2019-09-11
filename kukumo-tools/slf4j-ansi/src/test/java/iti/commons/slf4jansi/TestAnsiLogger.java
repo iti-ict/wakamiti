@@ -1,4 +1,4 @@
-package iti.commons.slf4jjansi;
+package iti.commons.slf4jansi;
 
 import org.junit.Test;
 import org.slf4j.Logger;

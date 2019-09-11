@@ -1,4 +1,4 @@
-package iti.commons.slf4jjansi.impl;
+package iti.commons.slf4jansi.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;

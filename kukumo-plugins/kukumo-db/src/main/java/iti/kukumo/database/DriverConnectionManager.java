@@ -26,8 +26,12 @@ public class DriverConnectionManager implements ConnectionManager {
 
     @Override
     public void releaseConnection(Connection connection) throws SQLException {
-        if (!connection.isClosed()) {
-            connection.close();
+        try {
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException | RuntimeException e) {
+            throw new SQLException("Problem releasing JDBC connection: "+e.getMessage());
         }
     }
 

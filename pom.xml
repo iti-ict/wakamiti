@@ -28,7 +28,7 @@
         <module>kukumo-tools/configurer</module>
         <module>kukumo-tools/maven-fetcher</module>
         <module>kukumo-tools/testing-embedded-db</module>
-        <module>kukumo-tools/slf4j-jansi</module>
+        <module>kukumo-tools/slf4j-ansi</module>
         <!-- kukumo -->
         <module>kukumo/kukumo-core</module>
         <module>kukumo/kukumo-launcher</module>
@@ -82,6 +82,7 @@
         <log4j.version>2.11.2</log4j.version>
         <junit.version>4.12</junit.version>
         <jsonassert.version>1.5.0</jsonassert.version>
+        <kukumo.version>0.9.0</kukumo.version>
         <!-- plugin versions -->
         <jacoco.version>0.8.2</jacoco.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
@@ -188,9 +189,48 @@
 
 
 
-    <profiles>
+    <distributionManagement>
+        <site>
+            <id>local-site</id>
+            <url>${project.baseUri}</url>
+        </site>
+    </distributionManagement>
 
-        <!-- Build site when buildSite=true -->
+
+
+    <!-- Reports to generate -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven.info.reports.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${surefire.report.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+
+    <profiles>
+        <!-- Copy site resources -->
         <profile>
             <id>build-site</id>
             <activation>
@@ -235,46 +275,10 @@
                     </plugin>
                 </plugins>
             </build>
-
-            <!-- Reports to generate -->
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-project-info-reports-plugin</artifactId>
-                        <version>${maven.info.reports.version}</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven.javadoc.version}</version>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>${surefire.report.version}</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
-                    </plugin>
-                </plugins>
-            </reporting>
         </profile>
     </profiles>
 
 
-
-    <distributionManagement>
-        <site>
-            <id>local-site</id>
-            <url>${project.baseUri}</url>
-        </site>
-    </distributionManagement>
 
 
 

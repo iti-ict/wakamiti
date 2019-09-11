@@ -1,4 +1,4 @@
-package iti.commons.slf4jjansi;
+package iti.commons.slf4jansi;
 
 import java.util.Properties;
 

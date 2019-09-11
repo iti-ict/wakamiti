@@ -86,6 +86,8 @@ public class KukumoConfiguration {
         @Property(key="logs.ansi.styles.keyword",value="blue"),
         @Property(key="logs.ansi.styles.source",value="faint"),
         @Property(key="logs.ansi.styles.time",value="faint"),
+        @Property(key="logs.ansi.styles.resourceType",value="cyan"),
+        @Property(key="logs.ansi.styles.contributor",value="green"),
         @Property(key="logs.ansi.styles.stepResult.PASSED",value="green,bold"),
         @Property(key="logs.ansi.styles.stepResult.SKIPPED",value="faint"),
         @Property(key="logs.ansi.styles.stepResult.UNDEFINED",value="yellow"),

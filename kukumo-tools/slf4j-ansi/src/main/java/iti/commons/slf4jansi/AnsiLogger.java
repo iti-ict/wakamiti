@@ -1,7 +1,7 @@
-package iti.commons.slf4jjansi;
+package iti.commons.slf4jansi;
 
-import iti.commons.slf4jjansi.impl.LocationAwareAnsiLogger;
-import iti.commons.slf4jjansi.impl.SimpleAnsiLogger;
+import iti.commons.slf4jansi.impl.LocationAwareAnsiLogger;
+import iti.commons.slf4jansi.impl.SimpleAnsiLogger;
 import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.spi.LocationAwareLogger;

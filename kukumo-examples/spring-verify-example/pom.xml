@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>iti.kukumo</groupId>
@@ -47,8 +47,6 @@
     </dependencies>
 
 
-
-
     <build>
         <plugins>
 
@@ -77,7 +75,7 @@
             <plugin>
                 <groupId>iti.kukumo</groupId>
                 <artifactId>kukumo-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>0.9.0</version>
                 <executions>
                     <!-- Executed at integration-test phase -->
                     <execution>
@@ -95,7 +93,7 @@
                     <!-- Kukumo configuration -->
                     <properties>
                         <resourceTypes>gherkin</resourceTypes>
-                        <resourcePath>src/test/resources</resourcePath>
+                        <resourcePath>${project.basedir}/src/test/resources</resourcePath>
                         <outputFilePath>target/kukumo/kukumo.json</outputFilePath>
                         <logs.showStepSource>false</logs.showStepSource>
                         <rest.baseURL>http://localhost:9191</rest.baseURL>
@@ -111,7 +109,7 @@
                     <dependency>
                         <groupId>iti.kukumo</groupId>
                         <artifactId>kukumo-rest</artifactId>
-                        <version>1.0.0</version>
+                        <version>0.9.0</version>
                     </dependency>
                     <dependency>
                         <groupId>com.h2database</groupId>
@@ -121,12 +119,12 @@
                     <dependency>
                         <groupId>iti.kukumo</groupId>
                         <artifactId>kukumo-db</artifactId>
-                        <version>1.0.0</version>
+                        <version>0.9.0</version>
                     </dependency>
                     <dependency>
                         <groupId>iti.kukumo</groupId>
                         <artifactId>kukumo-html-report</artifactId>
-                        <version>1.0.0</version>
+                        <version>0.9.0</version>
                     </dependency>
                 </dependencies>
             </plugin>

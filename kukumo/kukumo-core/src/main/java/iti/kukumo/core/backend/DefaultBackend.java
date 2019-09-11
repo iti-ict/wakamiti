@@ -115,7 +115,8 @@ public class DefaultBackend implements Backend {
             if (e.getCause() != null && e.getCause() != e) {
                 e = (Exception) e.getCause();
             }
-            LOGGER.error("Error running "+type+" operation", e);
+            LOGGER.error("Error running "+type+" operation: {}", e.getMessage());
+            LOGGER.debug(e.getMessage(),e);
         }
     }
 

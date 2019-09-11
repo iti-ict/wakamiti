@@ -16,6 +16,7 @@ server:
 logging:
   pattern.console: "[application] %m%n"
   level:
-    root: ERROR
+    root: INFO
+    org.h2: DEBUG
 
 

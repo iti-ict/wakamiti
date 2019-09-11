@@ -13,9 +13,40 @@ launched, although a Maven repository is still required in order to obtain libra
 ## Usage
 
 ### Installation
+#### Linux
 1. Download the `kukumo-launcher-x.x.x.zip` file and extract it in a folder of your choice
-2. Add the installation folder to your `PATH` system variable in order to run the executable from any folder
-3. Optionally, modify the `launcher.properties` file from the installation folder with custom values
+2. Add execution permissions to the file `kukumo.sh` (in case they were not set)
+```
+chmod +x kukumo.sh
+```
+3. Add a environment variable to your OS named `KUKUMO_PATH` and valued with the absolute path to the folder.
+```
+export KUKUMO_HOME=path_to_kukumo_folder
+```
+Also, you may want to include it in every boot. In the case of using `bash`, for example:
+```
+echo export KUKUMO_HOME=path_to_kukumo_folder >> ~/.profile
+```
+4. Create a symbolic link to the executable
+```
+sudo ln -s $KUKUMO_HOME/kukumo.sh /usr/local/bin/kukumo ; sudo chmod +x /usr/local/bin/kukumo
+```
+5. Optionally, modify the `launcher.properties` file from the installation folder with custom values
+#### Windows 
+1. Download the `kukumo-launcher-x.x.x.zip` file and extract it in a folder of your choice
+2. Add a environment variable to your OS named `KUKUMO_PATH` and valued with the absolute path to the folder.
+```
+setx KUKUMO_HOME "path_to_kukumo_folder" /M
+```
+3. Add `KUKUMO_HOME\kukumo.bat` to the `PATH` environment variable
+```
+setx PATH "%PATH%;%KUKUMO_HOME\kukumo.bat%"
+```
+4. Optionally, modify the `launcher.properties` file from the installation folder with custom values
+
+
+
+
 
 > **INFO**  
 > By default, a ready-to-use public Maven repository is configured. You can add more repositories editing 
@@ -78,7 +109,6 @@ The following is a list of accepted arguments:
 | --------------------- | --------------------------- | ---------- |
 |`-modules <module1> [module2 ...]` | `kukumo.modules` | Set a list of required artifacts |
 |`-conf <filename>` | *not applicable* | Set a custom file to be used as configuration file |
-|`-clean` | *not applicable* | Force the recreation of the `.kukumo`folder prior to execution |
 |`-M<argument>` | `mavenFetcher.<property>` | Set a custom *Maven Fetcher* property |
 |`-K<argument>` | `kukumo.<property>` | Set a custom *Kukumo* property |
 

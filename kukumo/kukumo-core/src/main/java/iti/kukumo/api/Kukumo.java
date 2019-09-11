@@ -70,7 +70,7 @@ public class Kukumo {
      */
     public static PlanNode createPlanFromConfiguration(Configuration configuration) {
 
-        LOGGER.info("{message}","Creating the Test Plan...");
+        LOGGER.info("{important}","Creating the Test Plan...");
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES,String.class);
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
@@ -272,7 +272,7 @@ public class Kukumo {
         if (reporters.isEmpty()) {
             return;
         }
-        LOGGER.info("{message}","Generating reports...");
+        LOGGER.info("{important}","Generating reports...");
         String reportSource = configuration.get(REPORT_SOURCE, String.class)
              .orElse( configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null) );
         Path sourceFolder = Paths.get(reportSource).toAbsolutePath();

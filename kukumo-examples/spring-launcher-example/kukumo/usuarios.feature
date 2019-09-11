@@ -9,12 +9,8 @@ Característica: Operaciones con usuarios
 
    Escenario: Se consulta un usuario existente
       Dado un usuario identificado por '3'
-      Y los siguientes datos se insertan en la tabla de BBDD USER :
+      Y los siguientes datos se insertan en la tabla de BBDD USER:
 	| ID | FIRST_NAME | LAST_NAME |
         | 3  | Pepe       | Perez     |
       Cuando se consulta el usuario
       Entonces el código de respuesta HTTP es 200
-      Y la respuesta es parcialmente:
-      """
-      { "firstName": "Pepe" }
-      """

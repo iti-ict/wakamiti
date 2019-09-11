@@ -1,7 +1,7 @@
 package iti.kukumo.util;
 
 import iti.commons.configurer.Configuration;
-import iti.commons.slf4jjansi.AnsiLogger;
+import iti.commons.slf4jansi.AnsiLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class KukumoLogger {
 
 
     public static String logo() {
-        return
+        return "\n"+
                "----------------------------------------------\n"+
                "    | |/ /   _| | ___   _ _ __ ___   ___\n" +
                "    | ' / | | | |/ / | | | '_ ` _ \\ / _ \\ \n" +
