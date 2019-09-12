@@ -109,7 +109,7 @@ public class DefaultBackendFactory implements BackendFactory {
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            return Kukumo.getSpecificDataTypeContributors(restrictedModules);
+            return Kukumo.getSpecificDataTypeContributors(modules);
         }
     }
 

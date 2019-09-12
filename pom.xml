@@ -103,11 +103,60 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
             </plugin>
+            <!-- Surefire with JaCoCo agent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <argLine>${surefireJacocoAgent} -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                </configuration>
+            </plugin>
+            <!-- Failsafe with JaCoCo agent -->
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <argLine>${failsafeJacocoAgent} -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- JaCoCo coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                            <propertyName>surefireJacocoAgent</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                            <propertyName>failsafeJacocoAgent</propertyName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- generate additional jar with sources -->
             <plugin>
@@ -130,6 +179,7 @@
             </plugin>
         </plugins>
     </build>
+
 
 
 
@@ -212,7 +262,16 @@
                 <version>${maven.javadoc.version}</version>
                 <configuration>
                     <failOnError>false</failOnError>
+                    <quiet/>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -223,6 +282,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>

@@ -2,6 +2,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
 >
+    <custom>
+        <fluidoSkin>
+            <topBarIcon>
+                <src>../../../../images/kukumo.png</src>
+                <href>../../../../index.html</href>
+            </topBarIcon>
+        </fluidoSkin>
+    </custom>
+
+
+
     <body>
 
         <!-- Add this to every site.xml -->
@@ -25,8 +36,13 @@
         </head>
 
 
+
         <breadcrumbs>
+            <item name="Kukumo" href="../../../../index.html"/>
+            <item name="Tools"/>
+            <item name="SLF4J ANSI" href="index.html"/>
         </breadcrumbs>
+
 
         <menu name="Overview">
             <item name="Overview" href="index.html"/>

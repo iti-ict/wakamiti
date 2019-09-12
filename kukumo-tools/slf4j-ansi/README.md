@@ -1,8 +1,8 @@
 
 # SLF4J Ansi  
   
-This tool enhances the [*Simple Logging Facade for Java*][1] library with the capability   
-of formatting parameters using [ANSI escape codes][2], which are defined as *styles* using   
+This tool enhances the [*Simple Logging Facade for Java*][1] library with the capability of 
+formatting parameters using [ANSI escape codes][2], which are defined as *styles* using  
 the [Jansi][3] library. In addition, overall styles can be defined for each logging level (`ERROR`,  
 `WARN`,`INFO`,`DEBUG`, `TRACE`).  
   

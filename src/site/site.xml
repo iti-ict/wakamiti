@@ -20,12 +20,10 @@
             <navBarStyle>navbar-inverse</navBarStyle>
             <sideBarEnabled>true</sideBarEnabled>
             <sourceLineNumbersEnabled>false</sourceLineNumbersEnabled>
-            <leftColumnClass>span3</leftColumnClass>
-            <bodyColumnClass>span9</bodyColumnClass>
+            <leftColumnClass>span2</leftColumnClass>
+            <bodyColumnClass>span10</bodyColumnClass>
         </fluidoSkin>
     </custom>
-
-
 
 
     <bannerRight>
@@ -35,11 +33,6 @@
         <width>170</width>
         <height>40</height>
     </bannerRight>
-
-
-
-
-
 
 
     <body>
@@ -74,20 +67,22 @@
             <item name="License" href="index.html#License"/>
         </menu>
         <menu name="Components">
-            <item name="Kukumo::CORE" href="kukumo/kukumo-core/kukumo/kukumo-core/index.html"/>
-            <item name="Kukumo::Maven Plugin" href="kukumo/kukumo-maven-plugin/kukumo/kukumo-maven-plugin/index.html"/>
-            <item name="Kukumo::Launcher" href="kukumo/kukumo-launcher/kukumo/kukumo-launcher/index.html"/>
-            <item name="Kukumo::Plugin Archetype" href="kukumo/kukumo-plugin-archetype/kukumo/kukumo-plugin-archetype/index.html"/>
+            <item name="Kukumo CORE" href="kukumo/kukumo-core/kukumo/kukumo-core/index.html"/>
+            <item name="Maven Plugin" href="kukumo/kukumo-maven-plugin/kukumo/kukumo-maven-plugin/index.html"/>
+            <item name="Launcher" href="kukumo/kukumo-launcher/kukumo/kukumo-launcher/index.html"/>
+            <item name="Plugin Archetype" href="kukumo/kukumo-plugin-archetype/kukumo/kukumo-plugin-archetype/index.html"/>
         </menu>
         <menu name="Plugins">
-            <item name="Kukumo::REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
-            <item name="Kukumo::Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
-            <item name="Kukumo::HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
+            <item name="REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
+            <item name="Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
+            <item name="HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
+            <item name="Spring" href="kukumo-plugins/kukumo-spring/kukumo-plugins/kukumo-spring/index.html"/>
         </menu>
         <menu name="Tools">
             <item name="jExt" href="kukumo-tools/jext/kukumo-tools/jext/index.html"/>
             <item name="Configurer" href="kukumo-tools/configurer/kukumo-tools/configurer/index.html"/>
             <item name="Maven Fetcher" href="kukumo-tools/maven-fetcher/kukumo-tools/maven-fetcher/index.html"/>
+            <item name="SLF4J ANSI" href="kukumo-tools/slf4j-ansi/kukumo-tools/slf4j-ansi/index.html"/>
         </menu>
 
 
