@@ -26,7 +26,8 @@ variables:
 
 
 stages:
-  - build_and_verify
+  - build
+  - verify
   - generate_doc
   - publish
 
@@ -47,15 +48,26 @@ cache:
 
 build:
   <<: *maven
-  stage: build_and_verify
+  stage: build
   script:
-    - 'mvn clean install verify $MAVEN_CLI_OPTS'
+    - 'mvn install $MAVEN_CLI_OPTS'
+
+verify:
+  <<: *maven
+  stage: verify
+  dependencies:
+    - build
+  script:
+    - 'mvn verify $MAVEN_CLI_OPTS'
+
 
 generate_site:
   <<: *maven
   stage: generate_doc
+  dependencies:
+    - verify
   script:
-    - 'mvn install site site:stage $MAVEN_CLI_OPTS'
+    - 'mvn site site:stage $MAVEN_CLI_OPTS'
   only:
     - master
   allow_failure: true    
@@ -63,6 +75,8 @@ generate_site:
 pages:
   image: busybox:latest
   stage: publish
+  dependencies:
+    - verify
   script:
     - mkdir public
     - cp -rf target/staging/* public/
