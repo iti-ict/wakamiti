@@ -16,7 +16,7 @@ import iti.kukumo.spring.junit.KukumoSpringJUnitRunner;
 @ContextConfiguration(classes = AppTestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles="test")
-public class KukumoTests {
+public class KukumoTest {
 
 
 }

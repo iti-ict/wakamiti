@@ -1,6 +1,7 @@
 {
   "nodeType" : "plan",
   "testCase" : false,
+  "step" : false,
   "children" : [ {
     "nodeType" : "feature",
     "name" : "Test Redefined feature - Definition",
@@ -9,6 +10,7 @@
     "source" : "definition.feature[3,1]",
     "displayName" : "Feature: Test Redefined feature - Definition",
     "testCase" : false,
+    "step" : false,
     "tags" : [ "definition" ],
     "children" : [ {
       "nodeType" : "scenario",
@@ -19,6 +21,7 @@
       "source" : "definition.feature[6,1]",
       "displayName" : "[ID-1] Scenario: Test scenario",
       "testCase" : true,
+      "step" : false,
       "tags" : [ "definition", "ID-1" ],
       "children" : [ {
         "nodeType" : "step",
@@ -26,6 +29,7 @@
         "keyword" : "*",
         "displayName" : "* <background>",
         "testCase" : false,
+        "step" : false,
         "children" : [ {
           "nodeType" : "step",
           "name" : "el conjunto de números reales ℝ",
@@ -33,7 +37,8 @@
           "language" : "es",
           "source" : "implementation.feature[8,3]",
           "displayName" : "Dado el conjunto de números reales ℝ",
-          "testCase" : false
+          "testCase" : false,
+          "step" : true
         } ]
       }, {
         "nodeType" : "step",
@@ -43,6 +48,7 @@
         "source" : "definition.feature[7,2]",
         "displayName" : "Given two numbers",
         "testCase" : false,
+        "step" : false,
         "children" : [ {
           "nodeType" : "step",
           "name" : "un número con valor 6,1 y otro número con valor 3",
@@ -51,6 +57,7 @@
           "source" : "implementation.feature[13,2]",
           "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "redefinition.stepMap" : "2-1-2"
           }
@@ -62,6 +69,7 @@
           "source" : "implementation.feature[14,2]",
           "displayName" : "Y un número con valor 6,1 y otro número con valor 3",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "redefinition.stepMap" : "2-1-2"
           }
@@ -74,6 +82,7 @@
         "source" : "definition.feature[8,2]",
         "displayName" : "When they are multiplied",
         "testCase" : false,
+        "step" : false,
         "children" : [ {
           "nodeType" : "step",
           "name" : "se multiplican ambos números",
@@ -82,6 +91,7 @@
           "source" : "implementation.feature[15,2]",
           "displayName" : "Cuando se multiplican ambos números",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "redefinition.stepMap" : "2-1-2"
           }
@@ -94,6 +104,7 @@
         "source" : "definition.feature[9,2]",
         "displayName" : "Then the result is the product",
         "testCase" : false,
+        "step" : false,
         "children" : [ {
           "nodeType" : "step",
           "name" : "el resultado es 18,3",
@@ -102,6 +113,7 @@
           "source" : "implementation.feature[16,2]",
           "displayName" : "Entonces el resultado es 18,3",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "redefinition.stepMap" : "2-1-2"
           }
@@ -113,6 +125,7 @@
           "source" : "implementation.feature[17,2]",
           "displayName" : "Y el resultado es 18,3",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "redefinition.stepMap" : "2-1-2"
           }
@@ -127,6 +140,7 @@
       "source" : "definition.feature[12,1]",
       "displayName" : "[ID-2] Scenario Outline: Test scenario outline",
       "testCase" : false,
+      "step" : false,
       "tags" : [ "ID-2", "definition" ],
       "children" : [ {
         "nodeType" : "scenario",
@@ -136,6 +150,7 @@
         "source" : "definition.feature[12,1]",
         "displayName" : "[ID-2_1] Test scenario outline [1]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-2", "definition" ],
         "children" : [ {
           "nodeType" : "step",
@@ -143,6 +158,7 @@
           "keyword" : "*",
           "displayName" : "* <background>",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el conjunto de números reales ℝ",
@@ -150,7 +166,8 @@
             "language" : "es",
             "source" : "implementation.feature[3,1]",
             "displayName" : "Dado el conjunto de números reales ℝ",
-            "testCase" : false
+            "testCase" : false,
+            "step" : true
           } ]
         }, {
           "nodeType" : "step",
@@ -160,12 +177,7 @@
           "source" : "definition.feature[13,2]",
           "displayName" : "Given a number with value 1.0",
           "testCase" : false,
-          "children" : [ {
-            "nodeType" : "step",
-            "name" : "void",
-            "displayName" : "void",
-            "testCase" : false
-          } ]
+          "step" : true
         }, {
           "nodeType" : "step",
           "name" : "another number with value 2",
@@ -174,6 +186,7 @@
           "source" : "definition.feature[14,2]",
           "displayName" : "And another number with value 2",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "un número con valor 1.0 y otro número con valor 2",
@@ -182,6 +195,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -195,6 +209,7 @@
           "source" : "definition.feature[15,2]",
           "displayName" : "When they are multiplied",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "se multiplican ambos números",
@@ -203,6 +218,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -216,6 +232,7 @@
           "source" : "definition.feature[16,2]",
           "displayName" : "Then the result is 2.0",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el resultado es 2.0",
@@ -224,6 +241,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 2.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -236,6 +254,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Y el resultado es 2.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -250,6 +269,7 @@
         "source" : "definition.feature[12,1]",
         "displayName" : "[ID-2_2] Test scenario outline [2]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-2", "definition" ],
         "children" : [ {
           "nodeType" : "step",
@@ -257,6 +277,7 @@
           "keyword" : "*",
           "displayName" : "* <background>",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el conjunto de números reales ℝ",
@@ -264,7 +285,8 @@
             "language" : "es",
             "source" : "implementation.feature[3,1]",
             "displayName" : "Dado el conjunto de números reales ℝ",
-            "testCase" : false
+            "testCase" : false,
+            "step" : true
           } ]
         }, {
           "nodeType" : "step",
@@ -274,12 +296,7 @@
           "source" : "definition.feature[13,2]",
           "displayName" : "Given a number with value 2.0",
           "testCase" : false,
-          "children" : [ {
-            "nodeType" : "step",
-            "name" : "void",
-            "displayName" : "void",
-            "testCase" : false
-          } ]
+          "step" : true
         }, {
           "nodeType" : "step",
           "name" : "another number with value 4",
@@ -288,6 +305,7 @@
           "source" : "definition.feature[14,2]",
           "displayName" : "And another number with value 4",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "un número con valor 2.0 y otro número con valor 4",
@@ -296,6 +314,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -309,6 +328,7 @@
           "source" : "definition.feature[15,2]",
           "displayName" : "When they are multiplied",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "se multiplican ambos números",
@@ -317,6 +337,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -330,6 +351,7 @@
           "source" : "definition.feature[16,2]",
           "displayName" : "Then the result is 8.0",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el resultado es 8.0",
@@ -338,6 +360,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 8.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -350,6 +373,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Y el resultado es 8.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -364,6 +388,7 @@
         "source" : "definition.feature[12,1]",
         "displayName" : "[ID-2_3] Test scenario outline [3]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-2", "definition" ],
         "children" : [ {
           "nodeType" : "step",
@@ -371,6 +396,7 @@
           "keyword" : "*",
           "displayName" : "* <background>",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el conjunto de números reales ℝ",
@@ -378,7 +404,8 @@
             "language" : "es",
             "source" : "implementation.feature[3,1]",
             "displayName" : "Dado el conjunto de números reales ℝ",
-            "testCase" : false
+            "testCase" : false,
+            "step" : true
           } ]
         }, {
           "nodeType" : "step",
@@ -388,12 +415,7 @@
           "source" : "definition.feature[13,2]",
           "displayName" : "Given a number with value 3.0",
           "testCase" : false,
-          "children" : [ {
-            "nodeType" : "step",
-            "name" : "void",
-            "displayName" : "void",
-            "testCase" : false
-          } ]
+          "step" : true
         }, {
           "nodeType" : "step",
           "name" : "another number with value 6",
@@ -402,6 +424,7 @@
           "source" : "definition.feature[14,2]",
           "displayName" : "And another number with value 6",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "un número con valor 3.0 y otro número con valor 6",
@@ -410,6 +433,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -423,6 +447,7 @@
           "source" : "definition.feature[15,2]",
           "displayName" : "When they are multiplied",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "se multiplican ambos números",
@@ -431,6 +456,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Cuando se multiplican ambos números",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -444,6 +470,7 @@
           "source" : "definition.feature[16,2]",
           "displayName" : "Then the result is 18.0",
           "testCase" : false,
+          "step" : false,
           "children" : [ {
             "nodeType" : "step",
             "name" : "el resultado es 18.0",
@@ -452,6 +479,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Entonces el resultado es 18.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"
@@ -464,6 +492,7 @@
             "source" : "implementation.feature[24,1]",
             "displayName" : "Y el resultado es 18.0",
             "testCase" : false,
+            "step" : true,
             "properties" : {
               "dataFormatLanguage" : "en",
               "redefinition.stepMap" : "0-1-1-2"

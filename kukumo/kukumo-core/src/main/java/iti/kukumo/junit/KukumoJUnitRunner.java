@@ -34,6 +34,9 @@ import java.util.stream.Collectors;
 
 public class KukumoJUnitRunner extends Runner {
 
+    /** Configuration property to set if the steps are treated as tests. False by default */
+    public static final String TREAT_STEPS_AS_TESTS = "junit.treatStepsAsTests";
+
     protected static final Logger LOGGER = Kukumo.LOGGER;
     protected static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
 
@@ -41,6 +44,7 @@ public class KukumoJUnitRunner extends Runner {
     protected final Configuration configuration;
     protected final Class<?> configurationClass;
     protected final PlanNodeLogger planNodeLogger;
+    protected final boolean treatStepsAsTests;
     private PlanNode plan;
     private List<JUnitPlanNodeRunner> children;
     private Description description;
@@ -53,6 +57,7 @@ public class KukumoJUnitRunner extends Runner {
         this.configurationClass = configurationClass;
         this.configuration = retrieveConfiguration(configurationClass);
         this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,getPlan().numTestCases());
+        this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class).orElse(Boolean.FALSE);
         validateAnnotatedMethod(configurationClass, BeforeClass.class);
         validateAnnotatedMethod(configurationClass, AfterClass.class);
     }
@@ -121,7 +126,9 @@ public class KukumoJUnitRunner extends Runner {
                 confBuilder.buildFromMap(node.properties())
             );
             BackendFactory backendFactory = Kukumo.getBackendFactory().setConfiguration(featureConfiguration);
-            return new JUnitPlanNodeRunner(uniqueId, node, backendFactory,planNodeLogger);
+            return treatStepsAsTests ?
+                    new JUnitPlanNodeStepRunner(uniqueId, node,backendFactory,planNodeLogger):
+                    new JUnitPlanNodeRunner(uniqueId, node,backendFactory,planNodeLogger);
         }).collect(Collectors.toList());
     }
 

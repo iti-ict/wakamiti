@@ -5,7 +5,6 @@ import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.KukumoSkippedException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.runner.PlanNodeLogger;
 import iti.kukumo.core.runner.PlanNodeRunner;
@@ -22,6 +21,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     private Description description;
     private RunNotifier notifier;
 
+
     public JUnitPlanNodeRunner(String parentUniqueId, PlanNode node, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
         super(parentUniqueId, node, backendFactory, backend, logger);
     }
@@ -32,11 +32,19 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     }
 
 
+    protected boolean isSuite() {
+        return !getNode().isTestCase() && !getNode().isStep();
+    }
+
     public Description getDescription() {
         if (description == null) {
-            description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
-            for (PlanNodeRunner child : getChildren()) {
-                description.addChild(((JUnitPlanNodeRunner)child).getDescription());
+            if (isSuite()) {
+                description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
+                for (PlanNodeRunner child : getChildren()) {
+                     description.addChild(((JUnitPlanNodeRunner) child).getDescription());
+                }
+            } else {
+                description = Description.createTestDescription("", getNode().displayName(), getUniqueId());
             }
         }
         return description;
@@ -56,11 +64,9 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
     public Result runNode(RunNotifier notifier, boolean forceSkip) {
         this.notifier = notifier;
-        if (getChildren().isEmpty() && !(getNode() instanceof PlanStep)) {
-            notifier.fireTestIgnored(getDescription());
-        }
         return super.runNode(forceSkip);
     }
+
 
 
     @Override
@@ -69,33 +75,43 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
         boolean forceSkipChild = false;
         for (PlanNodeRunner child : getChildren()) {
             childResult = ((JUnitPlanNodeRunner)child).runNode(notifier, forceSkipChild);
-            if (child.getNode() instanceof PlanStep && childResult != Result.PASSED) {
+            if (child.getNode().isStep() && childResult != Result.PASSED) {
                 forceSkipChild = true;
             }
         }
         return childResult;
     }
 
+
+
     @Override
-    protected Result runStep(boolean forceSkip) {
-        notifier.fireTestStarted(getDescription());
-        return super.runStep(forceSkip);
+    protected void testCasePreExecution(PlanNode node) {
+        super.testCasePreExecution(node);
+        if (node.isTestCase() && getChildren().isEmpty()) {
+            notifier.fireTestIgnored(getDescription());
+        } else {
+            notifier.fireTestStarted(getDescription());
+        }
     }
 
 
 
+
     @Override
-    protected void notifyAndLogStepResult(PlanStep step) {
-        Exception notExecuted = new KukumoException("Step not executed due to unknown reasons");
-        Exception skipped = new KukumoSkippedException("Step skipped due to previous step failed");
-        if (step.getResult() == Result.PASSED) {
-            notifier.fireTestFinished(getDescription());
-        } else if (step.getResult() == Result.SKIPPED) {
-            notifier.fireTestFailure(new Failure(getDescription(), skipped));
-        } else {
-            notifier.fireTestFailure(new Failure(getDescription(), step.getError().orElse(notExecuted)));
+    protected void testCasePostExecution(PlanNode node) {
+        super.testCasePostExecution(node);
+        Exception notExecuted = new KukumoException("Test case not executed due to unknown reasons");
+        Exception skipped = new KukumoSkippedException("Test case skipped");
+        Optional<Result> result = node.computeResult();
+        if (result.isPresent()) {
+            if (result.get() == Result.PASSED) {
+                notifier.fireTestFinished(getDescription());
+            } else if (result.get() == Result.SKIPPED) {
+                notifier.fireTestFailure(new Failure(getDescription(), skipped));
+            } else {
+                notifier.fireTestFailure(new Failure(getDescription(), node.errors().findFirst().orElse(notExecuted)));
+            }
         }
-        super.notifyAndLogStepResult(step);
     }
 
 

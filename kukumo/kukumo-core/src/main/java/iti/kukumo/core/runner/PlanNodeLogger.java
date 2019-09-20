@@ -59,6 +59,9 @@ public class PlanNodeLogger {
 
 
     public void logTestCaseHeader(PlanNode node) {
+        if (!node.isTestCase()) {
+            return;
+        }
         currentTestCaseNumber++;
         if (logger.isInfoEnabled()) {
             StringJoiner name = new StringJoiner(" : ");
