@@ -45,6 +45,7 @@ public interface PlanNode {
 
     boolean isTestCase();
 
+    boolean isStep();
 
     void clearChildren();
     
@@ -59,6 +60,8 @@ public interface PlanNode {
     boolean hasChildren();
     
     boolean containsChild(PlanNode child);
+
+    void replaceChild(PlanNode oldChild, PlanNode newChild);
 
     Optional<String> getTagThatSatisfies(Predicate<String> filter);
     
@@ -134,6 +137,11 @@ public interface PlanNode {
     }
 
 
+    default Stream<Throwable> errors() {
+        return children().flatMap(PlanNode::errors);
+    }
+
+
     default Stream<PlanNode> descendants() {
         return hasChildren() ? Stream.concat(children(), children().flatMap(PlanNode::descendants)) : Stream.empty();
     }
@@ -156,4 +164,6 @@ public interface PlanNode {
            .filter(Result::isPassed)
            .count();
     }
+
+
 }

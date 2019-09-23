@@ -11,6 +11,7 @@ import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeTypes;
 import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanStep;
+import iti.kukumo.core.plan.DefaultPlanVoidStep;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -208,10 +209,10 @@ public class GherkinPlanRedefiner {
                 defScenario.child(defScenario.numChildren()-1).addChild(nonBackgroundImplSteps.get(i));
             }
 
-            // if there are definition steps without implementation, attach them a void step
+            // if there are definition steps without implementation, transform to void step
             defScenario.children()
                 .filter(not(PlanNode::hasChildren))
-                .forEach(child->child.addChild(factory.voidStep()));
+                .forEach(child -> defScenario.replaceChild(child, new DefaultPlanVoidStep(child)));
     }
 
 

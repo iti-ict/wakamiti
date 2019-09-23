@@ -4,7 +4,6 @@ import iti.commons.jext.ExtensionPoint;
 import iti.commons.jext.LoadStrategy;
 import iti.kukumo.api.Resource;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanStep;
 
 import java.util.List;
 
@@ -27,12 +26,6 @@ public interface Planner extends Contributor {
      */
     PlanNode createPlan(List<Resource<?>> resources);
 
-    /**
-     * Returns a special step that will be used for redefining steps that do nothing.
-     * <p>This step satisfies that the method {@link PlanStep#isVoid} always returns <tt>true</tt>.</p>
-     * @return A step with no definition and no implementation
-     */
-    PlanStep voidStep();
 
 
 

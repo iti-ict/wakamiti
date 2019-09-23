@@ -1,13 +1,10 @@
 package iti.kukumo.core.plan;
 
+import iti.kukumo.api.plan.*;
+
 import java.time.Instant;
 import java.util.Optional;
-
-import iti.kukumo.api.plan.DataTable;
-import iti.kukumo.api.plan.Document;
-import iti.kukumo.api.plan.PlanNodeTypes;
-import iti.kukumo.api.plan.PlanStep;
-import iti.kukumo.api.plan.Result;
+import java.util.stream.Stream;
 
 public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements PlanStep {
 
@@ -18,7 +15,6 @@ public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements
     private Instant startInstant;
     private Instant finishInstant;
     private boolean isBackgroundStep;
-
 
     public DefaultPlanStep() {
         super(PlanNodeTypes.STEP);
@@ -42,6 +38,10 @@ public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements
         return Optional.ofNullable(error);
     }
 
+    @Override
+    public Stream<Throwable> errors() {
+        return getError().map(Stream::of).orElse(Stream.empty());
+    }
 
     @Override
     public Instant getStartInstant() {
@@ -63,6 +63,10 @@ public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements
         return isBackgroundStep;
     }
 
+    @Override
+    public boolean isStep() {
+        return true;
+    }
 
     @Override
     public Optional<Instant> computeStartInstant() {
@@ -138,8 +142,19 @@ public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements
         return this;
     }
 
-    
 
+    @Override
+    public String displayName() {
+        StringBuilder displayName = new StringBuilder();
+        if (keyword() != null) {
+            displayName.append(keyword());
+            displayName.append(" ");
+        }
+        if (name() != null) {
+            displayName.append(name());
+        }
+        return displayName.toString();
+    }
 
 
     @Override
@@ -162,12 +177,8 @@ public class DefaultPlanStep extends DefaultPlanNode<DefaultPlanStep> implements
     }
 
 
-
-
-
     @Override
     public boolean isVoid() {
         return false;
     }
-
 }

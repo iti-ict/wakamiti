@@ -1,15 +1,11 @@
 package iti.kukumo.core.plan;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeTypes;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 
 @SuppressWarnings("unchecked")
@@ -77,6 +73,10 @@ public class DefaultPlanNode<S extends DefaultPlanNode<S>> implements PlanNode {
         return testCase;
     }
 
+    @Override
+    public boolean isStep() {
+        return false;
+    }
 
     @Override
     public List<String> tags() {
@@ -124,6 +124,7 @@ public class DefaultPlanNode<S extends DefaultPlanNode<S>> implements PlanNode {
     }
 
 
+
     @Override
     public void addChildIfSatisfies(PlanNode child, Predicate<PlanNode> filter) {
         if (filter.test(child)) {
@@ -131,6 +132,15 @@ public class DefaultPlanNode<S extends DefaultPlanNode<S>> implements PlanNode {
         }
     }
 
+
+    @Override
+    public void replaceChild(PlanNode oldChild, PlanNode newChild) {
+        int index = children.indexOf(oldChild);
+        if (index == -1) {
+            throw new IllegalArgumentException("Node to replace is not a current child node");
+        }
+        children.set(index,newChild);
+    }
 
     @Override
     public int numChildren() {

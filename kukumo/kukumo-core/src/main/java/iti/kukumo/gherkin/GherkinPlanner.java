@@ -76,16 +76,6 @@ public class GherkinPlanner implements Planner {
 
 
 
-    @Override
-    public PlanStep voidStep() {
-        return new DefaultPlanStep(){
-            @Override
-            public boolean isVoid() {
-                return true;
-            }
-        }.setName("void");
-    }
-
 
 
     @SuppressWarnings("unchecked")

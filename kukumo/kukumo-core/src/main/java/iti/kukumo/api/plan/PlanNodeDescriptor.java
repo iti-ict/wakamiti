@@ -37,6 +37,7 @@ public class PlanNodeDescriptor {
     private String source;
     private String displayName;
     private boolean testCase;
+    private boolean step;
     private List<String> description;
     private List<String> tags;
     private Map<String,String> properties;
@@ -62,6 +63,7 @@ public class PlanNodeDescriptor {
         this.source = node.source();
         this.displayName = node.displayName();
         this.testCase = node.isTestCase();
+        this.step = node.isStep();
         this.description = (node.description() == null ? null : new ArrayList<>(node.description()));
         this.tags = (node.tags() == null ? null : new ArrayList<>(node.tags()));
         this.properties = (node.properties() == null? null : new LinkedHashMap<>(node.properties()));

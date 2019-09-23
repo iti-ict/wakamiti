@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlanNodeRunner  {
@@ -74,6 +75,7 @@ public class PlanNodeRunner  {
         return logger;
     }
 
+
     protected Result runNode(boolean forceSkip) {
         if (state != State.PREPARED) {
             throw new IllegalStateException("run() method can only be invoked once");
@@ -82,20 +84,15 @@ public class PlanNodeRunner  {
         Kukumo.publishEvent(Event.NODE_RUN_STARTED, node.obtainDescriptor());
         Result result;
         if (!getChildren().isEmpty()) {
-
             if (node.isTestCase()) {
-                logger.logTestCaseHeader(node);
-                getBackend().ifPresent(Backend::setUp);
+                testCasePreExecution(node);
             }
-
             result = runChildren();
-
             if (node.isTestCase()) {
-                getBackend().ifPresent(Backend::tearDown);
-                LOGGER.info("");
+                testCasePostExecution(node);
             }
 
-        } else if (node instanceof PlanStep){
+        } else if (node.isStep()){
             result = runStep(forceSkip);
         } else {
             // not implemented
@@ -124,12 +121,13 @@ public class PlanNodeRunner  {
 
     protected Result runStep(boolean forceSkip) {
         PlanStep step = (PlanStep) node;
+        stepPreExecution(step,forceSkip);
         if (forceSkip) {
             getBackend().ifPresent(stepBackend -> stepBackend.skipStep(step));
         } else {
             getBackend().ifPresent(stepBackend -> stepBackend.runStep(step));
         }
-        notifyAndLogStepResult(step);
+        stepPostExecution(step,forceSkip);
         return step.getResult();
     }
 
@@ -148,6 +146,7 @@ public class PlanNodeRunner  {
 
 
     protected String buildUniqueId(String parentUniqueId, PlanNode node) {
+        /*
         final StringBuilder nodeUniqueId = new StringBuilder(parentUniqueId).append(':');
         if (node.id() != null) {
             nodeUniqueId.append(node.id());
@@ -157,6 +156,8 @@ public class PlanNodeRunner  {
             nodeUniqueId.append(node.nodeType());
         }
         return nodeUniqueId.toString();
+        */
+        return UUID.randomUUID().toString();
     }
 
 
@@ -165,11 +166,28 @@ public class PlanNodeRunner  {
     }
 
 
-    protected void notifyAndLogStepResult(PlanStep step) {
-        logger.logStepResult(step);
+
+
+
+    protected void testCasePreExecution(PlanNode node) {
+        logger.logTestCaseHeader(node);
+        getBackend().ifPresent(Backend::setUp);
     }
 
 
+    protected void testCasePostExecution(PlanNode node) {
+        getBackend().ifPresent(Backend::tearDown);
+    }
+
+
+    protected void stepPreExecution(PlanStep step, boolean forceSkip) {
+        /* nothing by default */
+    }
+
+
+    protected void stepPostExecution(PlanStep step, boolean forceSkip) {
+        logger.logStepResult(step);
+    }
 
 
 }

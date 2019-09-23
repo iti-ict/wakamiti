@@ -1,6 +1,7 @@
 {
   "nodeType" : "plan",
   "testCase" : false,
+  "step" : false,
   "children" : [ {
     "nodeType" : "feature",
     "name" : "Test 2 - Scenario Outline",
@@ -9,6 +10,7 @@
     "source" : "src/test/resources/features/test2_scenarioOutline.feature[2,1]",
     "displayName" : "Feature: Test 2 - Scenario Outline",
     "testCase" : false,
+    "step" : false,
     "tags" : [ "Test2" ],
     "children" : [ {
       "nodeType" : "scenarioOutline",
@@ -19,6 +21,7 @@
       "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
       "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
       "testCase" : false,
+      "step" : false,
       "tags" : [ "ID-ScenarioOutline1", "Test2" ],
       "properties" : {
         "propertyScenarioOutline" : "A"
@@ -31,6 +34,7 @@
         "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_1] Test Scenario Outline [1]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A"
@@ -43,6 +47,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 1.0 and another number with value 2",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -54,6 +59,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -65,6 +71,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 2.0",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -77,6 +84,7 @@
         "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_2] Test Scenario Outline [2]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A"
@@ -89,6 +97,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 2.0 and another number with value 3",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -100,6 +109,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -111,6 +121,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 6.0",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -123,6 +134,7 @@
         "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_3] Test Scenario Outline [3]",
         "testCase" : true,
+        "step" : false,
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A"
@@ -135,6 +147,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 5.0 and another number with value 4",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -146,6 +159,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }
@@ -157,6 +171,7 @@
           "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 20.0",
           "testCase" : false,
+          "step" : true,
           "properties" : {
             "propertyScenarioOutline" : "A"
           }

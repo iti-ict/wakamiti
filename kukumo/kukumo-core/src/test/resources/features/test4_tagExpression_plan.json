@@ -1,6 +1,7 @@
 {
   "nodeType" : "plan",
   "testCase" : false,
+  "step" : false,
   "children" : [ {
     "nodeType" : "feature",
     "name" : "Test 4 - Tag Expressions",
@@ -9,6 +10,7 @@
     "source" : "src/test/resources/features/test4_tagExpression.feature[3,1]",
     "displayName" : "Feature: Test 4 - Tag Expressions",
     "testCase" : false,
+    "step" : false,
     "tags" : [ "Test4" ],
     "properties" : {
       "encoding" : "UTF-8"
@@ -21,6 +23,7 @@
       "source" : "src/test/resources/features/test4_tagExpression.feature[19,1]",
       "displayName" : "Scenario: Test Scenario B C",
       "testCase" : true,
+      "step" : false,
       "tags" : [ "B", "C", "Test4" ],
       "properties" : {
         "encoding" : "UTF-8"
@@ -33,6 +36,7 @@
         "source" : "src/test/resources/features/test4_tagExpression.feature[20,3]",
         "displayName" : "Given a number with value 8.09 and another number with value 9",
         "testCase" : false,
+        "step" : true,
         "properties" : {
           "encoding" : "UTF-8"
         }
@@ -44,6 +48,7 @@
         "source" : "src/test/resources/features/test4_tagExpression.feature[21,3]",
         "displayName" : "When both numbers are multiplied",
         "testCase" : false,
+        "step" : true,
         "properties" : {
           "encoding" : "UTF-8"
         }
@@ -55,6 +60,7 @@
         "source" : "src/test/resources/features/test4_tagExpression.feature[22,3]",
         "displayName" : "Then the result is equals to 72.81",
         "testCase" : false,
+        "step" : true,
         "properties" : {
           "encoding" : "UTF-8"
         }
