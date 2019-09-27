@@ -1,6 +1,6 @@
 package iti.kukumo.api;
 
-import iti.kukumo.api.plan.PlanStep;
+import iti.kukumo.api.plan.PlanNode;
 
 public interface Backend {
 
@@ -8,9 +8,9 @@ public interface Backend {
 
     void tearDown();
 
-    void runStep(PlanStep modelStep);
+    void runStep(PlanNode modelStep);
 
-    void skipStep(PlanStep step);
+    void skipStep(PlanNode step);
 
     KukumoDataTypeRegistry getTypeRegistry();
 

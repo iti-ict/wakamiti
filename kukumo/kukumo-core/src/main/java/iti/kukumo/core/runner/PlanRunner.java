@@ -1,48 +1,45 @@
 package iti.kukumo.core.runner;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
-import org.slf4j.Logger;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class PlanRunner  {
 
     private static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
+    private static final Logger LOGGER = Kukumo.LOGGER;
 
-    private final String uniqueId;
+    private final Kukumo kukumo;
     private final Configuration configuration;
-    private final Logger LOGGER = Kukumo.LOGGER;
+
     private PlanNodeLogger planNodeLogger;
     private PlanNode plan;
     private List<PlanNodeRunner> children;
 
 
+
     public PlanRunner(PlanNode plan, Configuration configuration)  {
-        this.uniqueId = "kukumo";
         this.plan = plan;
         this.configuration = configuration;
-        this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,plan.numTestCases());
+        this.planNodeLogger = new PlanNodeLogger(Kukumo.LOGGER,configuration,plan);
+        this.kukumo = Kukumo.instance();
     }
 
 
-    
+
     public PlanNode run() {
-        Kukumo.configureLogger(configuration);
-        Kukumo.configureEventObservers(configuration);
-        Kukumo.publishEvent(Event.PLAN_RUN_STARTED,plan.obtainDescriptor());
+        kukumo.configureLogger(configuration);
+        kukumo.configureEventObservers(configuration);
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED,plan.obtainDescriptor());
         planNodeLogger.logTestPlanHeader(plan);
         for (PlanNodeRunner child: getChildren()) {
             try {
@@ -52,30 +49,12 @@ public class PlanRunner  {
             }
         }
         planNodeLogger.logTestPlanResult(plan);
-        Kukumo.publishEvent(Event.PLAN_RUN_FINISHED,plan.obtainDescriptor());
-        writeOutputFile();
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED,plan.obtainDescriptor());
         return plan;
     }
 
 
 
-
-    private void writeOutputFile() {
-        configuration
-        .get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class)
-        .map(Paths::get)
-        .ifPresent(outputPath -> {
-            try {
-                Files.createDirectories(outputPath.toAbsolutePath().getParent());
-                try (Writer writer = new FileWriter(outputPath.toAbsolutePath().toFile())) {
-                    Kukumo.getPlanSerializer().write(writer, plan);
-                    LOGGER.info("Raw result data stored in {uri}", outputPath);
-                }
-            } catch (IOException e) {
-                LOGGER.error("{error} {uri}","Error writing output file", outputPath, e.getMessage(), e);
-            }
-        });
-    }
 
 
     public List<PlanNodeRunner> getChildren() {
@@ -92,8 +71,8 @@ public class PlanRunner  {
             Configuration childConfiguration = configuration.append(
                 confBuilder.buildFromMap(feature.properties())
             );
-            BackendFactory backendFactory = Kukumo.getBackendFactory().setConfiguration(childConfiguration);
-            return new PlanNodeRunner(uniqueId, feature, backendFactory, planNodeLogger);
+            BackendFactory backendFactory = kukumo.getBackendFactory().setConfiguration(childConfiguration);
+            return new PlanNodeRunner(feature, backendFactory, planNodeLogger);
         }).collect(Collectors.toList());
     }
 

@@ -1,5 +1,21 @@
 package iti.kukumo.junit;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.ConfigurationException;
@@ -9,27 +25,6 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.core.runner.PlanNodeLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
-import org.slf4j.Logger;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class KukumoJUnitRunner extends Runner {
@@ -40,11 +35,11 @@ public class KukumoJUnitRunner extends Runner {
     protected static final Logger LOGGER = Kukumo.LOGGER;
     protected static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
 
-    protected final String uniqueId;
     protected final Configuration configuration;
     protected final Class<?> configurationClass;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
+    protected final Kukumo kukumo;
     private PlanNode plan;
     private List<JUnitPlanNodeRunner> children;
     private Description description;
@@ -53,10 +48,10 @@ public class KukumoJUnitRunner extends Runner {
 
 
     public KukumoJUnitRunner(Class<?> configurationClass) throws InitializationError {
-        this.uniqueId = "kukumo";
+        this.kukumo = Kukumo.instance();
         this.configurationClass = configurationClass;
         this.configuration = retrieveConfiguration(configurationClass);
-        this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,getPlan().numTestCases());
+        this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,getPlan());
         this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class).orElse(Boolean.FALSE);
         validateAnnotatedMethod(configurationClass, BeforeClass.class);
         validateAnnotatedMethod(configurationClass, AfterClass.class);
@@ -68,9 +63,9 @@ public class KukumoJUnitRunner extends Runner {
 
     @Override
     public void run(RunNotifier notifier) {
-        Kukumo.configureLogger(configuration);
-        Kukumo.configureEventObservers(configuration);
-        Kukumo.publishEvent(Event.PLAN_RUN_STARTED,getPlan().obtainDescriptor());
+        kukumo.configureLogger(configuration);
+        kukumo.configureEventObservers(configuration);
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED,getPlan().obtainDescriptor());
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
@@ -86,8 +81,9 @@ public class KukumoJUnitRunner extends Runner {
         executeAnnotatedMethod(configurationClass, AfterClass.class);
 
         planNodeLogger.logTestPlanResult(plan);
-        Kukumo.publishEvent(Event.PLAN_RUN_FINISHED,getPlan().obtainDescriptor());
-        writeOutputFile();
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED,getPlan().obtainDescriptor());
+        kukumo.writeOutputFile(plan, configuration);
+        kukumo.generateReports(configuration);
     }
 
 
@@ -103,7 +99,7 @@ public class KukumoJUnitRunner extends Runner {
     @Override
     public Description getDescription() {
         if (description == null) {
-            description = Description.createSuiteDescription("Kukumo Test Plan",uniqueId);
+            description = Description.createSuiteDescription("Kukumo Test Plan",UUID.randomUUID().toString());
             for (JUnitPlanNodeRunner child : getChildren()) {
                 description.addChild(child.getDescription());
             }
@@ -114,7 +110,7 @@ public class KukumoJUnitRunner extends Runner {
 
     protected PlanNode getPlan() {
         if (plan == null) {
-            plan = Kukumo.createPlanFromConfiguration(configuration);
+            plan = kukumo.createPlanFromConfiguration(configuration);
         }
         return plan;
     }
@@ -125,10 +121,10 @@ public class KukumoJUnitRunner extends Runner {
             Configuration featureConfiguration = configuration.append(
                 confBuilder.buildFromMap(node.properties())
             );
-            BackendFactory backendFactory = Kukumo.getBackendFactory().setConfiguration(featureConfiguration);
+            BackendFactory backendFactory = kukumo.getBackendFactory().setConfiguration(featureConfiguration);
             return treatStepsAsTests ?
-                    new JUnitPlanNodeStepRunner(uniqueId, node,backendFactory,planNodeLogger):
-                    new JUnitPlanNodeRunner(uniqueId, node,backendFactory,planNodeLogger);
+                    new JUnitPlanNodeStepRunner(node,backendFactory,planNodeLogger):
+                    new JUnitPlanNodeRunner(node,backendFactory,planNodeLogger);
         }).collect(Collectors.toList());
     }
 
@@ -175,21 +171,5 @@ public class KukumoJUnitRunner extends Runner {
         }
     }
 
-
-
-    private void writeOutputFile() {
-        Optional<String> outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class);
-        if (outputPath.isPresent()) {
-            try {
-                Path path = Paths.get(outputPath.get()).toAbsolutePath();
-                Files.createDirectories(path.getParent());
-                try(Writer writer = new FileWriter(outputPath.get())) {
-                    Kukumo.getPlanSerializer().write(writer, plan);
-                }
-            } catch (IOException e) {
-                LOGGER.error("Error writing output file {} : {}", outputPath.get(), e.getMessage(), e);
-            }
-        }
-    }
 
 }

@@ -1,28 +1,46 @@
 package iti.kukumo.gherkin;
 
-import gherkin.ast.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import gherkin.ast.Background;
+import gherkin.ast.Comment;
+import gherkin.ast.DataTable;
+import gherkin.ast.DocString;
+import gherkin.ast.Examples;
+import gherkin.ast.Feature;
+import gherkin.ast.GherkinDocument;
+import gherkin.ast.Location;
+import gherkin.ast.Scenario;
+import gherkin.ast.ScenarioDefinition;
+import gherkin.ast.ScenarioOutline;
+import gherkin.ast.Step;
+import gherkin.ast.TableCell;
+import gherkin.ast.TableRow;
+import gherkin.ast.Tag;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.Resource;
-import iti.kukumo.api.event.Event;
 import iti.kukumo.api.extensions.Planner;
 import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeTypes;
-import iti.kukumo.api.plan.PlanStep;
 import iti.kukumo.core.plan.DefaultPlanNode;
-import iti.kukumo.core.plan.DefaultPlanStep;
 import iti.kukumo.gherkin.parser.CommentedNode;
-
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Extension(
     provider = "iti.kukumo",
@@ -57,7 +75,7 @@ public class GherkinPlanner implements Planner {
     protected void configureFilterFromTagExpression(Configuration configuration) {
         String tagFilterExpression = configuration.get(KukumoConfiguration.TAG_FILTER,String.class).orElse("");
         if (tagFilterExpression != null && !tagFilterExpression.isEmpty()) {
-            this.scenarioFilter = Kukumo.getTagFilter(tagFilterExpression)::filter;
+            this.scenarioFilter = Kukumo.instance().getTagFilter(tagFilterExpression)::filter;
         }
     }
 
@@ -81,7 +99,8 @@ public class GherkinPlanner implements Planner {
     @SuppressWarnings("unchecked")
     @Override
     public PlanNode createPlan(List<Resource<?>> resources) {
-        PlanNode plan = new DefaultPlanNode<>(PlanNodeTypes.PLAN);
+        DefaultPlanNode plan = new DefaultPlanNode(NodeType.AGGREGATOR)
+            .setDisplayNamePattern("Test Plan");
         List<Resource<GherkinDocument>> gherkinResources = resources.stream()
                 .map(x -> (Resource<GherkinDocument>) x).collect(Collectors.toList());
         for (Resource<GherkinDocument> gherkinResource : gherkinResources) {
@@ -90,18 +109,17 @@ public class GherkinPlanner implements Planner {
         if (this.redefinitionEnabled) {
             this.redefinitionHelper.arrangeRedefinitions(plan);
         }
-        Kukumo.publishEvent(Event.PLAN_CREATED, plan);
         return plan;
     }
 
 
 
 
-    protected DefaultPlanNode<?> createFeature(Resource<GherkinDocument> gherkinResource) {
+    protected DefaultPlanNode createFeature(Resource<GherkinDocument> gherkinResource) {
         Feature feature = gherkinResource.content().getFeature();
         String location = gherkinResource.relativePath();
         String language = feature.getLanguage();
-        DefaultPlanNode<?> node = newFeatureNode(feature, language, location);
+        DefaultPlanNode node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             if (abstractScenario instanceof Scenario) {
                 node.addChildIfSatisfies(
@@ -120,19 +138,14 @@ public class GherkinPlanner implements Planner {
 
 
 
-
-
-
-
-
-    protected DefaultPlanNode<?> createScenario(
-            Feature feature,
-            Scenario scenario,
-            String location,
-            PlanNode parentNode
+    protected DefaultPlanNode createScenario(
+        Feature feature,
+        Scenario scenario,
+        String location,
+        PlanNode parentNode
     ) {
-        DefaultPlanNode<?> node = newScenarioNode(scenario, location, parentNode);
-        for (DefaultPlanStep backgroundStep : createBackgroundSteps(feature, location)) {
+        DefaultPlanNode node = newScenarioNode(scenario, location, parentNode);
+        for (DefaultPlanNode backgroundStep : createBackgroundSteps(feature, location)) {
             node.addChild(backgroundStep);
         }
         for (Step step : scenario.getSteps()) {
@@ -144,17 +157,16 @@ public class GherkinPlanner implements Planner {
 
 
 
-    protected DefaultPlanNode<?> createScenarioOutline(
-            Feature feature,
-            ScenarioOutline scenarioOutline,
-            String location,
-            PlanNode parentNode
+    protected DefaultPlanNode createScenarioOutline(
+        Feature feature,
+        ScenarioOutline scenarioOutline,
+        String location,
+        PlanNode parentNode
     ) {
-
-        DefaultPlanNode<?> node = newScenarioOutlineNode(scenarioOutline,location,parentNode);
-        List<DefaultPlanStep> backgroundSteps = createBackgroundSteps(feature, location);
+        DefaultPlanNode node = newScenarioOutlineNode(scenarioOutline,location,parentNode);
+        List<DefaultPlanNode> backgroundSteps = createBackgroundSteps(feature, location);
         for (Examples examples : scenarioOutline.getExamples()) {
-           List<DefaultPlanNode<?>> scenarios = createScenariosFromExamples(
+           List<DefaultPlanNode> scenarios = createScenariosFromExamples(
                    scenarioOutline,
                    examples,
                    node,
@@ -169,29 +181,28 @@ public class GherkinPlanner implements Planner {
 
 
 
-    protected List<DefaultPlanNode<?>> createScenariosFromExamples(
+    protected List<DefaultPlanNode> createScenariosFromExamples(
             ScenarioOutline scenarioOutline,
             Examples examples,
-            DefaultPlanNode<?> scenarioOutlineNode,
-            List<DefaultPlanStep> backgroundSteps,
+            DefaultPlanNode scenarioOutlineNode,
+            List<DefaultPlanNode> backgroundSteps,
             String language,
             String location
     ) {
-        List<DefaultPlanNode<?>> output = new ArrayList<>();
+        List<DefaultPlanNode> output = new ArrayList<>();
 
         List<String> variables = tableCells(examples.getTableHeader());
         List<List<String>> values = examples.getTableBody().stream().map(this::tableCells)
                 .collect(Collectors.toList());
 
-        ArrayList<DefaultPlanStep> outlineSteps = new ArrayList<>();
+        ArrayList<DefaultPlanNode> outlineSteps = new ArrayList<>();
         for (Step step : scenarioOutline.getSteps()) {
             outlineSteps.add(createStep(step, location, language, scenarioOutlineNode));
         }
 
         for (int row = 0; row < values.size(); row++) {
 
-            DefaultPlanNode<?> exampleScenario = new DefaultPlanNode<>(PlanNodeTypes.SCENARIO)
-                    .setTestCase(true)
+            DefaultPlanNode exampleScenario = new DefaultPlanNode(NodeType.TEST_CASE)
                     .setId(id(scenarioOutline.getTags(), scenarioOutline.getName(),("_"+(row+1))))
                     .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
                     .setLanguage(language)
@@ -200,10 +211,10 @@ public class GherkinPlanner implements Planner {
                     .addProperties(propertiesFromComments(scenarioOutlineNode, scenarioOutlineNode.properties()))
             ;
 
-            for (DefaultPlanStep backgroundStep : backgroundSteps) {
+            for (DefaultPlanNode backgroundStep : backgroundSteps) {
                 exampleScenario.addChild(backgroundStep.copy());
             }
-            List<DefaultPlanStep> exampleSteps = replaceOutlineVariables(outlineSteps, variables, values.get(row));
+            List<DefaultPlanNode> exampleSteps = replaceOutlineVariables(outlineSteps, variables, values.get(row));
             exampleSteps.forEach(exampleScenario::addChild);
 
             output.add(exampleScenario);
@@ -219,10 +230,11 @@ public class GherkinPlanner implements Planner {
 
 
 
-    protected DefaultPlanNode<?> newFeatureNode(Feature feature, String language, String location) {
-        return new DefaultPlanNode<>(PlanNodeTypes.FEATURE)
+    protected DefaultPlanNode newFeatureNode(Feature feature, String language, String location) {
+        return new DefaultPlanNode(NodeType.AGGREGATOR)
             .setId(id(feature.getTags(), feature.getName()))
             .setName(feature.getName())
+            .setDisplayNamePattern("{keyword}: {name}")
             .setLanguage(language)
             .setKeyword(feature.getKeyword())
             .addDescription(splitAndTrim(feature.getDescription()))
@@ -230,48 +242,54 @@ public class GherkinPlanner implements Planner {
             .setSource(source(location,feature.getLocation()))
             .setGherkinModel(feature)
             .addProperties(propertiesFromComments(feature,null))
+            .addProperty("gherkinType","feature")
         ;
     }
 
 
-    protected DefaultPlanNode<?> newScenarioNode(Scenario scenario, String location, PlanNode parentNode) {
-        return new DefaultPlanNode<>(PlanNodeTypes.SCENARIO)
-            .setTestCase(true)
+    protected DefaultPlanNode newScenarioNode(Scenario scenario, String location, PlanNode parentNode) {
+        return new DefaultPlanNode(NodeType.TEST_CASE)
             .setId(id(scenario.getTags(), scenario.getName()))
             .setName(trim(scenario.getName()))
+            .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
             .setKeyword(trim(scenario.getKeyword()))
             .addTags(tags(parentNode.tags(),scenario.getTags()))
             .setSource(source(location,scenario.getLocation()))
             .setGherkinModel(scenario)
             .addProperties(propertiesFromComments(scenario,parentNode.properties()))
+            .addProperty("gherkinType","scenario")
         ;
     }
 
 
-    protected DefaultPlanNode<?> newScenarioOutlineNode(
+    protected DefaultPlanNode newScenarioOutlineNode(
             ScenarioOutline scenarioOutline, String location, PlanNode parentNode
     ) {
-        return new DefaultPlanNode<>(PlanNodeTypes.SCENARIO_OUTLINE)
+        return new DefaultPlanNode(NodeType.AGGREGATOR)
             .setId(id(scenarioOutline.getTags(), scenarioOutline.getName()))
             .setName(trim(scenarioOutline.getName()))
+            .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
             .setKeyword(trim(scenarioOutline.getKeyword()))
             .addTags(tags(parentNode.tags(),scenarioOutline.getTags()))
             .setSource(source(location,scenarioOutline.getLocation()))
             .setGherkinModel(scenarioOutline)
             .addProperties(propertiesFromComments(scenarioOutline, parentNode.properties()))
+            .addProperty("gherkinType","scenarioOutline")
         ;
     }
 
-    protected DefaultPlanStep newStepNode(Step step, String location, String language, PlanNode parentNode) {
-        return new DefaultPlanStep()
+    protected DefaultPlanNode newStepNode(Step step, String location, String language, PlanNode parentNode) {
+        return new DefaultPlanNode(NodeType.STEP)
             .setKeyword(trim(step.getKeyword()))
             .setName(trim(step.getText()))
+            .setDisplayNamePattern("{keyword} {name}")
             .setLanguage(language)
             .setSource(source(location,step.getLocation()))
             .setGherkinModel(step)
             .addProperties(propertiesFromComments(step, parentNode == null ? null : parentNode.properties()))
+            .addProperty("gherkinType","step")
         ;
     }
 
@@ -286,10 +304,13 @@ public class GherkinPlanner implements Planner {
     }
 
 
-    protected List<DefaultPlanStep> createBackgroundSteps(Feature feature, String location) {
+
+
+
+    protected List<DefaultPlanNode> createBackgroundSteps(Feature feature, String location) {
         Optional<Background> background = getBackground(feature);
         if (background.isPresent()) {
-            ArrayList<DefaultPlanStep> steps = new ArrayList<>();
+            ArrayList<DefaultPlanNode> steps = new ArrayList<>();
             for (Step step : background.get().getSteps()) {
                 steps.add(createStep(step, location, feature.getLanguage(), null).setBackgroundStep(true));
             }
@@ -302,8 +323,8 @@ public class GherkinPlanner implements Planner {
 
 
 
-    protected DefaultPlanStep createStep(Step step, String location, String language, PlanNode parentNode) {
-        DefaultPlanStep node = newStepNode(step, location, language, parentNode);
+    protected DefaultPlanNode createStep(Step step, String location, String language, PlanNode parentNode) {
+        DefaultPlanNode node = newStepNode(step, location, language, parentNode);
         if (step.getArgument() != null) {
             if (step.getArgument() instanceof DataTable) {
                 node.setDataTable(new iti.kukumo.api.plan.DataTable(toArray((DataTable) step.getArgument())));
@@ -324,20 +345,20 @@ public class GherkinPlanner implements Planner {
     /*
      * Scenario outline variables follow the pattern: <name>
      */
-    private List<DefaultPlanStep> replaceOutlineVariables(
-            ArrayList<DefaultPlanStep> outlineSteps, List<String> variables, List<String> values
+    private List<DefaultPlanNode> replaceOutlineVariables(
+            ArrayList<DefaultPlanNode> outlineSteps, List<String> variables, List<String> values
     ) {
-        ArrayList<DefaultPlanStep> exampleSteps = new ArrayList<>();
-        for (DefaultPlanStep outlineStep : outlineSteps) {
-            DefaultPlanStep exampleStep = outlineStep.copy();
+        ArrayList<DefaultPlanNode> exampleSteps = new ArrayList<>();
+        for (DefaultPlanNode outlineStep : outlineSteps) {
+            DefaultPlanNode exampleStep = outlineStep.copy();
             for (int i = 0; i < variables.size(); i++) {
                 String variableValue = values.get(i);
                 String variable = "<" + variables.get(i) + ">";
                 UnaryOperator<String> replacer = s -> s.replace(variable, variableValue);
                 exampleStep
                     .setName(Optional.ofNullable(trim(exampleStep.name())).map(replacer).orElse(null))
-                    .setDocument(exampleStep.getDocument().map(document -> document.copy(replacer)).orElse(null))
-                    .setDataTable(exampleStep.getDataTable().map(table -> table.copy(replacer)).orElse(null))
+                    .setDocument(exampleStep.document().map(document -> document.copy(replacer)).orElse(null))
+                    .setDataTable(exampleStep.dataTable().map(table -> table.copy(replacer)).orElse(null))
                 ;
             }
             exampleSteps.add(exampleStep);
@@ -385,10 +406,10 @@ public class GherkinPlanner implements Planner {
         return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct().collect(Collectors.toList());
     }
 
-    private List<String> tags(List<String> parentTags, List<Tag> tags) {
+    private Set<String> tags(Set<String> parentTags, Collection<Tag> tags) {
         Set<String> tagList = tags.stream().map(Tag::getName).map(s -> s.substring(1)).collect(Collectors.toSet());
         tagList.addAll(parentTags);
-        return new ArrayList<>(tagList);
+        return tagList;
     }
 
 

@@ -1,6 +1,5 @@
 package iti.kukumo.maven;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +28,9 @@ public class KukumoReporterMojo extends AbstractMojo implements KukumoConfigurab
         try {
             Configuration configuration = readConfiguration(configurationfiles, properties);
             info("invoking reports...");
-            Kukumo.report(configuration);
+            Kukumo.instance().generateReports(configuration);
         } catch (ConfigurationException e) {
             throw new MojoExecutionException("Kukumo configuration error: " + e.getMessage(), e);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error invoking reports", e);
         }
     }
 

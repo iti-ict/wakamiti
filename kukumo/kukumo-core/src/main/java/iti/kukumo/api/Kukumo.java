@@ -3,10 +3,12 @@ package iti.kukumo.api;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
+import iti.kukumo.api.event.Event;
 import iti.kukumo.api.event.EventDispatcher;
 import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.core.plan.DefaultPlanNode;
 import iti.kukumo.core.plan.DefaultPlanSerializer;
@@ -18,7 +20,9 @@ import iti.kukumo.util.ThrowableFunction;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,39 +40,52 @@ import static iti.kukumo.api.KukumoConfiguration.*;
 public class Kukumo {
 
     public static final Logger LOGGER = KukumoLogger.forClass(Kukumo.class);
+    private static Kukumo instance;
 
-    private static final ExtensionManager extensionManager =
-            new ExtensionManager(Thread.currentThread().getContextClassLoader());
-
-    private static ResourceLoader resourceLoader;
-    private static EventDispatcher eventDispatcher;
-    private static final PlanSerializer planSerializer = new DefaultPlanSerializer();
-
-
-    static {
-        KukumoLogger.configure(KukumoConfiguration.defaultConfiguration());
-        LOGGER.info("{logo}",KukumoLogger.logo());
+    public static Kukumo instance() {
+        if (instance == null) {
+            instance = new Kukumo();
+        }
+        return instance;
     }
 
 
+    private final ExtensionManager extensionManager = new ExtensionManager();
+    private final PlanSerializer planSerializer = new DefaultPlanSerializer();
+    private final ResourceLoader resourceLoader = new ResourceLoader();
+    private final EventDispatcher eventDispatcher = new EventDispatcher();
+
+
+
+    private Kukumo() {
+        KukumoLogger.configure(KukumoConfiguration.defaultConfiguration());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("{logo}",KukumoLogger.logo());
+        }
+        extensionManager.getExtensions(EventObserver.class).forEach(eventDispatcher::addObserver);
+    }
+
+
+
     /**
-     * Enable / disable Ansi characters in logs according the given configuration
+     * Configure the logger
      * @param configuration
      */
-    public static void configureLogger(Configuration configuration) {
+    public void configureLogger(Configuration configuration) {
         KukumoLogger.configure(configuration);
     }
 
 
 
+
     /**
-     * Attempt to create a iti.kukumo.test.gherkin.plan using the resource type and the feature
+     * Attempt to create a plan using the resource type and the feature
      * path defined in then received configuration.
      * @param configuration
-     * @return A new iti.kukumo.test.gherkin.plan ready to be executed
-     * @throws KukumoException if the iti.kukumo.test.gherkin.plan couldn't be created
+     * @return A new plan ready to be executed
+     * @throws KukumoException if the plan couldn't be created
      */
-    public static PlanNode createPlanFromConfiguration(Configuration configuration) {
+    public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
         LOGGER.info("{important}","Creating the Test Plan...");
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES,String.class);
@@ -87,26 +104,18 @@ public class Kukumo {
         if (plans.isEmpty()) {
             throw new KukumoException("No test plans created");
         }
-        return mergePlans(plans);
+        PlanNode plan = mergePlans(plans);
+        publishEvent(Event.PLAN_CREATED, plan);
+        return plan;
     }
 
 
 
-    private static PlanNode mergePlans(List<PlanNode> plans) {
-        if (plans.isEmpty()) {
-            return null;
-        }
-        if (plans.size() == 1) {
-            return plans.get(0);
-        }
-        PlanNode root = new DefaultPlanNode<>("root");
-        plans.forEach(root::addChild);
-        return root;
-    }
-
-
-
-    public static Optional<PlanNode> createPlanForResourceType(String resourceTypeName, List<String> discoveryPaths, Configuration configuration) {
+    private Optional<PlanNode> createPlanForResourceType(
+        String resourceTypeName,
+        List<String> discoveryPaths,
+        Configuration configuration
+    ) {
         Optional<ResourceType<?>> resourceType = getResourceTypeByName(resourceTypeName);
         if (!resourceType.isPresent()) {
             LOGGER.warn("{warn} {resourceType} {warn}","Resource type",resourceTypeName,"is not provided by any contributor");
@@ -129,94 +138,106 @@ public class Kukumo {
 
 
 
+    private PlanNode mergePlans(List<PlanNode> plans) {
+        if (plans.isEmpty()) {
+            return null;
+        }
+        if (plans.size() == 1) {
+            return plans.get(0);
+        }
+        DefaultPlanNode root = new DefaultPlanNode(NodeType.AGGREGATOR);
+        plans.forEach(root::addChild);
+        return root;
+    }
 
 
 
-    public static Optional<Planner> getPlannerFor(ResourceType<?> resourceType) {
+    private Optional<Planner> getPlannerFor(ResourceType<?> resourceType) {
         Predicate<Planner> filter = planner->planner.acceptResourceType(resourceType);
         return extensionManager.getExtensionThatSatisfy(Planner.class, filter);
     }
 
 
 
+    /**
+     * @return A list of all available resource types provided by contributors
+     */
     @SuppressWarnings({ "rawtypes" })
-    public static List<ResourceType<?>> availableResourceTypes() {
+    public List<ResourceType<?>> availableResourceTypes() {
         List<ResourceType> resourceTypes = extensionManager.getExtensions(ResourceType.class);
         return resourceTypes.stream().map(x->(ResourceType<?>)x).collect(Collectors.toList());
     }
 
 
-    public static Optional<ResourceType<?>> getResourceTypeByName(String name) {
+
+    public Optional<ResourceType<?>> getResourceTypeByName(String name) {
         return availableResourceTypes().stream().filter(
                 resourceType -> resourceType.extensionMetadata().name().equals(name)
         ).findAny();
     }
 
 
-    public static List<DataTypeContributor> getSpecificDataTypeContributors(List<String> modules) {
+
+    public List<DataTypeContributor> getSpecificDataTypeContributors(List<String> modules) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager.getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition);
     }
 
 
-    public static List<DataTypeContributor> getAllDataTypeContributors() {
+    public List<DataTypeContributor> getAllDataTypeContributors() {
         return extensionManager.getExtensions(DataTypeContributor.class);
     }
 
 
-    public static List<StepContributor> loadSpecificStepContributors(List<String> modules, Configuration configuration) {
+    public List<StepContributor> loadSpecificStepContributors(List<String> modules, Configuration configuration) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         List<StepContributor> stepContributors = extensionManager.getExtensionsThatSatisfyMetadata(StepContributor.class,condition);
         stepContributors.forEach(c->configure(c,configuration));
         return stepContributors;
     }
 
-    public static List<StepContributor> loadAllStepContributors(Configuration configuration) {
+    public List<StepContributor> loadAllStepContributors(Configuration configuration) {
         List<StepContributor> stepContributors = extensionManager.getExtensions(StepContributor.class);
         stepContributors.forEach(c->configure(c,configuration));
         return stepContributors;
     }
 
-    public static List<Extension> getAllStepContributorMetadata() {
+    public List<Extension> getAllStepContributorMetadata() {
         return extensionManager.getExtensionMetadata(StepContributor.class);
     }
 
 
-    public static ResourceLoader getResourceLoader() {
-        if (resourceLoader == null) {
-            resourceLoader = new ResourceLoader();
-        }
+    public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
 
 
 
-    public static TagFilter getTagFilter(String tagExpression) {
+    public TagFilter getTagFilter(String tagExpression) {
         return new TagFilter(tagExpression);
     }
 
-    public static BackendFactory getBackendFactory() {
+    public BackendFactory getBackendFactory() {
         return nonOptional(extensionManager.getExtension(BackendFactory.class),"Cannot get an instance of BackendFactory");
     }
 
-    public static PlanSerializer getPlanSerializer() {
+    public PlanSerializer getPlanSerializer() {
         return planSerializer;
     }
 
-    public static ExtensionManager getExtensionManager() {
+    public ExtensionManager getExtensionManager() {
         return extensionManager;
     }
 
-    private static <T> T nonOptional(Optional<T> optional, String errorMessage, Object... messageArgs) {
+    private <T> T nonOptional(Optional<T> optional, String errorMessage, Object... messageArgs) {
         return optional.orElseThrow(()->new KukumoException(errorMessage,messageArgs));
     }
 
 
-    private Kukumo() { /* avoid instantiation */ }
 
 
     @SuppressWarnings("unchecked")
-    public static <T> T configure( T contributor, Configuration configuration) {
+    public <T> T configure( T contributor, Configuration configuration) {
         for (Configurator<T> configurator : extensionManager.getExtensions(Configurator.class)) {
             if (configurator.accepts(contributor)) {
                 configurator.configure(contributor, configuration);
@@ -226,40 +247,36 @@ public class Kukumo {
     }
 
 
-
-    private static EventDispatcher getEventDispatcher() {
-        if (eventDispatcher == null) {
-            eventDispatcher = new EventDispatcher();
-            extensionManager.getExtensions(EventObserver.class).forEach(eventDispatcher::addObserver);
-        }
+    public EventDispatcher getEventDispatcher() {
         return eventDispatcher;
     }
 
 
-    public static void configureEventObservers(Configuration configuration) {
+    public void configureEventObservers(Configuration configuration) {
         getEventDispatcher().observers().forEach(observer -> configure(observer,configuration));
     }
 
-    public static void addEventDispatcherObserver(EventObserver observer) {
+    public void addEventDispatcherObserver(EventObserver observer) {
         getEventDispatcher().addObserver(observer);
     }
 
-    public static void removeEventDispatcherObserver(EventObserver observer) {
+    public void removeEventDispatcherObserver(EventObserver observer) {
         getEventDispatcher().removeObserver(observer);
     }
 
 
-    public static <T> void publishEvent(String eventType, T data) {
+    public <T> void publishEvent(String eventType, T data) {
         getEventDispatcher().publishEvent(eventType, data);
     }
 
 
 
-    public static PlanNode executePlan(PlanNode plan, Configuration configuration)
+    public PlanNode executePlan(PlanNode plan, Configuration configuration)
     throws IOException {
         PlanNode result = new PlanRunner(plan, configuration).run();
+        writeOutputFile(plan,configuration);
         if (configuration.get(KukumoConfiguration.REPORT_GENERATION,Boolean.class).orElse(true)) {
-            Kukumo.report(configuration);
+            generateReports(configuration);
         }
         return result;
     }
@@ -267,7 +284,26 @@ public class Kukumo {
 
 
 
-    public static void report(Configuration configuration) throws IOException {
+
+    public void writeOutputFile(PlanNode plan, Configuration configuration) {
+        Optional<String> outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class);
+        if (outputPath.isPresent()) {
+            try {
+                Path path = Paths.get(outputPath.get()).toAbsolutePath();
+                Files.createDirectories(path.getParent());
+                try(Writer writer = new FileWriter(outputPath.get())) {
+                    getPlanSerializer().write(writer, plan);
+                    LOGGER.info("Generated result output file {uri}",path);
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error writing output file {} : {}", outputPath.get(), e.getMessage(), e);
+            }
+        }
+    }
+
+
+
+    public void generateReports(Configuration configuration)  {
         List<Reporter> reporters = extensionManager.getExtensions(Reporter.class);
         if (reporters.isEmpty()) {
             return;
@@ -292,6 +328,8 @@ public class Kukumo {
             .filter(File::isFile)
             .map(ThrowableFunction.unchecked(deserializer::read))
             .toArray(PlanNodeDescriptor[]::new);
+        } catch (IOException e1) {
+            throw new KukumoException("Error searching source file/folder", e1);
         }
         PlanNodeDescriptor rootNode = PlanNodeDescriptor.group(plans);
         for (Reporter reporter : reporters) {

@@ -15,7 +15,7 @@ public abstract class AbstractAssertProvider {
     public static final String MATCHERS_RESOURCE = "iti_kukumo_core-matchers";
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
+    protected static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
 
     private final Map<Locale,ResourceBundle> bundles = new HashMap<>();
     private final Map<Locale,Map<String,Pattern>> translatedExpressions = new HashMap<>();
@@ -27,7 +27,7 @@ public abstract class AbstractAssertProvider {
 
     protected ResourceBundle bundle(Locale locale) {
         return bundles.computeIfAbsent(locale,
-                bundleLocale -> Kukumo.getResourceLoader().resourceBundle(MATCHERS_RESOURCE, bundleLocale));
+                bundleLocale -> resourceLoader.resourceBundle(MATCHERS_RESOURCE, bundleLocale));
     }
 
 

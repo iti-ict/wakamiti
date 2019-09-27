@@ -28,16 +28,14 @@ import java.util.stream.Collectors;
  */
 public class PlanNodeDescriptor {
 
-     
-    private String nodeType;
+
+    private NodeType nodeType;
     private String id;
     private String name;
     private String keyword;
     private String language;
     private String source;
     private String displayName;
-    private boolean testCase;
-    private boolean step;
     private List<String> description;
     private List<String> tags;
     private Map<String,String> properties;
@@ -54,7 +52,7 @@ public class PlanNodeDescriptor {
     private List<PlanNodeDescriptor> children;
 
 
-    PlanNodeDescriptor(PlanNode node) {
+    public PlanNodeDescriptor(PlanNode node) {
         this.nodeType = node.nodeType();
         this.id = node.id();
         this.name = node.name();
@@ -62,28 +60,22 @@ public class PlanNodeDescriptor {
         this.language = node.language();
         this.source = node.source();
         this.displayName = node.displayName();
-        this.testCase = node.isTestCase();
-        this.step = node.isStep();
         this.description = (node.description() == null ? null : new ArrayList<>(node.description()));
         this.tags = (node.tags() == null ? null : new ArrayList<>(node.tags()));
         this.properties = (node.properties() == null? null : new LinkedHashMap<>(node.properties()));
-        this.startInstant = node.computeStartInstant().map(this::instantToString).orElse(null);
-        this.finishInstant = node.computeFinishInstant().map(this::instantToString).orElse(null);
-        this.duration = node.computeDuration().map(Duration::toMillis).orElse(null);
-        this.result = node.computeResult().orElse(null);
-        if (node instanceof PlanStep) {
-            PlanStep step = (PlanStep) node;
-            this.document = step.getDocument().map(Document::getContent).orElse(null);
-            this.documentType = step.getDocument().map(Document::getContentType).orElse(null);
-            this.dataTable = step.getDataTable().map(DataTable::getValues).orElse(null);
-            this.errorMessage = step.getError().map(Throwable::getLocalizedMessage).orElse(null);
-            this.errorTrace = step.getError().map(this::errorTrace).orElse(null);
-        }
+        this.startInstant = node.startInstant().map(this::instantToString).orElse(null);
+        this.finishInstant = node.finishInstant().map(this::instantToString).orElse(null);
+        this.duration = node.duration().map(Duration::toMillis).orElse(null);
+        this.result = node.result().orElse(null);
+        this.document = node.document().map(Document::getContent).orElse(null);
+        this.documentType = node.document().map(Document::getContentType).orElse(null);
+        this.dataTable = node.dataTable().map(DataTable::getValues).orElse(null);
+        this.errorMessage = node.errors().findFirst().map(Throwable::getLocalizedMessage).orElse(null);
+        this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
         if (node.hasChildren()) {
             this.children = node.children().map(PlanNodeDescriptor::new).collect(Collectors.toList());
             this.testCaseResults = countTestCases(node);
         }
-
     }
 
 
@@ -98,10 +90,10 @@ public class PlanNodeDescriptor {
         error.printStackTrace(new PrintWriter(errorWriter));
         return errorWriter.toString();
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Creates a new node descriptor as a parent of the specified nodes
      * @param nodes The nodes to be grouped
@@ -125,12 +117,12 @@ public class PlanNodeDescriptor {
         });
         return root;
     }
-    
-      
+
+
     private static  Map<Result,Long> countTestCases(PlanNode node) {
         LinkedHashMap<Result,Long> results = new LinkedHashMap<>();
-        if (node.isTestCase()) {
-            node.computeResult().ifPresent(testCaseResult -> results.put(testCaseResult, 1L));
+        if (node.nodeType() == NodeType.TEST_CASE) {
+            node.result().ifPresent(testCaseResult -> results.put(testCaseResult, 1L));
         } else if (node.hasChildren()){
             node.children().map(PlanNodeDescriptor::countTestCases).filter(Objects::nonNull).flatMap(map->map.entrySet().stream())
             .forEach(entry ->{
@@ -141,17 +133,17 @@ public class PlanNodeDescriptor {
         return results;
     }
 
-    
-    private static String childLocalDateTime(PlanNodeDescriptor node, 
+
+    private static String childLocalDateTime(PlanNodeDescriptor node,
             Function<PlanNodeDescriptor,String> method, BinaryOperator<LocalDateTime> reductor
     ) {
         return node.children.stream().map(method).filter(Objects::nonNull).map(LocalDateTime::parse).reduce(reductor)
             .map(LocalDateTime::toString).orElse(null);
     }
-    
+
     private static <T extends Comparable<T>> T maxChild (PlanNodeDescriptor node, Function<PlanNodeDescriptor,T> mapper) {
         return node.children.stream().map(mapper).filter(Objects::nonNull).max(Comparator.naturalOrder()).orElse(null);
     }
-    
- 
+
+
 }

@@ -1,12 +1,5 @@
 package iti.kukumo.core.backend;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanStep;
-import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -14,6 +7,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
 
 public class ExpressionMatcher {
 
@@ -34,7 +35,7 @@ public class ExpressionMatcher {
         String translatedDefinition,
         KukumoDataTypeRegistry typeRegistry,
         Locale locale,
-        PlanStep modelStep
+        PlanNode modelStep
     ) {
         ExpressionMatcher matcher = new ExpressionMatcher(translatedDefinition,typeRegistry,locale);
         String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);

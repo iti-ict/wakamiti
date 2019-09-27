@@ -1,22 +1,37 @@
 package iti.kukumo.core.backend;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.*;
+import iti.kukumo.api.Backend;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.KukumoSkippedException;
 import iti.kukumo.api.event.Event;
-import iti.kukumo.api.plan.PlanStep;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeExecution;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.util.LocaleLoader;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.StringDistance;
 import iti.kukumo.util.ThrowableRunnable;
-import org.slf4j.Logger;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class DefaultBackend implements Backend {
 
@@ -24,6 +39,8 @@ public class DefaultBackend implements Backend {
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
+
+
 
     private final Configuration configuration;
     private final KukumoDataTypeRegistry typeRegistry;
@@ -50,13 +67,18 @@ public class DefaultBackend implements Backend {
 
 
     @Override
-    public void runStep(PlanStep modelStep) {
-        if (modelStep.isVoid()) {
-            Instant now = clock.instant();
-            modelStep.markStarted(now);
-            performRunVoidStep(modelStep,now);
-        } else {
-            modelStep.markStarted(clock.instant());
+    public void runStep(PlanNode modelStep) {
+        Instant now = clock.instant();
+
+        if (modelStep.nodeType() == NodeType.VIRTUAL_STEP) {
+            // virtual steps are not executed, marked as passed directly
+            PlanNodeExecution executionData = modelStep.prepareExecution();
+            executionData.markStarted(now);
+            executionData.markPassed(now);
+
+        } else if (modelStep.nodeType() == NodeType.STEP) {
+
+            modelStep.prepareExecution().markStarted(now);
             try {
                 Locale stepLocale = LocaleLoader.forLanguage(modelStep.language());
                 Locale dataLocale = dataLocale(modelStep, stepLocale);
@@ -70,20 +92,25 @@ public class DefaultBackend implements Backend {
             } catch (Exception e) {
                 fillErrorState(modelStep, e);
             }
+
+        } else {
+            throw new IllegalArgumentException("Plan node of type "+modelStep.nodeType()+" cannot be executed");
         }
     }
 
 
     @Override
-    public void skipStep(PlanStep modelStep) {
+    public void skipStep(PlanNode modelStep) {
         Instant now = clock.instant();
-        modelStep.markStarted(now);
-        modelStep.markFailure(
+        PlanNodeExecution execution = modelStep.prepareExecution();
+        execution.markStarted(now);
+        execution.markFailure(
             now,
             Result.SKIPPED,
             null
         );
     }
+
 
     @Override
     public KukumoDataTypeRegistry getTypeRegistry() {
@@ -115,32 +142,29 @@ public class DefaultBackend implements Backend {
             if (e.getCause() != null && e.getCause() != e) {
                 e = (Exception) e.getCause();
             }
-            LOGGER.error("Error running "+type+" operation: {}", e.getMessage());
+            LOGGER.error("Error running {} operation: {}", type, e.getMessage());
             LOGGER.debug(e.getMessage(),e);
         }
     }
 
 
 
-    protected void performRunStep(PlanStep modelStep, RunnableStep runnableStep, Map<String,Object> invokingArguments) {
+    protected void performRunStep(PlanNode modelStep, RunnableStep runnableStep, Map<String,Object> invokingArguments) {
         try {
-            Kukumo.publishEvent(Event.BEFORE_RUN_BACKEND_STEP, this);
+            Kukumo.instance().publishEvent(Event.BEFORE_RUN_BACKEND_STEP, this);
             runnableStep.run(invokingArguments);
-            modelStep.markPassed(clock.instant());
+            modelStep.prepareExecution().markPassed(clock.instant());
         } catch (Throwable e) {
             fillErrorState(modelStep, e);
         } finally {
-            Kukumo.publishEvent(Event.AFTER_RUN_BACKEND_STEP, this);
+            Kukumo.instance().publishEvent(Event.AFTER_RUN_BACKEND_STEP, this);
         }
     }
 
-    protected void performRunVoidStep(PlanStep voidStep, Instant fixedInstant) {
-        voidStep.markPassed(fixedInstant);
-    }
 
 
-    protected void fillErrorState(PlanStep modelStep, Throwable e) {
-        modelStep.markFailure(clock.instant(), resultFromThrowable(e), e);
+    protected void fillErrorState(PlanNode modelStep, Throwable e) {
+        modelStep.prepareExecution().markFailure(clock.instant(), resultFromThrowable(e), e);
     }
 
 
@@ -162,7 +186,7 @@ public class DefaultBackend implements Backend {
 
 
 
-    protected Pair<RunnableStep,Matcher> locateRunnableStep(PlanStep modelStep, Locale stepLocale, Locale dataLocale) {
+    protected Pair<RunnableStep,Matcher> locateRunnableStep(PlanNode modelStep, Locale stepLocale, Locale dataLocale) {
 
         List<Pair<RunnableStep,Matcher>> locatedSteps = runnableSteps.stream()
                 .map(Pair.computeValue(step->step.matcher(modelStep,stepLocale,dataLocale,typeRegistry)))
@@ -191,7 +215,7 @@ public class DefaultBackend implements Backend {
 
 
 
-    protected Map<String,Object> buildInvokingArguments(PlanStep modelStep, RunnableStep runnableStep, Matcher stepMatcher, Locale locale) {
+    protected Map<String,Object> buildInvokingArguments(PlanNode modelStep, RunnableStep runnableStep, Matcher stepMatcher, Locale locale) {
         Map<String,Object> invokingArguments = new HashMap<>();
         for (Pair<String,String> definedArgument : runnableStep.getArguments()) {
             String argName = definedArgument.key();
@@ -199,12 +223,12 @@ public class DefaultBackend implements Backend {
             String argValue = null;
 
             if (argType.equals(DOCUMENT_ARG)) {
-                invokingArguments.put(DOCUMENT_ARG, modelStep.getDocument().orElseThrow(
+                invokingArguments.put(DOCUMENT_ARG, modelStep.document().orElseThrow(
                     ()->new KukumoException("[{}] Incomplete step '{} {}': a document was expected",
                             modelStep.source(), modelStep.keyword(), modelStep.name())
                 ));
             } else if (argType.equals(DATATABLE_ARG)) {
-                invokingArguments.put(DATATABLE_ARG, modelStep.getDataTable().orElseThrow(
+                invokingArguments.put(DATATABLE_ARG, modelStep.dataTable().orElseThrow(
                   ()->new KukumoException("[{}] Incomplete step '{} {}': a data table was expected",
                         modelStep.source(), modelStep.keyword(), modelStep.name())
                 ));
@@ -258,7 +282,7 @@ public class DefaultBackend implements Backend {
 
 
 
-    protected Locale dataLocale(PlanStep modelStep, Locale fallbackLocale) {
+    protected Locale dataLocale(PlanNode modelStep, Locale fallbackLocale) {
         String dataFormatLocale = modelStep.properties().getOrDefault(
                 KukumoConfiguration.DATA_FORMAT_LANGUAGE,
                 configuration.get(KukumoConfiguration.DATA_FORMAT_LANGUAGE,String.class).orElse(null)

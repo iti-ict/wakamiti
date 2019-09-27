@@ -1,5 +1,16 @@
 package iti.kukumo.gherkin;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -7,17 +18,9 @@ import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeTypes;
 import iti.kukumo.core.plan.DefaultPlanNode;
-import iti.kukumo.core.plan.DefaultPlanStep;
-import iti.kukumo.core.plan.DefaultPlanVoidStep;
-import org.slf4j.Logger;
-
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 
@@ -39,7 +42,7 @@ public class GherkinPlanRedefiner {
 
 
 
-    public void arrangeRedefinitions(PlanNode plan) {
+    public void arrangeRedefinitions(DefaultPlanNode plan) {
         removeScenariosFromScenarioOutlines(plan);
         arrangeScenarioRedefinitions(plan);
         arrangeScenarioOutlineRedefinitions(plan);
@@ -49,13 +52,13 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected void arrangeScenarioRedefinitions(PlanNode plan) {
+    protected void arrangeScenarioRedefinitions(DefaultPlanNode plan) {
 
-        Map<String,DefaultPlanNode<?>> definitionScenarios = collectDefinitionScenarios(plan);
-        Map<String, DefaultPlanNode<?>> implementationScenarios = collectImplementationScenarios(plan);
+        Map<String,DefaultPlanNode> definitionScenarios = collectDefinitionScenarios(plan);
+        Map<String,DefaultPlanNode> implementationScenarios = collectImplementationScenarios(plan);
 
-        for (PlanNode definitionScenario : definitionScenarios.values()) {
-            PlanNode implementationScenario = implementationScenarios.get(definitionScenario.id());
+        for (DefaultPlanNode definitionScenario : definitionScenarios.values()) {
+            DefaultPlanNode implementationScenario = implementationScenarios.get(definitionScenario.id());
             if (implementationScenario == null) {
                 throw new KukumoException("Problem in {} '{}'\n\tNo implementation scenario with id '{}'",
                         definitionScenario.source(), definitionScenario.displayName(), definitionScenario.id());
@@ -67,30 +70,30 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected void arrangeScenarioOutlineRedefinitions(PlanNode plan) {
+    protected void arrangeScenarioOutlineRedefinitions(DefaultPlanNode plan) {
 
-        Map<String,DefaultPlanNode<?>> defScenarioOutlines = collectDefinitionScenarioOutlines(plan);
-        Map<String, DefaultPlanNode<?>> implScenarioOutlines = collectImplementationScenarioOutlines(plan);
+        Map<String,DefaultPlanNode> defScenarioOutlines = collectDefinitionScenarioOutlines(plan);
+        Map<String, DefaultPlanNode> implScenarioOutlines = collectImplementationScenarioOutlines(plan);
 
-        for (DefaultPlanNode<?> defScenarioOutline : defScenarioOutlines.values()) {
+        for (DefaultPlanNode defScenarioOutline : defScenarioOutlines.values()) {
 
-            DefaultPlanNode<?> implScenarioOutline = implScenarioOutlines.get(defScenarioOutline.id());
+            DefaultPlanNode implScenarioOutline = implScenarioOutlines.get(defScenarioOutline.id());
             if (implScenarioOutline == null) {
                 throw new KukumoException(
                         "Cannot redefine scenario outline <{}>::'{}'\n\tNo implementation scenario outline with id '{}'",
                         defScenarioOutline.source(), defScenarioOutline.displayName(), defScenarioOutline.id());
             }
-            DefaultPlanNode<?> implFeature = findParentFeature(plan, implScenarioOutline)
+            DefaultPlanNode implFeature = findParentFeature(plan, implScenarioOutline)
                     .orElseThrow(IllegalStateException::new);  // never should throw this exception
 
             Examples defExamples = ((ScenarioOutline)defScenarioOutline.getGherkinModel()).getExamples().get(0);
 
-            List<DefaultPlanStep> implBackgroundSteps = factory.createBackgroundSteps(
+            List<DefaultPlanNode> implBackgroundSteps = factory.createBackgroundSteps(
                     (Feature) implFeature.getGherkinModel(),
                     implFeature.source()
             );
 
-            List<DefaultPlanNode<?>> implScenarios = factory.createScenariosFromExamples(
+            List<DefaultPlanNode> implScenarios = factory.createScenariosFromExamples(
                     (ScenarioOutline)implScenarioOutline.getGherkinModel(),
                     defExamples,
                     implScenarioOutline,
@@ -100,7 +103,9 @@ public class GherkinPlanRedefiner {
             );
 
             for (int i=0;i<defScenarioOutline.numChildren();i++) {
-                arrangeScenarioImplIntoDefinition(defScenarioOutline.child(i), implScenarios.get(i));
+                arrangeScenarioImplIntoDefinition(
+                    (DefaultPlanNode) defScenarioOutline.child(i), implScenarios.get(i))
+                ;
             }
 
         }
@@ -110,9 +115,9 @@ public class GherkinPlanRedefiner {
 
 
     private void removeScenariosFromScenarioOutlines(PlanNode plan) {
-        for (PlanNode scenarioOutline : collectNodesById(
-                PlanNodeTypes.FEATURE,
-                PlanNodeTypes.SCENARIO_OUTLINE,
+        for (DefaultPlanNode scenarioOutline : collectNodesById(
+                "feature",
+                "scenarioOutline",
                 plan.children().filter(this::hasImplementationTag),
                 new HashMap<>())
                 .values()) {
@@ -123,69 +128,70 @@ public class GherkinPlanRedefiner {
 
 
 
-    private Map<String, DefaultPlanNode<?>> collectDefinitionScenarios(PlanNode plan) {
+    private Map<String, DefaultPlanNode> collectDefinitionScenarios(PlanNode plan) {
         return collectNodesById(
-            PlanNodeTypes.FEATURE,
-            PlanNodeTypes.SCENARIO,
+            "feature",
+            "scenario",
             plan.children().filter(this::hasDefinitionTag),
             new HashMap<>());
     }
 
 
-    private Map<String, DefaultPlanNode<?>> collectImplementationScenarios(PlanNode plan) {
+    private Map<String, DefaultPlanNode> collectImplementationScenarios(PlanNode plan) {
         return collectNodesById(
-            PlanNodeTypes.FEATURE,
-            PlanNodeTypes.SCENARIO,
+            "feature",
+            "scenario",
             plan.children().filter(this::hasImplementationTag),
             new HashMap<>());
     }
 
 
 
-    private Map<String, DefaultPlanNode<?>> collectDefinitionScenarioOutlines(PlanNode plan) {
+    private Map<String, DefaultPlanNode> collectDefinitionScenarioOutlines(PlanNode plan) {
         return collectNodesById(
-            PlanNodeTypes.FEATURE,
-            PlanNodeTypes.SCENARIO_OUTLINE,
+            "feature",
+            "scenarioOutline",
             plan.children().filter(this::hasDefinitionTag),
             new HashMap<>());
     }
 
 
-    private Map<String, DefaultPlanNode<?>> collectImplementationScenarioOutlines(PlanNode plan) {
+    private Map<String, DefaultPlanNode> collectImplementationScenarioOutlines(PlanNode plan) {
         return collectNodesById(
-            PlanNodeTypes.FEATURE,
-            PlanNodeTypes.SCENARIO_OUTLINE,
+            "feature",
+            "scenarioOutline",
             plan.children().filter(this::hasImplementationTag),
             new HashMap<>());
     }
 
 
-    private Optional<DefaultPlanNode<?>> findParentFeature(PlanNode plan, PlanNode child) {
+    private Optional<DefaultPlanNode> findParentFeature(PlanNode plan, PlanNode child) {
         return plan.children()
+               .map(DefaultPlanNode.class::cast)
             .filter(feature -> feature.containsChild(child))
             .findFirst()
-            .map(DefaultPlanNode.class::cast);
+            ;
     }
 
 
 
-    protected void arrangeScenarioImplIntoDefinition(PlanNode defScenario, PlanNode implScenario) {
+    protected void arrangeScenarioImplIntoDefinition(DefaultPlanNode defScenario, DefaultPlanNode implScenario) {
 
-            List<DefaultPlanStep> nonBackgroundDefSteps =
-                    stepList(defScenario, not(DefaultPlanStep::isBackgroundStep));
-            List<DefaultPlanStep> backgroundDefSteps =
-                    stepList(defScenario, DefaultPlanStep::isBackgroundStep);
-            List<DefaultPlanStep> nonBackgroundImplSteps =
-                    stepList(implScenario, not(DefaultPlanStep::isBackgroundStep));
-            List<DefaultPlanStep> backgroundImplSteps =
-                    stepList(implScenario, DefaultPlanStep::isBackgroundStep);
+            List<DefaultPlanNode> nonBackgroundDefSteps =
+                    stepList(defScenario, not(DefaultPlanNode::isBackgroundStep));
+            List<DefaultPlanNode> backgroundDefSteps =
+                    stepList(defScenario, DefaultPlanNode::isBackgroundStep);
+            List<DefaultPlanNode> nonBackgroundImplSteps =
+                    stepList(implScenario, not(DefaultPlanNode::isBackgroundStep));
+            List<DefaultPlanNode> backgroundImplSteps =
+                    stepList(implScenario, DefaultPlanNode::isBackgroundStep);
 
             defScenario.clearChildren();
 
             if (!backgroundImplSteps.isEmpty()) {
-                DefaultPlanNode<?> virtualBackgroundNode = new DefaultPlanNode<>(PlanNodeTypes.STEP)
-                        .setKeyword("*")
-                        .setName("<background>");
+                DefaultPlanNode virtualBackgroundNode = new DefaultPlanNode(NodeType.STEP_AGGREGATOR)
+                        .setName("<background>")
+                        .setDisplayNamePattern("{name}");
                 backgroundImplSteps.forEach(virtualBackgroundNode::addChild);
                 defScenario.addChild(virtualBackgroundNode);
             }
@@ -194,7 +200,7 @@ public class GherkinPlanRedefiner {
             int[] stepMap = computeStepMap(nonBackgroundDefSteps.size(), implScenario);
             int visitedSteps = 0;
             for (int i = 0; i<nonBackgroundDefSteps.size();i++) {
-                DefaultPlanNode<?> redefinedChild = nonBackgroundDefSteps.get(i).copyAsNode();
+                DefaultPlanNode redefinedChild = nonBackgroundDefSteps.get(i).copy();
                 for (int j = visitedSteps; j < visitedSteps + stepMap[i]; j++) {
                     // avoid getting and error if the map expects more implementation steps than actually exist
                     if (nonBackgroundImplSteps.size() > j) {
@@ -205,14 +211,16 @@ public class GherkinPlanRedefiner {
                 defScenario.addChild(redefinedChild);
             }
             // if there are implementation steps not mapped, add them to the last step
+            DefaultPlanNode lastDefScenarioChild = (DefaultPlanNode) defScenario.child(defScenario.numChildren()-1);
             for (int i = visitedSteps; i < nonBackgroundImplSteps.size(); i++) {
-                defScenario.child(defScenario.numChildren()-1).addChild(nonBackgroundImplSteps.get(i));
+                lastDefScenarioChild.addChild(nonBackgroundImplSteps.get(i));
             }
 
-            // if there are definition steps without implementation, transform to void step
-            defScenario.children()
-                .filter(not(PlanNode::hasChildren))
-                .forEach(child -> defScenario.replaceChild(child, new DefaultPlanVoidStep(child)));
+            // change the node type of children
+            defScenario.children().forEach(child ->{
+                ((DefaultPlanNode)child).setNodeType( child.hasChildren() ? NodeType.STEP_AGGREGATOR : NodeType.VIRTUAL_STEP);
+            });
+
     }
 
 
@@ -221,14 +229,14 @@ public class GherkinPlanRedefiner {
 
 
 
-    private Map<String, DefaultPlanNode<?>> collectNodesById(
-            String parentNodeType,
-            String nodeType,
+    private Map<String, DefaultPlanNode> collectNodesById(
+            String parentGherkinType,
+            String gherkinType,
             Stream<PlanNode> nodes,
-            Map<String, DefaultPlanNode<?>> output
+            Map<String, DefaultPlanNode> output
    ) {
         for (PlanNode node : nodes.collect(Collectors.toList())) {
-            if (node.nodeType().equals(nodeType)) {
+            if (node.properties().get("gherkinType").equals(gherkinType)) {
                 if (node.id() == null) {
                     LOGGER.warn(
                             "Scenario <{}>::'{}' not having a unique id; it will be ignored",
@@ -240,10 +248,10 @@ public class GherkinPlanRedefiner {
                             node.id(), node.source(), node.displayName(), existing.source(), existing.displayName()
                     );
                 } else {
-                    output.put(node.id(), (DefaultPlanNode<?>) node);
+                    output.put(node.id(), (DefaultPlanNode) node);
                 }
-            } else if (node.nodeType().equals(parentNodeType) && node.hasChildren()) {
-                collectNodesById(parentNodeType, nodeType, node.children(), output);
+            } else if (node.properties().get("gherkinType").equals(parentGherkinType) && node.hasChildren()) {
+                collectNodesById(parentGherkinType, gherkinType, node.children(), output);
             }
         }
         return output;
@@ -252,10 +260,10 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected List<DefaultPlanStep> stepList(PlanNode node, Predicate<DefaultPlanStep> filter) {
+    protected List<DefaultPlanNode> stepList(PlanNode node, Predicate<DefaultPlanNode> filter) {
         return node.children()
-                .filter(DefaultPlanStep.class::isInstance)
-                .map(DefaultPlanStep.class::cast)
+                .filter(DefaultPlanNode.class::isInstance)
+                .map(DefaultPlanNode.class::cast)
                 .filter(filter)
                 .collect(Collectors.toList());
     }

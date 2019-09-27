@@ -19,7 +19,7 @@ import java.io.File;
 @Extension(provider="iti.kukumo",name="rest-text-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class TextHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
+    private static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
 
 
     @Override

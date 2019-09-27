@@ -1,15 +1,10 @@
 package iti.kukumo.test.gherkin;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.Resource;
-import iti.kukumo.api.extensions.Planner;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanSerializer;
-import iti.kukumo.gherkin.GherkinResourceType;
-import iti.kukumo.util.ResourceLoader;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.util.Properties;
+
 import org.json.JSONException;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -19,17 +14,15 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationException;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.gherkin.GherkinResourceType;
 
 public class TestPlanFactory {
-
-    private final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
-    private final PlanSerializer planSerializer = Kukumo.getPlanSerializer();
-
 
     private void assertFilePlan(String filename, int testCases) throws IOException, JSONException, ConfigurationException {
         String featureFilename = "src/test/resources/features/"+filename+".feature";
@@ -40,32 +33,32 @@ public class TestPlanFactory {
 
     private void assertFilePlan(String featureFilename, String resultFilename, String tagExpression, int testCases)
     throws IOException, JSONException, ConfigurationException {
-        List<Resource<?>> resources = resourceLoader.discoverResources(featureFilename, GherkinResourceType.INSTANCE);
-        assertPlan(resources, resultFilename, tagExpression, testCases);
+        assertPlan(featureFilename, resultFilename, tagExpression, testCases);
     }
 
 
     private void assertPathPlan(String featurePath, String resultFilename, String tagExpression, int testCases)
     throws IOException, JSONException, ConfigurationException {
-        List<Resource<?>> resources = resourceLoader.discoverResources(featurePath, GherkinResourceType.INSTANCE);
-        assertPlan(resources, resultFilename, tagExpression, testCases);
+        assertPlan(featurePath, resultFilename, tagExpression, testCases);
     }
 
-    
-    private void assertPlan(List<Resource<?>> gherkinDocuments, String resultFilename, String tagExpression, int testCases)
+
+    private void assertPlan(String path, String resultFilename, String tagExpression, int testCases)
     throws JSONException, IOException, ConfigurationException {
         Properties properties = new Properties();
+        properties.put(KukumoConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
+        properties.put(KukumoConfiguration.RESOURCE_PATH, path);
         if (tagExpression != null) {
             properties.put(KukumoConfiguration.TAG_FILTER, tagExpression);
         }
         Configuration configuration = KukumoConfiguration.defaultConfiguration().appendFromProperties(properties);
-        Planner planner = Kukumo.getPlannerFor(GherkinResourceType.INSTANCE).get();
-        Kukumo.configure(planner, configuration);
-        PlanNode testPlan = planner.createPlan(gherkinDocuments);
+        Kukumo kukumo = Kukumo.instance();
+        PlanNode testPlan = kukumo.createPlanFromConfiguration(configuration);
+        System.out.println(printPlan(testPlan,new StringBuilder(),0));
 
-        assertThat(testPlan.numTestCases()).isEqualTo(testCases);
-        String plan = planSerializer.serialize(testPlan);
-        String result = resourceLoader.readResourceAsString(resultFilename);
+        assertThat(testPlan.numDescendants(NodeType.TEST_CASE)).isEqualTo(testCases);
+        String plan = kukumo.getPlanSerializer().serialize(testPlan);
+        String result = kukumo.getResourceLoader().readResourceAsString(resultFilename);
         JSONComparator comparator = new DefaultComparator(JSONCompareMode.STRICT);
         JSONCompareResult comparison = JSONCompare.compareJSON(result, plan, comparator);
         if (comparison.failed()) {
@@ -102,6 +95,15 @@ public class TestPlanFactory {
         assertPathPlan("src/test/resources/features/redefining","src/test/resources/features/redefining/redefining_plan.json", null,4);
     }
 
+
+    private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
+        for (int i=0;i<level;i++) {
+            string.append("--");
+        }
+        string.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName()).append("\n");
+        node.children().forEach(child -> printPlan(child,string,level+1));
+        return string;
+    }
 
 }
 

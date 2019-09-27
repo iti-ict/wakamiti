@@ -25,7 +25,7 @@ import iti.kukumo.util.ResourceLoader;
 @Extension(provider="iti.kukumo",name="rest-json-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class JSONHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
+    private static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
 
 
     @Override

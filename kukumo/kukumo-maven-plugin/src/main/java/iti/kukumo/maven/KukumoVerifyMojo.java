@@ -47,17 +47,18 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
 
         Configuration configuration;
         try {
+            Kukumo kukumo = Kukumo.instance();
             // replace null properties for empty values
             for (String key : properties.keySet()) {
                 properties.putIfAbsent(key, "");
             }
 
             configuration = readConfiguration(configurationFiles, properties);
-            PlanNode plan = Kukumo.createPlanFromConfiguration(configuration);
+            PlanNode plan = kukumo.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 warn("Test Plan is empty!");
             } else {
-                Optional<Result> result = Kukumo.executePlan(plan, configuration).computeResult();
+                Optional<Result> result = kukumo.executePlan(plan, configuration).result();
                 if (result.isPresent()) {
                     if (result.get() == Result.PASSED) {
                     } else {

@@ -10,8 +10,8 @@ import iti.kukumo.api.extensions.Configurator;
  *         Created by ITI on 12/03/19
  */
 @Extension(
-    provider = "iti.kukumo", 
-    name="gherkin-configurator", 
+    provider = "iti.kukumo",
+    name="gherkin-configurator",
     extensionPoint = "iti.kukumo.api.extensions.Configurator"
 )
 public class GherkinPlannerConfigurator implements Configurator<GherkinPlanner> {

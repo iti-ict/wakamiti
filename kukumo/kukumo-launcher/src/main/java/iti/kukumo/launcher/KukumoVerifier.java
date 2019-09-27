@@ -23,13 +23,14 @@ public class KukumoVerifier {
 
     public void verify() {
     Configuration configuration;
+         Kukumo kukumo = Kukumo.instance();
          try {
              configuration = readConfiguration(arguments);
-             PlanNode plan = Kukumo.createPlanFromConfiguration(configuration);
+             PlanNode plan = kukumo.createPlanFromConfiguration(configuration);
              if (!plan.hasChildren()) {
                  KukumoLauncher.logger().warn("Test Plan is empty!");
              } else {
-                 Kukumo.executePlan(plan, configuration).computeResult();
+                 kukumo.executePlan(plan, configuration);
              }
          } catch (ConfigurationException e) {
              KukumoLauncher.logger().error("Error reading configuration: {}", e.getLocalizedMessage(), e);
@@ -42,7 +43,7 @@ public class KukumoVerifier {
 
 
 
-    private Configuration readConfiguration(Arguments arguments) throws ConfigurationException {
+    private Configuration readConfiguration(Arguments arguments) {
         Configuration argumentConfiguration = arguments.kukumoConfiguration();
         Configuration configuration = KukumoConfiguration.defaultConfiguration().append(argumentConfiguration);
         if (KukumoLauncher.logger().isDebugEnabled()) {

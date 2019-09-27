@@ -28,6 +28,7 @@ public class DefaultBackendFactory implements BackendFactory {
             "core-types",
             "assertion-types"
     ));
+    private static Kukumo kukumo = Kukumo.instance();
 
 
     private Clock clock = Clock.systemUTC();
@@ -68,7 +69,7 @@ public class DefaultBackendFactory implements BackendFactory {
         // each backend uses a new instance of each step contributor in order to ease parallelization
         List<String> restrictedModules = new ArrayList<>(configuration.getList(KukumoConfiguration.MODULES,String.class));
         List<StepContributor> stepContributors = resolveStepContributors(restrictedModules);
-        stepContributors.forEach(stepContributor -> Kukumo.configure(stepContributor,configuration));
+        stepContributors.forEach(stepContributor -> kukumo.configure(stepContributor,configuration));
         List<DataTypeContributor> dataTypeContributors = resolveDataTypeContributors(restrictedModules);
         KukumoDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
         List<RunnableStep> steps = loadSteps(stepContributors, typeRegistry);
@@ -84,11 +85,11 @@ public class DefaultBackendFactory implements BackendFactory {
 
         List<StepContributor> stepContributors = new ArrayList<>();
         if (restrictedModules.isEmpty()) {
-            stepContributors.addAll( Kukumo.loadAllStepContributors(configuration) );
+            stepContributors.addAll( kukumo.loadAllStepContributors(configuration) );
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            stepContributors.addAll( Kukumo.loadSpecificStepContributors(modules,configuration) );
+            stepContributors.addAll( kukumo.loadSpecificStepContributors(modules,configuration) );
         }
 
         List<String> nonRegisteredContributorClasses = configuration.getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,String.class);
@@ -105,11 +106,11 @@ public class DefaultBackendFactory implements BackendFactory {
 
     protected List<DataTypeContributor> resolveDataTypeContributors(List<String> restrictedModules) {
         if (restrictedModules.isEmpty()) {
-            return Kukumo.getAllDataTypeContributors();
+            return kukumo.getAllDataTypeContributors();
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            return Kukumo.getSpecificDataTypeContributors(modules);
+            return kukumo.getSpecificDataTypeContributors(modules);
         }
     }
 
@@ -123,7 +124,7 @@ public class DefaultBackendFactory implements BackendFactory {
                 KukumoConfiguration.MODULES, KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS
             );
         } else {
-            String availableStepContributors = Kukumo.getAllStepContributorMetadata().stream()
+            String availableStepContributors = kukumo.getAllStepContributorMetadata().stream()
                 .map(Extension::name)
                 .collect(Collectors.joining("\n\t"))
             ;
@@ -148,8 +149,8 @@ public class DefaultBackendFactory implements BackendFactory {
 
 
     private <A extends Annotation> List<ThrowableRunnable> loadMethods(
-        List<StepContributor> stepContributors, 
-        Class<A> annotation, 
+        List<StepContributor> stepContributors,
+        Class<A> annotation,
         Function<A,Integer> orderProvider
     ) {
         LinkedHashMap<ThrowableRunnable,A> runnables = new LinkedHashMap<>();
@@ -158,7 +159,7 @@ public class DefaultBackendFactory implements BackendFactory {
                 if (method.isAnnotationPresent(annotation)) {
                     runnables.put(
                         args -> method.invoke(stepContributor),
-                        method.getAnnotation(annotation)                         
+                        method.getAnnotation(annotation)
                     );
                 }
             }
@@ -212,7 +213,7 @@ public class DefaultBackendFactory implements BackendFactory {
             try {
                 Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass).getConstructor().newInstance();
                 if (newStepContributor instanceof StepContributor) {
-                    Kukumo.configure(newStepContributor,configuration);
+                    kukumo.configure(newStepContributor,configuration);
                     nonRegisteredContributors.add((StepContributor) newStepContributor);
                 } else {
                     LOGGER.warn("Class {} does not implement {}", nonRegisteredContributorClass, StepContributor.class);

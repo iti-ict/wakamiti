@@ -37,9 +37,10 @@ import java.util.stream.Stream;
 public class RestStepContributor implements StepContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
-    public static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
+    public static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
 
-    private Map<ContentType,ContentTypeHelper> contentTypeValidators = Kukumo.getExtensionManager()
+    private Map<ContentType,ContentTypeHelper> contentTypeValidators = Kukumo.instance()
+            .getExtensionManager()
             .getExtensions(ContentTypeHelper.class).stream()
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 

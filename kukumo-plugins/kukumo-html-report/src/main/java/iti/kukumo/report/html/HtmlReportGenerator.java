@@ -1,8 +1,59 @@
 package iti.kukumo.report.html;
 
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.h1;
+import static j2html.TagCreator.h2;
+import static j2html.TagCreator.head;
+import static j2html.TagCreator.html;
+import static j2html.TagCreator.li;
+import static j2html.TagCreator.meta;
+import static j2html.TagCreator.p;
+import static j2html.TagCreator.pre;
+import static j2html.TagCreator.rawHtml;
+import static j2html.TagCreator.script;
+import static j2html.TagCreator.span;
+import static j2html.TagCreator.style;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.thead;
+import static j2html.TagCreator.title;
+import static j2html.TagCreator.tr;
+import static j2html.TagCreator.ul;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.util.KukumoLogger;
@@ -10,20 +61,6 @@ import j2html.TagCreator;
 import j2html.tags.ContainerTag;
 import j2html.tags.DomContent;
 import j2html.tags.Tag;
-import org.slf4j.Logger;
-
-import java.io.*;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static j2html.TagCreator.*;
 
 /**
  * @author ITI
@@ -72,7 +109,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     public void setReportLocale(Locale reportLocale) {
-        this.resourceBundle = Kukumo.getResourceLoader().resourceBundle("messages", reportLocale);
+        this.resourceBundle = Kukumo.instance().getResourceLoader().resourceBundle("messages", reportLocale);
         this.formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL,FormatStyle.MEDIUM).withLocale(reportLocale);
     }
 
@@ -126,7 +163,7 @@ public class HtmlReportGenerator implements Reporter {
         String domIdDesc = domIDs.get(node)+"_desc";
         boolean expandable = (node.getChildren() != null || node.getDataTable() != null || node.getDocument() != null);
         boolean childrenExpanded = (node.getResult() != Result.PASSED);
-        boolean sortNextChildren = (sortChildren && node.isTestCase()) ? false : sortChildren;
+        boolean sortNextChildren = (sortChildren && (isTestCase(node))) ? false : sortChildren;
 
         return li(
             div(
@@ -157,9 +194,9 @@ public class HtmlReportGenerator implements Reporter {
             divErrorDetails(node),
             ul(each(sortByResult(sortNextChildren,emptyIfNull(node.getChildren())), child->generateNode(child,sortNextChildren)))
                 .withId(domIdChildren)
-                .withClass(node.isTestCase()?"testCase":"")
+                .withClass((isTestCase(node))?"testCase":"")
                 .withStyle("display: "+(childrenExpanded ? "block" : "none"))
-        ).withClass(node.isTestCase()?"testCase":"");
+        ).withClass((isTestCase(node))?"testCase":"");
     }
 
 
@@ -167,7 +204,7 @@ public class HtmlReportGenerator implements Reporter {
 
     private ContainerTag divStatistics(PlanNodeDescriptor node, boolean includeText) {
         List<Tag<?>> tags = new ArrayList<>();
-        if (containsTestCases(node) && !node.isTestCase()) {
+        if (containsTestCases(node) && !(isTestCase(node))) {
             List<Tag<?>> resultTags = new ArrayList<>();
             Stream.of(Result.values()).sorted(Comparator.reverseOrder()).forEach(result -> {
                 Long count = node.getTestCaseResults().get(result);
@@ -191,8 +228,8 @@ public class HtmlReportGenerator implements Reporter {
 
 
     private boolean containsTestCases(PlanNodeDescriptor node) {
-        if (node.isTestCase() || node.getChildren() == null) {
-            return node.isTestCase();
+        if ((isTestCase(node)) || node.getChildren() == null) {
+            return (isTestCase(node));
         } else {
             return node.getChildren().stream().map(this::containsTestCases).anyMatch(Boolean.TRUE::equals);
         }
@@ -415,4 +452,11 @@ public class HtmlReportGenerator implements Reporter {
         }
         return nodes.stream().sorted(Comparator.comparing(PlanNodeDescriptor::getResult).reversed()).collect(Collectors.toList());
     }
+
+
+
+    private boolean isTestCase(PlanNodeDescriptor node) {
+        return node.getNodeType() == NodeType.TEST_CASE;
+    }
+
 }

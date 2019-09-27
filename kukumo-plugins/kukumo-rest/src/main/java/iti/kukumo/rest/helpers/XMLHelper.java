@@ -28,7 +28,7 @@ import iti.kukumo.util.ResourceLoader;
 @Extension(provider="iti.kukumo",name="rest-xml-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class XMLHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.getResourceLoader();
+    private static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
 
     private static final DifferenceEvaluator looseDifferenceEvaluator = (Comparison comparison, ComparisonResult outcome) -> {
         // ignore when the test has more elements than the control

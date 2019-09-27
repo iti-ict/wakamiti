@@ -1,19 +1,21 @@
 package iti.kukumo.test.core.types;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.core.plan.DefaultPlanStep;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.extensions.DataTypeContributor;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.core.backend.ExpressionMatcher;
+import iti.kukumo.core.plan.DefaultPlanNode;
 
 /**
  * @author ITI
@@ -104,7 +106,7 @@ public class TestExpressionMatcher {
                     expression,
                     coreTypes(),
                     locale,
-                    new DefaultPlanStep().setName(step)
+                    new DefaultPlanNode(NodeType.STEP).setName(step)
             );
             assertTrue("<<"+step+">> not matching <<"+expression+">>",matcher.matches());
         }
@@ -114,7 +116,7 @@ public class TestExpressionMatcher {
 
     private KukumoDataTypeRegistry coreTypes() {
         Map<String,KukumoDataType<?>> types = new HashMap<>();
-        for (DataTypeContributor contributor: Kukumo.getAllDataTypeContributors()) {
+        for (DataTypeContributor contributor: Kukumo.instance().getAllDataTypeContributors()) {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 types.put(type.getName(), type);
             }

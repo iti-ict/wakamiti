@@ -7,8 +7,8 @@ import java.util.function.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.Resource;
+import iti.kukumo.util.ResourceLoader;
 
 /**
  * @author ITI
@@ -23,7 +23,7 @@ public class TestResourceLoader {
         Predicate<String> txtFilter = filename -> filename.endsWith(".txt");
 
 
-        List<Resource<?>> discoveredResources = Kukumo.getResourceLoader()
+        List<Resource<?>> discoveredResources = new ResourceLoader()
                 .discoverResources("classpath:discovery", txtFilter, IOUtils::toString);
         for (Resource<?> discoveredResource : discoveredResources) {
             System.out.println(discoveredResource.relativePath()+" || "+discoveredResource.absolutePath());

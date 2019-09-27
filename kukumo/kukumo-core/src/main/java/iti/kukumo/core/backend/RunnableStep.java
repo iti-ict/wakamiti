@@ -1,18 +1,18 @@
 package iti.kukumo.core.backend;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanStep;
-import iti.kukumo.util.Pair;
-import iti.kukumo.util.ThrowableRunnable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.Pair;
+import iti.kukumo.util.ThrowableRunnable;
 
 public class RunnableStep {
 
@@ -40,7 +40,7 @@ public class RunnableStep {
     public String getTranslatedDefinition(Locale locale) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
-            ResourceBundle resourceBundle = Kukumo.getResourceLoader().resourceBundle(definitionFile,locale);
+            ResourceBundle resourceBundle = Kukumo.instance().getResourceLoader().resourceBundle(definitionFile,locale);
             if (resourceBundle == null) {
                 throw new KukumoException("Cannot find step definition file {} for locale {}",
                         definitionFile,locale);
@@ -57,7 +57,7 @@ public class RunnableStep {
 
 
 
-    public Matcher matcher(PlanStep modelStep, Locale stepLocale, Locale dataLocale, KukumoDataTypeRegistry typeRegistry) {
+    public Matcher matcher(PlanNode modelStep, Locale stepLocale, Locale dataLocale, KukumoDataTypeRegistry typeRegistry) {
         String translatedDefinition = getTranslatedDefinition(stepLocale);
         return ExpressionMatcher.matcherFor(translatedDefinition,typeRegistry,dataLocale,modelStep);
     }

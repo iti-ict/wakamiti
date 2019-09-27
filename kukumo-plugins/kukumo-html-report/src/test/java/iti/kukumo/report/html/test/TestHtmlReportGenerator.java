@@ -18,14 +18,14 @@ import java.util.Locale;
  *         Created by ITI on 14/03/19
  */
 public class TestHtmlReportGenerator {
-    
+
     @Test
     public void testHtmlReport() throws IOException {
 
         try (Reader reader = Files.newBufferedReader(Paths.get("src/test/resources/kukumo.json"), StandardCharsets.UTF_8);
              Writer writer = Files.newBufferedWriter(Paths.get("target/kukumo.html"), StandardCharsets.UTF_8);
         ) {
-            PlanNodeDescriptor plan = Kukumo.getPlanSerializer().read(reader);
+            PlanNodeDescriptor plan = Kukumo.instance().getPlanSerializer().read(reader);
             HtmlReportGenerator generator = new HtmlReportGenerator();
             generator.setReportLocale(Locale.ENGLISH);
             generator.generate(plan,writer);
