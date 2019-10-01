@@ -1,19 +1,18 @@
 package iti.kukumo.core.runner;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeExecution;
 import iti.kukumo.api.plan.Result;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
 
 
 /**
@@ -125,7 +124,7 @@ public class PlanNodeLogger {
         if (showElapsedTime) {
             String duration = (
                     execution.result().orElse(null) == Result.SKIPPED ? "" :
-                            "("+ String.valueOf(execution.duration().map(Duration::toMillis).orElse(0L) / 1000f) + ")"
+                            "("+ (execution.duration().map(Duration::toMillis).orElse(0L) / 1000f) + ")"
             );
             args.add(duration);
         }
