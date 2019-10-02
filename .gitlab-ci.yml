@@ -41,7 +41,7 @@ cache:
     - "*/target"
 
 .maven: &maven
-  image: maven:3.3.9-jdk-8
+  image: maven:3.6.1-jdk-8
   artifacts:
     paths:
       - target
