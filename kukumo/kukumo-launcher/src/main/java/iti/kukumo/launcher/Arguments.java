@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -24,13 +25,14 @@ public class Arguments {
 
     private final Configuration kukumoConfiguration;
     private final Configuration mavenFetcherConfiguration;
-
+    private final AtomicBoolean mustClean = new AtomicBoolean();
 
 
     public Arguments (Path localConfigFile, String[] args) throws ConfigurationException {
 
         Map<String,String> kukumoProperties = new HashMap<>();
         Map<String,String> mavenFetcherProperties = new HashMap<>();
+
 
         if (args != null && args.length > 0) {
             args = trim(args);
@@ -59,6 +61,7 @@ public class Arguments {
                         i = j-1;
                     } else {
                         i = singleValuedArgument(args,i,"-conf", value -> confFile = Optional.of(value));
+                        i = flagArgument(args,i,"-clean", () -> mustClean.set(true));
                     }
                 }
             }
@@ -130,8 +133,13 @@ public class Arguments {
             return index;
         }
     }
-    
-    
+
+    private int flagArgument(String[] args, int index, String name, Runnable action) {
+        if (args[index].equals(name)) {
+            action.run();
+        }
+        return index;
+    }
 
     public List<String> modules() {
         return modules;
@@ -149,5 +157,8 @@ public class Arguments {
         return confFile;
     }
 
+    public boolean mustClean() {
+        return mustClean.get();
+    }
 
 }

@@ -1,16 +1,5 @@
 package iti.kukumo.launcher;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.maven.fetcher.MavenFetchRequest;
 import iti.commons.maven.fetcher.MavenFetchResult;
@@ -19,6 +8,18 @@ import iti.commons.maven.fetcher.MavenFetcher;
 import iti.kukumo.api.KukumoException;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.slf4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ITI
@@ -49,7 +50,14 @@ public class KukumoFetcher {
             }
 
             Path mavenRepo = Paths.get(appDirs.getUserDataDir("kukumo", "repository", "iti"));
+            if (arguments.mustClean()) {
+                Files.walk(mavenRepo)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            }
             Files.createDirectories(mavenRepo);
+
             Configuration conf = arguments
                 .mavenFetcherConfiguration()
                 .appendProperty("localRepository",mavenRepo.toString());

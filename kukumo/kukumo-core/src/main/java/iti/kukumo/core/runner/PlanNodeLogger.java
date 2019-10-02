@@ -97,7 +97,7 @@ public class PlanNodeLogger {
     private String buildMessage(PlanNode step) {
         String resultStyle = "stepResult."+step.result().orElse(null);
         StringBuilder message = new StringBuilder();
-        message.append("{highlight} {"+resultStyle+"} {highlight}");
+        message.append("{highlight} {"+resultStyle+"} {highlight} ");
         if (showStepSource) {
             message.append("{source} :");
         }

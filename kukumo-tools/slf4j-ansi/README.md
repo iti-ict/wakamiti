@@ -2,13 +2,17 @@
 # SLF4J Ansi  
   
 This tool enhances the [*Simple Logging Facade for Java*][1] library with the capability of 
-formatting parameters using [ANSI escape codes][2], which are defined as *styles* using  
-the [Jansi][3] library. In addition, overall styles can be defined for each logging level (`ERROR`,  
+formatting parameters using [ANSI escape codes][2], which are defined as *styles* using 
+the [Jansi][3] library. In addition, overall styles can be defined for each logging level (`ERROR`, 
 `WARN`,`INFO`,`DEBUG`, `TRACE`).  
   
-If your console or log storing system does not work nicely with ANSI escape codes, you can   
-simply disable this feature and your messages will be logged without them, while you are not   
+If your console or log storing system does not work nicely with ANSI escape codes, you can 
+simply disable this feature and your messages will be logged without them, while you are not 
 required to change your code.  
+
+## Prerequisites
+
+- Java 8 or newer 
   
 ## Usage  
 
@@ -18,7 +22,7 @@ Just create an `AnsiLogger` wrapper around your Slf4J logger:
 Logger logger = AnsiLogger.of(LoggerFactory.getLogger(YourClass.class);  
 ```  
   
-After that, when you want to embed a parameter in a message, you can indicate the style inside the   
+After that, when you want to embed a parameter in a message, you can indicate the style inside the 
 brackets:  
   
 ```java  
@@ -29,7 +33,11 @@ logger.warn("A timeout of {} seconds has ocurred requesting the resource {resour
 If you desire to add/replace styles, you should configure `AnsiLogger` in some initializing method of your application, so that the styles are applied from the very beginning:
 ```java  
 public static void someInitializerMethod() {  
- Properties customStyles = new Properties(); customStyles.put("resource","magenta,underline,bold"); ... AnsiLogger.setStyles(customStyles);}  
+  Properties customStyles = new Properties(); 
+  customStyles.put("resource","magenta,underline,bold");
+  ... 
+  AnsiLogger.setStyles(customStyles);
+}  
 ```  
 
 ### Overall styles
@@ -51,6 +59,7 @@ AnsiLogger.setEnabled(false);
 When disabled, no Ansi codes are generated whatsoever. It is useful if you want to activate/deactivate
 this feature according to some argument or configuration provided externally. 
 
+[[back to top](#top)]
 
 ## Default styles
 The built-in styles provided by default are the following:
@@ -64,6 +73,8 @@ The built-in styles provided by default are the following:
 |`id`|`cyan,bold` |
 |`important`|`magenta,bold` |
 |`highlight`|`white,bold` |
+
+[[back to top](#top)]
 
 ## Jansi Codes  
 The recognized styles are defined by Jansi codes (can be combined with commas), which are:  
@@ -92,6 +103,8 @@ The recognized styles are defined by Jansi codes (can be combined with commas), 
 | `bg_cyan` | cyan background color |
 | `bg_white` | white background color |
 
+[[back to top](#top)]
+
 ## Other considerations
 
 Be aware that the use of this library will add extra computational cost to your underlying logging
@@ -99,9 +112,43 @@ system. For this reason, it is not recommended in scenarios where performance ma
 example extensive logging during long operations. Also, logging to targets other than console 
 will produce the same ANSI codes. Thus, it might difficult the readability of the messages if the 
 visualizer tool used does not support ANSI.
+
+[[back to top](#top)]
   
+## Contributing
 
+Currently the project is closed to external contributions but this may change in the future.  
 
+[[back to top](#top)]
+  
+## License
+
+```
+MIT License
+           
+Copyright (c) 2019 - Instituto Tecnológico de Informática www.iti.es
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```
+
+[[back to top](#top)]
   
 ## References  
 - [**1**] *Simple Logging Facade for Java* - https://www.slf4j.org  

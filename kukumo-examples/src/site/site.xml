@@ -6,7 +6,7 @@
     <custom>
         <fluidoSkin>
             <topBarIcon>
-                <src>../../../../images/kukumo.png</src>
+                <src>../../../../images/kukumo-white.png</src>
                 <href>../../../../index.html</href>
             </topBarIcon>
         </fluidoSkin>
@@ -39,7 +39,7 @@
             <item name="Kukumo" href="../../../../index.html"/>
         </breadcrumbs>
 
-        <menu name="Overview">
+        <menu name="General Info">
             <item name="Introduction" href="index.html"/>
         </menu>
     </body>

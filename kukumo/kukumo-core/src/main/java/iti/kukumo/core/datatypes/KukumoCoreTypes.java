@@ -26,7 +26,8 @@ public class KukumoCoreTypes implements DataTypeContributor {
 
 
     private static final KukumoDataTypeBase.LocaleHintProvider PATH_HINT = locale -> Arrays.asList("<path/file>");
-    private static final KukumoDataTypeBase.LocaleHintProvider TEXT_HINT = locale -> Arrays.asList("<text>");
+    private static final KukumoDataTypeBase.LocaleHintProvider TEXT_HINT = locale -> Arrays.asList("'<text>'");
+    private static final KukumoDataTypeBase.LocaleHintProvider WORD_HINT = locale -> Arrays.asList("<word>");
     private static final KukumoDataTypeBase.LocaleHintProvider URL_HINT = locale -> Arrays.asList("http://...","https://...","ftp://...");
 
 
@@ -37,8 +38,8 @@ public class KukumoCoreTypes implements DataTypeContributor {
         types.add(KukumoNumberDataType.createFromNumber("integer", Long.class, false, Number::longValue));
         types.add(KukumoNumberDataType.createFromBigDecimal("decimal", BigDecimal.class, true, x->x));
         types.add(new KukumoDataTypeBase<>("text", String.class, locale->STRING_REGEX, TEXT_HINT, locale->KukumoCoreTypes::prepareString));
-        types.add(new KukumoDataTypeBase<>("word", String.class, locale->WORD_REGEX, TEXT_HINT, locale->(input->input)));
-        types.add(new KukumoDataTypeBase<>("id", String.class, locale->IDENTIFIER_REGEX, TEXT_HINT, locale->(input->input)));
+        types.add(new KukumoDataTypeBase<>("word", String.class, locale->WORD_REGEX, WORD_HINT, locale->(input->input)));
+        types.add(new KukumoDataTypeBase<>("id", String.class, locale->IDENTIFIER_REGEX, WORD_HINT, locale->(input->input)));
         types.add(new KukumoDateDataType<>("date", LocalDate.class, true, false, LocalDate::from));
         types.add(new KukumoDateDataType<>("time", LocalTime.class, false, true, LocalTime::from));
         types.add(new KukumoDateDataType<>("datetime", LocalDateTime.class, true, true, LocalDateTime::from));

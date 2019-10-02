@@ -6,7 +6,7 @@
     <custom>
         <fluidoSkin>
             <topBarIcon>
-                <src>../../../../images/kukumo.png</src>
+                <src>../../../../images/kukumo-white.png</src>
                 <href>../../../../index.html</href>
             </topBarIcon>
         </fluidoSkin>
@@ -15,22 +15,10 @@
 
     <body>
 
-        <!-- Workaround for https://issues.apache.org/jira/browse/DOXIA-571 -->
+        <!-- Add this to every site.xml -->
         <head>
             <![CDATA[
-             <script type="text/javascript">
-             $(document).ready(function () {
-                $(".source").addClass("prettyprint");
-                prettyPrint();
-                var linkAbout = $('a').filter(function(index) { return $(this).text() === "About"; });
-                var projectInformationMenu = $('a').filter(function(index) { return $(this).text() === "Project Information"; });
-                linkAbout.hide();
-                if (!projectInformationMenu.parent().hasClass('active')) {
-                    projectInformationMenu.parent().children('ul').hide();
-                    projectInformationMenu.children('span').removeClass('icon-chevron-down').addClass('icon-chevron-right');
-                }
-            });
-            </script>
+             <script type="text/javascript" src="../../../../site.js"></script>
             <link rel="stylesheet" href="https://asciidoctor.org/stylesheets/styles.css">
         ]]>
         </head>
@@ -40,7 +28,7 @@
             <item name="Kukumo" href="../../../../index.html"/>
         </breadcrumbs>
 
-        <menu name="Overview">
+        <menu name="General Info">
             <item name="Introduction" href="index.html"/>
             <item name="Prerequisites" href="index.html#prerequisites"/>
             <item name="Usage" href="index.html#usage"/>
