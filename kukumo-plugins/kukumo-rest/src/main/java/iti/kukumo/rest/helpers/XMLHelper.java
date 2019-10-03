@@ -17,7 +17,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.plan.Document;
+import iti.kukumo.core.plan.Document;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.util.ResourceLoader;
 

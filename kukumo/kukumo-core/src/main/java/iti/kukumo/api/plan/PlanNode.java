@@ -10,7 +10,6 @@ import java.util.stream.Stream;
  */
 public interface PlanNode {
 
-    /** @return The name of the node */
     String name();
 
 
@@ -82,12 +81,9 @@ public interface PlanNode {
     PlanNodeDescriptor obtainDescriptor();
 
 
-    /** @return An optional string document defined in the node (usually only existing in steps) */
-    Optional<Document> document();
+    /** @return An optional data structure defined in the node (usually only existing in steps) */
+    Optional<PlanNodeData> data();
 
-
-    /** @return An optional data table defined in the node (usually only existing in steps) */
-    Optional<DataTable> dataTable();
 
 
     /**

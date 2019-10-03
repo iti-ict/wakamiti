@@ -1,34 +1,6 @@
 package iti.kukumo.gherkin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import gherkin.ast.Background;
-import gherkin.ast.Comment;
-import gherkin.ast.DataTable;
-import gherkin.ast.DocString;
-import gherkin.ast.Examples;
-import gherkin.ast.Feature;
-import gherkin.ast.GherkinDocument;
-import gherkin.ast.Location;
-import gherkin.ast.Scenario;
-import gherkin.ast.ScenarioDefinition;
-import gherkin.ast.ScenarioOutline;
-import gherkin.ast.Step;
-import gherkin.ast.TableCell;
-import gherkin.ast.TableRow;
-import gherkin.ast.Tag;
+import gherkin.ast.*;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
@@ -40,7 +12,15 @@ import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.core.plan.DefaultPlanNode;
+import iti.kukumo.core.plan.Document;
 import iti.kukumo.gherkin.parser.CommentedNode;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Extension(
     provider = "iti.kukumo",
@@ -327,10 +307,10 @@ public class GherkinPlanner implements Planner {
         DefaultPlanNode node = newStepNode(step, location, language, parentNode);
         if (step.getArgument() != null) {
             if (step.getArgument() instanceof DataTable) {
-                node.setDataTable(new iti.kukumo.api.plan.DataTable(toArray((DataTable) step.getArgument())));
+                node.setData(new iti.kukumo.core.plan.DataTable(toArray((DataTable) step.getArgument())));
             } else if (step.getArgument() instanceof DocString) {
-                node.setDocument(
-                        new iti.kukumo.api.plan.Document(
+                node.setData(
+                        new Document(
                                 ((DocString) step.getArgument()).getContent(),
                                 ((DocString) step.getArgument()).getContentType()
                         )
@@ -357,8 +337,7 @@ public class GherkinPlanner implements Planner {
                 UnaryOperator<String> replacer = s -> s.replace(variable, variableValue);
                 exampleStep
                     .setName(Optional.ofNullable(trim(exampleStep.name())).map(replacer).orElse(null))
-                    .setDocument(exampleStep.document().map(document -> document.copy(replacer)).orElse(null))
-                    .setDataTable(exampleStep.dataTable().map(table -> table.copy(replacer)).orElse(null))
+                    .setData(exampleStep.data().map(data -> data.copyReplacingVariables(replacer)).orElse(null))
                 ;
             }
             exampleSteps.add(exampleStep);

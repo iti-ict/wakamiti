@@ -1,21 +1,5 @@
 package iti.kukumo.junit;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.ConfigurationException;
@@ -25,6 +9,20 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.core.runner.PlanNodeLogger;
+import org.junit.*;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 public class KukumoJUnitRunner extends Runner {
@@ -53,8 +51,11 @@ public class KukumoJUnitRunner extends Runner {
         this.configuration = retrieveConfiguration(configurationClass);
         this.planNodeLogger = new PlanNodeLogger(LOGGER,configuration,getPlan());
         this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class).orElse(Boolean.FALSE);
-        validateAnnotatedMethod(configurationClass, BeforeClass.class);
-        validateAnnotatedMethod(configurationClass, AfterClass.class);
+        validateStaticZeroArgumentAnnotatedMethod(configurationClass, BeforeClass.class);
+        validateStaticZeroArgumentAnnotatedMethod(configurationClass, AfterClass.class);
+        validateNoAnnotatedMethod(configurationClass, Before.class);
+        validateNoAnnotatedMethod(configurationClass, After.class);
+        validateNoAnnotatedMethod(configurationClass, Test.class);
     }
 
 
@@ -143,13 +144,24 @@ public class KukumoJUnitRunner extends Runner {
 
 
 
-    private void validateAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation)
+    private void validateNoAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation)
     throws InitializationError {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
+                 throw new InitializationError("Method "+method.getName()+" annotated with "+annotation+
+                         " is not allowed");
+            }
+        }
+    }
+
+
+    private void validateStaticZeroArgumentAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation)
+            throws InitializationError {
+        for (Method method : configurationClass.getMethods()) {
+            if (method.isAnnotationPresent(annotation)) {
                 if (!Modifier.isStatic(method.getModifiers())) {
-                     throw new InitializationError("Method "+method.getName()+" annotated with "+annotation+
-                             " should be static");
+                    throw new InitializationError("Method "+method.getName()+" annotated with "+annotation+
+                            " should be static");
                 }
                 if (method.getParameterCount() > 0) {
                     throw new InitializationError("Method "+method.getName()+" annotated with "+annotation+
@@ -158,6 +170,7 @@ public class KukumoJUnitRunner extends Runner {
             }
         }
     }
+
 
     private void executeAnnotatedMethod(Class<?> configurationClass, Class<? extends Annotation> annotation) {
         for (Method method : configurationClass.getMethods()) {

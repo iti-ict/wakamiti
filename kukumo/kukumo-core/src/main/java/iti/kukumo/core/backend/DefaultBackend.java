@@ -1,37 +1,24 @@
 package iti.kukumo.core.backend;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.KukumoSkippedException;
+import iti.kukumo.api.*;
 import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeExecution;
-import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.util.LocaleLoader;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.StringDistance;
 import iti.kukumo.util.ThrowableRunnable;
+import org.slf4j.Logger;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DefaultBackend implements Backend {
 
@@ -39,6 +26,10 @@ public class DefaultBackend implements Backend {
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
+    public static final List<String> DATA_ARG_ALTERNATIVES = Arrays.asList(
+        DOCUMENT_ARG,
+        DATATABLE_ARG
+    );
 
 
 
@@ -221,16 +212,10 @@ public class DefaultBackend implements Backend {
             String argName = definedArgument.key();
             String argType = definedArgument.value();
             String argValue = null;
-
-            if (argType.equals(DOCUMENT_ARG)) {
-                invokingArguments.put(DOCUMENT_ARG, modelStep.document().orElseThrow(
-                    ()->new KukumoException("[{}] Incomplete step '{} {}': a document was expected",
-                            modelStep.source(), modelStep.keyword(), modelStep.name())
-                ));
-            } else if (argType.equals(DATATABLE_ARG)) {
-                invokingArguments.put(DATATABLE_ARG, modelStep.dataTable().orElseThrow(
-                  ()->new KukumoException("[{}] Incomplete step '{} {}': a data table was expected",
-                        modelStep.source(), modelStep.keyword(), modelStep.name())
+            if (DATA_ARG_ALTERNATIVES.contains(argType)) {
+                invokingArguments.put(argType, modelStep.data().orElseThrow(
+                    ()->new KukumoException("[{}] Incomplete step '{} {}': a {} was expected",
+                            modelStep.source(), modelStep.keyword(), modelStep.name(), argType)
                 ));
             } else {
                 argValue = stepMatcher.group(argName);

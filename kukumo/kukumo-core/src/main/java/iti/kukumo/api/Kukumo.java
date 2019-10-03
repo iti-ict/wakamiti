@@ -11,7 +11,6 @@ import iti.kukumo.api.plan.PlanNodeDescriptor;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.core.plan.DefaultPlanNode;
-import iti.kukumo.core.plan.DefaultPlanSerializer;
 import iti.kukumo.core.runner.PlanRunner;
 import iti.kukumo.util.KukumoLogger;
 import iti.kukumo.util.ResourceLoader;
@@ -51,7 +50,7 @@ public class Kukumo {
 
 
     private final ExtensionManager extensionManager = new ExtensionManager();
-    private final PlanSerializer planSerializer = new DefaultPlanSerializer();
+    private final PlanSerializer planSerializer = new PlanSerializer();
     private final ResourceLoader resourceLoader = new ResourceLoader();
     private final EventDispatcher eventDispatcher = new EventDispatcher();
 

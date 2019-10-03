@@ -1,16 +1,5 @@
 package iti.kukumo.gherkin;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -21,6 +10,12 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.core.plan.DefaultPlanNode;
+import org.slf4j.Logger;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 
@@ -86,15 +81,15 @@ public class GherkinPlanRedefiner {
             DefaultPlanNode implFeature = findParentFeature(plan, implScenarioOutline)
                     .orElseThrow(IllegalStateException::new);  // never should throw this exception
 
-            Examples defExamples = ((ScenarioOutline)defScenarioOutline.getGherkinModel()).getExamples().get(0);
+            Examples defExamples = ((ScenarioOutline)defScenarioOutline.getUnderlyingModel()).getExamples().get(0);
 
             List<DefaultPlanNode> implBackgroundSteps = factory.createBackgroundSteps(
-                    (Feature) implFeature.getGherkinModel(),
+                    (Feature) implFeature.getUnderlyingModel(),
                     implFeature.source()
             );
 
             List<DefaultPlanNode> implScenarios = factory.createScenariosFromExamples(
-                    (ScenarioOutline)implScenarioOutline.getGherkinModel(),
+                    (ScenarioOutline)implScenarioOutline.getUnderlyingModel(),
                     defExamples,
                     implScenarioOutline,
                     implBackgroundSteps,

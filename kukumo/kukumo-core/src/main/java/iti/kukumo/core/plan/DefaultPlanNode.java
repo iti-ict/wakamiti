@@ -1,23 +1,10 @@
 package iti.kukumo.core.plan;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import iti.kukumo.api.plan.*;
+
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import iti.kukumo.api.plan.DataTable;
-import iti.kukumo.api.plan.Document;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
-import iti.kukumo.api.plan.PlanNodeExecution;
 
 
 public class DefaultPlanNode implements PlanNode {
@@ -35,10 +22,9 @@ public class DefaultPlanNode implements PlanNode {
     private String name;
     private String displayNamePattern = "[{id}] {keyword} {name}";
 
-    private Optional<Document> document = Optional.empty();
-    private Optional<DataTable> dataTable = Optional.empty();
+    private Optional<PlanNodeData> data = Optional.empty();
 
-    private Object gherkinModel;
+    private Object underlyingModel;
     private boolean isBackgroundStep;
 
     private Optional<PlanNodeExecution> execution = Optional.empty();
@@ -141,15 +127,10 @@ public class DefaultPlanNode implements PlanNode {
 
 
     @Override
-    public Optional<Document> document() {
-        return document;
+    public Optional<PlanNodeData> data() {
+        return data;
     }
 
-
-    @Override
-    public Optional<DataTable> dataTable() {
-        return dataTable;
-    }
 
 
     @Override
@@ -218,8 +199,8 @@ public class DefaultPlanNode implements PlanNode {
 
 
 
-    public Object getGherkinModel() {
-        return gherkinModel;
+    public Object getUnderlyingModel() {
+        return underlyingModel;
     }
 
     public DefaultPlanNode setId(String id) {
@@ -283,7 +264,7 @@ public class DefaultPlanNode implements PlanNode {
 
 
     public DefaultPlanNode setGherkinModel(Object gherkinModel) {
-        this.gherkinModel = gherkinModel;
+        this.underlyingModel = gherkinModel;
         return this;
     }
 
@@ -293,16 +274,11 @@ public class DefaultPlanNode implements PlanNode {
     }
 
 
-    public DefaultPlanNode setDataTable(DataTable dataTable) {
-        this.dataTable = Optional.ofNullable(dataTable);
+    public DefaultPlanNode setData(PlanNodeData data) {
+        this.data = Optional.ofNullable(data);
         return this;
     }
 
-
-    public DefaultPlanNode setDocument(Document document) {
-        this.document = Optional.ofNullable(document);
-        return this;
-    }
 
 
     public DefaultPlanNode setBackgroundStep(boolean isBackgroundStep) {
@@ -327,8 +303,7 @@ public class DefaultPlanNode implements PlanNode {
         copy.setSource(this.source());
         copy.addDescription(this.description);
         copy.properties.putAll(this.properties);
-        copy.document = this.document.map(Document::copy);
-        copy.dataTable = this.dataTable.map(DataTable::copy);
+        copy.data = this.data.map(PlanNodeData::copy);
         copy.isBackgroundStep = this.isBackgroundStep;
         for (PlanNode child : this.children) {
             copy.addChild(((DefaultPlanNode)child).copy());

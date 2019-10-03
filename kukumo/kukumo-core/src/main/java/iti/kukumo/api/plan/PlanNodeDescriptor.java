@@ -1,5 +1,7 @@
 package iti.kukumo.api.plan;
 
+import iti.kukumo.core.plan.DataTable;
+import iti.kukumo.core.plan.Document;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,9 +69,9 @@ public class PlanNodeDescriptor {
         this.finishInstant = node.finishInstant().map(this::instantToString).orElse(null);
         this.duration = node.duration().map(Duration::toMillis).orElse(null);
         this.result = node.result().orElse(null);
-        this.document = node.document().map(Document::getContent).orElse(null);
-        this.documentType = node.document().map(Document::getContentType).orElse(null);
-        this.dataTable = node.dataTable().map(DataTable::getValues).orElse(null);
+        this.document = node.data().filter(Document.class::isInstance).map(Document.class::cast).map(Document::getContent).orElse(null);
+        this.documentType = node.data().filter(Document.class::isInstance).map(Document.class::cast).map(Document::getContentType).orElse(null);
+        this.dataTable = node.data().filter(DataTable.class::isInstance).map(DataTable.class::cast).map(DataTable::getValues).orElse(null);
         this.errorMessage = node.errors().findFirst().map(Throwable::getLocalizedMessage).orElse(null);
         this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
         if (node.hasChildren()) {

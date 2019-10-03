@@ -43,10 +43,6 @@
         </head>
 
 
-
-        <breadcrumbs>
-        </breadcrumbs>
-
         <menu name="General Info">
             <item name="Overview" href="index.html"/>
             <item name="Usage" href="index.html#Usage"/>

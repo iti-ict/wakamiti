@@ -142,9 +142,9 @@ the test approach:
 setting the custom JUnit runner ```KukumoJUnitRunner```. This way, the plan is treated 
 as a normal JUnit test and will be executed along any other JUnit test existing.
 
-   >  _Use it when..._   
-   >  Java applications, if you require report integration with other JUnit tests, or using an IDE
-   > to launch tests 
+    _Suitable scenarios_   
+   Java applications, if you require report integration with other JUnit tests, or using an IDE
+   to launch tests 
    
     
 - **Using Maven**: If your project uses Maven, and you prefer to execute the Kukumo test plan in a separate stage,
@@ -152,14 +152,14 @@ you can execute Kukumo attaching the ```kukumo-maven-plugin``` plugin to the
 Maven lifecycle.  Simply configure the Maven plugin and the desired additional Kukumo plugins 
 in your POM `build` section.
 
-   >  _Use it when..._   
-   >  Maven-built applications, if you want to include Kukumo as a part of the verify phase
+   _Suitable scenarios_   
+   Maven-built applications, if you want to include Kukumo as a part of the verify phase
 
 - **Stand-alone launcher**: If your project does not use neither JUnit nor Maven, Kukumo provides a 
 stand-alone command-line based launcher, that will manage the plugin dependencies internally.
 
-   >  _Use it when..._   
-   >  Non-Java applications and/or your test plan is to be executed outside the building process
+   _Suitable scenarios_   
+   Non-Java applications and/or your test plan is to be executed outside the building process
    
      
 
@@ -246,3 +246,5 @@ SOFTWARE.
 
     - linesta@iti.es
     - luiinge@gmail.com
+    
+[[back to top](#top)]    

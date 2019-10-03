@@ -1,8 +1,10 @@
-package iti.kukumo.api.plan;
+package iti.kukumo.core.plan;
 
-import java.util.function.Function;
+import iti.kukumo.api.plan.PlanNodeData;
 
-public class Document {
+import java.util.function.UnaryOperator;
+
+public class Document implements PlanNodeData {
 
     private final String content;
     private final String contentType;
@@ -25,12 +27,14 @@ public class Document {
         return contentType;
     }
 
-    public Document copy() {
+    @Override
+    public PlanNodeData copy() {
         return new Document(content,contentType);
     }
 
-    public Document copy(Function<String,String> transformer) {
-        return new Document(transformer.apply(content),contentType);
+    @Override
+    public PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer) {
+        return new Document(replacer.apply(content),contentType);
     }
 
 }

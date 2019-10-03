@@ -2,7 +2,7 @@ package iti.kukumo.database.dataset;
 
 import java.io.IOException;
 
-import iti.kukumo.api.plan.DataTable;
+import iti.kukumo.core.plan.DataTable;
 
 public class DataTableDataSet extends DataSet {
     
