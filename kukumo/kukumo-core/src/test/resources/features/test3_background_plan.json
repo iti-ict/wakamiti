@@ -27,15 +27,23 @@
         "gherkinType" : "scenario"
       },
       "children" : [ {
-        "nodeType" : "STEP",
-        "name" : "the set of real numbers ℝ",
-        "keyword" : "Given",
-        "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[6,3]",
-        "displayName" : "Given the set of real numbers ℝ",
+        "nodeType" : "STEP_AGGREGATOR",
+        "keyword" : "Background",
+        "displayName" : "[] Background ",
         "properties" : {
-          "gherkinType" : "step"
-        }
+          "gherkin" : "background"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "the set of real numbers ℝ",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "src/test/resources/features/test3_background.feature[6,3]",
+          "displayName" : "Given the set of real numbers ℝ",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
       }, {
         "nodeType" : "STEP",
         "name" : "a number with value 8.02 and another number with value 9",
@@ -84,15 +92,23 @@
         "gherkinType" : "scenario"
       },
       "children" : [ {
-        "nodeType" : "STEP",
-        "name" : "the set of real numbers ℝ",
-        "keyword" : "Given",
-        "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[6,3]",
-        "displayName" : "Given the set of real numbers ℝ",
+        "nodeType" : "STEP_AGGREGATOR",
+        "keyword" : "Background",
+        "displayName" : "[] Background ",
         "properties" : {
-          "gherkinType" : "step"
-        }
+          "gherkin" : "background"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "the set of real numbers ℝ",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "src/test/resources/features/test3_background.feature[6,3]",
+          "displayName" : "Given the set of real numbers ℝ",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
       }, {
         "nodeType" : "STEP",
         "name" : "a number with value 7.02 and another number with value 8",
@@ -141,15 +157,23 @@
         "gherkinType" : "scenario"
       },
       "children" : [ {
-        "nodeType" : "STEP",
-        "name" : "the set of real numbers ℝ",
-        "keyword" : "Given",
-        "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[6,3]",
-        "displayName" : "Given the set of real numbers ℝ",
+        "nodeType" : "STEP_AGGREGATOR",
+        "keyword" : "Background",
+        "displayName" : "[] Background ",
         "properties" : {
-          "gherkinType" : "step"
-        }
+          "gherkin" : "background"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "the set of real numbers ℝ",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "src/test/resources/features/test3_background.feature[6,3]",
+          "displayName" : "Given the set of real numbers ℝ",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
       }, {
         "nodeType" : "STEP",
         "name" : "a number with value 8.09 and another number with value 9",

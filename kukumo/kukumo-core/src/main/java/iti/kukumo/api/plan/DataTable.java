@@ -1,6 +1,4 @@
-package iti.kukumo.core.plan;
-
-import iti.kukumo.api.plan.PlanNodeData;
+package iti.kukumo.api.plan;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;

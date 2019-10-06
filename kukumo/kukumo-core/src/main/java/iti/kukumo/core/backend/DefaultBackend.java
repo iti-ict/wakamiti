@@ -5,8 +5,8 @@ import iti.kukumo.api.*;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeExecution;
 import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.model.ExecutionState;
 import iti.kukumo.util.LocaleLoader;
 import iti.kukumo.util.Pair;
 import iti.kukumo.util.StringDistance;
@@ -63,9 +63,9 @@ public class DefaultBackend implements Backend {
 
         if (modelStep.nodeType() == NodeType.VIRTUAL_STEP) {
             // virtual steps are not executed, marked as passed directly
-            PlanNodeExecution executionData = modelStep.prepareExecution();
+            ExecutionState<Result> executionData = modelStep.prepareExecution();
             executionData.markStarted(now);
-            executionData.markPassed(now);
+            executionData.markFinished(now,Result.PASSED);
 
         } else if (modelStep.nodeType() == NodeType.STEP) {
 
@@ -93,13 +93,9 @@ public class DefaultBackend implements Backend {
     @Override
     public void skipStep(PlanNode modelStep) {
         Instant now = clock.instant();
-        PlanNodeExecution execution = modelStep.prepareExecution();
+        ExecutionState<Result> execution = modelStep.prepareExecution();
         execution.markStarted(now);
-        execution.markFailure(
-            now,
-            Result.SKIPPED,
-            null
-        );
+        execution.markFinished(now,Result.SKIPPED);
     }
 
 
@@ -144,7 +140,7 @@ public class DefaultBackend implements Backend {
         try {
             Kukumo.instance().publishEvent(Event.BEFORE_RUN_BACKEND_STEP, this);
             runnableStep.run(invokingArguments);
-            modelStep.prepareExecution().markPassed(clock.instant());
+            modelStep.prepareExecution().markFinished(clock.instant(),Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(modelStep, e);
         } finally {
@@ -155,7 +151,7 @@ public class DefaultBackend implements Backend {
 
 
     protected void fillErrorState(PlanNode modelStep, Throwable e) {
-        modelStep.prepareExecution().markFailure(clock.instant(), resultFromThrowable(e), e);
+        modelStep.prepareExecution().markFinished(clock.instant(), resultFromThrowable(e), e);
     }
 
 

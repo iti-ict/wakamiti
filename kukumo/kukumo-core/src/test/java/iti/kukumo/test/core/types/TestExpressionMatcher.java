@@ -14,8 +14,8 @@ import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.core.plan.DefaultPlanNode;
 
 /**
  * @author ITI
@@ -106,7 +106,7 @@ public class TestExpressionMatcher {
                     expression,
                     coreTypes(),
                     locale,
-                    new DefaultPlanNode(NodeType.STEP).setName(step)
+                    new PlanNodeBuilder(NodeType.STEP).setName(step).build()
             );
             assertTrue("<<"+step+">> not matching <<"+expression+">>",matcher.matches());
         }

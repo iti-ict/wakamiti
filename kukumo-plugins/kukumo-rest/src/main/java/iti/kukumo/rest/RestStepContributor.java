@@ -12,7 +12,7 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.core.plan.Document;
+import iti.kukumo.api.plan.Document;
 import iti.kukumo.util.ResourceLoader;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;

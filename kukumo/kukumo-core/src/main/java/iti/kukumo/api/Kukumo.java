@@ -1,22 +1,9 @@
 package iti.kukumo.api;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.jext.Extension;
-import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.event.EventDispatcher;
-import iti.kukumo.api.extensions.*;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanSerializer;
-import iti.kukumo.core.plan.DefaultPlanNode;
-import iti.kukumo.core.runner.PlanRunner;
-import iti.kukumo.util.KukumoLogger;
-import iti.kukumo.util.ResourceLoader;
-import iti.kukumo.util.TagFilter;
-import iti.kukumo.util.ThrowableFunction;
-import org.slf4j.Logger;
+import static iti.kukumo.api.KukumoConfiguration.OUTPUT_FILE_PATH;
+import static iti.kukumo.api.KukumoConfiguration.REPORT_SOURCE;
+import static iti.kukumo.api.KukumoConfiguration.RESOURCE_PATH;
+import static iti.kukumo.api.KukumoConfiguration.RESOURCE_TYPES;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,7 +19,30 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static iti.kukumo.api.KukumoConfiguration.*;
+import org.slf4j.Logger;
+
+import iti.commons.configurer.Configuration;
+import iti.commons.jext.Extension;
+import iti.commons.jext.ExtensionManager;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.event.EventDispatcher;
+import iti.kukumo.api.extensions.Configurator;
+import iti.kukumo.api.extensions.DataTypeContributor;
+import iti.kukumo.api.extensions.EventObserver;
+import iti.kukumo.api.extensions.PlanBuilder;
+import iti.kukumo.api.extensions.Reporter;
+import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.core.runner.PlanRunner;
+import iti.kukumo.util.KukumoLogger;
+import iti.kukumo.util.ResourceLoader;
+import iti.kukumo.util.TagFilter;
+import iti.kukumo.util.ThrowableFunction;
 
 
 
@@ -126,12 +136,13 @@ public class Kukumo {
             LOGGER.warn("{warn} {resourceType}","No resources of type",resourceTypeName);
             return Optional.empty();
         }
-        Optional<Planner> planner = getPlannerFor(resourceType.get());
+        Optional<PlanBuilder> planner = getPlannerFor(resourceType.get());
         if (!planner.isPresent()) {
             LOGGER.warn("{warn} {resourceType} {warn}","No planner suitable for resource type",resourceType," has been found");
             return Optional.empty();
         }
-        return Optional.of(configure(planner.get(),configuration).createPlan(resources));
+        PlanNodeBuilder planNodeBuilder = configure(planner.get(),configuration).createPlan(resources);
+        return Optional.ofNullable(planNodeBuilder.build());
     }
 
 
@@ -144,16 +155,14 @@ public class Kukumo {
         if (plans.size() == 1) {
             return plans.get(0);
         }
-        DefaultPlanNode root = new DefaultPlanNode(NodeType.AGGREGATOR);
-        plans.forEach(root::addChild);
-        return root;
+        return new PlanNode(NodeType.AGGREGATOR,plans);
     }
 
 
 
-    private Optional<Planner> getPlannerFor(ResourceType<?> resourceType) {
-        Predicate<Planner> filter = planner->planner.acceptResourceType(resourceType);
-        return extensionManager.getExtensionThatSatisfy(Planner.class, filter);
+    private Optional<PlanBuilder> getPlannerFor(ResourceType<?> resourceType) {
+        Predicate<PlanBuilder> filter = planner->planner.acceptResourceType(resourceType);
+        return extensionManager.getExtensionThatSatisfy(PlanBuilder.class, filter);
     }
 
 

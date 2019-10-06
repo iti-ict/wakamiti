@@ -44,7 +44,7 @@ public class PlanSerializer {
      * Serialize the given iti.kukumo.test.gherkin.plan or iti.kukumo.test.gherkin.plan node into a string
      */
     public String serialize(PlanNode node) throws IOException {
-        return serialize(node.obtainDescriptor());
+        return serialize(new PlanNodeDescriptor(node));
     }
 
 
@@ -54,7 +54,7 @@ public class PlanSerializer {
 
 
     public void write(Writer writer, PlanNode node) throws IOException {
-        write(writer, node.obtainDescriptor());
+        write(writer, new PlanNodeDescriptor(node));
     }
 
 

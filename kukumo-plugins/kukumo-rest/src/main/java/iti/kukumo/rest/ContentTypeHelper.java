@@ -5,7 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.ExtensionPoint;
-import iti.kukumo.core.plan.Document;
+import iti.kukumo.api.plan.Document;
+
 import org.hamcrest.Matcher;
 
 import java.io.File;

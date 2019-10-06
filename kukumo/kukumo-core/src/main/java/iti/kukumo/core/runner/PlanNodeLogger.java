@@ -4,8 +4,9 @@ import iti.commons.configurer.Configuration;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeExecution;
 import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.model.ExecutionState;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -90,7 +91,7 @@ public class PlanNodeLogger {
         if (logger.isInfoEnabled()) {
             logger.info(buildMessage(step),buildMessageArgs(step));
         }
-        step.execution().flatMap(PlanNodeExecution::error).ifPresent(error->logger.debug("stack trace:", error));
+        step.executionState().flatMap(ExecutionState::error).ifPresent(error->logger.debug("stack trace:", error));
     }
 
 
@@ -111,7 +112,7 @@ public class PlanNodeLogger {
 
 
     private Object[] buildMessageArgs(PlanNode step) {
-        PlanNodeExecution execution = step.execution().orElse(null);
+        ExecutionState<Result> execution = step.executionState().orElse(null);
         List<Object> args = new ArrayList<>();
         args.add("[");
         args.add(execution.result().orElse(null));

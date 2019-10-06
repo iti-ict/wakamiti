@@ -1,7 +1,5 @@
 package iti.kukumo.api.plan;
 
-import iti.kukumo.core.plan.DataTable;
-import iti.kukumo.core.plan.Document;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

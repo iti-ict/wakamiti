@@ -1,10 +1,10 @@
 package iti.kukumo.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import io.cucumber.tagexpressions.Expression;
 import io.cucumber.tagexpressions.TagExpressionParser;
-import iti.kukumo.api.plan.PlanNode;
 
 public class TagFilter {
 
@@ -17,8 +17,8 @@ public class TagFilter {
     }
 
 
-    public boolean filter (PlanNode node) {
-        return tagParsedExpression.evaluate(new ArrayList<>(node.tags()));
+    public boolean filter (Collection<String> tags) {
+        return tagParsedExpression.evaluate(new ArrayList<>(tags));
     }
 
 

@@ -1,5 +1,20 @@
 package iti.kukumo.gherkin;
 
+import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.forAnyNode;
+import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.withProperty;
+import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.withTag;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -8,14 +23,8 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.core.plan.DefaultPlanNode;
-import org.slf4j.Logger;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GherkinPlanRedefiner {
 
@@ -23,9 +32,9 @@ public class GherkinPlanRedefiner {
 
     private final String definitionTag;
     private final String implementationTag;
-    private final GherkinPlanner factory;
+    private final GherkinPlanBuilder factory;
 
-    public GherkinPlanRedefiner(Configuration configuration, GherkinPlanner factory) {
+    public GherkinPlanRedefiner(Configuration configuration, GherkinPlanBuilder factory) {
         this.factory = factory;
         this.definitionTag = configuration
                 .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
@@ -37,7 +46,16 @@ public class GherkinPlanRedefiner {
 
 
 
-    public void arrangeRedefinitions(DefaultPlanNode plan) {
+/*
+    private PlanNodeBuilderBuilderRule removeScenariosFromScenarioOutlines() {
+        return forAnyNode(
+          withTag(implementationTag).and(withProperty("gherkin","scenarioOutline"))
+        ).perform( PlanNodeBuilder::clearChildren);
+    }
+*/
+
+
+    public void arrangeRedefinitions(PlanNodeBuilder plan) {
         removeScenariosFromScenarioOutlines(plan);
         arrangeScenarioRedefinitions(plan);
         arrangeScenarioOutlineRedefinitions(plan);
@@ -47,13 +65,13 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected void arrangeScenarioRedefinitions(DefaultPlanNode plan) {
+    protected void arrangeScenarioRedefinitions(PlanNodeBuilder plan) {
 
-        Map<String,DefaultPlanNode> definitionScenarios = collectDefinitionScenarios(plan);
-        Map<String,DefaultPlanNode> implementationScenarios = collectImplementationScenarios(plan);
+        Map<String,PlanNodeBuilder> definitionScenarios = collectDefinitionScenarios(plan);
+        Map<String,PlanNodeBuilder> implementationScenarios = collectImplementationScenarios(plan);
 
-        for (DefaultPlanNode definitionScenario : definitionScenarios.values()) {
-            DefaultPlanNode implementationScenario = implementationScenarios.get(definitionScenario.id());
+        for (PlanNodeBuilder definitionScenario : definitionScenarios.values()) {
+            PlanNodeBuilder implementationScenario = implementationScenarios.get(definitionScenario.id());
             if (implementationScenario == null) {
                 throw new KukumoException("Problem in {} '{}'\n\tNo implementation scenario with id '{}'",
                         definitionScenario.source(), definitionScenario.displayName(), definitionScenario.id());
@@ -65,30 +83,30 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected void arrangeScenarioOutlineRedefinitions(DefaultPlanNode plan) {
+    protected void arrangeScenarioOutlineRedefinitions(PlanNodeBuilder plan) {
 
-        Map<String,DefaultPlanNode> defScenarioOutlines = collectDefinitionScenarioOutlines(plan);
-        Map<String, DefaultPlanNode> implScenarioOutlines = collectImplementationScenarioOutlines(plan);
+        Map<String,PlanNodeBuilder> defScenarioOutlines = collectDefinitionScenarioOutlines(plan);
+        Map<String, PlanNodeBuilder> implScenarioOutlines = collectImplementationScenarioOutlines(plan);
 
-        for (DefaultPlanNode defScenarioOutline : defScenarioOutlines.values()) {
+        for (PlanNodeBuilder defScenarioOutline : defScenarioOutlines.values()) {
 
-            DefaultPlanNode implScenarioOutline = implScenarioOutlines.get(defScenarioOutline.id());
+            PlanNodeBuilder implScenarioOutline = implScenarioOutlines.get(defScenarioOutline.id());
             if (implScenarioOutline == null) {
                 throw new KukumoException(
                         "Cannot redefine scenario outline <{}>::'{}'\n\tNo implementation scenario outline with id '{}'",
                         defScenarioOutline.source(), defScenarioOutline.displayName(), defScenarioOutline.id());
             }
-            DefaultPlanNode implFeature = findParentFeature(plan, implScenarioOutline)
+            PlanNodeBuilder implFeature = findParentFeature(plan, implScenarioOutline)
                     .orElseThrow(IllegalStateException::new);  // never should throw this exception
 
             Examples defExamples = ((ScenarioOutline)defScenarioOutline.getUnderlyingModel()).getExamples().get(0);
 
-            List<DefaultPlanNode> implBackgroundSteps = factory.createBackgroundSteps(
+            Optional<PlanNodeBuilder> implBackgroundSteps = factory.createBackgroundSteps(
                     (Feature) implFeature.getUnderlyingModel(),
                     implFeature.source()
             );
 
-            List<DefaultPlanNode> implScenarios = factory.createScenariosFromExamples(
+            List<PlanNodeBuilder> implScenarios = factory.createScenariosFromExamples(
                     (ScenarioOutline)implScenarioOutline.getUnderlyingModel(),
                     defExamples,
                     implScenarioOutline,
@@ -99,7 +117,7 @@ public class GherkinPlanRedefiner {
 
             for (int i=0;i<defScenarioOutline.numChildren();i++) {
                 arrangeScenarioImplIntoDefinition(
-                    (DefaultPlanNode) defScenarioOutline.child(i), implScenarios.get(i))
+                    (PlanNodeBuilder) defScenarioOutline.child(i), implScenarios.get(i))
                 ;
             }
 
@@ -109,8 +127,14 @@ public class GherkinPlanRedefiner {
 
 
 
-    private void removeScenariosFromScenarioOutlines(PlanNode plan) {
-        for (DefaultPlanNode scenarioOutline : collectNodesById(
+    private void removeScenariosFromScenarioOutlines(PlanNodeBuilder plan) {
+
+        forAnyNode(
+          withTag(implementationTag).and(withProperty("gherkin","scenarioOutline"))
+        ).perform( PlanNodeBuilder::clearChildren);
+
+
+        for (PlanNodeBuilder scenarioOutline : collectNodesById(
                 "feature",
                 "scenarioOutline",
                 plan.children().filter(this::hasImplementationTag),
@@ -123,7 +147,7 @@ public class GherkinPlanRedefiner {
 
 
 
-    private Map<String, DefaultPlanNode> collectDefinitionScenarios(PlanNode plan) {
+    private Map<String, PlanNodeBuilder> collectDefinitionScenarios(PlanNodeBuilder plan) {
         return collectNodesById(
             "feature",
             "scenario",
@@ -132,7 +156,7 @@ public class GherkinPlanRedefiner {
     }
 
 
-    private Map<String, DefaultPlanNode> collectImplementationScenarios(PlanNode plan) {
+    private Map<String, PlanNodeBuilder> collectImplementationScenarios(PlanNodeBuilder plan) {
         return collectNodesById(
             "feature",
             "scenario",
@@ -142,7 +166,7 @@ public class GherkinPlanRedefiner {
 
 
 
-    private Map<String, DefaultPlanNode> collectDefinitionScenarioOutlines(PlanNode plan) {
+    private Map<String, PlanNodeBuilder> collectDefinitionScenarioOutlines(PlanNodeBuilder plan) {
         return collectNodesById(
             "feature",
             "scenarioOutline",
@@ -151,7 +175,7 @@ public class GherkinPlanRedefiner {
     }
 
 
-    private Map<String, DefaultPlanNode> collectImplementationScenarioOutlines(PlanNode plan) {
+    private Map<String, PlanNodeBuilder> collectImplementationScenarioOutlines(PlanNodeBuilder plan) {
         return collectNodesById(
             "feature",
             "scenarioOutline",
@@ -160,9 +184,9 @@ public class GherkinPlanRedefiner {
     }
 
 
-    private Optional<DefaultPlanNode> findParentFeature(PlanNode plan, PlanNode child) {
+    private Optional<PlanNodeBuilder> findParentFeature(PlanNodeBuilder plan, PlanNodeBuilder child) {
         return plan.children()
-               .map(DefaultPlanNode.class::cast)
+               .map(PlanNodeBuilder.class::cast)
             .filter(feature -> feature.containsChild(child))
             .findFirst()
             ;
@@ -170,21 +194,21 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected void arrangeScenarioImplIntoDefinition(DefaultPlanNode defScenario, DefaultPlanNode implScenario) {
+    protected void arrangeScenarioImplIntoDefinition(PlanNodeBuilder defScenario, PlanNodeBuilder implScenario) {
 
-            List<DefaultPlanNode> nonBackgroundDefSteps =
-                    stepList(defScenario, not(DefaultPlanNode::isBackgroundStep));
-            List<DefaultPlanNode> backgroundDefSteps =
-                    stepList(defScenario, DefaultPlanNode::isBackgroundStep);
-            List<DefaultPlanNode> nonBackgroundImplSteps =
-                    stepList(implScenario, not(DefaultPlanNode::isBackgroundStep));
-            List<DefaultPlanNode> backgroundImplSteps =
-                    stepList(implScenario, DefaultPlanNode::isBackgroundStep);
+            List<PlanNodeBuilder> nonBackgroundDefSteps =
+                    stepList(defScenario, not(this::isBackgroundStep));
+            List<PlanNodeBuilder> backgroundDefSteps =
+                    stepList(defScenario, this::isBackgroundStep);
+            List<PlanNodeBuilder> nonBackgroundImplSteps =
+                    stepList(implScenario, not(this::isBackgroundStep));
+            List<PlanNodeBuilder> backgroundImplSteps =
+                    stepList(implScenario, this::isBackgroundStep);
 
             defScenario.clearChildren();
 
             if (!backgroundImplSteps.isEmpty()) {
-                DefaultPlanNode virtualBackgroundNode = new DefaultPlanNode(NodeType.STEP_AGGREGATOR)
+                PlanNodeBuilder virtualBackgroundNode = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
                         .setName("<background>")
                         .setDisplayNamePattern("{name}");
                 backgroundImplSteps.forEach(virtualBackgroundNode::addChild);
@@ -195,7 +219,7 @@ public class GherkinPlanRedefiner {
             int[] stepMap = computeStepMap(nonBackgroundDefSteps.size(), implScenario);
             int visitedSteps = 0;
             for (int i = 0; i<nonBackgroundDefSteps.size();i++) {
-                DefaultPlanNode redefinedChild = nonBackgroundDefSteps.get(i).copy();
+                PlanNodeBuilder redefinedChild = nonBackgroundDefSteps.get(i).copy();
                 for (int j = visitedSteps; j < visitedSteps + stepMap[i]; j++) {
                     // avoid getting and error if the map expects more implementation steps than actually exist
                     if (nonBackgroundImplSteps.size() > j) {
@@ -206,14 +230,14 @@ public class GherkinPlanRedefiner {
                 defScenario.addChild(redefinedChild);
             }
             // if there are implementation steps not mapped, add them to the last step
-            DefaultPlanNode lastDefScenarioChild = (DefaultPlanNode) defScenario.child(defScenario.numChildren()-1);
+            PlanNodeBuilder lastDefScenarioChild = (PlanNodeBuilder) defScenario.child(defScenario.numChildren()-1);
             for (int i = visitedSteps; i < nonBackgroundImplSteps.size(); i++) {
                 lastDefScenarioChild.addChild(nonBackgroundImplSteps.get(i));
             }
 
             // change the node type of children
             defScenario.children().forEach(child ->{
-                ((DefaultPlanNode)child).setNodeType( child.hasChildren() ? NodeType.STEP_AGGREGATOR : NodeType.VIRTUAL_STEP);
+                ((PlanNodeBuilder)child).setNodeType( child.hasChildren() ? NodeType.STEP_AGGREGATOR : NodeType.VIRTUAL_STEP);
             });
 
     }
@@ -224,13 +248,13 @@ public class GherkinPlanRedefiner {
 
 
 
-    private Map<String, DefaultPlanNode> collectNodesById(
+    private Map<String, PlanNodeBuilder> collectNodesById(
             String parentGherkinType,
             String gherkinType,
-            Stream<PlanNode> nodes,
-            Map<String, DefaultPlanNode> output
+            Stream<PlanNodeBuilder> nodes,
+            Map<String, PlanNodeBuilder> output
    ) {
-        for (PlanNode node : nodes.collect(Collectors.toList())) {
+        for (PlanNodeBuilder node : nodes.collect(Collectors.toList())) {
             if (node.properties().get("gherkinType").equals(gherkinType)) {
                 if (node.id() == null) {
                     LOGGER.warn(
@@ -238,12 +262,12 @@ public class GherkinPlanRedefiner {
                             node.source(), node.displayName()
                     );
                 } else if (output.containsKey(node.id())){
-                    PlanNode existing = output.get(node.id());
+                    PlanNodeBuilder existing = output.get(node.id());
                     throw new KukumoException("More than one scenario using the id '{}'\n\t<{}>::'{}'\n\t<{}>::'{}'",
                             node.id(), node.source(), node.displayName(), existing.source(), existing.displayName()
                     );
                 } else {
-                    output.put(node.id(), (DefaultPlanNode) node);
+                    output.put(node.id(),node);
                 }
             } else if (node.properties().get("gherkinType").equals(parentGherkinType) && node.hasChildren()) {
                 collectNodesById(parentGherkinType, gherkinType, node.children(), output);
@@ -255,10 +279,10 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected List<DefaultPlanNode> stepList(PlanNode node, Predicate<DefaultPlanNode> filter) {
+    protected List<PlanNodeBuilder> stepList(PlanNodeBuilder node, Predicate<PlanNodeBuilder> filter) {
         return node.children()
-                .filter(DefaultPlanNode.class::isInstance)
-                .map(DefaultPlanNode.class::cast)
+                .filter(PlanNodeBuilder.class::isInstance)
+                .map(PlanNodeBuilder.class::cast)
                 .filter(filter)
                 .collect(Collectors.toList());
     }
@@ -273,7 +297,7 @@ public class GherkinPlanRedefiner {
 
 
 
-    protected int[] computeStepMap(int numDefChildren, PlanNode implNode) {
+    protected int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
         int[] stepMap = new int[numDefChildren];
         String stepMapProperty = implNode.properties().get(KukumoConfiguration.REDEFINITION_STEP_MAP);
         try {
@@ -294,15 +318,19 @@ public class GherkinPlanRedefiner {
 
 
 
-    private boolean hasDefinitionTag(PlanNode node) {
-        return node.hasTag(this.definitionTag);
+    private boolean hasDefinitionTag(PlanNodeBuilder node) {
+        return node.tags().contains(this.definitionTag);
     }
 
 
-    private boolean hasImplementationTag(PlanNode node) {
-        return node.hasTag(this.implementationTag);
+    private boolean hasImplementationTag(PlanNodeBuilder node) {
+        return node.tags().contains(this.implementationTag);
     }
 
+
+    private boolean isBackgroundStep(PlanNodeBuilder node) {
+        return node.parent().filter(parent -> "background".equals(parent.properties().get("gherkin"))).isPresent();
+    }
 
 
 }

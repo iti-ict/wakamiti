@@ -14,16 +14,16 @@ import iti.kukumo.api.extensions.Configurator;
     name="gherkin-configurator",
     extensionPoint = "iti.kukumo.api.extensions.Configurator"
 )
-public class GherkinPlannerConfigurator implements Configurator<GherkinPlanner> {
+public class GherkinPlanBuilderConfigurator implements Configurator<GherkinPlanBuilder> {
 
     @Override
     public boolean accepts(Object contributor) {
-        return GherkinPlanner.class.isAssignableFrom(contributor.getClass());
+        return GherkinPlanBuilder.class.isAssignableFrom(contributor.getClass());
     }
 
 
     @Override
-    public void configure(GherkinPlanner contributor, Configuration configuration) {
+    public void configure(GherkinPlanBuilder contributor, Configuration configuration) {
         contributor.configureFilterFromTagExpression(configuration);
         contributor.configureIdTagPattern(configuration);
         contributor.setRedefinitionEnabled(configuration.get(KukumoConfiguration.REDEFINITION_ENABLED,Boolean.class)
