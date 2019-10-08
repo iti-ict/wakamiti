@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import iti.kukumo.core.model.ExecutableTreeNode;
+import iti.kukumo.core.plan.PlanNodeBuilder;
 
 
 public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {

@@ -1,10 +1,12 @@
 package iti.kukumo.test.gherkin;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.Properties;
-
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationException;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.gherkin.GherkinResourceType;
 import org.json.JSONException;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -14,13 +16,11 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.gherkin.GherkinResourceType;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestPlanFactory {
 
@@ -97,10 +97,16 @@ public class TestPlanFactory {
 
 
     private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
+        StringBuilder leading = new StringBuilder();
         for (int i=0;i<level;i++) {
-            string.append("--");
+            leading.append("--");
         }
-        string.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName()).append("\n");
+        leading.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName());
+        string.append(String.format("%-100s %-40s %s\n",
+            leading,
+            node.tags().isEmpty() ? "" : node.tags().stream().sorted().map(s->"#"+s).collect(Collectors.joining(" ")),
+            node.properties().isEmpty() ? "" : node.properties()
+        ));
         node.children().forEach(child -> printPlan(child,string,level+1));
         return string;
     }

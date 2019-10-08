@@ -1,12 +1,13 @@
 package iti.kukumo.api.extensions;
 
+import iti.commons.configurer.Configuration;
 import iti.commons.jext.ExtensionPoint;
-import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.core.plan.PlanNodeBuilder;
 
 @ExtensionPoint
-public interface PlanTransformer {
+public interface PlanTransformer extends Contributor {
 
     /** Transform a plan */
-    public PlanNodeBuilder transform(PlanNodeBuilder plan);
+    public PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration);
 
 }

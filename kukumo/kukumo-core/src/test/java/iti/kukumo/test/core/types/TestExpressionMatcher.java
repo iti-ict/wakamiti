@@ -14,7 +14,7 @@ import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.core.plan.PlanNodeBuilder;
 import iti.kukumo.core.backend.ExpressionMatcher;
 
 /**

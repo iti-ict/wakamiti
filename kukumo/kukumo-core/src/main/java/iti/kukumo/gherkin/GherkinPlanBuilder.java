@@ -1,34 +1,6 @@
 package iti.kukumo.gherkin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import gherkin.ast.Background;
-import gherkin.ast.Comment;
-import gherkin.ast.DataTable;
-import gherkin.ast.DocString;
-import gherkin.ast.Examples;
-import gherkin.ast.Feature;
-import gherkin.ast.GherkinDocument;
-import gherkin.ast.Location;
-import gherkin.ast.Scenario;
-import gherkin.ast.ScenarioDefinition;
-import gherkin.ast.ScenarioOutline;
-import gherkin.ast.Step;
-import gherkin.ast.TableCell;
-import gherkin.ast.TableRow;
-import gherkin.ast.Tag;
+import gherkin.ast.*;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
@@ -39,14 +11,28 @@ import iti.kukumo.api.extensions.PlanBuilder;
 import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.core.plan.PlanNodeBuilder;
 import iti.kukumo.gherkin.parser.CommentedNode;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Extension(
     provider = "iti.kukumo",
     name="kukumo-gherkin"
 )
 public class GherkinPlanBuilder implements PlanBuilder {
+
+    public static final String GHERKIN_PROPERTY = "gherkinType";
+    public static final String GHERKIN_TYPE_FEATURE = "feature";
+    public static final String GHERKIN_TYPE_SCENARIO = "scenario";
+    public static final String GHERKIN_TYPE_SCENARIO_OUTLINE = "scenarioOutline";
+    public static final String GHERKIN_TYPE_BACKGROUND = "background";
+    public static final String GHERKIN_TYPE_STEP = "step";
 
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
@@ -106,7 +92,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
             plan.addChildIf(createFeature(gherkinResource), PlanNodeBuilder::hasChildren);
         }
         if (this.redefinitionEnabled) {
-            this.redefinitionHelper.arrangeRedefinitions(plan);
+            // this.redefinitionHelper.arrangeRedefinitions(plan);
         }
         return plan;
     }
@@ -144,7 +130,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
         PlanNodeBuilder parentNode
     ) {
         PlanNodeBuilder node = newScenarioNode(scenario, location, parentNode);
-        Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location);
+        Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
         backgroundSteps.ifPresent(background -> node.addChild(background.copy()));
         for (Step step : scenario.getSteps()) {
             node.addChild(createStep(step, location, parentNode.language(), node));
@@ -162,7 +148,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
         PlanNodeBuilder parentNode
     ) {
         PlanNodeBuilder node = newScenarioOutlineNode(scenarioOutline,location,parentNode);
-        Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location);
+        Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
         for (Examples examples : scenarioOutline.getExamples()) {
            List<PlanNodeBuilder> scenarios = createScenariosFromExamples(
                    scenarioOutline,
@@ -176,7 +162,6 @@ public class GherkinPlanBuilder implements PlanBuilder {
         }
         return node;
     }
-
 
 
     protected List<PlanNodeBuilder> createScenariosFromExamples(
@@ -205,8 +190,9 @@ public class GherkinPlanBuilder implements PlanBuilder {
                     .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
                     .setLanguage(language)
                     .setSource(source(location,scenarioOutline.getLocation()))
-                    .addTags(tags(scenarioOutlineNode.tags(), scenarioOutline.getTags()))
+                    .addTags(tags(scenarioOutlineNode.tags(), scenarioOutline.getTags(), scenarioOutlineNode.id()))
                     .addProperties(propertiesFromComments(scenarioOutlineNode, scenarioOutlineNode.properties()))
+                    .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_SCENARIO)
             ;
 
             backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
@@ -218,10 +204,6 @@ public class GherkinPlanBuilder implements PlanBuilder {
         }
         return output;
     }
-
-
-
-
 
 
 
@@ -238,7 +220,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
             .setSource(source(location,feature.getLocation()))
             .setUnderlyingModel(feature)
             .addProperties(propertiesFromComments(feature,null))
-            .addProperty("gherkinType","feature")
+            .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_FEATURE)
         ;
     }
 
@@ -258,7 +240,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
             .setSource(source(location,scenario.getLocation()))
             .setUnderlyingModel(scenario)
             .addProperties(propertiesFromComments(scenario,parentNode.properties()))
-            .addProperty("gherkinType","scenario")
+            .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_SCENARIO)
         ;
     }
 
@@ -275,8 +257,9 @@ public class GherkinPlanBuilder implements PlanBuilder {
             .addTags(tags(parentNode.tags(),scenarioOutline.getTags()))
             .setSource(source(location,scenarioOutline.getLocation()))
             .setUnderlyingModel(scenarioOutline)
+            .setData(examplesAsDataTable(scenarioOutline.getExamples()))
             .addProperties(propertiesFromComments(scenarioOutline, parentNode.properties()))
-            .addProperty("gherkinType","scenarioOutline")
+            .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_SCENARIO_OUTLINE)
         ;
     }
 
@@ -293,8 +276,8 @@ public class GherkinPlanBuilder implements PlanBuilder {
             .setLanguage(language)
             .setSource(source(location,step.getLocation()))
             .setUnderlyingModel(step)
-            .addProperties(propertiesFromComments(step, parentNode == null ? null : parentNode.properties()))
-            .addProperty("gherkinType","step")
+            //.addProperties(propertiesFromComments(step, parentNode == null ? null : parentNode.properties()))
+            .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_STEP)
         ;
     }
 
@@ -312,7 +295,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
 
 
 
-    protected Optional<PlanNodeBuilder> createBackgroundSteps(Feature feature, String location) {
+    protected Optional<PlanNodeBuilder> createBackgroundSteps(Feature feature, String location, PlanNodeBuilder parentNode) {
         Optional<Background> background = getBackground(feature);
         if (background.isPresent()) {
             ArrayList<PlanNodeBuilder> steps = new ArrayList<>();
@@ -320,9 +303,12 @@ public class GherkinPlanBuilder implements PlanBuilder {
                 steps.add(createStep(step, location, feature.getLanguage(), null));
             }
             PlanNodeBuilder backgroundAggregator = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
-                .addProperty("gherkin", "background")
+                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_BACKGROUND)
                 .setKeyword(background.get().getKeyword())
                 .setName(background.get().getName())
+                .setDisplayNamePattern("{keyword}: {name}")
+                .addTags(parentNode.tags())
+                .addProperties(parentNode.properties())
             ;
             steps.forEach(backgroundAggregator::addChild);
             return Optional.of(backgroundAggregator);
@@ -383,6 +369,25 @@ public class GherkinPlanBuilder implements PlanBuilder {
 
 
 
+    private iti.kukumo.api.plan.DataTable examplesAsDataTable(List<Examples> examplesList) {
+        if (examplesList == null || examplesList.isEmpty()) {
+            return null;
+        }
+        Examples examples = examplesList.get(0);
+        int rows = examples.getTableBody().size()+1;
+        int columns = examples.getTableHeader().getCells().size();
+        String[][] dataTable = new String[rows][columns];
+        for (int column = 0; column < columns; column++) {
+            dataTable[0][column] = examples.getTableHeader().getCells().get(column).getValue();
+        }
+        for (int row = 1; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                dataTable[row][column] = examples.getTableBody().get(row-1).getCells().get(column).getValue();
+            }
+        }
+        return new iti.kukumo.api.plan.DataTable(dataTable);
+    }
+
 
 
     private String[][] toArray(DataTable table) {
@@ -421,11 +426,17 @@ public class GherkinPlanBuilder implements PlanBuilder {
         return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct().collect(Collectors.toList());
     }
 
-    private Set<String> tags(Set<String> parentTags, Collection<Tag> tags) {
-        Set<String> tagList = tags.stream().map(Tag::getName).map(s -> s.substring(1)).collect(Collectors.toSet());
+    private Set<String> tags(Set<String> parentTags, Collection<Tag> tags, String... ignoredTags) {
+        List<String> ignoredTagList = Arrays.asList(ignoredTags);
+        Set<String> tagList = tags.stream()
+                .map(Tag::getName)
+                .map(s -> s.substring(1))
+                .filter(s -> !ignoredTagList.contains(s))
+                .collect(Collectors.toSet());
         tagList.addAll(parentTags);
         return tagList;
     }
+
 
 
 

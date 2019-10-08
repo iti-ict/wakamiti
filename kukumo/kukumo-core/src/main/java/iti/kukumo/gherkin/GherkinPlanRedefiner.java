@@ -1,20 +1,5 @@
 package iti.kukumo.gherkin;
 
-import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.forAnyNode;
-import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.withProperty;
-import static iti.kukumo.core.plan.DefaultPlanTransformer.PlanNodeBuilderPredicate.withTag;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -23,7 +8,13 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.core.plan.PlanNodeBuilder;
+import org.slf4j.Logger;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class GherkinPlanRedefiner {
@@ -103,7 +94,8 @@ public class GherkinPlanRedefiner {
 
             Optional<PlanNodeBuilder> implBackgroundSteps = factory.createBackgroundSteps(
                     (Feature) implFeature.getUnderlyingModel(),
-                    implFeature.source()
+                    implFeature.source(),
+                    implFeature
             );
 
             List<PlanNodeBuilder> implScenarios = factory.createScenariosFromExamples(
@@ -128,12 +120,12 @@ public class GherkinPlanRedefiner {
 
 
     private void removeScenariosFromScenarioOutlines(PlanNodeBuilder plan) {
-
+/*
         forAnyNode(
           withTag(implementationTag).and(withProperty("gherkin","scenarioOutline"))
         ).perform( PlanNodeBuilder::clearChildren);
 
-
+*/
         for (PlanNodeBuilder scenarioOutline : collectNodesById(
                 "feature",
                 "scenarioOutline",

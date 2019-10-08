@@ -47,6 +47,11 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
     }
 
 
+    public S root() {
+        return parent.map(TreeNodeBuilder::root).orElse((S)this);
+    }
+
+
     public Stream<S> ancestors() {
         return parent.isPresent() ?
             Stream.concat(Stream.of(parent.get()),parent.get().ancestors()) :

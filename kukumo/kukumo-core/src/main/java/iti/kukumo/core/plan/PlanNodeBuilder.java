@@ -1,15 +1,11 @@
-package iti.kukumo.api.plan;
+package iti.kukumo.core.plan;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeData;
 import iti.kukumo.core.model.TreeNodeBuilder;
+
+import java.util.*;
 
 
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
