@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
-import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
@@ -72,8 +71,7 @@ public class PlanRunner  {
             Configuration childConfiguration = configuration.append(
                 confBuilder.buildFromMap(feature.properties())
             );
-            BackendFactory backendFactory = kukumo.getBackendFactory().setConfiguration(childConfiguration);
-            return new PlanNodeRunner(feature, backendFactory, planNodeLogger);
+            return new PlanNodeRunner(feature, childConfiguration, planNodeLogger);
         }).collect(Collectors.toList());
     }
 

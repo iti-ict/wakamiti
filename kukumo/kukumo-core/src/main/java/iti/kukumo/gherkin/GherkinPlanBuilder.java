@@ -7,6 +7,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.Resource;
+import iti.kukumo.api.extensions.Configurable;
 import iti.kukumo.api.extensions.PlanBuilder;
 import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.plan.Document;
@@ -23,9 +24,10 @@ import java.util.stream.Collectors;
 
 @Extension(
     provider = "iti.kukumo",
-    name="kukumo-gherkin"
+    name="kukumo-gherkin",
+    extensionPoint="iti.kukumo.api.extensions.PlanBuilder"
 )
-public class GherkinPlanBuilder implements PlanBuilder {
+public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     public static final String GHERKIN_PROPERTY = "gherkinType";
     public static final String GHERKIN_TYPE_FEATURE = "feature";
@@ -37,18 +39,7 @@ public class GherkinPlanBuilder implements PlanBuilder {
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern = null;
-    private boolean redefinitionEnabled = true;
-    private GherkinPlanRedefiner redefinitionHelper;
 
-
-
-    public void setRedefinitionEnabled(boolean redefinitionEnabled) {
-        this.redefinitionEnabled = redefinitionEnabled;
-    }
-
-    public void setRedefinitionHelper(GherkinPlanRedefiner redefinitionHelper) {
-        this.redefinitionHelper = redefinitionHelper;
-    }
 
     @Override
     public boolean acceptResourceType(ResourceType<?> resourceType) {
@@ -57,10 +48,17 @@ public class GherkinPlanBuilder implements PlanBuilder {
 
 
 
+    @Override
+    public void configure(Configuration configuration) {
+        configureFilterFromTagExpression(configuration);
+        configureIdTagPattern(configuration);
+    }
+
+
     protected void configureFilterFromTagExpression(Configuration configuration) {
         String tagFilterExpression = configuration.get(KukumoConfiguration.TAG_FILTER,String.class).orElse("");
         if (tagFilterExpression != null && !tagFilterExpression.isEmpty()) {
-            this.scenarioFilter = node-> Kukumo.instance().getTagFilter(tagFilterExpression).filter(node.tags());
+            this.scenarioFilter = node-> Kukumo.instance().createTagFilter(tagFilterExpression).filter(node.tags());
         }
     }
 
@@ -90,9 +88,6 @@ public class GherkinPlanBuilder implements PlanBuilder {
                 .map(x -> (Resource<GherkinDocument>) x).collect(Collectors.toList());
         for (Resource<GherkinDocument> gherkinResource : gherkinResources) {
             plan.addChildIf(createFeature(gherkinResource), PlanNodeBuilder::hasChildren);
-        }
-        if (this.redefinitionEnabled) {
-            // this.redefinitionHelper.arrangeRedefinitions(plan);
         }
         return plan;
     }
@@ -303,12 +298,12 @@ public class GherkinPlanBuilder implements PlanBuilder {
                 steps.add(createStep(step, location, feature.getLanguage(), null));
             }
             PlanNodeBuilder backgroundAggregator = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
-                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_BACKGROUND)
                 .setKeyword(background.get().getKeyword())
                 .setName(background.get().getName())
                 .setDisplayNamePattern("{keyword}: {name}")
                 .addTags(parentNode.tags())
                 .addProperties(parentNode.properties())
+                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_BACKGROUND)
             ;
             steps.forEach(backgroundAggregator::addChild);
             return Optional.of(backgroundAggregator);

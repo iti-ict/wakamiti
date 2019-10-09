@@ -12,6 +12,7 @@ import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.Pair;
+import iti.kukumo.util.ResourceLoader;
 import iti.kukumo.util.ThrowableRunnable;
 
 public class RunnableStep {
@@ -21,6 +22,7 @@ public class RunnableStep {
     private final Map<Locale,String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
+    private final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
 
 
     public RunnableStep(
@@ -40,15 +42,22 @@ public class RunnableStep {
     public String getTranslatedDefinition(Locale locale) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
-            ResourceBundle resourceBundle = Kukumo.instance().getResourceLoader().resourceBundle(definitionFile,locale);
+            ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile,locale);
             if (resourceBundle == null) {
-                throw new KukumoException("Cannot find step definition file {} for locale {}",
-                        definitionFile,locale);
+                throw new KukumoException(
+                    "Cannot find step definition file {} for locale {}",
+                    definitionFile,
+                    locale
+                );
             }
             translatedDefinition = resourceBundle.getString(definitionKey).trim();
             if (translatedDefinition == null) {
-                throw new KukumoException("Cannot find step definition entry '{}' in file '{}' for locale {}",
-                        definitionKey,definitionFile,locale);
+                throw new KukumoException(
+                    "Cannot find step definition entry '{}' in file '{}' for locale {}",
+                    definitionKey,
+                    definitionFile,
+                    locale
+                );
             }
             translatedDefinitions.put(locale, translatedDefinition);
         }
@@ -64,7 +73,7 @@ public class RunnableStep {
 
 
 
-    public void run (Map<String,Object> invokeArguments) throws Throwable {
+    public void run (Map<String,Object> invokeArguments) {
 
         boolean error = false;
         // re-arrange argument order
@@ -83,13 +92,18 @@ public class RunnableStep {
             }
         }
         if (error) {
-            throw new KukumoException("Cannot run step: wrong arguments (expected {} but received {})",
-                    arguments, invokeArguments);
+            throw new KukumoException(
+                "Cannot run step: wrong arguments (expected {} but received {})",
+                arguments,
+                invokeArguments
+            );
         } else {
             try {
                 executor.run(argumentArray);
             } catch (InvocationTargetException e) {
-                throw e.getTargetException();
+                throw new KukumoException(e.getTargetException());
+            } catch (Exception e) {
+                throw new KukumoException(e);
             }
         }
     }

@@ -109,7 +109,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     public void setReportLocale(Locale reportLocale) {
-        this.resourceBundle = Kukumo.instance().getResourceLoader().resourceBundle("messages", reportLocale);
+        this.resourceBundle = Kukumo.instance().resourceLoader().resourceBundle("messages", reportLocale);
         this.formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL,FormatStyle.MEDIUM).withLocale(reportLocale);
     }
 

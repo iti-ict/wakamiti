@@ -57,8 +57,8 @@ public class TestPlanFactory {
         System.out.println(printPlan(testPlan,new StringBuilder(),0));
 
         assertThat(testPlan.numDescendants(NodeType.TEST_CASE)).isEqualTo(testCases);
-        String plan = kukumo.getPlanSerializer().serialize(testPlan);
-        String result = kukumo.getResourceLoader().readResourceAsString(resultFilename);
+        String plan = kukumo.planSerializer().serialize(testPlan);
+        String result = kukumo.resourceLoader().readResourceAsString(resultFilename);
         JSONComparator comparator = new DefaultComparator(JSONCompareMode.STRICT);
         JSONCompareResult comparison = JSONCompare.compareJSON(result, plan, comparator);
         if (comparison.failed()) {

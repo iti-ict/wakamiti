@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.core.runner.PlanNodeLogger;
@@ -14,13 +14,13 @@ import iti.kukumo.core.runner.PlanNodeRunner;
 public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
 
 
-    public JUnitPlanNodeStepRunner(PlanNode node, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
-        super(node, backendFactory, backend, logger);
+    public JUnitPlanNodeStepRunner(PlanNode node, Configuration configuration, Optional<Backend> backend, PlanNodeLogger logger) {
+        super(node, configuration, backend, logger);
     }
 
 
-    public JUnitPlanNodeStepRunner(PlanNode node, BackendFactory backendFactory, PlanNodeLogger logger) {
-        super(node, backendFactory, logger);
+    public JUnitPlanNodeStepRunner(PlanNode node, Configuration configuration, PlanNodeLogger logger) {
+        super(node, configuration, logger);
     }
 
 
@@ -33,7 +33,7 @@ public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
     @Override
     protected List<PlanNodeRunner> createChildren() {
         return getNode().children().map(child ->
-                new JUnitPlanNodeStepRunner(child, getBackendFactory(), getBackend(), getLogger())
+                new JUnitPlanNodeStepRunner(child, configuration(), getBackend(), getLogger())
         ).collect(Collectors.toList());
     }
 

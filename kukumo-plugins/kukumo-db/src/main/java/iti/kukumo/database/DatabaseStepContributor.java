@@ -32,7 +32,7 @@ public class DatabaseStepContributor implements StepContributor {
     private static final Logger LOGGER = KukumoLogger.of(LoggerFactory.getLogger("iti.kukumo.database"));
 
 
-    private static ConnectionManager connectionManager = Kukumo.instance().getExtensionManager()
+    private static ConnectionManager connectionManager = Kukumo.instance().extensionManager()
             .getExtension(ConnectionManager.class)
             .orElseThrow(()->new KukumoException("Cannot find a connection manager"));
 

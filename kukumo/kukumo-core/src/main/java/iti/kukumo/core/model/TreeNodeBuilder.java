@@ -78,6 +78,18 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
         return (S) this;
     }
 
+    public S addChild(S child, int index) {
+        children.add(index,child);
+        child.parent().ifPresent(previousParent -> previousParent.removeChild(child));
+        ((TreeNodeBuilder<S>)child).parent = Optional.of((S)this);
+        return (S) this;
+    }
+
+
+    public S addFirstChild(S child) {
+        return addChild(child,0);
+    }
+
     public S addChildIf(S child, Predicate<S> predicate) {
         if (predicate.test(child)) {
             addChild(child);

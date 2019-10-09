@@ -1,8 +1,33 @@
 package iti.kukumo.core.backend;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.*;
+import iti.kukumo.api.Backend;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoContributors;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.SetUp;
 import iti.kukumo.api.annotations.Step;
@@ -11,106 +36,111 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.ThrowableRunnable;
-import org.slf4j.Logger;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.Clock;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-@Extension(provider="iti.kukumo", name="defaultBackendFactory", version="1.0")
 public class DefaultBackendFactory implements BackendFactory {
 
     private static final Logger LOGGER = Kukumo.LOGGER;
     private static final List<String> DEFAULT_MODULES = Collections.unmodifiableList(Arrays.asList(
-            "core-types",
-            "assertion-types"
+        "core-types",
+        "assertion-types"
     ));
-    private static Kukumo kukumo = Kukumo.instance();
+    private static KukumoContributors kukumo = Kukumo.instance().contributors();
 
-
-    private Clock clock = Clock.systemUTC();
-    private Configuration configuration;
-
-
-    @Override
-    public BackendFactory setClock(Clock clock) {
-        this.clock = clock;
-        return this;
-    }
-
-    @Override
-    public BackendFactory setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-        return this;
-    }
 
 
 
     @Override
-    public Backend createBackend(PlanNode node) {
-        if (clock == null) {
-            throw new IllegalStateException("Clock must be set first");
+    public Backend createBackend(PlanNode node, Configuration configuration) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "Creating backend for Test Case {}::'{}'",
+                node.source(),
+                node.displayName()
+               );
         }
-        if (configuration == null) {
-            throw new IllegalStateException("Configuration must be set first");
-        }
-        LOGGER.debug("Creating backend for Test Case {}::'{}'", node.source(), node.displayName());
-        Backend backend =  createBackend(configuration.appendFromMap(node.properties()));
-        return backend;
+        return createBackend(configuration.appendFromMap(node.properties()));
     }
 
 
 
 
     protected Backend createBackend(Configuration configuration) {
-        // each backend uses a new instance of each step contributor in order to ease parallelization
-        List<String> restrictedModules = new ArrayList<>(configuration.getList(KukumoConfiguration.MODULES,String.class));
-        List<StepContributor> stepContributors = resolveStepContributors(restrictedModules);
-        stepContributors.forEach(stepContributor -> kukumo.configure(stepContributor,configuration));
-        List<DataTypeContributor> dataTypeContributors = resolveDataTypeContributors(restrictedModules);
+
+        List<String> restrictedModules = new ArrayList<>(
+            configuration.getList(KukumoConfiguration.MODULES,String.class)
+        );
+        List<StepContributor> stepContributors =
+            createStepContributors(restrictedModules,configuration);
+
+        Stream<DataTypeContributor> dataTypeContributors =
+            resolveDataTypeContributors(restrictedModules);
+
         KukumoDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
-        List<RunnableStep> steps = loadSteps(stepContributors, typeRegistry);
-        List<ThrowableRunnable> setUpOperations = loadMethods(stepContributors, SetUp.class, SetUp::order);
-        List<ThrowableRunnable> tearDownOperations = loadMethods(stepContributors, TearDown.class, TearDown::order);
-        return new DefaultBackend(configuration,typeRegistry,steps,setUpOperations,tearDownOperations,clock);
+        List<RunnableStep> steps = createSteps(stepContributors, typeRegistry);
+        Clock clock = Clock.systemUTC();
+        return new DefaultBackend(
+            configuration,
+            typeRegistry,
+            steps,
+            getSetUpOperations(stepContributors),
+            getTearDownOperations(stepContributors),
+            clock
+        );
+    }
+
+
+    private List<ThrowableRunnable> getSetUpOperations(List<StepContributor> stepContributors) {
+        return loadMethods(stepContributors, SetUp.class, SetUp::order);
+    }
+
+    private List<ThrowableRunnable> getTearDownOperations(List<StepContributor> stepContributors) {
+        return loadMethods(stepContributors, TearDown.class, TearDown::order);
     }
 
 
 
-
-    protected List<StepContributor> resolveStepContributors(List<String> restrictedModules) {
+    protected List<StepContributor> createStepContributors(
+        List<String> restrictedModules,
+        Configuration configuration
+    ) {
 
         List<StepContributor> stepContributors = new ArrayList<>();
         if (restrictedModules.isEmpty()) {
-            stepContributors.addAll( kukumo.loadAllStepContributors(configuration) );
+            stepContributors.addAll( kukumo.createAllStepContributors(configuration) );
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            stepContributors.addAll( kukumo.loadSpecificStepContributors(modules,configuration) );
+            stepContributors.addAll( kukumo.createStepContributors(modules,configuration) );
         }
 
-        List<String> nonRegisteredContributorClasses = configuration.getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,String.class);
-        stepContributors.addAll(resolveNonRegisteredContributors(nonRegisteredContributorClasses));
+        List<String> nonRegisteredContributorClasses
+            = configuration.getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,String.class);
+        List<StepContributor> nonRegisteredContributors
+            = resolveNonRegisteredContributors(nonRegisteredContributorClasses,configuration);
+
+        stepContributors.addAll(nonRegisteredContributors);
+
         if (stepContributors.isEmpty()) {
             logTipForNoStepContributors(restrictedModules);
             throw new KukumoException("Cannot build backend without step contributors");
         }
+
+        stepContributors.forEach(stepContributor->kukumo.configure(stepContributor,configuration));
         return stepContributors;
     }
 
 
 
 
-    protected List<DataTypeContributor> resolveDataTypeContributors(List<String> restrictedModules) {
+    protected Stream<DataTypeContributor> resolveDataTypeContributors(
+        List<String> restrictedModules
+    ) {
         if (restrictedModules.isEmpty()) {
-            return kukumo.getAllDataTypeContributors();
+            return kukumo.allDataTypeContributors();
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            return kukumo.getSpecificDataTypeContributors(modules);
+            return kukumo.dataTypeContributors(modules);
         }
     }
 
@@ -119,12 +149,13 @@ public class DefaultBackendFactory implements BackendFactory {
     protected void logTipForNoStepContributors(List<String> restrictedModules) {
         if (restrictedModules.isEmpty()) {
             LOGGER.error(
-               "No step contributors found. You must either declare step modules with property '{}' or " +
-               "non-registered step provider classes with property '{}'",
-                KukumoConfiguration.MODULES, KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS
+               "No step contributors found. You must either declare step modules with "+
+               "property '{}' or non-registered step provider classes with property '{}'",
+                KukumoConfiguration.MODULES,
+                KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS
             );
         } else {
-            String availableStepContributors = kukumo.getAllStepContributorMetadata().stream()
+            String availableStepContributors = kukumo.allStepContributorMetadata()
                 .map(Extension::name)
                 .collect(Collectors.joining("\n\t"))
             ;
@@ -151,7 +182,7 @@ public class DefaultBackendFactory implements BackendFactory {
     private <A extends Annotation> List<ThrowableRunnable> loadMethods(
         List<StepContributor> stepContributors,
         Class<A> annotation,
-        Function<A,Integer> orderProvider
+        ToIntFunction<A> orderGetter
     ) {
         LinkedHashMap<ThrowableRunnable,A> runnables = new LinkedHashMap<>();
         for (StepContributor stepContributor : stepContributors) {
@@ -164,41 +195,54 @@ public class DefaultBackendFactory implements BackendFactory {
                 }
             }
         }
+
+        Comparator<? super Entry<ThrowableRunnable, A>> sorter =
+            Comparator.comparingInt(e->orderGetter.applyAsInt(e.getValue()));
+
         return runnables.entrySet().stream()
-        .sorted( (e1,e2)->orderProvider.apply(e1.getValue()).compareTo(orderProvider.apply(e2.getValue())) )
+        .sorted(sorter)
         .map(Map.Entry::getKey)
         .collect(Collectors.toList());
     }
 
 
 
-    protected KukumoDataTypeRegistry loadTypes(List<DataTypeContributor> contributors) {
+    protected KukumoDataTypeRegistry loadTypes(Stream<DataTypeContributor> contributors) {
 
         Map<String,KukumoDataType<?>> types = new HashMap<>();
-        for (DataTypeContributor contributor: contributors) {
+        contributors.forEach(contributor -> {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("using type {resourceType}({}) provided by {contributor}", type.getName(), type.getJavaType(), contributor.info());
+                    LOGGER.trace(
+                        "using type {resourceType}({}) provided by {contributor}",
+                        type.getName(),
+                        type.getJavaType(),
+                        contributor.info()
+                    );
                 }
                 KukumoDataType<?> replacedType = types.put(type.getName(), type);
                 if (replacedType != null && LOGGER.isDebugEnabled()) {
-                    LOGGER.warn("Module {contributor} overrides type {resourceType}", contributor.info(), replacedType.getName());
+                    LOGGER.warn(
+                        "Module {contributor} overrides type {resourceType}",
+                        contributor.info(),
+                        replacedType.getName()
+                    );
                 }
             }
-        }
+        });
         return new KukumoDataTypeRegistry(types);
     }
 
 
 
 
-    protected List<RunnableStep> loadSteps(
+    protected List<RunnableStep> createSteps(
             List<StepContributor> stepContributors,
             KukumoDataTypeRegistry typeRegistry
     ) {
         ArrayList<RunnableStep> resultSteps = new ArrayList<>();
         for (Object stepContributor : stepContributors) {
-            loadContributorSteps(resultSteps,stepContributor,typeRegistry);
+            createContributorSteps(resultSteps,stepContributor,typeRegistry);
         }
         return resultSteps;
     }
@@ -206,26 +250,44 @@ public class DefaultBackendFactory implements BackendFactory {
 
 
 
-    protected List<StepContributor> resolveNonRegisteredContributors(List<String> nonRegisteredContributorClasses) {
+    protected List<StepContributor> resolveNonRegisteredContributors(
+        List<String> nonRegisteredContributorClasses,
+        Configuration configuration
+    ) {
         List<StepContributor> nonRegisteredContributors = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for (String nonRegisteredContributorClass : nonRegisteredContributorClasses) {
             try {
-                Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass).getConstructor().newInstance();
+                Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass)
+                    .getConstructor()
+                    .newInstance();
                 if (newStepContributor instanceof StepContributor) {
                     kukumo.configure(newStepContributor,configuration);
                     nonRegisteredContributors.add((StepContributor) newStepContributor);
                 } else {
-                    LOGGER.warn("Class {} does not implement {}", nonRegisteredContributorClass, StepContributor.class);
+                    LOGGER.warn(
+                        "Class {} does not implement {}",
+                        nonRegisteredContributorClass,
+                        StepContributor.class
+                    );
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER.warn("Cannot find non-registered step provider class: {}\n\t{}",
-                        nonRegisteredContributorClass,
-                        "Ensure the class exists, is fully qualified, and its accesible from the main class loader");
+                LOGGER.warn(
+                    "Cannot find non-registered step provider class: {}\n\tEnsure the class "+
+                    "exists, is fully qualified, and its accesible from the main class loader",
+                    nonRegisteredContributorClass
+                );
             } catch (NoSuchMethodException e) {
-                LOGGER.warn("Non-registered step provider class {} requieres empty constructor", nonRegisteredContributorClass);
+                LOGGER.warn(
+                    "Non-registered step provider class {} requieres empty constructor",
+                    nonRegisteredContributorClass
+                );
             } catch (ReflectiveOperationException e) {
-                LOGGER.warn("Error loading non-registered step provider class {} : {}", nonRegisteredContributorClass, e.getLocalizedMessage());
+                LOGGER.warn(
+                    "Error loading non-registered step provider class {} : {}",
+                    nonRegisteredContributorClass,
+                    e.getLocalizedMessage()
+                );
             }
         }
         return nonRegisteredContributors;
@@ -234,15 +296,23 @@ public class DefaultBackendFactory implements BackendFactory {
 
 
 
-    protected void loadContributorSteps(List<RunnableStep> output, Object stepProvider, KukumoDataTypeRegistry typeRegistry) {
+    protected void createContributorSteps(
+        List<RunnableStep> output,
+        Object stepProvider,
+        KukumoDataTypeRegistry typeRegistry
+    ) {
         for (Method method : stepProvider.getClass().getMethods()) {
             if (method.isAnnotationPresent(Step.class)) {
                 try {
                     RunnableStep step = createRunnableStep(stepProvider, method, typeRegistry);
                     output.add(step);
                     if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace("using step <{}::'{}' {}>",
-                                stepProvider.getClass().getSimpleName(), step.getDefinitionKey(), step.getArguments());
+                        LOGGER.trace(
+                               "using step <{}::'{}' {}>",
+                            stepProvider.getClass().getSimpleName(),
+                            step.getDefinitionKey(),
+                            step.getArguments()
+                        );
                     }
                 } catch (Exception e) {
                     throw new KukumoException(e);
@@ -262,21 +332,33 @@ public class DefaultBackendFactory implements BackendFactory {
             Method runnableMethod,
             KukumoDataTypeRegistry typeRegistry
     ) {
-        final I18nResource stepDefinitionFile = runnableObject.getClass().getAnnotation(I18nResource.class);
+        Class<?> stepContributorClass = runnableObject.getClass();
+        I18nResource stepDefinitionFile = stepContributorClass.getAnnotation(I18nResource.class);
         if (stepDefinitionFile == null) {
-            throw new KukumoException("Class {} must be annotated with {}",
-                    runnableObject.getClass().getCanonicalName(),
-                    I18nResource.class.getCanonicalName());
+            throw new KukumoException(
+                "Class {} must be annotated with {}",
+                runnableObject.getClass().getCanonicalName(),
+                I18nResource.class.getCanonicalName()
+            );
         }
         final Step stepDefinition = runnableMethod.getAnnotation(Step.class);
         if (stepDefinition == null) {
-            throw new KukumoException("Method {}::{} must be annotated with {}",
-                    runnableObject.getClass().getCanonicalName(), runnableMethod.getName(), Step.class.getCanonicalName());
+            throw new KukumoException(
+                "Method {}::{} must be annotated with {}",
+                runnableObject.getClass().getCanonicalName(),
+                runnableMethod.getName(),
+                Step.class.getCanonicalName()
+            );
         }
         for (Class<?> methodArgumentType: runnableMethod.getParameterTypes()) {
             if (methodArgumentType.isPrimitive()) {
-                throw new KukumoException("Method {}::{} must not use primitive argument type {}; use analogous boxed type",
-                        runnableObject.getClass().getCanonicalName(), runnableMethod.getName(), methodArgumentType.getName());
+                throw new KukumoException(
+                    "Method {}::{} must not use primitive argument type {}; "+
+                    "use equivalent boxed type",
+                    runnableObject.getClass().getCanonicalName(),
+                    runnableMethod.getName(),
+                    methodArgumentType.getName()
+                );
             }
         }
         return new RunnableStep(

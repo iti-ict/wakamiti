@@ -37,15 +37,15 @@ import java.util.stream.Stream;
 public class RestStepContributor implements StepContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
-    public static final ResourceLoader resourceLoader = Kukumo.instance().getResourceLoader();
+    public static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
 
     private Map<ContentType,ContentTypeHelper> contentTypeValidators = Kukumo.instance()
-            .getExtensionManager()
-            .getExtensions(ContentTypeHelper.class).stream()
-            .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
+        .extensionManager()
+        .getExtensions(ContentTypeHelper.class)
+        .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 
     private URL baseURL;
-    private ContentType contentType;
+    private ContentType requestContentType;
     private String path;
     private String subject;
     private Long timeoutMillis;
@@ -62,7 +62,7 @@ public class RestStepContributor implements StepContributor {
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().accept(contentType).with().params(requestParams);
+        RequestSpecification request = RestAssured.given().accept(requestContentType).with().params(requestParams);
         if (authenticator != null) {
             authenticator.accept(request);
         }
@@ -133,32 +133,32 @@ public class RestStepContributor implements StepContributor {
     }
 
 
-    protected ContentTypeHelper contentTypeHelper() {
-        ContentType contentType = ContentType.fromContentType(response.contentType());
-        if (contentType == null) {
+    protected ContentTypeHelper contentTypeHelperForResponse() {
+        ContentType responseContentType = ContentType.fromContentType(response.contentType());
+        if (responseContentType == null) {
             throw new KukumoException("The content type of the response is undefined");
         }
-        ContentTypeHelper helper = contentTypeValidators.get(contentType);
+        ContentTypeHelper helper = contentTypeValidators.get(responseContentType);
         if (helper == null) {
-            throw new KukumoException("There is no content type helper for "+contentType);
+            throw new KukumoException("There is no content type helper for "+responseContentType);
         }
         return helper;
     }
 
 
     protected void assertContentIs(Document expected, boolean exactMatch) {
-        ContentTypeHelper helper = contentTypeHelper();
+        ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(expected,validatableResponse.extract(),exactMatch);
     }
 
     protected void assertContentIs(File expected, boolean exactMatch) {
-        ContentTypeHelper helper = contentTypeHelper();
+        ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(expected,validatableResponse.extract(),exactMatch);
     }
 
 
     private <T> void assertBodyFragment(String fragment, Matcher<T> matcher, Class<T> dataType) {
-        ContentTypeHelper helper = contentTypeHelper();
+        ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertFragment(fragment,validatableResponse,dataType,matcher);
     }
 
@@ -181,7 +181,7 @@ public class RestStepContributor implements StepContributor {
 
     @Step(value="rest.define.contentType", args="word")
     public void setContentType(String contentType) {
-        this.contentType = parseContentType(contentType);
+        this.requestContentType = parseContentType(contentType);
     }
 
 
@@ -208,7 +208,7 @@ public class RestStepContributor implements StepContributor {
 
     @Step("rest.define.timeout.secs")
     public void setTimeoutInSecs(Integer secs) {
-        this.timeoutMillis = Long.valueOf(secs * 1000);
+        this.timeoutMillis = Long.valueOf(secs * 1000L);
     }
 
 
@@ -284,6 +284,7 @@ public class RestStepContributor implements StepContributor {
 
     @Step("rest.execute.POST.subject.from.file")
     public void executePostSubjectUsingFile(File file) {
+        assertSubjectDefined();
         assertFileExists(file);
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
     }

@@ -12,10 +12,9 @@ import org.junit.Test;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.core.plan.PlanNodeBuilder;
 import iti.kukumo.core.backend.ExpressionMatcher;
+import iti.kukumo.core.plan.PlanNodeBuilder;
 
 /**
  * @author ITI
@@ -116,11 +115,11 @@ public class TestExpressionMatcher {
 
     private KukumoDataTypeRegistry coreTypes() {
         Map<String,KukumoDataType<?>> types = new HashMap<>();
-        for (DataTypeContributor contributor: Kukumo.instance().getAllDataTypeContributors()) {
+        Kukumo.instance().contributors().allDataTypeContributors().forEach(contributor -> {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 types.put(type.getName(), type);
             }
-        }
+        });
         return new KukumoDataTypeRegistry(types);
     }
 

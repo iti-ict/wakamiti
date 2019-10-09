@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
@@ -21,18 +22,18 @@ public class PlanNodeRunner  {
 
     private final PlanNode node;
     private final String uniqueId;
-    private final BackendFactory backendFactory;
+    private final Configuration configuration;
     private final PlanNodeLogger logger;
-
+    private final BackendFactory backendFactory = Kukumo.instance().backendFactory();
 
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
     private State state;
 
 
-    public PlanNodeRunner(PlanNode node, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
+    public PlanNodeRunner(PlanNode node, Configuration configuration, Optional<Backend> backend, PlanNodeLogger logger) {
         this.node = node;
-        this.backendFactory = backendFactory;
+        this.configuration = configuration;
         this.uniqueId = UUID.randomUUID().toString();
         this.state = State.PREPARED;
         this.backend = backend;
@@ -40,8 +41,8 @@ public class PlanNodeRunner  {
     }
 
 
-    public PlanNodeRunner(PlanNode node, BackendFactory backendFactory, PlanNodeLogger logger) {
-        this(node, backendFactory, Optional.empty(), logger);
+    public PlanNodeRunner(PlanNode node, Configuration configuration, PlanNodeLogger logger) {
+        this(node, configuration, Optional.empty(), logger);
     }
 
 
@@ -59,14 +60,14 @@ public class PlanNodeRunner  {
 
     protected Optional<Backend> getBackend() {
         if (!backend.isPresent() && node.nodeType() == NodeType.TEST_CASE) {
-            backend = Optional.of(backendFactory.createBackend(node));
+            backend = Optional.of(backendFactory.createBackend(node,configuration));
         }
         return backend;
     }
 
 
-    protected BackendFactory getBackendFactory() {
-        return backendFactory;
+    protected Configuration configuration() {
+        return configuration;
     }
 
     protected PlanNodeLogger getLogger() {
@@ -135,7 +136,7 @@ public class PlanNodeRunner  {
 
     protected List<PlanNodeRunner> createChildren() {
         return  node.children()
-                .map(child -> new PlanNodeRunner(child, backendFactory, getBackend(), logger))
+                .map(child -> new PlanNodeRunner(child, configuration, getBackend(), logger))
                 .collect(Collectors.toList());
     }
 

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.config.LogConfig;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.extensions.Configurator;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class RestStepConfigurator implements Configurator<RestStepContributor> {
             ));
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KukumoException(e);
         }
     }
 

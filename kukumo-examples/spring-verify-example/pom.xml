@@ -172,7 +172,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>${maven.ant.version}</version>
+                        <version>${maven.ant.version}</version><!--$NO-MVN-MAN-VER$-->
                         <executions>
                             <execution>
                                 <id>copy-markdown-docs</id>

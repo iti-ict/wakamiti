@@ -242,7 +242,13 @@ public class PlanNodeBuilderRules {
     }
 
 
+     public static Predicate<PlanNodeBuilder> anyNode(Predicate<PlanNodeBuilder> predicate) {
+        return predicate;
+     }
 
 
+    public static Predicate<PlanNodeBuilder> childOf(Predicate<PlanNodeBuilder> predicate) {
+        return node -> node.parent().map(predicate::test).orElse(false);
+    }
 
 }

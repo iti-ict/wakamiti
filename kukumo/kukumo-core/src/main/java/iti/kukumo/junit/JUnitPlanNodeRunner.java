@@ -1,7 +1,15 @@
 package iti.kukumo.junit;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
+
+import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.KukumoSkippedException;
 import iti.kukumo.api.plan.NodeType;
@@ -9,13 +17,6 @@ import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.runner.PlanNodeLogger;
 import iti.kukumo.core.runner.PlanNodeRunner;
-import org.junit.runner.Description;
-import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunNotifier;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
@@ -23,13 +24,13 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     private RunNotifier notifier;
 
 
-    public JUnitPlanNodeRunner(PlanNode node, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
-        super(node, backendFactory, backend, logger);
+    public JUnitPlanNodeRunner(PlanNode node, Configuration configuration, Optional<Backend> backend, PlanNodeLogger logger) {
+        super(node, configuration, backend, logger);
     }
 
 
-    public JUnitPlanNodeRunner(PlanNode node, BackendFactory backendFactory, PlanNodeLogger logger) {
-        super(node, backendFactory, logger);
+    public JUnitPlanNodeRunner(PlanNode node, Configuration configuration, PlanNodeLogger logger) {
+        super(node, configuration, logger);
     }
 
 
@@ -57,7 +58,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     @Override
     protected List<PlanNodeRunner> createChildren() {
         return getNode().children().map(child ->
-            new JUnitPlanNodeRunner(child, getBackendFactory(), getBackend(), getLogger())
+            new JUnitPlanNodeRunner(child, configuration(), getBackend(), getLogger())
         ).collect(Collectors.toList());
     }
 

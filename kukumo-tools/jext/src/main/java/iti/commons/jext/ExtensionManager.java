@@ -1,12 +1,21 @@
 package iti.commons.jext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Component that provides operations in order to retrieve instances of classes annotated with
@@ -62,10 +71,8 @@ public class ExtensionManager {
      * @param extensionPoint A extension point
      * @return The extension metadata, or <code>null</code> if passed object is not an extension
      */
-    public <T> List<Extension> getExtensionMetadata(Class<T> extensionPoint) {
-        return getExtensions(extensionPoint).stream()
-               .map(this::getExtensionMetadata)
-               .collect(Collectors.toList());
+    public <T> Stream<Extension> getExtensionMetadata(Class<T> extensionPoint) {
+        return getExtensions(extensionPoint).map(this::getExtensionMetadata);
     }
 
 
@@ -124,7 +131,7 @@ public class ExtensionManager {
      * @param extensionPoint The extension point type
      * @return A list with the extensions, empty if none was found
      */
-    public <T> List<T> getExtensions(Class<T> extensionPoint) {
+    public <T> Stream<T> getExtensions(Class<T> extensionPoint) {
         return loadAll(ExtensionLoadContext.all(extensionPoint));
     }
 
@@ -136,7 +143,7 @@ public class ExtensionManager {
      * @param condition Only extensions satisfying this condition will be returned
      * @return A list with the extensions, empty if none was found
      */
-    public <T> List<T> getExtensionsThatSatisfy(Class<T> extensionPoint, Predicate<T> condition) {
+    public <T> Stream<T> getExtensionsThatSatisfy(Class<T> extensionPoint, Predicate<T> condition) {
         return loadAll(ExtensionLoadContext.satisfying(extensionPoint, condition));
     }
 
@@ -149,7 +156,7 @@ public class ExtensionManager {
     *                  returned
     * @return A list with the extensions, empty if none was found
     */
-    public <T> List<T> getExtensionsThatSatisfyMetadata(
+    public <T> Stream<T> getExtensionsThatSatisfyMetadata(
         Class<T> extensionPoint,
         Predicate<Extension> condition
     ) {
@@ -158,12 +165,11 @@ public class ExtensionManager {
 
 
 
-    protected <T> List<T> loadAll(ExtensionLoadContext<T> context) {
+    protected <T> Stream<T> loadAll(ExtensionLoadContext<T> context) {
         return obtainCachedValidExtensions(context).stream()
         .filter(context.condition())
         .sorted(sortByPriority())
-        .map(extension -> resolveInstance(extension,context))
-        .collect(Collectors.toList());
+        .map(extension -> resolveInstance(extension,context));
     }
 
 

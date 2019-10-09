@@ -1,18 +1,33 @@
 package iti.kukumo.gherkin;
 
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyOtherNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.childOf;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.forEachNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withProperty;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withSame;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withTag;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import gherkin.ast.Examples;
+import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.core.plan.PlanNodeBuilder;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
+import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 
 /**
  * @author ITI
@@ -22,11 +37,12 @@ import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
 public class GherkinRedefinitionPlanTransformer implements PlanTransformer {
 
 
-    private final GherkinPlanBuilder gherkinPlanBuilder = new GherkinPlanBuilder();
-
 
     @Override
     public PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration) {
+
+        GherkinPlanBuilder gherkinPlanBuilder = new GherkinPlanBuilder();
+        gherkinPlanBuilder.configure(configuration);
 
         String definitionTag = configuration
                 .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
@@ -36,24 +52,80 @@ public class GherkinRedefinitionPlanTransformer implements PlanTransformer {
                 .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
 
         List<PlanNodeBuilderRule> rules = Arrays.asList(
-
-                forEachNode(ofTypeScenarioOutline())
-                .perform(node -> System.out.println("HOLA SOY UN OUTLINE "+node.displayName())),
-
-                forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
-                .perform(PlanNodeBuilder::clearChildren)
-
-        //        forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
-        //        .given(anyOtherNode(
-        //                ofTypeScenarioOutline().and(withTag(definitionTag)),
-        //                withSame(PlanNodeBuilder::id)
-        //        ))
-        //        .perform(this::createScenariosFromExamples)
+            clearChildrenOfImplementationScenarioOutlines(implementationTag),
+            populateImplementationScenarioOutlinesWithDefinitionExamples(
+                implementationTag,definitionTag,gherkinPlanBuilder
+            ),
+            attachImplemantationBackgroundToCreatedScenarios(implementationTag,gherkinPlanBuilder)
         );
         rules.forEach(rule -> rule.apply(plan));
         return plan;
     }
 
+
+
+    private PlanNodeBuilderRule clearChildrenOfImplementationScenarioOutlines(String implementationTag) {
+        return
+                forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
+                .perform(PlanNodeBuilder::clearChildren);
+    }
+
+
+    private PlanNodeBuilderRule populateImplementationScenarioOutlinesWithDefinitionExamples(
+            String implementationTag,
+            String definitionTag,
+            GherkinPlanBuilder gherkinPlanBuilder
+    ) {
+        BiConsumer<PlanNodeBuilder, PlanNodeBuilder> action =
+               (scenarioOutlineNode, scenarioOutlineNodeWithExamples) -> {
+                Examples examples = ((ScenarioOutline) scenarioOutlineNodeWithExamples
+                        .getUnderlyingModel()).getExamples().get(0);
+                List<PlanNodeBuilder> scenarios = gherkinPlanBuilder.createScenariosFromExamples(
+                    (ScenarioOutline) scenarioOutlineNode.getUnderlyingModel(),
+                    examples,
+                    scenarioOutlineNode,
+                    Optional.empty(),
+                    scenarioOutlineNode.language(),
+                    scenarioOutlineNode.source()
+                );
+                scenarioOutlineNode.addChildren(scenarios);
+        };
+        return
+            forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
+            .given(anyOtherNode(
+                ofTypeScenarioOutline().and(withTag(definitionTag)),
+                withSame(PlanNodeBuilder::id)
+            ))
+            .perform(action);
+    }
+
+
+
+    private PlanNodeBuilderRule attachImplemantationBackgroundToCreatedScenarios(
+        String implementationTag,
+        GherkinPlanBuilder gherkinPlanBuilder
+    ) {
+        return
+            forEachNode(ofTypeScenario().and(
+                childOf(anyNode(ofTypeScenarioOutline().and(withTag(implementationTag))))
+            ))
+            .given(feature())
+            .perform((scenarioNode,featureNode)-> {
+                gherkinPlanBuilder.createBackgroundSteps(
+                    (Feature)featureNode.getUnderlyingModel(),
+                    scenarioNode.source(),
+                    scenarioNode
+                ).ifPresent(scenarioNode::addFirstChild);
+            });
+    }
+
+
+
+
+
+    private Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> feature() {
+        return node -> node.ancestors().filter(ofTypeFeature()).findFirst();
+    }
 
 
     private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
@@ -64,23 +136,16 @@ public class GherkinRedefinitionPlanTransformer implements PlanTransformer {
         return withGherkinType(GHERKIN_TYPE_SCENARIO_OUTLINE);
     }
 
+    private Predicate<PlanNodeBuilder> ofTypeScenario() {
+        return withGherkinType(GHERKIN_TYPE_SCENARIO);
+    }
 
+    private Predicate<PlanNodeBuilder> ofTypeFeature() {
+        return withGherkinType(GHERKIN_TYPE_SCENARIO);
+    }
 
-    private List<PlanNodeBuilder> createScenariosFromExamples(
-            PlanNodeBuilder scenarioOutlineNode,
-            PlanNodeBuilder scenarioOutlineNodeExamples
-    ) {
-        return gherkinPlanBuilder.createScenariosFromExamples(
-            (ScenarioOutline) scenarioOutlineNode.getUnderlyingModel(),
-            ((ScenarioOutline) scenarioOutlineNodeExamples.getUnderlyingModel()).getExamples().get(0),
-            scenarioOutlineNode,
-            scenarioOutlineNode.root().children()
-               .filter(node -> GHERKIN_TYPE_BACKGROUND.equals(node.properties().get(GHERKIN_PROPERTY)))
-               .findFirst()
-            ,
-            scenarioOutlineNode.language(),
-            scenarioOutlineNode.source()
-        );
+    private Predicate<PlanNodeBuilder> ofTypeBackground() {
+        return withGherkinType(GHERKIN_TYPE_BACKGROUND);
     }
 
 
