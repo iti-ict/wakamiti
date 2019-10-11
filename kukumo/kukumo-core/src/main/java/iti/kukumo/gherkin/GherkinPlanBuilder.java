@@ -271,7 +271,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             .setLanguage(language)
             .setSource(source(location,step.getLocation()))
             .setUnderlyingModel(step)
-            //.addProperties(propertiesFromComments(step, parentNode == null ? null : parentNode.properties()))
+            .addProperties(propertiesFromComments(step,parentNode.properties()))
             .addProperty(GHERKIN_PROPERTY,GHERKIN_TYPE_STEP)
         ;
     }
@@ -293,19 +293,23 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     protected Optional<PlanNodeBuilder> createBackgroundSteps(Feature feature, String location, PlanNodeBuilder parentNode) {
         Optional<Background> background = getBackground(feature);
         if (background.isPresent()) {
-            ArrayList<PlanNodeBuilder> steps = new ArrayList<>();
-            for (Step step : background.get().getSteps()) {
-                steps.add(createStep(step, location, feature.getLanguage(), null));
-            }
+  //          ArrayList<PlanNodeBuilder> steps = new ArrayList<>();
+  //          for (Step step : background.get().getSteps()) {
+  //              steps.add(createStep(step, location, feature.getLanguage(), null));
+  //          }
             PlanNodeBuilder backgroundAggregator = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
                 .setKeyword(background.get().getKeyword())
                 .setName(background.get().getName())
                 .setDisplayNamePattern("{keyword}: {name}")
                 .addTags(parentNode.tags())
-                .addProperties(parentNode.properties())
+                .addProperties(propertiesFromComments(background.get(),parentNode.properties()))
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_BACKGROUND)
             ;
-            steps.forEach(backgroundAggregator::addChild);
+            for (Step step : background.get().getSteps()) {
+                backgroundAggregator.addChild(createStep(step, location, feature.getLanguage(), backgroundAggregator));
+            }
+
+//            steps.forEach(backgroundAggregator::addChild);
             return Optional.of(backgroundAggregator);
         }
         return Optional.empty();

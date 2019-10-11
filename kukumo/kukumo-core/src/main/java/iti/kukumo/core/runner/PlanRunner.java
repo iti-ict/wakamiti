@@ -1,16 +1,16 @@
 package iti.kukumo.core.runner;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
+import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
+import org.slf4j.Logger;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class PlanRunner  {
@@ -67,11 +67,12 @@ public class PlanRunner  {
 
 
     protected List<PlanNodeRunner> buildRunners()  {
+        BackendFactory backendFactory = kukumo.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(
                 confBuilder.buildFromMap(feature.properties())
             );
-            return new PlanNodeRunner(feature, childConfiguration, planNodeLogger);
+            return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger);
         }).collect(Collectors.toList());
     }
 

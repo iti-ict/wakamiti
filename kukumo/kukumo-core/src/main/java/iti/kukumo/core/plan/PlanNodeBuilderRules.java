@@ -1,17 +1,20 @@
 package iti.kukumo.core.plan;
 
 import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.NodeType;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class PlanNodeBuilderRules {
 
 
-    private enum RuleMethod { ALL, ANY, FIRST }
+    private enum RuleMethod { ALL, FIRST }
 
     public interface PlanNodeBuilderRule {
         void apply(PlanNodeBuilder node) throws KukumoException;
@@ -55,15 +58,14 @@ public class PlanNodeBuilderRules {
         }
 
         public void apply(PlanNodeBuilder plan) throws KukumoException {
+            List<PlanNodeBuilder> nodes = plan.descendants().filter(predicate)
+                 .collect(Collectors.toList());
             switch (method) {
                 case ALL:
-                    plan.descendants().filter(predicate).forEach(consumer);
-                    break;
-                case ANY:
-                    plan.descendants().filter(predicate).findAny().ifPresent(consumer);
+                    nodes.forEach(consumer);
                     break;
                 case FIRST:
-                    plan.descendants().filter(predicate).findFirst().ifPresent(consumer);
+                    nodes.stream().findAny().ifPresent(consumer);
                     break;
             }
         }
@@ -124,10 +126,6 @@ public class PlanNodeBuilderRules {
     }
 
 
-    public static PlanNodeBuilderRuleConsumer forOneNode(Predicate<PlanNodeBuilder> predicate) {
-        return new PlanNodeBuilderRuleConsumer(predicate,x->{},RuleMethod.ANY);
-    }
-
 
     public static Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> anyOtherNode(Predicate<PlanNodeBuilder> predicate, BiPredicate<PlanNodeBuilder,PlanNodeBuilder> biPredicate) {
         return leftNode -> leftNode.root().descendants().filter(predicate).filter(rightNode -> biPredicate.test(leftNode,rightNode)).findAny();
@@ -136,6 +134,20 @@ public class PlanNodeBuilderRules {
 
     public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> withSame (Function<PlanNodeBuilder,T> method) {
         return (leftNode,rightNode) -> Objects.equals(method.apply(leftNode),method.apply(rightNode));
+    }
+
+
+    public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> withSame (
+            Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> leftNodeGetter,
+            Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> rightNodeGetter,
+            Function<PlanNodeBuilder,T> method
+    ) {
+        return (leftNode,rightNode) -> {
+            Optional<PlanNodeBuilder> actualLeftNode = leftNodeGetter.apply(leftNode);
+            Optional<PlanNodeBuilder> actualRightNode = rightNodeGetter.apply(rightNode);
+            return actualLeftNode.isPresent() && actualRightNode.isPresent() &&
+                    Objects.equals(method.apply(actualLeftNode.get()),method.apply(actualRightNode.get()));
+        };
     }
 
 
@@ -175,11 +187,26 @@ public class PlanNodeBuilderRules {
      }
 
 
+     public static Predicate<PlanNodeBuilder> withType(NodeType type) {
+        return node->node.nodeType() == type;
+     }
+
+
+    public static Predicate<PlanNodeBuilder> withTypeAnyOf(NodeType... types) {
+        return node->node.nodeType().isAnyOf(types);
+    }
+
+    public static Predicate<PlanNodeBuilder> withTypeNoneOf(NodeType... types) {
+        return node->node.nodeType().isNoneOf(types);
+    }
+
      public static Predicate<PlanNodeBuilder> withParent(Predicate<PlanNodeBuilder> predicate) {
         return node->node.parent().filter(predicate).isPresent();
      }
 
-
+    public static Predicate<PlanNodeBuilder> withoutChildren() {
+        return node->node.numChildren() == 0;
+    }
 
      public static Predicate<PlanNodeBuilder> withAnyChild(Predicate<PlanNodeBuilder> predicate) {
         return withAny(PlanNodeBuilder::children,predicate);
@@ -250,5 +277,7 @@ public class PlanNodeBuilderRules {
     public static Predicate<PlanNodeBuilder> childOf(Predicate<PlanNodeBuilder> predicate) {
         return node -> node.parent().map(predicate::test).orElse(false);
     }
+
+
 
 }

@@ -1,34 +1,10 @@
 package iti.kukumo.api;
 
-import static iti.kukumo.api.KukumoConfiguration.OUTPUT_FILE_PATH;
-import static iti.kukumo.api.KukumoConfiguration.REPORT_SOURCE;
-import static iti.kukumo.api.KukumoConfiguration.RESOURCE_PATH;
-import static iti.kukumo.api.KukumoConfiguration.RESOURCE_TYPES;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.event.EventDispatcher;
-import iti.kukumo.api.extensions.EventObserver;
-import iti.kukumo.api.extensions.PlanBuilder;
-import iti.kukumo.api.extensions.PlanTransformer;
-import iti.kukumo.api.extensions.Reporter;
-import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeDescriptor;
@@ -40,27 +16,65 @@ import iti.kukumo.util.KukumoLogger;
 import iti.kukumo.util.ResourceLoader;
 import iti.kukumo.util.TagFilter;
 import iti.kukumo.util.ThrowableFunction;
+import org.slf4j.Logger;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static iti.kukumo.api.KukumoConfiguration.*;
 
 
 
 public class Kukumo {
 
+    private static final AtomicBoolean instantiated = new AtomicBoolean();
+
     public static final Logger LOGGER = KukumoLogger.forClass(Kukumo.class);
+
+    private static final ResourceLoader resourceLoader = new ResourceLoader();
+    private static final KukumoContributors contributors = new KukumoContributors();
+    private static final PlanSerializer planSerializer = new PlanSerializer();
+    private static final EventDispatcher eventDispatcher = new EventDispatcher();
+
+
     private static Kukumo instance;
 
+
     public static Kukumo instance() {
-        if (instance == null) {
+        if (!instantiated.getAndSet(true)) {
             instance = new Kukumo();
         }
         return instance;
     }
 
 
-    private final KukumoContributors contributors = new KukumoContributors();
-    private final BackendFactory backendFactory = new DefaultBackendFactory();
-    private final PlanSerializer planSerializer = new PlanSerializer();
-    private final ResourceLoader resourceLoader = new ResourceLoader();
-    private final EventDispatcher eventDispatcher = new EventDispatcher();
+    public static ResourceLoader resourceLoader() {
+        return resourceLoader;
+    }
+
+    public static KukumoContributors contributors() {
+        return contributors;
+    }
+
+    public static PlanSerializer planSerializer() {
+        return planSerializer;
+    }
+
+    public static ExtensionManager extensionManager() {
+        return contributors.extensionManager();
+    }
+
 
 
 
@@ -71,7 +85,6 @@ public class Kukumo {
         }
         contributors.eventObservers().forEach(eventDispatcher::addObserver);
     }
-
 
 
     /**
@@ -189,29 +202,10 @@ public class Kukumo {
 
 
 
-    public ResourceLoader resourceLoader() {
-        return resourceLoader;
-    }
 
 
     public TagFilter createTagFilter(String tagExpression) {
         return new TagFilter(tagExpression);
-    }
-
-    public BackendFactory backendFactory() {
-        return backendFactory;
-    }
-
-    public PlanSerializer planSerializer() {
-        return planSerializer;
-    }
-
-    public ExtensionManager extensionManager() {
-        return contributors.extensionManager();
-    }
-
-    public KukumoContributors contributors() {
-        return contributors;
     }
 
 
@@ -249,6 +243,11 @@ public class Kukumo {
         return result;
     }
 
+
+
+    public BackendFactory newBackendFactory() {
+        return new DefaultBackendFactory(contributors);
+    }
 
 
 
@@ -330,6 +329,10 @@ public class Kukumo {
 
 
     }
+
+
+
+
 
 
 

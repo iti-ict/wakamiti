@@ -1,33 +1,8 @@
 package iti.kukumo.core.backend;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoContributors;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.*;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.SetUp;
 import iti.kukumo.api.annotations.Step;
@@ -36,6 +11,16 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.util.ThrowableRunnable;
+import org.slf4j.Logger;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.Clock;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DefaultBackendFactory implements BackendFactory {
 
@@ -44,7 +29,13 @@ public class DefaultBackendFactory implements BackendFactory {
         "core-types",
         "assertion-types"
     ));
-    private static KukumoContributors kukumo = Kukumo.instance().contributors();
+
+    private final KukumoContributors contributors;
+
+
+    public DefaultBackendFactory(KukumoContributors contributors) {
+        this.contributors = contributors;
+    }
 
 
 
@@ -106,11 +97,11 @@ public class DefaultBackendFactory implements BackendFactory {
 
         List<StepContributor> stepContributors = new ArrayList<>();
         if (restrictedModules.isEmpty()) {
-            stepContributors.addAll( kukumo.createAllStepContributors(configuration) );
+            stepContributors.addAll( contributors.createAllStepContributors(configuration) );
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            stepContributors.addAll( kukumo.createStepContributors(modules,configuration) );
+            stepContributors.addAll( contributors.createStepContributors(modules,configuration) );
         }
 
         List<String> nonRegisteredContributorClasses
@@ -125,7 +116,7 @@ public class DefaultBackendFactory implements BackendFactory {
             throw new KukumoException("Cannot build backend without step contributors");
         }
 
-        stepContributors.forEach(stepContributor->kukumo.configure(stepContributor,configuration));
+        stepContributors.forEach(stepContributor->contributors.configure(stepContributor,configuration));
         return stepContributors;
     }
 
@@ -136,11 +127,11 @@ public class DefaultBackendFactory implements BackendFactory {
         List<String> restrictedModules
     ) {
         if (restrictedModules.isEmpty()) {
-            return kukumo.allDataTypeContributors();
+            return contributors.allDataTypeContributors();
         } else {
             List<String> modules = new ArrayList<>(restrictedModules);
             modules.addAll(DEFAULT_MODULES);
-            return kukumo.dataTypeContributors(modules);
+            return contributors.dataTypeContributors(modules);
         }
     }
 
@@ -155,7 +146,7 @@ public class DefaultBackendFactory implements BackendFactory {
                 KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS
             );
         } else {
-            String availableStepContributors = kukumo.allStepContributorMetadata()
+            String availableStepContributors = contributors.allStepContributorMetadata()
                 .map(Extension::name)
                 .collect(Collectors.joining("\n\t"))
             ;
@@ -262,7 +253,7 @@ public class DefaultBackendFactory implements BackendFactory {
                     .getConstructor()
                     .newInstance();
                 if (newStepContributor instanceof StepContributor) {
-                    kukumo.configure(newStepContributor,configuration);
+                    contributors.configure(newStepContributor,configuration);
                     nonRegisteredContributors.add((StepContributor) newStepContributor);
                 } else {
                     LOGGER.warn(

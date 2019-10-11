@@ -1,5 +1,22 @@
 package iti.kukumo.junit;
 
+import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
+import iti.commons.configurer.ConfigurationException;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.core.runner.PlanNodeLogger;
+import org.junit.*;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,27 +24,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
-import org.slf4j.Logger;
-
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
-import iti.kukumo.core.runner.PlanNodeLogger;
 
 
 public class KukumoJUnitRunner extends Runner {
@@ -123,13 +119,14 @@ public class KukumoJUnitRunner extends Runner {
 
 
     protected List<JUnitPlanNodeRunner> buildRunners()  {
+        BackendFactory backendFactory = kukumo.newBackendFactory();
         return getPlan().children().map(node -> {
             Configuration featureConfiguration = configuration.append(
                 confBuilder.buildFromMap(node.properties())
             );
             return treatStepsAsTests ?
-                new JUnitPlanNodeStepRunner(node,featureConfiguration,planNodeLogger):
-                new JUnitPlanNodeRunner(node,featureConfiguration,planNodeLogger);
+                new JUnitPlanNodeStepRunner(node,featureConfiguration,backendFactory,planNodeLogger):
+                new JUnitPlanNodeRunner(node,featureConfiguration,backendFactory,planNodeLogger);
         }).collect(Collectors.toList());
     }
 

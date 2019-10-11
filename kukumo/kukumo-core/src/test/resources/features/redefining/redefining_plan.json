@@ -22,9 +22,31 @@
       "displayName" : "[ID-1] Scenario: Test scenario",
       "tags" : [ "definition", "ID-1" ],
       "properties" : {
-        "gherkinType" : "scenario"
+        "gherkinType" : "scenario",
+        "redefinition.stepMap" : "2-1-2"
       },
       "children" : [ {
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "<preparation>",
+        "displayName" : "<preparation>",
+        "tags" : [ "implementation", "ID-1" ],
+        "properties" : {
+          "gherkinType" : "background",
+          "redefinition.stepMap" : "2-1-2"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "el conjunto de números reales ℝ",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "implementation.feature[8,3]",
+          "displayName" : "Dado el conjunto de números reales ℝ",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          }
+        } ]
+      }, {
         "nodeType" : "STEP_AGGREGATOR",
         "name" : "two numbers",
         "keyword" : "Given",
@@ -35,31 +57,23 @@
           "gherkinType" : "step"
         },
         "children" : [ {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "Estos son los antecedentes",
-          "keyword" : "Antecedentes",
-          "displayName" : "[] Antecedentes Estos son los antecedentes",
-          "properties" : {
-            "gherkin" : "background"
-          },
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el conjunto de números reales ℝ",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[8,3]",
-            "displayName" : "Dado el conjunto de números reales ℝ",
-            "properties" : {
-              "gherkinType" : "step"
-            }
-          } ]
-        }, {
           "nodeType" : "STEP",
           "name" : "un número con valor 6,1 y otro número con valor 3",
           "keyword" : "Dado",
           "language" : "es",
           "source" : "implementation.feature[13,2]",
           "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "un número con valor 6,1 y otro número con valor 3",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "implementation.feature[14,2]",
+          "displayName" : "Y un número con valor 6,1 y otro número con valor 3",
           "properties" : {
             "gherkinType" : "step",
             "redefinition.stepMap" : "2-1-2"
@@ -77,11 +91,11 @@
         },
         "children" : [ {
           "nodeType" : "STEP",
-          "name" : "un número con valor 6,1 y otro número con valor 3",
-          "keyword" : "Y",
+          "name" : "se multiplican ambos números",
+          "keyword" : "Cuando",
           "language" : "es",
-          "source" : "implementation.feature[14,2]",
-          "displayName" : "Y un número con valor 6,1 y otro número con valor 3",
+          "source" : "implementation.feature[15,2]",
+          "displayName" : "Cuando se multiplican ambos números",
           "properties" : {
             "gherkinType" : "step",
             "redefinition.stepMap" : "2-1-2"
@@ -98,17 +112,6 @@
           "gherkinType" : "step"
         },
         "children" : [ {
-          "nodeType" : "STEP",
-          "name" : "se multiplican ambos números",
-          "keyword" : "Cuando",
-          "language" : "es",
-          "source" : "implementation.feature[15,2]",
-          "displayName" : "Cuando se multiplican ambos números",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          }
-        }, {
           "nodeType" : "STEP",
           "name" : "el resultado es 18,3",
           "keyword" : "Entonces",
@@ -144,6 +147,7 @@
       "properties" : {
         "gherkinType" : "scenarioOutline"
       },
+      "dataTable" : [ [ "a", "b", "c" ], [ "1.0", "2", "2.0" ], [ "2.0", "4", "8.0" ], [ "3.0", "6", "18.0" ] ],
       "children" : [ {
         "nodeType" : "TEST_CASE",
         "id" : "ID-2_1",
@@ -153,9 +157,34 @@
         "displayName" : "[ID-2_1]  Test scenario outline [1]",
         "tags" : [ "ID-2", "definition" ],
         "properties" : {
-          "gherkinType" : "scenarioOutline"
+          "dataFormatLanguage" : "en",
+          "gherkinType" : "scenario",
+          "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {
+          "nodeType" : "STEP_AGGREGATOR",
+          "name" : "<preparation>",
+          "displayName" : "<preparation>",
+          "tags" : [ "ID-2", "implementation" ],
+          "properties" : {
+            "dataFormatLanguage" : "en",
+            "gherkinType" : "background",
+            "redefinition.stepMap" : "0-1-1-2"
+          },
+          "children" : [ {
+            "nodeType" : "STEP",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          } ]
+        }, {
           "nodeType" : "VIRTUAL_STEP",
           "name" : "a number with value 1.0",
           "keyword" : "Given",
@@ -176,24 +205,17 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP_AGGREGATOR",
-            "name" : "Estos son los antecedentes",
-            "keyword" : "Antecedentes",
-            "displayName" : "[] Antecedentes Estos son los antecedentes",
+            "nodeType" : "STEP",
+            "name" : "un número con valor 1.0 y otro número con valor 2",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
             "properties" : {
-              "gherkin" : "background"
-            },
-            "children" : [ {
-              "nodeType" : "STEP",
-              "name" : "el conjunto de números reales ℝ",
-              "keyword" : "Dado",
-              "language" : "es",
-              "source" : "implementation.feature[3,1]",
-              "displayName" : "Dado el conjunto de números reales ℝ",
-              "properties" : {
-                "gherkinType" : "step"
-              }
-            } ]
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
           } ]
         }, {
           "nodeType" : "STEP_AGGREGATOR",
@@ -207,11 +229,11 @@
           },
           "children" : [ {
             "nodeType" : "STEP",
-            "name" : "un número con valor 1.0 y otro número con valor 2",
-            "keyword" : "Dado",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
             "language" : "es",
             "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
+            "displayName" : "Cuando se multiplican ambos números",
             "properties" : {
               "dataFormatLanguage" : "en",
               "gherkinType" : "step",
@@ -229,18 +251,6 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            }
-          }, {
             "nodeType" : "STEP",
             "name" : "el resultado es 2.0",
             "keyword" : "Entonces",
@@ -275,9 +285,34 @@
         "displayName" : "[ID-2_2]  Test scenario outline [2]",
         "tags" : [ "ID-2", "definition" ],
         "properties" : {
-          "gherkinType" : "scenarioOutline"
+          "dataFormatLanguage" : "en",
+          "gherkinType" : "scenario",
+          "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {
+          "nodeType" : "STEP_AGGREGATOR",
+          "name" : "<preparation>",
+          "displayName" : "<preparation>",
+          "tags" : [ "ID-2", "implementation" ],
+          "properties" : {
+            "dataFormatLanguage" : "en",
+            "gherkinType" : "background",
+            "redefinition.stepMap" : "0-1-1-2"
+          },
+          "children" : [ {
+            "nodeType" : "STEP",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          } ]
+        }, {
           "nodeType" : "VIRTUAL_STEP",
           "name" : "a number with value 2.0",
           "keyword" : "Given",
@@ -298,24 +333,17 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP_AGGREGATOR",
-            "name" : "Estos son los antecedentes",
-            "keyword" : "Antecedentes",
-            "displayName" : "[] Antecedentes Estos son los antecedentes",
+            "nodeType" : "STEP",
+            "name" : "un número con valor 2.0 y otro número con valor 4",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
             "properties" : {
-              "gherkin" : "background"
-            },
-            "children" : [ {
-              "nodeType" : "STEP",
-              "name" : "el conjunto de números reales ℝ",
-              "keyword" : "Dado",
-              "language" : "es",
-              "source" : "implementation.feature[3,1]",
-              "displayName" : "Dado el conjunto de números reales ℝ",
-              "properties" : {
-                "gherkinType" : "step"
-              }
-            } ]
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
           } ]
         }, {
           "nodeType" : "STEP_AGGREGATOR",
@@ -329,11 +357,11 @@
           },
           "children" : [ {
             "nodeType" : "STEP",
-            "name" : "un número con valor 2.0 y otro número con valor 4",
-            "keyword" : "Dado",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
             "language" : "es",
             "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
+            "displayName" : "Cuando se multiplican ambos números",
             "properties" : {
               "dataFormatLanguage" : "en",
               "gherkinType" : "step",
@@ -351,18 +379,6 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            }
-          }, {
             "nodeType" : "STEP",
             "name" : "el resultado es 8.0",
             "keyword" : "Entonces",
@@ -397,9 +413,34 @@
         "displayName" : "[ID-2_3]  Test scenario outline [3]",
         "tags" : [ "ID-2", "definition" ],
         "properties" : {
-          "gherkinType" : "scenarioOutline"
+          "dataFormatLanguage" : "en",
+          "gherkinType" : "scenario",
+          "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {
+          "nodeType" : "STEP_AGGREGATOR",
+          "name" : "<preparation>",
+          "displayName" : "<preparation>",
+          "tags" : [ "ID-2", "implementation" ],
+          "properties" : {
+            "dataFormatLanguage" : "en",
+            "gherkinType" : "background",
+            "redefinition.stepMap" : "0-1-1-2"
+          },
+          "children" : [ {
+            "nodeType" : "STEP",
+            "name" : "el conjunto de números reales ℝ",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado el conjunto de números reales ℝ",
+            "properties" : {
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
+          } ]
+        }, {
           "nodeType" : "VIRTUAL_STEP",
           "name" : "a number with value 3.0",
           "keyword" : "Given",
@@ -420,24 +461,17 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP_AGGREGATOR",
-            "name" : "Estos son los antecedentes",
-            "keyword" : "Antecedentes",
-            "displayName" : "[] Antecedentes Estos son los antecedentes",
+            "nodeType" : "STEP",
+            "name" : "un número con valor 3.0 y otro número con valor 6",
+            "keyword" : "Dado",
+            "language" : "es",
+            "source" : "implementation.feature[24,1]",
+            "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
             "properties" : {
-              "gherkin" : "background"
-            },
-            "children" : [ {
-              "nodeType" : "STEP",
-              "name" : "el conjunto de números reales ℝ",
-              "keyword" : "Dado",
-              "language" : "es",
-              "source" : "implementation.feature[3,1]",
-              "displayName" : "Dado el conjunto de números reales ℝ",
-              "properties" : {
-                "gherkinType" : "step"
-              }
-            } ]
+              "dataFormatLanguage" : "en",
+              "gherkinType" : "step",
+              "redefinition.stepMap" : "0-1-1-2"
+            }
           } ]
         }, {
           "nodeType" : "STEP_AGGREGATOR",
@@ -451,11 +485,11 @@
           },
           "children" : [ {
             "nodeType" : "STEP",
-            "name" : "un número con valor 3.0 y otro número con valor 6",
-            "keyword" : "Dado",
+            "name" : "se multiplican ambos números",
+            "keyword" : "Cuando",
             "language" : "es",
             "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
+            "displayName" : "Cuando se multiplican ambos números",
             "properties" : {
               "dataFormatLanguage" : "en",
               "gherkinType" : "step",
@@ -473,18 +507,6 @@
             "gherkinType" : "step"
           },
           "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            }
-          }, {
             "nodeType" : "STEP",
             "name" : "el resultado es 18.0",
             "keyword" : "Entonces",

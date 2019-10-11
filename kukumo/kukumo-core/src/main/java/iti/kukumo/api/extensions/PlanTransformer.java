@@ -8,6 +8,6 @@ import iti.kukumo.core.plan.PlanNodeBuilder;
 public interface PlanTransformer extends Contributor {
 
     /** Transform a plan */
-    public PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration);
+    PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration);
 
 }

@@ -25,6 +25,7 @@
         "propertyScenarioOutline" : "A",
         "gherkinType" : "scenarioOutline"
       },
+      "dataTable" : [ [ "a", "b", "c" ], [ "1.0", "2", "2.0" ], [ "2.0", "3", "6.0" ], [ "5.0", "4", "20.0" ] ],
       "children" : [ {
         "nodeType" : "TEST_CASE",
         "id" : "ID-ScenarioOutline1_1",
@@ -35,7 +36,7 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenarioOutline"
+          "gherkinType" : "scenario"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -81,7 +82,7 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenarioOutline"
+          "gherkinType" : "scenario"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -127,7 +128,7 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenarioOutline"
+          "gherkinType" : "scenario"
         },
         "children" : [ {
           "nodeType" : "STEP",

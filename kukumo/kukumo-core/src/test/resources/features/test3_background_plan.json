@@ -29,9 +29,11 @@
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
-        "displayName" : "[] Background ",
+        "displayName" : "Background: ",
+        "tags" : [ "ID-Test3_Scenario1", "Test3" ],
         "properties" : {
-          "gherkin" : "background"
+          "encoding" : "UTF-8",
+          "gherkinType" : "background"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -41,6 +43,7 @@
           "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
+            "encoding" : "UTF-8",
             "gherkinType" : "step"
           }
         } ]
@@ -94,9 +97,11 @@
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
-        "displayName" : "[] Background ",
+        "displayName" : "Background: ",
+        "tags" : [ "ID-Test3_Scenario2", "Test3" ],
         "properties" : {
-          "gherkin" : "background"
+          "encoding" : "UTF-8",
+          "gherkinType" : "background"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -106,6 +111,7 @@
           "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
+            "encoding" : "UTF-8",
             "gherkinType" : "step"
           }
         } ]
@@ -159,9 +165,11 @@
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
-        "displayName" : "[] Background ",
+        "displayName" : "Background: ",
+        "tags" : [ "ID-Test3_Scenario3", "Test3" ],
         "properties" : {
-          "gherkin" : "background"
+          "encoding" : "UTF-8",
+          "gherkinType" : "background"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -171,6 +179,7 @@
           "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
+            "encoding" : "UTF-8",
             "gherkinType" : "step"
           }
         } ]

@@ -26,6 +26,10 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
         return children.stream();
     }
 
+    public Stream<S> children(Predicate<S> filter) {
+        return children.stream().filter(filter);
+    }
+
 
     public S child(int index) {
         return children.get(index);
@@ -46,6 +50,14 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
         return parent;
     }
 
+
+    public int positionOfChild(S child) {
+        return children.indexOf(child);
+    }
+
+    public int positionInParent() {
+        return parent().map(p->p.positionOfChild((S)this)).orElse(-1);
+    }
 
     public S root() {
         return parent.map(TreeNodeBuilder::root).orElse((S)this);
@@ -98,7 +110,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
     }
 
     public S addChildren(Collection<S> children) {
-        this.children.addAll(children);
+        for (S child : children) {
+            addChild(child);
+        }
         return (S) this;
     }
 

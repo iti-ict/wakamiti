@@ -5,7 +5,7 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="[%level] %m%n"/>
+            <PatternLayout pattern="[%t] [%level] %m%n"/>
         </Console>
     </Appenders>
     <Loggers>
