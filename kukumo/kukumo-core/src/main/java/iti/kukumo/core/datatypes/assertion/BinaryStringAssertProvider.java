@@ -3,6 +3,7 @@ package iti.kukumo.core.datatypes.assertion;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -56,7 +57,8 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
 
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String key, String value) throws Exception {
+    protected Matcher<?> createMatcher(Locale locale, String key, String value)
+    throws ParseException {
         value = prepareString(value);
         Matcher<String> matcher = null;
         if (EQUALS.equals(key)) {
@@ -105,6 +107,9 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
     /* remove leading and tailing " or ' , and replace escaped characters */
     private static String prepareString(String input) {
-        return input.substring(1, input.length()-1).replaceAll("\\\\\"", "\"").replaceAll("\\\\'", "'");
+        return input
+            .substring(1, input.length()-1)
+            .replaceAll("\\\\\"", "\"")
+            .replaceAll("\\\\'", "'");
     }
 }

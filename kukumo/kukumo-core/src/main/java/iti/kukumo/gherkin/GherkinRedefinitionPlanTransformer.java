@@ -1,5 +1,18 @@
 package iti.kukumo.gherkin;
 
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import gherkin.ast.Examples;
 import gherkin.ast.Feature;
 import gherkin.ast.ScenarioOutline;
@@ -10,219 +23,285 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.core.plan.PlanNodeBuilder;
-import iti.kukumo.core.plan.PlanNodeBuilderRules.*;
+import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 import iti.kukumo.core.plan.RuleBasedPlanTransformer;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
 
 /**
  * @author ITI
  * Created by ITI on 7/10/19
  */
 @Extension(provider = "iti.kukumo", name = "gherkin-redefinition-transformer")
-public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer implements PlanTransformer {
+public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
+implements PlanTransformer {
 
 
     @Override
     protected List<PlanNodeBuilderRule> createRules(Configuration configuration) {
-
-        GherkinPlanBuilder gherkinPlanBuilder = new GherkinPlanBuilder();
-        gherkinPlanBuilder.configure(configuration);
-        String implementationTag = implementationTag(configuration);
-        String definitionTag = definitionTag(configuration);
-
+        GherkinRedefinitionRules rules = new GherkinRedefinitionRules(configuration);
         return Arrays.asList(
 
-           // remove background of definition features
-           forEachNode(ofTypeBackground().and(withTag(definitionTag)))
-              .perform(node -> node.parent().ifPresent(parent -> parent.removeChild(node))),
+            forEachNode(rules.definitionBackground())
+                .perform(removeNode()),
 
-           // remove scenarios from implementation scenario outlines
-           forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
-              .perform(PlanNodeBuilder::clearChildren),
+            forEachNode(rules.implementationScenarioOutline())
+                .perform(PlanNodeBuilder::clearChildren),
 
-            // repopulate implementation scenario outlines using definition examples
-            populateImplementationScenarioOutlinesWithDefinitionExamples(
-                implementationTag,definitionTag,gherkinPlanBuilder
-            ),
+            forEachNode(rules.implementationScenarioOutline())
+                .given(rules.definitionScenarioOutlineSharingId())
+                .perform(rules::populateImplementationScenarioOutlinesWithExamples),
 
-            // recreate the implementation background in each implementation scenario
-            // within scenario outlines
-            attachImplemantationBackgroundToCreatedScenarios(implementationTag,gherkinPlanBuilder),
+            forEachNode(rules.implementationScenarioChildOfScenarioOutline())
+                .given(rules.parentFeature())
+                .perform(rules::populateImplementationBackground),
 
-           // change node type of definition steps from step to step_aggregator
-           forEachNode(withType(NodeType.STEP).and(childOf(anyNode(withTag(definitionTag)))))
-              .perform(node -> node.setNodeType(NodeType.STEP_AGGREGATOR)),
+            forEachNode(rules.definitionStep())
+                .perform(node -> node.setNodeType(NodeType.STEP_AGGREGATOR)),
 
-           // move implementation steps to definition as children of the original definition steps
-           forEachNode(
-                   withType(NodeType.STEP_AGGREGATOR).and(childOf(anyNode(withTag(definitionTag))))
-           ).given(anyOtherNode(
-                   withType(NodeType.TEST_CASE).and(withTag(implementationTag)),
-                   withSame(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
-              ))
-              .perform(this::attachImplementationSteps),
+            forEachNode(rules.definitionStepAggregator())
+                .given(rules.implementationScenarioSharingIdWithParent())
+                .perform(rules::attachImplementationSteps),
 
-           // move background steps to definition as the first children of the definition scenario
-           forEachNode(ofTypeBackground().and(withTag(implementationTag)))
-              .given(anyOtherNode(
-                  ofTypeScenario().and(withTag(definitionTag)),
-                  withSame(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
-              ))
-              .perform((impBackground,defScenario)->defScenario.addFirstChild(
-                 impBackground
-                         .setName("<preparation>")
-                         .setKeyword(null)
-                         .setDisplayNamePattern("{name}")
-              )),
+           forEachNode(rules.implementationBackground())
+                .given(rules.definitionScenarioSharingIdWithParent())
+                .perform(rules::attachImplementationBackgroundToDefinitionScenario),
 
-           // change node type of any definition step without children, from step_aggregator to virtual_step
-           forEachNode(withType(NodeType.STEP_AGGREGATOR).and(withoutChildren()))
-              .perform(node -> node.setNodeType(NodeType.VIRTUAL_STEP)),
+           forEachNode(rules.stepAggregatorWithoutChildren())
+                .perform(node -> node.setNodeType(NodeType.VIRTUAL_STEP)),
 
-           // copy node properties of implementation scenarios to definition scenarios
-           forEachNode(ofTypeScenario().and(withTag(definitionTag)))
-              .given(anyOtherNode(ofTypeScenario().and(withTag(implementationTag)),withSame(PlanNodeBuilder::id)))
-              .perform((defScenario,impScenario)->defScenario.addProperties(impScenario.properties())),
+           forEachNode(rules.definitionScenario())
+                .given(rules.implementationScenarioSharingId())
+                .perform(copyProperties()),
 
-           // remove totally the implementation features
-           forEachNode(ofTypeFeature().and(withTag(implementationTag)))
-              .perform(node->node.parent().ifPresent(parent -> parent.removeChild(node)))
+           forEachNode(rules.implementationFeature())
+                .perform(removeNode())
 
         );
     }
 
 
 
-    private PlanNodeBuilderRule populateImplementationScenarioOutlinesWithDefinitionExamples(
-            String implementationTag,
-            String definitionTag,
-            GherkinPlanBuilder gherkinPlanBuilder
-    ) {
-        BiConsumer<PlanNodeBuilder, PlanNodeBuilder> action =
-               (scenarioOutlineNode, scenarioOutlineNodeWithExamples) -> {
-                Examples examples = ((ScenarioOutline) scenarioOutlineNodeWithExamples
-                        .getUnderlyingModel()).getExamples().get(0);
-                List<PlanNodeBuilder> scenarios = gherkinPlanBuilder.createScenariosFromExamples(
-                    (ScenarioOutline) scenarioOutlineNode.getUnderlyingModel(),
-                    examples,
-                    scenarioOutlineNode,
-                    Optional.empty(),
-                    scenarioOutlineNode.language(),
-                    scenarioOutlineNode.source()
-                );
-                scenarioOutlineNode.addChildren(scenarios);
-        };
-        return
-            forEachNode(ofTypeScenarioOutline().and(withTag(implementationTag)))
-            .given(anyOtherNode(
+
+
+
+    private class GherkinRedefinitionRules {
+
+        private final GherkinPlanBuilder gherkinPlanBuilder;
+        private final String implementationTag;
+        private final String definitionTag;
+
+        public GherkinRedefinitionRules(Configuration configuration) {
+            gherkinPlanBuilder = new GherkinPlanBuilder();
+            gherkinPlanBuilder.configure(configuration);
+            implementationTag = implementationTag(configuration);
+            definitionTag = definitionTag(configuration);
+        }
+
+
+        public Predicate<PlanNodeBuilder> definitionBackground() {
+            return ofTypeBackground().and(withTag(definitionTag));
+        }
+
+        public Predicate<PlanNodeBuilder> definitionScenario() {
+            return ofTypeScenario().and(withTag(definitionTag));
+        }
+
+        private Predicate<PlanNodeBuilder> definitionStep() {
+            return withType(NodeType.STEP).and(childOf(anyNode(withTag(definitionTag))));
+        }
+
+        private Predicate<PlanNodeBuilder> definitionStepAggregator() {
+            return withType(NodeType.STEP_AGGREGATOR).and(childOf(anyNode(withTag(definitionTag))));
+        }
+
+        public Predicate<PlanNodeBuilder> implementationBackground() {
+            return ofTypeBackground().and(withTag(implementationTag));
+        }
+
+        public Predicate<PlanNodeBuilder> implementationScenarioOutline() {
+            return ofTypeScenarioOutline().and(withTag(implementationTag));
+        }
+
+        public Predicate<PlanNodeBuilder> implementationScenario() {
+            return ofTypeScenario().and(withTag(implementationTag));
+        }
+
+        public Predicate<PlanNodeBuilder> implementationScenarioChildOfScenarioOutline() {
+            return implementationScenario().and(childOf(anyNode(ofTypeScenarioOutline())));
+        }
+
+        public Predicate<PlanNodeBuilder> implementationFeature() {
+            return ofTypeFeature().and(withTag(implementationTag));
+        }
+
+        public Predicate<PlanNodeBuilder> stepAggregatorWithoutChildren() {
+            return withType(NodeType.STEP_AGGREGATOR).and(withoutChildren());
+        }
+
+
+        private Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> parentFeature() {
+            return node -> node.ancestors().filter(ofTypeFeature()).findFirst();
+        }
+
+
+        public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> definitionScenarioOutlineSharingId() {
+            return anyOtherNode(
                 ofTypeScenarioOutline().and(withTag(definitionTag)),
-                withSame(PlanNodeBuilder::id)
-            ))
-            .perform(action);
-    }
-
-
-
-    private PlanNodeBuilderRule attachImplemantationBackgroundToCreatedScenarios(
-        String implementationTag,
-        GherkinPlanBuilder gherkinPlanBuilder
-    ) {
-        return
-            forEachNode(
-                ofTypeScenario().and(
-                withTag(implementationTag)).and(
-                childOf(anyNode(ofTypeScenarioOutline())))
-            )
-            .given(feature())
-            .perform((scenarioNode,featureNode)-> {
-                gherkinPlanBuilder.createBackgroundSteps(
-                    (Feature)featureNode.getUnderlyingModel(),
-                    scenarioNode.source(),
-                    scenarioNode
-                ).ifPresent(scenarioNode::addFirstChild);
-            });
-    }
-
-
-
-    private void attachImplementationSteps(PlanNodeBuilder defStepNode, PlanNodeBuilder impScenarioNode) {
-        int[] stepMap = computeStepMap(defStepNode.parent().map(PlanNodeBuilder::numChildren).orElse(0),impScenarioNode);
-        for (int i=0;i<stepMap[defStepNode.positionInParent()];i++) {
-            impScenarioNode
-                .children(withType(NodeType.STEP))
-                .findFirst()
-                .ifPresent(defStepNode::addChild);
+                sharing(PlanNodeBuilder::id)
+            );
         }
-    }
+
+        public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> implementationScenarioSharingIdWithParent() {
+            return anyOtherNode(
+                withType(NodeType.TEST_CASE).and(withTag(implementationTag)),
+                sharing(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
+            );
+        }
 
 
-
-    private String definitionTag(Configuration configuration) {
-        return configuration
-            .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
-            .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG);
-    }
-
-
-    private String implementationTag(Configuration configuration) {
-        return configuration
-                .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG,String.class)
-                .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
-    }
+        public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> definitionScenarioSharingIdWithParent() {
+            return anyOtherNode(
+                ofTypeScenario().and(withTag(definitionTag)),
+                sharing(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
+            );
+        }
 
 
-    private Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> feature() {
-        return node -> node.ancestors().filter(ofTypeFeature()).findFirst();
-    }
+        public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> implementationScenarioSharingId() {
+            return anyOtherNode(
+                ofTypeScenario().and(withTag(implementationTag)),
+                sharing(PlanNodeBuilder::id)
+            );
+        }
 
 
-    private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
-        return withProperty(GHERKIN_PROPERTY,gherkinType);
-    }
-
-    private Predicate<PlanNodeBuilder> ofTypeScenarioOutline() {
-        return withGherkinType(GHERKIN_TYPE_SCENARIO_OUTLINE);
-    }
-
-    private Predicate<PlanNodeBuilder> ofTypeScenario() {
-        return withGherkinType(GHERKIN_TYPE_SCENARIO);
-    }
-
-    private Predicate<PlanNodeBuilder> ofTypeFeature() {
-        return withGherkinType(GHERKIN_TYPE_FEATURE);
-    }
-
-    private Predicate<PlanNodeBuilder> ofTypeBackground() {
-        return withGherkinType(GHERKIN_TYPE_BACKGROUND);
-    }
+        public void populateImplementationScenarioOutlinesWithExamples(
+                PlanNodeBuilder scenarioOutlineNode,
+                PlanNodeBuilder scenarioOutlineNodeWithExamples
+        ) {
+            Examples examples = ((ScenarioOutline) scenarioOutlineNodeWithExamples
+                .getUnderlyingModel()).getExamples().get(0);
+            List<PlanNodeBuilder> scenarios = gherkinPlanBuilder.createScenariosFromExamples(
+                (ScenarioOutline) scenarioOutlineNode.getUnderlyingModel(),
+                examples,
+                scenarioOutlineNode,
+                Optional.empty(),
+                scenarioOutlineNode.language(),
+                scenarioOutlineNode.source()
+            );
+            scenarioOutlineNode.addChildren(scenarios);
+        }
 
 
-    private int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
-        int[] stepMap = new int[numDefChildren];
-        String stepMapProperty = implNode.properties().get(KukumoConfiguration.REDEFINITION_STEP_MAP);
-        try {
-            if (stepMapProperty != null) {
-                String[] stepMapArray = stepMapProperty.split("-");
-                for (int i = 0; i < stepMapArray.length; i++) {
-                    stepMap[i] = Integer.valueOf(stepMapArray[i]);
-                }
-            } else {
-                Arrays.fill(stepMap, 1);
+        public void populateImplementationBackground(
+            PlanNodeBuilder scenarioNode,
+            PlanNodeBuilder featureNode
+        ) {
+            gherkinPlanBuilder.createBackgroundSteps(
+                (Feature)featureNode.getUnderlyingModel(),
+                scenarioNode.source(),
+                scenarioNode
+            ).ifPresent(scenarioNode::addFirstChild);
+        }
+
+
+        public void attachImplementationBackgroundToDefinitionScenario(
+            PlanNodeBuilder impBackground,
+            PlanNodeBuilder defScenario
+           ) {
+            defScenario.addFirstChild(impBackground
+                .setName("<preparation>")
+                .setKeyword(null)
+                .setDisplayNamePattern("{name}")
+            );
+        }
+
+
+        public void attachImplementationSteps(
+            PlanNodeBuilder defStepNode,
+            PlanNodeBuilder impScenarioNode
+        ) {
+            int[] stepMap = computeStepMap(
+                defStepNode.parent().map(PlanNodeBuilder::numChildren).orElse(0),
+                impScenarioNode
+            );
+            for (int i=0;i<stepMap[defStepNode.positionInParent()];i++) {
+                impScenarioNode
+                    .children(withType(NodeType.STEP))
+                    .findFirst()
+                    .ifPresent(defStepNode::addChild);
             }
-            return stepMap;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new KukumoException("Bad definition of step map in {} : {}",implNode.source(),stepMapProperty,e);
         }
+
+
+
+        private String definitionTag(Configuration configuration) {
+            return configuration
+                .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
+                .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG);
+        }
+
+
+        private String implementationTag(Configuration configuration) {
+            return configuration
+                    .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG,String.class)
+                    .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
+        }
+
+
+
+
+        private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
+            return withProperty(GHERKIN_PROPERTY,gherkinType);
+        }
+
+        private Predicate<PlanNodeBuilder> ofTypeScenarioOutline() {
+            return withGherkinType(GHERKIN_TYPE_SCENARIO_OUTLINE);
+        }
+
+        private Predicate<PlanNodeBuilder> ofTypeScenario() {
+            return withGherkinType(GHERKIN_TYPE_SCENARIO);
+        }
+
+        private Predicate<PlanNodeBuilder> ofTypeFeature() {
+            return withGherkinType(GHERKIN_TYPE_FEATURE);
+        }
+
+        private Predicate<PlanNodeBuilder> ofTypeBackground() {
+            return withGherkinType(GHERKIN_TYPE_BACKGROUND);
+        }
+
+
+        private int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
+            int[] stepMap = new int[numDefChildren];
+            String stepMapProperty = implNode.properties().get(KukumoConfiguration.REDEFINITION_STEP_MAP);
+            try {
+                if (stepMapProperty != null) {
+                    String[] stepMapArray = stepMapProperty.split("-");
+                    for (int i = 0; i < stepMapArray.length; i++) {
+                        stepMap[i] = Integer.valueOf(stepMapArray[i]);
+                    }
+                } else {
+                    Arrays.fill(stepMap, 1);
+                }
+                return stepMap;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new KukumoException(
+                    "Bad definition of step map in {} : {}",
+                    implNode.source(),
+                    stepMapProperty,
+                    e
+                );
+            }
+        }
+
     }
+
+
+
+
+
+
+
 
 
 }

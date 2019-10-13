@@ -2,6 +2,7 @@ package iti.kukumo.core.datatypes.assertion;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -98,7 +99,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
 
 
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String key, String value) throws Exception {
+    protected Matcher<?> createMatcher(Locale locale, String key, String value)
+    throws ParseException {
         Matcher<T> matcher = null;
         T numericValue = mapper.apply(formatter.apply(locale).parse(value));
         if (EQUALS.equals(key)) {

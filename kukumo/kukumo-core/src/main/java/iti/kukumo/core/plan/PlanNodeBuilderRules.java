@@ -14,7 +14,20 @@ import java.util.stream.Stream;
 public class PlanNodeBuilderRules {
 
 
-    private enum RuleMethod { ALL, FIRST }
+    private enum RuleMethod { 
+    	ALL((list,consumer)->list.forEach(consumer)),
+    	FIRST((list,consumer) -> list.stream().findAny().ifPresent(consumer));
+
+    	private BiConsumer<List<PlanNodeBuilder>,Consumer<PlanNodeBuilder>> consumer;
+    	RuleMethod(BiConsumer<List<PlanNodeBuilder>,Consumer<PlanNodeBuilder>> consumer) {
+    	    this.consumer = consumer;
+        }
+
+        public void apply(List<PlanNodeBuilder> list, Consumer<PlanNodeBuilder> consumer) {
+    	    this.consumer.accept(list,consumer);
+        }
+    }
+
 
     public interface PlanNodeBuilderRule {
         void apply(PlanNodeBuilder node) throws KukumoException;
@@ -37,9 +50,6 @@ public class PlanNodeBuilderRules {
             this.method = method;
         }
 
-        public PlanNodeBuilderRuleConsumer and() {
-            return this;
-        }
 
         public PlanNodeBuilderRuleConsumer perform(Consumer<PlanNodeBuilder> action) {
             return new PlanNodeBuilderRuleConsumer(predicate, action, method);
@@ -57,17 +67,13 @@ public class PlanNodeBuilderRules {
             }, method);
         }
 
-        public void apply(PlanNodeBuilder plan) throws KukumoException {
-            List<PlanNodeBuilder> nodes = plan.descendants().filter(predicate)
+        
+        public void apply(PlanNodeBuilder plan) {
+            List<PlanNodeBuilder> nodes = plan
+                 .descendants()
+                 .filter(predicate)
                  .collect(Collectors.toList());
-            switch (method) {
-                case ALL:
-                    nodes.forEach(consumer);
-                    break;
-                case FIRST:
-                    nodes.stream().findAny().ifPresent(consumer);
-                    break;
-            }
+            method.apply(nodes,consumer);
         }
 
         public PlanNodeBuilderRuleBiConsumer given(Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> rightNodeGetter) {
@@ -94,13 +100,12 @@ public class PlanNodeBuilderRules {
         }
 
 
-        public PlanNodeBuilderRuleBiConsumer and() {
-            return this;
-        }
-
         public PlanNodeBuilderRuleBiConsumer perform(BiConsumer<PlanNodeBuilder,PlanNodeBuilder> action) {
             return new PlanNodeBuilderRuleBiConsumer(predicate, biconsume(rightNodeGetter,action), method, rightNodeGetter);
         }
+
+
+
 
     }
 
@@ -108,11 +113,11 @@ public class PlanNodeBuilderRules {
 
 
     private static Consumer<PlanNodeBuilder> biconsume(
-             Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> rightNodeGetter,
-             BiConsumer<PlanNodeBuilder, PlanNodeBuilder> action
-     ) {
-         return leftNode -> rightNodeGetter.apply(leftNode).ifPresent( rightNode -> action.accept(leftNode, rightNode));
-     }
+        Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> rightNodeGetter,
+        BiConsumer<PlanNodeBuilder, PlanNodeBuilder> action
+    ) {
+        return leftNode -> rightNodeGetter.apply(leftNode).ifPresent( rightNode -> action.accept(leftNode, rightNode));
+    }
 
 
 
@@ -127,17 +132,23 @@ public class PlanNodeBuilderRules {
 
 
 
-    public static Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> anyOtherNode(Predicate<PlanNodeBuilder> predicate, BiPredicate<PlanNodeBuilder,PlanNodeBuilder> biPredicate) {
-        return leftNode -> leftNode.root().descendants().filter(predicate).filter(rightNode -> biPredicate.test(leftNode,rightNode)).findAny();
+    public static Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> anyOtherNode(
+        Predicate<PlanNodeBuilder> predicate,
+        BiPredicate<PlanNodeBuilder,PlanNodeBuilder> biPredicate
+    ) {
+        return leftNode -> leftNode.root().descendants()
+            .filter(predicate)
+            .filter(rightNode -> biPredicate.test(leftNode,rightNode))
+            .findAny();
     }
 
 
-    public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> withSame (Function<PlanNodeBuilder,T> method) {
+    public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> sharing (Function<PlanNodeBuilder,T> method) {
         return (leftNode,rightNode) -> Objects.equals(method.apply(leftNode),method.apply(rightNode));
     }
 
 
-    public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> withSame (
+    public static <T> BiPredicate<PlanNodeBuilder,PlanNodeBuilder> sharing (
             Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> leftNodeGetter,
             Function<PlanNodeBuilder,Optional<PlanNodeBuilder>> rightNodeGetter,
             Function<PlanNodeBuilder,T> method
@@ -279,5 +290,13 @@ public class PlanNodeBuilderRules {
     }
 
 
+    public static Consumer<PlanNodeBuilder> removeNode() {
+        return node -> node.parent().ifPresent(parent -> parent.removeChild(node));
+    }
+
+
+    public static BiConsumer<PlanNodeBuilder,PlanNodeBuilder> copyProperties() {
+        return (leftNode,rightNode)->leftNode.addProperties(rightNode.properties());
+    }
 
 }

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -112,9 +113,9 @@ public class Kukumo {
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
         }
-        List<String> discoveryPaths = new ArrayList<>(configuration.getList(RESOURCE_PATH,String.class));
+        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH,String.class);
         if (discoveryPaths.isEmpty()) {
-            discoveryPaths.add(".");
+            discoveryPaths = Arrays.asList(".");
         }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {

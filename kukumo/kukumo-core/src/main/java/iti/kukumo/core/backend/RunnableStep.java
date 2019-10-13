@@ -22,7 +22,7 @@ public class RunnableStep {
     private final Map<Locale,String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
-    private final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
+    private final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
 
     public RunnableStep(

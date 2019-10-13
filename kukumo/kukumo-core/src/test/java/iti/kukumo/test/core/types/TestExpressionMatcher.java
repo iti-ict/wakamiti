@@ -115,7 +115,7 @@ public class TestExpressionMatcher {
 
     private KukumoDataTypeRegistry coreTypes() {
         Map<String,KukumoDataType<?>> types = new HashMap<>();
-        Kukumo.instance().contributors().allDataTypeContributors().forEach(contributor -> {
+        Kukumo.contributors().allDataTypeContributors().forEach(contributor -> {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 types.put(type.getName(), type);
             }

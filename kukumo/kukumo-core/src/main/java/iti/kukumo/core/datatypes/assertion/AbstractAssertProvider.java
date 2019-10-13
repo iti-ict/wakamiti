@@ -6,6 +6,7 @@ import iti.kukumo.core.backend.ExpressionMatcher;
 import iti.kukumo.util.ResourceLoader;
 import org.hamcrest.Matcher;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public abstract class AbstractAssertProvider {
     public static final String MATCHERS_RESOURCE = "iti_kukumo_core-matchers";
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
+    protected static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
     private final Map<Locale,ResourceBundle> bundles = new HashMap<>();
     private final Map<Locale,Map<String,Pattern>> translatedExpressions = new HashMap<>();
@@ -34,7 +35,9 @@ public abstract class AbstractAssertProvider {
 
     public Optional<Matcher<?>> matcherFromExpression(Locale locale, String expression) {
 
-        Map<String, Pattern> expressions = translatedExpressions.computeIfAbsent(locale, this::translatedExpressions);
+        Map<String, Pattern> expressions =
+            translatedExpressions.computeIfAbsent(locale, this::translatedExpressions);
+
         String key = null;
         String value = null;
         boolean found = false;
@@ -69,16 +72,21 @@ public abstract class AbstractAssertProvider {
     protected abstract LinkedHashMap<String,Pattern> translatedExpressions(Locale locale);
 
 
-    protected abstract Matcher<?> createMatcher(Locale locale, String key, String value) throws Exception;
+    protected abstract Matcher<?> createMatcher(Locale locale, String key, String value)
+        throws ParseException;
 
 
 
 
-    protected String translateBundleExpression(Locale locale, String expression, String valueGroupReplacing) {
+    protected String translateBundleExpression(
+        Locale locale,
+        String expression,
+        String valueGroupReplacing
+    ) {
         String translatedExpression = bundle(locale).getString(expression);
         translatedExpression = ExpressionMatcher.computeRegularExpression(translatedExpression);
-        translatedExpression =
-                translatedExpression.replace(VALUE_WILDCARD, "(?<"+VALUE_GROUP+">" + valueGroupReplacing + ")");
+        String regexGroupExpression = "(?<"+VALUE_GROUP+">" + valueGroupReplacing + ")";
+        translatedExpression = translatedExpression.replace(VALUE_WILDCARD, regexGroupExpression);
         return "^" + translatedExpression + "$";
     }
 
