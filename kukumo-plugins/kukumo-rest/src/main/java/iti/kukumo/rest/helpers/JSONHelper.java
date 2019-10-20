@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.rest.helpers;
+
 
 import java.io.File;
 
@@ -18,11 +22,9 @@ import iti.kukumo.api.plan.Document;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.util.ResourceLoader;
 
-/**
- * @author ITI
- * Created by ITI on 17/04/19
- */
-@Extension(provider="iti.kukumo",name="rest-json-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
+
+
+@Extension(provider = "iti.kukumo", name = "rest-json-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class JSONHelper implements ContentTypeHelper {
 
     private static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
@@ -33,28 +35,58 @@ public class JSONHelper implements ContentTypeHelper {
         return ContentType.JSON;
     }
 
+
     @Override
-    public void assertContent(Document expected, ExtractableResponse<Response> response, boolean exactMatch) {
-        assertJSONIs(expected.getContent(),response, exactMatch ? JSONCompareMode.STRICT : JSONCompareMode.LENIENT);
+    public void assertContent(
+        Document expected,
+        ExtractableResponse<Response> response,
+        boolean exactMatch
+    ) {
+        assertJSONIs(
+            expected.getContent(),
+            response,
+            exactMatch ? JSONCompareMode.STRICT : JSONCompareMode.LENIENT
+        );
     }
 
 
     @Override
-    public void assertContent(File expected, ExtractableResponse<Response> response, boolean exactMatch) {
-        assertJSONIs(resourceLoader.readFileAsString(expected),response, exactMatch ? JSONCompareMode.STRICT : JSONCompareMode.LENIENT);
+    public void assertContent(
+        File expected,
+        ExtractableResponse<Response> response,
+        boolean exactMatch
+    ) {
+        assertJSONIs(
+            resourceLoader.readFileAsString(expected),
+            response,
+            exactMatch ? JSONCompareMode.STRICT : JSONCompareMode.LENIENT
+        );
     }
 
 
     @Override
-    public <T> void assertFragment(String fragment, ValidatableResponse response, Class<T> dataType, Matcher<T> matcher) {
-        response.body(fragment,matcher);
+    public <T> void assertFragment(
+        String fragment,
+        ValidatableResponse response,
+        Class<T> dataType,
+        Matcher<T> matcher
+    ) {
+        response.body(fragment, matcher);
     }
 
 
-    protected void assertJSONIs(String expected, ExtractableResponse<Response> response, JSONCompareMode mode )  {
+    protected void assertJSONIs(
+        String expected,
+        ExtractableResponse<Response> response,
+        JSONCompareMode mode
+    ) {
         try {
             if (expected.trim().startsWith("[")) { // body is an array instead of a JSON object
-                JSONAssert.assertEquals(new JSONArray(expected), new JSONArray(response.asString()), mode);
+                JSONAssert.assertEquals(
+                    new JSONArray(expected),
+                    new JSONArray(response.asString()),
+                    mode
+                );
             } else {
                 JSONAssert.assertEquals(expected, response.asString(), mode);
             }
@@ -62,9 +94,5 @@ public class JSONHelper implements ContentTypeHelper {
             throw new KukumoException(e);
         }
     }
-
-
-
-
 
 }

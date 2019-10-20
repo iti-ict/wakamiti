@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.util;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,10 +10,11 @@ import java.util.Collection;
 import io.cucumber.tagexpressions.Expression;
 import io.cucumber.tagexpressions.TagExpressionParser;
 
+
 public class TagFilter {
 
+    private final Expression tagParsedExpression;
 
-    private Expression tagParsedExpression;
 
     public TagFilter(String tagExpression) {
         TagExpressionParser tagExpressionParser = new TagExpressionParser();
@@ -17,9 +22,8 @@ public class TagFilter {
     }
 
 
-    public boolean filter (Collection<String> tags) {
+    public boolean filter(Collection<String> tags) {
         return tagParsedExpression.evaluate(new ArrayList<>(tags));
     }
-
 
 }

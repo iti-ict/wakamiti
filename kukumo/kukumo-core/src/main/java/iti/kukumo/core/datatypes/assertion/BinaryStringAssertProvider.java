@@ -1,15 +1,19 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.datatypes.assertion;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public class BinaryStringAssertProvider extends AbstractAssertProvider {
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
+
+public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
     public static final String EQUALS = "matcher.string.equals";
     public static final String EQUALS_IGNORE_CASE = "matcher.string.equals.ignore.case";
@@ -32,33 +36,40 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
 
-
     @Override
-    protected LinkedHashMap<String,Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         // binary numeric matchers
         String[] expressions = {
-                EQUALS,
-                EQUALS_IGNORE_CASE,
-                EQUALS_IGNORE_WHITESPACE,
-                STARTS_WITH,
-                ENDS_WITH,
-                CONTAINS
+                        EQUALS,
+                        EQUALS_IGNORE_CASE,
+                        EQUALS_IGNORE_WHITESPACE,
+                        STARTS_WITH,
+                        ENDS_WITH,
+                        CONTAINS
         };
-        LinkedHashMap<String,Pattern> translatedExpressions = new LinkedHashMap<>();
+        LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions) {
-            translatedExpressions.put(expression,Pattern.compile(
-                    translateBundleExpression(locale, expression,
-                    "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'")));
+            translatedExpressions.put(
+                expression,
+                Pattern.compile(
+                    translateBundleExpression(
+                        locale,
+                        expression,
+                        "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"
+                    )
+                )
+            );
         }
         return translatedExpressions;
     }
 
 
-
-
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String key, String value)
-    throws ParseException {
+    protected Matcher<?> createMatcher(
+        Locale locale,
+        String key,
+        String value
+    ) throws ParseException {
         value = prepareString(value);
         Matcher<String> matcher = null;
         if (EQUALS.equals(key)) {
@@ -79,8 +90,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
             matcher = Matchers.containsString(value);
         } else if (CONTAINS_IGNORE_CASE.equals(key)) {
             matcher = Matchers.containsStringIgnoringCase(value);
-        }
-        else if (NOT_EQUALS.equals(key)) {
+        } else if (NOT_EQUALS.equals(key)) {
             matcher = Matchers.not(Matchers.equalTo(value));
         } else if (NOT_EQUALS_IGNORE_CASE.equals(key)) {
             matcher = Matchers.not(Matchers.equalToIgnoringCase(value));
@@ -100,7 +110,6 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
             matcher = Matchers.not(Matchers.containsStringIgnoringCase(value));
         }
 
-
         return matcher;
     }
 
@@ -108,7 +117,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     /* remove leading and tailing " or ' , and replace escaped characters */
     private static String prepareString(String input) {
         return input
-            .substring(1, input.length()-1)
+            .substring(1, input.length() - 1)
             .replaceAll("\\\\\"", "\"")
             .replaceAll("\\\\'", "'");
     }

@@ -1,57 +1,42 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.util;
+
 
 import java.util.Stack;
 
-/*
- * CATMA Computer Aided Text Markup and Analysis
- *
- *    Copyright (C) 2008-2010  University Of Hamburg
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
-/**
- * Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as described in the
- * July 1988 issue of <a href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>
- *
- * @author Marco Petris
- *
- */
+/* CATMA Computer Aided Text Markup and Analysis*    Copyright (C) 2008-2010  University Of Hamburg*    This program is free software: you can redistribute it and/or modify *    it under the terms of the GNU General Public License as published by *    the Free Software Foundation, either version 3 of the License, or *    (at your option) any later version.*    This program is distributed in the hope that it will be useful, *    but WITHOUT ANY WARRANTY; without even the implied warranty of *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the *    GNU General Public License for more details.*    You should have received a copy of the GNU General Public License *    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
+/** Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as * described in the July 1988 issue of <a * href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>* @author Marco Petris*/
 public class Simil {
 
-    private String upBaseInput;
+    private final String upBaseInput;
+
 
     /**
      * Constructor.
+     *
      * @param baseInput the basic input to compare against
      */
     public Simil(String baseInput) {
         upBaseInput = baseInput.toUpperCase();
     }
 
+
     /**
-     * This method takes two strings, one from each stack, and looks for the largest
-     * substring which both have in common. The fragments of the two strings which do not
-     * belong to the common substring are pushed on the stacks. The size of the common
-     * susbstring is returned.
+     * This method takes two strings, one from each stack, and looks for the
+     * largest substring which both have in common. The fragments of the two
+     * strings which do not belong to the common substring are pushed on the
+     * stacks. The size of the common susbstring is returned.
      *
-     * @param baseInputStack the stack with the remaining portions of the base input string which await
-     * examination
-     * @param inputStack the stack with the remaining portions of the input string which await
-     * examination
-     * @return the size of the largets common substring of the two strings which were on the tops of
-     * the incoming stacks.
+     * @param baseInputStack the stack with the remaining portions of the base
+     *                       input string which await examination
+     * @param inputStack     the stack with the remaining portions of the input
+     *                       string which await examination
+     * @return the size of the largets common substring of the two strings which
+     *         were on the tops of the incoming stacks.
      */
     private int compare(Stack<String> baseInputStack, Stack<String> inputStack) {
 
@@ -63,31 +48,29 @@ public class Simil {
 
         // loop over the decrementing size until we find
         // a common substring
-        while (windowSize > 0 ) {
+        while (windowSize > 0) {
 
             // we start to compare subtrings of the current windowsize
             // from the beginning of the base input fragment
             // and move forward with this window by one-character-steps until
             // we find a match
             int pos = 0;
-            while (pos+windowSize-1 < comp1.length()) {
+            while (pos + windowSize - 1 < comp1.length()) {
 
                 // is this a common substring?
-                if (comp2.contains(comp1.substring(pos,pos+windowSize))) {
+                if (comp2.contains(comp1.substring(pos, pos + windowSize))) {
 
                     // yes, so we take the parts that do not belong to our matching
                     // string and push them onto the stack for later examination
-                    String comp2Rest[] =
-                            comp2.split(comp1.substring(pos,pos+windowSize),2);
-                    String comp1Rest[] =
-                            comp1.split(comp1.substring(pos,pos+windowSize),2);
+                    String comp2Rest[] = comp2.split(comp1.substring(pos, pos + windowSize), 2);
+                    String comp1Rest[] = comp1.split(comp1.substring(pos, pos + windowSize), 2);
 
                     // both rest-arrays should have at least one entry to compare to next time
                     int resultLen = Math.min(comp1Rest.length, comp2Rest.length);
-                    if (resultLen> 1) {
+                    if (resultLen > 1) {
                         // we do not push empty fragments onto the stack
                         // but everything else
-                        for (int idx=0; idx<resultLen; idx++) {
+                        for (int idx = 0; idx < resultLen; idx++) {
                             if (!"".equals(comp1Rest[idx])) {
                                 baseInputStack.push(comp1Rest[idx]);
                             }
@@ -109,6 +92,7 @@ public class Simil {
         return 0;
     }
 
+
     /**
      * Computes the similarity of the base input of this instance to the given
      * input and returns the computed value in percent.
@@ -118,8 +102,8 @@ public class Simil {
      */
     public double getSimilarityInPercentFor(String input) {
         String upInput = input.toUpperCase();
-        Stack<String> inputStack = new Stack<String>();
-        Stack<String> baseInputStack = new Stack<String>();
+        Stack<String> inputStack = new Stack<>();
+        Stack<String> baseInputStack = new Stack<>();
 
         baseInputStack.push(upBaseInput);
         inputStack.push(upInput);
@@ -130,7 +114,7 @@ public class Simil {
         // we loop over the portions of the strings and try to find
         // the lengths of largest substrings
         // the stacks gets filled when common substrings are found
-        while(inputStack.size() > 0 && baseInputStack.size() > 0) {
+        while (inputStack.size() > 0 && baseInputStack.size() > 0) {
 
             compCount += compare(baseInputStack, inputStack);
 
@@ -138,9 +122,9 @@ public class Simil {
 
         // compute the percent value for the total length of the matching substrings
         // regarding the combined total length of the two strings we compared
-        double percentVal = (compCount*2);
-        percentVal /= (upBaseInput.length()+upInput.length());
+        double percentVal = (compCount * 2);
+        percentVal /= (upBaseInput.length() + upInput.length());
 
-        return (int)(Math.round(percentVal*100.0));
+        return (int) (Math.round(percentVal * 100.0));
     }
 }

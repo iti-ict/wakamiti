@@ -8,10 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author ITI
- * Created by ITI on 6/9/19
- */
+
 final class JAnsiSupport {
 
     public static final JAnsiSupport instance = new JAnsiSupport();
@@ -56,7 +53,7 @@ final class JAnsiSupport {
     }
 
     String ansi(String level, String message) {
-        return Ansi.ansi().render(replaceStyles(level, message)).toString();
+        return message == null ? null : Ansi.ansi().render(replaceStyles(level, message)).toString();
     }
 
 

@@ -1,11 +1,11 @@
 package iti.commons.slf4jansi;
 
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 public class TestAnsiLogger {
 
@@ -46,6 +46,15 @@ public class TestAnsiLogger {
     }
 
 
+    @Test
+    public void testNull() {
+        AnsiLogger.setAnsiEnabled(true);
+        StringLogger string = new StringLogger();
+        Logger logger = AnsiLogger.of(string);
+        logger.info(null);
+        System.out.println(string.getContent());
+        assertTrue(string.getContent().equals("null\n"));
+    }
 
 
 }

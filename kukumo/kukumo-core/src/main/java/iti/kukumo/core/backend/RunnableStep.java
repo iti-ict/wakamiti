@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.backend;
+
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,21 +19,22 @@ import iti.kukumo.util.Pair;
 import iti.kukumo.util.ResourceLoader;
 import iti.kukumo.util.ThrowableRunnable;
 
+
 public class RunnableStep {
 
     private final String definitionFile;
     private final String definitionKey;
-    private final Map<Locale,String> translatedDefinitions = new HashMap<>();
+    private final Map<Locale, String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
     private final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
 
     public RunnableStep(
-            String definitionFile,
-            String definitionKey,
-            BackendArguments arguments,
-            ThrowableRunnable stepExecutor
+                    String definitionFile,
+                    String definitionKey,
+                    BackendArguments arguments,
+                    ThrowableRunnable stepExecutor
     ) {
         this.definitionFile = definitionFile;
         this.definitionKey = definitionKey;
@@ -38,11 +43,10 @@ public class RunnableStep {
     }
 
 
-
     public String getTranslatedDefinition(Locale locale) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
-            ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile,locale);
+            ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile, locale);
             if (resourceBundle == null) {
                 throw new KukumoException(
                     "Cannot find step definition file {} for locale {}",
@@ -65,15 +69,19 @@ public class RunnableStep {
     }
 
 
-
-    public Matcher matcher(PlanNode modelStep, Locale stepLocale, Locale dataLocale, KukumoDataTypeRegistry typeRegistry) {
+    public Matcher matcher(
+        PlanNode modelStep,
+        Locale stepLocale,
+        Locale dataLocale,
+        KukumoDataTypeRegistry typeRegistry
+    ) {
         String translatedDefinition = getTranslatedDefinition(stepLocale);
-        return ExpressionMatcher.matcherFor(translatedDefinition,typeRegistry,dataLocale,modelStep);
+        return ExpressionMatcher
+            .matcherFor(translatedDefinition, typeRegistry, dataLocale, modelStep);
     }
 
 
-
-    public void run (Map<String,Object> invokeArguments) {
+    public void run(Map<String, Object> invokeArguments) {
 
         boolean error = false;
         // re-arrange argument order
@@ -81,7 +89,7 @@ public class RunnableStep {
             error = true;
         }
         Object[] argumentArray = new Object[this.arguments.size()];
-        for (int i=0;i<argumentArray.length;i++) {
+        for (int i = 0; i < argumentArray.length; i++) {
             Pair<String, String> argument = this.arguments.get(i);
             Object invokeArgument = invokeArguments.get(argument.key());
             if (invokeArgument == null) {
@@ -112,6 +120,7 @@ public class RunnableStep {
     public BackendArguments getArguments() {
         return arguments;
     }
+
 
     public String getDefinitionKey() {
         return definitionKey;

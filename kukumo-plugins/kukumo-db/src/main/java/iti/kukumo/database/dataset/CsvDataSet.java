@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.database.dataset;
+
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,6 +15,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import iti.kukumo.api.KukumoException;
 
+
 public class CsvDataSet extends DataSet {
 
     private final File file;
@@ -18,14 +23,15 @@ public class CsvDataSet extends DataSet {
     private final Reader reader;
     private final Iterator<CSVRecord> iterator;
     private CSVRecord currentRecord;
-    
-    
+
+
     public CsvDataSet(String table, File file, String csvFormat) throws IOException {
-        this(table,file,CSVFormat.valueOf(csvFormat));
+        this(table, file, CSVFormat.valueOf(csvFormat));
     }
-    
+
+
     private CsvDataSet(String table, File file, CSVFormat format) throws IOException {
-        super(table,"file '"+file+"'");
+        super(table, "file '" + file + "'");
         this.file = file;
         this.format = format;
         this.reader = new FileReader(file);
@@ -33,7 +39,7 @@ public class CsvDataSet extends DataSet {
             this.iterator = format.parse(reader).iterator();
             CSVRecord header = iterator.next();
             this.columns = new String[header.size()];
-            for (int c=0;c<columns.length;c++) {
+            for (int c = 0; c < columns.length; c++) {
                 this.columns[c] = header.get(c);
             }
         } catch (Exception e) {
@@ -41,14 +47,14 @@ public class CsvDataSet extends DataSet {
             throw new KukumoException(e);
         }
     }
-    
-    
+
+
     @Override
     public void close() throws IOException {
         reader.close();
     }
 
-    
+
     @Override
     public boolean nextRow() {
         if (!iterator.hasNext()) {
@@ -59,14 +65,13 @@ public class CsvDataSet extends DataSet {
         }
     }
 
-    
-    
+
     @Override
     public Object rowValue(int columnIndex) {
         return currentRecord.get(columnIndex);
     }
 
-    
+
     @Override
     public DataSet copy() throws IOException {
         return new CsvDataSet(table, file, format);

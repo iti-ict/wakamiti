@@ -1,6 +1,11 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.testing.embeddeddb;
 
+
 import org.junit.rules.ExternalResource;
+
 
 public class EmbeddedDatabaseRule extends ExternalResource {
 
@@ -8,18 +13,18 @@ public class EmbeddedDatabaseRule extends ExternalResource {
     private final String initialScriptFile;
     private EmbeddedDatabase embeddedDatabase;
 
-    
+
     public EmbeddedDatabaseRule(EmbeddedDatabaseTemplate template) {
-        this(template,null);
+        this(template, null);
     }
-    
-    
+
+
     public EmbeddedDatabaseRule(EmbeddedDatabaseTemplate template, String initalScriptFile) {
         this.template = template;
         this.initialScriptFile = initalScriptFile;
     }
-    
-    
+
+
     @Override
     protected void before() throws Throwable {
         super.before();
@@ -29,9 +34,8 @@ public class EmbeddedDatabaseRule extends ExternalResource {
         }
         embeddedDatabase.start();
     }
-    
-    
-    
+
+
     @Override
     protected void after() {
         try {
@@ -42,6 +46,4 @@ public class EmbeddedDatabaseRule extends ExternalResource {
         super.after();
     }
 
-    
-    
 }

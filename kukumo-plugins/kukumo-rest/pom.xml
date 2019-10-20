@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-rest</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
 
     <!-- additional information -->
     <name>Kukumo::REST Steps</name>
@@ -25,7 +25,7 @@
 
     <!-- dependency versions -->
     <properties>
-        <kukumo.version>0.9.0</kukumo.version>
+        <kukumo.version>0.9.1</kukumo.version>
         <jext.version>1.0.0</jext.version>
         <rest-assured.version>3.2.0</rest-assured.version>
         <jsonassert.version>1.5.0</jsonassert.version>

@@ -1,4 +1,21 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.gherkin.parser;
+
+
+import static gherkin.Parser.RuleType.Scenario_Definition;
+import static gherkin.StringUtils.join;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import gherkin.AstNode;
 import gherkin.GherkinLineSpan;
@@ -7,15 +24,21 @@ import gherkin.Parser.RuleType;
 import gherkin.Parser.TokenType;
 import gherkin.ParserException;
 import gherkin.Token;
-import gherkin.ast.*;
+import gherkin.ast.Background;
+import gherkin.ast.Comment;
+import gherkin.ast.DataTable;
+import gherkin.ast.DocString;
+import gherkin.ast.Examples;
+import gherkin.ast.Feature;
+import gherkin.ast.GherkinDocument;
+import gherkin.ast.Location;
+import gherkin.ast.Node;
+import gherkin.ast.ScenarioDefinition;
+import gherkin.ast.Step;
+import gherkin.ast.TableCell;
+import gherkin.ast.TableRow;
+import gherkin.ast.Tag;
 
-
-
-import java.util.*;
-import java.util.stream.Stream;
-
-import static gherkin.Parser.RuleType.Scenario_Definition;
-import static gherkin.StringUtils.join;
 
 public class GherkinAstBuilder implements Builder<GherkinDocument> {
 
@@ -24,11 +47,9 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     private final Map<Token, List<Comment>> comments = new HashMap<>();
 
 
-
     public GherkinAstBuilder() {
         reset();
     }
-
 
 
     @Override
@@ -40,11 +61,9 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     private CommentedAstNode currentNode() {
         return stack.peek();
     }
-
 
 
     @Override
@@ -69,12 +88,10 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     @Override
     public void startRule(RuleType ruleType) {
         stack.push(new CommentedAstNode(ruleType));
     }
-
 
 
     @Override
@@ -83,7 +100,6 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
         Object transformedNode = getTransformedNode(node);
         currentNode().add(node.ruleType, transformedNode);
     }
-
 
 
     private Object getTransformedNode(AstNode node) {
@@ -109,19 +125,10 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
         case GherkinDocument:
             Feature feature = node.getSingle(RuleType.Feature, null);
             return new GherkinDocument(feature, Collections.emptyList());
-         default:
-             return node;
+        default:
+            return node;
         }
     }
-
-
-
-
-
-
-
-
-
 
 
     private Object getTransformedStep(AstNode node) {
@@ -131,15 +138,15 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
             stepArg = node.getSingle(RuleType.DocString, null);
         }
         return new CommentedStep(
-                getLocation(stepLine, 0), stepLine.matchedKeyword, stepLine.matchedText, stepArg, comments(node)
+            getLocation(stepLine, 0), stepLine.matchedKeyword, stepLine.matchedText, stepArg, comments(node)
         );
     }
 
 
-
     private Object getTransformedDocString(AstNode node) {
         Token separatorToken = node.getTokens(TokenType.DocStringSeparator).get(0);
-        String contentType = separatorToken.matchedText.length() > 0 ? separatorToken.matchedText : null;
+        String contentType = separatorToken.matchedText.length() > 0 ? separatorToken.matchedText
+                        : null;
         List<Token> lineTokens = node.getTokens(TokenType.Other);
         StringBuilder content = new StringBuilder();
         boolean newLine = false;
@@ -154,16 +161,14 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     private Object getTransformedBackground(AstNode node) {
         Token backgroundLine = node.getToken(TokenType.BackgroundLine);
         String description = getDescription(node);
         List<Step> steps = getSteps(node);
         return new CommentedBackground(
-                getLocation(backgroundLine, 0), backgroundLine.matchedKeyword, backgroundLine.matchedText, description, steps, comments(node)
+            getLocation(backgroundLine, 0), backgroundLine.matchedKeyword, backgroundLine.matchedText, description, steps, comments(node)
         );
     }
-
 
 
     private Object getTransformedScenarioDefinition(AstNode node) {
@@ -176,7 +181,7 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
             List<Step> steps = getSteps(scenarioNode);
 
             return new CommentedScenario(
-                    tags, getLocation(scenarioLine, 0), scenarioLine.matchedKeyword, scenarioLine.matchedText, description, steps, comments(scenarioNode)
+                tags, getLocation(scenarioLine, 0), scenarioLine.matchedKeyword, scenarioLine.matchedText, description, steps, comments(scenarioNode)
             );
         } else {
             AstNode scenarioOutlineNode = node.getSingle(RuleType.ScenarioOutline, null);
@@ -187,14 +192,14 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
             String description = getDescription(scenarioOutlineNode);
             List<Step> steps = getSteps(scenarioOutlineNode);
 
-            List<Examples> examplesList = scenarioOutlineNode.getItems(RuleType.Examples_Definition);
+            List<Examples> examplesList = scenarioOutlineNode
+                .getItems(RuleType.Examples_Definition);
 
             return new CommentedScenarioOutline(
-                    tags, getLocation(scenarioOutlineLine, 0), scenarioOutlineLine.matchedKeyword, scenarioOutlineLine.matchedText, description, steps, examplesList, comments(scenarioOutlineNode)
+                tags, getLocation(scenarioOutlineLine, 0), scenarioOutlineLine.matchedKeyword, scenarioOutlineLine.matchedText, description, steps, examplesList, comments(scenarioOutlineNode)
             );
         }
     }
-
 
 
     private Object getTransformedExamplesDefinition(AstNode node) {
@@ -204,12 +209,12 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
         String description = getDescription(examplesNode);
         List<TableRow> rows = examplesNode.getSingle(RuleType.Examples_Table, null);
         TableRow tableHeader = rows != null && !rows.isEmpty() ? rows.get(0) : null;
-        List<TableRow> tableBody = rows != null && !rows.isEmpty() ? rows.subList(1, rows.size()) : null;
+        List<TableRow> tableBody = rows != null && !rows.isEmpty() ? rows.subList(1, rows.size())
+                        : null;
         return new Examples(
-                getLocation(examplesLine, 0), tags, examplesLine.matchedKeyword, examplesLine.matchedText, description, tableHeader, tableBody
+            getLocation(examplesLine, 0), tags, examplesLine.matchedKeyword, examplesLine.matchedText, description, tableHeader, tableBody
         );
     }
-
 
 
     private Object getTransformedDescription(AstNode node) {
@@ -220,14 +225,13 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
             end--;
         }
         lineTokens = lineTokens.subList(0, end);
-        return join( token->token.matchedText, "\n", lineTokens);
+        return join(token -> token.matchedText, "\n", lineTokens);
     }
 
 
-
-
     private Object getTransformedFeature(AstNode node) {
-        AstNode header = node.getSingle(RuleType.Feature_Header, new AstNode(RuleType.Feature_Header));
+        AstNode header = node
+            .getSingle(RuleType.Feature_Header, new AstNode(RuleType.Feature_Header));
         if (header == null) {
             return null;
         }
@@ -249,10 +253,9 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
         String language = featureLine.matchedGherkinDialect.getLanguage();
 
         return new CommentedFeature(
-                tags, getLocation(featureLine, 0), language, featureLine.matchedKeyword, featureLine.matchedText, description, scenarioDefinitions, comments(header)
+            tags, getLocation(featureLine, 0), language, featureLine.matchedKeyword, featureLine.matchedText, description, scenarioDefinitions, comments(header)
         );
     }
-
 
 
     private List<TableRow> getTableRows(AstNode node) {
@@ -265,7 +268,6 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     private void ensureCellCount(List<TableRow> rows) {
         if (rows.isEmpty()) {
             return;
@@ -275,12 +277,11 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
         for (TableRow row : rows) {
             if (row.getCells().size() != cellCount) {
                 throw new ParserException.AstBuilderException(
-                        "inconsistent cell count within the table", row.getLocation()
+                    "inconsistent cell count within the table", row.getLocation()
                 );
             }
         }
     }
-
 
 
     private List<TableCell> getCells(Token token) {
@@ -292,11 +293,9 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     private List<Step> getSteps(AstNode node) {
         return node.getItems(RuleType.Step);
     }
-
 
 
     private Location getLocation(Token token, int column) {
@@ -304,11 +303,9 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     private String getDescription(AstNode node) {
         return node.getSingle(RuleType.Description, null);
     }
-
 
 
     private List<Tag> getTags(AstNode node) {
@@ -328,19 +325,17 @@ public class GherkinAstBuilder implements Builder<GherkinDocument> {
     }
 
 
-
     @Override
     public GherkinDocument getResult() {
         return currentNode().getSingle(RuleType.GherkinDocument, null);
     }
 
 
-
     private List<Comment> comments(AstNode node) {
         List<Token> tokens = Stream.of(TokenType.values()).map(node::getTokens)
-                .collect(ArrayList::new, List::addAll, List::addAll);
+            .collect(ArrayList::new, List::addAll, List::addAll);
         return tokens.stream().map(comments::get).filter(Objects::nonNull)
-                .collect(ArrayList::new, List::addAll, List::addAll);
+            .collect(ArrayList::new, List::addAll, List::addAll);
     }
 
 }

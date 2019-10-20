@@ -1,14 +1,18 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.database;
 
-import iti.commons.jext.Extension;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@Extension(provider="iti.kukumo", name="kukumo-database-driver-connection", version="1.0")
-public class DriverConnectionManager implements ConnectionManager {
+import iti.commons.jext.Extension;
 
+
+@Extension(provider = "iti.kukumo", name = "kukumo-database-driver-connection", version = "1.0")
+public class DriverConnectionManager implements ConnectionManager {
 
     @Override
     public Connection obtainConnection(ConnectionParameters parameters) throws SQLException {
@@ -17,10 +21,13 @@ public class DriverConnectionManager implements ConnectionManager {
             try {
                 Class.forName(parameters.driver());
             } catch (ClassNotFoundException e) {
-                throw new SQLException("JDBC Driver "+parameters.driver()+" not found in classpath");
+                throw new SQLException(
+                    "JDBC Driver " + parameters.driver() + " not found in classpath"
+                );
             }
         }
-        return DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password());
+        return DriverManager
+            .getConnection(parameters.url(), parameters.username(), parameters.password());
     }
 
 
@@ -31,7 +38,7 @@ public class DriverConnectionManager implements ConnectionManager {
                 connection.close();
             }
         } catch (SQLException | RuntimeException e) {
-            throw new SQLException("Problem releasing JDBC connection: "+e.getMessage());
+            throw new SQLException("Problem releasing JDBC connection: " + e.getMessage());
         }
     }
 

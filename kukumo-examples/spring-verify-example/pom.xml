@@ -100,7 +100,7 @@
                     <plugin>
                         <groupId>iti.kukumo</groupId>
                         <artifactId>kukumo-maven-plugin</artifactId>
-                        <version>0.9.0</version>
+                        <version>0.9.1</version>
                         <executions>
                             <!-- Executed at integration-test phase -->
                             <execution>
@@ -134,7 +134,7 @@
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-rest</artifactId>
-                                <version>0.9.0</version>
+                                <version>0.9.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.h2database</groupId>
@@ -144,12 +144,12 @@
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-db</artifactId>
-                                <version>0.9.0</version>
+                                <version>0.9.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-html-report</artifactId>
-                                <version>0.9.0</version>
+                                <version>0.9.1</version>
                             </dependency>
                         </dependencies>
                     </plugin>

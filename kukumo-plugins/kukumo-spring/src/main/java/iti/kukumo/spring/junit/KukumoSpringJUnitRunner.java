@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.spring.junit;
+
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -17,6 +21,7 @@ public class KukumoSpringJUnitRunner extends Runner {
     private final KukumoJUnitRunner kukumoJUnitRunner;
     private final TestContextManager testContextManager;
 
+
     public KukumoSpringJUnitRunner(Class<?> configurationClass) throws InitializationError {
         /** IMPORTANT: TestContext must be prepared before accessing Kukumo */
         this.testContextManager = createTestContextManager(configurationClass);
@@ -24,16 +29,16 @@ public class KukumoSpringJUnitRunner extends Runner {
             this.testContextManager.prepareTestInstance(this);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            LOGGER.debug(e.getMessage(),e);
+            LOGGER.debug(e.getMessage(), e);
         }
         this.kukumoJUnitRunner = new KukumoJUnitRunner(configurationClass);
     }
 
 
-
     protected TestContextManager createTestContextManager(Class<?> clazz) {
         return new TestContextManager(clazz);
     }
+
 
     protected final TestContextManager getTestContextManager() {
         return this.testContextManager;
@@ -44,6 +49,7 @@ public class KukumoSpringJUnitRunner extends Runner {
     public Description getDescription() {
         return kukumoJUnitRunner.getDescription();
     }
+
 
     @Override
     public void run(RunNotifier notifier) {

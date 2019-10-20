@@ -1,5 +1,5 @@
 function switchVisibility(ids,displayValues) {
-   for (i in ids) {
+   for (const i in ids) {
        console.log('switch visibility for id ',ids[i]);
        let e = document.getElementById(ids[i]);
        if (e) {

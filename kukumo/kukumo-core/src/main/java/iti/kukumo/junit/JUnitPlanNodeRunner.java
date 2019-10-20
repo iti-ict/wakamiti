@@ -1,4 +1,16 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.junit;
+
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
 
 import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
@@ -10,13 +22,7 @@ import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.runner.PlanNodeLogger;
 import iti.kukumo.core.runner.PlanNodeRunner;
-import org.junit.runner.Description;
-import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunNotifier;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
@@ -24,67 +30,67 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     private RunNotifier notifier;
 
 
-    public JUnitPlanNodeRunner(PlanNode node, Configuration configuration, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
+    public JUnitPlanNodeRunner(
+                    PlanNode node, Configuration configuration, BackendFactory backendFactory,
+                    Optional<Backend> backend, PlanNodeLogger logger
+    ) {
         super(node, configuration, backendFactory, backend, logger);
     }
 
 
-    public JUnitPlanNodeRunner(PlanNode node, Configuration configuration, BackendFactory backendFactory, PlanNodeLogger logger) {
+    public JUnitPlanNodeRunner(
+                    PlanNode node, Configuration configuration, BackendFactory backendFactory,
+                    PlanNodeLogger logger
+    ) {
         super(node, configuration, backendFactory, logger);
     }
 
 
     protected boolean isSuite() {
-        return getNode().nodeType().isNoneOf(NodeType.TEST_CASE,NodeType.STEP);
+        return getNode().nodeType().isNoneOf(NodeType.TEST_CASE, NodeType.STEP);
     }
+
 
     public Description getDescription() {
         if (description == null) {
             if (isSuite()) {
-                description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
+                description = Description
+                    .createSuiteDescription(getNode().displayName(), getUniqueId());
                 for (PlanNodeRunner child : getChildren()) {
-                     description.addChild(((JUnitPlanNodeRunner) child).getDescription());
+                    description.addChild(((JUnitPlanNodeRunner) child).getDescription());
                 }
             } else {
-                description = Description.createTestDescription("", getNode().displayName(), getUniqueId());
+                description = Description
+                    .createTestDescription("", getNode().displayName(), getUniqueId());
             }
         }
         return description;
     }
 
 
-
-
     @Override
     protected List<PlanNodeRunner> createChildren() {
-        return getNode().children().map(child ->
-            new JUnitPlanNodeRunner(child, configuration(), backendFactory(), getBackend(), getLogger())
-        ).collect(Collectors.toList());
+        return getNode().children()
+            .map(
+                child -> new JUnitPlanNodeRunner(
+                    child, configuration(), backendFactory(), getBackend(), getLogger()
+                )
+            ).collect(Collectors.toList());
     }
 
 
-
-    public Result runNode(RunNotifier notifier, boolean forceSkip) {
+    public void runNode(RunNotifier notifier) {
         this.notifier = notifier;
-        return super.runNode(forceSkip);
+        super.runNode();
     }
-
 
 
     @Override
-    protected Result runChildren() {
-        Result childResult = null;
-        boolean forceSkipChild = false;
+    protected void runChildren() {
         for (PlanNodeRunner child : getChildren()) {
-            childResult = ((JUnitPlanNodeRunner)child).runNode(notifier, forceSkipChild);
-            NodeType nodeType = child.getNode().nodeType();
-            if (nodeType.isAnyOf(NodeType.STEP,NodeType.STEP_AGGREGATOR) && childResult != Result.PASSED) {
-                forceSkipChild = true;
-            }
+            ((JUnitPlanNodeRunner) child).runNode(notifier);
         }
-        return childResult;
     }
-
 
 
     @Override
@@ -98,12 +104,12 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     }
 
 
-
-
     @Override
     protected void testCasePostExecution(PlanNode node) {
         super.testCasePostExecution(node);
-        Exception notExecuted = new KukumoException("Test case not executed due to unknown reasons");
+        Exception notExecuted = new KukumoException(
+            "Test case not executed due to unknown reasons"
+        );
         Exception skipped = new KukumoSkippedException("Test case skipped");
         Optional<Result> result = node.result();
         if (result.isPresent()) {
@@ -112,10 +118,11 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
             } else if (result.get() == Result.SKIPPED) {
                 notifier.fireTestFailure(new Failure(getDescription(), skipped));
             } else {
-                notifier.fireTestFailure(new Failure(getDescription(), node.errors().findFirst().orElse(notExecuted)));
+                notifier.fireTestFailure(
+                    new Failure(getDescription(), node.errors().findFirst().orElse(notExecuted))
+                );
             }
         }
     }
-
 
 }

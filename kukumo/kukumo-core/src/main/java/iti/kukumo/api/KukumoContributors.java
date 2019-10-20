@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -19,20 +23,26 @@ import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.extensions.StepContributor;
 
+
 public class KukumoContributors {
 
     private final ExtensionManager extensionManager = new ExtensionManager();
+
 
     public Stream<EventObserver> eventObservers() {
         return extensionManager.getExtensions(EventObserver.class);
     }
 
-    public Optional<PlanBuilder> createPlanBuilderFor(ResourceType<?> resourceType, Configuration configuration) {
-        Predicate<PlanBuilder> filter = planner->planner.acceptResourceType(resourceType);
-        Optional<PlanBuilder> planBuilder
-            = extensionManager.getExtensionThatSatisfy(PlanBuilder.class, filter);
+
+    public Optional<PlanBuilder> createPlanBuilderFor(
+        ResourceType<?> resourceType,
+        Configuration configuration
+    ) {
+        Predicate<PlanBuilder> filter = planner -> planner.acceptResourceType(resourceType);
+        Optional<PlanBuilder> planBuilder = extensionManager
+            .getExtensionThatSatisfy(PlanBuilder.class, filter);
         if (planBuilder.isPresent()) {
-            configure(planBuilder.get(),configuration);
+            configure(planBuilder.get(), configuration);
         }
         return planBuilder;
     }
@@ -42,13 +52,13 @@ public class KukumoContributors {
      * @return A list of all available resource types provided by contributors
      */
     public Stream<ResourceType<?>> availableResourceTypes() {
-        return extensionManager.getExtensions(ResourceType.class).map(x->(ResourceType<?>)x);
+        return extensionManager.getExtensions(ResourceType.class).map(x -> (ResourceType<?>) x);
     }
 
 
     public Optional<ResourceType<?>> resourceTypeByName(String name) {
         return availableResourceTypes().filter(
-                resourceType -> resourceType.extensionMetadata().name().equals(name)
+            resourceType -> resourceType.extensionMetadata().name().equals(name)
         ).findAny();
     }
 
@@ -60,11 +70,9 @@ public class KukumoContributors {
     }
 
 
-
     public Stream<DataTypeContributor> allDataTypeContributors() {
         return extensionManager.getExtensions(DataTypeContributor.class);
     }
-
 
 
     public List<StepContributor> createStepContributors(
@@ -73,17 +81,16 @@ public class KukumoContributors {
     ) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
-            .getExtensionsThatSatisfyMetadata(StepContributor.class,condition)
-            .peek(c->configure(c,configuration))
+            .getExtensionsThatSatisfyMetadata(StepContributor.class, condition)
+            .peek(c -> configure(c, configuration))
             .collect(Collectors.toList());
     }
-
 
 
     public List<StepContributor> createAllStepContributors(Configuration configuration) {
         return extensionManager
             .getExtensions(StepContributor.class)
-            .peek(c->configure(c,configuration))
+            .peek(c -> configure(c, configuration))
             .collect(Collectors.toList());
     }
 
@@ -93,18 +100,17 @@ public class KukumoContributors {
     }
 
 
-
     @SuppressWarnings("unchecked")
     public <T> Stream<Configurator<T>> configuratorsFor(T contributor) {
         return extensionManager
-            .getExtensionsThatSatisfy(Configurator.class, c->c.accepts(contributor))
-            .map(c->(Configurator<T>) c);
+            .getExtensionsThatSatisfy(Configurator.class, c -> c.accepts(contributor))
+            .map(c -> (Configurator<T>) c);
     }
 
 
     public <T> T configure(T contributor, Configuration configuration) {
         if (contributor instanceof Configurable) {
-            ((Configurable)contributor).configure(configuration);
+            ((Configurable) contributor).configure(configuration);
         }
         configuratorsFor(contributor).forEach(
             configurator -> configurator.configure(contributor, configuration)

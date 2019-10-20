@@ -1,11 +1,11 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.gherkin;
 
+
 import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,14 +26,11 @@ import iti.kukumo.core.plan.PlanNodeBuilder;
 import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 import iti.kukumo.core.plan.RuleBasedPlanTransformer;
 
-/**
- * @author ITI
- * Created by ITI on 7/10/19
- */
+
+
 @Extension(provider = "iti.kukumo", name = "gherkin-redefinition-transformer")
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
-implements PlanTransformer {
-
+                implements PlanTransformer {
 
     @Override
     protected List<PlanNodeBuilderRule> createRules(Configuration configuration) {
@@ -61,26 +58,22 @@ implements PlanTransformer {
                 .given(rules.implementationScenarioSharingIdWithParent())
                 .perform(rules::attachImplementationSteps),
 
-           forEachNode(rules.implementationBackground())
+            forEachNode(rules.implementationBackground())
                 .given(rules.definitionScenarioSharingIdWithParent())
                 .perform(rules::attachImplementationBackgroundToDefinitionScenario),
 
-           forEachNode(rules.stepAggregatorWithoutChildren())
+            forEachNode(rules.stepAggregatorWithoutChildren())
                 .perform(node -> node.setNodeType(NodeType.VIRTUAL_STEP)),
 
-           forEachNode(rules.definitionScenario())
+            forEachNode(rules.definitionScenario())
                 .given(rules.implementationScenarioSharingId())
                 .perform(copyProperties()),
 
-           forEachNode(rules.implementationFeature())
+            forEachNode(rules.implementationFeature())
                 .perform(removeNode())
 
         );
     }
-
-
-
-
 
 
     private class GherkinRedefinitionRules {
@@ -88,6 +81,7 @@ implements PlanTransformer {
         private final GherkinPlanBuilder gherkinPlanBuilder;
         private final String implementationTag;
         private final String definitionTag;
+
 
         public GherkinRedefinitionRules(Configuration configuration) {
             gherkinPlanBuilder = new GherkinPlanBuilder();
@@ -101,37 +95,46 @@ implements PlanTransformer {
             return ofTypeBackground().and(withTag(definitionTag));
         }
 
+
         public Predicate<PlanNodeBuilder> definitionScenario() {
             return ofTypeScenario().and(withTag(definitionTag));
         }
+
 
         private Predicate<PlanNodeBuilder> definitionStep() {
             return withType(NodeType.STEP).and(childOf(anyNode(withTag(definitionTag))));
         }
 
+
         private Predicate<PlanNodeBuilder> definitionStepAggregator() {
             return withType(NodeType.STEP_AGGREGATOR).and(childOf(anyNode(withTag(definitionTag))));
         }
+
 
         public Predicate<PlanNodeBuilder> implementationBackground() {
             return ofTypeBackground().and(withTag(implementationTag));
         }
 
+
         public Predicate<PlanNodeBuilder> implementationScenarioOutline() {
             return ofTypeScenarioOutline().and(withTag(implementationTag));
         }
+
 
         public Predicate<PlanNodeBuilder> implementationScenario() {
             return ofTypeScenario().and(withTag(implementationTag));
         }
 
+
         public Predicate<PlanNodeBuilder> implementationScenarioChildOfScenarioOutline() {
             return implementationScenario().and(childOf(anyNode(ofTypeScenarioOutline())));
         }
 
+
         public Predicate<PlanNodeBuilder> implementationFeature() {
             return ofTypeFeature().and(withTag(implementationTag));
         }
+
 
         public Predicate<PlanNodeBuilder> stepAggregatorWithoutChildren() {
             return withType(NodeType.STEP_AGGREGATOR).and(withoutChildren());
@@ -150,10 +153,11 @@ implements PlanTransformer {
             );
         }
 
+
         public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> implementationScenarioSharingIdWithParent() {
             return anyOtherNode(
                 withType(NodeType.TEST_CASE).and(withTag(implementationTag)),
-                sharing(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
+                sharing(PlanNodeBuilder::parent, Optional::of, PlanNodeBuilder::id)
             );
         }
 
@@ -161,7 +165,7 @@ implements PlanTransformer {
         public Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> definitionScenarioSharingIdWithParent() {
             return anyOtherNode(
                 ofTypeScenario().and(withTag(definitionTag)),
-                sharing(PlanNodeBuilder::parent,Optional::of,PlanNodeBuilder::id)
+                sharing(PlanNodeBuilder::parent, Optional::of, PlanNodeBuilder::id)
             );
         }
 
@@ -175,8 +179,8 @@ implements PlanTransformer {
 
 
         public void populateImplementationScenarioOutlinesWithExamples(
-                PlanNodeBuilder scenarioOutlineNode,
-                PlanNodeBuilder scenarioOutlineNodeWithExamples
+            PlanNodeBuilder scenarioOutlineNode,
+            PlanNodeBuilder scenarioOutlineNodeWithExamples
         ) {
             Examples examples = ((ScenarioOutline) scenarioOutlineNodeWithExamples
                 .getUnderlyingModel()).getExamples().get(0);
@@ -197,7 +201,7 @@ implements PlanTransformer {
             PlanNodeBuilder featureNode
         ) {
             gherkinPlanBuilder.createBackgroundSteps(
-                (Feature)featureNode.getUnderlyingModel(),
+                (Feature) featureNode.getUnderlyingModel(),
                 scenarioNode.source(),
                 scenarioNode
             ).ifPresent(scenarioNode::addFirstChild);
@@ -207,11 +211,12 @@ implements PlanTransformer {
         public void attachImplementationBackgroundToDefinitionScenario(
             PlanNodeBuilder impBackground,
             PlanNodeBuilder defScenario
-           ) {
-            defScenario.addFirstChild(impBackground
-                .setName("<preparation>")
-                .setKeyword(null)
-                .setDisplayNamePattern("{name}")
+        ) {
+            defScenario.addFirstChild(
+                impBackground
+                    .setName("<preparation>")
+                    .setKeyword(null)
+                    .setDisplayNamePattern("{name}")
             );
         }
 
@@ -224,7 +229,7 @@ implements PlanTransformer {
                 defStepNode.parent().map(PlanNodeBuilder::numChildren).orElse(0),
                 impScenarioNode
             );
-            for (int i=0;i<stepMap[defStepNode.positionInParent()];i++) {
+            for (int i = 0; i < stepMap[defStepNode.positionInParent()]; i++) {
                 impScenarioNode
                     .children(withType(NodeType.STEP))
                     .findFirst()
@@ -233,38 +238,39 @@ implements PlanTransformer {
         }
 
 
-
         private String definitionTag(Configuration configuration) {
             return configuration
-                .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG,String.class)
+                .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG, String.class)
                 .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG);
         }
 
 
         private String implementationTag(Configuration configuration) {
             return configuration
-                    .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG,String.class)
-                    .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
+                .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG, String.class)
+                .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
         }
-
-
 
 
         private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
-            return withProperty(GHERKIN_PROPERTY,gherkinType);
+            return withProperty(GHERKIN_PROPERTY, gherkinType);
         }
+
 
         private Predicate<PlanNodeBuilder> ofTypeScenarioOutline() {
             return withGherkinType(GHERKIN_TYPE_SCENARIO_OUTLINE);
         }
 
+
         private Predicate<PlanNodeBuilder> ofTypeScenario() {
             return withGherkinType(GHERKIN_TYPE_SCENARIO);
         }
 
+
         private Predicate<PlanNodeBuilder> ofTypeFeature() {
             return withGherkinType(GHERKIN_TYPE_FEATURE);
         }
+
 
         private Predicate<PlanNodeBuilder> ofTypeBackground() {
             return withGherkinType(GHERKIN_TYPE_BACKGROUND);
@@ -273,7 +279,8 @@ implements PlanTransformer {
 
         private int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
             int[] stepMap = new int[numDefChildren];
-            String stepMapProperty = implNode.properties().get(KukumoConfiguration.REDEFINITION_STEP_MAP);
+            String stepMapProperty = implNode.properties()
+                .get(KukumoConfiguration.REDEFINITION_STEP_MAP);
             try {
                 if (stepMapProperty != null) {
                     String[] stepMapArray = stepMapProperty.split("-");
@@ -295,13 +302,5 @@ implements PlanTransformer {
         }
 
     }
-
-
-
-
-
-
-
-
 
 }

@@ -1,9 +1,14 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.model;
+
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
 
 public abstract class TreeNode<S extends TreeNode<S>> {
 
@@ -39,5 +44,15 @@ public abstract class TreeNode<S extends TreeNode<S>> {
         return (int) descendants().filter(predicate).count();
     }
 
+
+    public boolean hasChild(S child) {
+        return children.contains(child);
+    }
+
+
+    public boolean hasDescendant(S descendant) {
+        return hasChild(descendant) ||
+                        children().anyMatch(child -> child.hasDescendant(descendant));
+    }
 
 }

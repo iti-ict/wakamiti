@@ -1,17 +1,9 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.rest.test;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import groovy.json.JsonBuilder;
-import groovy.json.JsonSlurper;
-import groovy.util.XmlSlurper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,42 +12,69 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+import groovy.json.JsonBuilder;
+import groovy.json.JsonSlurper;
+import groovy.util.XmlSlurper;
 
 
 public class MockServer implements HttpHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MockServer.class);
-	
+    private static final Logger LOGGER = LoggerFactory.getLogger(MockServer.class);
+
+
     public enum Format {
         JSON, XML
-    };
+    }
 
 
     protected static final class JSONError {
-        private String exception;
-        private String message;
-        private LocalDateTime timestamp;
+
+        private final String exception;
+        private final String message;
+        private final LocalDateTime timestamp;
+
 
         public JSONError(String exception, String message, LocalDateTime timestamp) {
             this.exception = exception;
             this.message = message;
             this.timestamp = timestamp;
         }
+
+
         public String getException() {
             return exception;
         }
+
+
         public String getMessage() {
             return message;
         }
+
+
         public LocalDateTime getTimestamp() {
             return timestamp;
         }
     }
-
-
 
 
     private HttpServer server;
@@ -66,29 +85,28 @@ public class MockServer implements HttpHandler {
     private Charset charset;
 
 
-    public MockServer (Format format, Charset charset, int port) throws IOException {
-        configure(format,charset,port);
+    public MockServer(Format format, Charset charset, int port) throws IOException {
+        configure(format, charset, port);
         start();
     }
 
 
-
-    public MockServer(Format format, Charset charset, int port, String filename, Format fileFormat) throws IOException {
+    public MockServer(Format format, Charset charset, int port, String filename, Format fileFormat)
+                    throws IOException {
         try {
             configure(format, charset, port);
-            loadFromFile(filename,fileFormat);
+            loadFromFile(filename, fileFormat);
             start();
         } catch (Exception e) {
-            LOGGER.error("Error starting Mock Server",e);
+            LOGGER.error("Error starting Mock Server", e);
             stop();
             throw e;
         }
     }
 
 
-
     protected void configure(Format format, Charset charset, int port) throws IOException {
-        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName("127.0.0.1"),port);
+        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), port);
         server = HttpServer.create(address, 10);
         server.createContext("/", this);
         server.setExecutor(Executors.newSingleThreadExecutor());
@@ -99,18 +117,17 @@ public class MockServer implements HttpHandler {
     }
 
 
-
     @SuppressWarnings("unchecked")
-    public void loadFromInputStream (InputStream stream, Format loadFormat) throws IOException {
+    public void loadFromInputStream(InputStream stream, Format loadFormat) throws IOException {
         if (running) {
             throw new IllegalStateException("cannot load data from input if server is running");
         }
-        Map<String,Object> data = (Map<String,Object>) parse(stream, loadFormat);
+        Map<String, Object> data = (Map<String, Object>) parse(stream, loadFormat);
         this.data.putAll(data);
     }
 
 
-    public void loadFromFile (String file, Format loadFormat) throws IOException {
+    public void loadFromFile(String file, Format loadFormat) throws IOException {
         try (InputStream stream = new FileInputStream(file)) {
             loadFromInputStream(stream, loadFormat);
         }
@@ -154,117 +171,108 @@ public class MockServer implements HttpHandler {
     }
 
 
-
     private Object error(Exception e) {
         return new JSONError(
-          e.getClass().getSimpleName(),
-          e.getMessage(),
-          LocalDateTime.now());
+            e.getClass().getSimpleName(),
+            e.getMessage(),
+            LocalDateTime.now()
+        );
     }
 
 
     private synchronized void handleGET(HttpExchange exchange) throws Exception {
-    		LOGGER.info("{} {}", "GET", exchange.getRequestURI().getPath());
-            Deque<Object> path = resolvePath(exchange.getRequestURI().getPath());
-            Object value = path.pop();
+        LOGGER.info("{} {}", "GET", exchange.getRequestURI().getPath());
+        Deque<Object> path = resolvePath(exchange.getRequestURI().getPath());
+        Object value = path.pop();
 
-            sendResponse(200,value,exchange);
+        sendResponse(200, value, exchange);
     }
-
 
 
     private synchronized void handlePUT(HttpExchange exchange) throws Exception {
-    	LOGGER.info("{} {}", "PUT", exchange.getRequestURI().getPath());
+        LOGGER.info("{} {}", "PUT", exchange.getRequestURI().getPath());
         Object newValue = readRequestBody(exchange);
         assertHasID(newValue);
         Deque<Object> objectPath = resolvePath(exchange.getRequestURI().getPath());
         objectPath.pop();
         Object container = objectPath.pop();
-        insertOrUpdateWithinContainer(container,newValue);
-        sendResponse(200,newValue,exchange);
+        insertOrUpdateWithinContainer(container, newValue);
+        sendResponse(200, newValue, exchange);
     }
-
 
 
     private synchronized void handleDELETE(HttpExchange exchange) throws Exception {
-    	LOGGER.info("{} {}", "DELETE", exchange.getRequestURI().getPath());
+        LOGGER.info("{} {}", "DELETE", exchange.getRequestURI().getPath());
         String path = exchange.getRequestURI().getPath();
-        String id = path.substring(path.lastIndexOf('/')+1);
+        String id = path.substring(path.lastIndexOf('/') + 1);
         Deque<Object> objectPath = resolvePath(exchange.getRequestURI().getPath());
         objectPath.pop();
         Object container = objectPath.pop();
-        removeFromContainer(container,id);
-        sendResponse(200,null,exchange);
+        removeFromContainer(container, id);
+        sendResponse(200, null, exchange);
     }
 
 
-
-
     private synchronized void handlePOST(HttpExchange exchange) throws Exception {
-    	LOGGER.info("{} {}", "POST", exchange.getRequestURI().getPath());
+        LOGGER.info("{} {}", "POST", exchange.getRequestURI().getPath());
         Object newValue = readRequestBody(exchange);
         assertHasID(newValue);
         Deque<Object> objectPath = resolvePath(exchange.getRequestURI().getPath());
         Object container = objectPath.pop();
-        insertOrUpdateWithinContainer(container,newValue);
+        insertOrUpdateWithinContainer(container, newValue);
         sendResponse(201, newValue, exchange);
     }
-
-
-
-
-
 
 
     @SuppressWarnings("unchecked")
     private void insertOrUpdateWithinContainer(Object container, Object newValue) {
         Object id = assertHasID(newValue);
         if (container instanceof Map) {
-            ((Map<String,Object>)container).put(String.valueOf(id),newValue);
-        }
-        else if (container instanceof List) {
+            ((Map<String, Object>) container).put(String.valueOf(id), newValue);
+        } else if (container instanceof List) {
             List<Object> list = (List<Object>) container;
-            Optional<Object> old = list.stream().filter(o->id.equals(assertHasID(o))).findFirst();
+            Optional<Object> old = list.stream().filter(o -> id.equals(assertHasID(o))).findFirst();
             if (old.isPresent()) {
                 list.remove(old.get());
             }
-            ((List<Object>)container).add(newValue);
+            ((List<Object>) container).add(newValue);
         }
     }
-
-
 
 
     @SuppressWarnings("unchecked")
     private void removeFromContainer(Object container, String id) {
         if (container instanceof Map) {
-            ((Map<String,Object>)container).remove(id);
-        }
-        else if (container instanceof List) {
+            ((Map<String, Object>) container).remove(id);
+        } else if (container instanceof List) {
             List<Object> list = (List<Object>) container;
-            Optional<Object> old = list.stream().filter(o->id.equals(String.valueOf(assertHasID(o)))).findFirst();
+            Optional<Object> old = list.stream()
+                .filter(o -> id.equals(String.valueOf(assertHasID(o)))).findFirst();
             if (old.isPresent()) {
                 list.remove(old.get());
             }
         }
     }
-
-
 
 
     private Object assertHasID(Object newValue) {
         if (!(newValue instanceof Map)) {
             throw new IllegalArgumentException("received value is not an JSON object");
         }
-        if (!((Map<?,?>)newValue).containsKey(idProperty)) {
-            throw new IllegalArgumentException("received value required the property: "+idProperty);
+        if (!((Map<?, ?>) newValue).containsKey(idProperty)) {
+            throw new IllegalArgumentException(
+                "received value required the property: " + idProperty
+            );
         }
-        return ((Map<?,?>)newValue).get(idProperty);
+        return ((Map<?, ?>) newValue).get(idProperty);
     }
 
 
-    private void resolveNextSegment(Deque<String> segments, Deque<Object> objectPath) throws IllegalAccessException {
-    	if (!segments.isEmpty()) {
+    private void resolveNextSegment(
+        Deque<String> segments,
+        Deque<Object> objectPath
+    ) throws IllegalAccessException {
+        if (!segments.isEmpty()) {
             String segment = segments.pop();
             Object container = objectPath.peek();
             if (container == null) {
@@ -272,12 +280,13 @@ public class MockServer implements HttpHandler {
             }
             Object nextValue = null;
             if ("".equals(segment)) {
-            	nextValue = container;
+                nextValue = container;
             } else if (container instanceof Map) {
-                nextValue = ((Map<?,?>)container).get(segment);
+                nextValue = ((Map<?, ?>) container).get(segment);
             } else if (container instanceof List) {
-                for (Object child : ((List<?>)container)) {
-                    if ((child instanceof Map) && segment.equals(String.valueOf((((Map<?,?>)child).get("id"))))) {
+                for (Object child : ((List<?>) container)) {
+                    if ((child instanceof Map) && segment
+                        .equals(String.valueOf((((Map<?, ?>) child).get("id"))))) {
                         nextValue = child;
                         break;
                     }
@@ -295,15 +304,10 @@ public class MockServer implements HttpHandler {
         Deque<Object> objectPath = new ArrayDeque<>();
         Deque<String> segments = new ArrayDeque<>(Arrays.asList(path.substring(1).split("/")));
         while (!segments.isEmpty()) {
-            resolveNextSegment(segments,objectPath);
+            resolveNextSegment(segments, objectPath);
         }
         return objectPath;
     }
-
-
-
-
-
 
 
     private Object readRequestBody(HttpExchange exchange) {
@@ -311,17 +315,20 @@ public class MockServer implements HttpHandler {
     }
 
 
-
-    private void sendResponse (int status, Object value, HttpExchange exchange) throws IOException {
+    private void sendResponse(int status, Object value, HttpExchange exchange) throws IOException {
         byte[] body = serialize(value);
-        exchange.getResponseHeaders().add("Content-Type", "application/"+format.toString().toLowerCase()+"; charset="+charset.name().toLowerCase());
+        exchange.getResponseHeaders().add(
+            "Content-Type",
+            "application/" + format.toString().toLowerCase() + "; charset=" + charset.name()
+                .toLowerCase()
+        );
         exchange.sendResponseHeaders(status, body == null ? -1 : body.length);
         if (body != null) {
             try (OutputStream stream = exchange.getResponseBody()) {
                 stream.write(body);
             }
+            LOGGER.info("{}", new String(body, charset));
         }
-        LOGGER.info("{}",new String(body,charset));
     }
 
 
@@ -330,26 +337,19 @@ public class MockServer implements HttpHandler {
     }
 
 
-
-
-
-
     private Object parse(InputStream stream, Format parseFormat) throws IOException {
         if (parseFormat == Format.JSON) {
             return new JsonSlurper().parse(stream);
-        }
-        else if (parseFormat == Format.XML) {
+        } else if (parseFormat == Format.XML) {
             try {
-				return new XmlSlurper().parse(stream);
-			} catch (SAXException | ParserConfigurationException e) {
-				throw new IOException(e);
-			}
+                return new XmlSlurper().parse(stream);
+            } catch (SAXException | ParserConfigurationException e) {
+                throw new IOException(e);
+            }
         } else {
-            throw new IllegalArgumentException("format not supported: "+parseFormat);
+            throw new IllegalArgumentException("format not supported: " + parseFormat);
         }
     }
-
-
 
 
     public byte[] serialize(Object entity) throws IOException {
@@ -360,16 +360,17 @@ public class MockServer implements HttpHandler {
             JsonBuilder json = new JsonBuilder(entity);
             return json.toString().getBytes(charset);
         } else if (format == Format.XML) {
-        	XmlMapper mapper = new XmlMapper();
+            XmlMapper mapper = new XmlMapper();
             String xml = mapper.writeValueAsString(entity);
             String entityClassNameTagOpen = "<" + entity.getClass().getSimpleName() + ">";
             String entityClassNameTagClosed = "</" + entity.getClass().getSimpleName() + ">";
-            xml = "<data>" +
-                  xml.substring(entityClassNameTagOpen.length(), xml.length() - entityClassNameTagClosed.length()) +
-                  "</data>";
-        	return xml.getBytes(charset);
+            xml = "<data>" + xml.substring(
+                entityClassNameTagOpen.length(),
+                xml.length() - entityClassNameTagClosed.length()
+            ) + "</data>";
+            return xml.getBytes(charset);
         } else {
-            throw new IllegalArgumentException("format not supported: "+format);
+            throw new IllegalArgumentException("format not supported: " + format);
         }
     }
 

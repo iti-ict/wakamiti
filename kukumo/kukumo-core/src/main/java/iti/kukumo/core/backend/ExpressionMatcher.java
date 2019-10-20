@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.backend;
+
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,6 +20,7 @@ import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 
+
 public class ExpressionMatcher {
 
     private static final Logger LOGGER = Kukumo.LOGGER;
@@ -23,12 +28,11 @@ public class ExpressionMatcher {
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w+)\\:(\\w+\\-?\\w+)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+\\-?\\w+)\\}";
 
-    private static final Map<ExpressionMatcher,String> cache = new HashMap<>();
+    private static final Map<ExpressionMatcher, String> cache = new HashMap<>();
 
     private final String translatedDefinition;
     private final KukumoDataTypeRegistry typeRegistry;
     private final Locale locale;
-
 
 
     public static Matcher matcherFor(
@@ -37,22 +41,23 @@ public class ExpressionMatcher {
         Locale locale,
         PlanNode modelStep
     ) {
-        ExpressionMatcher matcher = new ExpressionMatcher(translatedDefinition,typeRegistry,locale);
+        ExpressionMatcher matcher = new ExpressionMatcher(
+            translatedDefinition, typeRegistry, locale
+        );
         String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
         return Pattern.compile(regex).matcher(modelStep.name());
     }
 
 
     private ExpressionMatcher(
-            String translatedDefinition,
-            KukumoDataTypeRegistry typeRegistry,
-            Locale locale)
-    {
+                    String translatedDefinition,
+                    KukumoDataTypeRegistry typeRegistry,
+                    Locale locale
+    ) {
         this.translatedDefinition = translatedDefinition;
         this.typeRegistry = typeRegistry;
         this.locale = locale;
     }
-
 
 
     public static String computeRegularExpression(String translatedExpression) {
@@ -72,26 +77,22 @@ public class ExpressionMatcher {
     }
 
 
-
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
-        regex = regex.replaceAll("[^ |(]*(\\|[^ |)]+)+","\\($0\\)");
-        // (( -> (  and )) -> (
-        regex = regex.replace("((","(").replace("))",")");
+        regex = regex.replaceAll("[^ |(]*(\\|[^ |)]+)+", "\\($0\\)");
+        // (( -> ( and )) -> (
+        regex = regex.replace("((", "(").replace("))", ")");
         // * -> any value
         regex = regex.replaceAll("(?<!/)\\*", "(.*)");
         // ( ) -> optional
-        regex = regex.replaceAll("(?<!/)\\(([^)]*)\\)","(?:$1)?");
-        // (...)?_  -> (?:(...)?_)?
+        regex = regex.replaceAll("(?<!/)\\(([^)]*)\\)", "(?:$1)?");
+        // (...)?_ -> (?:(...)?_)?
         regex = regex.replaceAll("\\(\\?:[^)]+\\)\\? ", "(?:$0)?");
         // _(?:.*)? -> (?:.*)?
-        regex = regex.replace(" (?:.*)?","(?:.*)?");
+        regex = regex.replace(" (?:.*)?", "(?:.*)?");
         return regex;
     }
-
-
-
 
 
     protected String regexArgumentSubstitution(String computingRegex) {
@@ -104,7 +105,10 @@ public class ExpressionMatcher {
             if (type == null) {
                 throwTypeNotRegistered(typeName);
             } else {
-                regex = regex.replace("{"+typeName+"}","(?<"+DefaultBackend.UNNAMED_ARG+">"+type.getRegex(locale)+")");
+                regex = regex.replace(
+                    "{" + typeName + "}",
+                    "(?<" + DefaultBackend.UNNAMED_ARG + ">" + type.getRegex(locale) + ")"
+                );
             }
         }
         // named arguments
@@ -116,33 +120,36 @@ public class ExpressionMatcher {
             if (type == null) {
                 throwTypeNotRegistered(argType);
             } else {
-                regex = regex.replace("{"+argName+":"+argType+"}","(?<"+argName+">"+type.getRegex(locale)+")");
+                regex = regex.replace(
+                    "{" + argName + ":" + argType + "}",
+                    "(?<" + argName + ">" + type.getRegex(locale) + ")"
+                );
             }
         }
         return regex;
     }
 
 
-
     protected static String regexFinalAdjustments(String computingRegex) {
         String regex = computingRegex;
-        regex = regex.replace(" $","$");
-        regex = regex.replace("$","\\s*$");
+        regex = regex.replace(" $", "$");
+        regex = regex.replace("$", "\\s*$");
         return regex;
     }
 
 
     protected void throwTypeNotRegistered(String type) {
-        throw new KukumoException("Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}",
-                translatedDefinition, type, typeRegistry.allTypeNames().sorted().collect(Collectors.joining(", ")));
+        throw new KukumoException(
+            "Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}",
+            translatedDefinition, type,
+            typeRegistry.allTypeNames().sorted().collect(Collectors.joining(", "))
+        );
     }
-
-
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(translatedDefinition,typeRegistry,locale);
+        return Objects.hash(translatedDefinition, typeRegistry, locale);
     }
 
 
@@ -151,8 +158,8 @@ public class ExpressionMatcher {
         if (obj instanceof ExpressionMatcher) {
             ExpressionMatcher other = (ExpressionMatcher) obj;
             return other.typeRegistry == this.typeRegistry &&
-                   other.locale.equals(this.locale) &&
-                   other.translatedDefinition.equals(this.translatedDefinition);
+                            other.locale.equals(this.locale) &&
+                            other.translatedDefinition.equals(this.translatedDefinition);
         }
         return false;
     }

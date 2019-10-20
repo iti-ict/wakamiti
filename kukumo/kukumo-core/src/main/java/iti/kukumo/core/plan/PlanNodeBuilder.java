@@ -1,18 +1,29 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.plan;
+
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeData;
 import iti.kukumo.core.model.TreeNodeBuilder;
 
-import java.util.*;
-
 
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 
     private final List<String> description = new ArrayList<>();
     private final Set<String> tags = new HashSet<>();
-    private final Map<String,String> properties = new HashMap<>();
+    private final Map<String, String> properties = new HashMap<>();
 
     private NodeType nodeType;
     private String language;
@@ -25,19 +36,21 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private Object underlyingModel;
 
 
-
     public PlanNodeBuilder(NodeType nodeType) {
         this.nodeType = nodeType;
     }
+
 
     public PlanNodeBuilder(NodeType nodeType, Collection<PlanNodeBuilder> children) {
         super(children);
         this.nodeType = nodeType;
     }
 
+
     public PlanNode build() {
         return new PlanNode(this);
     }
+
 
     public String name() {
         return name;
@@ -113,20 +126,24 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return this;
     }
 
+
     public PlanNodeBuilder setKeyword(String keyword) {
         this.keyword = keyword;
         return this;
     }
+
 
     public PlanNodeBuilder setLanguage(String language) {
         this.language = language;
         return this;
     }
 
+
     public PlanNodeBuilder setName(String name) {
         this.name = name;
         return this;
     }
+
 
     public PlanNodeBuilder setNodeType(NodeType nodeType) {
         this.nodeType = nodeType;
@@ -145,6 +162,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return this;
     }
 
+
     public PlanNodeBuilder addTags(Collection<String> tags) {
         this.tags.addAll(tags);
         return this;
@@ -156,14 +174,15 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return this;
     }
 
-    public PlanNodeBuilder addProperties(Map<String,String> properties) {
+
+    public PlanNodeBuilder addProperties(Map<String, String> properties) {
         this.properties.putAll(properties);
         return this;
     }
 
 
     public PlanNodeBuilder addProperty(String key, String value) {
-        this.properties.put(key,value);
+        this.properties.put(key, value);
         return this;
     }
 
@@ -201,8 +220,5 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         super.copy(copy);
         return copy;
     }
-
-
-
 
 }

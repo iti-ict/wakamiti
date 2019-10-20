@@ -1,14 +1,16 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.model;
+
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
-/**
- * A test <tt>PlanNode</tt> object is any of the parts that form a test iti.kukumo.test.gherkin.plan
- */
-public class ExecutionState<R> {
 
+/** A test <tt>PlanNode</tt> object is any of the parts that form a test * iti.kukumo.test.gherkin.plan */
+public class ExecutionState<R> {
 
     private Optional<Instant> startInstant = Optional.empty();
     private Optional<Instant> finishInstant = Optional.empty();
@@ -18,6 +20,7 @@ public class ExecutionState<R> {
 
     /**
      * Get the start instant of this node, if executed.
+     *
      * @return The nullable optional start instant
      */
     public Optional<Instant> startInstant() {
@@ -27,6 +30,7 @@ public class ExecutionState<R> {
 
     /**
      * Get the start instant of this node, if executed.
+     *
      * @return The nullable optional finish instant
      */
     public Optional<Instant> finishInstant() {
@@ -35,19 +39,19 @@ public class ExecutionState<R> {
 
 
     /**
-     * @return The duration between {@link #startInstant()} and {@link #finishInstant()}, if both
-     * are present.
+     * @return The duration between {@link #startInstant()} and
+     *         {@link #finishInstant()}, if both are present.
      */
     public Optional<Duration> duration() {
-        return startInstant.isPresent() && finishInstant.isPresent() ?
-            Optional.of(Duration.between(startInstant.get(), finishInstant.get())) :
-            Optional.empty();
+        return startInstant.isPresent() && finishInstant.isPresent()
+                        ? Optional.of(Duration.between(startInstant.get(), finishInstant.get()))
+                        : Optional.empty();
     }
-
 
 
     /**
      * Get the result of this node, if executed.
+     *
      * @return The nullable optional result
      */
     public Optional<R> result() {
@@ -55,7 +59,9 @@ public class ExecutionState<R> {
     }
 
 
-    /** @return Whether the result of the execution is the same as the one given */
+    /**
+     * @return Whether the result of the execution is the same as the one given
+     */
     public boolean hasResult(R result) {
         return this.result.isPresent() && this.result.get().equals(result);
     }
@@ -63,6 +69,7 @@ public class ExecutionState<R> {
 
     /**
      * Get the error of this node, if executed and failed.
+     *
      * @return The nullable optional error
      */
     public Optional<Throwable> error() {
@@ -70,11 +77,12 @@ public class ExecutionState<R> {
     }
 
 
-
     /**
      * Mark the current execution as started at the given instant
+     *
      * @param instant The start instant
-     * @throws IllegalStateException If the execution was already marked as started
+     * @throws IllegalStateException If the execution was already marked as
+     *                               started
      */
     public void markStarted(Instant instant) {
         if (startInstant.isPresent()) {
@@ -86,21 +94,25 @@ public class ExecutionState<R> {
 
     /**
      * Mark the current execution as finished with the given result
+     *
      * @param instant The finish instant
-     * @param result The finish result
-     * @throws IllegalStateException If the execution was already marked as finished
+     * @param result  The finish result
+     * @throws IllegalStateException If the execution was already marked as
+     *                               finished
      */
     public void markFinished(Instant instant, R result) {
-        markFinished(instant,result,null);
+        markFinished(instant, result, null);
     }
 
 
     /**
      * Mark the current execution as finished with the given result and error
+     *
      * @param instant The finish instant
-     * @param result The finish result
-     * @param error The exception that caused the failure. Can be null.
-     * @throws IllegalStateException If the execution was already marked as finished
+     * @param result  The finish result
+     * @param error   The exception that caused the failure. Can be null.
+     * @throws IllegalStateException If the execution was already marked as
+     *                               finished
      */
     public void markFinished(Instant instant, R result, Throwable error) {
         if (finishInstant.isPresent()) {
@@ -120,16 +132,12 @@ public class ExecutionState<R> {
         return startInstant.isPresent();
     }
 
+
     /**
      * @return Check whether the execution has been marked as finished.
      */
     public boolean hasFinished() {
         return finishInstant.isPresent();
     }
-
-
-
-
-
 
 }

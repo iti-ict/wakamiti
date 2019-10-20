@@ -111,38 +111,38 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-spring</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
         <!-- Localization -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
 

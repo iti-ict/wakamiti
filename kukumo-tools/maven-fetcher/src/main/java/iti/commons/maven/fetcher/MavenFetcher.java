@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.maven.fetcher;
+
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,10 +37,8 @@ import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author ITI
- * Created by ITI on 25/03/19
- */
+
+
 public class MavenFetcher {
 
     private final List<RemoteRepository> remoteRepositories = new ArrayList<>();
@@ -50,17 +52,16 @@ public class MavenFetcher {
     private Logger logger = LoggerFactory.getLogger(MavenFetcher.class);
 
 
-
     public MavenFetcher() {
-        this.system = newRepositorySystem( MavenRepositorySystemUtils.newServiceLocator() );
+        this.system = newRepositorySystem(MavenRepositorySystemUtils.newServiceLocator());
     }
-
 
 
     public MavenFetcher config(Path configFile) throws IOException {
         new MavenFetcherConfig(configFile.toString()).config(this);
         return this;
     }
+
 
     public MavenFetcher config(Properties properties) throws MalformedURLException {
         new MavenFetcherConfig(properties).config(this);
@@ -92,11 +93,12 @@ public class MavenFetcher {
      * Set the credentials for the next proxy
      */
     public MavenFetcher proxyCredentials(String username, String password) {
-        checkNonNull(username,password);
+        checkNonNull(username, password);
         this.proxyUsername = username;
         this.proxyPassword = password;
         return this;
     }
+
 
     /**
      * Set exceptions for the next proxy
@@ -106,7 +108,6 @@ public class MavenFetcher {
         this.proxyExceptions = new ArrayList<>(exceptions);
         return this;
     }
-
 
 
     /**
@@ -139,12 +140,16 @@ public class MavenFetcher {
 
 
     /**
-     * Retrieve the specified artifacts and their dependencies from the remote repositories
+     * Retrieve the specified artifacts and their dependencies from the remote
+     * repositories
+     *
      * @param request
      * @throws DependencyCollectionException
      * @throws ArtifactResolutionException
      */
-    public MavenFetchResult fetchArtifacts(MavenFetchRequest request) throws DependencyCollectionException {
+    public MavenFetchResult fetchArtifacts(
+        MavenFetchRequest request
+    ) throws DependencyCollectionException {
         if (remoteRepositories.isEmpty()) {
             throw new IllegalArgumentException("Remote repositories not specified");
         }
@@ -154,8 +159,8 @@ public class MavenFetcher {
             newSession(),
             request,
             logger
-         )
-        .fetch();
+        )
+            .fetch();
         if (!result.hasErrors()) {
             logger.warn("Some dependencies were not fetched!");
         }
@@ -163,15 +168,14 @@ public class MavenFetcher {
     }
 
 
-
     private DefaultRepositorySystemSession newSession() {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepository));
+        session
+            .setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepository));
         session.setTransferListener(new MavenTransferLogger(logger));
         proxy().ifPresent(session::setProxySelector);
         return session;
     }
-
 
 
     private Optional<ProxySelector> proxy() {
@@ -188,12 +192,15 @@ public class MavenFetcher {
         int port = url.getPort() < 0 ? 8080 : url.getPort();
         Authentication authentication = null;
         if (proxyUsername != null) {
-            authentication = new AuthenticationBuilder().addUsername(proxyUsername).addPassword(proxyPassword).build();
+            authentication = new AuthenticationBuilder().addUsername(proxyUsername)
+                .addPassword(proxyPassword).build();
         }
-        Proxy proxy = new Proxy(url.getProtocol(),url.getHost(),port,authentication);
-        return Optional.of(new DefaultProxySelector().add(proxy, proxyExceptions == null ? Collections.emptyList() : proxyExceptions));
+        Proxy proxy = new Proxy(url.getProtocol(), url.getHost(), port, authentication);
+        return Optional.of(
+            new DefaultProxySelector()
+                .add(proxy, proxyExceptions == null ? Collections.emptyList() : proxyExceptions)
+        );
     }
-
 
 
     private static RepositorySystem newRepositorySystem(DefaultServiceLocator locator) {
@@ -205,7 +212,7 @@ public class MavenFetcher {
 
 
     private static RemoteRepository createRemoteRepository(String id, String url) {
-        return new RemoteRepository.Builder(id,"default",url).build();
+        return new RemoteRepository.Builder(id, "default", url).build();
     }
 
 
@@ -215,6 +222,7 @@ public class MavenFetcher {
         }
     }
 
+
     private static void checkNonNull(Collection<? extends Object> collection) {
         Objects.requireNonNull(collection);
         for (Object object : collection) {
@@ -222,9 +230,9 @@ public class MavenFetcher {
         }
     }
 
+
     private static void checkURL(String url) throws MalformedURLException {
         new URL(url);
     }
-
 
 }

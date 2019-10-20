@@ -1,15 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.launcher;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.maven.fetcher.MavenFetchRequest;
-import iti.commons.maven.fetcher.MavenFetchResult;
-import iti.commons.maven.fetcher.MavenFetchResult.FetchedArtifact;
-import iti.commons.maven.fetcher.MavenFetcher;
-import iti.kukumo.api.KukumoException;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,11 +13,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * @author ITI
- * Created by ITI on 8/04/19
- */
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.slf4j.Logger;
+
+import iti.commons.configurer.Configuration;
+import iti.commons.maven.fetcher.MavenFetchRequest;
+import iti.commons.maven.fetcher.MavenFetchResult;
+import iti.commons.maven.fetcher.MavenFetchResult.FetchedArtifact;
+import iti.commons.maven.fetcher.MavenFetcher;
+import iti.kukumo.api.KukumoException;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
+
+
+
 public class KukumoFetcher {
 
     private final Arguments arguments;
@@ -39,7 +43,7 @@ public class KukumoFetcher {
 
         Logger logger = KukumoLauncher.logger();
 
-        try  {
+        try {
 
             AppDirs appDirs = AppDirsFactory.getInstance();
 
@@ -51,28 +55,30 @@ public class KukumoFetcher {
 
             Path mavenRepo = Paths.get(appDirs.getUserDataDir("kukumo", "repository", "iti"));
             if (arguments.mustClean()) {
-                Files.walk(mavenRepo)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+                try (Stream<Path> walker = Files.walk(mavenRepo)) {
+                    walker
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+                }
             }
             Files.createDirectories(mavenRepo);
 
             Configuration conf = arguments
                 .mavenFetcherConfiguration()
-                .appendProperty("localRepository",mavenRepo.toString());
+                .appendProperty("localRepository", mavenRepo.toString());
 
             logger.info("Fetching dependencies...");
             MavenFetcher mavenFetcher = new MavenFetcher()
                 .logger(logger)
                 .config(conf.asProperties());
             MavenFetchRequest fetchRequest = new MavenFetchRequest(arguments.modules())
-                    .scopes("compile","provided")
-                    .retrieveOptionals(false);
+                .scopes("compile", "provided")
+                .retrieveOptionals(false);
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
 
             if (logger.isDebugEnabled()) {
-                logger.debug("{}",fetchedArtifacts);
+                logger.debug("{}", fetchedArtifacts);
             }
             return fetchedArtifacts
                 .allDepedencies()
@@ -80,18 +86,15 @@ public class KukumoFetcher {
                 .collect(Collectors.toList());
 
         } catch (RuntimeException | DependencyCollectionException | IOException e) {
-            logger.error("Error fetching dependencies: {}", e.getLocalizedMessage());
-            logger.debug("<error>",e);
+            logger.error("Error fetching dependencies");
             throw new KukumoException(e);
         }
     }
 
 
-
     private void addModulesFromConfigFile(Arguments arguments) {
         Configuration conf = arguments.kukumoConfiguration();
-        arguments.modules().addAll(conf.getList("launcher.modules",String.class));
+        arguments.modules().addAll(conf.getList("launcher.modules", String.class));
     }
-
 
 }

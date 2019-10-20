@@ -2,10 +2,7 @@ package iti.commons.slf4jansi;
 
 import java.util.Properties;
 
-/**
- * @author ITI
- * Created by ITI on 6/9/19
- */
+
 public class DefaultStyles {
 
     public static Properties asProperties() {

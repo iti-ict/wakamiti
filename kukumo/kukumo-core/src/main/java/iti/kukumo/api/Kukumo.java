@@ -1,22 +1,10 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.event.EventDispatcher;
-import iti.kukumo.api.extensions.*;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
-import iti.kukumo.api.plan.PlanSerializer;
-import iti.kukumo.core.backend.DefaultBackendFactory;
-import iti.kukumo.core.plan.PlanNodeBuilder;
-import iti.kukumo.core.runner.PlanRunner;
-import iti.kukumo.util.KukumoLogger;
-import iti.kukumo.util.ResourceLoader;
-import iti.kukumo.util.TagFilter;
-import iti.kukumo.util.ThrowableFunction;
-import org.slf4j.Logger;
+
+import static iti.kukumo.api.KukumoConfiguration.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,8 +21,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static iti.kukumo.api.KukumoConfiguration.*;
+import org.slf4j.Logger;
 
+import iti.commons.configurer.Configuration;
+import iti.commons.jext.ExtensionManager;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.event.EventDispatcher;
+import iti.kukumo.api.extensions.EventObserver;
+import iti.kukumo.api.extensions.PlanBuilder;
+import iti.kukumo.api.extensions.PlanTransformer;
+import iti.kukumo.api.extensions.Reporter;
+import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.core.backend.DefaultBackendFactory;
+import iti.kukumo.core.plan.PlanNodeBuilder;
+import iti.kukumo.core.runner.PlanRunner;
+import iti.kukumo.util.KukumoLogger;
+import iti.kukumo.util.ResourceLoader;
+import iti.kukumo.util.TagFilter;
+import iti.kukumo.util.ThrowableFunction;
 
 
 public class Kukumo {
@@ -47,7 +55,6 @@ public class Kukumo {
     private static final KukumoContributors contributors = new KukumoContributors();
     private static final PlanSerializer planSerializer = new PlanSerializer();
     private static final EventDispatcher eventDispatcher = new EventDispatcher();
-
 
     private static Kukumo instance;
 
@@ -64,25 +71,26 @@ public class Kukumo {
         return resourceLoader;
     }
 
+
     public static KukumoContributors contributors() {
         return contributors;
     }
 
+
     public static PlanSerializer planSerializer() {
         return planSerializer;
     }
+
 
     public static ExtensionManager extensionManager() {
         return contributors.extensionManager();
     }
 
 
-
-
     private Kukumo() {
         KukumoLogger.configure(KukumoConfiguration.defaultConfiguration());
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("{logo}",KukumoLogger.logo());
+            LOGGER.info("{logo}", KukumoLogger.logo());
         }
         contributors.eventObservers().forEach(eventDispatcher::addObserver);
     }
@@ -90,6 +98,7 @@ public class Kukumo {
 
     /**
      * Configure the logger
+     *
      * @param configuration
      */
     public void configureLogger(Configuration configuration) {
@@ -97,23 +106,22 @@ public class Kukumo {
     }
 
 
-
-
     /**
-     * Attempt to create a plan using the resource type and the feature
-     * path defined in then received configuration.
+     * Attempt to create a plan using the resource type and the feature path
+     * defined in then received configuration.
+     *
      * @param configuration
      * @return A new plan ready to be executed
      * @throws KukumoException if the plan couldn't be created
      */
     public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
-        LOGGER.info("{important}","Creating the Test Plan...");
-        List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES,String.class);
+        LOGGER.info("{important}", "Creating the Test Plan...");
+        List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured");
         }
-        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH,String.class);
+        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
             discoveryPaths = Arrays.asList(".");
         }
@@ -133,7 +141,6 @@ public class Kukumo {
         publishEvent(Event.PLAN_CREATED, plan);
         return plan;
     }
-
 
 
     private Optional<PlanNode> createPlanForResourceType(
@@ -157,15 +164,15 @@ public class Kukumo {
             );
         }
         List<Resource<?>> resources = resourceLoader()
-               .discoverResources(discoveryPaths, resourceType.get());
+            .discoverResources(discoveryPaths, resourceType.get());
 
         if (resources.isEmpty()) {
-            LOGGER.warn("No resources of type {resourceType}",resourceTypeName);
+            LOGGER.warn("No resources of type {resourceType}", resourceTypeName);
             return Optional.empty();
         }
 
-        Optional<PlanBuilder> planBuilder =
-            contributors.createPlanBuilderFor(resourceType.get(),configuration);
+        Optional<PlanBuilder> planBuilder = contributors
+            .createPlanBuilderFor(resourceType.get(), configuration);
 
         if (!planBuilder.isPresent()) {
             LOGGER.warn(
@@ -177,16 +184,14 @@ public class Kukumo {
 
         PlanNodeBuilder planNodeBuilder = planBuilder.get().createPlan(resources);
 
-        List<PlanTransformer> planTransformers
-            = contributors.planTransformers().collect(Collectors.toList());
+        List<PlanTransformer> planTransformers = contributors.planTransformers()
+            .collect(Collectors.toList());
         for (PlanTransformer planTransformer : planTransformers) {
-            planNodeBuilder = planTransformer.transform(planNodeBuilder,configuration);
+            planNodeBuilder = planTransformer.transform(planNodeBuilder, configuration);
         }
 
         return Optional.ofNullable(planNodeBuilder.build());
     }
-
-
 
 
     private PlanNode mergePlans(List<PlanNode> plans) {
@@ -196,13 +201,8 @@ public class Kukumo {
         if (plans.size() == 1) {
             return plans.get(0);
         }
-        return new PlanNode(NodeType.AGGREGATOR,plans);
+        return new PlanNode(NodeType.AGGREGATOR, plans);
     }
-
-
-
-
-
 
 
     public TagFilter createTagFilter(String tagExpression) {
@@ -217,12 +217,14 @@ public class Kukumo {
 
     public void configureEventObservers(Configuration configuration) {
         getEventDispatcher().observers()
-            .forEach(observer -> contributors.configure(observer,configuration));
+            .forEach(observer -> contributors.configure(observer, configuration));
     }
+
 
     public void addEventDispatcherObserver(EventObserver observer) {
         getEventDispatcher().addObserver(observer);
     }
+
 
     public void removeEventDispatcherObserver(EventObserver observer) {
         getEventDispatcher().removeObserver(observer);
@@ -234,16 +236,14 @@ public class Kukumo {
     }
 
 
-
     public PlanNode executePlan(PlanNode plan, Configuration configuration) {
         PlanNode result = new PlanRunner(plan, configuration).run();
-        writeOutputFile(plan,configuration);
-        if (configuration.get(KukumoConfiguration.REPORT_GENERATION,Boolean.class).orElse(true)) {
+        writeOutputFile(plan, configuration);
+        if (configuration.get(KukumoConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
             generateReports(configuration);
         }
         return result;
     }
-
 
 
     public BackendFactory newBackendFactory() {
@@ -251,18 +251,18 @@ public class Kukumo {
     }
 
 
-
-
     public void writeOutputFile(PlanNode plan, Configuration configuration) {
-        Optional<String> outputPath
-            = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH,String.class);
+        Optional<String> outputPath = configuration
+            .get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class);
         if (outputPath.isPresent()) {
             try {
                 Path path = Paths.get(outputPath.get()).toAbsolutePath();
-                Files.createDirectories(path.getParent());
-                try(Writer writer = new FileWriter(outputPath.get())) {
+                if (path.getParent() != null) {
+                    Files.createDirectories(path.getParent());
+                }
+                try (Writer writer = new FileWriter(outputPath.get())) {
                     planSerializer().write(writer, plan);
-                    LOGGER.info("Generated result output file {uri}",path);
+                    LOGGER.info("Generated result output file {uri}", path);
                 }
             } catch (IOException e) {
                 LOGGER.error(
@@ -276,35 +276,33 @@ public class Kukumo {
     }
 
 
-
-    public void generateReports(Configuration configuration)  {
+    public void generateReports(Configuration configuration) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
             return;
         }
-        LOGGER.info("{important}","Generating reports...");
+        LOGGER.info("{important}", "Generating reports...");
         String reportSource = configuration.get(REPORT_SOURCE, String.class)
-             .orElse( configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null) );
+            .orElse(configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null));
         Path sourceFolder = Paths.get(reportSource).toAbsolutePath();
         if (!sourceFolder.toFile().exists()) {
             throw new KukumoException(
-                "The report source file/folder {} does not exist.\n"+
-                "Perhaps you may set the property {} to the path defined by the property {}:{}",
+                "The report source file/folder {} does not exist.\n" + "Perhaps you may set the property {} to the path defined by the property {}:{}",
                 sourceFolder,
                 REPORT_SOURCE,
                 OUTPUT_FILE_PATH,
-                configuration.get(OUTPUT_FILE_PATH,String.class).orElse("<undefined>")
+                configuration.get(OUTPUT_FILE_PATH, String.class).orElse("<undefined>")
             );
         }
         PlanSerializer deserializer = planSerializer();
         PlanNodeDescriptor[] plans;
-        try ( Stream<Path> walker = Files.walk(sourceFolder)) {
+        try (Stream<Path> walker = Files.walk(sourceFolder)) {
             plans = walker
-            .map(Path::toFile)
-            .filter(File::exists)
-            .filter(File::isFile)
-            .map(ThrowableFunction.unchecked(deserializer::read))
-            .toArray(PlanNodeDescriptor[]::new);
+                .map(Path::toFile)
+                .filter(File::exists)
+                .filter(File::isFile)
+                .map(ThrowableFunction.unchecked(deserializer::read))
+                .toArray(PlanNodeDescriptor[]::new);
         } catch (IOException e1) {
             throw new KukumoException("Error searching source file/folder", e1);
         }
@@ -315,12 +313,13 @@ public class Kukumo {
                     LOGGER.debug(
                         "Generating report provided by plugin {contributor}...",
                         reporter.info()
-                   );
+                    );
                 }
-                contributors.configure(reporter,configuration).report(rootNode);
+                contributors.configure(reporter, configuration).report(rootNode);
             } catch (Exception e) {
                 LOGGER.error(
-                    "{error} {contributor} : {error}","Error running reporter",
+                    "{error} {contributor} : {error}",
+                    "Error running reporter",
                     reporter.info(),
                     e.getMessage(),
                     e
@@ -328,13 +327,6 @@ public class Kukumo {
             }
         }
 
-
     }
-
-
-
-
-
-
 
 }

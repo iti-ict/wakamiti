@@ -1,8 +1,13 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.jext;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+
 
 public class TestExtensionVersion {
 
@@ -10,12 +15,14 @@ public class TestExtensionVersion {
     public void testInvalidVersion1() {
         new ExtensionVersion("1.2.4");
     }
-    
+
+
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidVersion2() {
         new ExtensionVersion("1.dog");
     }
-    
+
+
     @Test
     public void testIsCompatible() {
         ExtensionVersion v1_5 = new ExtensionVersion("1.5");
@@ -29,5 +36,5 @@ public class TestExtensionVersion {
         assertThat(v2_1.isCompatibleWith(v2_5)).isFalse();
         assertThat(v2_5.isCompatibleWith(v2_1)).isTrue();
     }
-    
+
 }

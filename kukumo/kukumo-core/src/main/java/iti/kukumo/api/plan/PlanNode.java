@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api.plan;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -11,11 +15,11 @@ import iti.kukumo.core.model.ExecutableTreeNode;
 import iti.kukumo.core.plan.PlanNodeBuilder;
 
 
-public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {
+public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
     private final List<String> description;
     private final Set<String> tags;
-    private final Map<String,String> properties;
+    private final Map<String, String> properties;
     private final NodeType nodeType;
     private final String language;
     private final String id;
@@ -26,7 +30,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {
     private final Optional<PlanNodeData> data;
 
 
-    public PlanNode (PlanNodeBuilder builder) {
+    public PlanNode(PlanNodeBuilder builder) {
         super(builder.children().map(PlanNode::new).collect(Collectors.toList()));
         description = Collections.unmodifiableList(builder.description());
         tags = Collections.unmodifiableSet(builder.tags());
@@ -42,7 +46,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {
     }
 
 
-    public PlanNode (NodeType nodeType, List<PlanNode> children) {
+    public PlanNode(NodeType nodeType, List<PlanNode> children) {
         super(children);
         description = null;
         tags = Collections.emptySet();
@@ -102,6 +106,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {
         return properties;
     }
 
+
     public Optional<PlanNodeData> data() {
         return data;
     }
@@ -116,13 +121,13 @@ public class PlanNode extends ExecutableTreeNode<PlanNode,Result> {
         return numDescendants(descendant -> descendant.nodeType() == nodeType);
     }
 
+
     public int numDescendants(NodeType nodeType, Result result) {
         return numDescendants(
-           descendant -> descendant.nodeType() == nodeType &&
-           descendant.executionState().isPresent() &&
-           descendant.executionState().get().hasResult(result)
+            descendant -> descendant.nodeType() == nodeType &&
+                            descendant.executionState().isPresent() &&
+                            descendant.executionState().get().hasResult(result)
         );
     }
-
 
 }

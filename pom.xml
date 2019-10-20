@@ -83,7 +83,7 @@
         <log4j.version>2.11.2</log4j.version>
         <junit.version>4.12</junit.version>
         <jsonassert.version>1.5.0</jsonassert.version>
-        <kukumo.version>0.9.0</kukumo.version>
+        <kukumo.version>0.9.1</kukumo.version>
         <!-- plugin versions -->
         <jacoco.version>0.8.2</jacoco.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>

@@ -1,11 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.gherkin;
 
-
-import gherkin.Parser;
-import gherkin.ast.GherkinDocument;
-import iti.commons.jext.Extension;
-import iti.kukumo.api.extensions.ResourceType;
-import iti.kukumo.gherkin.parser.GherkinAstBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +10,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-/**
- * @author ITI
- *         Created by ITI on 9/01/19
- */
-@Extension(
-    provider="iti.kukumo", 
-    name = GherkinResourceType.NAME, 
-    extensionPoint = "iti.kukumo.api.extensions.ResourceType"
-)
+import gherkin.Parser;
+import gherkin.ast.GherkinDocument;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.gherkin.parser.GherkinAstBuilder;
+
+
+
+@Extension(provider = "iti.kukumo", name = GherkinResourceType.NAME, extensionPoint = "iti.kukumo.api.extensions.ResourceType")
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
     public static final String NAME = "gherkin";
@@ -34,10 +31,12 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
         return GherkinDocument.class;
     }
 
+
     @Override
     public String description() {
         return "GherkinResource File";
     }
+
 
     @Override
     public GherkinDocument parse(InputStream stream, Charset charset) throws IOException {
@@ -45,6 +44,7 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
             return parse(reader);
         }
     }
+
 
     @Override
     public GherkinDocument parse(Reader reader) throws IOException {
@@ -57,6 +57,7 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
     public boolean acceptsFilename(String filename) {
         return filename.endsWith(".feature") || filename.endsWith(".FEATURE");
     }
+
 
     @Override
     public String toString() {

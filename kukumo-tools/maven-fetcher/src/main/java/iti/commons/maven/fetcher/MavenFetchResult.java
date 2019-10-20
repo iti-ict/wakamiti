@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.maven.fetcher;
+
 
 import java.nio.file.Path;
 import java.util.List;
@@ -11,12 +15,9 @@ import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.LocalRepositoryManager;
 
-/**
- * @author ITI
- * Created by ITI on 25/03/19
- */
-public class MavenFetchResult {
 
+
+public class MavenFetchResult {
 
     public static class FetchedArtifact {
 
@@ -26,6 +27,7 @@ public class MavenFetchResult {
         private final Path path;
         private final List<FetchedArtifact> dependencies;
 
+
         FetchedArtifact(Artifact artifact, Path path, List<FetchedArtifact> dependencies) {
             this.groupId = artifact.getGroupId();
             this.artifactId = artifact.getArtifactId();
@@ -34,25 +36,31 @@ public class MavenFetchResult {
             this.dependencies = dependencies;
         }
 
+
         public String groupId() {
             return groupId;
         }
+
 
         public String artifactId() {
             return artifactId;
         }
 
+
         public String version() {
             return version;
         }
 
+
         public String coordinates() {
-            return groupId+":"+artifactId+":"+version;
+            return groupId + ":" + artifactId + ":" + version;
         }
+
 
         public Stream<FetchedArtifact> dependencies() {
             return dependencies.stream();
         }
+
 
         public Stream<FetchedArtifact> allDepedencies() {
             return Stream.concat(
@@ -61,28 +69,31 @@ public class MavenFetchResult {
             );
         }
 
+
         public Path path() {
             return path;
         }
+
 
         @Override
         public String toString() {
             return toString(0, new StringBuilder()).toString();
         }
 
+
         private StringBuilder toString(int level, StringBuilder string) {
-            for (int i=0;i<level;i++) {
+            for (int i = 0; i < level; i++) {
                 string.append("  ");
             }
             string
-            .append("|- ")
-            .append(coordinates())
-            .append("  [")
-            .append(path)
-            .append("]")
-            .append("\n");
+                .append("|- ")
+                .append(coordinates())
+                .append("  [")
+                .append(path)
+                .append("]")
+                .append("\n");
             for (FetchedArtifact child : dependencies) {
-                child.toString(level+1, string);
+                child.toString(level + 1, string);
             }
             return string;
         }
@@ -90,9 +101,8 @@ public class MavenFetchResult {
     }
 
 
-
-   private final CollectResult result;
-   private final List<FetchedArtifact> rootArtifacts;
+    private final CollectResult result;
+    private final List<FetchedArtifact> rootArtifacts;
 
 
     MavenFetchResult(CollectResult result, DefaultRepositorySystemSession session) {
@@ -100,10 +110,9 @@ public class MavenFetchResult {
         LocalRepositoryManager localRepositoryManager = session.getLocalRepositoryManager();
         Path repositoryPath = localRepositoryManager.getRepository().getBasedir().toPath();
         this.rootArtifacts = result.getRoot().getChildren().stream()
-            .map(node -> collectArtifact(node,localRepositoryManager,repositoryPath))
+            .map(node -> collectArtifact(node, localRepositoryManager, repositoryPath))
             .collect(Collectors.toList());
     }
-
 
 
     private FetchedArtifact collectArtifact(
@@ -114,13 +123,12 @@ public class MavenFetchResult {
         Artifact artifact = node.getArtifact();
         return new FetchedArtifact(
             artifact,
-               repositoryPath.resolve(localRepositoryManager.getPathForLocalArtifact(artifact)),
-               node.getChildren().stream()
-                .map(child -> collectArtifact(child,localRepositoryManager,repositoryPath))
+            repositoryPath.resolve(localRepositoryManager.getPathForLocalArtifact(artifact)),
+            node.getChildren().stream()
+                .map(child -> collectArtifact(child, localRepositoryManager, repositoryPath))
                 .collect(Collectors.toList())
-           );
+        );
     }
-
 
 
     public Stream<FetchedArtifact> dependencies() {
@@ -132,7 +140,7 @@ public class MavenFetchResult {
         return Stream.concat(
             dependencies(),
             dependencies().flatMap(FetchedArtifact::allDepedencies)
-           );
+        );
     }
 
 
@@ -145,7 +153,5 @@ public class MavenFetchResult {
     public String toString() {
         return dependencies().map(FetchedArtifact::toString).collect(Collectors.joining("\n"));
     }
-
-
 
 }

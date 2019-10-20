@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api.plan;
+
 
 public enum NodeType {
 
@@ -17,9 +21,7 @@ public enum NodeType {
     /** Non-executable final node within a test case. Cannot have children. */
     VIRTUAL_STEP;
 
-
-
-    public boolean isAnyOf(NodeType...nodeTypes) {
+    public boolean isAnyOf(NodeType... nodeTypes) {
         for (NodeType nodeType : nodeTypes) {
             if (nodeType == this) {
                 return true;
@@ -29,7 +31,7 @@ public enum NodeType {
     }
 
 
-    public boolean isNoneOf(NodeType...nodeTypes) {
+    public boolean isNoneOf(NodeType... nodeTypes) {
         for (NodeType nodeType : nodeTypes) {
             if (nodeType == this) {
                 return false;

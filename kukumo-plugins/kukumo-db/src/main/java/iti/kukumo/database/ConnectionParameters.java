@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.database;
+
 
 public class ConnectionParameters {
 
@@ -12,32 +16,39 @@ public class ConnectionParameters {
         return url;
     }
 
+
     public ConnectionParameters url(String url) {
         this.url = url;
         return this;
     }
 
+
     public String username() {
         return username;
     }
+
 
     public ConnectionParameters username(String username) {
         this.username = username;
         return this;
     }
 
+
     public String password() {
         return password;
     }
+
 
     public ConnectionParameters password(String password) {
         this.password = password;
         return this;
     }
 
+
     public String driver() {
         return driver;
     }
+
 
     public ConnectionParameters driver(String driver) {
         this.driver = driver;

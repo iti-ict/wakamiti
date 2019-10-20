@@ -1,23 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.rest;
 
-
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
-import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.annotations.I18nResource;
-import iti.kukumo.api.annotations.Step;
-import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.ResourceLoader;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -32,6 +17,26 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.util.ResourceLoader;
+
+
 @I18nResource("iti_kukumo_kukumo-rest")
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor implements StepContributor {
@@ -39,7 +44,7 @@ public class RestStepContributor implements StepContributor {
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
     public static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
 
-    private Map<ContentType,ContentTypeHelper> contentTypeValidators = Kukumo.instance()
+    private final Map<ContentType, ContentTypeHelper> contentTypeValidators = Kukumo.instance()
         .extensionManager()
         .getExtensions(ContentTypeHelper.class)
         .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
@@ -50,19 +55,17 @@ public class RestStepContributor implements StepContributor {
     private String subject;
     private Long timeoutMillis;
     private Consumer<RequestSpecification> authenticator;
-    private Map<String,String> requestParams = new LinkedHashMap<>();
+    private final Map<String, String> requestParams = new LinkedHashMap<>();
     private Matcher<Integer> failureHttpCodeAssertion;
     private Response response;
     private ValidatableResponse validatableResponse;
 
 
-
-
-
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().accept(requestContentType).with().params(requestParams);
+        RequestSpecification request = RestAssured.given().accept(requestContentType).with()
+            .params(requestParams);
         if (authenticator != null) {
             authenticator.accept(request);
         }
@@ -85,7 +88,7 @@ public class RestStepContributor implements StepContributor {
     protected URI uri() {
         String base = baseURL.toString();
         if (base.endsWith("/")) {
-            base = base.substring(0,base.length()-1);
+            base = base.substring(0, base.length() - 1);
         }
         StringBuilder url = new StringBuilder(base);
         if (path != null) {
@@ -100,30 +103,31 @@ public class RestStepContributor implements StepContributor {
 
     protected ValidatableResponse commonResponseAssertions(Response response) {
         return response.then()
-          .time(timeoutMillis != null ? Matchers.lessThan(timeoutMillis) : Matchers.any(Long.class), TimeUnit.MILLISECONDS)
-          .statusCode(failureHttpCodeAssertion)
-        ;
+            .time(timeoutMillis != null ? Matchers.lessThan(timeoutMillis) : Matchers.any(Long.class), TimeUnit.MILLISECONDS)
+            .statusCode(failureHttpCodeAssertion);
     }
 
 
-    protected void executeRequest(BiFunction<RequestSpecification,URI,Response> function) {
-        this.response = function.apply(newRequest(),uri());
+    protected void executeRequest(BiFunction<RequestSpecification, URI, Response> function) {
+        this.response = function.apply(newRequest(), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
 
-    protected void executeRequest(BiFunction<RequestSpecification,URI,Response> function, String body) {
-        this.response = function.apply(newRequest().body(body),uri());
+
+    protected void executeRequest(
+        BiFunction<RequestSpecification, URI, Response> function,
+        String body
+    ) {
+        this.response = function.apply(newRequest().body(body), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
 
 
     protected void assertFileExists(File file) {
         if (!file.exists()) {
-           throw new KukumoException("File {} not found", file.getAbsolutePath());
+            throw new KukumoException("File {} not found", file.getAbsolutePath());
         }
     }
-
-
 
 
     protected void assertSubjectDefined() {
@@ -140,7 +144,7 @@ public class RestStepContributor implements StepContributor {
         }
         ContentTypeHelper helper = contentTypeValidators.get(responseContentType);
         if (helper == null) {
-            throw new KukumoException("There is no content type helper for "+responseContentType);
+            throw new KukumoException("There is no content type helper for " + responseContentType);
         }
         return helper;
     }
@@ -148,63 +152,68 @@ public class RestStepContributor implements StepContributor {
 
     protected void assertContentIs(Document expected, boolean exactMatch) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
-        helper.assertContent(expected,validatableResponse.extract(),exactMatch);
+        helper.assertContent(expected, validatableResponse.extract(), exactMatch);
     }
+
 
     protected void assertContentIs(File expected, boolean exactMatch) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
-        helper.assertContent(expected,validatableResponse.extract(),exactMatch);
+        helper.assertContent(expected, validatableResponse.extract(), exactMatch);
     }
 
 
     private <T> void assertBodyFragment(String fragment, Matcher<T> matcher, Class<T> dataType) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
-        helper.assertFragment(fragment,validatableResponse,dataType,matcher);
+        helper.assertFragment(fragment, validatableResponse, dataType, matcher);
     }
-
 
 
     protected ContentType parseContentType(String contentType) {
         try {
             return ContentType.valueOf(contentType.toUpperCase());
         } catch (IllegalArgumentException e) {
-            String validNames = Stream.of(ContentType.values()).map(Enum::name).collect(Collectors.joining(", "));
-            throw new KukumoException("REST content type must be one of the following: {}", validNames, e);
+            String validNames = Stream.of(ContentType.values()).map(Enum::name)
+                .collect(Collectors.joining(", "));
+            throw new KukumoException(
+                "REST content type must be one of the following: {}", validNames, e
+            );
         }
     }
 
     /*
-     // TODO rest.define.query.parameters=the query parameters {params:map}
+     * // TODO rest.define.query.parameters=the query parameters {params:map}
      */
 
 
-
-    @Step(value="rest.define.contentType", args="word")
+    @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
         this.requestContentType = parseContentType(contentType);
     }
 
 
-    @Step(value="rest.define.baseURL",args ="url")
+    @Step(value = "rest.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         this.baseURL = url;
     }
 
 
-    @Step(value="rest.define.service")
+    @Step(value = "rest.define.service")
     public void setService(String service) {
         this.path = (service.startsWith("/") ? service.substring(1) : service);
     }
+
 
     @Step("rest.define.subject")
     public void setSubject(String subject) {
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
+
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
         this.timeoutMillis = Long.valueOf(millis);
     }
+
 
     @Step("rest.define.timeout.secs")
     public void setTimeoutInSecs(Integer secs) {
@@ -212,21 +221,23 @@ public class RestStepContributor implements StepContributor {
     }
 
 
-    @Step(value="rest.define.failure.http.code.assertion", args="integer-assertion")
+    @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
     public void setFailureHttpCodeAssertion(Matcher<Integer> httpCodeAssertion) {
         this.failureHttpCodeAssertion = httpCodeAssertion;
     }
 
-    @Step(value="rest.define.auth.basic", args={"username:text","password:text"})
+
+    @Step(value = "rest.define.auth.basic", args = { "username:text", "password:text" })
     public void setBasicAuth(String username, String password) {
-        this.authenticator = requestSpecification -> requestSpecification.auth().basic(username,password);
+        this.authenticator = requestSpecification -> requestSpecification.auth()
+            .basic(username, password);
     }
 
-    @Step(value="rest.define.auth.bearer")
+
+    @Step(value = "rest.define.auth.bearer")
     public void setBearerAuth(String token) {
         this.authenticator = requestSpecification -> requestSpecification.auth().oauth2(token);
     }
-
 
 
     @Step("rest.execute.GET.query")
@@ -237,8 +248,8 @@ public class RestStepContributor implements StepContributor {
 
     @Step("rest.execute.GET.subject")
     public void executeGetSubject() {
-       assertSubjectDefined();
-       executeRequest(RequestSpecification::get);
+        assertSubjectDefined();
+        executeRequest(RequestSpecification::get);
     }
 
 
@@ -263,11 +274,13 @@ public class RestStepContributor implements StepContributor {
         executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));
     }
 
+
     @Step("rest.execute.PATCH.subject.from.document")
     public void executePatchSubjectUsingDocument(Document document) {
         assertSubjectDefined();
         executeRequest(RequestSpecification::patch, document.getContent());
     }
+
 
     @Step("rest.execute.PATCH.subject.from.file")
     public void executePatchSubjectUsingFile(File file) {
@@ -275,6 +288,7 @@ public class RestStepContributor implements StepContributor {
         assertFileExists(file);
         executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
     }
+
 
     @Step("rest.execute.POST.data.from.document")
     public void executePostUsingDocument(Document document) {
@@ -295,6 +309,7 @@ public class RestStepContributor implements StepContributor {
         executeRequest(RequestSpecification::post, document.getContent());
     }
 
+
     @Step("rest.execute.POST.data.from.document")
     public void executePostDataUsingDocument(Document document) {
         executeRequest(RequestSpecification::post, document.getContent());
@@ -313,6 +328,7 @@ public class RestStepContributor implements StepContributor {
         assertContentIs(file, true);
     }
 
+
     @Step("rest.assert.response.body.loose.from.file")
     public void assertLooseFileContent(File file) {
         assertContentIs(file, true);
@@ -330,32 +346,37 @@ public class RestStepContributor implements StepContributor {
         assertContentIs(document, false);
     }
 
-    @Step(value="rest.assert.response.HTTP.code", args="integer-assertion")
+
+    @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
     public void assertHttpCode(Matcher<Integer> matcher) {
         validatableResponse.statusCode(matcher);
     }
 
 
-    @Step(value="rest.assert.response.body.contentType", args="word")
+    @Step(value = "rest.assert.response.body.contentType", args = "word")
     public void assertResponseContentType(String contentType) {
         validatableResponse.contentType(parseContentType(contentType));
     }
 
 
-    @Step(value="rest.assert.response.body.fragment.text", args={"fragment:text", "matcher:text-assertion"})
+    @Step(value = "rest.assert.response.body.fragment.text", args = { "fragment:text",
+                    "matcher:text-assertion" })
     public void assertBodyFragmentAsText(String fragment, Matcher<String> matcher) {
-        assertBodyFragment(fragment,matcher,String.class);
+        assertBodyFragment(fragment, matcher, String.class);
     }
 
 
-    @Step(value="rest.assert.response.body.fragment.integer", args={"fragment:text", "matcher:integer-assertion"})
+    @Step(value = "rest.assert.response.body.fragment.integer", args = { "fragment:text",
+                    "matcher:integer-assertion" })
     public void assertBodyFragmentAsInteger(String fragment, Matcher<Integer> matcher) {
-        assertBodyFragment(fragment,matcher,Integer.class);
+        assertBodyFragment(fragment, matcher, Integer.class);
     }
 
-    @Step(value="rest.assert.response.body.fragment.decimal", args={"fragment:text", "matcher:decimal-assertion"})
+
+    @Step(value = "rest.assert.response.body.fragment.decimal", args = { "fragment:text",
+                    "matcher:decimal-assertion" })
     public void assertBodyFragmentAsDecimal(String fragment, Matcher<BigDecimal> matcher) {
-        assertBodyFragment(fragment,matcher,BigDecimal.class);
+        assertBodyFragment(fragment, matcher, BigDecimal.class);
     }
 
 }

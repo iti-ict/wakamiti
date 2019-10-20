@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.util;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,13 +12,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-/**
- * @author ITI
- *         Created by ITI on 8/01/19
- */
+
+
 public class CompoundResourceBundle extends ResourceBundle {
 
     private final List<ResourceBundle> resourceBundles;
+
 
     public CompoundResourceBundle(List<ResourceBundle> resourceBundles) {
         this.resourceBundles = new ArrayList<>(resourceBundles);
@@ -41,7 +44,5 @@ public class CompoundResourceBundle extends ResourceBundle {
         }
         return Collections.enumeration(keys);
     }
-
-
 
 }

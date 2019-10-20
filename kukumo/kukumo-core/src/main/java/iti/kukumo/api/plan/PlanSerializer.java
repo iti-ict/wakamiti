@@ -1,16 +1,28 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api.plan;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import iti.kukumo.util.ThrowableFunction;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class PlanSerializer {
 
@@ -18,12 +30,12 @@ public class PlanSerializer {
         .registerModule(new JavaTimeModule())
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-        .enable(SerializationFeature.INDENT_OUTPUT)
-    ;
+        .enable(SerializationFeature.INDENT_OUTPUT);
 
 
     /**
      * Deserialize the given string into a {@link PlanNodeDescriptor} object
+     *
      * @throws IOException
      */
     public PlanNodeDescriptor deserialize(String json) throws IOException {
@@ -33,6 +45,7 @@ public class PlanSerializer {
 
     /**
      * Serialize the given
+     *
      * @throws IOException
      */
     public String serialize(PlanNodeDescriptor node) throws IOException {
@@ -41,7 +54,8 @@ public class PlanSerializer {
 
 
     /**
-     * Serialize the given iti.kukumo.test.gherkin.plan or iti.kukumo.test.gherkin.plan node into a string
+     * Serialize the given iti.kukumo.test.gherkin.plan or
+     * iti.kukumo.test.gherkin.plan node into a string
      */
     public String serialize(PlanNode node) throws IOException {
         return serialize(new PlanNodeDescriptor(node));
@@ -58,9 +72,10 @@ public class PlanSerializer {
     }
 
 
-
     public PlanNodeDescriptor read(InputStream inputStream) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(
+            inputStream, StandardCharsets.UTF_8
+        )) {
             return read(reader);
         }
     }
@@ -71,6 +86,7 @@ public class PlanSerializer {
             return read(stream);
         }
     }
+
 
     public PlanNodeDescriptor read(Path path) throws IOException {
         try (InputStream stream = new FileInputStream(path.toFile())) {
@@ -85,6 +101,7 @@ public class PlanSerializer {
 
 
     public Collection<PlanNodeDescriptor> read(Collection<Path> paths) throws IOException {
-        return paths.stream().map(ThrowableFunction.unchecked(path -> read(path))).collect(Collectors.toList());
+        return paths.stream().map(ThrowableFunction.unchecked(path -> read(path)))
+            .collect(Collectors.toList());
     }
 }

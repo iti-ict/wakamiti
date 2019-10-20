@@ -1,14 +1,16 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api;
 
-/**
- * @author ITI
- *         Created by ITI on 9/01/19
- */
+
+
 public class Resource<T> {
 
     private final String absolutePath;
     private final String relativePath;
     private final T content;
+
 
     public Resource(String absolutePath, String relativePath, T content) {
         this.absolutePath = absolutePath;
@@ -21,9 +23,13 @@ public class Resource<T> {
         return relativePath;
     }
 
+
     public String absolutePath() {
         return absolutePath;
     }
 
-    public T content() { return content; }
+
+    public T content() {
+        return content;
+    }
 }

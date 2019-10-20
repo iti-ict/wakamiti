@@ -1,6 +1,11 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api;
 
+
 import java.util.Arrays;
+
 
 public class KukumoException extends RuntimeException {
 
@@ -11,47 +16,51 @@ public class KukumoException extends RuntimeException {
         super();
     }
 
+
     public KukumoException(String message, Throwable throwable) {
         super(message, throwable);
     }
+
 
     public KukumoException(String message) {
         super(message);
     }
 
+
     public KukumoException(String message, Object... args) {
-        super(replace(message,argsWithoutThrowable(args)),throwable(args));
+        super(replace(message, argsWithoutThrowable(args)), throwable(args));
     }
+
 
     public KukumoException(Throwable throwable) {
         super(throwable);
     }
 
 
-
     private static String replace(String message, Object[] args) {
         StringBuilder s = new StringBuilder(message);
-        for (int i=0;i<args.length;i++) {
+        for (Object arg : args) {
             int pos = s.indexOf("{}");
             if (pos == -1) {
                 break;
             }
-            s.replace(pos, pos+2, String.valueOf(args[i]));
+            s.replace(pos, pos + 2, String.valueOf(arg));
         }
         return s.toString();
     }
 
 
     private static Object[] argsWithoutThrowable(Object[] args) {
-        return throwable(args) == null ? args : Arrays.copyOf(args,args.length-1);
+        return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);
     }
 
 
-    private static Throwable throwable(Object...args) {
+    private static Throwable throwable(Object... args) {
         if (args == null || args.length == 0) {
             return null;
         }
-        return args[args.length-1] instanceof Throwable ? (Throwable)args[args.length-1] : null;
+        return args[args.length - 1] instanceof Throwable ? (Throwable) args[args.length - 1]
+                        : null;
     }
 
 }

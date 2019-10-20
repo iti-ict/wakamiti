@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.maven;
+
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +22,7 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
 
+
 @Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable {
 
@@ -34,11 +39,10 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
     public String logLevel;
 
 
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        System.setProperty("org.slf4j.simpleLogger.log.iti.kukumo",logLevel);
+        System.setProperty("org.slf4j.simpleLogger.log.iti.kukumo", logLevel);
 
         if (skipTests) {
             info("Kukumo tests skipped");
@@ -73,6 +77,5 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
         }
 
     }
-
 
 }

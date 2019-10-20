@@ -1,8 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.datatypes;
 
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.util.ThrowableFunction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,25 +11,38 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.util.ThrowableFunction;
+
+
 public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
 
-
     public interface TypeParser<T> {
+
         T parse(String value) throws Exception;
+
+
         static <T> TypeParser<T> from(ThrowableFunction<String, T> function) {
             return function::apply;
         }
     }
 
+
     public interface LocaleTypeParser<T> {
+
         TypeParser<T> parser(Locale locale);
     }
 
+
     public interface LocaleRegexProvider {
+
         String regex(Locale locale);
     }
 
+
     public interface LocaleHintProvider {
+
         List<String> hints(Locale locale);
     }
 
@@ -39,19 +52,18 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
     private final LocaleRegexProvider regexProvider;
     private final LocaleHintProvider hintProvider;
     private final LocaleTypeParser<T> parserProvider;
-    private final Map<Locale,String> regexByLocale = new HashMap<>();
-    private final Map<Locale,List<String>> hintsByLocale = new HashMap<>();
-    private final Map<Locale,TypeParser<T>> parserByLocale = new HashMap<>();
-
+    private final Map<Locale, String> regexByLocale = new HashMap<>();
+    private final Map<Locale, List<String>> hintsByLocale = new HashMap<>();
+    private final Map<Locale, TypeParser<T>> parserByLocale = new HashMap<>();
 
 
     public KukumoDataTypeBase(
-            String name,
-            Class<T> javaType,
-            LocaleRegexProvider regexProvider,
-            LocaleHintProvider hintProvider,
-            LocaleTypeParser<T> parserProvider
-            ) {
+                    String name,
+                    Class<T> javaType,
+                    LocaleRegexProvider regexProvider,
+                    LocaleHintProvider hintProvider,
+                    LocaleTypeParser<T> parserProvider
+    ) {
         this.name = name;
         this.javaType = javaType;
         this.regexProvider = regexProvider;
@@ -65,8 +77,10 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
         try {
             return parserForLocale(locale).parse(value);
         } catch (final Exception e) {
-            throw new KukumoException("Error parsing type {} using language {}: '{}'\n\tExpected {}",
-                    name,locale,value,getHints(locale),e) ;
+            throw new KukumoException(
+                "Error parsing type {} using language {}: '{}'\n\tExpected {}",
+                name, locale, value, getHints(locale), e
+            );
         }
     }
 
@@ -76,17 +90,21 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
         return name;
     }
 
+
     @Override
     public Class<T> getJavaType() {
         return javaType;
     }
+
 
     @Override
     public Matcher matcher(Locale locale, CharSequence value) {
         try {
             return Pattern.compile(regexForLocale(locale)).matcher(value);
         } catch (final Exception e) {
-            throw new KukumoException("Cannot create regex pattern for type {} using language {}",name,locale,e);
+            throw new KukumoException(
+                "Cannot create regex pattern for type {} using language {}", name, locale, e
+            );
         }
     }
 
@@ -114,11 +132,10 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
         return regexByLocale.get(locale);
     }
 
+
     protected List<String> hintsForLocale(Locale locale) {
         hintsByLocale.computeIfAbsent(locale, hintProvider::hints);
         return hintsByLocale.get(locale);
     }
-
-
 
 }
