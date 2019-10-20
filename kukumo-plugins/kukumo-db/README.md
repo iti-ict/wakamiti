@@ -1,4 +1,4 @@
-# Kukumo::Database Steps
+# Database Steps
 
 This plugin provides a set of steps that interact with a database via JDBC, easing the effort
 required to load and assert data.
@@ -21,46 +21,78 @@ The plugin source code provides a convenient way to implement new data sources e
 class `DataSet`, which can be used by third-party contributors.
 
 
-> **CAUTION:**  
+> **KEEP IN MIND**  
 > Regarding the multiple database implementations existing, this plugin **does not** include
-any specific driver. In order to work properly, remember to include the module with the JDBC driver(s)
+any specific driver. In order to work properly, do not forget to include the module with the JDBC driver(s)
 that your database connection would require.
-
----
 
 ## Usage
 
 ### Configuration properties
 
-> **CAUTION:**  
+> **KEEP IN MIND**  
 > These properties must have the `kukumo.` prefix when defined in an external configuration file.
 
-`database.connection.url`::
+- `database.connection.url`
+   
+   The JDBC database connection URL. The driver used to access the database will be determined by the URL format.
 
-The JDBC database connection URL. The driver used to access the database will be determined by the URL format.
+- `database.connection.username`
 
-`database.connection.username`::
-The connection username.
+  The connection username.
 
-`database.connection.password`::
-The connection password.
+- `database.connection.password`
 
-`database.csv.format` = `DEFAULT`::
-The format used to parse CSV files. Accepted values are:
-`DEFAULT`, `INFORMIX_UNLOAD`, `INFORMIX_UNLOAD_CSV`, `MYSQL`, `ORACLE`, `POSTGRESQL_CSV`,
-`POSTGRESQL_TEXT`, `RFC4180`. Check the https://commons.apache.org/proper/commons-csv/[Commons CSV]
-project for detailed explanation of each format.
+  The connection password.
 
-`database.xls.ignoreSheetPattern` = `#.*` ::
-Regex pattern used to determine what sheets to be ignored when loading XLSX files.
+- `database.csv.format` = `DEFAULT`
 
-`database.xls.nullSymbol` = `<null>` ::
-Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files.
+  The format used to parse CSV files. Accepted values are:
+  `DEFAULT`, `INFORMIX_UNLOAD`, `INFORMIX_UNLOAD_CSV`, `MYSQL`, `ORACLE`, `POSTGRESQL_CSV`,
+  `POSTGRESQL_TEXT`, `RFC4180`. Check the [Commons CSV][1]
+  project for detailed explanation of each format.
 
-`database.enableCleanupUponCompletion` = `true | [false]` ::
-The default behaviour does not perform any clean-up operation following the test iti.kukumo.test.gherkin.plan execution so that
-you can check the resulting data afterwards. Switching this parameter to `true` will force
-clean-up operations so no test data will remain in the database after the execution of the tests.
+- `database.xls.ignoreSheetPattern` = `#.*` 
+
+  Regex pattern used to determine what sheets to be ignored when loading XLSX files.
+
+- `database.xls.nullSymbol` = `<null>`
+
+  Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files.
+
+- `database.enableCleanupUponCompletion` = `true | [false]` 
+
+  The default behaviour does not perform any clean-up operation following the test iti.kukumo.test.gherkin.plan execution so that
+  you can check the resulting data afterwards. Switching this parameter to `true` will force
+  clean-up operations so no test data will remain in the database after the execution of the tests.
+
+```properties
+database.connection.url= # The JDBC database connection URL
+  # The driver used to access the database will be determined by the URL format.
+database.connection.username= # The connection username
+database.connection.password= # The connection password
+database.csv.format=DEFAULT # The format used to parse CSV files. \
+  # Accepted values are: DEFAULT, INFORMIX_UNLOAD, INFORMIX_UNLOAD_CSV, MYSQL, ORACLE, POSTGRESQL_CSV, POSTGRESQL_TEXT, RFC4180.\
+  # Check Commons CSV for further details: https://commons.apache.org/proper/commons-csv/
+database.xls.ignoreSheetPattern=\#.* # Regex pattern used to determine what sheets to be ignored when loading XLSX files
+database.xls.nullSymbol=<null> # Literal used to handle a specific cell value as the SQL NULL element when loading XSLX files
+database.enableCleanupUponCompletion=false # Set if clean-up operation should be performed upon completion 
+  # The default behaviour does not perform any clean-up operation following the test plan execution so that
+  # you can check the resulting data afterwards. Switching this parameter to `true` will force
+  # clean-up operations so no test data will remain in the database after the execution of the tests.
+```
+
+
+|property |  accepted values | default value | comments |
+| --- | --- | --- | --- |
+| `database.connection.url` | jdbc://... || The JDBC database connection URL. The driver used to access the database will be determined by the URL format.
+| `database.connection.username` | any || The connection username
+| `database.connection.password` | any || The connection password
+| `database.csv.format` | `DEFAULT`, `INFORMIX_UNLOAD`, `INFORMIX_UNLOAD_CSV`, `MYSQL`, `ORACLE`, `POSTGRESQL_CSV`, `POSTGRESQL_TEXT`, `RFC4180` | `DEFAULT` |  The format used to parse CSV files.  Check [Commons CSV][1] for further details
+| `database.xls.ignoreSheetPattern` | regular expression | #.* | Pattern used to determine what sheets to be ignored when loading XLSX files
+| `database.xls.nullSymbol` | any | `<null>` | Literal used to handle a specific cell value as the SQL `NULL` element when loading XSLX files
+| `database.enableCleanupUponCompletion` | `true`,`false` | `false` | The default behaviour does not perform any clean-up operation following the plan execution so that you can check the resulting data afterwards. Switching this parameter to `true` will force   clean-up operations so no test data will remain in the database after the execution of the tests.
+
 
 
 ### Steps
@@ -108,3 +140,10 @@ clean-up operations so no test data will remain in the database after the execut
 - the database table {word} is empty ::
 - the database table {word} is not empty ::
 
+
+  
+## References  
+
+- [**1**] *Common CSV* -  https://commons.apache.org/proper/commons-csv/  
+  
+[1]:  https://commons.apache.org/proper/commons-csv/

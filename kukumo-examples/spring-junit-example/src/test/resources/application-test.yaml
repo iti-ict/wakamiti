@@ -3,6 +3,8 @@ kukumo:
   resourceTypes: gherkin
   resourcePath: src/test/resources
   outputFilePath: target/kukumo/kukumo.json
+  junit:
+    treatStepsAsTests: true
   logs:
     showStepSource: false
   database:

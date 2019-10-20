@@ -1,9 +1,10 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.jext;
 
-import iti.commons.jext.ExtensionPoint;
 
 @ExtensionPoint(loadStrategy = LoadStrategy.SINGLETON)
 public interface ExtensionPointSingleton {
 
-    
 }

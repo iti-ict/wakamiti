@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.maven.fetcher;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Properties;
 
+
 public class MavenFetcherConfig {
 
     public static final String REMOTE_REPOSITORIES = "remoteRepositories";
@@ -17,18 +22,20 @@ public class MavenFetcherConfig {
     public static final String PROXY_USERNAME = "proxy.username";
     public static final String PROXY_PASSWORD = "proxy.password";
     public static final String PROXY_EXCEPTIONS = "proxy.exceptions";
-    
-    private final Properties properties; 
-    
-    
+
+    private final Properties properties;
+
+
     public MavenFetcherConfig(String configFile) throws IOException {
-        try (Reader reader = new InputStreamReader(new FileInputStream(configFile),StandardCharsets.UTF_8)) {
+        try (Reader reader = new InputStreamReader(
+            new FileInputStream(configFile), StandardCharsets.UTF_8
+        )) {
             this.properties = new Properties();
-            this.properties.load(reader);    
+            this.properties.load(reader);
         }
     }
-    
-    
+
+
     public MavenFetcherConfig(Properties properties) {
         this.properties = properties;
     }
@@ -59,5 +66,5 @@ public class MavenFetcherConfig {
             }
         }
     }
-    
+
 }

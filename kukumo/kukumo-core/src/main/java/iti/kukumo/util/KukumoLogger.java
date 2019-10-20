@@ -1,31 +1,24 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.util;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.slf4jansi.AnsiLogger;
+
+import static iti.kukumo.api.KukumoConfiguration.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static iti.kukumo.api.KukumoConfiguration.LOGS_ANSI_ENABLED;
-import static iti.kukumo.api.KukumoConfiguration.LOGS_ANSI_STYLES;
+import iti.commons.configurer.Configuration;
+import iti.commons.slf4jansi.AnsiLogger;
 
-/**
- * @author ITI
- * Created by ITI on 28/08/19
- */
+
+
 public class KukumoLogger {
 
-
     public static String logo() {
-        return "\n"+
-               "----------------------------------------------\n"+
-               "    | |/ /   _| | ___   _ _ __ ___   ___\n" +
-               "    | ' / | | | |/ / | | | '_ ` _ \\ / _ \\ \n" +
-               "    | . \\ |_| |   <| |_| | | | | | | (_) | \n"+
-               "    |_|\\_\\__,_|_|\\_\\\\__,_|_| |_| |_|\\___/\n"+
-               "----------------------------------------------"
-               ;
+        return "\n" + "----------------------------------------------\n" + "    | |/ /   _| | ___   _ _ __ ___   ___\n" + "    | ' / | | | |/ / | | | '_ ` _ \\ / _ \\ \n" + "    | . \\ |_| |   <| |_| | | | | | | (_) | \n" + "    |_|\\_\\__,_|_|\\_\\\\__,_|_| |_| |_|\\___/\n" + "----------------------------------------------";
     }
-
 
 
     public static Logger forClass(Class<?> logger) {
@@ -37,16 +30,14 @@ public class KukumoLogger {
         return AnsiLogger.of(logger);
     }
 
+
     public static void configure(Configuration configuration) {
         AnsiLogger.setAnsiEnabled(
-            configuration.get(LOGS_ANSI_ENABLED,Boolean.class).orElse(true)
+            configuration.get(LOGS_ANSI_ENABLED, Boolean.class).orElse(true)
         );
         AnsiLogger.setStyles(
             configuration.inner(LOGS_ANSI_STYLES).asProperties()
         );
     }
-
-
-
 
 }

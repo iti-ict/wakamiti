@@ -1,31 +1,34 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.test.core.types;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.core.plan.DefaultPlanStep;
-import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-/**
- * @author ITI
- * Created by ITI on 29/05/19
- */
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.core.backend.ExpressionMatcher;
+import iti.kukumo.core.plan.PlanNodeBuilder;
+
+
+
 public class TestExpressionMatcher {
 
     @Test
     public void testExpressionStep1() {
         assertExpression(
             new Locale("es"),
-           "(que) el|la|lo|los|las siguiente(s) * se inserta(n) en la tabla de BBDD {word}:",
+            "(que) el|la|lo|los|las siguiente(s) * se inserta(n) en la tabla de BBDD {word}:",
             "que los siguientes datos se insertan en la tabla de BBDD USER:",
             "que el siguiente dato se inserta en la tabla de BBDD USER:",
             "que lo siguiente se inserta en la tabla de BBDD USER:",
@@ -89,36 +92,34 @@ public class TestExpressionMatcher {
     @Test
     public void testExpressionStep5() {
         assertExpression(
-             new Locale("es"),
-             "se realiza la búsqueda *",
-             "se realiza la búsqueda",
-             "se realiza la búsqueda de algo"
+            new Locale("es"),
+            "se realiza la búsqueda *",
+            "se realiza la búsqueda",
+            "se realiza la búsqueda de algo"
         );
     }
-
 
 
     private void assertExpression(Locale locale, String expression, String... steps) {
         for (String step : steps) {
             Matcher matcher = ExpressionMatcher.matcherFor(
-                    expression,
-                    coreTypes(),
-                    locale,
-                    new DefaultPlanStep().setName(step)
+                expression,
+                coreTypes(),
+                locale,
+                new PlanNodeBuilder(NodeType.STEP).setName(step).build()
             );
-            assertTrue("<<"+step+">> not matching <<"+expression+">>",matcher.matches());
+            assertTrue("<<" + step + ">> not matching <<" + expression + ">>", matcher.matches());
         }
     }
 
 
-
     private KukumoDataTypeRegistry coreTypes() {
-        Map<String,KukumoDataType<?>> types = new HashMap<>();
-        for (DataTypeContributor contributor: Kukumo.getAllDataTypeContributors()) {
+        Map<String, KukumoDataType<?>> types = new HashMap<>();
+        Kukumo.contributors().allDataTypeContributors().forEach(contributor -> {
             for (KukumoDataType<?> type : contributor.contributeTypes()) {
                 types.put(type.getName(), type);
             }
-        }
+        });
         return new KukumoDataTypeRegistry(types);
     }
 

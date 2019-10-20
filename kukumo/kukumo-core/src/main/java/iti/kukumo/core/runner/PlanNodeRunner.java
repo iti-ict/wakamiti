@@ -1,48 +1,68 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.core.runner;
 
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanStep;
+import iti.kukumo.api.plan.PlanNodeDescriptor;
 import iti.kukumo.api.plan.Result;
-import org.slf4j.Logger;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-public class PlanNodeRunner  {
-
-    private static final Logger LOGGER = Kukumo.LOGGER;
+import iti.kukumo.core.model.ExecutionState;
 
 
-    protected enum State {PREPARED, RUNNING, FINISHED}
+public class PlanNodeRunner {
+
+    protected enum State {
+        PREPARED, RUNNING, FINISHED
+    }
+
 
     private final PlanNode node;
     private final String uniqueId;
-    private final BackendFactory backendFactory;
+    private final Configuration configuration;
     private final PlanNodeLogger logger;
-
+    private final BackendFactory backendFactory;
 
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
     private State state;
 
 
-    public PlanNodeRunner(String parentUniqueId, PlanNode node, BackendFactory backendFactory, Optional<Backend> backend, PlanNodeLogger logger) {
+    public PlanNodeRunner(
+                    PlanNode node,
+                    Configuration configuration,
+                    BackendFactory backendFactory,
+                    Optional<Backend> backend,
+                    PlanNodeLogger logger
+    ) {
         this.node = node;
-        this.backendFactory = backendFactory;
-        this.uniqueId = buildUniqueId(parentUniqueId,node);
+        this.configuration = configuration;
+        this.uniqueId = UUID.randomUUID().toString();
         this.state = State.PREPARED;
+        this.backendFactory = backendFactory;
         this.backend = backend;
         this.logger = logger;
     }
 
 
-    public PlanNodeRunner(String parentUniqueId, PlanNode node, BackendFactory backendFactory, PlanNodeLogger logger) {
-        this(parentUniqueId, node, backendFactory, Optional.empty(), logger);
+    public PlanNodeRunner(
+                    PlanNode node,
+                    Configuration configuration,
+                    BackendFactory backendFactory,
+                    PlanNodeLogger logger
+    ) {
+        this(node, configuration, backendFactory, Optional.empty(), logger);
     }
 
 
@@ -53,110 +73,78 @@ public class PlanNodeRunner  {
         return children;
     }
 
+
     public String getUniqueId() {
         return uniqueId;
     }
 
 
     protected Optional<Backend> getBackend() {
-        if (!backend.isPresent() && node.isTestCase()) {
-            backend = Optional.of(backendFactory.createBackend(node));
+        if (!backend.isPresent() && node.nodeType() == NodeType.TEST_CASE) {
+            backend = Optional.of(backendFactory.createBackend(node, configuration));
         }
         return backend;
     }
 
 
-    protected BackendFactory getBackendFactory() {
+    protected Configuration configuration() {
+        return configuration;
+    }
+
+
+    protected BackendFactory backendFactory() {
         return backendFactory;
     }
+
 
     protected PlanNodeLogger getLogger() {
         return logger;
     }
 
-    protected Result runNode(boolean forceSkip) {
+
+    protected void runNode() {
         if (state != State.PREPARED) {
             throw new IllegalStateException("run() method can only be invoked once");
         }
         state = State.RUNNING;
-        Kukumo.publishEvent(Event.NODE_RUN_STARTED, node.obtainDescriptor());
-        Result result;
+        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeDescriptor(node));
         if (!getChildren().isEmpty()) {
-
-            if (node.isTestCase()) {
-                logger.logTestCaseHeader(node);
-                getBackend().ifPresent(Backend::setUp);
+            if (node.nodeType() == NodeType.TEST_CASE) {
+                testCasePreExecution(node);
             }
-
-            result = runChildren();
-
-            if (node.isTestCase()) {
-                getBackend().ifPresent(Backend::tearDown);
-                LOGGER.info("");
+            runChildren();
+            if (node.nodeType() == NodeType.TEST_CASE) {
+                testCasePostExecution(node);
             }
-
-        } else if (node instanceof PlanStep){
-            result = runStep(forceSkip);
-        } else {
-            // not implemented
-            result = Result.SKIPPED;
+        } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
+            runStep();
         }
         state = State.FINISHED;
-        Kukumo.publishEvent(Event.NODE_RUN_FINISHED, node.obtainDescriptor());
-        return result;
+        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeDescriptor(node));
     }
 
 
-
-
-    protected Result runChildren() {
-        Result childResult = null;
-        boolean forceSkipChild = false;
-        for (PlanNodeRunner child : children) {
-            childResult = child.runNode(forceSkipChild);
-            if (child.getNode() instanceof PlanStep && childResult != Result.PASSED) {
-                forceSkipChild = true;
-            }
-        }
-        return childResult;
+    protected void runChildren() {
+        children.forEach(PlanNodeRunner::runNode);
     }
 
 
-    protected Result runStep(boolean forceSkip) {
-        PlanStep step = (PlanStep) node;
-        if (forceSkip) {
-            getBackend().ifPresent(stepBackend -> stepBackend.skipStep(step));
-        } else {
-            getBackend().ifPresent(stepBackend -> stepBackend.runStep(step));
-        }
-        notifyAndLogStepResult(step);
-        return step.getResult();
+    protected Result runStep() {
+        stepPreExecution(node);
+        getBackend().ifPresent(stepBackend -> stepBackend.runStep(node));
+        stepPostExecution(node);
+        return node.executionState().flatMap(ExecutionState::result).orElse(null);
     }
-
-
-
-
-
 
 
     protected List<PlanNodeRunner> createChildren() {
-        return  node.children()
-                .map(child -> new PlanNodeRunner(uniqueId, child, backendFactory, getBackend(), logger))
-                .collect(Collectors.toList());
-    }
-
-
-
-    protected String buildUniqueId(String parentUniqueId, PlanNode node) {
-        final StringBuilder nodeUniqueId = new StringBuilder(parentUniqueId).append(':');
-        if (node.id() != null) {
-            nodeUniqueId.append(node.id());
-        } else if (node.name() != null) {
-            nodeUniqueId.append(node.name());
-        } else {
-            nodeUniqueId.append(node.nodeType());
-        }
-        return nodeUniqueId.toString();
+        return node.children()
+            .map(
+                child -> new PlanNodeRunner(
+                    child, configuration, backendFactory, getBackend(), logger
+                )
+            )
+            .collect(Collectors.toList());
     }
 
 
@@ -165,11 +153,24 @@ public class PlanNodeRunner  {
     }
 
 
-    protected void notifyAndLogStepResult(PlanStep step) {
-        logger.logStepResult(step);
+    protected void testCasePreExecution(PlanNode node) {
+        logger.logTestCaseHeader(node);
+        getBackend().ifPresent(Backend::setUp);
     }
 
 
+    protected void testCasePostExecution(PlanNode node) {
+        getBackend().ifPresent(Backend::tearDown);
+    }
 
+
+    protected void stepPreExecution(PlanNode step) {
+        /* nothing by default */
+    }
+
+
+    protected void stepPostExecution(PlanNode step) {
+        logger.logStepResult(step);
+    }
 
 }

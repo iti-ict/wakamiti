@@ -14,7 +14,7 @@
             <topBarIcon>
                 <name>Kukumo</name>
                 <alt>Kukumo</alt>
-                <src>/images/kukumo.png</src>
+                <src>/images/kukumo-white.png</src>
                 <href>/index.html</href>
             </topBarIcon>
             <navBarStyle>navbar-inverse</navBarStyle>
@@ -26,44 +26,30 @@
     </custom>
 
 
-    <bannerRight>
-        <name>ITI</name>
-        <src>https://www.iti.es/wp-content/uploads/logo-iti.svg</src>
-        <href>https://www.iti.es</href>
-        <width>170</width>
-        <height>40</height>
-    </bannerRight>
-
+    <poweredBy>
+        <logo img="/images/iti.png" href="https://www.iti.es" name="ITI"  alt="ITI"/>
+    </poweredBy>
+    <version position="none"></version>
+    <publishDate position="right"></publishDate>
 
     <body>
 
         <!-- Add this to every site.xml -->
         <head>
             <![CDATA[
-             <script type="text/javascript">
-             $(document).ready(function () {
-                $(".source").addClass("prettyprint");
-                prettyPrint();
-                var linkAbout = $('a').filter(function(index) { return $(this).text() === "About"; });
-                var projectInformationMenu = $('a').filter(function(index) { return $(this).text() === "Project Information"; });
-                linkAbout.hide();
-                if (!projectInformationMenu.parent().hasClass('active')) {
-                    projectInformationMenu.parent().children('ul').hide();
-                    projectInformationMenu.children('span').removeClass('icon-chevron-down').addClass('icon-chevron-right');
-                }
-            });
-            </script>
+             <script type="text/javascript" src="site.js"></script>
             <link rel="stylesheet" href="https://asciidoctor.org/stylesheets/styles.css">
         ]]>
         </head>
 
 
-        <breadcrumbs>
-        </breadcrumbs>
-
-        <menu name="Overview">
-            <item name="Introduction" href="index.html"/>
+        <menu name="General Info">
+            <item name="Overview" href="index.html"/>
             <item name="Usage" href="index.html#Usage"/>
+            <item name="Runners" href="index.html#Runners"/>
+            <item name="Plugins" href="index.html#Plugins"/>
+            <item name="Other tools" href="index.html#Other_tools"/>
+            <item name="Contributing" href="index.html#Contributing"/>
             <item name="License" href="index.html#License"/>
         </menu>
         <menu name="Components">
@@ -83,6 +69,11 @@
             <item name="Configurer" href="kukumo-tools/configurer/kukumo-tools/configurer/index.html"/>
             <item name="Maven Fetcher" href="kukumo-tools/maven-fetcher/kukumo-tools/maven-fetcher/index.html"/>
             <item name="SLF4J ANSI" href="kukumo-tools/slf4j-ansi/kukumo-tools/slf4j-ansi/index.html"/>
+        </menu>
+        <menu name="Examples">
+            <item name="JUnit example" href="kukumo-examples/spring-junit-example/kukumo-examples/spring-junit-example/index.html"/>
+            <item name="Maven plugin example" href="kukumo-examples/spring-verify-example/kukumo-examples/spring-verify-example/index.html"/>
+            <item name="Launcher example" href="kukumo-examples/spring-launcher-example/kukumo-examples/spring-launcher-example/index.html"/>
         </menu>
 
 

@@ -1,23 +1,32 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.spring.db;
 
-import iti.commons.jext.Extension;
-import iti.kukumo.database.ConnectionManager;
-import iti.kukumo.database.ConnectionParameters;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import iti.commons.jext.Extension;
+import iti.kukumo.database.ConnectionManager;
+import iti.kukumo.database.ConnectionParameters;
 
-@Extension(
-    provider="iti.kukumo",
-    name="kukumo-database-springboot-datasource",
-    version="1.0",
-    externallyManaged = true, // because Spring bean infrastructure will managed the lifecycle
-    overrides = "iti.kukumo.database.DriverConnectionManager"
-)
+
+@Extension(provider = "iti.kukumo", name = "kukumo-database-springboot-datasource", version = "1.0", externallyManaged = true, // because
+                                                                                                                               // Spring
+                                                                                                                               // bean
+                                                                                                                               // infrastructure
+                                                                                                                               // will
+                                                                                                                               // managed
+                                                                                                                               // the
+                                                                                                                               // lifecycle
+                overrides = "iti.kukumo.database.DriverConnectionManager")
 @Component
 @ConditionalOnProperty(SpringConnectionProvider.USE_SPRING_DATASOURCE)
 public class SpringConnectionProvider implements ConnectionManager {
@@ -27,10 +36,12 @@ public class SpringConnectionProvider implements ConnectionManager {
     @Autowired
     private DataSource dataSource;
 
+
     @Override
     public Connection obtainConnection(ConnectionParameters parameters) throws SQLException {
         return dataSource.getConnection();
     }
+
 
     @Override
     public void releaseConnection(Connection connection) throws SQLException {

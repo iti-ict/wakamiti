@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.testing.embeddeddb;
+
 
 import java.io.File;
 import java.util.Optional;
@@ -10,8 +14,8 @@ import com.wix.mysql.SqlScriptSource;
 import com.wix.mysql.config.MysqldConfig;
 import com.wix.mysql.distribution.Version;
 
-public class MySqlEmbeddedDatabase extends EmbeddedDatabase {
 
+public class MySqlEmbeddedDatabase extends EmbeddedDatabase {
 
     private EmbeddedMysql embeddedMysql;
 
@@ -20,6 +24,7 @@ public class MySqlEmbeddedDatabase extends EmbeddedDatabase {
         super(template);
     }
 
+
     private MysqldConfig config() {
         return MysqldConfig.aMysqldConfig(Version.v5_7_19)
             .withPort(template.port())
@@ -27,6 +32,8 @@ public class MySqlEmbeddedDatabase extends EmbeddedDatabase {
             .build();
     }
 
+
+    @Override
     public void start() {
         Builder builder = EmbeddedMysql.anEmbeddedMysql(config());
         Optional<SqlScriptSource> initialScript = scriptFile.map(File::new).map(Sources::fromFile);
@@ -37,8 +44,9 @@ public class MySqlEmbeddedDatabase extends EmbeddedDatabase {
         }
         embeddedMysql = builder.start();
     }
-       
-    
+
+
+    @Override
     public void stop() {
         embeddedMysql.stop();
     }

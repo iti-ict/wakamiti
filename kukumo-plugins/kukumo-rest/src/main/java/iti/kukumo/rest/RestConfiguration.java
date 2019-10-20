@@ -1,12 +1,14 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.rest;
+
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * @author ITI
- *         Created by ITI on 5/03/19
- */
+
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestConfiguration {
 
@@ -17,6 +19,7 @@ public class RestConfiguration {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public class DefaultValues {
+
         public static final String BASE_URL = "http://localhost:8080";
         public static final String CONTENT_TYPE = "JSON";
         public static final int FAILURE_HTTP_CODE_THRESHOLD = 500;

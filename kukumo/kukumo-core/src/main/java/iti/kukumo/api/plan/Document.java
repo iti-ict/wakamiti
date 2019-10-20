@@ -1,17 +1,25 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.kukumo.api.plan;
 
-import java.util.function.Function;
 
-public class Document {
+import java.util.function.UnaryOperator;
+
+
+public class Document implements PlanNodeData {
 
     private final String content;
     private final String contentType;
 
-    public Document (String content) {
+
+    public Document(String content) {
         this.content = content;
         this.contentType = null;
     }
-    public Document (String content, String contentType) {
+
+
+    public Document(String content, String contentType) {
         this.content = content;
         this.contentType = contentType;
     }
@@ -21,16 +29,21 @@ public class Document {
         return content;
     }
 
+
     public String getContentType() {
         return contentType;
     }
 
-    public Document copy() {
-        return new Document(content,contentType);
+
+    @Override
+    public PlanNodeData copy() {
+        return new Document(content, contentType);
     }
 
-    public Document copy(Function<String,String> transformer) {
-        return new Document(transformer.apply(content),contentType);
+
+    @Override
+    public PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer) {
+        return new Document(replacer.apply(content), contentType);
     }
 
 }

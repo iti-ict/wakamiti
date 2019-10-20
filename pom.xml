@@ -33,7 +33,6 @@
         <module>kukumo/kukumo-core</module>
         <module>kukumo/kukumo-launcher</module>
         <module>kukumo/kukumo-maven-plugin</module>
-        <module>kukumo/kukumo-plugin-archetype</module>
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>
@@ -69,6 +68,8 @@
     <properties>
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8
+        </project.reporting.outputEncoding>
         <!-- build versions -->
         <java.version>1.8</java.version>
         <maven.compiler.version>3.8.0</maven.compiler.version>
@@ -82,7 +83,7 @@
         <log4j.version>2.11.2</log4j.version>
         <junit.version>4.12</junit.version>
         <jsonassert.version>1.5.0</jsonassert.version>
-        <kukumo.version>0.9.0</kukumo.version>
+        <kukumo.version>0.9.1</kukumo.version>
         <!-- plugin versions -->
         <jacoco.version>0.8.2</jacoco.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
@@ -262,6 +263,7 @@
                 <version>${maven.javadoc.version}</version>
                 <configuration>
                     <failOnError>false</failOnError>
+                    <doclint>none</doclint>
                     <quiet/>
                 </configuration>
                 <reportSets>

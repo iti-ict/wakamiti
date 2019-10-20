@@ -1,3 +1,4 @@
+/** @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com */
 package iti.kukumo.core.datatypes.assertion;
 
 
@@ -11,9 +12,8 @@ import java.util.regex.Pattern;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+
 public class GenericUnaryAssertProvider extends AbstractAssertProvider {
-
-
 
     public static final String NULL = "matcher.generic.null";
     public static final String EMPTY = "matcher.generic.empty";
@@ -24,28 +24,27 @@ public class GenericUnaryAssertProvider extends AbstractAssertProvider {
     public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
 
 
-
-
     @Override
-    protected LinkedHashMap<String,Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         String[] expressions = {
-                NULL,
-                EMPTY,
-                NULL_EMPTY,
-                NOT_NULL,
-                NOT_EMPTY,
-                NOT_NULL_EMPTY
+                        NULL,
+                        EMPTY,
+                        NULL_EMPTY,
+                        NOT_NULL,
+                        NOT_EMPTY,
+                        NOT_NULL_EMPTY
         };
-        LinkedHashMap<String,Pattern> translatedExpressions = new LinkedHashMap<>();
+        LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String key : expressions) {
-            translatedExpressions.put(key, Pattern.compile(translateBundleExpression(locale, key, "")));
+            translatedExpressions
+                .put(key, Pattern.compile(translateBundleExpression(locale, key, "")));
         }
         return translatedExpressions;
     }
 
 
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String expression, String value)  {
+    protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
 
         Matcher<?> matcher = null;
         if (NULL.equals(expression)) {
@@ -53,50 +52,43 @@ public class GenericUnaryAssertProvider extends AbstractAssertProvider {
 
         } else if (EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyString(),String.class));
-            matchers.add(matcher(Matchers.empty(),Collection.class));
-            //matchers.add(assertion(Matchers.emptyIterable(), Iterable.class));
-            matcher = Matchers.anyOf( matchers );
+            matchers.add(matcher(Matchers.emptyString(), String.class));
+            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matcher = Matchers.anyOf(matchers);
 
         } else if (NULL_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
-               matchers.add(matcher(Matchers.emptyOrNullString(),String.class));
-            matchers.add(matcher(Matchers.empty(),Collection.class));
-            //matchers.add(assertion(Matchers.emptyIterable(), Iterable.class));
-            matcher = Matchers.anyOf( matchers );
+            matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
+            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matcher = Matchers.anyOf(matchers);
 
-        }
-        else if (NOT_NULL.equals(expression)) {
+        } else if (NOT_NULL.equals(expression)) {
             matcher = Matchers.notNullValue();
 
         } else if (NOT_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyString(),String.class));
-            matchers.add(matcher(Matchers.empty(),Collection.class));
-            //matchers.add(assertion(Matchers.emptyIterable(), Iterable.class));
-            matcher = Matchers.anyOf( matchers );
+            matchers.add(matcher(Matchers.emptyString(), String.class));
+            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matcher = Matchers.anyOf(matchers);
             matcher = Matchers.not(matcher);
 
         } else if (NOT_NULL_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyOrNullString(),String.class));
-            matchers.add(matcher(Matchers.empty(),Collection.class));
-            //matchers.add(assertion(Matchers.emptyIterable(), Iterable.class));
-            matcher = Matchers.anyOf( matchers );
+            matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
+            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matcher = Matchers.anyOf(matchers);
             matcher = Matchers.not(matcher);
         }
         return matcher;
     }
 
 
-
-
     @SuppressWarnings("unchecked")
-    private <T> Matcher<? super Object> matcher(Matcher<? super T> matcher, Class<? super T> expectedType) {
-        return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType),matcher);
+    private <T> Matcher<? super Object> matcher(
+        Matcher<? super T> matcher,
+        Class<? super T> expectedType
+    ) {
+        return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
     }
-
-
-
 
 }

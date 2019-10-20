@@ -1,4 +1,8 @@
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package iti.commons.testing.embeddeddb;
+
 
 public class EmbeddedDatabaseTemplates {
 
@@ -11,18 +15,17 @@ public class EmbeddedDatabaseTemplates {
         H2EmbeddedDatabase::new
     );
 
-    
     public static final EmbeddedDatabaseTemplate MYSQL = new EmbeddedDatabaseTemplate(
-            "jdbc:mysql://localhost:3307/testdb",
-            "test",
-            "test",
-            "testdb",
-            3307,
-            MySqlEmbeddedDatabase::new
-        );
-    
-    private EmbeddedDatabaseTemplates() { /* avoid instantiation */ }
-    
+        "jdbc:mysql://localhost:3307/testdb",
+        "test",
+        "test",
+        "testdb",
+        3307,
+        MySqlEmbeddedDatabase::new
+    );
 
+
+    private EmbeddedDatabaseTemplates() {
+        /* avoid instantiation */ }
 
 }

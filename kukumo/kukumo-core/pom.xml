@@ -13,7 +13,7 @@
 
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -130,6 +130,9 @@
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
                 <version>3.3.3</version>
+                <configuration>
+                <processors>iti.commons.jext.processor.ExtensionProcessor</processors>
+                </configuration>
                 <executions>
                     <execution>
                         <id>process</id>

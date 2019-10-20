@@ -30,5 +30,8 @@ Esquema del escenario: Esquema de escenario de test en español
  # Then the result is <c>
  Entonces el resultado es <c>
  Y el resultado es <c>
-
+ # -- Implementation examples would be ignored, and use definition examples instead
+ Ejemplos:
+ | a    | b  | c     |
+ | 99.0 | 99 | 99.0  |
 
