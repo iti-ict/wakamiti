@@ -73,19 +73,20 @@ generate_site:
   allow_failure: true    
 
 
-generate_zips:
+generate_artifacts:
   <<: *maven
   stage: assemble
   dependencies:
     - verify
   script:
     - 'mvn package -DskipTests -Dassemble-zips'
-    - 'mkdir zips'
-    - 'find -type f -name "kukumo*.zip" -exec cp {} zips/ \;'
+    - 'mkdir artifacts'
+    - 'find -type f -name "kukumo*.zip" -exec cp {} artifacts/ \;'
+    - 'find -type f -name "*.jar" -exec cp {} artifacts/ \;'
   artifacts:
     paths:
       - target
-      - zips
+      - artifacts
   only:
     - master
   allow_failure: true
@@ -102,8 +103,7 @@ pages:
   artifacts:
     paths:
       - public
-      - target
-      - zips
+      - artifacts
   only:
     - master
   allow_failure: true
