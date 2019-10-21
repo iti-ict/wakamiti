@@ -68,6 +68,12 @@ generate_site:
     - verify
   script:
     - 'mvn site site:stage $MAVEN_CLI_OPTS'
+    - mkdir site
+    - cp -rf target/staging/* site/
+  artifacts:
+    paths:
+      - target
+      - site
   only:
     - master
   allow_failure: true    
@@ -86,6 +92,7 @@ generate_artifacts:
   artifacts:
     paths:
       - target
+      - site
       - artifacts
   only:
     - master
@@ -99,9 +106,11 @@ pages:
     - generate_artifacts
   script:
     - mkdir public
-    - cp -rf target/staging/* public/
+    - cp -rf site/* public/
   artifacts:
     paths:
+      - target
+      - site
       - public
       - artifacts
   only:
