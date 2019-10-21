@@ -88,11 +88,10 @@ generate_artifacts:
     - 'mvn package -DskipTests -Dassemble-zips'
     - 'mkdir artifacts'
     - 'find -type f -name "kukumo*.zip" -exec cp {} artifacts/ \;'
-    - 'find -type f -name "*.jar" -exec cp {} artifacts/ \;'
+    - 'find -type f  -regex ".*\/target\/[^\/]*\.jar" -exec cp {} artifacts/ \;'
   artifacts:
     paths:
       - target
-      - site
       - artifacts
   only:
     - master
@@ -104,6 +103,7 @@ pages:
   stage: publish
   dependencies:
     - generate_artifacts
+    - generate_site
   script:
     - mkdir public
     - cp -rf site/* public/
