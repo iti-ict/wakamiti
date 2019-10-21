@@ -96,7 +96,7 @@ pages:
   image: busybox:latest
   stage: publish
   dependencies:
-    - assemble
+    - generate_artifacts
   script:
     - mkdir public
     - cp -rf target/staging/* public/
