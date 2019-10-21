@@ -28,7 +28,7 @@ variables:
 stages:
   - build
   - verify
-  - generate_doc
+  - assemble
   - publish
 
 # Cache downloaded dependencies and plugins between builds.
@@ -63,7 +63,7 @@ verify:
 
 generate_site:
   <<: *maven
-  stage: generate_doc
+  stage: assemble
   dependencies:
     - verify
   script:
@@ -75,15 +75,16 @@ generate_site:
 
 generate_zips:
   <<: *maven
-  stage: publish
+  stage: assemble
   dependencies:
     - verify
   script:
     - 'mvn package -DskipTests -Dassemble-zips'
-    - mkdir zips
-    - cp -rf *.zip zips/
+    - 'mkdir zips'
+    - 'find -type f -name "kukumo*.zip" -exec cp {} zips/ \;'
   artifacts:
     paths:
+      - target
       - zips
   only:
     - master
@@ -94,7 +95,7 @@ pages:
   image: busybox:latest
   stage: publish
   dependencies:
-    - verify
+    - assemble
   script:
     - mkdir public
     - cp -rf target/staging/* public/
@@ -102,6 +103,7 @@ pages:
     paths:
       - public
       - target
+      - zips
   only:
     - master
   allow_failure: true
