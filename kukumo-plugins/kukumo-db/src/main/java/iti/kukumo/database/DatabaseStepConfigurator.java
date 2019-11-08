@@ -5,8 +5,10 @@ package iti.kukumo.database;
 
 
 import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationConsumer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.Configurator;
+import static iti.kukumo.database.DatabaseStepConfiguration.*;
 
 
 
@@ -23,41 +25,51 @@ public class DatabaseStepConfigurator implements Configurator<DatabaseStepContri
     public void configure(DatabaseStepContributor contributor, Configuration configuration) {
 
         ConnectionParameters connectionParameters = contributor.getConnectionParameters();
-        configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_URL, String.class)
-            .ifPresent(connectionParameters::url);
-        configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_USERNAME, String.class)
-            .ifPresent(connectionParameters::username);
-        configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_PASSWORD, String.class)
-            .ifPresent(connectionParameters::password);
-        configuration.get(DatabaseStepConfiguration.DATABASE_CONNECTION_DRIVER, String.class)
-            .ifPresent(connectionParameters::driver);
 
-        contributor.setXlsIgnoreSheetRegex(
-            configuration
-                .get(DatabaseStepConfiguration.DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class)
-                .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_XLS_IGNORE_SHEET_PATTERN)
-        );
+        ConfigurationConsumer.of(configuration,connectionParameters)
+            .ifPresent(DATABASE_CONNECTION_URL, String.class, ConnectionParameters::url)
+            .ifPresent(DATABASE_CONNECTION_USERNAME, String.class, ConnectionParameters::username)
+            .ifPresent(DATABASE_CONNECTION_PASSWORD, String.class, ConnectionParameters::password)
+            .ifPresent(DATABASE_CONNECTION_DRIVER, String.class, ConnectionParameters::driver)
+            .ifPresent(DATABASE_CONNECTION_SCHEMA, String.class, ConnectionParameters::schema)
+            .ifPresent(DATABASE_CONNECTION_CATALOG, String.class, ConnectionParameters::catalog)
+         ;
 
-        contributor.setXlsNullSymbol(
-            configuration.get(DatabaseStepConfiguration.DATABASE_XLS_NULL_SYMBOL, String.class)
-                .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_XLS_NULL_SYMBOL)
-        );
+        ConfigurationConsumer.of(configuration, contributor)
+         .orDefault(
+              DATABASE_XLS_IGNORE_SHEET_PATTERN,
+              String.class,
+              Defaults.DEFAULT_DATABASE_XLS_IGNORE_SHEET_PATTERN,
+              DatabaseStepContributor::setXlsIgnoreSheetRegex
+         )
+         .orDefault(
+              DATABASE_XLS_NULL_SYMBOL,
+              String.class,
+              Defaults.DEFAULT_DATABASE_XLS_NULL_SYMBOL,
+              DatabaseStepContributor::setXlsNullSymbol
+         )
+         .orDefault(
+              DATABASE_CSV_FORMAT,
+              String.class,
+              Defaults.DEFAULT_DATABASE_CSV_FORMAT,
+              DatabaseStepContributor::setCsvFormat
+         )
+         .orDefault(
+              DATABASE_ENABLE_CLEANUP_UPON_COMPLETION,
+              Boolean.class,
+              Defaults.DEFAULT_DATABASE_ENABLE_CLEANUP_UPON_COMPLETION,
+              DatabaseStepContributor::setEnableCleanupUponCompletion
+         )
+         ;
 
-        contributor.setCsvFormat(
-            configuration.get(DatabaseStepConfiguration.DATABASE_CSV_FORMAT, String.class)
-                .orElse(DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_CSV_FORMAT)
-        );
-
-        contributor.setEnableCleanupUponCompletion(
-            configuration.get(
-                DatabaseStepConfiguration.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION,
-                Boolean.class
-            )
-                .orElse(
-                    DatabaseStepConfiguration.Defaults.DEFAULT_DATABASE_ENABLE_CLEANUP_UPON_COMPLETION
-                )
-        );
+        configuration.get(DATABASE_CASE_SENSITIVITY, String.class)
+            .map(String::toUpperCase)
+            .map(CaseSensitivity::valueOf)
+            .ifPresent(contributor::setCaseSensitivity);
 
     }
+
+
+
 
 }

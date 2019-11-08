@@ -10,6 +10,8 @@ public class ConnectionParameters {
     private String username;
     private String password;
     private String driver;
+    private String schema;
+    private String catalog;
 
 
     public String url() {
@@ -54,4 +56,24 @@ public class ConnectionParameters {
         this.driver = driver;
         return this;
     }
+
+
+    public String schema() {
+        return schema;
+    }
+
+    public ConnectionParameters schema(String schema) {
+        this.schema = schema;
+        return this;
+    }
+
+    public String catalog() {
+        return catalog;
+    }
+
+    public ConnectionParameters catalog(String catalog) {
+        this.catalog = catalog;
+        return this;
+    }
+
 }

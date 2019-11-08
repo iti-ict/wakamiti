@@ -4,20 +4,6 @@
 package iti.kukumo.database;
 
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
@@ -27,13 +13,17 @@ import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.database.dataset.CsvDataSet;
-import iti.kukumo.database.dataset.DataSet;
-import iti.kukumo.database.dataset.DataTableDataSet;
-import iti.kukumo.database.dataset.InlineDataSet;
-import iti.kukumo.database.dataset.MultiDataSet;
-import iti.kukumo.database.dataset.OoxmlDataSet;
+import iti.kukumo.database.dataset.*;
 import iti.kukumo.util.KukumoLogger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 
 
@@ -49,8 +39,8 @@ public class DatabaseStepContributor implements StepContributor {
         .orElseThrow(() -> new KukumoException("Cannot find a connection manager"));
 
     private final ConnectionParameters connectionParameters = new ConnectionParameters();
+    private final DatabaseHelper helper = new DatabaseHelper(connectionParameters,this::connection);
 
-    private final DatabaseHelper helper = new DatabaseHelper(this::connection);
     private Connection connection;
     private String xlsIgnoreSheetRegex;
     private String xlsNullSymbol;
@@ -61,14 +51,14 @@ public class DatabaseStepContributor implements StepContributor {
     public Connection connection() throws SQLException {
         if (connection == null) {
             connection = connectionManager.obtainConnection(connectionParameters);
+            LOGGER.debug(
+                    "Using database connection of type {} provided by {contributor}",
+                    connection.getClass().getSimpleName(),
+                    connectionManager.info()
+            );
         } else {
             connection = connectionManager.refreshConnection(connection, connectionParameters);
         }
-        LOGGER.debug(
-            "Using database connection of type {} provided by {contributor}",
-            connection.getClass().getSimpleName(),
-            connectionManager.info()
-        );
         return connection;
     }
 
@@ -82,7 +72,6 @@ public class DatabaseStepContributor implements StepContributor {
         this.xlsIgnoreSheetRegex = ignoreSheetRegex;
     }
 
-
     public void setXlsNullSymbol(String nullSymbol) {
         this.xlsNullSymbol = nullSymbol;
     }
@@ -95,6 +84,10 @@ public class DatabaseStepContributor implements StepContributor {
 
     public void setEnableCleanupUponCompletion(boolean enableCleanupUponCompletion) {
         this.enableCleanupUponCompletion = enableCleanupUponCompletion;
+    }
+
+    public void setCaseSensitivity(CaseSensitivity caseSensitivity) {
+        this.helper.setCaseSensitivity(caseSensitivity);
     }
 
 
@@ -510,5 +503,6 @@ public class DatabaseStepContributor implements StepContributor {
     public void assertTableIsNotEmpty(String table) throws SQLException {
         helper.assertCountRowsInTableByClause(matcherNonEmpty(), table, "1=1");
     }
+
 
 }

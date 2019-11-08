@@ -1,4 +1,4 @@
-CREATE TABLE `user` ( 
+CREATE TABLE `client` (
   id bigint,
   first_name varchar(20) NOT NULL,
   second_name varchar(20),
@@ -14,11 +14,11 @@ CREATE TABLE `city` (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE `user_city` ( 
- user_id bigint,
+CREATE TABLE `client_city` (
+ client_id bigint,
  city_id bigint,
- PRIMARY key(user_id,city_id),
- FOREIGN KEY (user_id) REFERENCES `user`(id),
+ PRIMARY key(client_id,city_id),
+ FOREIGN KEY (client_id) REFERENCES `client`(id),
  FOREIGN KEY (city_id) REFERENCES `city`(id)
 );
 

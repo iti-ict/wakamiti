@@ -2,3 +2,5 @@
 .factorypath
 **/.~lock*
 /src/site/markdown/*
+/create_db_error.log
+/create_db.log

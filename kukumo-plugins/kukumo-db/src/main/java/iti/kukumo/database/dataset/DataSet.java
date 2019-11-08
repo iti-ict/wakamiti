@@ -4,6 +4,8 @@
 package iti.kukumo.database.dataset;
 
 
+import iti.kukumo.database.CaseSensitivity;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -48,8 +50,15 @@ public abstract class DataSet implements Closeable {
         return Stream.of(columns).collect(Collectors.joining(delimiter));
     }
 
-
     public String collectColumns(UnaryOperator<String> columnMapper, CharSequence delimiter) {
+        return Stream.of(columns).map(columnMapper).collect(Collectors.joining(delimiter));
+    }
+
+    public String collectColumns(CharSequence delimiter, CaseSensitivity caseSensitivity) {
+        return Stream.of(columns).map(caseSensitivity::format).collect(Collectors.joining(delimiter));
+    }
+
+    public String collectColumns(UnaryOperator<String> columnMapper, CharSequence delimiter, CaseSensitivity caseSensitivity) {
         return Stream.of(columns).map(columnMapper).collect(Collectors.joining(delimiter));
     }
 
