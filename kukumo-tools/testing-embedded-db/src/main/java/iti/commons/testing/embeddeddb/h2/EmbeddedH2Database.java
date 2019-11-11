@@ -34,13 +34,18 @@ public class EmbeddedH2Database extends EmbeddedDatabase<Driver> {
 
     @Override
     protected void startServer() throws Exception {
+        System.out.println("Starting server...");
         server.start();
+
     }
 
     @Override
     protected void stopServer() throws Exception {
-        if (server.isRunning(true)) {
+        System.out.println("Stopping server...");
+        try {
             execute("DROP ALL OBJECTS DELETE FILES");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         server.stop();
     }

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 })
 public class TestMariaDbLoader {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TestH2DbLoader.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(H2DbLoader.class);
     private static EmbeddedDatabase database;
 
     @BeforeClass

@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
     @Property(key = DatabaseStepConfiguration.DATABASE_CONNECTION_PASSWORD, value = ""),
     @Property(key = DatabaseStepConfiguration.DATABASE_CASE_SENSITIVITY, value = "upper_cased")
 })
-public class TestH2DbLoader {
+public class H2DbLoader {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TestH2DbLoader.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(H2DbLoader.class);
     private static EmbeddedDatabase database;
 
     @BeforeClass
