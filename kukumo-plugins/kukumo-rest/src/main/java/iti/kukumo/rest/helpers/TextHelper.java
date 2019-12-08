@@ -22,7 +22,7 @@ import iti.kukumo.util.ResourceLoader;
 @Extension(provider = "iti.kukumo", name = "rest-text-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class TextHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
+    private static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
 
     @Override

@@ -30,7 +30,7 @@ import iti.kukumo.util.ResourceLoader;
 @Extension(provider = "iti.kukumo", name = "rest-xml-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class XMLHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
+    private static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
     private static final DifferenceEvaluator looseDifferenceEvaluator = (Comparison comparison,
         ComparisonResult outcome) -> {

@@ -13,30 +13,32 @@ import org.assertj.core.api.Assertions;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.core.datatypes.KukumoDateDataType;
 
 /**
- * Since JRE 9, the default date/time format has changed in order to honour CLDR,
- * being the main difference that a comma is required between date and hour, whereas no
- * comma is used in previous JRE versions.
- * @see https://www.oracle.com/technetwork/java/javase/9-relnote-issues-3704069.html#JDK-8008577
- * @see http://openjdk.java.net/jeps/252
- *
- * These tests are targeted to JRE >=9.
- */
-public class TestKukumoDateTypeEs {
+* Since JRE 9, the default date/time format has changed in order to honour CLDR,
+* being the main difference that a comma is required between date and hour, whereas no
+* comma is used in previous JRE versions.
+* @see https://www.oracle.com/technetwork/java/javase/9-relnote-issues-3704069.html#JDK-8008577
+* @see http://openjdk.java.net/jeps/252
+*
+* These tests are targeted to JRE <=8.
+*/
+public class TestKukumoDateTypeEsJava8 {
 
     @ClassRule
-    public static JavaVersionRule javaVersionRule = new JavaVersionRule(version -> version >= 9);
+    public static JavaVersionRule javaVersionRule = new JavaVersionRule(version -> version <= 8);
 
+	
     private static final Locale LOCALE = Locale.forLanguageTag("es");
-    private static final KukumoDateDataType<LocalDate> DATE_TYPE = new KukumoDateDataType<>(
+    private static final KukumoDataType<LocalDate> DATE_TYPE = new KukumoDateDataType<>(
         "date", LocalDate.class, true, false, LocalDate::from
     );
-    private static final KukumoDateDataType<LocalTime> TIME_TYPE = new KukumoDateDataType<>(
+    private static final KukumoDataType<LocalTime> TIME_TYPE = new KukumoDateDataType<>(
         "time", LocalTime.class, false, true, LocalTime::from
     );
-    private static final KukumoDateDataType<LocalDateTime> DATETIME_TYPE = new KukumoDateDataType<>(
+    private static final KukumoDataType<LocalDateTime> DATETIME_TYPE = new KukumoDateDataType<>(
         "datetime", LocalDateTime.class, true, true, LocalDateTime::from
     );
 
@@ -59,11 +61,9 @@ public class TestKukumoDateTypeEs {
 
     @Test
     public void testLocalizedDate3() {
-        DATETIME_TYPE.getDateTimeFormats(LOCALE).forEach(System.out::println);
-
-        Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "Miércoles, 30 de mayo de 2018").matches())
+        Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "Miércoles 30 de mayo de 2018").matches())
             .isTrue();
-        Assertions.assertThat(DATE_TYPE.parse(LOCALE, "Miércoles, 30 de mayo de 2018"))
+        Assertions.assertThat(DATE_TYPE.parse(LOCALE, "Miércoles 30 de mayo de 2018"))
             .isEqualTo(LocalDate.of(2018, 5, 30));
     }
 

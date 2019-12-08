@@ -42,9 +42,9 @@ import iti.kukumo.util.ResourceLoader;
 public class RestStepContributor implements StepContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
-    public static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
+    public static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
 
-    private final Map<ContentType, ContentTypeHelper> contentTypeValidators = Kukumo.instance()
+    private final Map<ContentType, ContentTypeHelper> contentTypeValidators = Kukumo
         .extensionManager()
         .getExtensions(ContentTypeHelper.class)
         .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
