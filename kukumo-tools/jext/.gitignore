@@ -11,3 +11,4 @@
 /.attach_pid*
 /src/site/markdown/
 /src/site/asciidoc/
+/bin/

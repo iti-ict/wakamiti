@@ -5,3 +5,12 @@ kukumo.json
 /src/site/markdown/
 /create_db_error.log
 /create_db.log
+/.classpath
+/target/
+/.classpath
+/create_db.log
+/create_db_error.log
+/kukumo.json
+/kukumo-db.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

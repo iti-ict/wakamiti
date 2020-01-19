@@ -2,3 +2,7 @@
 .factorypath
 **/.~lock*
 /src/site/markdown/
+/.classpath
+/.settings
+/target/
+/kukumo-db-l10n.iml

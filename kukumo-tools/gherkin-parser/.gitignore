@@ -1,7 +1,5 @@
-/.project
-/src/site/markdown/index.md
+/gherkin-parser.iml
 /.classpath
 /target/
-/kukumo-spring.iml
 /.settings/org.eclipse.jdt.core.prefs
 /.settings/org.eclipse.core.resources.prefs

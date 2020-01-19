@@ -6,8 +6,7 @@
 *.iml
 *.classpath
 /.project
-/src/site/markdown/
-/src/site/resources/images/
-**/.attach_pid*
-**/*.swp
-**/.factorypath
+/.idea
+/kukumo-project.iml
+/.settings/
+/target/
