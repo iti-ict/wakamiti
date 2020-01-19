@@ -14,8 +14,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +39,7 @@ public class TestMavenFetcher {
 
 
     @Test
-    public void testFetcher() throws DependencyCollectionException, ArtifactResolutionException, IOException {
+    public void testFetcher() throws IOException, MavenFetchException {
         Path localRepo = Paths.get("target/mvn-repo");
         if (localRepo.toFile().exists()) {
             Files.walkFileTree(localRepo, deleteFileTree);
@@ -54,8 +52,7 @@ public class TestMavenFetcher {
             .fetchArtifacts(
                 new MavenFetchRequest(
                     Arrays.asList("junit:junit:4.12", "iti.kukumo:kukumo-gherkin:0.1.0")
-                )
-                    .scopes("compile")
+                ).scopes("compile")
             );
     }
 

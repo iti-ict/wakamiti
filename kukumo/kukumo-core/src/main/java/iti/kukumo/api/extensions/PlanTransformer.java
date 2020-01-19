@@ -6,7 +6,7 @@ package iti.kukumo.api.extensions;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.ExtensionPoint;
-import iti.kukumo.core.plan.PlanNodeBuilder;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 
 
 @ExtensionPoint

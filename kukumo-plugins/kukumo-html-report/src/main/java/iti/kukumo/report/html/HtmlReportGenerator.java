@@ -39,7 +39,7 @@ import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.util.KukumoLogger;
 import j2html.TagCreator;
@@ -65,11 +65,11 @@ public class HtmlReportGenerator implements Reporter {
     private String cssFile;
     private ResourceBundle resourceBundle;
     private DateTimeFormatter formatter;
-    private Map<PlanNodeDescriptor, String> domIDs;
+    private Map<PlanNodeSnapshot, String> domIDs;
 
 
     @Override
-    public void report(PlanNodeDescriptor root) {
+    public void report(PlanNodeSnapshot root) {
 
         LOGGER.info("Generating HTML report...");
         File outputFileFolder = outputFile.getParentFile();
@@ -109,7 +109,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    public void generate(PlanNodeDescriptor plan, Writer writer) throws IOException {
+    public void generate(PlanNodeSnapshot plan, Writer writer) throws IOException {
         this.domIDs = new HashMap<>();
         registerIDs(plan, domIDs, 0);
         ContainerTag html = html(
@@ -130,14 +130,14 @@ public class HtmlReportGenerator implements Reporter {
 
 
     private int registerIDs(
-        PlanNodeDescriptor node,
-        Map<PlanNodeDescriptor, String> map,
+        PlanNodeSnapshot node,
+        Map<PlanNodeSnapshot, String> map,
         int lastID
     ) {
         lastID++;
         map.put(node, String.valueOf(lastID));
         if (node.getChildren() != null) {
-            for (PlanNodeDescriptor child : node.getChildren()) {
+            for (PlanNodeSnapshot child : node.getChildren()) {
                 lastID = registerIDs(child, map, lastID);
             }
         }
@@ -145,7 +145,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private ContainerTag generateNode(PlanNodeDescriptor node, boolean sortChildren) {
+    private ContainerTag generateNode(PlanNodeSnapshot node, boolean sortChildren) {
         String domIdChildren = domIDs.get(node) + "_children";
         String domIdExpandIcon = domIDs.get(node) + "_expand";
         String domIdData = domIDs.get(node) + "_data";
@@ -204,7 +204,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private ContainerTag divStatistics(PlanNodeDescriptor node, boolean includeText) {
+    private ContainerTag divStatistics(PlanNodeSnapshot node, boolean includeText) {
         List<Tag<?>> tags = new ArrayList<>();
         if (containsTestCases(node) && !(isTestCase(node))) {
             List<Tag<?>> resultTags = new ArrayList<>();
@@ -231,7 +231,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private boolean containsTestCases(PlanNodeDescriptor node) {
+    private boolean containsTestCases(PlanNodeSnapshot node) {
         if ((isTestCase(node)) || node.getChildren() == null) {
             return (isTestCase(node));
         } else {
@@ -241,13 +241,13 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private boolean wasExecuted(PlanNodeDescriptor node) {
+    private boolean wasExecuted(PlanNodeSnapshot node) {
         return node.getResult() == Result.PASSED || node.getResult() == Result.FAILED
                         || node.getResult() == Result.ERROR;
     }
 
 
-    private ContainerTag divTags(PlanNodeDescriptor node) {
+    private ContainerTag divTags(PlanNodeSnapshot node) {
         List<Tag<?>> tags = new ArrayList<>();
         if (node.getTags() != null) {
             node.getTags().sort(Comparator.naturalOrder());
@@ -263,7 +263,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private Tag<?> divDescription(PlanNodeDescriptor node) {
+    private Tag<?> divDescription(PlanNodeSnapshot node) {
         boolean hasDescription = (node.getDescription() != null
                         && !node.getDescription().isEmpty());
         String description = "";
@@ -275,7 +275,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private ContainerTag divErrorDetails(PlanNodeDescriptor node) {
+    private ContainerTag divErrorDetails(PlanNodeSnapshot node) {
         List<Tag<?>> tags = new ArrayList<>();
         if (node.getResult() == Result.ERROR || node.getResult() == Result.FAILED) {
             boolean trace = (node.getErrorTrace() != null);
@@ -303,7 +303,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private ContainerTag divStepExtraData(PlanNodeDescriptor node) {
+    private ContainerTag divStepExtraData(PlanNodeSnapshot node) {
         List<Tag<?>> tags = new ArrayList<>();
         String domIdData = domIDs.get(node) + "_data";
         Tag<?> tag = null;
@@ -330,7 +330,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private Tag<?> overallResult(PlanNodeDescriptor plan) {
+    private Tag<?> overallResult(PlanNodeSnapshot plan) {
         return div(
             h2(
                 div(
@@ -345,7 +345,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private Tag<?> divPercentage(PlanNodeDescriptor node) {
+    private Tag<?> divPercentage(PlanNodeSnapshot node) {
         float total = node.getTestCaseResults().values().stream().mapToLong(Long::longValue).sum();
         Map<Result, Float> percentages = node.getTestCaseResults().entrySet().stream()
             .collect(
@@ -466,19 +466,19 @@ public class HtmlReportGenerator implements Reporter {
     }
 
 
-    private Collection<PlanNodeDescriptor> sortByResult(
+    private Collection<PlanNodeSnapshot> sortByResult(
         boolean sort,
-        Collection<PlanNodeDescriptor> nodes
+        Collection<PlanNodeSnapshot> nodes
     ) {
         if (!sort) {
             return nodes;
         }
-        return nodes.stream().sorted(Comparator.comparing(PlanNodeDescriptor::getResult).reversed())
+        return nodes.stream().sorted(Comparator.comparing(PlanNodeSnapshot::getResult).reversed())
             .collect(Collectors.toList());
     }
 
 
-    private boolean isTestCase(PlanNodeDescriptor node) {
+    private boolean isTestCase(PlanNodeSnapshot node) {
         return node.getNodeType() == NodeType.TEST_CASE;
     }
 

@@ -1,0 +1,34 @@
+applicationName: Kukumo 0.9.1
+distributions:
+  - os: linux
+    fileSet:
+      - destinationFolder: /usr/local/bin
+        access:
+          executableBy: any
+        files:
+          - kukumo
+      - destinationFolder: /usr/local/share/kukumo
+        clean: true
+        access:
+          writableBy: user
+        files:
+          - kukumo-launcher.jar
+          - launcher.properties
+          - lib/**
+          - java-version-checker.jar
+    environmentVariables:
+      KUKUMO_HOME: /usr/local/share/kukumo
+
+  - os: windows 10
+    fileSet:
+      - destinationFolder: "%programFiles%\\Kukumo"
+        clean: true
+        files:
+          - kukumo.bat
+          - kukumo-launcher.jar
+          - launcher.properties
+          - lib/**
+          - java-version-checker.jar
+    environmentVariables:
+      KUKUMO_HOME: "%ProgramFiles%\\Kukumo"
+      PATH: "%PATH%;%ProgramFiles%\\Kukumo"

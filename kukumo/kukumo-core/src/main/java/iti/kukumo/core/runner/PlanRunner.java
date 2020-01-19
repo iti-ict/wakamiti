@@ -15,7 +15,7 @@ import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 
 
 public class PlanRunner {
@@ -42,7 +42,7 @@ public class PlanRunner {
     public PlanNode run() {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
-        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeDescriptor(plan));
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         for (PlanNodeRunner child : getChildren()) {
             try {
@@ -52,7 +52,7 @@ public class PlanRunner {
             }
         }
         planNodeLogger.logTestPlanResult(plan);
-        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeDescriptor(plan));
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
         return plan;
     }
 

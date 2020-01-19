@@ -16,13 +16,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
 
+import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
-import lombok.extern.slf4j.Slf4j;
 
 
-@Slf4j
+
 public class OoxmlDataSet extends MultiDataSet {
+
+    private static final Logger logger = Kukumo.LOGGER;
 
     private final File file;
     private final String ignoreSheetRegex;
@@ -58,7 +61,7 @@ public class OoxmlDataSet extends MultiDataSet {
         try {
             this.workbook.close();
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 

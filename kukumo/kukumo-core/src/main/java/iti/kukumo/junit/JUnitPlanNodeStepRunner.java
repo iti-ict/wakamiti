@@ -19,7 +19,7 @@ import iti.kukumo.core.runner.PlanNodeRunner;
 
 public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
 
-    public JUnitPlanNodeStepRunner(
+    JUnitPlanNodeStepRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     Optional<Backend> backend, PlanNodeLogger logger
     ) {
@@ -27,7 +27,7 @@ public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
     }
 
 
-    public JUnitPlanNodeStepRunner(
+    JUnitPlanNodeStepRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     PlanNodeLogger logger
     ) {

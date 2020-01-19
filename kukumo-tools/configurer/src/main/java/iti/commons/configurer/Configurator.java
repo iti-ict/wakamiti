@@ -28,4 +28,5 @@ public @interface Configurator {
 
     boolean environmentProperties() default false;
 
+
 }

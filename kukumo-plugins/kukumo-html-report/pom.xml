@@ -28,26 +28,60 @@
     <properties>
         <jext.version>1.0.0</jext.version>
         <j2html.version>1.4.0</j2html.version>
+        <kukumo-core.version>0.9.1</kukumo-core.version>
     </properties>
 
 
     <!-- dependencies -->
     <dependencies>
-
-        <!-- Kukumo CORE -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo.version}</version>
+            <version>${kukumo-core.version}</version>
         </dependency>
-
-        <!-- HTML generator -->
+         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
             <artifactId>j2html</artifactId>
             <version>${j2html.version}</version>
         </dependency>
-
     </dependencies>
+
+
+    <!-- jExt annotation processor -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>iti.commons</groupId>
+                            <artifactId>jext</artifactId>
+                            <version>${jext.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

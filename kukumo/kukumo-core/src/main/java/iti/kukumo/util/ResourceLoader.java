@@ -4,11 +4,13 @@
 package iti.kukumo.util;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,14 +29,12 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 import iti.kukumo.api.Kukumo;
@@ -49,59 +49,10 @@ public class ResourceLoader {
     private static final String FILE_PROTOCOL = "file";
     private static final File APPLICATION_FOLDER = new File(System.getProperty("user.dir"));
     private static final Logger LOGGER = Kukumo.LOGGER;
-
-
-    // this specific ResourceBundle Control allows read bundles with different
-    // charsets
-    private class CharsetResourceBundleControl extends ResourceBundle.Control {
-
-        @Override
-        public Locale getFallbackLocale(String baseName, Locale locale) {
-            if (baseName == null) {
-                throw new NullPointerException();
-            }
-            Locale defaultLocale = Locale.ROOT;
-            return locale.equals(defaultLocale) ? null : defaultLocale;
-        }
-
-
-        @Override
-        public ResourceBundle newBundle(
-            String baseName,
-            Locale locale,
-            String format,
-            ClassLoader loader,
-            boolean reload
-        ) throws IllegalAccessException, InstantiationException, IOException {
-            if (format.equals("java.class")) {
-                return super.newBundle(baseName, locale, format, loader, reload);
-            }
-            String bundleName = toBundleName(baseName, locale);
-            String resourceName = toResourceName(bundleName, "properties");
-            List<URL> urls = Collections.list(loader.getResources(resourceName));
-            if (urls.isEmpty()) {
-                return null;
-            }
-            List<ResourceBundle> alternativeResourceBundles = new ArrayList<>();
-            for (URL url : urls) {
-                try {
-                    alternativeResourceBundles
-                        .add(new PropertyResourceBundle(ResourceLoader.this.reader(url)));
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                    if (urls.size() == 1) {
-                        throw e;
-                    }
-                }
-            }
-            return alternativeResourceBundles.size() == 1 ? alternativeResourceBundles.get(0)
-                            : new CompoundResourceBundle(alternativeResourceBundles);
-        }
-    }
+    private static final int BUFFER_SIZE = 2048;
 
 
     public interface Parser<T> {
-
         T parse(InputStream stream, Charset charset) throws IOException;
     }
 
@@ -121,7 +72,7 @@ public class ResourceLoader {
 
     public Reader reader(URL url) throws IOException {
         try (InputStream inputStream = url.openStream()) {
-            byte[] bytes = IOUtils.toByteArray(inputStream);
+            byte[] bytes = toByteArray(inputStream);
             CharsetDecoder decoder = charset.newDecoder();
             CharBuffer resourceBuffer = decoder.decode(ByteBuffer.wrap(bytes));
             return new CharArrayReader(resourceBuffer.array());
@@ -129,13 +80,14 @@ public class ResourceLoader {
             LOGGER.error(
                 "ERROR CHECKING CHARSET {} IN RESOURCE {uri} : {error}",
                 charset,
-                url,
-                e.getMessage(),
-                e
+                url
             );
             throw e;
         }
     }
+
+
+
 
 
     public String readFileAsString(File file) {
@@ -146,12 +98,14 @@ public class ResourceLoader {
     public String readFileAsString(File file, Charset charset) {
         try {
             try (FileInputStream inputStream = new FileInputStream(file)) {
-                return IOUtils.toString(inputStream, charset);
+                return toString(inputStream, charset);
             }
         } catch (IOException e) {
             throw new KukumoException("Error reading text file {} : {}", file, e.getMessage(), e);
         }
     }
+
+
 
 
     /**
@@ -189,7 +143,7 @@ public class ResourceLoader {
      * <p>
      * This method differs from {@link ResourceBundle#getBundle(String, Locale)}
      * in two aspects:
-     * <li>The content will be readed using the charset defined in the resource
+     * <li>The content will be read using the charset defined in the resource
      * loader instance</li>
      * <li>If there is more than one resource available (e.g. a plugin redefines
      * an existing property file), the resource bundle will contain the
@@ -201,14 +155,17 @@ public class ResourceLoader {
      * @return
      */
     public ResourceBundle resourceBundle(String resourceBundle, Locale locale) {
-        return ResourceBundle.getBundle(resourceBundle, locale, new CharsetResourceBundleControl());
+        return ResourceBundle.getBundle(resourceBundle, locale);
     }
+
 
 
     public String readResourceAsString(String path) {
-        return discoverResources(Arrays.asList(path), x -> true, IOUtils::toString).get(0).content()
+        return discoverResources(Arrays.asList(path), x -> true, this::toString).get(0).content()
             .toString();
     }
+
+
 
 
     public <T> List<Resource<?>> discoverResources(
@@ -351,7 +308,7 @@ public class ResourceLoader {
                     )
                 );
             } catch (IOException e) {
-                LOGGER.error("{error}", e.getMessage(), e);
+                LOGGER.error(e.toString(), e);
             }
         }
 
@@ -419,4 +376,30 @@ public class ResourceLoader {
             throw new IOException(e);
         }
     }
+
+
+
+    private byte[] toByteArray(InputStream inputStream) throws IOException {
+        try (var outputStream = new ByteArrayOutputStream()) {
+            transfer(inputStream, outputStream, new byte[BUFFER_SIZE]);
+            return outputStream.toByteArray();
+        }
+    }
+
+
+    private String toString(InputStream inputStream, Charset stringCharset) throws IOException {
+        return new String(toByteArray(inputStream),stringCharset);
+    }
+
+
+    private void transfer(InputStream input, OutputStream output,byte[] buffer) throws IOException {
+         int n;
+         while ((n = input.read(buffer)) > 0) {
+             output.write(buffer, 0, n);
+         }
+    }
+
+
+
+
 }

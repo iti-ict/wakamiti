@@ -33,7 +33,7 @@ public class KukumoException extends RuntimeException {
 
 
     public KukumoException(Throwable throwable) {
-        super(throwable);
+        super(throwable.getMessage(), throwable);
     }
 
 

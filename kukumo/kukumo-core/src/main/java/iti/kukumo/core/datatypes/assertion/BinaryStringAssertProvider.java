@@ -77,7 +77,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
         } else if (EQUALS_IGNORE_CASE.equals(key)) {
             matcher = Matchers.equalToIgnoringCase(value);
         } else if (EQUALS_IGNORE_WHITESPACE.equals(key)) {
-            matcher = Matchers.equalToIgnoringWhiteSpace(value);
+            matcher = Matchers.equalToCompressingWhiteSpace(value);
         } else if (STARTS_WITH.equals(key)) {
             matcher = Matchers.startsWith(value);
         } else if (STARTS_WITH_IGNORE_CASE.equals(key)) {
@@ -95,7 +95,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
         } else if (NOT_EQUALS_IGNORE_CASE.equals(key)) {
             matcher = Matchers.not(Matchers.equalToIgnoringCase(value));
         } else if (NOT_EQUALS_IGNORE_WHITESPACE.equals(key)) {
-            matcher = Matchers.not(Matchers.equalToIgnoringWhiteSpace(value));
+            matcher = Matchers.not(Matchers.equalToCompressingWhiteSpace(value));
         } else if (NOT_STARTS_WITH.equals(key)) {
             matcher = Matchers.not(Matchers.startsWith(value));
         } else if (NOT_STARTS_WITH_IGNORE_CASE.equals(key)) {

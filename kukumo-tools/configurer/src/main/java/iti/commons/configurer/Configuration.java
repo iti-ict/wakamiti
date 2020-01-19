@@ -136,13 +136,9 @@ public interface Configuration {
 
     /**
      * Create a new configuration resulting the merge the current configuration
-     * with the configuration from the environment properties
-     *
-     * @param includeSystemProperties When the value is <tt>true</tt>, the
-     *                                configuration will include also every
-     *                                system variable.
+     * with the configuration from the {@link System} properties
      */
-    Configuration appendFromEnvironment(boolean includeSystemProperties);
+    Configuration appendFromSystem();
 
 
     /**

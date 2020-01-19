@@ -1,0 +1,15 @@
+#!/bin/bash
+ARGS=$@
+
+if test -z "${KUKUMO_HOME}"
+then
+  export KUKUMO_HOME="/usr/local/share/kukumo"
+fi
+java -jar "${KUKUMO_HOME}/java-version-checker.jar" 11
+
+if test $? -ne 0
+then
+  exit -2
+fi
+
+java -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar --module-path "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib" -m kukumo.launcher/iti.kukumo.launcher.KukumoLauncher ${ARGS}

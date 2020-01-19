@@ -4,8 +4,6 @@
 package iti.kukumo.rest;
 
 
-import java.io.File;
-
 import org.hamcrest.Matcher;
 
 import io.restassured.http.ContentType;
@@ -22,26 +20,33 @@ public interface ContentTypeHelper {
 
     ContentType contentType();
 
+    void assertContent(String expected, String actual, MatchMode matchMode);
 
-    void assertContent(
+
+    default void assertContent(
         Document expected,
         ExtractableResponse<Response> response,
-        boolean exactMatch
-    );
+        MatchMode matchMode
+    ) {
+        assertContent(expected.getContent(), response.asString(), matchMode);
+    }
 
 
-    void assertContent(File expected, ExtractableResponse<Response> response, boolean exactMatch);
+    default void assertContent(
+        String expected,
+        ExtractableResponse<Response> response,
+        MatchMode matchMode
+    ) {
+        assertContent(expected, response.asString(), matchMode);
+    }
 
 
-    default <T> void assertFragment(
+    <T> void assertFragment(
         String fragment,
         ValidatableResponse response,
         Class<T> dataType,
         Matcher<T> matcher
-    ) {
-        throw new UnsupportedOperationException(
-            "Not implemented for content type " + contentType()
-        );
-    }
+    );
+
 
 }

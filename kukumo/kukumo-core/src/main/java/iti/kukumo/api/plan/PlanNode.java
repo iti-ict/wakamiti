@@ -9,41 +9,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import iti.kukumo.core.model.ExecutableTreeNode;
-import iti.kukumo.core.plan.PlanNodeBuilder;
 
 
 public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
-    private final List<String> description;
-    private final Set<String> tags;
-    private final Map<String, String> properties;
-    private final NodeType nodeType;
-    private final String language;
-    private final String id;
-    private final String source;
-    private final String keyword;
-    private final String name;
-    private final String displayName;
-    private final Optional<PlanNodeData> data;
-
-
-    public PlanNode(PlanNodeBuilder builder) {
-        super(builder.children().map(PlanNode::new).collect(Collectors.toList()));
-        description = Collections.unmodifiableList(builder.description());
-        tags = Collections.unmodifiableSet(builder.tags());
-        properties = Collections.unmodifiableMap(builder.properties());
-        nodeType = builder.nodeType();
-        language = builder.language();
-        id = builder.id();
-        source = builder.source();
-        keyword = builder.keyword();
-        name = builder.name();
-        displayName = builder.displayName();
-        data = builder.data();
-    }
+    List<String> description;
+    Set<String> tags;
+    Map<String, String> properties;
+    NodeType nodeType;
+    String language;
+    String id;
+    String source;
+    String keyword;
+    String name;
+    String displayName;
+    Optional<PlanNodeData> data;
 
 
     public PlanNode(NodeType nodeType, List<PlanNode> children) {

@@ -292,7 +292,7 @@ public class ExtensionManager {
             return false;
         }
 
-        if (extensionData.externallyManaged() != context.externallyManaged()) {
+        if (extensionData.externallyManaged() != context.isExternallyManaged()) {
             this.invalidExtensions.get(extensionPoint).add(extension.getClass());
             return false;
         }

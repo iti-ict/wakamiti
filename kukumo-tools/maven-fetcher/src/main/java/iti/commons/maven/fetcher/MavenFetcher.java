@@ -10,13 +10,13 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.repository.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.collection.DependencyCollectionException;
@@ -36,6 +36,10 @@ import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import iti.commons.maven.fetcher.internal.MavenDependencyFetcher;
+import iti.commons.maven.fetcher.internal.MavenFetcherConfig;
+import iti.commons.maven.fetcher.internal.MavenTransferLogger;
 
 
 
@@ -149,22 +153,27 @@ public class MavenFetcher {
      */
     public MavenFetchResult fetchArtifacts(
         MavenFetchRequest request
-    ) throws DependencyCollectionException {
-        if (remoteRepositories.isEmpty()) {
-            throw new IllegalArgumentException("Remote repositories not specified");
-        }
-        MavenFetchResult result = new MavenDependencyFetcher(
-            system,
-            remoteRepositories,
-            newSession(),
-            request,
-            logger
-        )
+    ) throws MavenFetchException {
+
+        try {
+            if (remoteRepositories.isEmpty()) {
+                throw new IllegalArgumentException("Remote repositories not specified");
+            }
+            MavenFetchResult result = new MavenDependencyFetcher(
+                system,
+                remoteRepositories,
+                newSession(),
+                request,
+                logger
+            )
             .fetch();
-        if (!result.hasErrors()) {
-            logger.warn("Some dependencies were not fetched!");
+            if (!result.hasErrors()) {
+                logger.warn("Some dependencies were not fetched!");
+            }
+            return result;
+        } catch (DependencyCollectionException e) {
+            throw new MavenFetchException(e);
         }
-        return result;
     }
 
 
@@ -198,7 +207,7 @@ public class MavenFetcher {
         Proxy proxy = new Proxy(url.getProtocol(), url.getHost(), port, authentication);
         return Optional.of(
             new DefaultProxySelector()
-                .add(proxy, proxyExceptions == null ? Collections.emptyList() : proxyExceptions)
+                .add(proxy, proxyExceptions == null ? "" : proxyExceptions.stream().collect(Collectors.joining("|")))
         );
     }
 

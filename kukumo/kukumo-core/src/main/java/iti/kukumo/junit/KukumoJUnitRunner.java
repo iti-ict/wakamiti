@@ -32,7 +32,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.core.runner.PlanNodeLogger;
 
 
@@ -76,7 +76,7 @@ public class KukumoJUnitRunner extends Runner {
     public void run(RunNotifier notifier) {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
-        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeDescriptor(plan));
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
@@ -92,7 +92,7 @@ public class KukumoJUnitRunner extends Runner {
         executeAnnotatedMethod(configurationClass, AfterClass.class);
 
         planNodeLogger.logTestPlanResult(plan);
-        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeDescriptor(getPlan()));
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(getPlan()));
         kukumo.writeOutputFile(plan, configuration);
         kukumo.generateReports(configuration);
     }

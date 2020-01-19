@@ -54,19 +54,15 @@ public interface ConfigurationBuilder {
 
 
     /**
-     * Create a new configuration from the environment properties
+     * Create a new configuration from the OS environment properties
      */
     Configuration buildFromEnvironment();
 
 
     /**
-     * Create a new configuration from the environment properties
-     *
-     * @param includeSystemProperties When the value is <tt>true</tt>, the
-     *                                configuration will include also every
-     *                                system variable.
+     * Create a new configuration from the {@link System} properties
      */
-    Configuration buildFromEnvironment(boolean includeSystemProperties);
+    Configuration buildFromSystem();
 
 
     /**

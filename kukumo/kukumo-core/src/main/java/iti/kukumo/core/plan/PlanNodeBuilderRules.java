@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 
 
 public class PlanNodeBuilderRules {

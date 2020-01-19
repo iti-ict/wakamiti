@@ -24,61 +24,49 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
+        <jext-spring.version>1.0.0</jext-spring.version>
         <spring.version>[2.0.5.RELEASE,)</spring.version>
+        <kukumo-core.version>0.9.1</kukumo-core.version>
+        <kukumo-db.version>0.9.1</kukumo-db.version>
+        <kukumo-rest.version>0.9.1</kukumo-rest.version>
     </properties>
 
 
     <dependencies>
-
-        <!-- Kukumo CORE -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo.version}</version>
+            <version>${kukumo-core.version}</version>
         </dependency>
-
-         <!-- junit 4 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- jExt - Spring -->
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>jext-spring</artifactId>
-            <version>1.0.0</version>
+            <version>${jext-spring.version}</version>
         </dependency>
-
-
-        <!-- Kukumo DB -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>0.9.1</version>
+            <version>${kukumo-db.version}</version>
             <optional>true</optional>
         </dependency>
-
-        <!-- Kukumo Rest -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>0.9.1</version>
+            <version>${kukumo-rest.version}</version>
             <optional>true</optional>
         </dependency>
-
-
-        <!-- generic test assertions -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.10.0</version>
+            <version>${assertj-core.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Spring Boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>

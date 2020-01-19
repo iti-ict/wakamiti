@@ -19,21 +19,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import gherkin.ast.Background;
-import gherkin.ast.Comment;
-import gherkin.ast.DataTable;
-import gherkin.ast.DocString;
-import gherkin.ast.Examples;
-import gherkin.ast.Feature;
-import gherkin.ast.GherkinDocument;
-import gherkin.ast.Location;
-import gherkin.ast.Scenario;
-import gherkin.ast.ScenarioDefinition;
-import gherkin.ast.ScenarioOutline;
-import gherkin.ast.Step;
-import gherkin.ast.TableCell;
-import gherkin.ast.TableRow;
-import gherkin.ast.Tag;
+import iti.commons.gherkin.Background;
+import iti.commons.gherkin.Comment;
+import iti.commons.gherkin.DataTable;
+import iti.commons.gherkin.DocString;
+import iti.commons.gherkin.Examples;
+import iti.commons.gherkin.Feature;
+import iti.commons.gherkin.GherkinDocument;
+import iti.commons.gherkin.Location;
+import iti.commons.gherkin.Scenario;
+import iti.commons.gherkin.ScenarioDefinition;
+import iti.commons.gherkin.ScenarioOutline;
+import iti.commons.gherkin.Step;
+import iti.commons.gherkin.TableCell;
+import iti.commons.gherkin.TableRow;
+import iti.commons.gherkin.Tag;
+import iti.commons.gherkin.CommentedNode;
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
@@ -45,8 +46,8 @@ import iti.kukumo.api.extensions.PlanBuilder;
 import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.core.plan.PlanNodeBuilder;
-import iti.kukumo.gherkin.parser.CommentedNode;
+import iti.kukumo.api.plan.PlanNodeBuilder;
+
 
 
 @Extension(provider = "iti.kukumo", name = "kukumo-gherkin", extensionPoint = "iti.kukumo.api.extensions.PlanBuilder")
@@ -322,10 +323,6 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     ) {
         Optional<Background> background = getBackground(feature);
         if (background.isPresent()) {
-            // ArrayList<PlanNodeBuilder> steps = new ArrayList<>();
-            // for (Step step : background.get().getSteps()) {
-            // steps.add(createStep(step, location, feature.getLanguage(), null));
-            // }
             PlanNodeBuilder backgroundAggregator = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
                 .setKeyword(background.get().getKeyword())
                 .setName(background.get().getName())
@@ -338,8 +335,6 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                     createStep(step, location, feature.getLanguage(), backgroundAggregator)
                 );
             }
-
-//            steps.forEach(backgroundAggregator::addChild);
             return Optional.of(backgroundAggregator);
         }
         return Optional.empty();

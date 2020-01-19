@@ -17,14 +17,7 @@
     <name>SLF4J-Ansi</name>
 
     <properties>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jansi.version>1.18</jansi.version>
-        <log4j.version>2.11.2</log4j.version>
-        <slf4j.version>[1.7.25,)</slf4j.version>
-        <junit.version>4.12</junit.version>
     </properties>
 
 
@@ -34,23 +27,21 @@
             <artifactId>jansi</artifactId>
             <version>${jansi.version}</version>
         </dependency>
-        <!-- SLF4J API -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <version>${slf4j-api.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -59,16 +50,7 @@
             <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- JUnit testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
-
 
 
 </project>

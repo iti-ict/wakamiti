@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
@@ -82,19 +81,25 @@ public class PlanNodeLogger {
                 name.add(node.keyword());
             }
             name.add(node.name());
-            logger.info("{highlight}", StringUtils.repeat("-", name.length() + 4));
+            logger.info("{highlight}", repeat("-", name.length() + 4));
             logger.info(
                 "{highlight} (Test Case {}/{})",
                 "| " + name + " |",
                 currentTestCaseNumber,
                 totalNumberTestCases
             );
-            logger.info("{highlight}", StringUtils.repeat("-", name.length() + 4));
+            logger.info("{highlight}", repeat("-", name.length() + 4));
         }
     }
 
 
-    public void logStepResult(PlanNode step) {
+
+
+
+
+
+
+	public void logStepResult(PlanNode step) {
         if (step.nodeType() != NodeType.STEP) {
             return;
         }
@@ -124,6 +129,9 @@ public class PlanNodeLogger {
 
     private Object[] buildMessageArgs(PlanNode step) {
         ExecutionState<Result> execution = step.executionState().orElse(null);
+        if (execution == null) {
+        	return new Object[0];
+        }
         List<Object> args = new ArrayList<>();
         args.add("[");
         args.add(execution.result().orElse(null));
@@ -146,5 +154,14 @@ public class PlanNodeLogger {
     private static Object emptyIfNull(Object value) {
         return value == null ? "" : value;
     }
+
+
+    private String repeat(String string, int count) {
+		StringBuilder s = new StringBuilder();
+		for (int i=0;i<count;i++) {
+			s.append(string);
+		}
+		return s.toString();
+	}
 
 }

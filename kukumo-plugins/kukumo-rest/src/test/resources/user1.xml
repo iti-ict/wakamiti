@@ -9,7 +9,7 @@
     <vegetables>
         <id>2</id>
         <description>Gherkin</description>
-    </vegetables>
+    </vegetables>"src/test/resources/data.json"
     <contact>
         <email>user1@mail</email>
     </contact>

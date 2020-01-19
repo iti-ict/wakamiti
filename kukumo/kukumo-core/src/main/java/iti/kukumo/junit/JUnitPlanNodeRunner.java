@@ -30,7 +30,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     private RunNotifier notifier;
 
 
-    public JUnitPlanNodeRunner(
+    JUnitPlanNodeRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     Optional<Backend> backend, PlanNodeLogger logger
     ) {
@@ -38,7 +38,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     }
 
 
-    public JUnitPlanNodeRunner(
+    JUnitPlanNodeRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     PlanNodeLogger logger
     ) {

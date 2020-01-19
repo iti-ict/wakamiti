@@ -1,10 +1,3 @@
-**/.idea
-**/.settings
-**/bin
-**/out
-**/target
-*.iml
-*.classpath
 /.project
 /.idea
 /kukumo-project.iml

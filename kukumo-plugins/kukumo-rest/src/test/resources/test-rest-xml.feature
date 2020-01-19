@@ -20,6 +20,6 @@ Scenario: Get a user from a service
   <name>User One</name>
  </data>
  """
- # And the text from response fragment 'contact/email' is 'user1@mail'
+ And the text from response fragment 'data.contact.email' is 'user1@mail'
 
 

@@ -10,11 +10,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-import gherkin.Parser;
-import gherkin.ast.GherkinDocument;
+import iti.commons.gherkin.GherkinDocument;
+import iti.commons.gherkin.GherkinParser;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ResourceType;
-import iti.kukumo.gherkin.parser.GherkinAstBuilder;
 
 
 
@@ -48,8 +47,7 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
     @Override
     public GherkinDocument parse(Reader reader) throws IOException {
-        Parser<GherkinDocument> gherkinParser = new Parser<>(new GherkinAstBuilder());
-        return gherkinParser.parse(reader);
+        return new GherkinParser().parse(reader);
     }
 
 

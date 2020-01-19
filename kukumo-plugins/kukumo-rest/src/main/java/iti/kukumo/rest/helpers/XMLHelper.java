@@ -4,36 +4,46 @@
 package iti.kukumo.rest.helpers;
 
 
-import java.io.File;
-
-import org.junit.ComparisonFailure;
-import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.Comparison;
-import org.xmlunit.diff.ComparisonResult;
-import org.xmlunit.diff.ComparisonType;
-import org.xmlunit.diff.DefaultNodeMatcher;
-import org.xmlunit.diff.Diff;
-import org.xmlunit.diff.DifferenceEvaluator;
-import org.xmlunit.diff.ElementSelectors;
+import org.hamcrest.Matcher;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.plan.Document;
 import iti.kukumo.rest.ContentTypeHelper;
-import iti.kukumo.util.ResourceLoader;
+import iti.kukumo.rest.MatchMode;
 
 
 
 @Extension(provider = "iti.kukumo", name = "rest-xml-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
-public class XMLHelper implements ContentTypeHelper {
+public class XMLHelper extends JSONHelper implements ContentTypeHelper {
 
-    private static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
+    private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
 
-    private static final DifferenceEvaluator looseDifferenceEvaluator = (Comparison comparison,
-        ComparisonResult outcome) -> {
+    @Override
+    public ContentType contentType() {
+        return ContentType.XML;
+    }
+
+
+    @Override
+    public void assertContent(String expected, String actual, MatchMode matchMode) {
+       diff.assertContent(expected, actual, matchMode);
+    }
+
+
+    @Override
+    public <T> void assertFragment(
+        String fragment,
+        ValidatableResponse response,
+        Class<T> dataType,
+        Matcher<T> matcher
+    ) {
+        response.body(fragment, matcher);
+    }
+
+/*
+    private static final DifferenceEvaluator looseDifferenceEvaluator =
+    (Comparison comparison, ComparisonResult outcome) -> {
         // ignore when the test has more elements than the control
         if (outcome == ComparisonResult.DIFFERENT) {
             if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH) {
@@ -52,6 +62,42 @@ public class XMLHelper implements ContentTypeHelper {
     };
 
 
+    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
+    (Comparison comparison, ComparisonResult outcome) -> {
+        // ignore when the test has more elements than the control
+        if (outcome == ComparisonResult.DIFFERENT) {
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                return ComparisonResult.SIMILAR;
+            }
+        }
+        return outcome;
+    };
+
+
+    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
+    (Comparison comparison, ComparisonResult outcome) -> {
+        // ignore when the test has more elements than the control
+        if (outcome == ComparisonResult.DIFFERENT) {
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                return ComparisonResult.SIMILAR;
+            }
+        }
+        return outcome;
+    };
+
+
+    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
+    (Comparison comparison, ComparisonResult outcome) -> {
+        // ignore when the test has more elements than the control
+        if (outcome == ComparisonResult.DIFFERENT) {
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                return ComparisonResult.SIMILAR;
+            }
+        }
+        return outcome;
+    };
+
+
     @Override
     public ContentType contentType() {
         return ContentType.XML;
@@ -59,37 +105,23 @@ public class XMLHelper implements ContentTypeHelper {
 
 
     @Override
-    public void assertContent(
-        Document expected,
-        ExtractableResponse<Response> response,
-        boolean exactMatch
-    ) {
-        assertContent(expected.getContent(), response.asString(), exactMatch);
-    }
-
-
-    @Override
-    public void assertContent(
-        File expected,
-        ExtractableResponse<Response> response,
-        boolean exactMatch
-    ) {
-        assertContent(resourceLoader.readFileAsString(expected), response.asString(), exactMatch);
-    }
-
-
-    public void assertContent(String expected, String actual, boolean exactMatch) {
-        Diff diff = exactMatch ? diffBuilder(expected, actual)
-            .build()
-                        : diffBuilder(expected, actual)
-                            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName))
-                            .withDifferenceEvaluator(looseDifferenceEvaluator)
-                            .build();
-
+    public void assertContent(String expected, String actual, MatchMode matchMode) {
+        DiffBuilder diffBuilder = diffBuilder(expected, actual);
+        if (matchMode == MatchMode.LOOSE) {
+            diffBuilder = diffBuilder
+                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName))
+                .withDifferenceEvaluator(looseDifferenceEvaluator);
+        } else if (matchMode == MatchMode.STRICT_ANY_ORDER) {
+            diffBuilder = diffBuilder
+                    .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName))
+                    .withDifferenceEvaluator(anyOrderDifferenceEvaluator);
+        }
+        Diff diff = diffBuilder.build();
         if (diff.hasDifferences()) {
             throw new ComparisonFailure(diff.toString(), expected, actual);
         }
     }
+
 
 
     private DiffBuilder diffBuilder(String expected, String actual) {
@@ -101,4 +133,15 @@ public class XMLHelper implements ContentTypeHelper {
             .checkForSimilar();
     }
 
+
+    @Override
+    public <T> void assertFragment(
+        String fragment,
+        ValidatableResponse response,
+        Class<T> dataType,
+        Matcher<T> matcher
+    ) {
+        response.body(fragment,matcher);
+    }
+    */
 }

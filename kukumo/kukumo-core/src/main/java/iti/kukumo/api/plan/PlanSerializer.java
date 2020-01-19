@@ -34,12 +34,12 @@ public class PlanSerializer {
 
 
     /**
-     * Deserialize the given string into a {@link PlanNodeDescriptor} object
+     * Deserialize the given string into a {@link PlanNodeSnapshot} object
      *
      * @throws IOException
      */
-    public PlanNodeDescriptor deserialize(String json) throws IOException {
-        return OBJECT_MAPPER.readValue(json, PlanNodeDescriptor.class);
+    public PlanNodeSnapshot deserialize(String json) throws IOException {
+        return OBJECT_MAPPER.readValue(json, PlanNodeSnapshot.class);
     }
 
 
@@ -48,7 +48,7 @@ public class PlanSerializer {
      *
      * @throws IOException
      */
-    public String serialize(PlanNodeDescriptor node) throws IOException {
+    public String serialize(PlanNodeSnapshot node) throws IOException {
         return OBJECT_MAPPER.writeValueAsString(node);
     }
 
@@ -58,21 +58,21 @@ public class PlanSerializer {
      * iti.kukumo.test.gherkin.plan node into a string
      */
     public String serialize(PlanNode node) throws IOException {
-        return serialize(new PlanNodeDescriptor(node));
+        return serialize(new PlanNodeSnapshot(node));
     }
 
 
-    public void write(Writer writer, PlanNodeDescriptor node) throws IOException {
+    public void write(Writer writer, PlanNodeSnapshot node) throws IOException {
         OBJECT_MAPPER.writeValue(writer, node);
     }
 
 
     public void write(Writer writer, PlanNode node) throws IOException {
-        write(writer, new PlanNodeDescriptor(node));
+        write(writer, new PlanNodeSnapshot(node));
     }
 
 
-    public PlanNodeDescriptor read(InputStream inputStream) throws IOException {
+    public PlanNodeSnapshot read(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(
             inputStream, StandardCharsets.UTF_8
         )) {
@@ -81,26 +81,26 @@ public class PlanSerializer {
     }
 
 
-    public PlanNodeDescriptor read(File file) throws IOException {
+    public PlanNodeSnapshot read(File file) throws IOException {
         try (InputStream stream = new FileInputStream(file)) {
             return read(stream);
         }
     }
 
 
-    public PlanNodeDescriptor read(Path path) throws IOException {
+    public PlanNodeSnapshot read(Path path) throws IOException {
         try (InputStream stream = new FileInputStream(path.toFile())) {
             return read(stream);
         }
     }
 
 
-    public PlanNodeDescriptor read(Reader reader) throws IOException {
-        return OBJECT_MAPPER.readValue(reader, PlanNodeDescriptor.class);
+    public PlanNodeSnapshot read(Reader reader) throws IOException {
+        return OBJECT_MAPPER.readValue(reader, PlanNodeSnapshot.class);
     }
 
 
-    public Collection<PlanNodeDescriptor> read(Collection<Path> paths) throws IOException {
+    public Collection<PlanNodeSnapshot> read(Collection<Path> paths) throws IOException {
         return paths.stream().map(ThrowableFunction.unchecked(path -> read(path)))
             .collect(Collectors.toList());
     }
