@@ -41,7 +41,7 @@ cache:
     - "*/target"
 
 .maven: &maven
-  image: maven:3.6.1-jdk-8
+  image: maven:3.6.1-jdk-11
   artifacts:
     paths:
       - target
@@ -85,9 +85,8 @@ generate_artifacts:
   dependencies:
     - verify
   script:
-    - 'mvn package -DskipTests -Dassemble-zips'
+    - 'mvn package -DskipTests'
     - 'mkdir artifacts'
-    - 'find -type f -name "kukumo*.zip" -exec cp {} artifacts/ \;'
     - 'find -type f  -regex ".*\/target\/[^\/]*\.jar" -exec cp {} artifacts/ \;'
   artifacts:
     paths:
@@ -95,6 +94,7 @@ generate_artifacts:
       - artifacts
   only:
     - master
+    - java11  
   allow_failure: true
 
 

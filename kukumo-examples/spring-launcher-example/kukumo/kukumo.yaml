@@ -12,4 +12,4 @@ kukumo:
       - com.h2database:h2:1.4.199
 mavenFetcher:
   remoteRepositories:
-    - file:///home/linesta/.m2/repository
+    - file:///home/luis/.m2/repository

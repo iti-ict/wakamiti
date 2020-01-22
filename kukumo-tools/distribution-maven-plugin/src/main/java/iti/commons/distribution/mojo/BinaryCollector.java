@@ -68,7 +68,7 @@ public class BinaryCollector {
 
             var fetchedArtifacts = fetcher
                 .fetchArtifacts(new MavenFetchRequest(artifacts))
-                .allDepedencies()
+                .allArtifacts()
                 .collect(Collectors.toList());
 
             for (var artifact : fetchedArtifacts) {

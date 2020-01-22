@@ -1,2 +1,6 @@
 /target/
 /maven-aether-provider-java9.iml
+/.classpath
+/.project
+/src/site/markdown/index.md
+/.settings/

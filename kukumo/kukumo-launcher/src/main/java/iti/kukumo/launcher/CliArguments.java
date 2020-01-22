@@ -102,7 +102,9 @@ public class CliArguments {
     }
 
     public List<String> modules() {
-        return Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(","));
+        return cliCommand.hasOption(ARG_MODULES) ?
+            Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
+            List.of();
     }
 
     private Configuration buildConfiguration(

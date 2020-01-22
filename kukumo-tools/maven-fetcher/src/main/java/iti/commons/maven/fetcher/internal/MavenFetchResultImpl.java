@@ -53,15 +53,15 @@ public class MavenFetchResultImpl implements MavenFetchResult {
     }
 
 
-    public Stream<FetchedArtifact> dependencies() {
+    public Stream<FetchedArtifact> artifacts() {
         return rootArtifacts.stream();
     }
 
 
-    public Stream<FetchedArtifact> allDepedencies() {
+    public Stream<FetchedArtifact> allArtifacts() {
         return Stream.concat(
-            dependencies(),
-            dependencies().flatMap(FetchedArtifact::allDepedencies)
+            artifacts(),
+            artifacts().flatMap(FetchedArtifact::allDepedencies)
         );
     }
 
@@ -73,7 +73,7 @@ public class MavenFetchResultImpl implements MavenFetchResult {
 
     @Override
     public String toString() {
-        return dependencies().map(FetchedArtifact::toString).collect(Collectors.joining("\n"));
+        return artifacts().map(FetchedArtifact::toString).collect(Collectors.joining("\n"));
     }
 
 }

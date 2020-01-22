@@ -51,7 +51,10 @@ public class KukumoLauncher {
             updateClasspath(fetchedArtifacts);
             new KukumoRunner(arguments).run();
         } catch (Exception e) {
-            logger.error("Error: {}", e.toString(), e);
+            logger.error("Error: {}", e.toString());
+            if (logger.isDebugEnabled()) {
+                logger.error("<exception stack trace>",e);
+            }
             System.exit(2);
         }
     }

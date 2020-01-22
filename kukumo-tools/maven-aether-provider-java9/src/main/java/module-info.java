@@ -3,7 +3,9 @@ module maven.aether.provider.java9 {
     exports org.apache.maven.artifact;
     exports org.apache.maven.model;
     exports org.apache.maven.repository;
+    exports org.apache.maven.repository.internal;
     exports org.apache.maven.building;
+
 
     requires aether.api;
     requires aether.connector.basic;

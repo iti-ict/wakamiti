@@ -4,6 +4,8 @@
 package iti.commons.maven.fetcher;
 
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -44,16 +46,16 @@ public class TestMavenFetcher {
         if (localRepo.toFile().exists()) {
             Files.walkFileTree(localRepo, deleteFileTree);
         }
-        new MavenFetcher()
+        MavenFetchResult results = new MavenFetcher()
             .localRepositoryPath(localRepo)
-            .addRemoteRepository("central", "http://repo1.maven.org/maven2")
-            .addRemoteRepository("kukumo", "https://raw.github.com/luiinge/maven-repo/master")
+            .addRemoteRepository("central", "https://repo1.maven.org/maven2")
             .logger(LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME))
             .fetchArtifacts(
                 new MavenFetchRequest(
-                    Arrays.asList("junit:junit:4.12", "iti.kukumo:kukumo-gherkin:0.1.0")
+                    Arrays.asList("junit:junit:4.12")
                 ).scopes("compile")
             );
+        results.allArtifacts().forEach(artifact -> assertTrue(artifact.path().toFile().exists()));
     }
 
 }

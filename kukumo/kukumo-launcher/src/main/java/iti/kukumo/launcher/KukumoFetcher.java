@@ -57,6 +57,7 @@ public class KukumoFetcher {
                 cleanCache(mavenRepo);
             }
             Files.createDirectories(mavenRepo);
+            logger.debug("Using local Maven repository {}",mavenRepo);
 
             Configuration conf = arguments
                 .mavenFetcherConfiguration()
@@ -66,7 +67,14 @@ public class KukumoFetcher {
             MavenFetcher mavenFetcher = new MavenFetcher()
                 .logger(logger)
                 .config(conf.asProperties());
-            MavenFetchRequest fetchRequest = new MavenFetchRequest(arguments.modules())
+
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                    "Modules requested to fetch are:{}",
+                    modules.stream().collect(Collectors.joining("\n -", "\n -",""))
+                );
+            }
+            MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
                 .scopes("compile", "provided")
                 .retrieveOptionals(false);
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
@@ -75,7 +83,7 @@ public class KukumoFetcher {
                 logger.debug("{}", fetchedArtifacts);
             }
             return fetchedArtifacts
-                .allDepedencies()
+                .allArtifacts()
                 .map(FetchedArtifact::path)
                 .collect(Collectors.toList());
 
@@ -86,14 +94,14 @@ public class KukumoFetcher {
     }
 
 
-	private void cleanCache(Path mavenRepo) throws IOException {
-		try (Stream<Path> walker = Files.walk(mavenRepo)) {
-		    walker
-		        .sorted(Comparator.reverseOrder())
-		        .map(Path::toFile)
-		        .forEach(File::delete);
-		}
-	}
+    private void cleanCache(Path mavenRepo) throws IOException {
+        try (Stream<Path> walker = Files.walk(mavenRepo)) {
+            walker
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
+    }
 
 
     private List<String> modulesToFetch() throws URISyntaxException {

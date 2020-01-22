@@ -143,6 +143,7 @@
                 <version>1.0.0</version>
                 <configuration>
                     <distributionDefinition>src/assembly/distribution.yaml</distributionDefinition>
+                    <output>src/bin/kukumo-${project.version}-installer.jar</output>
                 </configuration>
                 <executions>
                     <execution>

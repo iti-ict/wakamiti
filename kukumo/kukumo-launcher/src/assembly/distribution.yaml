@@ -19,9 +19,9 @@ distributions:
     environmentVariables:
       KUKUMO_HOME: /usr/local/share/kukumo
 
-  - os: windows 10
+  - os: windows
     fileSet:
-      - destinationFolder: "%programFiles%\\Kukumo"
+      - destinationFolder: "%ProgramFiles%\\Kukumo"
         clean: true
         files:
           - kukumo.bat

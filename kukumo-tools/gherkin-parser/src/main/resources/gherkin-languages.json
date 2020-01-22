@@ -693,7 +693,8 @@
     ],
     "given": [
       "* ",
-      "Given "
+      "Given ",
+      "Given that"
     ],
     "name": "English",
     "native": "English",
@@ -973,7 +974,8 @@
     "and": [
       "* ",
       "Y ",
-      "E "
+      "E ",
+      "Y que"
     ],
     "background": [
       "Antecedentes"
@@ -993,7 +995,8 @@
       "Dado ",
       "Dada ",
       "Dados ",
-      "Dadas "
+      "Dadas ",
+      "Dado que"
     ],
     "name": "Spanish",
     "native": "español",

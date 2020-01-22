@@ -9,8 +9,14 @@ import java.util.stream.Stream;
 
 public interface MavenFetchResult {
 
-    Stream<FetchedArtifact> dependencies();
-    Stream<FetchedArtifact> allDepedencies();
+    /** @return A new stream with the fetched artifacts requested */
+    Stream<FetchedArtifact> artifacts();
+
+    /** @return A new stream with all fetched artifacts, includind dependencies */
+    Stream<FetchedArtifact> allArtifacts();
+
+    /** @return <tt>true</tt> if any error has ocurred during the fetching */
     boolean hasErrors();
+
 
 }
