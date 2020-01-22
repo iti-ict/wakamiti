@@ -44,7 +44,7 @@ public class DistributionMojo extends AbstractMojo {
     @Parameter(defaultValue = "${settings.localRepository}")
     private String localRepository;
 
-    @Parameter(defaultValue = "central::default::http://repo1.maven.apache.org/maven2")
+    @Parameter(defaultValue = "central::default::https://repo.maven.apache.org/maven2")
     private String remoteRepositories;
 
 
