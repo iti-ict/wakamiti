@@ -15,8 +15,8 @@ public class DataTableDataSet extends DataSet {
     private int rowNumber;
 
 
-    public DataTableDataSet(String table, DataTable dataTable) {
-        super(table, "data table");
+    public DataTableDataSet(String table, DataTable dataTable, String nullSymbol) {
+        super(table, "data table", nullSymbol);
         this.dataTable = dataTable;
         this.columns = new String[dataTable.columns()];
         for (int c = 0; c < dataTable.columns(); c++) {
@@ -38,7 +38,7 @@ public class DataTableDataSet extends DataSet {
 
     @Override
     public Object rowValue(int columnIndex) {
-        return dataTable.value(rowNumber, columnIndex);
+        return nullIfMatchNullSymbol(dataTable.value(rowNumber, columnIndex));
     }
 
 
@@ -50,7 +50,7 @@ public class DataTableDataSet extends DataSet {
 
     @Override
     public DataSet copy() throws IOException {
-        return new DataTableDataSet(table, dataTable);
+        return new DataTableDataSet(table, dataTable, nullSymbol);
     }
 
 }

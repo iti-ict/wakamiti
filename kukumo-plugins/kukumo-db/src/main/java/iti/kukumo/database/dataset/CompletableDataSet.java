@@ -26,7 +26,7 @@ public class CompletableDataSet extends DataSet {
 
 
     public CompletableDataSet(DataSet wrapped, Map<String, Integer> nonNullableColumnsWithType) {
-        super(wrapped.table(), wrapped.origin());
+        super(wrapped.table(), wrapped.origin(), wrapped.nullSymbol());
         this.wrapped = wrapped;
         this.nonNullableColumnsWithType = nonNullableColumnsWithType;
         List<String> originalColumnList = Arrays.asList(wrapped.columns());

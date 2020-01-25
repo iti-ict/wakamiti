@@ -67,6 +67,7 @@ public class ResourceLoader {
 
     public ResourceLoader() {
         this.charset = StandardCharsets.UTF_8;
+        Locale.setDefault(Locale.ENGLISH); // avoid different behaviours regarding the OS language
     }
 
 

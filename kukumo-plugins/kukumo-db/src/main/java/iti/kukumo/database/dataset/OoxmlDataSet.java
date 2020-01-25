@@ -34,12 +34,11 @@ public class OoxmlDataSet extends MultiDataSet {
 
 
     public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {
-
         this.workbook = WorkbookFactory.create(file, null, true);
         this.file = file;
         this.ignoreSheetRegex = ignoreSheetRegex;
+        this.nullSymbol = nullSymbol;
         try {
-            this.nullSymbol = nullSymbol;
             Pattern ignoreSheetPattern = Pattern.compile(ignoreSheetRegex);
             Iterator<Sheet> sheetIterator = this.workbook.sheetIterator();
             while (sheetIterator.hasNext()) {
@@ -47,7 +46,7 @@ public class OoxmlDataSet extends MultiDataSet {
                 if (ignoreSheetPattern.matcher(sheet.getSheetName()).matches()) {
                     continue;
                 }
-                addDataSet(new OoxmlSheetDataSet(sheet, file));
+                addDataSet(new OoxmlSheetDataSet(sheet, file, nullSymbol));
             }
         } catch (Exception e) {
             close();
@@ -72,8 +71,8 @@ public class OoxmlDataSet extends MultiDataSet {
         private Row currentRow;
 
 
-        public OoxmlSheetDataSet(Sheet sheet, File file) {
-            super(sheet.getSheetName(), "file '" + file + "'");
+        public OoxmlSheetDataSet(Sheet sheet, File file, String nullSymbol) {
+            super(sheet.getSheetName(), "file '" + file + "'", nullSymbol);
             this.rowIterator = sheet.rowIterator();
             this.columns = sheetHeaders(rowIterator.next());
         }

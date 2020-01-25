@@ -13,8 +13,8 @@ public class InlineDataSet extends DataSet {
     private boolean consumed;
 
 
-    public InlineDataSet(String table, String[] columns, Object[] values) {
-        super(table, "inline values");
+    public InlineDataSet(String table, String[] columns, Object[] values, String nullSymbol) {
+        super(table, "inline values", nullSymbol);
         this.columns = columns;
         this.values = values;
     }
@@ -32,7 +32,7 @@ public class InlineDataSet extends DataSet {
 
     @Override
     public Object rowValue(int columnIndex) {
-        return values[columnIndex];
+        return nullIfMatchNullSymbol(values[columnIndex]);
     }
 
 
@@ -44,6 +44,6 @@ public class InlineDataSet extends DataSet {
 
     @Override
     public DataSet copy() throws IOException {
-        return new InlineDataSet(table, columns, values);
+        return new InlineDataSet(table, columns, values, nullSymbol);
     }
 }

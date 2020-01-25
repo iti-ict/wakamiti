@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -36,15 +37,18 @@ public class DatabaseHelper {
     private final ConnectionProvider connectionProvider;
     private final ConnectionParameters connectionParameters;
     private final Deque<DataSet> cleanUpOperations = new LinkedList<>();
+    private final Supplier<String> nullSymbol;
 
     private CaseSensitivity caseSensitivity = CaseSensitivity.INSENSITIVE;
 
     public DatabaseHelper(
         ConnectionParameters connectionParameters,
-        ConnectionProvider connectionProvider
+        ConnectionProvider connectionProvider,
+        Supplier<String> nullSymbol
     ) {
         this.connectionProvider = connectionProvider;
         this.connectionParameters = connectionParameters;
+        this.nullSymbol = nullSymbol;
         AnsiLogger.addStyle("sql","yellow,bold");
     }
 
@@ -203,7 +207,7 @@ public class DatabaseHelper {
         StringBuilder sql = sqlSelectCountFrom(table).append(sqlWhereColumnsEquals(columns));
         try (PreparedStatement statement = createRowStatement(
             sql,
-            new InlineDataSet(table, columns, values),
+            new InlineDataSet(table, columns, values, nullSymbol.get()),
             true
         )) {
             if (LOGGER.isTraceEnabled()) {

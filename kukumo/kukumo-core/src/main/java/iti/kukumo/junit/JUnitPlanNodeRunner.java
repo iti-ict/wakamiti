@@ -118,9 +118,12 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
             } else if (result.get() == Result.SKIPPED) {
                 notifier.fireTestFailure(new Failure(getDescription(), skipped));
             } else {
-                notifier.fireTestFailure(
-                    new Failure(getDescription(), node.errors().findFirst().orElse(notExecuted))
-                );
+                Throwable error = node.errors().findFirst().orElse(notExecuted);
+                if (error instanceof KukumoSkippedException) {
+                    notifier.fireTestIgnored(getDescription());
+                } else {
+                    notifier.fireTestFailure(new Failure(getDescription(), error));
+                }
             }
         }
     }

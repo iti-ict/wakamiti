@@ -1,6 +1,7 @@
 package iti.commons.gherkin;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +19,18 @@ public class TestParser {
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
+        }
+    }
+
+
+    @Test
+    public void testParserExtended() throws IOException {
+        try (var reader = new InputStreamReader(
+                classLoader.getResourceAsStream("gherkinDocument2.feature")
+        )) {
+            GherkinDocument document = new GherkinParser().parse(reader);
+            assertNotNull(document);
+            assertTrue(document.getFeature().getChildren().get(0).getSteps().get(0).getKeyword().equals("Dado que"));
         }
     }
 }

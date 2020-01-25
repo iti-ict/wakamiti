@@ -20,7 +20,7 @@ import iti.kukumo.junit.KukumoJUnitRunner;
     @Property(key = DatabaseStepConfiguration.DATABASE_CONNECTION_URL, value = "jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/create-schema.sql'"),
     @Property(key = DatabaseStepConfiguration.DATABASE_CONNECTION_USERNAME, value = "sa"),
     @Property(key = DatabaseStepConfiguration.DATABASE_CONNECTION_PASSWORD, value = ""),
-    @Property(key = DatabaseStepConfiguration.DATABASE_CASE_SENSITIVITY, value = "upper_cased")
+    @Property(key = DatabaseStepConfiguration.DATABASE_METADATA_CASE_SENSITIVITY, value = "upper_cased")
 })
 public class H2DbLoader {
 

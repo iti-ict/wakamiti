@@ -31,8 +31,8 @@ public class DatabaseStepConfigurator implements Configurator<DatabaseStepContri
             .ifPresent(DATABASE_CONNECTION_USERNAME, String.class, ConnectionParameters::username)
             .ifPresent(DATABASE_CONNECTION_PASSWORD, String.class, ConnectionParameters::password)
             .ifPresent(DATABASE_CONNECTION_DRIVER, String.class, ConnectionParameters::driver)
-            .ifPresent(DATABASE_CONNECTION_SCHEMA, String.class, ConnectionParameters::schema)
-            .ifPresent(DATABASE_CONNECTION_CATALOG, String.class, ConnectionParameters::catalog)
+            .ifPresent(DATABASE_METADATA_SCHEMA, String.class, ConnectionParameters::schema)
+            .ifPresent(DATABASE_METADATA_CATALOG, String.class, ConnectionParameters::catalog)
          ;
 
         ConfigurationConsumer.of(configuration, contributor)
@@ -43,10 +43,10 @@ public class DatabaseStepConfigurator implements Configurator<DatabaseStepContri
               DatabaseStepContributor::setXlsIgnoreSheetRegex
          )
          .orDefault(
-              DATABASE_XLS_NULL_SYMBOL,
+              DATABASE_NULL_SYMBOL,
               String.class,
-              Defaults.DEFAULT_DATABASE_XLS_NULL_SYMBOL,
-              DatabaseStepContributor::setXlsNullSymbol
+              Defaults.DEFAULT_DATABASE_NULL_SYMBOL,
+              DatabaseStepContributor::setNullSymbol
          )
          .orDefault(
               DATABASE_CSV_FORMAT,
@@ -62,7 +62,7 @@ public class DatabaseStepConfigurator implements Configurator<DatabaseStepContri
          )
          ;
 
-        configuration.get(DATABASE_CASE_SENSITIVITY, String.class)
+        configuration.get(DATABASE_METADATA_CASE_SENSITIVITY, String.class)
             .map(String::toUpperCase)
             .map(CaseSensitivity::valueOf)
             .ifPresent(contributor::setCaseSensitivity);

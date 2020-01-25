@@ -1,0 +1,9 @@
+<settings>
+ <mirrors>
+   <mirror>
+     <id>maven-central-https</id>
+     <mirrorOf>*</mirrorOf>
+     <url>https://repo.maven.apache.org/maven2</url>
+   </mirror>
+ </mirrors>
+</settings>

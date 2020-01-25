@@ -25,13 +25,13 @@ public class CsvDataSet extends DataSet {
     private CSVRecord currentRecord;
 
 
-    public CsvDataSet(String table, File file, String csvFormat) throws IOException {
-        this(table, file, CSVFormat.valueOf(csvFormat));
+    public CsvDataSet(String table, File file, String csvFormat, String nullSymbol) throws IOException {
+        this(table, file, CSVFormat.valueOf(csvFormat), nullSymbol);
     }
 
 
-    private CsvDataSet(String table, File file, CSVFormat format) throws IOException {
-        super(table, "file '" + file + "'");
+    private CsvDataSet(String table, File file, CSVFormat format, String nullSymbol) throws IOException {
+        super(table, "file '" + file + "'", nullSymbol);
         this.file = file;
         this.format = format;
         this.reader = new FileReader(file);
@@ -68,12 +68,13 @@ public class CsvDataSet extends DataSet {
 
     @Override
     public Object rowValue(int columnIndex) {
-        return currentRecord.get(columnIndex);
+        return nullIfMatchNullSymbol(currentRecord.get(columnIndex));
     }
+
 
 
     @Override
     public DataSet copy() throws IOException {
-        return new CsvDataSet(table, file, format);
+        return new CsvDataSet(table, file, format, nullSymbol);
     }
 }
