@@ -27,8 +27,10 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-        <poi-ooxml.version>4.1.0</poi-ooxml.version>
-        <commons-csv.version>1.6</commons-csv.version>
+        <poi-ooxml.version>4.1.1</poi-ooxml.version>
+        <commons-csv.version>1.7</commons-csv.version>
+        <kukumo-core.version>0.9.1</kukumo-core.version>
+        <h2.version>1.4.199</h2.version>
     </properties>
 
 
@@ -38,40 +40,68 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo.version}</version>
+            <version>${kukumo-core.version}</version>
         </dependency>
-
-        <!-- XML reader -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${poi-ooxml.version}</version>
         </dependency>
-
-        <!-- CSV reader -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>${commons-csv.version}</version>
         </dependency>
-
-        <!-- generic test assertions -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.10.0</version>
+            <version>${assertj-core.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- testing database support -->
-        <dependency>
-            <groupId>iti.commons</groupId>
-            <artifactId>testing-embedded-db</artifactId>
-            <version>0.1.0</version>
+       <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
+
+
+    <!-- jExt annotation processor -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>iti.commons</groupId>
+                            <artifactId>jext</artifactId>
+                            <version>${jext.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -41,7 +41,7 @@ cache:
     - "*/target"
 
 .maven: &maven
-  image: maven:3.6.1-jdk-8
+  image: maven:3.6.1-jdk-11
   artifacts:
     paths:
       - target
@@ -95,6 +95,7 @@ generate_artifacts:
       - artifacts
   only:
     - master
+    - java11  
   allow_failure: true
 
 

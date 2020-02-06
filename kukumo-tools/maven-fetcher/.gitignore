@@ -3,3 +3,8 @@
 **/.~lock*
 /src/site/markdown/*
 
+/.classpath
+/maven-fetcher.iml
+/target/
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

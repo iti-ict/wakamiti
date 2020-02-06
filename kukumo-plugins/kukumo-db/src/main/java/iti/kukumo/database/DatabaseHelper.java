@@ -4,36 +4,22 @@
 package iti.kukumo.database;
 
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
-
+import iti.commons.slf4jansi.AnsiLogger;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.database.dataset.*;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.database.dataset.CompletableDataSet;
-import iti.kukumo.database.dataset.DataSet;
-import iti.kukumo.database.dataset.EmptyDataSet;
-import iti.kukumo.database.dataset.InlineDataSet;
-import iti.kukumo.database.dataset.MultiDataSet;
+import java.io.IOException;
+import java.sql.*;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 public class DatabaseHelper {
@@ -44,16 +30,26 @@ public class DatabaseHelper {
     }
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.database");
+    private static final Logger LOGGER = AnsiLogger.of(LoggerFactory.getLogger("iti.kukumo.database"));
 
     private final Map<String, List<String>> primaryKeyCache = new HashMap<>();
     private final Map<String, Map<String, Integer>> nonNullabeColumnCache = new HashMap<>();
     private final ConnectionProvider connectionProvider;
+    private final ConnectionParameters connectionParameters;
     private final Deque<DataSet> cleanUpOperations = new LinkedList<>();
+    private final Supplier<String> nullSymbol;
 
+    private CaseSensitivity caseSensitivity = CaseSensitivity.INSENSITIVE;
 
-    public DatabaseHelper(ConnectionProvider connectionProvider) {
+    public DatabaseHelper(
+        ConnectionParameters connectionParameters,
+        ConnectionProvider connectionProvider,
+        Supplier<String> nullSymbol
+    ) {
         this.connectionProvider = connectionProvider;
+        this.connectionParameters = connectionParameters;
+        this.nullSymbol = nullSymbol;
+        AnsiLogger.addStyle("sql","yellow,bold");
     }
 
 
@@ -62,13 +58,19 @@ public class DatabaseHelper {
     }
 
 
+    public DatabaseHelper setCaseSensitivity(CaseSensitivity caseSensitivity) {
+        this.caseSensitivity = caseSensitivity;
+        return this;
+    }
+
+
     private StringBuilder sqlSelectFrom(String table) {
-        return new StringBuilder("select * from ").append(table);
+        return new StringBuilder("select * from ").append(caseSensitivity.format(table));
     }
 
 
     private StringBuilder sqlSelectCountFrom(String table) {
-        return new StringBuilder("select count(*) from ").append(table);
+        return new StringBuilder("select count(*) from ").append(caseSensitivity.format(table));
     }
 
 
@@ -78,8 +80,8 @@ public class DatabaseHelper {
 
 
     private String sqlInsertIntoValues(DataSet dataSet) {
-        return new StringBuilder("insert into ").append(dataSet.table())
-            .append(" (").append(dataSet.collectColumns(",")).append(") values (")
+        return new StringBuilder("insert into ").append(caseSensitivity.format(dataSet.table()))
+            .append(" (").append(dataSet.collectColumns(",",caseSensitivity)).append(") values (")
             .append(dataSet.collectColumns(x -> "?", ",")).append(")")
             .toString();
     }
@@ -92,6 +94,7 @@ public class DatabaseHelper {
 
     private String sqlWhereColumnsEquals(String... columns) {
         return " where " + Stream.of(columns)
+            .map(caseSensitivity::format)
             .map(column -> "(" + column + "=? or (" + column + " is null and ? is null))")
             .collect(Collectors.joining(" and "));
     }
@@ -140,10 +143,8 @@ public class DatabaseHelper {
     }
 
 
-    private <T> T extractSingleResult(
-        PreparedStatement statement,
-        Class<T> type
-    ) throws SQLException {
+    private <T> T extractSingleResult(PreparedStatement statement, Class<T> type)
+    throws SQLException {
         try (ResultSet result = statement.executeQuery()) {
             if (!result.next()) {
                 return null;
@@ -157,12 +158,12 @@ public class DatabaseHelper {
         try {
             DatabaseMetaData metadata = connection().getMetaData();
             ArrayList<String> primaryKeys = new ArrayList<>();
-            ResultSet resultSet = metadata.getPrimaryKeys(null, null, table.toUpperCase());
+            ResultSet resultSet = metadata.getPrimaryKeys(catalog(), schema(), caseSensitivity.format(table));
             while (resultSet != null && resultSet.next()) {
                 primaryKeys.add(resultSet.getString("COLUMN_NAME"));
             }
             if (primaryKeys.isEmpty() && throwIfAbsent) {
-                throw new KukumoException("Cannot determine primary key for table " + table);
+                throw new KukumoException("Cannot determine primary key for table " + caseSensitivity.format(table));
             }
             return primaryKeys;
         } catch (Exception e) {
@@ -175,7 +176,7 @@ public class DatabaseHelper {
         try {
             DatabaseMetaData metadata = connection().getMetaData();
             Map<String, Integer> nonNullableColumns = new LinkedHashMap<>();
-            ResultSet resultSet = metadata.getColumns(null, null, table.toUpperCase(), null);
+            ResultSet resultSet = metadata.getColumns(catalog(), schema(), caseSensitivity.format(table), null);
             while (resultSet != null && resultSet.next()) {
                 if (resultSet.getInt("NULLABLE") == DatabaseMetaData.attributeNoNulls) {
                     nonNullableColumns
@@ -206,13 +207,16 @@ public class DatabaseHelper {
         StringBuilder sql = sqlSelectCountFrom(table).append(sqlWhereColumnsEquals(columns));
         try (PreparedStatement statement = createRowStatement(
             sql,
-            new InlineDataSet(table, columns, values),
+            new InlineDataSet(table, columns, values, nullSymbol.get()),
             true
         )) {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("[SQL] {}  | {}", sql, mapValues(columns, values));
+                LOGGER.trace("[SQL] {sql}  | {}", sql, mapValues(columns, values));
             }
             assertCount(statement, matcher);
+        } catch (SQLException e) {
+            LOGGER.error("[SQL] {sql} | {}", sql, mapValues(columns, values));
+            throw e;
         }
     }
 
@@ -228,8 +232,11 @@ public class DatabaseHelper {
             new EmptyDataSet(table),
             false
         )) {
-            LOGGER.trace("[SQL] {}", sql);
+            LOGGER.trace("[SQL] {sql}", sql);
             assertCount(statement, matcher);
+        }  catch (SQLException e) {
+            LOGGER.error("[SQL] {sql}", sql);
+            throw e;
         }
     }
 
@@ -251,15 +258,18 @@ public class DatabaseHelper {
         try (Statement statement = connection().createStatement()) {
             for (String statementLine : statements) {
                 statement.addBatch(statementLine);
-                LOGGER.trace("[SQL] {}", statementLine);
+                LOGGER.trace("[SQL] {sql}", statementLine);
             }
-            long count = countResults(statement.executeLargeBatch());
+            long count = countResults(statement.executeBatch());
             if (scriptFileName != null) {
                 LOGGER.debug("Executed SQL script '{}'; {} rows affected", scriptFileName, count);
             } else {
                 LOGGER.debug("Executed SQL script; {} rows affected", count);
             }
             return count;
+        } catch (SQLException e) {
+            statements.forEach(statement -> LOGGER.error("[SQL] {sql}", statement));
+            throw e;
         }
 
     }
@@ -270,8 +280,11 @@ public class DatabaseHelper {
         boolean addCleanUpOperation
     ) throws SQLException, IOException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER
-                .debug("Inserting rows in table {} from {}...", dataSet.table(), dataSet.origin());
+            LOGGER.debug(
+                "Inserting rows in table {} from {}...",
+                caseSensitivity.format(dataSet.table()),
+                dataSet.origin()
+            );
         }
         Map<String, Integer> nonNullableColumns = nonNullableColumns(dataSet.table());
         if (!dataSet.containColumns(nonNullableColumns.keySet())) {
@@ -287,12 +300,12 @@ public class DatabaseHelper {
                 statement.addBatch();
                 traceSQL(sql, dataSet);
             }
-            long count = countResults(statement.executeLargeBatch());
+            long count = countResults(statement.executeBatch());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(
                     "Inserted {} rows in table {} from {}",
                     count,
-                    dataSet.table(),
+                    caseSensitivity.format(dataSet.table()),
                     dataSet.origin()
                 );
             }
@@ -304,7 +317,7 @@ public class DatabaseHelper {
 
     public long deleteDataSet(DataSet dataSet) throws SQLException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Deleting rows in table {} from {}...", dataSet.table(), dataSet.origin());
+            LOGGER.debug("Deleting rows in table {} from {}...", caseSensitivity.format(dataSet.table()), dataSet.origin());
         }
         String sql = null;
         String[] primaryKey = primaryKey(dataSet.table(), false);
@@ -328,12 +341,12 @@ public class DatabaseHelper {
                 statement.addBatch();
                 traceSQL(sql, dataSet);
             }
-            long count = countResults(statement.executeLargeBatch());
+            long count = countResults(statement.executeBatch());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(
                     "Deleted {} rows in table {} from {}",
                     count,
-                    dataSet.table(),
+                    caseSensitivity.format(dataSet.table()),
                     dataSet.origin()
                 );
             }
@@ -426,7 +439,7 @@ public class DatabaseHelper {
                     String.format(
                         "Expected row %s not to exist in table %s but it does",
                         dataSet.rowAsMap(),
-                        dataSet.table()
+                        caseSensitivity.format(dataSet.table())
                     )
                 );
             }
@@ -446,6 +459,8 @@ public class DatabaseHelper {
                 bindRowValues(statement, dataSet, true);
                 count += extractSingleResult(statement, Long.class);
             }
+        } catch (SQLException e) {
+            LOGGER.error("[SQL] {sql}",sql);
         }
         MatcherAssert.assertThat(count, matcher);
     }
@@ -512,8 +527,8 @@ public class DatabaseHelper {
     }
 
 
-    private long countResults(long[] results) {
-        return LongStream.of(results).filter(count -> count > 0).count();
+    private long countResults(int[] results) {
+        return IntStream.of(results).filter(count -> count > 0).count();
     }
 
 
@@ -551,8 +566,45 @@ public class DatabaseHelper {
 
     private void traceSQL(String sql, DataSet dataSet) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("[SQL] {} | {}", sql, dataSet.rowAsMap());
+            LOGGER.trace("[SQL] {sql} | {}", sql, dataSet.rowAsMap());
         }
     }
+
+
+
+    private String catalog() {
+        try {
+            if (connectionParameters.catalog() != null) {
+                return connectionParameters.catalog();
+            }
+            if (connection().getCatalog() != null) {
+                return connection().getCatalog();
+            }
+            return null;
+        } catch (SQLException e) {
+            LOGGER.trace(e.toString());
+            return null;
+        }
+    }
+
+
+
+    private String schema() {
+        try {
+            if (connectionParameters.schema() != null) {
+                return connectionParameters.schema();
+            }
+            if (connection().getSchema() != null) {
+                return connection().getSchema();
+            }
+            return null;
+        } catch (SQLException e) {
+            LOGGER.trace(e.toString());
+            return null;
+        }
+    }
+
+
+
 
 }

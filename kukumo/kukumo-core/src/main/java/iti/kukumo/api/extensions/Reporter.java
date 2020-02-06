@@ -5,7 +5,7 @@ package iti.kukumo.api.extensions;
 
 
 import iti.commons.jext.ExtensionPoint;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 
 
 
@@ -20,6 +20,6 @@ public interface Reporter extends Contributor {
      *                 iti.kukumo.test.gherkin.plan or a root node grouping
      *                 several plans.
      */
-    void report(PlanNodeDescriptor rootNode);
+    void report(PlanNodeSnapshot rootNode);
 
 }

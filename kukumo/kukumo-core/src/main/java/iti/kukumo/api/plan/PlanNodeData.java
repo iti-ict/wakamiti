@@ -12,7 +12,6 @@ public interface PlanNodeData {
 
     PlanNodeData copy();
 
-
     PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer);
 
 }

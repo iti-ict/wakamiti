@@ -1,7 +1,13 @@
 @echo off
 set ARGS=%*
 if "%KUKUMO_HOME%"=="" (
-  echo Environment variable KUKUMO_HOME must be set
-  exit -2
+  SET KUKUMO_HOME="%ProgramFiles%\Kukumo"
 )
-java -javaagent:%KUKUMO_HOME%\kukumo-launcher.jar -classpath "%KUKUMO_HOME%\kukumo-launcher.jar:%KUKUMO_HOME%\lib\*" iti.kukumo.launcher.KukumoLauncher %ARGS%
+
+java -jar "%KUKUMO_HOME%\java-version-checker.jar" 11
+
+if %ERRORLEVEL% EQU 0 (
+  java -javaagent:%KUKUMO_HOME%\kukumo-launcher.jar --module-path "%KUKUMO_HOME%\kukumo-launcher.jar:%KUKUMO_HOME%\lib" -m kukumo.launcher/iti.kukumo.launcher.KukumoLauncher %ARGS%
+)
+
+

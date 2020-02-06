@@ -28,4 +28,5 @@ public interface KukumoDataType<T> {
 
     Matcher matcher(Locale locale, CharSequence value);
 
+
 }

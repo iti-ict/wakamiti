@@ -27,7 +27,7 @@
         <skipExampleTests>false</skipExampleTests>
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
-        <spring-boot.version>2.0.5.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
     </properties>
 
 
@@ -102,6 +102,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+
+        <!-- Java Assist (required by Hibernate) -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.26.0-GA</version>
+        </dependency>
+
 
         <!--  ==================================================== -->
         <!--    Kukumo test dependencies -->

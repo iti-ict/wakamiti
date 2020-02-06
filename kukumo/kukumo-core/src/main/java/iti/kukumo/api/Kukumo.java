@@ -4,7 +4,10 @@
 package iti.kukumo.api;
 
 
-import static iti.kukumo.api.KukumoConfiguration.*;
+import static iti.kukumo.api.KukumoConfiguration.OUTPUT_FILE_PATH;
+import static iti.kukumo.api.KukumoConfiguration.REPORT_SOURCE;
+import static iti.kukumo.api.KukumoConfiguration.RESOURCE_PATH;
+import static iti.kukumo.api.KukumoConfiguration.RESOURCE_TYPES;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,16 +31,14 @@ import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.event.EventDispatcher;
 import iti.kukumo.api.extensions.EventObserver;
-import iti.kukumo.api.extensions.PlanBuilder;
 import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.api.extensions.Reporter;
-import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeBuilder;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.PlanSerializer;
 import iti.kukumo.core.backend.DefaultBackendFactory;
-import iti.kukumo.core.plan.PlanNodeBuilder;
 import iti.kukumo.core.runner.PlanRunner;
 import iti.kukumo.util.KukumoLogger;
 import iti.kukumo.util.ResourceLoader;
@@ -148,7 +149,7 @@ public class Kukumo {
         List<String> discoveryPaths,
         Configuration configuration
     ) {
-        Optional<ResourceType<?>> resourceType = contributors.resourceTypeByName(resourceTypeName);
+        var resourceType = contributors.resourceTypeByName(resourceTypeName);
         if (!resourceType.isPresent()) {
             LOGGER.warn(
                 "Resource type {resourceType} is not provided by any contributor",
@@ -163,17 +164,14 @@ public class Kukumo {
                 resourceType.get().info()
             );
         }
-        List<Resource<?>> resources = resourceLoader()
-            .discoverResources(discoveryPaths, resourceType.get());
 
+        var resources = resourceLoader().discoverResources(discoveryPaths, resourceType.get());
         if (resources.isEmpty()) {
             LOGGER.warn("No resources of type {resourceType}", resourceTypeName);
             return Optional.empty();
         }
 
-        Optional<PlanBuilder> planBuilder = contributors
-            .createPlanBuilderFor(resourceType.get(), configuration);
-
+        var planBuilder = contributors.createPlanBuilderFor(resourceType.get(), configuration);
         if (!planBuilder.isPresent()) {
             LOGGER.warn(
                 "No plan builder suitable for resource type {resourceType} has been found",
@@ -186,12 +184,13 @@ public class Kukumo {
 
         List<PlanTransformer> planTransformers = contributors.planTransformers()
             .collect(Collectors.toList());
-        for (PlanTransformer planTransformer : planTransformers) {
+        for (var planTransformer : planTransformers) {
             planNodeBuilder = planTransformer.transform(planNodeBuilder, configuration);
         }
 
         return Optional.ofNullable(planNodeBuilder.build());
     }
+
 
 
     private PlanNode mergePlans(List<PlanNode> plans) {
@@ -295,18 +294,18 @@ public class Kukumo {
             );
         }
         PlanSerializer deserializer = planSerializer();
-        PlanNodeDescriptor[] plans;
+        PlanNodeSnapshot[] plans;
         try (Stream<Path> walker = Files.walk(sourceFolder)) {
             plans = walker
                 .map(Path::toFile)
                 .filter(File::exists)
                 .filter(File::isFile)
                 .map(ThrowableFunction.unchecked(deserializer::read))
-                .toArray(PlanNodeDescriptor[]::new);
+                .toArray(PlanNodeSnapshot[]::new);
         } catch (IOException e1) {
             throw new KukumoException("Error searching source file/folder", e1);
         }
-        PlanNodeDescriptor rootNode = PlanNodeDescriptor.group(plans);
+        PlanNodeSnapshot rootNode = PlanNodeSnapshot.group(plans);
         for (Reporter reporter : reporters) {
             try {
                 if (LOGGER.isDebugEnabled()) {
@@ -328,5 +327,7 @@ public class Kukumo {
         }
 
     }
+
+
 
 }

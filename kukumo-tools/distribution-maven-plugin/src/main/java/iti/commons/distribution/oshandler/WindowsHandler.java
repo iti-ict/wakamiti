@@ -1,0 +1,20 @@
+package iti.commons.distribution.oshandler;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.logging.Logger;
+
+public class WindowsHandler extends OsHandler {
+
+    protected WindowsHandler(Logger logger) {
+        super(logger);
+    }
+
+
+    @Override
+    protected void performRegisterEnvVarirable(Map<String, String> variables) throws IOException {
+        variables.forEach((key,value) -> execute("setx",key,value));
+    }
+
+
+}

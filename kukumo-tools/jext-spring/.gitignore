@@ -1,13 +1,6 @@
-# Java
-**/target
-
-# IntelliJ
-**/.idea
-*.iml
-**/out
 /.classpath
 /.project
-/.settings/
-/.attach_pid*
-/src/site/markdown/
-
+/jext-spring.iml
+/target/
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

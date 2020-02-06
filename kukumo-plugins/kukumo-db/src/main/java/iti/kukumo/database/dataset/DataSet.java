@@ -4,6 +4,8 @@
 package iti.kukumo.database.dataset;
 
 
+import iti.kukumo.database.CaseSensitivity;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,11 +23,13 @@ public abstract class DataSet implements Closeable {
     protected String table;
     protected String[] columns;
     protected String origin;
+    protected String nullSymbol;
 
 
-    public DataSet(String table, String origin) {
+    public DataSet(String table, String origin, String nullSymbol) {
         this.table = table;
         this.origin = origin;
+        this.nullSymbol = nullSymbol;
     }
 
 
@@ -44,12 +48,22 @@ public abstract class DataSet implements Closeable {
     }
 
 
+    public String nullSymbol() { return nullSymbol; }
+
+
     public String collectColumns(CharSequence delimiter) {
         return Stream.of(columns).collect(Collectors.joining(delimiter));
     }
 
-
     public String collectColumns(UnaryOperator<String> columnMapper, CharSequence delimiter) {
+        return Stream.of(columns).map(columnMapper).collect(Collectors.joining(delimiter));
+    }
+
+    public String collectColumns(CharSequence delimiter, CaseSensitivity caseSensitivity) {
+        return Stream.of(columns).map(caseSensitivity::format).collect(Collectors.joining(delimiter));
+    }
+
+    public String collectColumns(UnaryOperator<String> columnMapper, CharSequence delimiter, CaseSensitivity caseSensitivity) {
         return Stream.of(columns).map(columnMapper).collect(Collectors.joining(delimiter));
     }
 
@@ -128,6 +142,13 @@ public abstract class DataSet implements Closeable {
             }
         }
         return false;
+    }
+
+    protected Object nullIfMatchNullSymbol(Object value) {
+        if (value instanceof String && nullSymbol.equals(value)) {
+            return null;
+        }
+        return value;
     }
 
 }

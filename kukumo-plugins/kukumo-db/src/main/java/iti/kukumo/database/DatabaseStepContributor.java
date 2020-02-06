@@ -4,20 +4,6 @@
 package iti.kukumo.database;
 
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
@@ -27,13 +13,17 @@ import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.database.dataset.CsvDataSet;
-import iti.kukumo.database.dataset.DataSet;
-import iti.kukumo.database.dataset.DataTableDataSet;
-import iti.kukumo.database.dataset.InlineDataSet;
-import iti.kukumo.database.dataset.MultiDataSet;
-import iti.kukumo.database.dataset.OoxmlDataSet;
+import iti.kukumo.database.dataset.*;
 import iti.kukumo.util.KukumoLogger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 
 
@@ -44,16 +34,16 @@ public class DatabaseStepContributor implements StepContributor {
     private static final Logger LOGGER = KukumoLogger
         .of(LoggerFactory.getLogger("iti.kukumo.database"));
 
-    private static ConnectionManager connectionManager = Kukumo.instance().extensionManager()
+    private static ConnectionManager connectionManager = Kukumo.extensionManager()
         .getExtension(ConnectionManager.class)
         .orElseThrow(() -> new KukumoException("Cannot find a connection manager"));
 
     private final ConnectionParameters connectionParameters = new ConnectionParameters();
+    private final DatabaseHelper helper = new DatabaseHelper(connectionParameters,this::connection,this::nullSymbol);
 
-    private final DatabaseHelper helper = new DatabaseHelper(this::connection);
     private Connection connection;
     private String xlsIgnoreSheetRegex;
-    private String xlsNullSymbol;
+    private String nullSymbol;
     private String csvFormat;
     private boolean enableCleanupUponCompletion;
 
@@ -61,14 +51,14 @@ public class DatabaseStepContributor implements StepContributor {
     public Connection connection() throws SQLException {
         if (connection == null) {
             connection = connectionManager.obtainConnection(connectionParameters);
+            LOGGER.debug(
+                    "Using database connection of type {} provided by {contributor}",
+                    connection.getClass().getSimpleName(),
+                    connectionManager.info()
+            );
         } else {
             connection = connectionManager.refreshConnection(connection, connectionParameters);
         }
-        LOGGER.debug(
-            "Using database connection of type {} provided by {contributor}",
-            connection.getClass().getSimpleName(),
-            connectionManager.info()
-        );
         return connection;
     }
 
@@ -82,9 +72,8 @@ public class DatabaseStepContributor implements StepContributor {
         this.xlsIgnoreSheetRegex = ignoreSheetRegex;
     }
 
-
-    public void setXlsNullSymbol(String nullSymbol) {
-        this.xlsNullSymbol = nullSymbol;
+    public void setNullSymbol(String nullSymbol) {
+        this.nullSymbol = nullSymbol;
     }
 
 
@@ -97,6 +86,10 @@ public class DatabaseStepContributor implements StepContributor {
         this.enableCleanupUponCompletion = enableCleanupUponCompletion;
     }
 
+    public void setCaseSensitivity(CaseSensitivity caseSensitivity) {
+        this.helper.setCaseSensitivity(caseSensitivity);
+    }
+
 
     private Matcher<Long> matcherEmpty() {
         return Matchers.equalTo(0L);
@@ -107,6 +100,9 @@ public class DatabaseStepContributor implements StepContributor {
         return Matchers.greaterThan(0L);
     }
 
+    private String nullSymbol() {
+        return nullSymbol;
+    }
 
     @TearDown(order = 1)
     public void cleanUp() {
@@ -119,12 +115,6 @@ public class DatabaseStepContributor implements StepContributor {
         if (this.connection != null) {
             connectionManager.releaseConnection(connection);
         }
-    }
-
-
-    @Step("db.define.database.schema")
-    public void setSchema(String schema) throws SQLException {
-        connection().setSchema(schema);
     }
 
 
@@ -162,7 +152,7 @@ public class DatabaseStepContributor implements StepContributor {
         String table,
         DataTable dataTable
     ) throws IOException, SQLException {
-        try (DataSet dataSet = new DataTableDataSet(table, dataTable)) {
+        try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
             helper.deleteDataSet(dataSet);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
@@ -171,9 +161,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step("db.action.insert.from.xls")
     public void insertFromXLSFile(File file) throws IOException, SQLException {
-        try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, xlsNullSymbol
-        )) {
+        try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             helper.deleteMultiDataSet(multiDataSet);
             helper.insertMultiDataSet(multiDataSet.copy(), enableCleanupUponCompletion);
         }
@@ -182,7 +170,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.insert.from.csv", args = { "csv:file", "table:word" })
     public void insertFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
             helper.deleteDataSet(dataSet);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
@@ -194,7 +182,7 @@ public class DatabaseStepContributor implements StepContributor {
         String table,
         DataTable dataTable
     ) throws IOException, SQLException {
-        try (DataSet dataSet = new DataTableDataSet(table, dataTable)) {
+        try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
             helper.deleteDataSet(dataSet);
         }
     }
@@ -205,7 +193,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws IOException, SQLException, InvalidFormatException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, xlsNullSymbol
+            file, xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.deleteMultiDataSet(multiDataSet);
         }
@@ -214,7 +202,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.delete.from.csv", args = { "csv:file", "table:word" })
     public void deleteFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
             helper.deleteDataSet(dataSet);
         }
     }
@@ -234,7 +222,7 @@ public class DatabaseStepContributor implements StepContributor {
         String value
     ) throws SQLException, IOException {
         try (DataSet dataSet = new InlineDataSet(
-            table, new String[] { column }, new Object[] { value }
+            table, new String[] { column }, new Object[] { value }, nullSymbol
         )) {
             helper.deleteDataSet(dataSet);
         }
@@ -251,7 +239,7 @@ public class DatabaseStepContributor implements StepContributor {
         String value2
     ) throws SQLException, IOException {
         try (DataSet dataSet = new InlineDataSet(
-            table, new String[] { column1, column2 }, new Object[] { value1, value2 }
+            table, new String[] { column1, column2 }, new Object[] { value1, value2 }, nullSymbol
         )) {
             helper.deleteDataSet(dataSet);
         }
@@ -315,7 +303,7 @@ public class DatabaseStepContributor implements StepContributor {
         String table,
         DataTable dataTable
     ) throws IOException, SQLException {
-        try (DataSet dataSet = new DataTableDataSet(table, dataTable)) {
+        try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
             helper.assertDataSetExists(dataSet);
         }
     }
@@ -326,7 +314,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws InvalidFormatException, IOException, SQLException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, xlsNullSymbol
+            file, xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.assertMultiDataSetExists(multiDataSet);
         }
@@ -335,7 +323,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
             helper.assertDataSetExists(dataSet);
         }
     }
@@ -398,26 +386,9 @@ public class DatabaseStepContributor implements StepContributor {
         String table,
         DataTable dataTable
     ) throws IOException, SQLException {
-        try (DataSet dataSet = new DataTableDataSet(table, dataTable)) {
+        try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
             helper.assertDataSetNotExists(dataSet);
         }
-    }
-
-
-    @Step(value = "db.assert.table.count.row.single.id", args = { "id:text", "table:word",
-                    "matcher:long-assertion" })
-    public void assertRowCountBySingleId(
-        String id,
-        String table,
-        Matcher<Long> matcher
-    ) throws SQLException {
-        String keyColumn = helper.primaryKey(table, true)[0];
-        helper.assertCountRowsInTableByColumns(
-            matcher,
-            table,
-            new String[] { keyColumn },
-            new Object[] { id }
-        );
     }
 
 
@@ -474,7 +445,7 @@ public class DatabaseStepContributor implements StepContributor {
         Matcher<Long> matcher,
         DataTable dataTable
     ) throws IOException, SQLException {
-        try (DataSet dataSet = new DataTableDataSet(table, dataTable)) {
+        try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
             helper.assertCountRowsInTableByDataSet(dataSet, matcher);
         }
     }
@@ -485,7 +456,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws InvalidFormatException, IOException, SQLException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, xlsNullSymbol
+            file, xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.assertMultiDataSetNotExists(multiDataSet);
         }
@@ -494,7 +465,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.not.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileNotExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
             helper.assertDataSetNotExists(dataSet);
         }
     }
@@ -510,5 +481,6 @@ public class DatabaseStepContributor implements StepContributor {
     public void assertTableIsNotEmpty(String table) throws SQLException {
         helper.assertCountRowsInTableByClause(matcherNonEmpty(), table, "1=1");
     }
+
 
 }

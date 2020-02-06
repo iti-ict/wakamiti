@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
 
-    <!--
-        This POM is used as base for any child project in a way that it is not necessary
-        manage details of each child individually. However, every child must be considered
-        as an independent project, and thus, their coordinates have not to be align with
-        the defined here.
-        The version number will be always RELEASE regardless the versions of the children.
-    -->
+    <!-- This POM is used as base for any child project in a way that it is
+        not necessary manage details of each child individually. However, every child
+        must be considered as an independent project, and thus, their coordinates
+        have not to be align with the defined here. The version number will be always
+        RELEASE regardless the versions of the children. -->
 
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-project</artifactId>
@@ -27,8 +25,10 @@
         <module>kukumo-tools/jext-spring</module>
         <module>kukumo-tools/configurer</module>
         <module>kukumo-tools/maven-fetcher</module>
-        <module>kukumo-tools/testing-embedded-db</module>
         <module>kukumo-tools/slf4j-ansi</module>
+        <module>kukumo-tools/gherkin-parser</module>
+        <module>kukumo-tools/maven-aether-provider-java9</module>
+        <module>kukumo-tools/distribution-maven-plugin</module>
         <!-- kukumo -->
         <module>kukumo/kukumo-core</module>
         <module>kukumo/kukumo-launcher</module>
@@ -47,11 +47,8 @@
     </modules>
 
 
-    <!--
-      =============================================================
-      The following configuration will be inherited by every module
-      =============================================================
-    -->
+    <!-- ============================================================= The following
+        configuration will be inherited by every module ============================================================= -->
 
     <organization>
         <name>ITI - Instituto Tecnológico de Informática</name>
@@ -68,22 +65,46 @@
     <properties>
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8
-        </project.reporting.outputEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- build versions -->
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <maven.compiler.version>3.8.0</maven.compiler.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <!-- paths -->
         <maven.repo.local>${env.HOME}/.m2/repository</maven.repo.local>
+
         <!-- dependency versions -->
-        <lombok.version>1.18.6</lombok.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <log4j.version>2.11.2</log4j.version>
-        <junit.version>4.12</junit.version>
-        <jsonassert.version>1.5.0</jsonassert.version>
-        <kukumo.version>0.9.1</kukumo.version>
+        <lombok.version>1.18.10</lombok.version>
+        <slf4j-api.version>1.7.29</slf4j-api.version>
+        <log4j.version>2.13.0</log4j.version>
+        <junit.version>4.13-rc-2</junit.version>
+        <assertj-core.version>3.14.0</assertj-core.version>
+        <jackson.version>2.10.1</jackson.version>
+        <snakeyaml.version>1.25</snakeyaml.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <plexus-utils.version>3.2.0</plexus-utils.version>
+        <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
+        <plexus-component-annotations.version>2.1.0</plexus-component-annotations.version>
+        <plexus-interpolation.version>1.26</plexus-interpolation.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <commons-io.version>2.6</commons-io.version>
+        <commons-logging.version>1.2</commons-logging.version>
+        <commons-configuration2.version>2.6</commons-configuration2.version>
+        <maven-plugin-api.version>3.6.1</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+        <maven-artifact.version>3.6.1</maven-artifact.version>
+        <maven-fetcher.version>1.0.0</maven-fetcher.version>
+        <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
+        <aether.version>1.0.2.v20150114</aether.version>
+        <guice.version>4.2.2</guice.version>
+        <guava.version>28.1-jre</guava.version>
+        <javax.inject.version>1</javax.inject.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+
+
         <!-- plugin versions -->
         <jacoco.version>0.8.2</jacoco.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
@@ -92,7 +113,114 @@
         <maven.ant.version>1.8</maven.ant.version>
         <maven.info.reports.version>3.0.0</maven.info.reports.version>
         <maven.javadoc.version>2.8</maven.javadoc.version>
+        <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
+
     </properties>
+
+
+
+
+    <!-- dependency management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest.core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven-plugin-api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-classworlds</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-component-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-artifact</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>${maven-artifact.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons-configuration2.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 
     <!-- basic build features -->
@@ -103,6 +231,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <verbose>${verbose}</verbose>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <!-- Surefire with JaCoCo agent -->
             <plugin>
@@ -110,7 +245,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18.1</version>
                 <configuration>
-                    <argLine>${surefireJacocoAgent} -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                    <argLine>${surefireJacocoAgent}
+                        -Djdk.net.URLClassPath.disableClassPathURLCheck=true
+                        --illegal-access=permit</argLine>
                 </configuration>
             </plugin>
             <!-- Failsafe with JaCoCo agent -->
@@ -124,7 +261,9 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                            <argLine>${failsafeJacocoAgent} -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                            <argLine>${failsafeJacocoAgent}
+                                -Djdk.net.URLClassPath.disableClassPathURLCheck=true
+                                --illegal-access=permit</argLine>
                         </configuration>
                     </execution>
                 </executions>
@@ -178,65 +317,11 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${maven.site.version}</version>
             </plugin>
+
+
         </plugins>
     </build>
 
-
-
-
-    <!-- basic dependencies -->
-    <dependencies>
-        <!-- COMPILE SCOPE -->
-        <!-- SLF4J API -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- TEST SCOPE -->
-        <!-- Log4j 2 over SLF4J -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- JUnit testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- generic test assertions -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.10.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-
-
-    <!-- extra dependencies -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- lombok -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <!-- JSON test assertions -->
-            <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${jsonassert.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 
 
@@ -264,7 +349,7 @@
                 <configuration>
                     <failOnError>false</failOnError>
                     <doclint>none</doclint>
-                    <quiet/>
+                    <quiet />
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -323,19 +408,13 @@
                                 <configuration>
                                     <target>
                                         <!-- Uses README.md as the main page of the site -->
-                                        <copy
-                                                file="${basedir}/README.md"
-                                                tofile="${basedir}/src/site/markdown/index.md"
-                                                overwrite="true"
-                                                failonerror="false"
-                                        ></copy>
-                                        <!-- Use any .md file from  /docs/* as a site resource -->
-                                        <copy
-                                                file="${basedir}/docs/*.md"
-                                                todir="${basedir}/src/site/markdown"
-                                                overwrite="true"
-                                                failonerror="false"
-                                        ></copy>
+                                        <copy file="${basedir}/README.md"
+                                            tofile="${basedir}/src/site/markdown/index.md"
+                                            overwrite="true" failonerror="false"></copy>
+                                        <!-- Use any .md file from /docs/* as a site resource -->
+                                        <copy file="${basedir}/docs/*.md"
+                                            todir="${basedir}/src/site/markdown" overwrite="true"
+                                            failonerror="false"></copy>
                                     </target>
                                 </configuration>
                             </execution>

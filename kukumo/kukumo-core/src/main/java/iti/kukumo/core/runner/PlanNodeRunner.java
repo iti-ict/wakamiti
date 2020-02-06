@@ -16,7 +16,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeDescriptor;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.model.ExecutionState;
 
@@ -107,7 +107,7 @@ public class PlanNodeRunner {
             throw new IllegalStateException("run() method can only be invoked once");
         }
         state = State.RUNNING;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeDescriptor(node));
+        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
         if (!getChildren().isEmpty()) {
             if (node.nodeType() == NodeType.TEST_CASE) {
                 testCasePreExecution(node);
@@ -120,7 +120,7 @@ public class PlanNodeRunner {
             runStep();
         }
         state = State.FINISHED;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeDescriptor(node));
+        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
     }
 
 

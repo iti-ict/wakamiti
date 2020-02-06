@@ -26,9 +26,26 @@
     <!-- dependencies -->
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>compile</scope>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -40,29 +57,49 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <version>${maven.compiler.version}</version>
                 <executions>
                     <execution>
                         <id>default-compile</id>
-                        <configuration>
-                            <compilerArgument>-proc:none</compilerArgument>
-                            <includes>
-                                <include>iti/commons/jext/processor/ExtensionProcessor.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-project</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <proc>none</proc>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>process-test-annotations</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <proc>only</proc>
+                            <annotationProcessors>
+                                <annotationProcessor>iti.commons.jext.ExtensionProcessor</annotationProcessor>
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <arg>--processor-path</arg>
+                                <arg>${project.build.outputDirectory}</arg>
+                            </compilerArgs>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>iti.commons.jext</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -16,6 +16,8 @@ import iti.commons.configurer.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.rest.test.mockserver.HttpServerAdapter;
+import iti.kukumo.rest.test.mockserver.InMemoryServer;
 
 
 
@@ -27,20 +29,21 @@ import iti.kukumo.junit.KukumoJUnitRunner;
 @RunWith(KukumoJUnitRunner.class)
 public class TestRestStepsXML {
 
-    private static MockServer server;
+    private static InMemoryServer server;
 
 
     @BeforeClass
     public static void setupServer() throws IOException {
-        server = new MockServer(
-            MockServer.Format.XML, StandardCharsets.UTF_8, 8888, "src/test/resources/data.json",
-            MockServer.Format.JSON
+        server = new InMemoryServer(
+            HttpServerAdapter.serverFactory(),
+            InMemoryServer.Format.XML, StandardCharsets.UTF_8, 8888, "src/test/resources/data.json",
+            InMemoryServer.Format.JSON
         );
     }
 
 
     @AfterClass
-    public static void teardownServer() {
+    public static void teardownServer() throws IOException {
         server.stop();
     }
 }

@@ -4,8 +4,22 @@
 package iti.kukumo.gherkin;
 
 
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
-import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyOtherNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.childOf;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.copyProperties;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.forEachNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.removeNode;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.sharing;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withProperty;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withTag;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withType;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.withoutChildren;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
+import static iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,16 +27,16 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import gherkin.ast.Examples;
-import gherkin.ast.Feature;
-import gherkin.ast.ScenarioOutline;
 import iti.commons.configurer.Configuration;
+import iti.commons.gherkin.Examples;
+import iti.commons.gherkin.Feature;
+import iti.commons.gherkin.ScenarioOutline;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.core.plan.PlanNodeBuilder;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 import iti.kukumo.core.plan.RuleBasedPlanTransformer;
 

@@ -6,7 +6,6 @@ package iti.kukumo.api;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
 import iti.commons.configurer.Configurator;
 import iti.commons.configurer.Property;
 
@@ -120,12 +119,12 @@ public class KukumoConfiguration {
     }
 
 
-    public static Configuration defaultConfiguration() throws ConfigurationException {
+    public static Configuration defaultConfiguration() {
         return ConfigurationBuilder.instance()
-            .buildFromEnvironment(false)
+            .buildFromEnvironment()
+            .appendFromSystem()
             .filtered(PREFIX)
             .appendFromAnnotation(Defaults.class);
-        // TODO append from file
     }
 
 

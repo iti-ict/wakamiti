@@ -3,12 +3,12 @@ kukumo:
     - gherkin
   launcher:
     modules:
-      - iti.kukumo:kukumo-core-l10n:0.9.0
-      - iti.kukumo:kukumo-rest:0.9.0
-      - iti.kukumo:kukumo-rest-l10n:0.9.0
-      - iti.kukumo:kukumo-db:0.9.0
-      - iti.kukumo:kukumo-db-l10n:0.9.0
-      - iti.kukumo:kukumo-html-report:0.9.0
+      - iti.kukumo:kukumo-core-l10n:0.9.1
+      - iti.kukumo:kukumo-rest:0.9.1
+      - iti.kukumo:kukumo-rest-l10n:0.9.1
+      - iti.kukumo:kukumo-db:0.9.1
+      - iti.kukumo:kukumo-db-l10n:0.9.1
+      - iti.kukumo:kukumo-html-report:0.9.1
       - com.h2database:h2:1.4.199
 mavenFetcher:
   remoteRepositories:

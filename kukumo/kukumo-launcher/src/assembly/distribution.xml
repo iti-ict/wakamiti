@@ -3,16 +3,18 @@
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
     <id>bin</id>
     <formats>
-        <format>tar.gz</format>
-        <format>tar.bz2</format>
-        <format>zip</format>
         <format>dir</format>
     </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
             <useProjectArtifact>false</useProjectArtifact>
+            <excludes>
+                <exclude>com.google.code.findbugs:jsr305</exclude>
+                <exclude>org.hamcrest:hamcrest-core</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
     <fileSets>
@@ -23,16 +25,17 @@
                 <include>README*</include>
                 <include>LICENSE*</include>
                 <include>NOTICE*</include>
-                <include>kukumo.sh</include>
+                <include>kukumo</include>
                 <include>kukumo.bat</include>
                 <include>launcher.properties</include>
+                <include>java-version-checker.jar</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>*.jar</include>
+                <include>kukumo-launcher.jar</include>
             </includes>
         </fileSet>
     </fileSets>

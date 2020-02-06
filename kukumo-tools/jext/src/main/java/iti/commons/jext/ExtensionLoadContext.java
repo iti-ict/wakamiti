@@ -6,39 +6,27 @@ package iti.commons.jext;
 
 import java.util.function.Predicate;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.experimental.Wither;
 
-
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Wither(AccessLevel.PRIVATE)
-@Getter
-@Accessors(fluent = true)
 class ExtensionLoadContext<T> {
 
-    static <T> ExtensionLoadContext<T> all(Class<T> extensionPoint) {
+    public static <T> ExtensionLoadContext<T> all(Class<T> extensionPoint) {
         return new ExtensionLoadContext<>(extensionPoint, dataOf(extensionPoint), selectAll());
     }
 
 
-    static <T> ExtensionLoadContext<T> satisfying(
+    public static <T> ExtensionLoadContext<T> satisfying(
         Class<T> extensionPoint,
         Predicate<T> condition
     ) {
-        return new ExtensionLoadContext<>(extensionPoint, dataOf(extensionPoint), condition);
+        return new ExtensionLoadContext<T>(extensionPoint, dataOf(extensionPoint), condition);
     }
 
 
-    static <T> ExtensionLoadContext<T> satisfyingData(
+    public static <T> ExtensionLoadContext<T> satisfyingData(
         Class<T> extensionPoint,
         Predicate<Extension> condition
     ) {
-        return new ExtensionLoadContext<>(
+        return new ExtensionLoadContext<T>(
             extensionPoint,
             dataOf(extensionPoint),
             conditionFromAnnotation(condition)
@@ -55,30 +43,70 @@ class ExtensionLoadContext<T> {
     private boolean externallyManaged;
 
 
+    private ExtensionLoadContext(
+        Class<T> extensionPoint,
+        ExtensionPoint extensionPointData,
+        Predicate<T> condition
+    ) {
+        this.extensionPoint = extensionPoint;
+        this.extensionPointData = extensionPointData;
+        this.condition = condition;
+
+    }
+
+
+
+
+
     public ExtensionLoadContext<T> withInternalLoader(
         ClassLoader classLoader,
         ExtensionLoader extensionLoader
     ) {
-        return this
-            .withClassLoader(classLoader)
-            .withExtensionLoader(extensionLoader);
+        var context = new ExtensionLoadContext<T>(extensionPoint, extensionPointData, condition);
+        context.classLoader = classLoader;
+        context.extensionLoader = extensionLoader;
+        context.externallyManaged = false;
+        return context;
     }
+
 
 
     public ExtensionLoadContext<T> withExternalLoader(
         ClassLoader classLoader,
         ExtensionLoader extensionLoader
     ) {
-        return this
-            .withClassLoader(classLoader)
-            .withExtensionLoader(extensionLoader)
-            .withExternallyManaged(true);
+        var context = new ExtensionLoadContext<T>(extensionPoint, extensionPointData, condition);
+        context.classLoader = classLoader;
+        context.extensionLoader = extensionLoader;
+        context.externallyManaged = true;
+        return context;
     }
 
 
     public Iterable<T> load() {
         return extensionLoader.load(extensionPoint, classLoader);
     }
+
+
+    public Predicate<T> condition() {
+        return condition;
+    }
+
+
+    public ExtensionPoint extensionPointData() {
+        return extensionPointData;
+    }
+
+
+    public Class<T> extensionPoint() {
+        return extensionPoint;
+    }
+
+
+    public boolean isExternallyManaged() {
+        return externallyManaged;
+    }
+
 
 
     @Override

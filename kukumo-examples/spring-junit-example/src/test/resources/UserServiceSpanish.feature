@@ -7,7 +7,7 @@ Característica: Operaciones del servicio de usuarios
 
    Escenario: Se consulta un usuario existente
       Dado un usuario identificado por '3'
-      Y que los siguientes datos se insertan en la tabla de BBDD USER:
+      Y que se ha insertado los siguientes datos en la tabla de BBDD USER:
         | ID | FIRST_NAME | LAST_NAME |
         | 3  | Samuel L.  | Jackson   |
       Cuando se consulta el usuario

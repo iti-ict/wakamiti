@@ -2,3 +2,8 @@
 .factorypath
 /kukumo.json
 /src/site/markdown/
+/.classpath
+/target/
+/kukumo-rest.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

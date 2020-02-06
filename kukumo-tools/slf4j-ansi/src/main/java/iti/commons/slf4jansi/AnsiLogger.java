@@ -42,6 +42,10 @@ public class AnsiLogger {
         AnsiLogger.configurationChangeObservers.forEach(Runnable::run);
     }
 
+    public static void addStyle(String key, String value) {
+        AnsiLogger.styles.put(key,value);
+        AnsiLogger.configurationChangeObservers.forEach(Runnable::run);
+    }
 
     public static Properties styles() {
         return AnsiLogger.styles;

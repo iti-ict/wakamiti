@@ -4,17 +4,16 @@
 package iti.kukumo.database.test.loader;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
+import iti.kukumo.database.dataset.DataSet;
+import iti.kukumo.database.dataset.OoxmlDataSet;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.junit.Test;
-
-import iti.kukumo.database.dataset.DataSet;
-import iti.kukumo.database.dataset.OoxmlDataSet;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestOoxmlDataSet {
@@ -26,13 +25,13 @@ public class TestOoxmlDataSet {
         try (OoxmlDataSet multiDataSet = new OoxmlDataSet(file, "#.*", "<null>")) {
             Iterator<DataSet> iterator = multiDataSet.iterator();
 
-            DataSet users = iterator.next();
-            assertThat(users.collectColumns(","))
+            DataSet clients = iterator.next();
+            assertThat(clients.collectColumns(","))
                 .isEqualTo("id,first_name,second_name,active,birth_date");
-            assertRow(users, 1., "John", "Smith", true, "2000-10-30");
-            assertRow(users, 2., "Annie", "Hall", false, "2011-09-12");
-            assertRow(users, 3., "Bruce", null, true, "1982-12-31");
-            assertThat(users.nextRow()).isFalse();
+            assertRow(clients, 1., "John", "Smith", true, "2000-10-30");
+            assertRow(clients, 2., "Annie", "Hall", false, "2011-09-12");
+            assertRow(clients, 3., "Bruce", null, true, "1982-12-31");
+            assertThat(clients.nextRow()).isFalse();
 
             DataSet city = iterator.next();
             assertThat(city.collectColumns(",")).isEqualTo("id,name,zip_code");
@@ -42,7 +41,7 @@ public class TestOoxmlDataSet {
             assertThat(city.nextRow()).isFalse();
 
             DataSet userCity = iterator.next();
-            assertThat(userCity.collectColumns(",")).isEqualTo("user_id,city_id");
+            assertThat(userCity.collectColumns(",")).isEqualTo("client_id,city_id");
             assertRow(userCity, 1., 1.);
             assertRow(userCity, 1., 3.);
             assertRow(userCity, 2., 1.);

@@ -30,7 +30,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     private RunNotifier notifier;
 
 
-    public JUnitPlanNodeRunner(
+    JUnitPlanNodeRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     Optional<Backend> backend, PlanNodeLogger logger
     ) {
@@ -38,7 +38,7 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
     }
 
 
-    public JUnitPlanNodeRunner(
+    JUnitPlanNodeRunner(
                     PlanNode node, Configuration configuration, BackendFactory backendFactory,
                     PlanNodeLogger logger
     ) {
@@ -118,9 +118,12 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
             } else if (result.get() == Result.SKIPPED) {
                 notifier.fireTestFailure(new Failure(getDescription(), skipped));
             } else {
-                notifier.fireTestFailure(
-                    new Failure(getDescription(), node.errors().findFirst().orElse(notExecuted))
-                );
+                Throwable error = node.errors().findFirst().orElse(notExecuted);
+                if (error instanceof KukumoSkippedException) {
+                    notifier.fireTestIgnored(getDescription());
+                } else {
+                    notifier.fireTestFailure(new Failure(getDescription(), error));
+                }
             }
         }
     }

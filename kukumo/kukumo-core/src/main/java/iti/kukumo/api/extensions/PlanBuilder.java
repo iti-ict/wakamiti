@@ -9,7 +9,7 @@ import java.util.List;
 import iti.commons.jext.ExtensionPoint;
 import iti.commons.jext.LoadStrategy;
 import iti.kukumo.api.Resource;
-import iti.kukumo.core.plan.PlanNodeBuilder;
+import iti.kukumo.api.plan.PlanNodeBuilder;
 
 
 /** This interface defines the methods required in order to instantiate a * Kukumo model iti.kukumo.test.gherkin.plan from a set of Gherkin resources.* @author luinge@gmail.com*/

@@ -4,25 +4,19 @@
 package iti.kukumo.rest.helpers;
 
 
-import java.io.File;
-
+import org.hamcrest.Matcher;
 import org.junit.ComparisonFailure;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.plan.Document;
 import iti.kukumo.rest.ContentTypeHelper;
-import iti.kukumo.util.ResourceLoader;
+import iti.kukumo.rest.MatchMode;
 
 
 
 @Extension(provider = "iti.kukumo", name = "rest-text-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class TextHelper implements ContentTypeHelper {
-
-    private static final ResourceLoader resourceLoader = Kukumo.instance().resourceLoader();
 
 
     @Override
@@ -32,31 +26,31 @@ public class TextHelper implements ContentTypeHelper {
 
 
     @Override
-    public void assertContent(
-        Document expected,
-        ExtractableResponse<Response> response,
-        boolean exactMatch
-    ) {
-        assertContent(expected.getContent(), response.asString(), exactMatch);
+    public void assertContent(String expected, String actual, MatchMode matchMode) {
+        switch (matchMode) {
+        case STRICT:
+        case STRICT_ANY_ORDER:
+            if (!actual.trim().equals(expected.trim())) {
+                throw new ComparisonFailure("Text differences", expected, actual);
+            }
+            break;
+        case LOOSE:
+            if (!actual.trim().contains(expected.trim())) {
+                throw new ComparisonFailure("Text differences", expected, actual);
+            }
+        }
     }
+
 
 
     @Override
-    public void assertContent(
-        File expected,
-        ExtractableResponse<Response> response,
-        boolean exactMatch
+    public <T> void assertFragment(
+        String fragment,
+        ValidatableResponse response,
+        Class<T> dataType,
+        Matcher<T> matcher
     ) {
-        assertContent(resourceLoader.readFileAsString(expected), response.asString(), exactMatch);
-    }
-
-
-    protected void assertContent(String expected, String actual, boolean exactMatch) {
-        if (exactMatch && !actual.trim().equals(expected.trim())) {
-            throw new ComparisonFailure("Text differences", expected, actual);
-        } else if (!exactMatch && !actual.trim().contains(expected.trim())) {
-            throw new ComparisonFailure("Text differences", expected, actual);
-        }
+        throw new UnsupportedOperationException("Not implemented for content type "+contentType());
     }
 
 }
