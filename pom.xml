@@ -42,8 +42,9 @@
         <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
         <!-- examples -->
-        <module>kukumo-examples</module>
-
+        <module>kukumo-examples/spring-junit-example</module>
+        <module>kukumo-examples/spring-verify-example</module>
+        <module>kukumo-examples/spring-launcher-example</module>
     </modules>
 
 

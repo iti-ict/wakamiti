@@ -69,6 +69,7 @@ public class TestPlanFactory {
         Properties properties = new Properties();
         properties.put(KukumoConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(KukumoConfiguration.RESOURCE_PATH, path);
+        properties.put(KukumoConfiguration.OUTPUT_FILE_PATH, "target/kukumo.json");
         if (tagExpression != null) {
             properties.put(KukumoConfiguration.TAG_FILTER, tagExpression);
         }

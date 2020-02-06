@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-html-report</artifactId>
-    <version>0.9.1</version>
+    <version>1.0.0</version>
 
     <!-- additional information -->
     <name>Kukumo::HTML Report</name>
@@ -28,7 +28,7 @@
     <properties>
         <jext.version>1.0.0</jext.version>
         <j2html.version>1.4.0</j2html.version>
-        <kukumo-core.version>0.9.1</kukumo-core.version>
+        <kukumo-core.version>1.0.0</kukumo-core.version>
     </properties>
 
 
