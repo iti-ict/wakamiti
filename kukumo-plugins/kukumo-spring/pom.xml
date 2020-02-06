@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-spring</artifactId>
-    <version>0.9.1</version>
+    <version>1.0.0</version>
 
     <name>Kukumo::SpringBoot support</name>
 
@@ -26,9 +26,9 @@
         <jext.version>1.0.0</jext.version>
         <jext-spring.version>1.0.0</jext-spring.version>
         <spring.version>[2.0.5.RELEASE,)</spring.version>
-        <kukumo-core.version>0.9.1</kukumo-core.version>
-        <kukumo-db.version>0.9.1</kukumo-db.version>
-        <kukumo-rest.version>0.9.1</kukumo-rest.version>
+        <kukumo-core.version>1.0.0</kukumo-core.version>
+        <kukumo-db.version>1.0.0</kukumo-db.version>
+        <kukumo-rest.version>1.0.0</kukumo-rest.version>
     </properties>
 
 
