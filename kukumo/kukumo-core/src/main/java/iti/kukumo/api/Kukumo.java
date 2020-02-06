@@ -9,10 +9,7 @@ import static iti.kukumo.api.KukumoConfiguration.REPORT_SOURCE;
 import static iti.kukumo.api.KukumoConfiguration.RESOURCE_PATH;
 import static iti.kukumo.api.KukumoConfiguration.RESOURCE_TYPES;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,9 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import iti.kukumo.api.extensions.ResourceType;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
@@ -109,11 +109,11 @@ public class Kukumo {
 
     /**
      * Attempt to create a plan using the resource type and the feature path
-     * defined in then received configuration.
+     * defined in the received configuration.
      *
      * @param configuration
      * @return A new plan ready to be executed
-     * @throws KukumoException if the plan couldn't be created
+     * @throws KukumoException if the plan was not created
      */
     public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
@@ -144,28 +144,86 @@ public class Kukumo {
     }
 
 
+
+
+    /**
+     * Attempt to create a plan using the resource type defined in the received configuration,
+     * but using the given content instead of discovering resources
+     * @param configuration
+     * @param inputStream
+     * @return a new plan ready to be executed
+     * @throws KukumoException if the plan was not created
+     */
+    public PlanNode createPlanFromContent(Configuration configuration, InputStream inputStream) {
+        LOGGER.info("{important}", "Creating the Test Plan...");
+        String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
+            .orElseThrow(()->new KukumoException("No resource types configured"));
+        Optional<PlanNode> plan = createPlanForResourceType(
+             resourceTypeName,
+             inputStream,
+             configuration
+        );
+        if (plan.isEmpty()) {
+            throw new KukumoException("No test plans created");
+        } else {
+            publishEvent(Event.PLAN_CREATED, plan.get());
+            return plan.get();
+        }
+    }
+
+
+
+
     private Optional<PlanNode> createPlanForResourceType(
         String resourceTypeName,
         List<String> discoveryPaths,
         Configuration configuration
     ) {
+       return createPlanForResourceType(
+           resourceTypeName,
+           resourceType->resourceLoader().discoverResources(discoveryPaths, resourceType),
+           configuration
+       );
+    }
+
+
+
+    private Optional<PlanNode> createPlanForResourceType(
+        String resourceTypeName,
+        InputStream inputStream,
+        Configuration configuration
+    ) {
+        return createPlanForResourceType(
+            resourceTypeName,
+            resourceType->List.of(resourceLoader().fromInputStream(resourceType,inputStream)),
+            configuration
+        );
+    }
+
+
+
+
+    private Optional<PlanNode> createPlanForResourceType(
+            String resourceTypeName,
+            Function<ResourceType<?>,List<Resource<?>>> resourceSupplier,
+            Configuration configuration
+    ) {
         var resourceType = contributors.resourceTypeByName(resourceTypeName);
         if (!resourceType.isPresent()) {
             LOGGER.warn(
-                "Resource type {resourceType} is not provided by any contributor",
-                resourceTypeName
+                    "Resource type {resourceType} is not provided by any contributor",
+                    resourceTypeName
             );
             return Optional.empty();
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "Creating plan for resources of type {resourceType} provided by {contributor}...",
-                resourceTypeName,
-                resourceType.get().info()
+                    "Creating plan for resources of type {resourceType} provided by {contributor}...",
+                    resourceTypeName,
+                    resourceType.get().info()
             );
         }
-
-        var resources = resourceLoader().discoverResources(discoveryPaths, resourceType.get());
+        var resources = resourceSupplier.apply(resourceType.get());
         if (resources.isEmpty()) {
             LOGGER.warn("No resources of type {resourceType}", resourceTypeName);
             return Optional.empty();
@@ -174,8 +232,8 @@ public class Kukumo {
         var planBuilder = contributors.createPlanBuilderFor(resourceType.get(), configuration);
         if (!planBuilder.isPresent()) {
             LOGGER.warn(
-                "No plan builder suitable for resource type {resourceType} has been found",
-                resourceTypeName
+                    "No plan builder suitable for resource type {resourceType} has been found",
+                    resourceTypeName
             );
             return Optional.empty();
         }
@@ -183,13 +241,15 @@ public class Kukumo {
         PlanNodeBuilder planNodeBuilder = planBuilder.get().createPlan(resources);
 
         List<PlanTransformer> planTransformers = contributors.planTransformers()
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
         for (var planTransformer : planTransformers) {
             planNodeBuilder = planTransformer.transform(planNodeBuilder, configuration);
         }
 
         return Optional.ofNullable(planNodeBuilder.build());
     }
+
+
 
 
 

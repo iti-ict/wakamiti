@@ -52,6 +52,7 @@ public class ResourceLoader {
     private static final int BUFFER_SIZE = 2048;
 
 
+
     public interface Parser<T> {
         T parse(InputStream stream, Charset charset) throws IOException;
     }
@@ -69,6 +70,19 @@ public class ResourceLoader {
         this.charset = StandardCharsets.UTF_8;
         Locale.setDefault(Locale.ENGLISH); // avoid different behaviours regarding the OS language
     }
+
+
+
+
+    public <T> Resource<T> fromInputStream(ResourceType<T> resourceType, InputStream inputStream) {
+        try {
+            return new Resource<T>("", "", resourceType.parse(inputStream,charset));
+        } catch (IOException e) {
+            throw new KukumoException("Error reading input stream: ",e);
+        }
+    }
+
+
 
 
     public Reader reader(URL url) throws IOException {
