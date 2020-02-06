@@ -85,8 +85,9 @@ generate_artifacts:
   dependencies:
     - verify
   script:
-    - 'mvn package -DskipTests'
+    - 'mvn package -DskipTests -Dassemble-zips'
     - 'mkdir artifacts'
+    - 'find -type f -name "kukumo*.zip" -exec cp {} artifacts/ \;'
     - 'find -type f  -regex ".*\/target\/[^\/]*\.jar" -exec cp {} artifacts/ \;'
   artifacts:
     paths:
