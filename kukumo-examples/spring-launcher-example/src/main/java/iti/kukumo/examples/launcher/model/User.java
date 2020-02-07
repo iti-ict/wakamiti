@@ -1,4 +1,4 @@
-package iti.kukumo.spring.sample.app.model;
+package iti.kukumo.examples.launcher.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

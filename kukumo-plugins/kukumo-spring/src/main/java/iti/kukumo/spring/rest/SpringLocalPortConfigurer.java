@@ -4,6 +4,8 @@
 package iti.kukumo.spring.rest;
 
 
+import static iti.kukumo.spring.db.SpringConnectionProvider.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -15,38 +17,51 @@ import org.springframework.stereotype.Component;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
+import iti.commons.configurer.Configurer;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.extensions.Configurator;
+import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.rest.RestStepContributor;
 import iti.kukumo.util.KukumoLogger;
 
 
-@Extension(provider = "iti.kukumo", name = "rest-configurator-springboot", extensionPoint = "iti.kukumo.api.extensions.Configurator", externallyManaged = true, priority = Integer.MAX_VALUE // to
-                                                                                                                                                                                             // ensure
-                                                                                                                                                                                             // it
-                                                                                                                                                                                             // will
-                                                                                                                                                                                             // executed
-                                                                                                                                                                                             // last
+@Extension(
+    provider = "kukumo",
+    name = "rest-configurator-springboot",
+    extensionPoint = "iti.kukumo.api.extensions.ConfigContributor",
+    externallyManaged = true,
+    priority = Integer.MAX_VALUE // to ensure it will executed last
 )
 @Component
 @ConditionalOnProperty(SpringLocalPortConfigurer.USE_SPRING_LOCAL_SERVER_PORT)
-public class SpringLocalPortConfigurer implements Configurator<RestStepContributor> {
+public class SpringLocalPortConfigurer implements ConfigContributor<RestStepContributor> {
 
     private static final Logger LOGGER = KukumoLogger.forClass(SpringLocalPortConfigurer.class);
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "kukumo.rest.useSpringLocalServerPort";
 
+    private static final Configuration DEFAULTS = Configuration.fromPairs(
+        USE_SPRING_LOCAL_SERVER_PORT, "false",
+        USE_SPRING_DATASOURCE, "false"
+    );
+
     @Autowired
     private Environment environment;
 
+    @Override
+    public Configuration defaultConfiguration() {
+        return DEFAULTS;
+    }
 
     @Override
     public boolean accepts(Object contributor) {
         return RestStepContributor.class.isAssignableFrom(contributor.getClass());
     }
 
-
     @Override
-    public void configure(RestStepContributor contributor, Configuration configuration) {
+    public Configurer<RestStepContributor> configurer() {
+        return this::configure;
+    }
+
+    private void configure(RestStepContributor contributor, Configuration configuration) {
         try {
             String localServerPort = environment.getProperty("local.server.port");
             URL baseURL = new URL("http://localhost:" + localServerPort);

@@ -1,22 +1,16 @@
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.api;
 
-
 import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.Configurator;
-import iti.commons.configurer.Property;
+import iti.commons.configurer.Configurer;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ConfigContributor;
 
-
-public class KukumoConfiguration {
+@Extension(name = "core-properties")
+public class KukumoConfiguration implements ConfigContributor<Void> {
 
     public static final String PREFIX = "kukumo";
 
-    // basic configuration
-
-    /** Types of resources to be discovered and processed */
+      /** Types of resources to be discovered and processed */
     public static final String RESOURCE_TYPES = "resourceTypes";
 
     /** Language used by a resource */
@@ -84,51 +78,53 @@ public class KukumoConfiguration {
     /** Show the elapsed time for each step in the logs */
     public static final String LOGS_SHOW_ELAPSED_TIME = "logs.showElapsedTime";
 
-
-    @Configurator(properties = {
-                    @Property(key = RESOURCE_PATH, value = "."),
-                    @Property(key = OUTPUT_FILE_PATH, value = Defaults.DEFAULT_OUTPUT_FILE_PATH),
-                    @Property(key = REPORT_GENERATION, value = "true"),
-                    @Property(key = ID_TAG_PATTERN, value = Defaults.DEFAULT_ID_TAG_PATTERN),
-                    @Property(key = REDEFINITION_ENABLED, value = Defaults.DEFAULT_REDEFINITION_ENABLED),
-                    @Property(key = REDEFINITION_DEFINITION_TAG, value = Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG),
-                    @Property(key = REDEFINITION_IMPLEMENTATION_TAG, value = Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG),
-                    @Property(key = "logs.ansi.styles.logo", value = "bold,green"),
-                    @Property(key = "logs.ansi.styles.keyword", value = "blue"),
-                    @Property(key = "logs.ansi.styles.source", value = "faint"),
-                    @Property(key = "logs.ansi.styles.time", value = "faint"),
-                    @Property(key = "logs.ansi.styles.resourceType", value = "cyan"),
-                    @Property(key = "logs.ansi.styles.contributor", value = "green"),
-                    @Property(key = "logs.ansi.styles.stepResult.PASSED", value = "green,bold"),
-                    @Property(key = "logs.ansi.styles.stepResult.SKIPPED", value = "faint"),
-                    @Property(key = "logs.ansi.styles.stepResult.UNDEFINED", value = "yellow"),
-                    @Property(key = "logs.ansi.styles.stepResult.FAILED", value = "red,bold"),
-                    @Property(key = "logs.ansi.styles.stepResult.ERROR", value = "red,bold")
-    })
-    public static class Defaults {
-
-        public static final String DEFAULT_OUTPUT_FILE_PATH = "kukumo.json";
-        public static final String DEFAULT_ID_TAG_PATTERN = "ID-(.*)";
-        public static final String DEFAULT_REDEFINITION_ENABLED = "true";
-        public static final String DEFAULT_REDEFINITION_DEFINITION_TAG = "definition";
-        public static final String DEFAULT_REDEFINITION_IMPLEMENTATION_TAG = "implementation";
+    /** Set if the steps are treated as tests. */
+    public static final String TREAT_STEPS_AS_TESTS = "junit.treatStepsAsTests";
 
 
-        private Defaults() {
-            /* avoid instantiation */ }
+    static final Configuration DEFAULTS = Configuration
+        .fromEnvironment()
+        .appendFromSystem()
+        .filtered(PREFIX)
+        .appendFromPairs(
+            RESOURCE_PATH, ".",
+            OUTPUT_FILE_PATH, "kukumo.json",
+            REPORT_GENERATION, "true",
+            ID_TAG_PATTERN, "ID-(.*)",
+            REDEFINITION_ENABLED, "true",
+            REDEFINITION_DEFINITION_TAG, "definition",
+            REDEFINITION_IMPLEMENTATION_TAG, "implementation",
+            LOGS_SHOW_LOGO, "true",
+            LOGS_SHOW_STEP_SOURCE, "false",
+            LOGS_SHOW_ELAPSED_TIME, "true",
+            TREAT_STEPS_AS_TESTS, "false",
+            "logs.ansi.styles.keyword", "blue",
+            "logs.ansi.styles.source", "faint",
+            "logs.ansi.styles.time", "faint",
+            "logs.ansi.styles.resourceType", "cyan",
+            "logs.ansi.styles.contributor", "green",
+            "logs.ansi.styles.stepResult.PASSED", "green,bold",
+            "logs.ansi.styles.stepResult.SKIPPED", "faint",
+            "logs.ansi.styles.stepResult.UNDEFINED", "yellow",
+            "logs.ansi.styles.stepResult.FAILED", "red,bold",
+            "logs.ansi.styles.stepResult.ERROR", "red,bold"
+        );
+
+
+    @Override
+    public Configuration defaultConfiguration() {
+        return DEFAULTS;
     }
 
 
-    public static Configuration defaultConfiguration() {
-        return ConfigurationBuilder.instance()
-            .buildFromEnvironment()
-            .appendFromSystem()
-            .filtered(PREFIX)
-            .appendFromAnnotation(Defaults.class);
+    @Override
+    public boolean accepts(Object contributor) {
+        return false;
     }
 
 
-    private KukumoConfiguration() {
-        // avoid instantation
+    @Override
+    public Configurer<Void> configurer() {
+        return (x,y)->{};
     }
 }

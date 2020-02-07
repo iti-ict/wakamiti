@@ -18,10 +18,9 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-import org.apache.commons.configuration2.BaseConfiguration;
-
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
+import org.apache.commons.configuration2.BaseConfiguration;
 
 
 public class ApacheConfiguration2 extends AbstractConfiguration {
@@ -108,7 +107,9 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
 
     @Override
     public <T> Optional<T> get(String key, Class<T> type) {
-        return Optional.ofNullable(conf.get(type, key));
+        String raw = conf.getString(key);
+        boolean empty = (raw == null || "".equals(raw));
+        return Optional.ofNullable(empty ? null : conf.get(type, key));
     }
 
 
@@ -151,7 +152,7 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
         StringBuilder string = new StringBuilder("configuration:\n---------------\n");
         conf.getKeys().forEachRemaining(key -> {
             final String[] values = conf.getStringArray(key);
-            String value = "";
+            String value = "<undefined>";
             if (values.length == 1) {
                 value = values[0];
             } else if (values.length > 1) {
