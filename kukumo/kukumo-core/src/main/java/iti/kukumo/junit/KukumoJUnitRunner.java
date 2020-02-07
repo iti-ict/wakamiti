@@ -76,7 +76,7 @@ public class KukumoJUnitRunner extends Runner {
     public void run(RunNotifier notifier) {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
-        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED, plan);
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
@@ -92,7 +92,7 @@ public class KukumoJUnitRunner extends Runner {
         executeAnnotatedMethod(configurationClass, AfterClass.class);
 
         planNodeLogger.logTestPlanResult(plan);
-        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(getPlan()));
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, getPlan());
         kukumo.writeOutputFile(plan, configuration);
         kukumo.generateReports(configuration);
     }

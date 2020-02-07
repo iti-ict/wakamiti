@@ -225,13 +225,11 @@ public class DefaultBackend implements Backend {
             if (stepBackend.exception() != null) {
                 throw stepBackend.exception();
             }
-            Kukumo.instance().publishEvent(Event.BEFORE_RUN_BACKEND_STEP, this);
             stepBackend.runnableStep().run(stepBackend.invokingArguments());
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e);
         } finally {
-            Kukumo.instance().publishEvent(Event.AFTER_RUN_BACKEND_STEP, this);
             KukumoStepRunContext.clear();
         }
     }

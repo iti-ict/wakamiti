@@ -13,13 +13,29 @@ import java.util.stream.Stream;
 
 
 public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R extends Comparable<R>>
-                extends TreeNode<S> {
+extends TreeNode<S> {
 
+    private String executionID;
     private Optional<ExecutionState<R>> executionState = Optional.empty();
 
 
     public ExecutableTreeNode(List<S> children) {
         super(children);
+    }
+
+
+    /** Assign an execution ID */
+    public void assignExecutionID(String executionID) {
+        if (this.executionID != null) {
+            throw new IllegalStateException("ExecutionID already assigned");
+        }
+        this.executionID = executionID;
+        children().forEach(child -> child.assignExecutionID(executionID));
+    }
+
+
+    public String executionID() {
+        return executionID;
     }
 
 

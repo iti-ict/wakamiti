@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 /** This class is a immutable, non-executable representation of a * {@link PlanNode} in a specific state. * <p> * It is mainly used for serialization/deserialization operations. * </p> */
 public class PlanNodeSnapshot {
 
+    private String executionID;
+    private String snapshotInstant;
     private NodeType nodeType;
     private String id;
     private String name;
@@ -52,6 +54,13 @@ public class PlanNodeSnapshot {
     }
 
     public PlanNodeSnapshot(PlanNode node) {
+        this(node, LocalDateTime.now().toString());
+    }
+
+
+    public PlanNodeSnapshot(PlanNode node, String snapshotInstant) {
+        this.executionID = node.executionID();
+        this.snapshotInstant = snapshotInstant;
         this.nodeType = node.nodeType();
         this.id = node.id();
         this.name = node.name();
@@ -78,7 +87,7 @@ public class PlanNodeSnapshot {
             .orElse(null);
         this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
         if (node.hasChildren()) {
-            this.children = node.children().map(PlanNodeSnapshot::new)
+            this.children = node.children().map(child -> new PlanNodeSnapshot(child,snapshotInstant))
                 .collect(Collectors.toList());
             this.testCaseResults = countTestCases(node);
         }
@@ -274,6 +283,11 @@ public class PlanNodeSnapshot {
         return children;
     }
 
+    public String getExecutionID() {
+        return executionID;
+    }
 
-
+    public String getSnapshotInstant() {
+        return snapshotInstant;
+    }
 }

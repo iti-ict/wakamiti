@@ -290,8 +290,8 @@ public class Kukumo {
     }
 
 
-    public <T> void publishEvent(String eventType, T data) {
-        getEventDispatcher().publishEvent(eventType, data);
+    public void publishEvent(String eventType, PlanNode data) {
+        getEventDispatcher().publishEvent(eventType, new PlanNodeSnapshot(data));
     }
 
 

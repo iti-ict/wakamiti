@@ -4,16 +4,10 @@
 package iti.kukumo.gherkin;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -202,7 +196,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         for (int row = 0; row < values.size(); row++) {
 
             PlanNodeBuilder exampleScenario = new PlanNodeBuilder(NodeType.TEST_CASE)
-                .setId(id(scenarioOutline.getTags(), scenarioOutline.getName(), ("_" + (row + 1))))
+                .setId(id(
+                    scenarioOutlineNode.id(),
+                    scenarioOutline.getTags(),
+                    scenarioOutline.getName(),
+                    ("_" + (row + 1))
+                ))
                 .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
                 .setLanguage(language)
                 .setSource(source(location, scenarioOutline.getLocation()))
@@ -233,9 +232,13 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     }
 
 
-    protected PlanNodeBuilder newFeatureNode(Feature feature, String language, String location) {
+    protected PlanNodeBuilder newFeatureNode(
+        Feature feature,
+        String language,
+        String location
+    ) {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
-            .setId(id(feature.getTags(), feature.getName()))
+            .setId(id("",feature.getTags(), feature.getName(), ""))
             .setName(feature.getName())
             .setDisplayNamePattern("{keyword}: {name}")
             .setLanguage(language)
@@ -255,7 +258,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.TEST_CASE)
-            .setId(id(scenario.getTags(), scenario.getName()))
+            .setId(id(parentNode.id(), scenario.getTags(), scenario.getName(), ""))
             .setName(trim(scenario.getName()))
             .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
@@ -274,7 +277,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
-            .setId(id(scenarioOutline.getTags(), scenarioOutline.getName()))
+            .setId(id(parentNode.id(),scenarioOutline.getTags(), scenarioOutline.getName(), ""))
             .setName(trim(scenarioOutline.getName()))
             .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
@@ -467,26 +470,27 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     }
 
 
-    protected String id(List<Tag> tags, String nodeName, String suffix) {
-        if (idTagPattern == null || tags.isEmpty()) {
-            return null;
+
+    protected String id(String parentId, List<Tag> tags, String nodeName, String suffix) {
+        String idTag = null;
+        if (idTagPattern != null ) {
+            List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1))
+                    .map(idTagPattern::matcher)
+                    .filter(Matcher::matches).map(Matcher::group).collect(Collectors.toList());
+            if (idTags.size() > 1) {
+                throw new KukumoException("More than one ID tag found in element {}", nodeName);
+            }
+            if (!idTags.isEmpty()) {
+                idTag = idTags.get(0);
+            }
         }
-        List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1))
-            .map(idTagPattern::matcher)
-            .filter(Matcher::matches).map(Matcher::group).collect(Collectors.toList());
-        if (idTags.size() > 1) {
-            throw new KukumoException("More than one ID tag found in element {}", nodeName);
+        if (idTag == null) {
+            idTag = "#"+UUID.randomUUID().toString().substring(0,5);
         }
-        if (idTags.isEmpty()) {
-            return null;
-        }
-        return suffix == null ? idTags.get(0) : idTags.get(0) + suffix;
+        return idTag + suffix;
     }
 
 
-    protected String id(List<Tag> tags, String nodeName) {
-        return id(tags, nodeName, null);
-    }
 
 
     private List<String> tableCells(TableRow tableRow) {

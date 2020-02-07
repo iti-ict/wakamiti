@@ -12,8 +12,7 @@ import iti.kukumo.api.event.Event;
 @ExtensionPoint
 public interface EventObserver extends Contributor {
 
-    void eventReceived(Event<?> event);
-
+    void eventReceived(Event event);
 
     boolean acceptType(String eventType);
 }

@@ -4,11 +4,13 @@
 package iti.kukumo.api.event;
 
 
+import iti.kukumo.api.plan.PlanNodeSnapshot;
+
 import java.time.Instant;
 
 
 
-public class Event<T> {
+public class Event {
 
     public static final String PLAN_CREATED = "PLAN_CREATED";
     public static final String PLAN_RUN_STARTED = "PLAN_RUN_STARTED";
@@ -19,13 +21,11 @@ public class Event<T> {
     public static final String AFTER_RUN_BACKEND_STEP = "AFTER_RUN_BACKEND_STEP";
 
     private final String type;
-    private final Instant instant;
-    private final T data;
+    private final PlanNodeSnapshot data;
 
 
-    public Event(String type, Instant instant, T data) {
+    public Event(String type, Instant instant, PlanNodeSnapshot data) {
         this.type = type;
-        this.instant = instant;
         this.data = data;
     }
 
@@ -35,12 +35,7 @@ public class Event<T> {
     }
 
 
-    public Instant instant() {
-        return instant;
-    }
-
-
-    public T data() {
+    public PlanNodeSnapshot data() {
         return data;
     }
 }

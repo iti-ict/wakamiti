@@ -107,7 +107,7 @@ public class PlanNodeRunner {
             throw new IllegalStateException("run() method can only be invoked once");
         }
         state = State.RUNNING;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
+        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, node);
         if (!getChildren().isEmpty()) {
             if (node.nodeType() == NodeType.TEST_CASE) {
                 testCasePreExecution(node);
@@ -120,7 +120,7 @@ public class PlanNodeRunner {
             runStep();
         }
         state = State.FINISHED;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
+        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, node);
     }
 
 

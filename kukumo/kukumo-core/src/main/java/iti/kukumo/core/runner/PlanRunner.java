@@ -5,6 +5,7 @@ package iti.kukumo.core.runner;
 
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -42,7 +43,8 @@ public class PlanRunner {
     public PlanNode run() {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
-        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
+        plan.assignExecutionID(UUID.randomUUID().toString());
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED, plan);
         planNodeLogger.logTestPlanHeader(plan);
         for (PlanNodeRunner child : getChildren()) {
             try {
@@ -52,7 +54,7 @@ public class PlanRunner {
             }
         }
         planNodeLogger.logTestPlanResult(plan);
-        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, plan);
         return plan;
     }
 
