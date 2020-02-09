@@ -1,16 +1,14 @@
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-package iti.kukumo.launcher;
+package iti.kukumo.api;
 
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +23,6 @@ import iti.commons.maven.fetcher.MavenFetchException;
 import iti.commons.maven.fetcher.MavenFetchRequest;
 import iti.commons.maven.fetcher.MavenFetchResult;
 import iti.commons.maven.fetcher.MavenFetcher;
-import iti.kukumo.api.KukumoException;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
@@ -33,35 +30,40 @@ import net.harawata.appdirs.AppDirsFactory;
 
 public class KukumoFetcher {
 
-    private final CliArguments arguments;
+    private Logger logger;
+    private Configuration conf;
 
 
-    public KukumoFetcher(CliArguments arguments) {
-        this.arguments = arguments;
+    public KukumoFetcher() {
+        this(Kukumo.LOGGER, Kukumo.defaultConfiguration());
+    }
+
+    protected KukumoFetcher(Logger logger, Configuration mavenFetcherConfiguration) {
+        this.logger = logger;
+        this.conf = mavenFetcherConfiguration;
     }
 
 
-    public List<Path> fetch() {
-        Logger logger = KukumoLauncher.logger();
+    public KukumoFetcher withConfiguration(Configuration mavenFetcherConfiguration) {
+        return new KukumoFetcher(logger,mavenFetcherConfiguration);
+    }
+
+
+    public List<Path> fetch(List<String> modules, boolean mustClean, boolean updateClasspath) {
         try {
 
-            List<String> modules = modulesToFetch();
             if (modules.isEmpty()) {
-                KukumoLauncher.logger().info("Nothing to fetch");
+                logger.info("Nothing to fetch");
                 return Collections.emptyList();
             }
 
             AppDirs appDirs = AppDirsFactory.getInstance();
             Path mavenRepo = Paths.get(appDirs.getUserDataDir("kukumo", "repository", "iti"));
-            if (arguments.mustClean()) {
+            if (mustClean) {
                 cleanCache(mavenRepo);
             }
             Files.createDirectories(mavenRepo);
             logger.debug("Using local Maven repository {}",mavenRepo);
-
-            Configuration conf = arguments
-                .mavenFetcherConfiguration()
-                .appendProperty("localRepository", mavenRepo.toString());
 
             logger.info("Fetching dependencies...");
             MavenFetcher mavenFetcher = new MavenFetcher()
@@ -82,12 +84,17 @@ public class KukumoFetcher {
             if (logger.isDebugEnabled()) {
                 logger.debug("{}", fetchedArtifacts);
             }
-            return fetchedArtifacts
+            List<Path> paths = fetchedArtifacts
                 .allArtifacts()
                 .map(FetchedArtifact::path)
                 .collect(Collectors.toList());
 
-        } catch (RuntimeException | MavenFetchException | IOException | URISyntaxException e) {
+            if (updateClasspath) {
+                mavenFetcher.updateClasspath(paths);
+            }
+            return paths;
+
+        } catch (RuntimeException | MavenFetchException | IOException e) {
             logger.error("Error fetching dependencies");
             throw new KukumoException(e);
         }
@@ -103,13 +110,5 @@ public class KukumoFetcher {
         }
     }
 
-
-    private List<String> modulesToFetch() throws URISyntaxException {
-        Configuration conf = arguments.kukumoConfiguration();
-        List<String> modules = new ArrayList<>();
-        modules.addAll(arguments.modules());
-        modules.addAll(conf.getList("launcher.modules", String.class));
-        return modules;
-    }
 
 }

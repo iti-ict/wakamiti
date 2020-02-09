@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <!-- inherited configuration -->
@@ -13,61 +13,28 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
-    <artifactId>kukumo-launcher</artifactId>
-    <version>1.0.0</version>
-
+    <groupId>kukumo</groupId>
+    <artifactId>kukumo-lsp</artifactId>
+    <version>0.0.1</version>
 
     <!-- additional information -->
-    <name>Kukumo::Launcher</name>
-    <description>Standalone laucher for Kukumo</description>
-    <inceptionYear>2019</inceptionYear>
+    <name>Kukumo::Language Server Protocol</name>
+    <description>Implementation of Language Server Protocol</description>
+    <inceptionYear>2020</inceptionYear>
+
 
     <properties>
-        <maven-fetcher.version>1.0.0</maven-fetcher.version>
-        <aetherVersion>1.1.0</aetherVersion>
-        <mavenVersion>3.3.9</mavenVersion>
-        <kukumo-core.version>1.0.0</kukumo-core.version>
-        <appdirs.version>1.0.3</appdirs.version>
+        <!-- dependency versions -->
+        <eclipse.lsp4j.version>0.8.1</eclipse.lsp4j.version>
+        <configurer.version>1.0.0</configurer.version>
     </properties>
 
 
     <dependencies>
-
-        <!-- Kukumo Core -->
         <dependency>
-            <groupId>iti.kukumo</groupId>
-            <artifactId>kukumo-core</artifactId>
-            <version>${kukumo-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <version>${hamcrest.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>iti.commons</groupId>
-            <artifactId>maven-fetcher</artifactId>
-            <version>${maven-fetcher.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.harawata</groupId>
-            <artifactId>appdirs</artifactId>
-            <version>${appdirs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.eclipse.lsp4j</groupId>
+            <artifactId>org.eclipse.lsp4j</artifactId>
+            <version>${eclipse.lsp4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -85,14 +52,21 @@
             <version>${log4j.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>${commons-cli.version}</version>
         </dependency>
-
-
+        <dependency>
+        <groupId>iti.commons</groupId>
+        <artifactId>configurer</artifactId>
+        <version>${configurer.version}</version>
+        </dependency>
     </dependencies>
-
 
 
 
@@ -106,10 +80,9 @@
                 <version>3.0.0</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/staging</outputDirectory>
-                    <finalName>kukumo-launcher</finalName>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>iti.kukumo.launcher.KukumoLauncher</Main-Class>
+                            <Main-Class>iti.kukumo.lsp.KukumoLspLauncher</Main-Class>
                             <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
                             <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
                             <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
@@ -117,50 +90,25 @@
                     </archive>
                 </configuration>
             </plugin>
-
-
             <!-- assemble staging folder distribution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <descriptors>
-                        <descriptor>src/assembly/distribution.xml</descriptor>
-                    </descriptors>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <finalName>staging</finalName>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>prepare-package</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>iti.commons</groupId>
-                <artifactId>distribution-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <distributionDefinition>src/assembly/distribution.yaml</distributionDefinition>
-                    <output>src/bin/kukumo-${project.version}-installer.jar</output>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>generate-installer</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-
         </plugins>
     </build>
 

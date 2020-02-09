@@ -4,13 +4,11 @@
 package iti.kukumo.launcher.test;
 
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.nio.file.Paths;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 import org.junit.Test;
 
-import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.launcher.CliArguments;
 
 

@@ -8,6 +8,7 @@ module iti.commons.maven.fetcher {
     requires aether.transport.http;
     requires aether.util;
     requires transitive org.slf4j;
+    requires transitive java.instrument;
     requires maven.aether.provider.java9;
 
     exports iti.commons.maven.fetcher;

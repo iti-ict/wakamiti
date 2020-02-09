@@ -1,11 +1,5 @@
-package iti.kukumo.launcher;
+package iti.kukumo.lsp;
 
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,12 +16,9 @@ import iti.commons.configurer.Configuration;
 
 public class CliArguments {
 
-    private static final String DEFAULT_CONF_FILE = "kukumo.yaml";
     private static final String ARG_HELP = "h";
     private static final String ARG_DEBUG = "d";
-    private static final String ARG_CLEAN = "c";
-    private static final String ARG_FILE = "f";
-    private static final String ARG_MODULES = "m";
+    private static final String ARG_PORT = "p";
     private static final String ARG_KUKUMO_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
 
@@ -39,9 +30,7 @@ public class CliArguments {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
         cliOptions.addOption(ARG_DEBUG, "debug", false, "Show debug information");
-        cliOptions.addOption(ARG_CLEAN, "clean", false, "Force any module to be re-gathered");
-        cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./kukumo.yaml by default)");
-        cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
+        cliOptions.addOption(ARG_PORT, "port", false, "Port to run the LSP server (any free port if not specified)");
         cliOptions.addOption(
             Option.builder(ARG_KUKUMO_PROPERTY)
             .argName("kukumoProperty=value")
@@ -73,22 +62,17 @@ public class CliArguments {
     }
 
 
-    public Configuration kukumoConfiguration() throws URISyntaxException {
+    public Configuration kukumoConfiguration() {
         Properties properties = cliCommand.getOptionProperties(ARG_KUKUMO_PROPERTY);
-        String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile,properties,"kukumo");
+        return Configuration.fromProperties(properties);
     }
 
 
-    public Configuration mavenFetcherConfiguration() throws URISyntaxException {
+    public Configuration mavenFetcherConfiguration() {
         Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
-        String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile,properties,"mavenFetcher");
+        return Configuration.fromProperties(properties);
     }
 
-    public boolean mustClean() {
-        return cliCommand.hasOption(ARG_CLEAN);
-    }
 
     public boolean isDebugActive() {
         return cliCommand.hasOption(ARG_DEBUG);
@@ -96,29 +80,6 @@ public class CliArguments {
 
     public boolean isHelpActive() {
         return cliCommand.hasOption(ARG_HELP);
-    }
-
-    public List<String> modules() {
-        return cliCommand.hasOption(ARG_MODULES) ?
-            Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
-            List.of();
-    }
-
-    private Configuration buildConfiguration(
-        String confFileName,
-        Properties arguments,
-        String qualifier
-    ) throws URISyntaxException {
-        Path launcherProperties = JarUtil.jarFolder().resolve("launcher.properties");
-        Path projectProperties = Paths.get(confFileName);
-        Configuration launcherConf = (Files.exists(launcherProperties))
-            ? Configuration.fromPath(launcherProperties).inner(qualifier)
-            : Configuration.empty();
-        Configuration projectConf = (Files.exists(projectProperties))
-            ? Configuration.fromPath(projectProperties).inner(qualifier)
-            : Configuration.empty();
-        Configuration argumentConf = Configuration.fromProperties(arguments);
-        return launcherConf.append(projectConf).append(argumentConf);
     }
 
 

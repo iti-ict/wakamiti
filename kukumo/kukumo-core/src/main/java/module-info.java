@@ -24,6 +24,7 @@ open module kukumo.core {
     requires transitive iti.commons.configurer;
     requires transitive iti.commons.jext;
     requires transitive iti.commons.slf4jansi;
+    requires transitive iti.commons.maven.fetcher;
 
     requires transitive junit;
     requires transitive org.hamcrest;
@@ -32,6 +33,7 @@ open module kukumo.core {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.databind;
     requires transitive gherkin.parser;
+    requires net.harawata.appdirs;
 
 
     uses iti.kukumo.api.extensions.ResourceType;
