@@ -7,6 +7,7 @@ package iti.commons.configurer;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -21,11 +22,11 @@ public interface ConfigurationBuilder {
 
 
     /**
-     * Create a new configuration composed of other configurations. When the same
+     * Create a new configuration composed of two other configurations. When the same
      * property is present in two or more configurations, the value from the
-     * outer configuration will prevail.
+     * delta configuration will prevail (except when it has an empty value)
      */
-    Configuration compose(Configuration... configurations);
+    Configuration merge(Configuration base, Configuration delta);
 
 
     /**
@@ -36,21 +37,21 @@ public interface ConfigurationBuilder {
 
     /**
      * Create a new configuration from a class annotated with
-     * {@link Configurator}
+     * {@link AnnotatedConfiguration}
      *
-     * @param configuredClass Class annotated with {@link Configurator}
+     * @param configuredClass Class annotated with {@link AnnotatedConfiguration}
      * @throws ConfigurationException if the configuration was not loaded
      */
     Configuration buildFromAnnotation(Class<?> configuredClass);
 
 
     /**
-     * Create a new configuration from a {@link Configurator} annotation
+     * Create a new configuration from a {@link AnnotatedConfiguration} annotation
      *
      * @param annotation
      * @throws ConfigurationException if the configuration was not loaded
      */
-    Configuration buildFromAnnotation(Configurator annotation);
+    Configuration buildFromAnnotation(AnnotatedConfiguration annotation);
 
 
     /**
@@ -123,5 +124,23 @@ public interface ConfigurationBuilder {
      * specified class loader
      */
     Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader);
+
+
+
+    /**
+     * Create a new configuration from directly passed strings, using each two entries as a pair of
+     * <tt>key,value</tt>.
+     * @throws IllegalArgumentException if the number of strings is not even
+     */
+    default Configuration buildFromPairs(String... pairs) {
+        if (pairs.length % 2 == 1) {
+            throw new IllegalArgumentException("Number of arguments must be even");
+        }
+        Map<String,String> map = new LinkedHashMap<>();
+        for (int i=0;i<pairs.length;i+=2) {
+            map.put(pairs[i],pairs[i+1]);
+        }
+        return buildFromMap(map);
+    }
 
 }

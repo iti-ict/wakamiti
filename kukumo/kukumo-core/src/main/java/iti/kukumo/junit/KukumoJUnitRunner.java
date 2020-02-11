@@ -28,7 +28,6 @@ import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
@@ -146,7 +145,7 @@ public class KukumoJUnitRunner extends Runner {
         Class<?> testedClass
     ) throws InitializationError {
         try {
-            return KukumoConfiguration.defaultConfiguration().appendFromAnnotation(testedClass);
+            return Kukumo.defaultConfiguration().appendFromAnnotation(testedClass);
         } catch (ConfigurationException e) {
             LOGGER.error("Error loading configuration from {}", testedClass);
             throw new InitializationError(e);

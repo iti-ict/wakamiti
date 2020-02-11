@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 
@@ -48,7 +47,7 @@ public class KukumoRunner {
 
     private Configuration readConfiguration(CliArguments arguments) throws URISyntaxException {
         Configuration argumentConfiguration = arguments.kukumoConfiguration();
-        Configuration configuration = KukumoConfiguration.defaultConfiguration()
+        Configuration configuration = Kukumo.defaultConfiguration()
             .append(argumentConfiguration);
         if (KukumoLauncher.logger().isDebugEnabled()) {
             KukumoLauncher.logger().debug("Using the following {}", configuration);

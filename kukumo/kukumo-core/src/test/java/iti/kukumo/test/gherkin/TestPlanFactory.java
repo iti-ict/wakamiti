@@ -77,7 +77,7 @@ public class TestPlanFactory {
         if (tagExpression != null) {
             properties.put(KukumoConfiguration.TAG_FILTER, tagExpression);
         }
-        Configuration configuration = KukumoConfiguration.defaultConfiguration()
+        Configuration configuration = Kukumo.defaultConfiguration()
             .appendFromProperties(properties);
         Kukumo kukumo = Kukumo.instance();
         PlanNode testPlan = kukumo.createPlanFromConfiguration(configuration);

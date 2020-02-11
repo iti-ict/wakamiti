@@ -1,7 +1,7 @@
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-package iti.commons.configurer.test;
+package iti.commons.configurer.test.test.test;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -19,7 +20,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.ConfigurationException;
-import iti.commons.configurer.Configurator;
+import iti.commons.configurer.AnnotatedConfiguration;
 import iti.commons.configurer.Property;
 
 
@@ -83,72 +84,72 @@ public class TestConfigurationBuilder {
     private ConfigurationBuilder builder;
 
 
-    @Configurator(path = "src/test/resources/test-conf.properties", environmentProperties = true)
+    @AnnotatedConfiguration(path = "src/test/resources/test-conf.properties", environmentProperties = true)
     public static class ConfProperties {
     }
 
 
-    @Configurator(path = "classpath:test-conf.json", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:test-conf.json", environmentProperties = true)
     public static class ConfJSON {
     }
 
 
-    @Configurator(path = "classpath:test-conf.xml", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:test-conf.xml", environmentProperties = true)
     public static class ConfXML {
     }
 
 
-    @Configurator(path = "classpath:test-conf.yaml", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:test-conf.yaml", environmentProperties = true)
     public static class ConfYAML {
     }
 
 
-    @Configurator(path = "classpath:non-existing.properties", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:non-existing.properties", environmentProperties = true)
     public static class ConfNoFile {
     }
 
 
-    @Configurator(environmentProperties = true, properties = {
-                    @Property(key = KEY_ENV, value = VAL_ENV),
-                    @Property(key = KEY_STRING, value = VAL_STRING),
-                    @Property(key = KEY_STRINGS, value = { VAL_STRINGS_1, VAL_STRINGS_2 }),
-                    @Property(key = KEY_BOOL, value = VAL_BOOL),
-                    @Property(key = KEY_BOOLS, value = { VAL_BOOLS_1, VAL_BOOLS_2, VAL_BOOLS_3 }),
-                    @Property(key = KEY_INTEGER, value = VAL_INTEGER),
-                    @Property(key = KEY_INTEGERS, value = { VAL_INTEGERS_1, VAL_INTEGERS_2,
-                                    VAL_INTEGERS_3 }),
-                    @Property(key = KEY_LONG, value = VAL_LONG),
-                    @Property(key = KEY_LONGS, value = { VAL_LONGS_1, VAL_LONGS_2, VAL_LONGS_3 }),
-                    @Property(key = KEY_FLOAT, value = VAL_FLOAT),
-                    @Property(key = KEY_FLOATS, value = { VAL_FLOATS_1, VAL_FLOATS_2,
-                                    VAL_FLOATS_3 }),
-                    @Property(key = KEY_DOUBLE, value = VAL_DOUBLE),
-                    @Property(key = KEY_DOUBLES, value = { VAL_DOUBLES_1, VAL_DOUBLES_2,
-                                    VAL_DOUBLES_3 }),
-                    @Property(key = KEY_BIGDECIMAL, value = VAL_BIGDECIMAL),
-                    @Property(key = KEY_BIGDECIMALS, value = {
-                                    VAL_BIGDECIMALS_1,
-                                    VAL_BIGDECIMALS_2,
-                                    VAL_BIGDECIMALS_3
-                    }),
-                    @Property(key = KEY_BIGINTEGER, value = VAL_BIGINTEGER),
-                    @Property(key = KEY_BIGINTEGERS, value = {
-                                    VAL_BIGINTEGERS_1,
-                                    VAL_BIGINTEGERS_2,
-                                    VAL_BIGINTEGERS_3
-                    }),
-                    @Property(key = "properties2.test2.key.string", value = VAL_STRING)
+    @AnnotatedConfiguration(environmentProperties = true, properties = {
+        @Property(key = KEY_ENV, value = VAL_ENV),
+        @Property(key = KEY_STRING, value = VAL_STRING),
+        @Property(key = KEY_STRINGS, value = { VAL_STRINGS_1, VAL_STRINGS_2 }),
+        @Property(key = KEY_BOOL, value = VAL_BOOL),
+        @Property(key = KEY_BOOLS, value = { VAL_BOOLS_1, VAL_BOOLS_2, VAL_BOOLS_3 }),
+        @Property(key = KEY_INTEGER, value = VAL_INTEGER),
+        @Property(key = KEY_INTEGERS, value = { VAL_INTEGERS_1, VAL_INTEGERS_2,
+                        VAL_INTEGERS_3 }),
+        @Property(key = KEY_LONG, value = VAL_LONG),
+        @Property(key = KEY_LONGS, value = { VAL_LONGS_1, VAL_LONGS_2, VAL_LONGS_3 }),
+        @Property(key = KEY_FLOAT, value = VAL_FLOAT),
+        @Property(key = KEY_FLOATS, value = { VAL_FLOATS_1, VAL_FLOATS_2,
+                        VAL_FLOATS_3 }),
+        @Property(key = KEY_DOUBLE, value = VAL_DOUBLE),
+        @Property(key = KEY_DOUBLES, value = { VAL_DOUBLES_1, VAL_DOUBLES_2,
+                        VAL_DOUBLES_3 }),
+        @Property(key = KEY_BIGDECIMAL, value = VAL_BIGDECIMAL),
+        @Property(key = KEY_BIGDECIMALS, value = {
+                        VAL_BIGDECIMALS_1,
+                        VAL_BIGDECIMALS_2,
+                        VAL_BIGDECIMALS_3
+        }),
+        @Property(key = KEY_BIGINTEGER, value = VAL_BIGINTEGER),
+        @Property(key = KEY_BIGINTEGERS, value = {
+                        VAL_BIGINTEGERS_1,
+                        VAL_BIGINTEGERS_2,
+                        VAL_BIGINTEGERS_3
+        }),
+        @Property(key = "properties2.test2.key.string", value = VAL_STRING)
     })
     public static class ConfAnnotatedProps {
     }
 
 
-    @Configurator(path = "classpath:malformed-conf.xml", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:malformed-conf.xml", environmentProperties = true)
     public static class ConfMalformed {
     }
 
 
-    @Configurator(path = "classpath:unrecognized-format.xyq", environmentProperties = true)
+    @AnnotatedConfiguration(path = "classpath:unrecognized-format.xyq", environmentProperties = true)
     public static class ConfUnrecognized {
     }
 
@@ -168,8 +169,16 @@ public class TestConfigurationBuilder {
 
 
     @Test
+    public void testAnnotatedConfigurationUsingFile() {
+        Configuration conf = Configuration.fromAnnotation(ConfYAML.class);
+        assertProperties(conf);
+
+    }
+
+
+    @Test
     public void testPropertyFileConfiguration() throws ConfigurationException {
-        Configuration conf = builder.compose(
+        Configuration conf = builder.merge(
             builder.buildFromEnvironment(),
             builder.buildFromAnnotation(ConfProperties.class)
         );
@@ -180,7 +189,7 @@ public class TestConfigurationBuilder {
 
     @Test
     public void testJSONConfiguration() throws ConfigurationException {
-        Configuration conf = builder.compose(
+        Configuration conf = builder.merge(
             builder.buildFromEnvironment(),
             builder.buildFromAnnotation(ConfJSON.class)
         );
@@ -191,7 +200,7 @@ public class TestConfigurationBuilder {
 
     @Test
     public void testYAMLConfiguration() throws ConfigurationException {
-        Configuration conf = builder.compose(
+        Configuration conf = builder.merge(
             builder.buildFromEnvironment(),
             builder.buildFromAnnotation(ConfYAML.class)
         );
@@ -202,7 +211,7 @@ public class TestConfigurationBuilder {
 
     @Test
     public void testXMLConfiguration() throws ConfigurationException {
-        Configuration conf = builder.compose(
+        Configuration conf = builder.merge(
             builder.buildFromEnvironment(),
             builder.buildFromAnnotation(ConfXML.class)
         );
@@ -213,7 +222,7 @@ public class TestConfigurationBuilder {
 
     @Test
     public void testAnnotatedPropertiesConfiguration() throws ConfigurationException {
-        Configuration conf = builder.compose(
+        Configuration conf = builder.merge(
             builder.buildFromEnvironment(),
             builder.buildFromAnnotation(ConfAnnotatedProps.class)
         );
@@ -267,22 +276,46 @@ public class TestConfigurationBuilder {
         HashMap<String, String> map1 = new HashMap<>();
         map1.put("property.a", "a");
         map1.put("property.b", "b");
+        map1.put("property.c", "");
+        map1.put("property.d","d");
         HashMap<String, String> map2 = new HashMap<>();
         map2.put("property.a", "aa");
         map2.put("property.c", "c");
+        map2.put("property.d", "");
 
         Configuration conf1 = builder.buildFromMap(map1).appendFromMap(map2);
         assertThat(conf1.get("property.a", String.class)).contains("aa");
         assertThat(conf1.get("property.b", String.class)).contains("b");
         assertThat(conf1.get("property.c", String.class)).contains("c");
+        assertThat(conf1.get("property.d", String.class)).contains("d");
         assertThat(conf1.getList("property.a", String.class)).hasSize(1);
 
         Configuration conf2 = builder.buildFromMap(map2).appendFromMap(map1);
         assertThat(conf2.get("property.a", String.class)).contains("a");
         assertThat(conf2.get("property.b", String.class)).contains("b");
         assertThat(conf2.get("property.c", String.class)).contains("c");
+        assertThat(conf1.get("property.d", String.class)).contains("d");
         assertThat(conf2.getList("property.a", String.class)).hasSize(1);
 
+    }
+
+
+
+    @Test
+    public void testEmptyProperties() {
+        var conf = Configuration.fromMap(Map.of(
+            "property.a", "",
+            "property.b", "",
+            "property.c", "c"
+        ));
+        System.out.println(conf);
+        assertThat(conf.keys()).contains("property.a","property.b","property.c");
+        assertThat(conf.hasProperty("property.a")).isTrue();
+        assertThat(conf.hasProperty("property.b")).isTrue();
+        assertThat(conf.hasProperty("property.c")).isTrue();
+        assertThat(conf.get("property.a", String.class)).isEmpty();
+        assertThat(conf.get("property.a", Integer.class)).isEmpty();
+        assertThat(conf.getList("property.b",String.class)).isEmpty();
     }
 
 

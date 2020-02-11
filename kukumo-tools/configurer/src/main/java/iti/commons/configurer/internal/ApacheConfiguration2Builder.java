@@ -13,13 +13,9 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 import org.apache.commons.configuration2.BaseConfiguration;
@@ -36,7 +32,7 @@ import org.apache.commons.configuration2.convert.ConversionHandler;
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.configurer.ConfigurationException;
-import iti.commons.configurer.Configurator;
+import iti.commons.configurer.AnnotatedConfiguration;
 import iti.commons.configurer.Property;
 
 
@@ -46,16 +42,29 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
 
 
     @Override
-    public Configuration compose(Configuration... configurations) {
-        if (configurations == null || configurations.length == 0) {
-            return empty();
+    public Configuration merge(Configuration base, Configuration delta) {
+
+        AbstractConfiguration result = new BaseConfiguration();
+        for (String property : delta.keys()) {
+            var existing = base.getList(property,String.class);
+            var added = delta.getList(property,String.class);
+            if (existing.isEmpty() && added.isEmpty()) {
+                result.setProperty(property,"");
+            } else if (!added.isEmpty()) {
+                added.forEach(value -> result.addProperty(property,value));
+            }
         }
-        AbstractConfiguration configuration = configure(new BaseConfiguration());
-        for (Configuration configuration2 : configurations) {
-            configuration.copy(toImpl(configuration2));
+        for (String property : base.keys()) {
+            if (result.containsKey(property)) {
+                continue;
+            }
+            base.getList(property,String.class).forEach(value -> result.addProperty(property,value));
         }
-        return new ApacheConfiguration2(this, configuration);
+        return new ApacheConfiguration2(this, result);
     }
+
+
+
 
 
     @Override
@@ -66,7 +75,7 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
 
     @Override
     public Configuration buildFromAnnotation(Class<?> configuredClass) {
-        return Optional.ofNullable(configuredClass.getAnnotation(Configurator.class))
+        return Optional.ofNullable(configuredClass.getAnnotation(AnnotatedConfiguration.class))
             .map(this::buildFromAnnotation)
             .orElseThrow(
                 () -> new ConfigurationException(
@@ -77,7 +86,7 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
 
 
     @Override
-    public Configuration buildFromAnnotation(Configurator annotation) {
+    public Configuration buildFromAnnotation(AnnotatedConfiguration annotation) {
         BaseConfiguration configuration = configure(new BaseConfiguration());
         for (Property property : annotation.properties()) {
             String[] value = property.value();
@@ -148,15 +157,15 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
     @Override
     public Configuration buildFromClasspathResource(String resourcePath, ClassLoader classLoader) {
         try {
-            BaseConfiguration configuration = configure(new BaseConfiguration());
+            Configuration base = Configuration.empty();
             List<Configuration> urlConfs = buildFromURLEnum(
                 classLoader.getResources(resourcePath),
                 resourcePath
             );
             for (Configuration urlConf : urlConfs) {
-                configuration.append(toImpl(urlConf));
+                base = base.append(urlConf);
             }
-            return new ApacheConfiguration2(this, configuration);
+            return base;
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -206,13 +215,13 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
         if (!urls.hasMoreElements()) {
             throw new ConfigurationException("Cannot find resource " + resourcePath);
         } else {
-            while (urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
+            for (URL url : distinctURLs(urls)) {
                 configurations.add(buildFromURL(url));
             }
         }
         return configurations;
     }
+
 
 
     private Configuration buildFromJSON(URL url) {
@@ -274,4 +283,7 @@ public class ApacheConfiguration2Builder implements ConfigurationBuilder {
         return configuration;
     }
 
+    private Set<URL> distinctURLs (Enumeration<URL> urls) {
+        return Collections.list(urls).stream().collect(Collectors.toSet());
+    }
 }

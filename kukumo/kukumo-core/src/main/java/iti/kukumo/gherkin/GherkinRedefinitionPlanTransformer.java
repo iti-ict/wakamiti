@@ -255,14 +255,14 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
         private String definitionTag(Configuration configuration) {
             return configuration
                 .get(KukumoConfiguration.REDEFINITION_DEFINITION_TAG, String.class)
-                .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG);
+                .orElseThrow();
         }
 
 
         private String implementationTag(Configuration configuration) {
             return configuration
                 .get(KukumoConfiguration.REDEFINITION_IMPLEMENTATION_TAG, String.class)
-                .orElse(KukumoConfiguration.Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG);
+                .orElseThrow();
         }
 
 

@@ -11,7 +11,7 @@ import org.apache.maven.plugin.logging.Log;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationException;
-import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.Kukumo;
 
 
 public interface KukumoConfigurable {
@@ -20,7 +20,7 @@ public interface KukumoConfigurable {
         List<String> confFiles,
         Map<String, String> properties
     ) throws ConfigurationException {
-        Configuration configuration = KukumoConfiguration.defaultConfiguration();
+        Configuration configuration = Kukumo.defaultConfiguration();
         if (confFiles != null) {
             for (String confFile : confFiles) {
                 configuration = configuration.appendFromClasspathResourceOrURI(confFile)
