@@ -17,7 +17,6 @@ import iti.commons.configurer.Configuration;
 public class CliArguments {
 
     private static final String ARG_HELP = "h";
-    private static final String ARG_DEBUG = "d";
     private static final String ARG_PORT = "p";
     private static final String ARG_KUKUMO_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
@@ -29,7 +28,6 @@ public class CliArguments {
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
-        cliOptions.addOption(ARG_DEBUG, "debug", false, "Show debug information");
         cliOptions.addOption(ARG_PORT, "port", false, "Port to run the LSP server (any free port if not specified)");
         cliOptions.addOption(
             Option.builder(ARG_KUKUMO_PROPERTY)
@@ -74,12 +72,13 @@ public class CliArguments {
     }
 
 
-    public boolean isDebugActive() {
-        return cliCommand.hasOption(ARG_DEBUG);
-    }
-
     public boolean isHelpActive() {
         return cliCommand.hasOption(ARG_HELP);
+    }
+
+
+    public int port() {
+        return Integer.parseInt(cliCommand.getOptionValue(ARG_PORT, "0"));
     }
 
 

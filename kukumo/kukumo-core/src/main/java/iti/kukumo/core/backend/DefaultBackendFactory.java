@@ -73,13 +73,27 @@ public class DefaultBackendFactory implements BackendFactory {
                 testCase.displayName()
             );
         }
+        return doCreateBackend(testCase, configuration);
+    }
 
+
+
+    @Override
+    public Backend createNonRunnableBackend(Configuration configuration) {
+        return doCreateBackend(null, configuration);
+    }
+
+
+
+    private Backend doCreateBackend(PlanNode testCase, Configuration configuration) {
+        boolean runnableBackend = (testCase != null);
         List<String> restrictedModules = new ArrayList<>(
             configuration.getList(KukumoConfiguration.MODULES, String.class)
         );
         List<StepContributor> stepContributors = createStepContributors(
             restrictedModules,
-            configuration
+            configuration,
+            !runnableBackend
         );
 
         Stream<DataTypeContributor> dataTypeContributors = resolveDataTypeContributors(
@@ -89,16 +103,23 @@ public class DefaultBackendFactory implements BackendFactory {
         KukumoDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
         List<RunnableStep> steps = createSteps(stepContributors, typeRegistry);
         Clock clock = Clock.systemUTC();
-        return new DefaultBackend(
-            testCase,
-            configuration,
-            typeRegistry,
-            steps,
-            getSetUpOperations(stepContributors),
-            getTearDownOperations(stepContributors),
-            clock
-        );
+        if (runnableBackend) {
+            return new RunnableBackend(
+                testCase,
+                configuration,
+                typeRegistry,
+                steps,
+                getSetUpOperations(stepContributors),
+                getTearDownOperations(stepContributors),
+                clock
+            );
+        } else {
+            return new NonRunnableBackend(configuration, typeRegistry, steps);
+        }
     }
+
+
+
 
 
     private List<ThrowableRunnable> getSetUpOperations(List<StepContributor> stepContributors) {
@@ -113,7 +134,8 @@ public class DefaultBackendFactory implements BackendFactory {
 
     protected List<StepContributor> createStepContributors(
         List<String> restrictedModules,
-        Configuration configuration
+        Configuration configuration,
+        boolean allowEmptySteps
     ) {
 
         List<StepContributor> stepContributors = new ArrayList<>();
@@ -134,7 +156,7 @@ public class DefaultBackendFactory implements BackendFactory {
 
         stepContributors.addAll(nonRegisteredContributors);
 
-        if (stepContributors.isEmpty()) {
+        if (stepContributors.isEmpty() && !allowEmptySteps) {
             logTipForNoStepContributors(restrictedModules);
             throw new KukumoException("Cannot build backend without step contributors");
         }
@@ -285,7 +307,7 @@ public class DefaultBackendFactory implements BackendFactory {
                 LOGGER.warn(
                     "Error loading non-registered step provider class {} : {}",
                     nonRegisteredContributorClass,
-                    e.getLocalizedMessage()
+                    e.toString()
                 );
             }
         }

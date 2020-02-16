@@ -4,16 +4,17 @@
 package iti.kukumo.rest;
 
 
+import static iti.kukumo.rest.AssertionMatcher.matcher;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
-
-import org.hamcrest.Matcher;
 
 import io.restassured.specification.RequestSpecification;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
 
@@ -64,8 +65,8 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
 
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
-    public void setFailureHttpCodeAssertion(Matcher<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = httpCodeAssertion;
+    public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
+        this.failureHttpCodeAssertion = matcher(httpCodeAssertion);
     }
 
 
@@ -202,8 +203,8 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
 
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
-    public void assertHttpCode(Matcher<Integer> matcher) {
-        validatableResponse.statusCode(matcher);
+    public void assertHttpCode(Assertion<Integer> assertion) {
+        validatableResponse.statusCode(matcher(assertion));
     }
 
 
@@ -215,22 +216,24 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.assert.response.body.fragment.text", args = { "fragment:text",
                     "matcher:text-assertion" })
-    public void assertBodyFragmentAsText(String fragment, Matcher<String> matcher) {
-        assertBodyFragment(fragment, matcher, String.class);
+    public void assertBodyFragmentAsText(String fragment, Assertion<String> assertion) {
+        assertBodyFragment(fragment, matcher(assertion), String.class);
     }
 
 
     @Step(value = "rest.assert.response.body.fragment.integer", args = { "fragment:text",
                     "matcher:integer-assertion" })
-    public void assertBodyFragmentAsInteger(String fragment, Matcher<Integer> matcher) {
-        assertBodyFragment(fragment, matcher, Integer.class);
+    public void assertBodyFragmentAsInteger(String fragment, Assertion<Integer> assertion) {
+        assertBodyFragment(fragment, matcher(assertion), Integer.class);
     }
 
 
     @Step(value = "rest.assert.response.body.fragment.decimal", args = { "fragment:text",
                     "matcher:decimal-assertion" })
-    public void assertBodyFragmentAsDecimal(String fragment, Matcher<BigDecimal> matcher) {
-        assertBodyFragment(fragment, matcher, BigDecimal.class);
+    public void assertBodyFragmentAsDecimal(String fragment, Assertion<BigDecimal> assertion) {
+        assertBodyFragment(fragment, matcher(assertion), BigDecimal.class);
     }
+
+
 
 }

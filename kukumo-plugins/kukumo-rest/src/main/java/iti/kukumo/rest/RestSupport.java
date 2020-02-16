@@ -54,6 +54,11 @@ public class RestSupport {
     protected ValidatableResponse validatableResponse;
 
 
+    public void setFailureHttpCodeAssertion(Matcher<Integer> httpCodeAssertion) {
+        this.failureHttpCodeAssertion = httpCodeAssertion;
+    }
+
+
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
@@ -179,5 +184,7 @@ public class RestSupport {
     private String readFile(File file) {
         return resourceLoader.readFileAsString(file);
     }
+
+
 
 }

@@ -6,10 +6,9 @@ package iti.kukumo.database;
 
 import iti.commons.slf4jansi.AnsiLogger;
 import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.database.dataset.*;
 import org.assertj.core.api.Assertions;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,14 +191,14 @@ public class DatabaseHelper {
 
     private void assertCount(
         PreparedStatement statement,
-        Matcher<Long> matcher
+        Assertion<Long> matcher
     ) throws SQLException {
-        MatcherAssert.assertThat(extractSingleResult(statement, Long.class), matcher);
+        Assertion.assertThat(extractSingleResult(statement, Long.class), matcher);
     }
 
 
     public void assertCountRowsInTableByColumns(
-        Matcher<Long> matcher,
+        Assertion<Long> matcher,
         String table,
         String[] columns,
         Object[] values
@@ -222,7 +221,7 @@ public class DatabaseHelper {
 
 
     public void assertCountRowsInTableByClause(
-        Matcher<Long> matcher,
+        Assertion<Long> matcher,
         String table,
         String clause
     ) throws SQLException {
@@ -449,7 +448,7 @@ public class DatabaseHelper {
 
     public void assertCountRowsInTableByDataSet(
         DataSet dataSet,
-        Matcher<Long> matcher
+        Assertion<Long> matcher
     ) throws SQLException {
         String sql = sqlSelectCountFrom(dataSet.table()).append(sqlWhereColumnsEquals(dataSet))
             .toString();
@@ -462,7 +461,7 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             LOGGER.error("[SQL] {sql}",sql);
         }
-        MatcherAssert.assertThat(count, matcher);
+        Assertion.assertThat(count, matcher);
     }
 
 

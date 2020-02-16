@@ -27,6 +27,8 @@
         <!-- dependency versions -->
         <eclipse.lsp4j.version>0.8.1</eclipse.lsp4j.version>
         <configurer.version>1.0.0</configurer.version>
+        <maven-fetcher.version>1.0.0</maven-fetcher.version>
+        <kukumo-core.version>1.0.0</kukumo-core.version>
     </properties>
 
 
@@ -62,9 +64,25 @@
             <version>${commons-cli.version}</version>
         </dependency>
         <dependency>
-        <groupId>iti.commons</groupId>
-        <artifactId>configurer</artifactId>
-        <version>${configurer.version}</version>
+            <groupId>iti.commons</groupId>
+            <artifactId>configurer</artifactId>
+            <version>${configurer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.commons</groupId>
+            <artifactId>maven-fetcher</artifactId>
+            <version>${maven-fetcher.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <version>${kukumo-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -73,23 +91,6 @@
 
     <build>
         <plugins>
-            <!-- customize the name of the jar and add a manifest -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/staging</outputDirectory>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>iti.kukumo.lsp.KukumoLspLauncher</Main-Class>
-                            <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
-                            <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
-                            <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
             <!-- assemble staging folder distribution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -98,6 +99,14 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>iti.kukumo.lsp.KukumoLspLauncher</Main-Class>
+                            <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
+                            <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
+                            <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>

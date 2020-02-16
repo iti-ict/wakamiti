@@ -13,26 +13,26 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 
-public class GenericUnaryAssertProvider extends AbstractAssertProvider {
+public class UnaryStringAssertProvider extends AbstractAssertProvider {
 
-    public static final String NULL = "matcher.generic.null";
-    public static final String EMPTY = "matcher.generic.empty";
-    public static final String NULL_EMPTY = "matcher.generic.null.empty";
+    public static final String NULL = "matcher.string.null";
+    public static final String EMPTY = "matcher.string.empty";
+    public static final String NULL_EMPTY = "matcher.string.null.empty";
 
-    public static final String NOT_NULL = "matcher.generic.not.null";
-    public static final String NOT_EMPTY = "matcher.generic.not.empty";
-    public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
+    public static final String NOT_NULL = "matcher.string.not.null";
+    public static final String NOT_EMPTY = "matcher.string.not.empty";
+    public static final String NOT_NULL_EMPTY = "matcher.string.not.null.empty";
 
 
     @Override
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         String[] expressions = {
-                        NULL,
-                        EMPTY,
-                        NULL_EMPTY,
-                        NOT_NULL,
-                        NOT_EMPTY,
-                        NOT_NULL_EMPTY
+            NULL,
+            EMPTY,
+            NULL_EMPTY,
+            NOT_NULL,
+            NOT_EMPTY,
+            NOT_NULL_EMPTY
         };
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String key : expressions) {

@@ -1,0 +1,47 @@
+{
+  "name": "kukumo-lsp-client",
+  "description": "VSCode extension for Kukumo LSP server",
+  "author": "ITI",
+  "license": "MIT",
+  "version": "0.0.1",
+  "publisher": "vscode",
+  "engines": {
+    "vscode": "^1.8.0"
+  },
+  "categories": [
+    "LSP",
+    "Kukumo"
+  ],
+  "activationEvents": [
+    "onLanguage:plaintext"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Example configuration",
+      "properties": {
+        "debug": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Traces the communication between VSCode and the languageServerExample service."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "update-vscode": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.33",
+    "@types/node": "^6.0.52",
+    "typescript": "^2.1.5",
+    "vscode": "^1.0.3"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^3.1.0"
+  }
+}

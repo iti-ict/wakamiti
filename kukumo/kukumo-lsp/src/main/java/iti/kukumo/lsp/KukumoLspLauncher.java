@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.cli.ParseException;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +20,16 @@ public class KukumoLspLauncher extends Thread {
 
 
 
-    public static void main(String[] args) {
-
-
-
-        KukumoLspLauncher launcher;
-        if (args.length > 0) {
-            launcher = new KukumoLspLauncher(Integer.parseInt(args[0]));
+    public static void main(String[] args) throws ParseException {
+        CliArguments arguments = new CliArguments().parse(args);
+        if (arguments.isHelpActive()) {
+            arguments.printUsage();
         } else {
-            launcher = new KukumoLspLauncher();
+            int port = arguments.port();
+            KukumoLspLauncher launcher = new KukumoLspLauncher(port);
+            launcher.start();
+            System.out.println(launcher.getPort());
         }
-        launcher.start();
-        System.out.println(launcher.getPort());
     }
 
 

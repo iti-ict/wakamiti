@@ -4,26 +4,36 @@
 package iti.kukumo.database;
 
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.annotations.TearDown;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.database.dataset.*;
+import iti.kukumo.database.dataset.CsvDataSet;
+import iti.kukumo.database.dataset.DataSet;
+import iti.kukumo.database.dataset.DataTableDataSet;
+import iti.kukumo.database.dataset.InlineDataSet;
+import iti.kukumo.database.dataset.MultiDataSet;
+import iti.kukumo.database.dataset.OoxmlDataSet;
 import iti.kukumo.util.KukumoLogger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
 
@@ -91,13 +101,13 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    private Matcher<Long> matcherEmpty() {
-        return Matchers.equalTo(0L);
+    private Assertion<Long> matcherEmpty() {
+        return new MatcherAssertion<>(Matchers.equalTo(0L));
     }
 
 
-    private Matcher<Long> matcherNonEmpty() {
-        return Matchers.greaterThan(0L);
+    private Assertion<Long> matcherNonEmpty() {
+        return new MatcherAssertion<>(Matchers.greaterThan(0L));
     }
 
     private String nullSymbol() {
@@ -118,8 +128,10 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.define.connection.parameters", args = { "url:text", "username:text",
-                    "password:text" })
+    @Step(
+        value = "db.define.connection.parameters",
+           args = { "url:text", "username:text", "password:text" }
+    )
     public void setConnectionParameters(String url, String username, String password) {
         LOGGER.debug(
             "Setting database connection parameters [url={}, username={}, password={}]",
@@ -398,7 +410,7 @@ public class DatabaseStepContributor implements StepContributor {
         String table,
         String column,
         String value,
-        Matcher<Long> matcher
+        Assertion<Long> matcher
     ) throws SQLException {
         helper.assertCountRowsInTableByColumns(
             matcher,
@@ -417,7 +429,7 @@ public class DatabaseStepContributor implements StepContributor {
         String value1,
         String column2,
         String value2,
-        Matcher<Long> matcher
+        Assertion<Long> matcher
     ) throws SQLException {
         helper.assertCountRowsInTableByColumns(
             matcher,
@@ -433,7 +445,7 @@ public class DatabaseStepContributor implements StepContributor {
     public void assertRowCountByClause(
         String table,
         String clause,
-        Matcher<Long> matcher
+        Assertion<Long> matcher
     ) throws SQLException {
         helper.assertCountRowsInTableByClause(matcher, table, clause);
     }
@@ -442,7 +454,7 @@ public class DatabaseStepContributor implements StepContributor {
     @Step(value = "db.assert.table.count.data", args = { "table:word", "matcher:long-assertion" })
     public void assertDataTableCount(
         String table,
-        Matcher<Long> matcher,
+        Assertion<Long> matcher,
         DataTable dataTable
     ) throws IOException, SQLException {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {

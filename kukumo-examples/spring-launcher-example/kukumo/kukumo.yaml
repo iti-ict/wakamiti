@@ -11,4 +11,4 @@ kukumo:
       - iti.kukumo:kukumo-html-report:1.0.0
       - com.h2database:h2:1.4.199
 mavenFetcher:
-  remoteRepositories: https://repo.maven.apache.org/maven2;file:///home/linesta/.m2/repository
+  remoteRepositories: https://repo.maven.apache.org/maven2;file:///home/luis/.m2/repository

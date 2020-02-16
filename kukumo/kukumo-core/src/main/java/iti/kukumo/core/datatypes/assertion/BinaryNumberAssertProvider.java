@@ -62,9 +62,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
 
 
     protected BinaryNumberAssertProvider(
-                    ThrowableFunction<Locale, String> numberRegexProvider,
-                    ThrowableFunction<Number, T> mapper,
-                    ThrowableFunction<Locale, NumberFormat> formatter
+        ThrowableFunction<Locale, String> numberRegexProvider,
+        ThrowableFunction<Number, T> mapper,
+        ThrowableFunction<Locale, NumberFormat> formatter
     ) {
         this.numberRegexProvider = numberRegexProvider;
         this.mapper = mapper;
@@ -76,16 +76,16 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         // binary numeric matchers
         String[] expressions = {
-                        EQUALS,
-                        GREATER,
-                        GREATER_EQUALS,
-                        LESS,
-                        LESS_EQUALS,
-                        NOT_EQUALS,
-                        NOT_GREATER,
-                        NOT_GREATER_EQUALS,
-                        NOT_LESS,
-                        NOT_LESS_EQUALS
+            EQUALS,
+            GREATER,
+            GREATER_EQUALS,
+            LESS,
+            LESS_EQUALS,
+            NOT_EQUALS,
+            NOT_GREATER,
+            NOT_GREATER_EQUALS,
+            NOT_LESS,
+            NOT_LESS_EQUALS,
         };
 
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();

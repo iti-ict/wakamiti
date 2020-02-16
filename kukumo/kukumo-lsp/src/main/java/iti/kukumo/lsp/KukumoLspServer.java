@@ -1,7 +1,5 @@
 package iti.kukumo.lsp;
 
-import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.lsp4j.CompletionOptions;

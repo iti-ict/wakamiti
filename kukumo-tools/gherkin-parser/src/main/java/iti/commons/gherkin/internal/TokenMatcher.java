@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import iti.commons.gherkin.GherkinDialect;
+import iti.commons.gherkin.GherkinDialectProvider;
+import iti.commons.gherkin.GherkinLanguageConstants;
 import iti.commons.gherkin.Location;
 
 public class TokenMatcher implements ITokenMatcher {

@@ -13,10 +13,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.core.datatypes.assertion.KukumoAssertTypes;
 
 
@@ -29,8 +29,8 @@ public class TestkukumoAssertTypesEs {
     @Test
     public void testInteger() throws ParseException {
 
-        KukumoDataType<Matcher> intMatcher = KukumoAssertTypes
-            .binaryNumbeAssert("int-assert", false, Number::intValue);
+        KukumoDataType<Assertion> intAssertion = KukumoAssertTypes
+            .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7", -7);
         exp.put("es igual a 8.000", 8000);
@@ -46,14 +46,14 @@ public class TestkukumoAssertTypesEs {
         exp.put("no es menor o igual que 13", 15);
 
         for (Entry<String, Object> e : exp.entrySet()) {
-            Matcher<?> matcher = intMatcher.parse(locale, e.getKey());
+            Assertion<?> matcher = intAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
-            assertThat(matcher.matches(e.getValue()))
+            assertThat(matcher.test(e.getValue()))
                 .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
 
-        intMatcher.parse(locale, "es nulo").matches(null);
-        intMatcher.parse(locale, "no es nulo").matches(7);
+        intAssertion.parse(locale, "es nulo").test(null);
+        intAssertion.parse(locale, "no es nulo").test(7);
 
     }
 
@@ -61,8 +61,8 @@ public class TestkukumoAssertTypesEs {
     @Test
     public void testLong() throws ParseException {
 
-        KukumoDataType<Matcher> longMatcher = KukumoAssertTypes
-            .binaryNumbeAssert("long-assert", false, Number::longValue);
+        KukumoDataType<Assertion> longAssertion = KukumoAssertTypes
+            .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7", -7L);
         exp.put("es igual a 8.000", 8000L);
@@ -78,14 +78,14 @@ public class TestkukumoAssertTypesEs {
         exp.put("no es menor o igual que 13", 15L);
 
         for (Entry<String, Object> e : exp.entrySet()) {
-            Matcher<?> matcher = longMatcher.parse(locale, e.getKey());
+            Assertion<?> matcher = longAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
-            assertThat(matcher.matches(e.getValue()))
+            assertThat(matcher.test(e.getValue()))
                 .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
 
-        longMatcher.parse(locale, "es nulo").matches(null);
-        longMatcher.parse(locale, "no es nulo").matches(7L);
+        longAssertion.parse(locale, "es nulo").test(null);
+        longAssertion.parse(locale, "no es nulo").test(7L);
 
     }
 
@@ -93,8 +93,8 @@ public class TestkukumoAssertTypesEs {
     @Test
     public void testDouble() throws ParseException {
 
-        KukumoDataType<Matcher> doubleMatcher = KukumoAssertTypes
-            .binaryNumbeAssert("double-assert", true, Number::doubleValue);
+        KukumoDataType<Assertion> doubleAssertion = KukumoAssertTypes
+            .binaryNumberAssert("double-assert", true, Number::doubleValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7,0", -7.0);
         exp.put("es igual a 8,0", 8.0);
@@ -106,9 +106,9 @@ public class TestkukumoAssertTypesEs {
         exp.put("es menor o igual que 13,0", 13.0);
 
         for (Entry<String, Object> e : exp.entrySet()) {
-            Matcher<?> matcher = doubleMatcher.parse(locale, e.getKey());
+            Assertion<?> matcher = doubleAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
-            assertThat(matcher.matches(e.getValue()))
+            assertThat(matcher.test(e.getValue()))
                 .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
@@ -117,7 +117,7 @@ public class TestkukumoAssertTypesEs {
     @Test
     public void testBigDecimal() throws ParseException {
 
-        KukumoDataType<Matcher> bigDecimalMatcher = KukumoAssertTypes
+        KukumoDataType<Assertion> bigDecimalAssertion = KukumoAssertTypes
             .binaryBigDecimalAssert("bigdecimal-assert", true, x -> x);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7,0", BigDecimal.valueOf(7.0));
@@ -130,9 +130,9 @@ public class TestkukumoAssertTypesEs {
         exp.put("es menor o igual que 13,0", BigDecimal.valueOf(15.0));
 
         for (Entry<String, Object> e : exp.entrySet()) {
-            Matcher<?> matcher = bigDecimalMatcher.parse(locale, e.getKey());
+            Assertion<?> matcher = bigDecimalAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
-            assertThat(matcher.matches(e.getValue()))
+            assertThat(matcher.test(e.getValue()))
                 .as("failed negative match for: " + e.getKey() + " with " + e.getValue()).isFalse();
         }
     }

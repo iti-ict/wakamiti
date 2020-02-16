@@ -106,9 +106,12 @@ public abstract class AbstractAssertProvider {
     }
 
 
-    public static List<String> getAllExpressions(Locale locale) {
+    public static List<String> getAllExpressions(Locale locale, String prefix) {
         ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
-        return bundle.keySet().stream().map(bundle::getString).collect(Collectors.toList());
+        return bundle.keySet().stream()
+            .filter(key->key.startsWith(prefix))
+            .map(bundle::getString)
+            .collect(Collectors.toList());
     }
 
 }

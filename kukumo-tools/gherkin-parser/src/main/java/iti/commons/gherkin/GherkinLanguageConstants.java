@@ -1,4 +1,4 @@
-package iti.commons.gherkin.internal;
+package iti.commons.gherkin;
 
 public interface GherkinLanguageConstants {
     String TAG_PREFIX = "@";

@@ -1,4 +1,4 @@
-package iti.commons.gherkin.internal;
+package iti.commons.gherkin;
 
 import static java.util.Collections.sort;
 import static java.util.Collections.unmodifiableList;
@@ -6,11 +6,13 @@ import static java.util.Collections.unmodifiableList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import iti.commons.gherkin.Location;
+import iti.commons.gherkin.internal.ParserException;
+import iti.commons.gherkin.internal.ResourceLoader;
 
 @SuppressWarnings("unchecked")
 public class GherkinDialectProvider {
@@ -52,9 +54,16 @@ public class GherkinDialectProvider {
         return new GherkinDialect(language, map);
     }
 
+
+    public GherkinDialect getDialect(Locale locale) {
+        return getDialect(locale.toLanguageTag(),null);
+    }
+
+
     public List<String> getLanguages() {
         List<String> languages = new ArrayList<>(DIALECTS.keySet());
         sort(languages);
         return unmodifiableList(languages);
     }
+
 }

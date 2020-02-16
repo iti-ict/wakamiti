@@ -13,6 +13,7 @@ import org.hamcrest.Matcher;
 
 import iti.commons.jext.Extension;
 import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.core.datatypes.KukumoDataTypeBase;
 import iti.kukumo.core.datatypes.KukumoNumberDataType;
@@ -26,13 +27,13 @@ public class KukumoAssertTypes implements DataTypeContributor {
     public List<KukumoDataType<?>> contributeTypes() {
         List<KukumoDataType<?>> types = new ArrayList<>();
         // functional datatypes
-        types.add(binaryNumbeAssert("integer-assertion", false, Number::intValue));
+        types.add(binaryNumberAssert("integer-assertion", false, Number::intValue));
         types.add(binaryBigDecimalAssert("decimal-assertion", true, x -> x));
         types.add(binaryStringAssert("text-assertion"));
         // java datatypes
-        types.add(binaryNumbeAssert("short-assertion", false, Number::shortValue));
-        types.add(binaryNumbeAssert("int-assertion", false, Number::intValue));
-        types.add(binaryNumbeAssert("long-assertion", false, Number::longValue));
+        types.add(binaryNumberAssert("short-assertion", false, Number::shortValue));
+        types.add(binaryNumberAssert("int-assertion", false, Number::intValue));
+        types.add(binaryNumberAssert("long-assertion", false, Number::longValue));
         types.add(binaryBigDecimalAssert("biginteger-assertion", true, BigDecimal::toBigInteger));
         types.add(binaryBigDecimalAssert("float-assertion", true, BigDecimal::floatValue));
         types.add(binaryBigDecimalAssert("double-assertion", true, BigDecimal::doubleValue));
@@ -41,18 +42,19 @@ public class KukumoAssertTypes implements DataTypeContributor {
     }
 
 
-    public static <T extends Comparable<T>> KukumoAssertDataType binaryNumbeAssert(
+    public static <T extends Comparable<T>> KukumoAssertDataType binaryNumberAssert(
         String name,
         boolean includeDecimals,
         ThrowableFunction<Number, T> mapper
     ) {
         return new KukumoAssertDataType(
             name,
+            "matcher.number",
             BinaryNumberAssertProvider.createFromNumber(
                 locale -> KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),
                 mapper
             ),
-            new GenericUnaryAssertProvider()
+            new UnaryNumberAssertProvider()
         );
     }
 
@@ -64,11 +66,12 @@ public class KukumoAssertTypes implements DataTypeContributor {
     ) {
         return new KukumoAssertDataType(
             name,
+            "matcher.number",
             BinaryNumberAssertProvider.createFromBigDecimal(
                 locale -> KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),
                 mapper
             ),
-            new GenericUnaryAssertProvider()
+            new UnaryNumberAssertProvider()
         );
     }
 
@@ -76,24 +79,25 @@ public class KukumoAssertTypes implements DataTypeContributor {
     public static KukumoAssertDataType binaryStringAssert(String name) {
         return new KukumoAssertDataType(
             name,
+            "matcher.string",
             new BinaryStringAssertProvider(),
-            new GenericUnaryAssertProvider()
+            new UnaryStringAssertProvider()
         );
     }
 
 
     @SuppressWarnings("rawtypes")
-    private static class KukumoAssertDataType extends KukumoDataTypeBase<Matcher> {
-
+    private static class KukumoAssertDataType extends KukumoDataTypeBase<Assertion> {
         public KukumoAssertDataType(
-                        String name,
-                        AbstractAssertProvider... matcherProviders
+            String name,
+            String prefix,
+            AbstractAssertProvider... matcherProviders
         ) {
             super(
                 name,
-                Matcher.class,
+                Assertion.class,
                 locale -> ".*",
-                AbstractAssertProvider::getAllExpressions,
+                locale -> AbstractAssertProvider.getAllExpressions(locale,prefix),
                 parseProvider(matcherProviders)
             );
         }
@@ -101,7 +105,7 @@ public class KukumoAssertTypes implements DataTypeContributor {
 
 
     @SuppressWarnings("rawtypes")
-    protected static KukumoDataTypeBase.LocaleTypeParser<Matcher> parseProvider(
+    protected static KukumoDataTypeBase.LocaleTypeParser<Assertion> parseProvider(
         AbstractAssertProvider[] assertProviders
     ) {
         return locale -> expression -> {
@@ -109,11 +113,17 @@ public class KukumoAssertTypes implements DataTypeContributor {
                 Optional<Matcher<?>> matcher = assertProvider
                     .matcherFromExpression(locale, expression);
                 if (matcher.isPresent()) {
-                    return matcher.get();
+                    return adapt(matcher.get());
                 }
             }
             return null;
         };
+    }
+
+
+
+    private static <T> Assertion<T> adapt(Matcher<T> matcher) {
+        return new MatcherAssertion<>(matcher);
     }
 
 }

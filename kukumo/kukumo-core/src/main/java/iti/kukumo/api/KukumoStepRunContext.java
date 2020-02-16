@@ -1,14 +1,12 @@
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-package iti.kukumo.core.backend;
+package iti.kukumo.api;
 
 
 import java.util.Locale;
 
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.KukumoDataTypeRegistry;
 
 
 public class KukumoStepRunContext {
