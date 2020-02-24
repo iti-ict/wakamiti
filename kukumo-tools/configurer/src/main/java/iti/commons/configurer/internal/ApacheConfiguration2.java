@@ -4,17 +4,7 @@
 package iti.commons.configurer.internal;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
@@ -141,7 +131,7 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
 
     @Override
     public Map<String, String> asMap() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
         conf.getKeys().forEachRemaining(key -> map.put(key, conf.getString(key)));
         return map;
     }

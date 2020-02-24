@@ -1,0 +1,6 @@
+server:
+  port: 0
+
+kukumo:
+  executions:
+    path: target/kukumo-executions/

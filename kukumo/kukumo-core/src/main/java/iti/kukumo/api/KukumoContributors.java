@@ -5,6 +5,7 @@ package iti.kukumo.api;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -17,14 +18,9 @@ import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.extensions.ConfigContributor;
-import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.api.extensions.EventObserver;
-import iti.kukumo.api.extensions.PlanBuilder;
-import iti.kukumo.api.extensions.PlanTransformer;
-import iti.kukumo.api.extensions.Reporter;
-import iti.kukumo.api.extensions.ResourceType;
-import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.extensions.*;
+import iti.kukumo.util.Pair;
 
 
 public class KukumoContributors {
@@ -34,6 +30,23 @@ public class KukumoContributors {
 
     public void setClassLoaders(ClassLoader... loaders) {
         this.extensionManager = new ExtensionManager(loaders);
+    }
+
+
+    public Map<Class<?>,List<Contributor>> allContributors() {
+        Class<?>[] contributorTypes = {
+                ConfigContributor.class,
+                DataTypeContributor.class,
+                EventObserver.class,
+                PlanBuilder.class,
+                PlanTransformer.class,
+                Reporter.class,
+                ResourceType.class,
+                StepContributor.class
+        } ;
+        return Stream.of(contributorTypes)
+            .map(type -> new Pair<>(type,extensionManager.getExtensions(type).map(Contributor.class::cast).collect(Collectors.toList())))
+            .collect(Collectors.toMap(Pair::key,Pair::value));
     }
 
 
@@ -149,5 +162,14 @@ public class KukumoContributors {
         .reduce(ConfigurationBuilder.instance().empty(), Configuration::append);
     }
 
+
+
+    private <T> Stream<T> concat(Stream<? extends T>... streams) {
+        Stream<T> concat = Stream.empty();
+        for (Stream<? extends T> stream : streams) {
+            concat = Stream.concat(concat,stream);
+        }
+        return concat;
+    }
 
 }

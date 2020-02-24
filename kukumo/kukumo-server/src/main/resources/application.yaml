@@ -1,1 +1,15 @@
+spring:
+  application:
+    name: Kukumo Server
+  jackson:
+    serialization:
+      indent_output: true
 
+
+server:
+  port: 9150
+
+kukumo:
+  executions:
+    path: /var/lib/kukumo-executions/
+    oldestAge: 30

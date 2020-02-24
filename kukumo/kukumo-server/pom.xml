@@ -28,7 +28,7 @@
 		<!-- paths -->
 		<maven.repo.local>${env.HOME}/.m2/repository</maven.repo.local>
 		<!-- dependency versions -->
-		<kukumo.core.version>1.0.0</kukumo.core.version>
+		<kukumo.core.version>1.0.1-SERVER</kukumo.core.version>
 		<!-- plugin versions -->
 		<jacoco.version>0.8.2</jacoco.version>
 		<maven.source.plugin.version>3.0.1</maven.source.plugin.version>

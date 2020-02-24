@@ -10,7 +10,7 @@ import iti.commons.jext.ExtensionPoint;
 
 
 @ExtensionPoint
-public interface ConfigContributor<T> {
+public interface ConfigContributor<T> extends Contributor {
 
     /** @return <tt>true</tt> if the configurator can configure the given object */
     boolean accepts(Object contributor);
