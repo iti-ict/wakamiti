@@ -78,7 +78,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.bearer")
     public void setBearerAuth(String token) {
+        LOGGER.debug("Setting header [Authorization: Bearer {}]", token);
         this.authenticator = requestSpecification -> requestSpecification.auth().oauth2(token);
+    }
+
+    @Step("rest.define.auth.bearer.file")
+    public void setBearerAuthFile(File file) {
+        String token = resourceLoader.readFileAsString(file).trim();
+        setBearerAuth(token);
     }
 
 
@@ -164,6 +171,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
     }
 
+    @Step("rest.execute.POST.empty")
+    public void executePost() {
+        executeRequest(RequestSpecification::post);
+    }
 
     @Step("rest.assert.response.body.strict.from.file")
     public void assertStrictFileContent(File file) {
