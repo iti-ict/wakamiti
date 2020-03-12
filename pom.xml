@@ -41,10 +41,14 @@
         <module>kukumo-plugins/kukumo-db</module>
         <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
+        <module>kukumo-plugins/kukumo-io</module>
+        <module>kukumo-plugins/kukumo-io-i10n</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
         <module>kukumo-examples/spring-launcher-example</module>
+        <!-- docker -->
+        <module>kukumo-docker</module>
     </modules>
 
 
@@ -115,7 +119,7 @@
         <maven.info.reports.version>3.0.0</maven.info.reports.version>
         <maven.javadoc.version>2.8</maven.javadoc.version>
         <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
-
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
     </properties>
 
 
@@ -424,12 +428,7 @@
                 </plugins>
             </build>
         </profile>
+
     </profiles>
-
-
-
-
-
-
 
 </project>
