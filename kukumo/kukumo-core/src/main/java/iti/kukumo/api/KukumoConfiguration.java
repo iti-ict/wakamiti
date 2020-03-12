@@ -84,6 +84,10 @@ public class KukumoConfiguration {
     /** Show the elapsed time for each step in the logs */
     public static final String LOGS_SHOW_ELAPSED_TIME = "logs.showElapsedTime";
 
+    /** Set if file log is enabled */
+    public static final String LOGS_FILE_ENABLED = "logs.file.enabled";
+
+    public static final String LOGS_FILE_PATH = "logs.file.path";
 
     @Configurator(properties = {
                     @Property(key = RESOURCE_PATH, value = "."),
@@ -93,6 +97,8 @@ public class KukumoConfiguration {
                     @Property(key = REDEFINITION_ENABLED, value = Defaults.DEFAULT_REDEFINITION_ENABLED),
                     @Property(key = REDEFINITION_DEFINITION_TAG, value = Defaults.DEFAULT_REDEFINITION_DEFINITION_TAG),
                     @Property(key = REDEFINITION_IMPLEMENTATION_TAG, value = Defaults.DEFAULT_REDEFINITION_IMPLEMENTATION_TAG),
+                    @Property(key = LOGS_FILE_ENABLED, value = Defaults.DEFAULT_LOGS_FILE_ENABLED),
+                    @Property(key = LOGS_FILE_PATH, value = Defaults.DEFAULT_LOGS_FILE_PATH),
                     @Property(key = "logs.ansi.styles.logo", value = "bold,green"),
                     @Property(key = "logs.ansi.styles.keyword", value = "blue"),
                     @Property(key = "logs.ansi.styles.source", value = "faint"),
@@ -112,6 +118,8 @@ public class KukumoConfiguration {
         public static final String DEFAULT_REDEFINITION_ENABLED = "true";
         public static final String DEFAULT_REDEFINITION_DEFINITION_TAG = "definition";
         public static final String DEFAULT_REDEFINITION_IMPLEMENTATION_TAG = "implementation";
+        public static final String DEFAULT_LOGS_FILE_ENABLED = "false";
+        public static final String DEFAULT_LOGS_FILE_PATH = "kukumo.log";
 
 
         private Defaults() {

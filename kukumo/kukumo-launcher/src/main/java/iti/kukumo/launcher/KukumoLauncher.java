@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import iti.kukumo.util.KukumoLogger;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -62,7 +63,7 @@ public class KukumoLauncher {
 
     private static Logger createLogger(boolean debug) {
         if (debug) {
-            Configurator.setLevel("iti.kukumo", Level.DEBUG);
+            KukumoLogger.setLevel(KukumoLogger.CONSOLE_APPENDER, Level.DEBUG);
         }
         return LoggerFactory.getLogger("iti.kukumo");
     }
