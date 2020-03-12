@@ -298,7 +298,7 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.assert.table.exists.data", args = "word")
+    @Step(value = "db.assert.table.exists.data", args = "table:word")
     public void assertDataTableExists(
         String table,
         DataTable dataTable
@@ -381,7 +381,7 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.assert.table.not.exists.data", args = "word")
+    @Step(value = "db.assert.table.not.exists.data", args = "table:word")
     public void assertDataTableNotExists(
         String table,
         DataTable dataTable
