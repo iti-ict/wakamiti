@@ -28,7 +28,7 @@
         <eclipse.lsp4j.version>0.8.1</eclipse.lsp4j.version>
         <configurer.version>1.0.0</configurer.version>
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
-        <kukumo-core.version>1.0.0</kukumo-core.version>
+        <kukumo-core.version>1.0.0-lsp</kukumo-core.version>
     </properties>
 
 

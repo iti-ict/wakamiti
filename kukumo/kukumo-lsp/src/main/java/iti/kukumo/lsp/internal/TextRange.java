@@ -1,0 +1,60 @@
+package iti.kukumo.lsp.internal;
+
+public class TextRange {
+
+    public static TextRange of(int startLine, int startLinePosition, int endLine, int endLinePosition) {
+        TextRange range = new TextRange();
+        range.startLine = startLine;
+        range.startLinePosition = startLinePosition;
+        range.endLine = endLine;
+        range.endLinePosition = endLinePosition;
+        return range;
+    }
+
+    public static TextRange empty() {
+        return of(-1,-1,-1,-1);
+    }
+
+
+    private int startLine;
+    private int startLinePosition;
+    private int endLine;
+    private int endLinePosition;
+
+
+    public int startLine() {
+        return startLine;
+    }
+
+    public int startLinePosition() {
+        return startLinePosition;
+    }
+
+    public int endLine() {
+        return endLine;
+    }
+
+    public int endLinePosition() {
+        return endLinePosition;
+    }
+
+
+
+    public boolean isEmpty() {
+        return startLine == endLine && startLinePosition == endLinePosition;
+    }
+
+
+    public boolean isSingleLine() {
+        return startLine == endLine;
+    }
+
+
+    public LineRange toLineRange() {
+        if (!isSingleLine()) {
+            throw new IllegalStateException("text range is not a single line");
+        }
+        return LineRange.of(startLinePosition,endLinePosition);
+    }
+
+}

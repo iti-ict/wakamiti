@@ -2,41 +2,49 @@ package iti.kukumo.lsp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.eclipse.lsp4j.CompletionItem;
 import org.junit.Test;
 
 import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.lsp.internal.GherkinCompleter;
 
 
 public class TestCompletion {
 
-    KukumoCompletion completion = new KukumoCompletion();
+    GherkinCompleter completion = new GherkinCompleter();
 
     @Test
     public void testCompletionOnEmptyComment() {
-        completion.updateDocument("");
+        completion.resetDocument("");
         var suggestions = completion.suggest(0, "# ");
-        assertThat(suggestions).containsExactly(
-            Kukumo.defaultConfiguration().keyStream().toArray(String[]::new)
+        assertThat(asStringList(suggestions)).containsExactly(
+            Kukumo.defaultConfiguration().keyStream().map(key -> key+": <value>").toArray(String[]::new)
         );
     }
+
+
 
 
     @Test
     public void testCompletionOnPartialComment() {
-        completion.updateDocument("");
-        var suggestions = completion.suggest(0, "# redef");
+        completion.resetDocument("");
+        var suggestions = asStringList(completion.suggest(0, "# redef"));
         assertThat(suggestions).containsExactly(
-            "redefinition.enabled",
-            "redefinition.definitionTag",
-            "redefinition.implementationTag"
+            "redefinition.enabled: <value>",
+            "redefinition.definitionTag: <value>",
+            "redefinition.implementationTag: <value>"
         );
     }
 
 
+
+
     @Test
     public void testCompletionOnCompletedComment() {
-        completion.updateDocument("");
+        completion.resetDocument("");
         var suggestions = completion.suggest(0, "## redefinition.enabled: true");
         assertThat(suggestions).isEmpty();
     }
@@ -44,32 +52,32 @@ public class TestCompletion {
 
     @Test
     public void testKeywordCompletionOnEmptyDocument() {
-        completion.updateDocument("");
-        assertThat(completion.suggest(0, ""))
+        completion.resetDocument("");
+        assertThat(asStringList(completion.suggest(0, "")))
             .containsExactly("Feature:","Business Need:","Ability:");
-        assertThat(completion.suggest(0,"Fea"))
+        assertThat(asStringList(completion.suggest(0,"Fea")))
             .containsExactly("Feature:");
-        assertThat(completion.suggest(0,"Feature: Something"))
+        assertThat(asStringList(completion.suggest(0,"Feature: Something")))
             .isEmpty();
     }
 
 
     @Test
     public void testKeywordCompletionOnSpanishDocument() {
-        completion.updateDocument("# language: es");
-        var suggestions = completion.suggest(1, "");
+        completion.resetDocument("# language: es");
+        var suggestions = asStringList(completion.suggest(1, ""));
         assertThat(suggestions).containsExactly("Característica:");
     }
 
 
     @Test
     public void testEmptyStepKeywordCompletion() {
-        completion.updateDocument(new StringBuilder()
+        completion.resetDocument(new StringBuilder()
             .append("Feature: Test feature\n")
             .append("Scenario: Test scenario\n")
             .toString()
         );
-        var suggestions = completion.suggest(2, "");
+        var suggestions = asStringList(completion.suggest(2, ""));
         assertThat(suggestions).contains(
             "* ",
             "Given that ",
@@ -86,13 +94,13 @@ public class TestCompletion {
     public void testStepCompletionShort() {
         completion
         .setMaxSuggestions(2)
-        .updateDocument(new StringBuilder()
+        .resetDocument(new StringBuilder()
             .append("# nonRegisteredStepProviders : iti.kukumo.lsp.KukumoSteps\n")
             .append("Feature: Test feature\n")
             .append("Scenario: Test scenario\n")
             .toString()
         );
-        var suggestions = completion.suggest(3, "Given that ");
+        var suggestions = asStringList(completion.suggest(3, "Given that "));
         assertThat(suggestions).containsExactly(
             "the set of real numbers ℝ",
             "this step has an integer that {integer-assertion}"
@@ -103,15 +111,22 @@ public class TestCompletion {
     @Test
     public void testStepCompletionLong() {
         completion
-        .updateDocument(new StringBuilder()
+        .resetDocument(new StringBuilder()
             .append("# nonRegisteredStepProviders : iti.kukumo.lsp.KukumoSteps\n")
             .append("Feature: Test feature\n")
             .append("Scenario: Test scenario\n")
             .toString()
         );
-        var suggestions = completion.suggest(3, "Given that this step");
+        var suggestions = asStringList(completion.suggest(3, "Given that this step"));
         assertThat(suggestions).isNotEmpty();
         assertThat(suggestions).allMatch(suggestion -> suggestion.startsWith("this step"));
     }
+
+
+
+    private List<String> asStringList(List<CompletionItem> suggestions) {
+        return suggestions.stream().map(CompletionItem::getLabel).collect(Collectors.toList());
+    }
+
 
 }

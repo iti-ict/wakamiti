@@ -28,7 +28,7 @@ public class CliArguments {
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
-        cliOptions.addOption(ARG_PORT, "port", false, "Port to run the LSP server (any free port if not specified)");
+        cliOptions.addOption(ARG_PORT, "port", true, "Port to run the LSP server (any free port if not specified)");
         cliOptions.addOption(
             Option.builder(ARG_KUKUMO_PROPERTY)
             .argName("kukumoProperty=value")

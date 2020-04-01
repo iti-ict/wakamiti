@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import iti.commons.gherkin.internal.ParserException;
 import iti.commons.gherkin.internal.ResourceLoader;
 
 @SuppressWarnings("unchecked")

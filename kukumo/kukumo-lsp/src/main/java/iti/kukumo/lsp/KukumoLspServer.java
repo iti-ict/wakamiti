@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.lsp4j.CompletionOptions;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InitializeResult;
+import org.eclipse.lsp4j.InitializedParams;
 import org.eclipse.lsp4j.MessageParams;
 import org.eclipse.lsp4j.MessageType;
 import org.eclipse.lsp4j.ServerCapabilities;
@@ -22,17 +23,22 @@ public class KukumoLspServer implements LanguageServer, LanguageClientAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KukumoLspLauncher.class);
 
-    private final TextDocumentService textDocumentService = new KukumoTextDocumentService(null);
-    private final WorkspaceService workspaceService = new KukumoWorkspaceService(null);
+    private final TextDocumentService textDocumentService;
+    private final WorkspaceService workspaceService;
 
-    private LanguageClient client;
+    LanguageClient client;
+
+
+    public KukumoLspServer() {
+        this.textDocumentService = new KukumoTextDocumentService(this);
+        this.workspaceService = new KukumoWorkspaceService(this);
+    }
 
 
     public static ServerCapabilities capabilities() {
         var capabilities = new ServerCapabilities();
         capabilities.setCompletionProvider(new CompletionOptions(true, null));
-        capabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
-        capabilities.setCodeActionProvider(false);
+        capabilities.setTextDocumentSync(TextDocumentSyncKind.Incremental);
         return capabilities;
     }
 
@@ -45,6 +51,11 @@ public class KukumoLspServer implements LanguageServer, LanguageClientAware {
         return CompletableFuture.completedFuture(result);
     }
 
+    @Override
+    public void initialized(InitializedParams params) {
+        LOGGER.info("EVENT initialized:\n{}",params);
+        LanguageServer.super.initialized(params);
+    }
 
     @Override
     public CompletableFuture<Object> shutdown() {
@@ -76,8 +87,11 @@ public class KukumoLspServer implements LanguageServer, LanguageClientAware {
 
     @Override
     public void connect(LanguageClient client) {
-        LOGGER.info("connect:\n{}",client);
+        LOGGER.info("EVENT connect");
         this.client = client;
+        client.logMessage(info("[LSP Server] Connected"));
+        client.showMessage(info("Connected to Kukumo LSP Server"));
+
     }
 
 

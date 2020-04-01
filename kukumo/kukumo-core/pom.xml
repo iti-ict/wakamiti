@@ -13,7 +13,7 @@
 
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-lsp</version>
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -25,7 +25,7 @@
         <!-- dependency versions -->
         <configurer.version>1.0.0</configurer.version>
         <jext.version>1.0.0</jext.version>
-        <gherkin-parser.version>1.0.0</gherkin-parser.version>
+        <gherkin-parser.version>1.0.0-lsp</gherkin-parser.version>
         <tag-expressions.version>1.1.1</tag-expressions.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>

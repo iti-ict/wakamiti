@@ -7,7 +7,7 @@
 
     <groupId>iti.commons</groupId>
     <artifactId>gherkin-parser</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-lsp</version>
 
     <name>gherkin-parser</name>
 

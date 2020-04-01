@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.ParseException;
@@ -28,7 +29,6 @@ public class KukumoLspLauncher extends Thread {
             int port = arguments.port();
             KukumoLspLauncher launcher = new KukumoLspLauncher(port);
             launcher.start();
-            System.out.println(launcher.getPort());
         }
     }
 
@@ -53,6 +53,7 @@ public class KukumoLspLauncher extends Thread {
         try {
             serverSocket = new ServerSocket();
             serverSocket.bind(endpoint);
+            System.out.println(getPort());
             LOGGER.info("Listening at {}:{}",getAddress(),getPort());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(),e);
@@ -63,6 +64,7 @@ public class KukumoLspLauncher extends Thread {
     public void finalize() {
         try {
             serverSocket.close();
+            LOGGER.info("Server stopped.");
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(),e);
         }
@@ -90,17 +92,20 @@ public class KukumoLspLauncher extends Thread {
     }
 
 
-    private KukumoLspServer launchServer(Socket socket) {
+    private void launchServer(Socket socket) {
         try {
+            LOGGER.info("Creating new server instance for connection {}", socket.getPort());
             var server = new KukumoLspServer();
             var launcher = LSPLauncher.createServerLauncher(
-                    server,
+                server,
                 socket.getInputStream(),
                 socket.getOutputStream()
             );
             server.connect(launcher.getRemoteProxy());
-            launcher.startListening();
-            return server;
+            Futures.whenDone(
+                launcher.startListening(),
+                ()->LOGGER.info("Server instance for connection {} closed.", socket.getPort())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(),e);
         }

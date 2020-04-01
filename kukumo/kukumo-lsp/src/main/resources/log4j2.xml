@@ -5,12 +5,13 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="[Kukumo LSP Server] %d{yyyy-MM-dd HH:mm:ss} >> %m%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] >> %m%n"/>
         </Console>
     </Appenders>
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
+        <Logger name="iti.kukumo.lsp.textDocument.documentHighlight" level="debug"><AppenderReg ref="Console"/></Logger>
     </Loggers>
 </Configuration>

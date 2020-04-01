@@ -7,21 +7,21 @@ import org.eclipse.lsp4j.services.WorkspaceService;
 
 public class KukumoWorkspaceService implements WorkspaceService {
 
-    public KukumoWorkspaceService(InitializeParams params) {
-        // TODO Auto-generated constructor stub
+    private final KukumoLspServer server;
+
+    public KukumoWorkspaceService(KukumoLspServer server) {
+        this.server = server;
     }
 
     @Override
     public void didChangeConfiguration(DidChangeConfigurationParams params) {
-        // TODO Auto-generated method stub
-        System.out.println("didChangeConfiguration");
+        LoggerUtil.log("workspace.didChangeConfiguration",params);
 
     }
 
     @Override
     public void didChangeWatchedFiles(DidChangeWatchedFilesParams params) {
-        // TODO Auto-generated method stub
-        System.out.println("didChangeWatchedFiles");
+        LoggerUtil.log("workspace.didChangeWatcherFiles", params);
 
     }
 

@@ -2,10 +2,8 @@ package iti.commons.gherkin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class GherkinDialect {
     private final Map<String, List<String>> keywords;
@@ -21,6 +19,10 @@ public class GherkinDialect {
         this.keywords.put(
             "feature-content",
             merge(keywords,"background","scenario","scenarioOutline")
+        );
+        this.keywords.put(
+            "all",
+            merge(keywords,"given","when","then","and","but","background","examples","feature","scenario","scenarioOutline")
         );
     }
 
@@ -73,6 +75,10 @@ public class GherkinDialect {
 
     public List<String> getButKeywords() {
         return keywords.get("but");
+    }
+
+    public List<String> getKeywords() {
+        return keywords.get("all");
     }
 
     public String getLanguage() {

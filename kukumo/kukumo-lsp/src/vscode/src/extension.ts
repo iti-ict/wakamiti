@@ -11,25 +11,22 @@ import * as child_process from "child_process";
 
 import { workspace, Disposable, ExtensionContext } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, StreamInfo } from 'vscode-languageclient';
+import { resolveCname } from "dns";
 
 export function activate(context: ExtensionContext) {
 
 	function createServer(): Promise<StreamInfo> {
 		return new Promise((resolve, reject) => {
-			var server = net.createServer((socket) => {
+
+			var server = net.createServer((socket : net.Socket) => {
 				console.log("Creating server");
-
-				resolve({
-					reader: socket,
-					writer: socket
-				});
-
+				resolve({ writer: socket, reader: socket });
 				socket.on('end', () => console.log("Disconnected"));
 			}).on('error', (err) => {
-				// handle errors here
 				throw err;
 			});
 
+			/*
 			let javaExecutablePath = findJavaExecutable('java');
 
 			// grab a random port.
@@ -52,33 +49,35 @@ export function activate(context: ExtensionContext) {
 				let logFile = context.storagePath + '/vscode-languageserver-java-example.log';
 				let logStream = fs.createWriteStream(logFile, { flags: 'w' });
 
-				process.stdout.pipe(logStream);
-				process.stderr.pipe(logStream);
-
+				/*			
+		
 				console.log(`Storing log in '${logFile}'`);
 			});
+			*/
+			server.listen(44444);
+
 		});
 	};
 
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
-		// Register the server for plain text documents
 		documentSelector: ['plaintext'],
 		synchronize: {
-			// Synchronize the setting section 'languageServerExample' to the server
-			configurationSection: 'languageServerExample',
-			// Notify the server about file changes to '.clientrc files contain in the workspace
-			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
+			configurationSection: 'kukumoLanguageServer',
+			fileEvents: workspace.createFileSystemWatcher('**/*.feature')
 		}
 	}
 
 	// Create the language client and start the client.
-	let disposable = new LanguageClient('languageServerExample', 'Language Server Example', createServer, clientOptions).start();
+	let disposable = new LanguageClient('kukumoLanguageServer', 'Kukumo Language Server', createServer, clientOptions).start();
 
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation
 	context.subscriptions.push(disposable);
 }
+
+
+
 
 // MIT Licensed code from: https://github.com/georgewfraser/vscode-javac
 function findJavaExecutable(binname: string) {

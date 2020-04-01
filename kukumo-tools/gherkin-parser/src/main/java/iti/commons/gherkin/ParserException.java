@@ -1,14 +1,15 @@
-package iti.commons.gherkin.internal;
+package iti.commons.gherkin;
 
 import java.util.Collections;
 import java.util.List;
 
-import iti.commons.gherkin.Location;
+import iti.commons.gherkin.internal.StringUtils;
+import iti.commons.gherkin.internal.Token;
 
 @SuppressWarnings("serial")
 public class ParserException extends RuntimeException {
 
-    public final Location location;
+    private final Location location;
 
     protected ParserException(String message) {
         super(message);
@@ -18,6 +19,10 @@ public class ParserException extends RuntimeException {
     protected ParserException(String message, Location location) {
         super(getMessage(message, location));
         this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     private static String getMessage(String message, Location location) {
@@ -79,7 +84,8 @@ public class ParserException extends RuntimeException {
     }
 
     public static class CompositeParserException extends ParserException {
-        public final List<ParserException> errors;
+
+        private final List<ParserException> errors;
 
         public CompositeParserException(List<ParserException> errors) {
             super(getMessage(errors));
@@ -88,14 +94,12 @@ public class ParserException extends RuntimeException {
 
         private static String getMessage(List<ParserException> errors) {
             if (errors == null) throw new NullPointerException("errors");
-
-            StringUtils.ToString<ParserException> exceptionToString = new StringUtils.ToString<ParserException>() {
-                @Override
-                public String toString(ParserException e) {
-                    return e.getMessage();
-                }
-            };
+            StringUtils.ToString<ParserException> exceptionToString = ParserException::getMessage;
             return "Parser errors:\n" + StringUtils.join(exceptionToString, "\n", errors);
+        }
+
+        public List<ParserException> getErrors() {
+            return List.copyOf(errors);
         }
     }
 }
