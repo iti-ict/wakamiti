@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import iti.kukumo.lsp.LoggerUtil;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.Diagnostic;
@@ -17,17 +18,20 @@ import org.eclipse.lsp4j.Range;
 import iti.commons.configurer.Configuration;
 import iti.commons.gherkin.Comment;
 import iti.commons.gherkin.Feature;
-import iti.commons.gherkin.GherkinDocument;
 import iti.commons.gherkin.GherkinParser;
 import iti.commons.gherkin.ParserException;
 import iti.commons.gherkin.ParserException.CompositeParserException;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GherkinCompleter {
+public class GherkinDocument {
 
     private static final BackendFactory backendFactory = Kukumo.instance().newBackendFactory();
+    private static final Logger LOGGER = LoggerFactory.getLogger("document.synchronization");
+    private static final String DOTS = "---------------------------";
 
     private final GherkinParser parser = new GherkinParser();
 
@@ -36,22 +40,22 @@ public class GherkinCompleter {
     private int maxSuggestions = 20;
 
     private GherkinDocumentMap documentMap;
-    private GherkinDocument parsedDocument;
+    private iti.commons.gherkin.GherkinDocument parsedDocument;
     private Exception parsingError;
 
 
-    public GherkinCompleter updateGlobalConfiguration(Configuration configuration) {
+    public GherkinDocument updateGlobalConfiguration(Configuration configuration) {
         this.globalConfiguration = configuration;
         return this;
     }
 
-    public GherkinCompleter setMaxSuggestions(int maxSuggestions) {
+    public GherkinDocument setMaxSuggestions(int maxSuggestions) {
         this.maxSuggestions = maxSuggestions;
         return this;
     }
 
 
-    public synchronized GherkinCompleter resetDocument(String document) {
+    public synchronized GherkinDocument resetDocument(String document) {
         Configuration documentConfiguration;
         try {
             this.parsedDocument = parser.parse(new StringReader(document));
@@ -63,26 +67,23 @@ public class GherkinCompleter {
         }
         this.backend = backendFactory.createNonRunnableBackend(documentConfiguration);
         this.documentMap = new GherkinDocumentMap(document);
-
+        LOGGER.debug("{}{}{}",DOTS,documentMap.document().raw(),DOTS);
         return this;
     }
 
 
-    public synchronized void updateDocument(TextRange range, String delta) {
-        boolean requiresParsing = false;
-        if (range.isSingleLine() || range.isEmpty()) {
-            requiresParsing = documentMap.updateLine(range.startLine(), range.toLineRange(), delta);
-        } else {
-            requiresParsing = true;
-        }
+    public synchronized GherkinDocument updateDocument(TextRange range, String delta) {
+        boolean requiresParsing = documentMap.replace(range,delta);
         if (requiresParsing) {
-            resetDocument(documentMap.replaceDocumentSegment(range,delta));
+            resetDocument(documentMap.raw());
         }
+        LOGGER.debug("{}{}{}",DOTS,documentMap.document().raw(),DOTS);
+        return this;
     }
 
 
 
-    private Configuration extractConfiguration(GherkinDocument document) {
+    private Configuration extractConfiguration(iti.commons.gherkin.GherkinDocument document) {
         Feature feature = document.getFeature();
         if (feature == null) {
             return Configuration.empty();
@@ -107,39 +108,46 @@ public class GherkinCompleter {
 
 
 
-    public List<CompletionItem> suggest(int lineNumber, int rowPosition) {
-        return suggest(lineNumber,documentMap.lineContent(lineNumber,LineRange.of(0,rowPosition)));
+    public List<CompletionItem> collectCompletions(int lineNumber, int rowPosition) {
+        return collectCompletions(
+            lineNumber,
+            documentMap.document().extract(TextRange.of(lineNumber,0,lineNumber,rowPosition))
+        );
     }
 
 
 
-    public List<CompletionItem> suggest(int lineNumber, String lineContent) {
+    private List<CompletionItem> collectCompletions(int lineNumber, String lineContent) {
         String strippedLine = lineContent.stripLeading();
         if (strippedLine.startsWith("#") && !strippedLine.contains(":")) {
-            return suggestConfigurationProperties(lineContent);
-        }
-        else if (documentMap.isStep(lineNumber,lineContent)) {
-            return suggestSteps(lineContent);
-        }
-        else {
-            return suggestKeywords(lineNumber, strippedLine);
+            return completeConfigurationProperties(lineContent);
+        } else if (documentMap.isStep(lineNumber,lineContent)) {
+            return completeSteps(lineContent);
+        } else {
+            return completeKeywords(lineNumber, strippedLine);
         }
     }
 
 
 
-    private List<CompletionItem> suggestConfigurationProperties(String lineContent) {
+    private List<CompletionItem> completeConfigurationProperties(String lineContent) {
         String line = lineContent.strip().replace("#","").strip();
-        return
-            globalConfiguration.keyStream()
+        return globalConfiguration.keyStream()
             .filter(key -> key.startsWith(line))
             .map(property -> completionProperty(property))
-            .collect(toList())
-        ;
+            .collect(toList());
     }
 
 
-    private List<CompletionItem> suggestSteps(String lineContent) {
+    private CompletionItem completionProperty(String property) {
+        String suggestion = property+": <value>";
+        var item = new CompletionItem(suggestion);
+        item.setKind(CompletionItemKind.Property);
+        return item;
+    }
+
+
+    private List<CompletionItem> completeSteps(String lineContent) {
         for (String keyword : documentMap.dialect().getStepKeywords()) {
             if (lineContent.startsWith(keyword)) {
                 lineContent = lineContent.substring(keyword.length());
@@ -158,17 +166,6 @@ public class GherkinCompleter {
     }
 
 
-
-    private List<CompletionItem> suggestKeywords(int lineNumber, String strippedLine) {
-        return
-            documentMap.followingKeywords(lineNumber-1).stream()
-            .filter(k -> k.startsWith(strippedLine))
-            .map(keyword -> completionItem(keyword,CompletionItemKind.Keyword))
-            .collect(toList());
-    }
-
-
-
     private CompletionItem completionItem(String suggestion, CompletionItemKind kind) {
         var item = new CompletionItem(suggestion);
         item.setKind(kind);
@@ -176,43 +173,41 @@ public class GherkinCompleter {
     }
 
 
-    private CompletionItem completionProperty(String property) {
-        String suggestion = property+": <value>";
-        var item = new CompletionItem(suggestion);
-        item.setKind(CompletionItemKind.Property);
-        return item;
-    }
-
-    public String currentContent() {
-        return documentMap.currentContent();
+    private List<CompletionItem> completeKeywords(int lineNumber, String strippedLine) {
+        return documentMap.followingKeywords(lineNumber-1).stream()
+            .filter(k -> k.startsWith(strippedLine))
+            .map(keyword -> completionItem(keyword,CompletionItemKind.Keyword))
+            .collect(toList());
     }
 
 
 
-    public List<Diagnostic> diagnostics() {
-        if (parsingError != null) {
-            parsingError.printStackTrace();
-            if (parsingError instanceof ParserException) {
-                return diagnostics((ParserException)parsingError, new ArrayList<>());
-            } else {
-               return List.of(new Diagnostic(
-                    new Range(new Position(0,0),new Position(documentMap.lines().size(),0)),
-                    parsingError.toString(),
-                    DiagnosticSeverity.Error,
-                    ""
-                ));
-            }
-        } else {
+
+
+
+    public List<Diagnostic> collectDiagnostics() {
+        if (parsingError == null) {
             return List.of();
+        }
+        parsingError.printStackTrace();
+        if (parsingError instanceof ParserException) {
+            return collectDiagnostics((ParserException)parsingError, new ArrayList<>());
+        } else {
+            return List.of(new Diagnostic(
+                new Range(new Position(0,0),new Position(documentMap.document().lines(),0)),
+                parsingError.toString(),
+                DiagnosticSeverity.Error,
+                ""
+            ));
         }
     }
 
 
 
-    private List<Diagnostic> diagnostics(ParserException parsingError, List<Diagnostic> results) {
+    private List<Diagnostic> collectDiagnostics(ParserException parsingError, List<Diagnostic> results) {
         if (parsingError instanceof CompositeParserException) {
             for (ParserException e : ((CompositeParserException)parsingError).getErrors()) {
-                diagnostics(e,results);
+                collectDiagnostics(e,results);
             }
         } else {
             int line = parsingError.getLocation().getLine();
@@ -228,7 +223,7 @@ public class GherkinCompleter {
                 line --;
                 column --;
                 results.add(new Diagnostic(
-                    new Range(new Position(line,column),new Position(line,documentMap.lines().get(line).length())),
+                    new Range(new Position(line,column),new Position(line,documentMap.document().line(line).length())),
                     parsingError.getMessage(),
                     DiagnosticSeverity.Error,
                     ""
@@ -238,6 +233,13 @@ public class GherkinCompleter {
         return results;
     }
 
+
+
+
+
+    public String content() {
+        return documentMap.document().raw();
+    }
 
 
 }

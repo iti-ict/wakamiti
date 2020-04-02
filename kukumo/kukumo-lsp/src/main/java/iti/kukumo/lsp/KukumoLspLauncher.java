@@ -6,7 +6,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.ParseException;
@@ -61,19 +60,8 @@ public class KukumoLspLauncher extends Thread {
         super.start();
     }
 
-    public void finalize() {
-        try {
-            serverSocket.close();
-            LOGGER.info("Server stopped.");
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(),e);
-        }
-    }
 
 
-    /**
-     * Don't call this method directly. Use {@link #startServer()} instead
-     */
     @Override
     public void run() {
         var threadPool = Executors.newCachedThreadPool();
@@ -120,12 +108,10 @@ public class KukumoLspLauncher extends Thread {
     }
 
 
-
     public int getPort() {
         assertServerRunning();
         return serverSocket.getLocalPort();
     }
-
 
 
     public InetAddress getAddress() {
@@ -134,7 +120,4 @@ public class KukumoLspLauncher extends Thread {
     }
 
 
-    public Socket openSocket() throws IOException {
-        return new Socket(getAddress(),getPort());
-    }
 }

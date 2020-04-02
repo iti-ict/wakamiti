@@ -2,18 +2,9 @@ package iti.kukumo.lsp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.eclipse.lsp4j.CompletionItem;
-import org.junit.Test;
-
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.lsp.internal.GherkinCompleter;
-
 
 public class TestCompletion {
-
+/*
     GherkinCompleter completion = new GherkinCompleter();
 
     @Test
@@ -128,5 +119,5 @@ public class TestCompletion {
         return suggestions.stream().map(CompletionItem::getLabel).collect(Collectors.toList());
     }
 
-
+*/
 }

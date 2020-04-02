@@ -2,10 +2,7 @@ package iti.kukumo.lsp.internal;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -25,32 +22,153 @@ public class GherkinDocumentMap {
     );
     private static final Pattern propertyPattern = Pattern.compile("\\s*#*\\s*([^\\s]+)\\s*:\\s*([^\\s]+)\\s*");
     private static final GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
-    private final Locale locale;
-    private final GherkinDialect dialect;
-    private List<String> lines = new ArrayList<>();
+
+    private Locale locale;
+    private GherkinDialect dialect;
+    private TextDocument document;
 
 
     public GherkinDocumentMap(String document) {
-        this.lines = new ArrayList<>(Arrays.asList(document.split("\n")));
-        if (document.endsWith("\n")) {
-            this.lines.add("");
-        }
-        this.locale = extractLocale(lines);
+        this.document = new TextDocument(document);
+        this.locale = extractProperty("language",this.document).map(Locale::new).orElse(Locale.ENGLISH);
         this.dialect = dialectProvider.getDialect(locale);
     }
 
 
-    private static Locale extractLocale(List<String> lines) {
-        Pattern pattern = Pattern.compile("\\s*#*\\s*language\\s*:\\s*([^\\s]+)\\s*");
-        for (String line : lines) {
-            var matcher = pattern.matcher(line);
-            if (matcher.matches()) {
-                return LocaleLoader.forLanguage(matcher.group(1));
-            }
-        }
-        return Locale.ENGLISH;
+    public String raw() {
+        return document.raw();
     }
 
+    public TextDocument document() {
+        return document;
+    }
+
+    public GherkinDialect dialect() {
+        return dialect;
+    }
+
+    public Locale locale() {
+        return locale;
+    }
+
+    public boolean replace(TextRange range, String text) {
+        boolean requireParsing = false;
+        if (range.isSingleLine()) {
+            requireParsing = checkReplaceSingleLineRequireParsing(range);
+        } else {
+            requireParsing = true;
+        }
+        document.replace(range,text);
+        return requireParsing;
+    }
+
+
+
+    public boolean checkReplaceSingleLineRequireParsing(TextRange range) {
+        boolean requireParsing = false;
+        int lineNumber = range.startLine();
+        String strippedLineContent = document.line(lineNumber).strip();
+        boolean isProperty = strippedLineContent.startsWith("#");
+        if (isProperty) {
+            var matcher = propertyPattern.matcher(strippedLineContent);
+            if (matcher.matches() && propertiesRequiringParsing.contains(matcher.group(1))) {
+                requireParsing = true;
+            }
+        } else {
+            TextRange keyword = detectKeyword(lineNumber,strippedLineContent,dialect.getKeywords());
+            if (!keyword.isEmpty() && range.intersect(keyword)) {
+                requireParsing = true;
+            }
+        }
+        return requireParsing;
+    }
+
+
+
+    private TextRange detectKeyword(int lineNumber, String strippedLineContent, List<String> keywords) {
+        TextRange keywordRange = TextRange.of(0,0,0,0);
+        for (String keyword : keywords) {
+            if (strippedLineContent.startsWith(keyword)) {
+                keywordRange = TextRange.of(lineNumber,0,lineNumber,keyword.length());
+                break;
+            }
+        }
+        return keywordRange;
+    }
+
+
+    public boolean isStep(int lineNumber, String strippedLineContent) {
+        TextRange keywordRange = detectKeyword(lineNumber,strippedLineContent,dialect.getStepKeywords());
+        if (!keywordRange.isEmpty()) {
+            String lastKeyword = lastKeyword(lineNumber-1);
+            return dialect.getFeatureContentKeywords().contains(lastKeyword);
+        } else {
+            return false;
+        }
+    }
+
+
+    private String lastKeyword(int lineNumber) {
+        for (int i = lineNumber; i>0; i--) {
+            String line = document.line(i).stripLeading();
+            if (line.startsWith("#")) {
+                continue;
+            }
+            int position = line.indexOf(':');
+            if (position > -1) {
+                return line.substring(0, position);
+            }
+        }
+        return null;
+    }
+
+
+    public List<String> followingKeywords(int lineNumber) {
+
+        String line = lastLineWithContent(lineNumber);
+        if (line == null) {
+            line = "";
+        }
+        line = line.stripLeading();
+        if (line.startsWith(GherkinLanguageConstants.DOCSTRING_SEPARATOR) ||
+                line.startsWith(GherkinLanguageConstants.DOCSTRING_ALTERNATIVE_SEPARATOR) ||
+                line.startsWith(GherkinLanguageConstants.TABLE_CELL_SEPARATOR)) {
+            return List.of();
+        }
+
+        String lastKeyword = lastKeyword(lineNumber);
+        List<String> result;
+        if (lastKeyword == null) {
+            result = suffix(dialect.getFeatureKeywords(),":");
+        } else if (dialect.getFeatureKeywords().contains(lastKeyword)) {
+            result = suffix(dialect.getFeatureContentKeywords(),":");
+        } else if (dialect.getFeatureContentKeywords().contains(lastKeyword)) {
+            result = dialect.getStepKeywords();
+        } else {
+            result = List.of();
+        }
+        return result;
+    }
+
+
+
+    private String lastLineWithContent(int lineNumber) {
+        for (int i = lineNumber; i>0; i--) {
+            String line = document.line(i);
+            if (line.stripLeading().isEmpty()) {
+                continue;
+            }
+            return line;
+        }
+        return null;
+    }
+
+
+    private static List<String> suffix(List<String> values, String suffix) {
+        return values.stream().map(s -> s+suffix).collect(toList());
+    }
+
+    /*
 
     public String lineContent(int lineNumber, LineRange range) {
         return range.extractString(lines.get(lineNumber));
@@ -92,71 +210,17 @@ public class GherkinDocumentMap {
     }
 
 
-    private String lastLineWithContent(int lineNumber) {
-        for (int i = lineNumber; i>0; i--) {
-            String line = lines.get(i);
-            if (line.stripLeading().isEmpty()) {
-                continue;
-            }
-            return line;
-        }
-        return null;
-    }
 
 
 
-    private String lastKeyword(int lineNumber) {
-        for (int i = lineNumber; i>0; i--) {
-            String line = lines.get(i).stripLeading();
-            if (line.startsWith("#")) {
-                continue;
-            }
-            int position = line.indexOf(':');
-            if (position > -1) {
-                return line.substring(0, position);
-            }
-        }
-        return null;
-    }
 
 
-    public List<String> followingKeywords(int lineNumber) {
-
-        String line = lastLineWithContent(lineNumber);
-        if (line == null) {
-            line = "";
-        }
-        line = line.stripLeading();
-        if (line.startsWith(GherkinLanguageConstants.DOCSTRING_SEPARATOR) ||
-            line.startsWith(GherkinLanguageConstants.DOCSTRING_ALTERNATIVE_SEPARATOR) ||
-            line.startsWith(GherkinLanguageConstants.TABLE_CELL_SEPARATOR)) {
-            return List.of();
-        }
-
-        String lastKeyword = lastKeyword(lineNumber);
-        List<String> result;
-        if (lastKeyword == null) {
-            result = suffix(dialect.getFeatureKeywords(),":");
-        } else if (dialect.getFeatureKeywords().contains(lastKeyword)) {
-            result = suffix(dialect.getFeatureContentKeywords(),":");
-        } else if (dialect.getFeatureContentKeywords().contains(lastKeyword)) {
-            result = dialect.getStepKeywords();
-        } else {
-            result = List.of();
-        }
-        return result;
-    }
 
 
-    public boolean isStep(int lineNumber, String strippedLineContent) {
-        LineRange keywordRange = detectKeyword(strippedLineContent,dialect.getStepKeywords());
-        if (!keywordRange.isEmpty()) {
-            String lastKeyword = lastKeyword(lineNumber-1);
-            return dialect.getFeatureContentKeywords().contains(lastKeyword);
-        } else {
-            return false;
-        }
-    }
+
+
+
+
 
 
     public LineRange detectKeyword(String strippedLineContent, List<String> keywords) {
@@ -173,9 +237,7 @@ public class GherkinDocumentMap {
 
 
 
-    private static List<String> suffix(List<String> values, String suffix) {
-        return values.stream().map(s -> s+suffix).collect(toList());
-    }
+
 
 
 
@@ -202,7 +264,7 @@ public class GherkinDocumentMap {
         // delta
         document.append(delta);
         // partial post-range line
-        String postLine = lines.get(range.endLine()).substring(0,range.startLinePosition());
+        String postLine = lines.get(range.endLine()).substring(range.endLinePosition());
         document.append(postLine);
         // post-range lines
         for (int i=range.endLine(); i<lines.size()-1; i++) {
@@ -216,7 +278,7 @@ public class GherkinDocumentMap {
 
 
     public String currentContent() {
-        return lines.stream().collect(Collectors.joining("\n"));
+        return lines.stream().collect(Collectors.joining(""));
     }
 
 
@@ -225,6 +287,22 @@ public class GherkinDocumentMap {
     }
 
 
+
+
+
+*/
+
+
+    private static Optional<String> extractProperty(String property,TextDocument document) {
+        Pattern pattern = Pattern.compile("\\s*#*\\s*"+property+"\\s*:\\s*([^\\s]+)\\s*");
+        for (int l=0; l<document.lines(); l++) {
+            var matcher = pattern.matcher(document.line(l));
+            if (matcher.matches()) {
+                return Optional.of(matcher.group(1));
+            }
+        }
+        return Optional.empty();
+    }
 
 
 }

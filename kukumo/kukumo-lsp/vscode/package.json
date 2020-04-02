@@ -30,6 +30,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"@types/vscode": "1.42.0",
 		"vscode-languageclient": "6.1.1"
 	},
 	"devDependencies": {

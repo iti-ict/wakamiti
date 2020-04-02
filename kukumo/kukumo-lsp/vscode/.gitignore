@@ -3,3 +3,4 @@
 /.eslintrc.json
 /out
 /.vscode-test
+/npm-debug.log

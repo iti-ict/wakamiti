@@ -9,6 +9,5 @@ module kukumo.lsp {
     requires org.slf4j;
     requires kukumo.core;
     requires transitive gherkin.parser;
-	requires junit;
 
 }

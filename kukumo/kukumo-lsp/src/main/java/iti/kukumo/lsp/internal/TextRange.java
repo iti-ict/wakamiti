@@ -1,5 +1,7 @@
 package iti.kukumo.lsp.internal;
 
+import java.util.List;
+
 public class TextRange {
 
     public static TextRange of(int startLine, int startLinePosition, int endLine, int endLinePosition) {
@@ -38,23 +40,22 @@ public class TextRange {
         return endLinePosition;
     }
 
-
-
     public boolean isEmpty() {
         return startLine == endLine && startLinePosition == endLinePosition;
     }
-
 
     public boolean isSingleLine() {
         return startLine == endLine;
     }
 
-
-    public LineRange toLineRange() {
-        if (!isSingleLine()) {
-            throw new IllegalStateException("text range is not a single line");
+    public boolean intersect(TextRange range) {
+        if (startLine < range.startLine && endLine > range.startLine) {
+            return true;
         }
-        return LineRange.of(startLinePosition,endLinePosition);
+        if (endLine == range.startLine &&
+            startLinePosition < range.startLinePosition && endLinePosition > range.startLinePosition) {
+            return true;
+        }
+        return false;
     }
-
 }
