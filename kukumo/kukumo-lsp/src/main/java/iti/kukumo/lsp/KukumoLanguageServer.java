@@ -1,5 +1,6 @@
 package iti.kukumo.lsp;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.lsp4j.CompletionOptions;
@@ -19,17 +20,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class KukumoLspServer implements LanguageServer, LanguageClientAware {
+public class KukumoLanguageServer implements LanguageServer, LanguageClientAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KukumoLspLauncher.class);
 
     private final TextDocumentService textDocumentService;
     private final WorkspaceService workspaceService;
-
     LanguageClient client;
 
 
-    public KukumoLspServer() {
+    public KukumoLanguageServer() {
         this.textDocumentService = new KukumoTextDocumentService(this);
         this.workspaceService = new KukumoWorkspaceService(this);
     }

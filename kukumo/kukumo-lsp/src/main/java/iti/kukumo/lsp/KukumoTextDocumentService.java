@@ -16,10 +16,10 @@ public class KukumoTextDocumentService implements TextDocumentService {
 
 
     private final Map<String, GherkinDocument> gherkinDocuments = new HashMap<>();
-    private final KukumoLspServer server;
+    private final KukumoLanguageServer server;
 
 
-    public KukumoTextDocumentService(KukumoLspServer server) {
+    public KukumoTextDocumentService(KukumoLanguageServer server) {
         this.server = server;
     }
 

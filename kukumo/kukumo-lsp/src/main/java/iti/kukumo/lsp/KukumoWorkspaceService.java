@@ -7,9 +7,9 @@ import org.eclipse.lsp4j.services.WorkspaceService;
 
 public class KukumoWorkspaceService implements WorkspaceService {
 
-    private final KukumoLspServer server;
+    private final KukumoLanguageServer server;
 
-    public KukumoWorkspaceService(KukumoLspServer server) {
+    public KukumoWorkspaceService(KukumoLanguageServer server) {
         this.server = server;
     }
 
