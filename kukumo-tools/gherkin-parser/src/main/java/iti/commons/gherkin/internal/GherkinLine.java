@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import iti.commons.gherkin.GherkinLanguageConstants;
+
 public class GherkinLine {
 
     private final String lineText;

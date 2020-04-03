@@ -56,6 +56,7 @@ public class Kukumo {
     private static final KukumoContributors contributors = new KukumoContributors();
     private static final PlanSerializer planSerializer = new PlanSerializer();
     private static final EventDispatcher eventDispatcher = new EventDispatcher();
+    private static final KukumoFetcher artifactFetcher = new KukumoFetcher();
 
     private static Kukumo instance;
 
@@ -85,6 +86,11 @@ public class Kukumo {
 
     public static ExtensionManager extensionManager() {
         return contributors.extensionManager();
+    }
+
+
+    public static KukumoFetcher artifactFetcher() {
+        return artifactFetcher;
     }
 
 

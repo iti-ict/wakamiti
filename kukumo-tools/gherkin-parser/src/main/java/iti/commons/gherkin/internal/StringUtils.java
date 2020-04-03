@@ -36,4 +36,5 @@ public class StringUtils {
 
         String toString(T o);
     }
+
 }

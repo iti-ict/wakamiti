@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-lsp</version>
 
 
     <!-- additional information -->
@@ -28,7 +28,7 @@
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
         <aetherVersion>1.1.0</aetherVersion>
         <mavenVersion>3.3.9</mavenVersion>
-        <kukumo-core.version>1.0.0</kukumo-core.version>
+        <kukumo-core.version>1.0.0-lsp</kukumo-core.version>
         <appdirs.version>1.0.3</appdirs.version>
     </properties>
 
@@ -107,10 +107,14 @@
                 <configuration>
                     <outputDirectory>${project.build.directory}/staging</outputDirectory>
                     <finalName>kukumo-launcher</finalName>
-                    <archive> <manifestEntries> <Main-Class>iti.kukumo.launcher.KukumoLauncher</Main-Class>
-                    <Launcher-Agent-Class>iti.kukumo.launcher.ClasspathAgent</Launcher-Agent-Class>
-                    <Agent-Class>iti.kukumo.launcher.ClasspathAgent</Agent-Class> <Premain-Class>iti.kukumo.launcher.ClasspathAgent</Premain-Class>
-                    </manifestEntries> </archive>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>iti.kukumo.launcher.KukumoLauncher</Main-Class>
+                            <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
+                            <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
+                            <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 

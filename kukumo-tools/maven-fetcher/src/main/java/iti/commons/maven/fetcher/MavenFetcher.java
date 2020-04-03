@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.apache.maven.repository.MavenRepositorySystemUtils;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import iti.commons.maven.fetcher.internal.MavenDependencyFetcher;
 import iti.commons.maven.fetcher.internal.MavenFetcherConfig;
 import iti.commons.maven.fetcher.internal.MavenTransferLogger;
+
 
 
 
@@ -142,6 +144,17 @@ public class MavenFetcher {
     }
 
 
+
+    public void updateClasspath(MavenFetchRequest request) throws MavenFetchException {
+         updateClasspath(
+            fetchArtifacts(request).allArtifacts()
+            .map(FetchedArtifact::path)
+            .collect(Collectors.toList())
+        );
+    }
+
+
+
     /**
      * Retrieve the specified artifacts and their dependencies from the remote
      * repositories
@@ -150,9 +163,7 @@ public class MavenFetcher {
      * @throws DependencyCollectionException
      * @throws ArtifactResolutionException
      */
-    public MavenFetchResult fetchArtifacts(
-        MavenFetchRequest request
-    ) throws MavenFetchException {
+    public MavenFetchResult fetchArtifacts(MavenFetchRequest request) throws MavenFetchException {
 
         try {
             if (remoteRepositories.isEmpty()) {
@@ -264,4 +275,28 @@ public class MavenFetcher {
         new URL(url);
     }
 
+
+
+
+    public void updateClasspath(List<Path> artifacts) {
+        for (Path artifact : artifacts) {
+            if (artifact.toString().endsWith(".jar")) {
+                if (!artifact.toFile().exists()) {
+                    logger.warn(
+                        "Cannot include JAR in the classpath (the file no exists): {}",
+                        artifact
+                    );
+                    continue;
+                }
+                try {
+                    JarFile jarFile = new JarFile(artifact.toFile());
+                    ClasspathAgent.appendJarFile(jarFile);
+                    logger.debug("Added JAR {} to the classpath", artifact);
+                } catch (IOException e) {
+                    logger.error("Cannot include JAR in the classpath: {}", artifact);
+                    logger.debug(e.getMessage(), e);
+                }
+            }
+        }
+    }
 }

@@ -4,7 +4,7 @@
 package iti.kukumo.core.backend;
 
 
-import static iti.kukumo.core.backend.DefaultBackend.*;
+import static iti.kukumo.core.backend.RunnableBackend.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

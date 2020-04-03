@@ -4,11 +4,6 @@
 package iti.kukumo.launcher;
 
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.jar.JarFile;
-
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -47,8 +42,7 @@ public class KukumoLauncher {
         }
 
         try {
-            List<Path> fetchedArtifacts = new KukumoFetcher(arguments).fetch();
-            updateClasspath(fetchedArtifacts);
+            new KukumoLauncherFetcher(arguments).fetchAndUpdateClasspath();
             new KukumoRunner(arguments).run();
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
@@ -70,27 +64,7 @@ public class KukumoLauncher {
 
 
 
-    private static void updateClasspath(List<Path> artifacts) {
-        for (Path artifact : artifacts) {
-            if (artifact.toString().endsWith(".jar")) {
-                if (!artifact.toFile().exists()) {
-                    logger.warn(
-                        "Cannot include JAR in the classpath (the file no exists): {}",
-                        artifact
-                    );
-                    continue;
-                }
-                try {
-                    JarFile jarFile = new JarFile(artifact.toFile());
-                    ClasspathAgent.appendJarFile(jarFile);
-                    logger.debug("Added JAR {} to the classpath", artifact);
-                } catch (IOException e) {
-                    logger.error("Cannot include JAR in the classpath: {}", artifact);
-                    logger.debug(e.getMessage(), e);
-                }
-            }
-        }
-    }
+
 
 
 }

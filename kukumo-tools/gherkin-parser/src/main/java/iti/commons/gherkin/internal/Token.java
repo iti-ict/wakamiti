@@ -2,6 +2,7 @@ package iti.commons.gherkin.internal;
 
 import java.util.List;
 
+import iti.commons.gherkin.GherkinDialect;
 import iti.commons.gherkin.Location;
 
 public class Token {

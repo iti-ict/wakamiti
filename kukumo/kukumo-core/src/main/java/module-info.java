@@ -17,6 +17,7 @@ open module kukumo.core {
     exports iti.kukumo.api.event;
     exports iti.kukumo.api.extensions;
     exports iti.kukumo.api.plan;
+    exports iti.kukumo.api.datatypes;
     exports iti.kukumo.gherkin;
     exports iti.kukumo.junit;
     exports iti.kukumo.util;
@@ -24,14 +25,16 @@ open module kukumo.core {
     requires transitive iti.commons.configurer;
     requires transitive iti.commons.jext;
     requires transitive iti.commons.slf4jansi;
+    requires transitive iti.commons.maven.fetcher;
 
     requires transitive junit;
-    requires transitive org.hamcrest;
+    requires org.hamcrest;
     requires tag.expressions;
 
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.databind;
     requires transitive gherkin.parser;
+    requires net.harawata.appdirs;
 
 
     uses iti.kukumo.api.extensions.ResourceType;

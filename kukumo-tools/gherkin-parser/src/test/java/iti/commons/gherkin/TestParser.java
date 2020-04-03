@@ -30,7 +30,7 @@ public class TestParser {
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
-            assertTrue(document.getFeature().getChildren().get(0).getSteps().get(0).getKeyword().equals("Dado que"));
+            assertTrue(document.getFeature().getChildren().get(0).getSteps().get(0).getKeyword().equals("Dado que "));
         }
     }
 }

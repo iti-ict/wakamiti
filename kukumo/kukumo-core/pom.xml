@@ -13,7 +13,7 @@
 
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>1.0.1-SERVER</version>
+    <version>1.0.0-lsp</version>
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -22,13 +22,16 @@
 
 
     <properties>
-        <!--  dependency versions -->
-        <configurer.version>1.0.1-SERVER</configurer.version>
+        <!-- dependency versions -->
+        <configurer.version>1.0.0</configurer.version>
         <jext.version>1.0.0</jext.version>
-        <gherkin-parser.version>1.0.0</gherkin-parser.version>
+        <gherkin-parser.version>1.0.0-lsp</gherkin-parser.version>
         <tag-expressions.version>1.1.1</tag-expressions.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>
+        <maven-fetcher.version>1.0.0</maven-fetcher.version>
+        <aetherVersion>1.1.0</aetherVersion>
+        <appdirs.version>1.0.3</appdirs.version>
     </properties>
 
 
@@ -101,7 +104,22 @@
             <artifactId>slf4j-ansi</artifactId>
             <version>${slf4j-ansi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>iti.commons</groupId>
+            <artifactId>maven-fetcher</artifactId>
+            <version>${maven-fetcher.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.harawata</groupId>
+            <artifactId>appdirs</artifactId>
+            <version>${appdirs.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 
@@ -125,7 +143,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-     </plugins>
+        </plugins>
     </build>
 
 

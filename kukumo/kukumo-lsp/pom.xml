@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <groupId>kukumo</groupId>
+    <artifactId>kukumo-lsp</artifactId>
+    <version>0.0.1</version>
+
+    <!-- additional information -->
+    <name>Kukumo::Language Server Protocol</name>
+    <description>Implementation of Language Server Protocol</description>
+    <inceptionYear>2020</inceptionYear>
+
+
+    <properties>
+        <!-- dependency versions -->
+        <eclipse.lsp4j.version>0.8.1</eclipse.lsp4j.version>
+        <configurer.version>1.0.0</configurer.version>
+        <maven-fetcher.version>1.0.0</maven-fetcher.version>
+        <kukumo-core.version>1.0.0-lsp</kukumo-core.version>
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.lsp4j</groupId>
+            <artifactId>org.eclipse.lsp4j</artifactId>
+            <version>${eclipse.lsp4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.commons</groupId>
+            <artifactId>configurer</artifactId>
+            <version>${configurer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.commons</groupId>
+            <artifactId>maven-fetcher</artifactId>
+            <version>${maven-fetcher.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <version>${kukumo-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+
+
+    <build>
+        <plugins>
+            <!-- assemble staging folder distribution -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>iti.kukumo.lsp.KukumoLspLauncher</Main-Class>
+                            <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
+                            <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
+                            <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

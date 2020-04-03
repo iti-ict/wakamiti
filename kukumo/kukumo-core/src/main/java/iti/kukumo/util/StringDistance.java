@@ -12,19 +12,25 @@ import java.util.stream.Collectors;
 
 public class StringDistance {
 
+
     public static List<String> closerStrings(
         String string,
         Collection<String> candidates,
         int limitResults
     ) {
         Comparator<Pair<String, Double>> greaterDistance = Comparator.comparing(Pair::value);
-        return candidates.stream()
+        var stream = candidates.stream()
             .map(Pair.computeValue(candidate -> calculateDistance(string, candidate)))
-            .sorted(greaterDistance.reversed())
-            .limit(limitResults)
+            .sorted(greaterDistance.reversed());
+        if (limitResults >= 0) {
+            stream = stream.limit(limitResults);
+        }
+        return stream
             .map(Pair::key)
             .collect(Collectors.toList());
     }
+
+
 
 
     private StringDistance() {

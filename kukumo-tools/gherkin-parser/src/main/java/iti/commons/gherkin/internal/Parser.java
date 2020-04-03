@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.function.Supplier;
 
+import iti.commons.gherkin.ParserException;
+
 import static java.util.Arrays.asList;
 
 public class Parser<T> {
@@ -165,7 +167,7 @@ public class Parser<T> {
         try {
             return action.get();
         } catch (ParserException.CompositeParserException compositeParserException) {
-            for (ParserException error : compositeParserException.errors) {
+            for (ParserException error : compositeParserException.getErrors()) {
                 addError(context, error);
             }
         } catch (ParserException error) {

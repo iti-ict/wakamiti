@@ -19,7 +19,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
 
 public class CliArguments {
 
@@ -33,7 +32,6 @@ public class CliArguments {
     private static final String ARG_MAVEN_PROPERTY = "M";
 
     private final Options cliOptions;
-    private final ConfigurationBuilder configurationBuilder;
     private CommandLine cliCommand;
 
 
@@ -60,7 +58,6 @@ public class CliArguments {
             .desc("Set a MavenFetcher-specific property")
             .build()
         );
-        this.configurationBuilder = ConfigurationBuilder.instance();
     }
 
 
@@ -115,12 +112,12 @@ public class CliArguments {
         Path launcherProperties = JarUtil.jarFolder().resolve("launcher.properties");
         Path projectProperties = Paths.get(confFileName);
         Configuration launcherConf = (Files.exists(launcherProperties))
-            ? configurationBuilder.buildFromPath(launcherProperties).inner(qualifier)
-            : configurationBuilder.empty();
+            ? Configuration.fromPath(launcherProperties).inner(qualifier)
+            : Configuration.empty();
         Configuration projectConf = (Files.exists(projectProperties))
-            ? configurationBuilder.buildFromPath(projectProperties).inner(qualifier)
-            : configurationBuilder.empty();
-        Configuration argumentConf = configurationBuilder.buildFromProperties(arguments);
+            ? Configuration.fromPath(projectProperties).inner(qualifier)
+            : Configuration.empty();
+        Configuration argumentConf = Configuration.fromProperties(arguments);
         return launcherConf.append(projectConf).append(argumentConf);
     }
 

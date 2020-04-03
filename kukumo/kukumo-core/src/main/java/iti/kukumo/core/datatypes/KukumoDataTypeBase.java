@@ -58,11 +58,11 @@ public class KukumoDataTypeBase<T> implements KukumoDataType<T> {
 
 
     public KukumoDataTypeBase(
-                    String name,
-                    Class<T> javaType,
-                    LocaleRegexProvider regexProvider,
-                    LocaleHintProvider hintProvider,
-                    LocaleTypeParser<T> parserProvider
+        String name,
+        Class<T> javaType,
+        LocaleRegexProvider regexProvider,
+        LocaleHintProvider hintProvider,
+        LocaleTypeParser<T> parserProvider
     ) {
         this.name = name;
         this.javaType = javaType;
