@@ -76,7 +76,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <!-- paths -->
-        <maven.repo.local>${env.HOME}/.m2/repository</maven.repo.local>
+        <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
 
         <!-- dependency versions -->
         <lombok.version>1.18.10</lombok.version>

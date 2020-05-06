@@ -11,7 +11,8 @@
             <directory>${maven.repo.local}</directory>
             <outputDirectory>/repo</outputDirectory>
             <includes>
-                <include>%regex[${parent.groupId}/.*]</include>
+                <!--include>%regex[${parent.groupId}/.*]</include-->
+                <include>%regex[iti/.*]</include>
             </includes>
         </fileSet>
         <fileSet>

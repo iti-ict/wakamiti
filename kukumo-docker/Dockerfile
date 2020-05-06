@@ -1,9 +1,9 @@
-FROM openjdk
+FROM openjdk:11
 
-ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/;https://nexus3.iti.upv.es/repository/
+ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/
 
 ENV KUKUMO_HOME /opt/kukumo
-ENV KUKUMO_REPOSITORY /home/kukumo/.local/share/kukumo/repository
+ENV KUKUMO_REPOSITORY /root/.local/share/kukumo/repository
 ENV MAVEN_LOCAL_REPOSITORY /repository
 
 WORKDIR /kukumo
@@ -25,7 +25,7 @@ RUN groupadd --gid 1024 kukumo \
     && chown -R kukumo:kukumo $MAVEN_LOCAL_REPOSITORY \
     && chown -R kukumo:kukumo /kukumo
 
-USER kukumo
+#USER kukumo
 
 RUN mkdir -p $KUKUMO_REPOSITORY
 
