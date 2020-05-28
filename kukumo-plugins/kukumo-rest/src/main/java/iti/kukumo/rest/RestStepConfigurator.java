@@ -6,7 +6,7 @@ package iti.kukumo.rest;
 
 import java.net.URL;
 
-import io.restassured.config.SSLConfig;
+import iti.commons.configurer.ConfigurationConsumer;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class RestStepConfigurator implements Configurator<RestStepContributor> {
 
         try {
             Logger logger = LoggerFactory.getLogger("iti.kukumo.rest");
-            RestAssured.config().logConfig(
+            RestAssured.config = RestAssured.config().logConfig(
                 new LogConfig().defaultStream(new RestAssuredLogger(logger).getPrintStream())
             );
             RestAssured.useRelaxedHTTPSValidation();
