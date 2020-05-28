@@ -31,8 +31,6 @@ open module kukumo.core {
     requires com.fasterxml.jackson.databind;
     requires transitive gherkin.parser;
 
-    requires org.apache.logging.log4j;
-    requires org.apache.logging.log4j.core;
 
     uses iti.kukumo.api.extensions.ResourceType;
     uses iti.kukumo.api.extensions.Configurator;
