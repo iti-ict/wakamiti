@@ -69,6 +69,12 @@ public class RestStepConfigurator implements Configurator<RestStepContributor> {
                 )
             );
 
+            ConfigurationConsumer.of(configuration, contributor.oauth2ProviderConfiguration)
+                    .ifPresent(RestConfiguration.OAUTH2_URL, URL.class, Oauth2ProviderConfiguration::url)
+                    .ifPresent(RestConfiguration.OAUTH2_CLIENT_ID, String.class, Oauth2ProviderConfiguration::clientId)
+                    .ifPresent(RestConfiguration.OAUTH2_CLIENT_SECRET, String.class, Oauth2ProviderConfiguration::clientSecret)
+             ;
+
         } catch (Exception e) {
             throw new KukumoException(e);
         }

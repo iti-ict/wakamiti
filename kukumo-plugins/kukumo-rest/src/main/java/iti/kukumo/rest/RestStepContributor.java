@@ -7,7 +7,13 @@ package iti.kukumo.rest;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.hamcrest.Matcher;
 
 import io.restassured.specification.RequestSpecification;
@@ -16,6 +22,7 @@ import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
+import org.json.JSONObject;
 
 
 @I18nResource("iti_kukumo_kukumo-rest")
@@ -86,6 +93,34 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setBearerAuthFile(File file) {
         String token = resourceLoader.readFileAsString(file).trim();
         setBearerAuth(token);
+    }
+
+
+
+    @Step("rest.define.auth.provider")
+    public void setAuthentication(Document document) {
+        if (oauth2ProviderConfiguration.url() == null) {
+            throw new NoSuchElementException("Provider url is required");
+        }
+        RequestSpecification specification = RestAssured.given();
+
+        if (Stream.of(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret())
+                .allMatch(Objects::nonNull)) {
+            specification = specification.auth().preemptive()
+                    .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
+        }
+
+        String token_key = specification
+                    .contentType("application/x-www-form-urlencoded; charset=UTF-8")
+                    .body(document.getContent())
+                    .log().all()
+                .with().post(oauth2ProviderConfiguration.url())
+                .then()
+                    .log().all()
+                    .statusCode(200)
+                    .extract().body().jsonPath().getString("access_token");
+
+        setBearerAuth(token_key);
     }
 
 

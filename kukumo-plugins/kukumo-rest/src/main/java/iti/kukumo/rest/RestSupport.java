@@ -52,6 +52,7 @@ public class RestSupport {
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
+    protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
 
 
     protected RequestSpecification newRequest() {
