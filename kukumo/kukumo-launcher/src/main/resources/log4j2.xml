@@ -5,7 +5,6 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
-            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%m%n"/>
         </Console>
     </Appenders>
@@ -13,7 +12,7 @@
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name="iti.kukumo" level="debug"/>
+        <Logger name="iti.kukumo" level="info"/>
         <Logger name="org.eclipse" level="info"/>
     </Loggers>
 </Configuration>
