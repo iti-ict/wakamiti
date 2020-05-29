@@ -21,15 +21,17 @@ revert_replace_properties() {
 
 replace_properties $KUKUMO_HOME
 
-WAS_DISCONNECTED=false
-while [ $(curl --write-out %{http_code} --silent --output /dev/null $KUKUMO_BASE_URL/info) -ne 200 ] ; do
-  echo -ne \\r"Waiting for $KUKUMO_BASE_URL to be available... (This could take a few minutes. Please, be patient)"
-  WAS_DISCONNECTED=true
-  sleep 1
-done
-if [ $WAS_DISCONNECTED ] ; then
-  echo ""
-  sleep 10
+if ${PING_URL:-false} ; then
+  WAS_DISCONNECTED=false
+  while [ $(curl --write-out %{http_code} --silent --output /dev/null --insecure -L $KUKUMO_BASE_URL) -ne 200 ] ; do
+    echo -ne \\r"Waiting for $KUKUMO_BASE_URL to be available... (This could take a few minutes. Please, be patient)"
+    WAS_DISCONNECTED=true
+    sleep 1
+  done
+  if [ $WAS_DISCONNECTED ] ; then
+    echo ""
+    sleep 5
+  fi
 fi
 
 cp -r $MAVEN_LOCAL_REPOSITORY/iti $KUKUMO_REPOSITORY

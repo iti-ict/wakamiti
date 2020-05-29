@@ -9,7 +9,9 @@ ENV MAVEN_LOCAL_REPOSITORY /repository
 WORKDIR /kukumo
 
 COPY target/assembly/staging $KUKUMO_HOME/
-COPY src/launcher.properties $KUKUMO_HOME
+COPY src $KUKUMO_HOME/
+COPY src/kukumo $KUKUMO_HOME
+COPY src/log4j2.xml $KUKUMNO_HOME
 COPY src/entrypoint.sh /
 COPY target/assembly/repo $MAVEN_LOCAL_REPOSITORY/
 

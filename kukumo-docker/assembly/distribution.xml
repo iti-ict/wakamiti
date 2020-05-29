@@ -14,6 +14,9 @@
                 <!--include>%regex[${parent.groupId}/.*]</include-->
                 <include>%regex[iti/.*]</include>
             </includes>
+            <excludes>
+                <exclude>%regex[.*sources.jar]</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>${kukumo.launcher.path}/target/staging</directory>
