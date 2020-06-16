@@ -58,7 +58,7 @@ public class RestSupport {
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().accept(requestContentType).with()
+        RequestSpecification request = RestAssured.given().contentType(requestContentType).with()
             .params(requestParams);
         if (authenticator != null) {
             authenticator.accept(request);
@@ -125,8 +125,9 @@ public class RestSupport {
 
 
     protected void assertSubjectDefined() {
+        //todo: make path parameterization more flexible
         if (subject == null) {
-            throw new KukumoException("Subject not defined");
+            //throw new KukumoException("Subject not defined");
         }
     }
 

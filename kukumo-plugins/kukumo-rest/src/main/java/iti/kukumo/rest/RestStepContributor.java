@@ -9,11 +9,9 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.hamcrest.Matcher;
 
 import io.restassured.specification.RequestSpecification;
@@ -22,7 +20,6 @@ import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
-import org.json.JSONObject;
 
 
 @I18nResource("iti_kukumo_kukumo-rest")
