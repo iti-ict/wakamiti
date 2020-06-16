@@ -84,9 +84,9 @@ public class ExpressionMatcher {
         // (( -> ( and )) -> (
         regex = regex.replace("((", "(").replace("))", ")");
         // * -> any value
-        regex = regex.replaceAll("(?<!/)\\*", "(.*)");
+        regex = regex.replaceAll("(?<!\\\\)\\*", "(.*)");
         // ( ) -> optional
-        regex = regex.replaceAll("(?<!/)\\(([^)]*)\\)", "(?:$1)?");
+        regex = regex.replaceAll("(?<!\\\\)\\(([^)]*)\\)", "(?:$1)?");
         // (...)?_ -> (?:(...)?_)?
         regex = regex.replaceAll("\\(\\?:[^)]+\\)\\? ", "(?:$0)?");
         // _(?:.*)? -> (?:.*)?
