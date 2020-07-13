@@ -5,6 +5,8 @@ ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/
 ENV KUKUMO_HOME /opt/kukumo
 ENV KUKUMO_REPOSITORY /root/.local/share/kukumo/repository
 ENV MAVEN_LOCAL_REPOSITORY /repository
+ENV JACOCO_VERSION 0.8.5
+ENV JACOCO_HOME /opt/jacoco
 
 WORKDIR /kukumo
 
@@ -14,6 +16,11 @@ COPY src/kukumo $KUKUMO_HOME
 COPY src/log4j2.xml $KUKUMNO_HOME
 COPY src/entrypoint.sh /
 COPY target/assembly/repo $MAVEN_LOCAL_REPOSITORY/
+
+RUN curl -f https://repo1.maven.org/maven2/org/jacoco/jacoco/$JACOCO_VERSION/jacoco-$JACOCO_VERSION.zip -o jacoco.zip && \
+    mkdir $JACOCO_HOME && \
+    unzip jacoco.zip -d $JACOCO_HOME && \
+    rm jacoco.zip
 
 RUN groupadd --gid 1024 kukumo \
     && useradd --gid 1024 kukumo \
