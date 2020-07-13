@@ -89,11 +89,17 @@ public class Kukumo {
 
 
     private Kukumo() {
-        KukumoLogger.configure(KukumoConfiguration.defaultConfiguration());
+        KukumoLogger.configure(KukumoConfiguration.DEFAULTS);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("{logo}", KukumoLogger.logo());
         }
         contributors.eventObservers().forEach(eventDispatcher::addObserver);
+    }
+
+
+    /** @return The default configuration. Any configuration should be derived from this one */
+    public static Configuration defaultConfiguration() {
+        return KukumoConfiguration.DEFAULTS;
     }
 
 

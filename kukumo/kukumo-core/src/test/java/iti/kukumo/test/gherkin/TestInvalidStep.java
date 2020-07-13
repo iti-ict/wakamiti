@@ -34,7 +34,7 @@ public class TestInvalidStep {
             KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS,
             "iti.kukumo.test.gherkin.KukumoSteps"
         );
-        Configuration configuration = KukumoConfiguration.defaultConfiguration()
+        Configuration configuration = Kukumo.defaultConfiguration()
             .appendFromMap(properties);
         PlanNode plan = Kukumo.instance().createPlanFromConfiguration(configuration);
         Kukumo.instance().executePlan(plan, configuration);

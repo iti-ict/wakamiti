@@ -1,3 +1,5 @@
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.extensions.PlanBuilder;
 import iti.kukumo.api.extensions.PlanTransformer;
@@ -33,7 +35,7 @@ open module kukumo.core {
 
 
     uses iti.kukumo.api.extensions.ResourceType;
-    uses iti.kukumo.api.extensions.Configurator;
+    uses iti.kukumo.api.extensions.ConfigContributor;
     uses iti.kukumo.api.extensions.DataTypeContributor;
     uses iti.kukumo.api.extensions.EventObserver;
     uses iti.kukumo.api.extensions.PlanBuilder;
@@ -45,5 +47,6 @@ open module kukumo.core {
     provides PlanBuilder with GherkinPlanBuilder;
     provides PlanTransformer with GherkinRedefinitionPlanTransformer;
     provides DataTypeContributor with KukumoCoreTypes, KukumoAssertTypes;
+    provides ConfigContributor with KukumoConfiguration;
 
 }

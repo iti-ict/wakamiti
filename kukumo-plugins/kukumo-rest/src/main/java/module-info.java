@@ -1,6 +1,6 @@
-import iti.kukumo.api.extensions.Configurator;
+import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.rest.RestStepConfigurator;
+import iti.kukumo.rest.RestConfigContributor;
 import iti.kukumo.rest.RestStepContributor;
 
 module kukumo.rest {
@@ -20,10 +20,10 @@ module kukumo.rest {
     requires com.fasterxml.jackson.dataformat.xml;
 
 
-    uses Configurator;
+    uses ConfigContributor;
     uses StepContributor;
 
-    provides Configurator with RestStepConfigurator;
+    provides ConfigContributor with RestConfigContributor;
     provides StepContributor with RestStepContributor;
 
 }

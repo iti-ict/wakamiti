@@ -1,4 +1,4 @@
-package iti.kukumo.spring.sample.app;
+package iti.kukumo.examples.launcher;
 
 import java.sql.SQLException;
 

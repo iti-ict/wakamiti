@@ -11,7 +11,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import iti.commons.configurer.Configurator;
+import iti.commons.configurer.AnnotatedConfiguration;
 import iti.commons.configurer.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.gherkin.GherkinResourceType;
@@ -21,10 +21,10 @@ import iti.kukumo.rest.test.mockserver.InMemoryServer;
 
 
 
-@Configurator(properties = {
-                @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
-                @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/test-rest-xml.feature"),
-                @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json")
+@AnnotatedConfiguration(properties = {
+    @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
+    @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/test-rest-xml.feature"),
+    @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json")
 })
 @RunWith(KukumoJUnitRunner.class)
 public class TestRestStepsXML {

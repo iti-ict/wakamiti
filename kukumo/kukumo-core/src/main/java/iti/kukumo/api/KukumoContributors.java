@@ -10,11 +10,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+
+import iti.commons.configurer.Configurable;
 import iti.commons.configurer.Configuration;
+import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.extensions.Configurable;
-import iti.kukumo.api.extensions.Configurator;
+import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.api.extensions.EventObserver;
 import iti.kukumo.api.extensions.PlanBuilder;
@@ -26,7 +29,12 @@ import iti.kukumo.api.extensions.StepContributor;
 
 public class KukumoContributors {
 
-    private final ExtensionManager extensionManager = new ExtensionManager();
+    private ExtensionManager extensionManager = new ExtensionManager();
+
+
+    public void setClassLoaders(ClassLoader... loaders) {
+        this.extensionManager = new ExtensionManager(loaders);
+    }
 
 
     public Stream<EventObserver> eventObservers() {
@@ -101,20 +109,21 @@ public class KukumoContributors {
 
 
     @SuppressWarnings("unchecked")
-    public <T> Stream<Configurator<T>> configuratorsFor(T contributor) {
+    public <T> Stream<ConfigContributor<T>> configuratorsFor(T contributor) {
         return extensionManager
-            .getExtensionsThatSatisfy(Configurator.class, c -> c.accepts(contributor))
-            .map(c -> (Configurator<T>) c);
+            .getExtensionsThatSatisfy(ConfigContributor.class, c -> c.accepts(contributor))
+            .map(c -> (ConfigContributor<T>) c);
     }
+
 
 
     public <T> T configure(T contributor, Configuration configuration) {
         if (contributor instanceof Configurable) {
             ((Configurable) contributor).configure(configuration);
         }
-        configuratorsFor(contributor).forEach(
-            configurator -> configurator.configure(contributor, configuration)
-        );
+        configuratorsFor(contributor).forEach(configurator -> {
+            configurator.configurer().configure(contributor, configurator.defaultConfiguration().append(configuration));
+        });
         return contributor;
     }
 
@@ -132,5 +141,13 @@ public class KukumoContributors {
     public ExtensionManager extensionManager() {
         return extensionManager;
     }
+
+
+    public Configuration globalDefaultConfiguration() {
+        return extensionManager.getExtensions(ConfigContributor.class)
+        .map(ConfigContributor::defaultConfiguration)
+        .reduce(ConfigurationBuilder.instance().empty(), Configuration::append);
+    }
+
 
 }
