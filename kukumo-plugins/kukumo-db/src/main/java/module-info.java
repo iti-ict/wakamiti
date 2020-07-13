@@ -10,4 +10,7 @@ module kukumo.db {
     requires iti.commons.configurer;
     requires org.hamcrest;
     requires junit;
+    requires jsqlparser;
+    requires org.apache.commons.io;
+    requires java.sql.rowset;
 }

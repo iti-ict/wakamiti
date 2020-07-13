@@ -15,6 +15,8 @@ import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.database.dataset.*;
 import iti.kukumo.util.KukumoLogger;
+import net.sf.jsqlparser.JSQLParserException;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -117,6 +119,18 @@ public class DatabaseStepContributor implements StepContributor {
         }
     }
 
+    @Step("db.define.cleanup.document")
+    public void setManualCleanup(Document document) {
+        helper.setCleanUpOperations(document.getContent());
+    }
+
+
+    @Step("db.define.cleanup.file")
+    public void setManualCleanup(File file) throws IOException {
+        try (Reader reader = new FileReader(file)) {
+            helper.setCleanUpOperations(IOUtils.toString(reader), file.toString());
+        }
+    }
 
     @Step(value = "db.define.connection.parameters", args = { "url:text", "username:text",
                     "password:text" })
@@ -132,17 +146,15 @@ public class DatabaseStepContributor implements StepContributor {
 
 
     @Step("db.action.script.document")
-    public void executeSQLScript(Document document) throws IOException, SQLException {
-        helper.executeSQLStatements(
-            new SQLReader().parseStatements(new StringReader(document.getContent()))
-        );
+    public void executeSQLScript(Document document) throws SQLException, JSQLParserException {
+        helper.executeSQLStatements(document.getContent(), enableCleanupUponCompletion);
     }
 
 
     @Step("db.action.script.file")
-    public void executeSQLScript(File file) throws IOException, SQLException {
+    public void executeSQLScript(File file) throws IOException, SQLException, JSQLParserException {
         try (Reader reader = new FileReader(file)) {
-            helper.executeSQLStatements(new SQLReader().parseStatements(reader), file.toString());
+            helper.executeSQLStatements(IOUtils.toString(reader), file.toString(), enableCleanupUponCompletion);
         }
     }
 
@@ -153,7 +165,7 @@ public class DatabaseStepContributor implements StepContributor {
         DataTable dataTable
     ) throws IOException, SQLException {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, false);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
     }
@@ -162,7 +174,7 @@ public class DatabaseStepContributor implements StepContributor {
     @Step("db.action.insert.from.xls")
     public void insertFromXLSFile(File file) throws IOException, SQLException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
-            helper.deleteMultiDataSet(multiDataSet);
+            helper.deleteMultiDataSet(multiDataSet, false);
             helper.insertMultiDataSet(multiDataSet.copy(), enableCleanupUponCompletion);
         }
     }
@@ -171,7 +183,7 @@ public class DatabaseStepContributor implements StepContributor {
     @Step(value = "db.action.insert.from.csv", args = { "csv:file", "table:word" })
     public void insertFromCSVFile(File file, String table) throws IOException, SQLException {
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, false);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
     }
@@ -183,7 +195,7 @@ public class DatabaseStepContributor implements StepContributor {
         DataTable dataTable
     ) throws IOException, SQLException {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, enableCleanupUponCompletion);
         }
     }
 
@@ -195,7 +207,7 @@ public class DatabaseStepContributor implements StepContributor {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
             file, xlsIgnoreSheetRegex, nullSymbol
         )) {
-            helper.deleteMultiDataSet(multiDataSet);
+            helper.deleteMultiDataSet(multiDataSet, enableCleanupUponCompletion);
         }
     }
 
@@ -203,7 +215,7 @@ public class DatabaseStepContributor implements StepContributor {
     @Step(value = "db.action.delete.from.csv", args = { "csv:file", "table:word" })
     public void deleteFromCSVFile(File file, String table) throws IOException, SQLException {
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, enableCleanupUponCompletion);
         }
     }
 
@@ -224,7 +236,7 @@ public class DatabaseStepContributor implements StepContributor {
         try (DataSet dataSet = new InlineDataSet(
             table, new String[] { column }, new Object[] { value }, nullSymbol
         )) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, false);
         }
     }
 
@@ -241,7 +253,7 @@ public class DatabaseStepContributor implements StepContributor {
         try (DataSet dataSet = new InlineDataSet(
             table, new String[] { column1, column2 }, new Object[] { value1, value2 }, nullSymbol
         )) {
-            helper.deleteDataSet(dataSet);
+            helper.deleteDataSet(dataSet, false);
         }
     }
 
