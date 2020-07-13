@@ -54,6 +54,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
+    @Step(value = "rest.define.query.parameters", args = "map:text")
+    public void setParameters(String map) {
+        this.queryParameters = (map.startsWith("?") ? map.substring(1) : map);
+    }
 
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {

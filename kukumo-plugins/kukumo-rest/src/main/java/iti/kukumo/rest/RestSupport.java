@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,6 +47,7 @@ public class RestSupport {
     protected ContentType requestContentType;
     protected String path;
     protected String subject;
+    protected String queryParameters;
     protected Long timeoutMillis;
     protected Consumer<RequestSpecification> authenticator;
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
@@ -54,6 +56,7 @@ public class RestSupport {
     protected ValidatableResponse validatableResponse;
     protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
 
+    //private final String QUERY_PARAMS_REGEX = ".*[?]?(([^=#]+)=([^&#]*))*.*";
 
     protected RequestSpecification newRequest() {
         response = null;
@@ -90,6 +93,10 @@ public class RestSupport {
         }
         if (subject != null) {
             url.append("/").append(subject);
+        }
+        //TODO: temporal solution for query parameters
+        if (queryParameters != null) {
+            url.append("?").append(queryParameters);
         }
         return URI.create(url.toString());
     }
@@ -130,7 +137,6 @@ public class RestSupport {
             //throw new KukumoException("Subject not defined");
         }
     }
-
 
     protected ContentTypeHelper contentTypeHelperForResponse() {
         ContentType responseContentType = ContentType.fromContentType(response.contentType());
