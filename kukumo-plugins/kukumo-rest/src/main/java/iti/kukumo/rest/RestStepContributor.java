@@ -170,6 +170,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
     }
 
+    @Step("rest.execute.PATCH.subject.empty")
+    public void executePatchSubject() {
+        assertSubjectDefined();
+        executeRequest(RequestSpecification::patch);
+    }
+
 
     @Step("rest.execute.POST.data.from.document")
     public void executePostUsingDocument(Document document) {
@@ -203,7 +209,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
     }
 
-    @Step("rest.execute.POST.empty")
+    @Step("rest.execute.POST.data.empty")
     public void executePost() {
         executeRequest(RequestSpecification::post);
     }
