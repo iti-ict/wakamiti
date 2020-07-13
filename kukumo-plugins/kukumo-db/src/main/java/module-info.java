@@ -1,8 +1,3 @@
-import iti.kukumo.api.extensions.ConfigContributor;
-import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.database.DatabaseConfigContributor;
-import iti.kukumo.database.DatabaseStepContributor;
-
 module kukumo.db {
 
     requires kukumo.core;
@@ -15,12 +10,7 @@ module kukumo.db {
     requires iti.commons.configurer;
     requires org.hamcrest;
     requires junit;
-
-    uses StepContributor;
-    uses ConfigContributor;
-
-    provides StepContributor with DatabaseStepContributor;
-    provides ConfigContributor with DatabaseConfigContributor;
-
-    exports iti.kukumo.database;
+    requires jsqlparser;
+    requires org.apache.commons.io;
+    requires java.sql.rowset;
 }

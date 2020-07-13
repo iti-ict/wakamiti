@@ -1,0 +1,26 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>bin</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${maven.repo.local}</directory>
+            <outputDirectory>/repo</outputDirectory>
+            <includes>
+                <!--include>%regex[${parent.groupId}/.*]</include-->
+                <include>%regex[iti/.*]</include>
+            </includes>
+            <excludes>
+                <exclude>%regex[.*sources.jar]</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>${kukumo.launcher.path}/target/staging</directory>
+            <outputDirectory>/staging</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

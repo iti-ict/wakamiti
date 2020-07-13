@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,18 +47,21 @@ public class RestSupport {
     protected ContentType requestContentType;
     protected String path;
     protected String subject;
+    protected String queryParameters;
     protected Long timeoutMillis;
     protected Consumer<RequestSpecification> authenticator;
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
+    protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
 
+    //private final String QUERY_PARAMS_REGEX = ".*[?]?(([^=#]+)=([^&#]*))*.*";
 
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().accept(requestContentType).with()
+        RequestSpecification request = RestAssured.given().contentType(requestContentType).with()
             .params(requestParams);
         if (authenticator != null) {
             authenticator.accept(request);
@@ -89,6 +93,10 @@ public class RestSupport {
         }
         if (subject != null) {
             url.append("/").append(subject);
+        }
+        //TODO: temporal solution for query parameters
+        if (queryParameters != null) {
+            url.append("?").append(queryParameters);
         }
         return URI.create(url.toString());
     }
@@ -124,11 +132,11 @@ public class RestSupport {
 
 
     protected void assertSubjectDefined() {
+        //todo: make path parameterization more flexible
         if (subject == null) {
-            throw new KukumoException("Subject not defined");
+            //throw new KukumoException("Subject not defined");
         }
     }
-
 
     protected ContentTypeHelper contentTypeHelperForResponse() {
         ContentType responseContentType = ContentType.fromContentType(response.contentType());

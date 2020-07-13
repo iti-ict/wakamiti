@@ -7,7 +7,11 @@ package iti.kukumo.rest;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
 
+import io.restassured.RestAssured;
 import org.hamcrest.Matcher;
 
 import io.restassured.specification.RequestSpecification;
@@ -50,6 +54,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
+    @Step(value = "rest.define.query.parameters", args = "map:text")
+    public void setParameters(String map) {
+        this.queryParameters = (map.startsWith("?") ? map.substring(1) : map);
+    }
 
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
@@ -78,7 +86,42 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.bearer")
     public void setBearerAuth(String token) {
+        LOGGER.debug("Setting header [Authorization: Bearer {}]", token);
         this.authenticator = requestSpecification -> requestSpecification.auth().oauth2(token);
+    }
+
+    @Step("rest.define.auth.bearer.file")
+    public void setBearerAuthFile(File file) {
+        String token = resourceLoader.readFileAsString(file).trim();
+        setBearerAuth(token);
+    }
+
+
+
+    @Step("rest.define.auth.provider")
+    public void setAuthentication(Document document) {
+        if (oauth2ProviderConfiguration.url() == null) {
+            throw new NoSuchElementException("Provider url is required");
+        }
+        RequestSpecification specification = RestAssured.given();
+
+        if (Stream.of(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret())
+                .allMatch(Objects::nonNull)) {
+            specification = specification.auth().preemptive()
+                    .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
+        }
+
+        String token_key = specification
+                    .contentType("application/x-www-form-urlencoded; charset=UTF-8")
+                    .body(document.getContent())
+                    .log().all()
+                .with().post(oauth2ProviderConfiguration.url())
+                .then()
+                    .log().all()
+                    .statusCode(200)
+                    .extract().body().jsonPath().getString("access_token");
+
+        setBearerAuth(token_key);
     }
 
 
@@ -131,6 +174,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
     }
 
+    @Step("rest.execute.PATCH.subject.empty")
+    public void executePatchSubject() {
+        assertSubjectDefined();
+        executeRequest(RequestSpecification::patch);
+    }
+
 
     @Step("rest.execute.POST.data.from.document")
     public void executePostUsingDocument(Document document) {
@@ -164,6 +213,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
     }
 
+    @Step("rest.execute.POST.data.empty")
+    public void executePost() {
+        executeRequest(RequestSpecification::post);
+    }
 
     @Step("rest.assert.response.body.strict.from.file")
     public void assertStrictFileContent(File file) {

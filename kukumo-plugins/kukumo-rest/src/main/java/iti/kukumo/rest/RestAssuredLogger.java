@@ -5,8 +5,6 @@ package iti.kukumo.rest;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.slf4j.Logger;
@@ -25,24 +23,13 @@ public class RestAssuredLogger {
 
     public PrintStream getPrintStream() {
         if (printStream == null) {
-            OutputStream output = new OutputStream() {
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
+            printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: autoflush must be set!
 
                 @Override
-                public void write(int b) throws IOException {
-                    baos.write(b);
-                }
-
-
-                @Override
-                public void flush() {
-                    logger.debug(this.baos.toString());
-                    baos = new ByteArrayOutputStream();
+                public void println(String x) {
+                    logger.debug(x);
                 }
             };
-            printStream = new PrintStream(output, true); // true: autoflush must be set!
         }
 
         return printStream;
