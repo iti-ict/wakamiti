@@ -27,6 +27,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String BASE_URL = "rest.baseURL";
     public static final String CONTENT_TYPE = "rest.contentType";
     public static final String FAILURE_HTTP_CODE_THRESHOLD = "rest.httpCodeThreshold";
+    public static final String OAUTH2_URL = "rest.oauth2.url";
+    public static final String OAUTH2_CLIENT_ID = "rest.oauth2.clientId";
+    public static final String OAUTH2_CLIENT_SECRET = "rest.oauth2.clientSecret";
 
     private static final Configuration DEFAULTS = Configuration.fromPairs(
         BASE_URL, "http://localhost:8080",
@@ -58,6 +61,12 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(FAILURE_HTTP_CODE_THRESHOLD,Integer.class)
             .map(Matchers::lessThan)
             .ifPresent(contributor::setFailureHttpCodeAssertion);
+
+        Oauth2ProviderConfiguration oauth2ProviderConfiguration = contributor.oauth2ProviderConfiguration;
+        configuration.ifPresent(OAUTH2_URL, URL.class, oauth2ProviderConfiguration::url)
+                .ifPresent(OAUTH2_CLIENT_ID, String.class, oauth2ProviderConfiguration::clientId)
+                .ifPresent(OAUTH2_CLIENT_SECRET, String.class, oauth2ProviderConfiguration::clientSecret)
+        ;
     }
 
 }
