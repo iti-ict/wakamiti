@@ -55,7 +55,7 @@ public class SQLParseTest {
         Statement insert = CCJSqlParserUtil.parse("INSERT INTO T (A, B) VALUES (1, NOW());");
         Optional<Select> result = parser.toSelect(insert);
         log.debug("Result insert: {}", result);
-        assertTrue(result.isEmpty());
+        assertTrue(result.isPresent());
     }
 
     @Test
@@ -85,11 +85,11 @@ public class SQLParseTest {
             Select result = parser.toSelect(clients);
             log.debug("Result: {}", result);
             String expected = "SELECT * FROM client " +
-                    "WHERE ((id = ? OR (id IS NULL AND ? IS NULL)) " +
-                    "AND (first_name = ? OR (first_name IS NULL AND ? IS NULL)) " +
-                    "AND (second_name = ? OR (second_name IS NULL AND ? IS NULL)) " +
-                    "AND (active = ? OR (active IS NULL AND ? IS NULL)) " +
-                    "AND (birth_date = ? OR (birth_date IS NULL AND ? IS NULL)))";
+                    "WHERE ((trim(id) = ? OR (trim(id) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(first_name) = ? OR (trim(first_name) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(second_name) = ? OR (trim(second_name) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(active) = ? OR (trim(active) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(birth_date) = ? OR (trim(birth_date) IS NULL AND ? IS NULL)))";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
@@ -120,11 +120,11 @@ public class SQLParseTest {
             Select result = parser.sqlSelectCountFrom(clients.table(), clients.columns());
             log.debug("Result: {}", result);
             String expected = "SELECT count(*) FROM client " +
-                    "WHERE ((id = ? OR (id IS NULL AND ? IS NULL)) " +
-                    "AND (first_name = ? OR (first_name IS NULL AND ? IS NULL)) " +
-                    "AND (second_name = ? OR (second_name IS NULL AND ? IS NULL)) " +
-                    "AND (active = ? OR (active IS NULL AND ? IS NULL)) " +
-                    "AND (birth_date = ? OR (birth_date IS NULL AND ? IS NULL)))";
+                    "WHERE ((trim(id) = ? OR (trim(id) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(first_name) = ? OR (trim(first_name) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(second_name) = ? OR (trim(second_name) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(active) = ? OR (trim(active) IS NULL AND ? IS NULL)) " +
+                    "AND (trim(birth_date) = ? OR (trim(birth_date) IS NULL AND ? IS NULL)))";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
@@ -165,7 +165,7 @@ public class SQLParseTest {
             Update result = parser.sqlUpdateSet(clients, new String[] {"id"});
             log.debug("Result: {}", result);
             String expected = "UPDATE client SET first_name = ?, second_name = ?, active = ?, birth_date = ? " +
-                    "WHERE ((id = ? OR (id IS NULL AND ? IS NULL)))";
+                    "WHERE (trim(id) = ?)";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
