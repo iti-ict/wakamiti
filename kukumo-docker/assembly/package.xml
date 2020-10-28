@@ -1,15 +1,16 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
-    <id>bin</id>
+    <id>zip</id>
     <formats>
-        <format>dir</format>
+        <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
+
     <fileSets>
         <fileSet>
             <directory>${maven.repo.local}</directory>
-            <outputDirectory>/repo</outputDirectory>
+            <outputDirectory>target/assembly/repo</outputDirectory>
             <includes>
                 <include>%regex[.*/kukumo/.*]</include>
             </includes>
@@ -20,7 +21,17 @@
         </fileSet>
         <fileSet>
             <directory>${kukumo.launcher.path}/target/staging</directory>
-            <outputDirectory>/staging</outputDirectory>
+            <outputDirectory>target/assembly/staging</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>/src</directory>
+            <outputDirectory>src</outputDirectory>
         </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>Dockerfile</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
 </assembly>
