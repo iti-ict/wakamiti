@@ -48,7 +48,7 @@ public class DatabaseHelper {
     private final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     private final Supplier<String> nullSymbol;
     private SQLParser parser;
-    //private boolean manualCleanup = false;
+    private Runnable manualCleanup;
 
     private CaseSensitivity caseSensitivity = CaseSensitivity.INSENSITIVE;
 
@@ -76,24 +76,24 @@ public class DatabaseHelper {
     }
 
     public DatabaseHelper setCleanUpOperations(String sql) {
-       this.cleanUpOperations.addLast(() -> {
-           try {
-               executeSQLStatements(sql, false);
-           } catch (SQLException | JSQLParserException e) {
-               LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
-           }
-       });
+        manualCleanup = () -> {
+            try {
+                executeSQLStatements(sql, false);
+            } catch (SQLException | JSQLParserException e) {
+                LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
+            }
+        };
        return this;
     }
 
     public DatabaseHelper setCleanUpOperations(String sql, String fileName) {
-        this.cleanUpOperations.addLast(() -> {
+        manualCleanup = () -> {
             try {
                 executeSQLStatements(sql, fileName, false);
             } catch (SQLException | JSQLParserException e) {
                 LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
             }
-        });
+        };
         return this;
     }
 
@@ -702,6 +702,7 @@ public class DatabaseHelper {
 
     public void cleanUp() {
         LOGGER.debug("Performing clean-up operations...");
+        Optional.ofNullable(manualCleanup).ifPresent(Runnable::run);
         for (Runnable cleanUp : cleanUpOperations) {
             cleanUp.run();
         }
