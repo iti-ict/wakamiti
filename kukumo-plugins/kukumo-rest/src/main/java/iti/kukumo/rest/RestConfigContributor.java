@@ -6,6 +6,8 @@ package iti.kukumo.rest;
 
 import java.net.URL;
 
+import io.restassured.RestAssured;
+import io.restassured.config.LogConfig;
 import org.hamcrest.Matchers;
 
 import iti.commons.configurer.Configuration;
@@ -13,7 +15,8 @@ import iti.commons.configurer.Configurer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.util.ThrowableFunction;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Extension(
@@ -54,6 +57,12 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     }
 
     private void configure(RestStepContributor contributor, Configuration configuration) {
+        Logger logger = LoggerFactory.getLogger("iti.kukumo.rest");
+        RestAssured.config = RestAssured.config().logConfig(
+                new LogConfig().defaultStream(new RestAssuredLogger(logger).getPrintStream())
+        );
+        RestAssured.useRelaxedHTTPSValidation();
+
         configuration.get(BASE_URL,String.class)
             .map(ThrowableFunction.unchecked(URL::new))
             .ifPresent(contributor::setBaseURL);
