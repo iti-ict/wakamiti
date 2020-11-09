@@ -2,12 +2,12 @@
 
 * Windows:
 ```Shell
-$ docker container create --env-file .env -v "%cd%:/kukumo" --privileged --name kukumo docker-registry-default.devapps.consum.es/arquitecturades/kukumo
+$ docker container create --env-file .env -v "%cd%:/kukumo" --privileged --name kukumo docker.iti.upv.es/act/act/devops/kukumo-project
 ```
 
 * Linux:
 ```Shell
-$ docker container create --env-file .env -v "$pwd:/kukumo" --user kukumo --name kukumo docker-registry-default.devapps.consum.es/arquitecturades/kukumo
+$ docker container create --env-file .env -v "$pwd:/kukumo" --user kukumo --name kukumo kukumo docker.iti.upv.es/act/act/devops/kukumo-project
 ```
 
 #### Ejecutar tests:
