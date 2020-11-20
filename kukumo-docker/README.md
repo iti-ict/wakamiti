@@ -7,7 +7,7 @@ $ docker container create --env-file .env -v "%cd%:/kukumo" --privileged --name 
 
 * Linux:
 ```Shell
-$ docker container create --env-file .env -v "$pwd:/kukumo" --user kukumo --name kukumo docker-registry-default.devapps.consum.es/arquitecturades/kukumo
+$ docker container create --env-file .env -v "$(pwd):/kukumo" --name kukumo --network=host docker-registry-default.devapps.consum.es/arquitecturades/kukumo
 ```
 
 #### Ejecutar tests:
