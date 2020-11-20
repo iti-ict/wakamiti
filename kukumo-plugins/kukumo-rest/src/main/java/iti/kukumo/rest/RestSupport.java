@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.restassured.builder.MultiPartSpecBuilder;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -31,7 +32,6 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.util.ResourceLoader;
-
 
 public class RestSupport {
 
@@ -48,6 +48,7 @@ public class RestSupport {
     protected String path;
     protected String subject;
     protected String queryParameters;
+    protected AttachedFile attached;
     protected Long timeoutMillis;
     protected Consumer<RequestSpecification> authenticator;
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
@@ -61,8 +62,18 @@ public class RestSupport {
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().contentType(requestContentType).with()
-            .params(requestParams);
+        RequestSpecification request = RestAssured.given().params(requestParams);
+
+        if (attached != null) {
+            request.multiPart(new MultiPartSpecBuilder(attached.getContent())
+                    .fileName(attached.getName())
+                    .mimeType(attached.getMimeType())
+                    .controlName("file")
+                    .build()
+            );
+        } else {
+            request.contentType(requestContentType);
+        }
         if (authenticator != null) {
             authenticator.accept(request);
         }
@@ -122,7 +133,6 @@ public class RestSupport {
         this.response = function.apply(newRequest().body(body), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
-
 
     protected void assertFileExists(File file) {
         if (!file.exists()) {
