@@ -199,19 +199,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post);
     }
 
-//    @Step("rest.execute.POST.subject.attached.file")
-//    public void executePostSubjectAttachedFile(File file) {
-//        assertSubjectDefined();
-//        assertFileExists(file);
-//        executeRequest(RequestSpecification::post, file);
-//    }
-//
-//    @Step("rest.execute.POST.subject.attached.data")
-//    public void executePostSubjectAttached(Document document) {
-//        assertSubjectDefined();
-//        executeRequest(RequestSpecification::post, document.getContent().getBytes());
-//    }
-
     @Step("rest.execute.POST.data.from.document")
     public void executePostDataUsingDocument(Document document) {
         executeRequest(RequestSpecification::post, document.getContent());
