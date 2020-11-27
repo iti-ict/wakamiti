@@ -4,9 +4,17 @@
 package iti.kukumo.rest;
 
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.internal.util.IOUtils;
+import iti.kukumo.api.plan.DataTable;
+import org.hamcrest.Matcher;
+
 import io.restassured.specification.RequestSpecification;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.annotations.I18nResource;
@@ -30,7 +38,6 @@ import java.util.stream.Stream;
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
-    // TODO rest.define.query.parameters=the query parameters {params:map}
 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
@@ -52,9 +59,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
-    @Step(value = "rest.define.query.parameters", args = "map:text")
-    public void setParameters(String map) {
-        this.queryParameters = (map.startsWith("?") ? map.substring(1) : map);
+    @Step("rest.define.request.parameters")
+    public void setRequestParameters(DataTable dataTable) {
+        requestParams.putAll(tableToMap(dataTable));
+    }
+
+    @Step("rest.define.query.parameters")
+    public void setQueryParameters(DataTable dataTable) {
+        queryParams.putAll(tableToMap(dataTable));
     }
 
     @Step("rest.define.timeout.millis")

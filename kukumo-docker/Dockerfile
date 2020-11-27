@@ -1,4 +1,5 @@
 FROM openjdk:11
+LABEL version="1.2.0"
 
 ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/
 

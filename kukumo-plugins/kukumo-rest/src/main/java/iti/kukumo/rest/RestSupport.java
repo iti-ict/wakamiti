@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.restassured.builder.MultiPartSpecBuilder;
+import iti.kukumo.api.plan.DataTable;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -47,23 +47,22 @@ public class RestSupport {
     protected ContentType requestContentType;
     protected String path;
     protected String subject;
-    protected String queryParameters;
-    protected AttachedFile attached;
     protected Long timeoutMillis;
     protected Consumer<RequestSpecification> authenticator;
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
+    protected final Map<String, String> queryParams = new LinkedHashMap<>();
+    protected AttachedFile attached;
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
     protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
 
-    //private final String QUERY_PARAMS_REGEX = ".*[?]?(([^=#]+)=([^&#]*))*.*";
-
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().params(requestParams);
-
+        RequestSpecification request = RestAssured.given().contentType(requestContentType).with()
+            .params(requestParams)
+            .queryParams(queryParams);
         if (attached != null) {
             request.multiPart(new MultiPartSpecBuilder(attached.getContent())
                     .fileName(attached.getName())
@@ -105,10 +104,6 @@ public class RestSupport {
         if (subject != null) {
             url.append("/").append(subject);
         }
-        //TODO: temporal solution for query parameters
-        if (queryParameters != null) {
-            url.append("?").append(queryParameters);
-        }
         return URI.create(url.toString());
     }
 
@@ -146,6 +141,17 @@ public class RestSupport {
         if (subject == null) {
             //throw new KukumoException("Subject not defined");
         }
+    }
+
+    protected Map<String,String> tableToMap(DataTable dataTable) {
+        if (dataTable.columns() != 2) {
+            throw new KukumoException("Table must have 2 columns [key, value]");
+        }
+        Map map = new LinkedHashMap();
+        for (int i = 1; i < dataTable.rows(); i++) {
+            map.put(dataTable.value(i, 0), dataTable.value(i, 1));
+        }
+        return map;
     }
 
     protected ContentTypeHelper contentTypeHelperForResponse() {
