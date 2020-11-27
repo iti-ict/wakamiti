@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import io.restassured.RestAssured;
+import iti.kukumo.api.plan.DataTable;
 import org.hamcrest.Matcher;
 
 import io.restassured.specification.RequestSpecification;
@@ -25,10 +26,6 @@ import iti.kukumo.api.plan.Document;
 @I18nResource("iti_kukumo_kukumo-rest")
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
-
-    /*
-     * // TODO rest.define.query.parameters=the query parameters {params:map}
-     */
 
 
     @Step(value = "rest.define.contentType", args = "word")
@@ -54,9 +51,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
-    @Step(value = "rest.define.query.parameters", args = "map:text")
-    public void setParameters(String map) {
-        this.queryParameters = (map.startsWith("?") ? map.substring(1) : map);
+    @Step("rest.define.request.parameters")
+    public void setRequestParameters(DataTable dataTable) {
+        requestParams.putAll(tableToMap(dataTable));
+    }
+
+    @Step("rest.define.query.parameters")
+    public void setQueryParameters(DataTable dataTable) {
+        queryParams.putAll(tableToMap(dataTable));
     }
 
     @Step("rest.define.timeout.millis")
