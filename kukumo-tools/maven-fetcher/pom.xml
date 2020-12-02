@@ -26,6 +26,7 @@
     <properties>
         <aetherVersion>1.0.2.v20150114</aetherVersion>
         <mavenAetherVersion>3.3.9</mavenAetherVersion>
+        <httpclient.version>4.5.3</httpclient.version>
     </properties>
 
 
@@ -58,6 +59,22 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- using jcl-over-slf4j instead -->
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
