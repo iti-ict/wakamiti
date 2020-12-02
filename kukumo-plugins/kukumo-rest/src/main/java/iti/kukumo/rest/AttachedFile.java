@@ -4,9 +4,9 @@ public class AttachedFile {
 
     private String name;
     private String mimeType;
-    private String content;
+    private byte[] content;
 
-    public AttachedFile(String name, String mimeType, String content) {
+    public AttachedFile(String name, String mimeType, byte[] content) {
         this.name = name;
         this.mimeType = mimeType;
         this.content = content;
@@ -28,11 +28,11 @@ public class AttachedFile {
         this.mimeType = mimeType;
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 }

@@ -4,24 +4,15 @@
 package iti.kukumo.rest;
 
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import io.restassured.RestAssured;
-import iti.kukumo.api.plan.DataTable;
-import org.hamcrest.Matcher;
-
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.Pair;
 import org.hamcrest.Matcher;
 
 import java.io.File;
@@ -132,15 +123,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setAttachedFile(File file) throws IOException {
         assertFileExists(file);
         this.attached = new AttachedFile(file.getName(), Files.probeContentType(file.toPath()),
-                resourceLoader.readFileAsString(file));
+                Files.readAllBytes(file.toPath()));
     }
 
     @Step("rest.define.attached.data")
     public void setAttachedFile(Document document) {
-        this.attached = new AttachedFile("file_test.txt", ContentType.TEXT.getAcceptHeader(),
-                document.getContent());
+        this.attached = new AttachedFile("kukumo_test.txt", ContentType.TEXT.getAcceptHeader(),
+                document.getContent().getBytes());
     }
-
 
 
     @Step("rest.execute.GET.query")
@@ -228,7 +218,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
-
     @Step("rest.assert.response.body.strict.from.file")
     public void assertStrictFileContent(File file) {
         assertContentIs(file, MatchMode.STRICT);
@@ -257,36 +246,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.assert.response.body.loose.from.document")
     public void assertBodyLooseComparison(Document document) {
         assertContentIs(document, MatchMode.LOOSE);
-    }
-
-    @Step("rest.assert.response.file.strict.from.document")
-    public void assertFileStrictComparison(Document document) throws IOException {
-        String content = new String(IOUtils.toByteArray(response.asInputStream()));
-        ContentTypeHelper helper = contentTypeValidators.get(ContentType.TEXT);
-        helper.assertContent(document.getContent(), content, MatchMode.STRICT);
-    }
-
-    @Step("rest.assert.response.file.strict.from.file")
-    public void assertFileStrictFileComparison(File file) throws IOException {
-        assertFileExists(file);
-        String content = new String(IOUtils.toByteArray(response.asInputStream()));
-        ContentTypeHelper helper = contentTypeValidators.get(ContentType.TEXT);
-        helper.assertContent(resourceLoader.readFileAsString(file), content, MatchMode.STRICT);
-    }
-
-    @Step("rest.assert.response.file.loose.from.document")
-    public void assertFileLooseComparison(Document document) throws IOException {
-        String content = new String(IOUtils.toByteArray(response.asInputStream()));
-        ContentTypeHelper helper = contentTypeValidators.get(ContentType.TEXT);
-        helper.assertContent(document.getContent(), content, MatchMode.LOOSE);
-    }
-
-    @Step("rest.assert.response.file.loose.from.file")
-    public void assertFileLooseFileComparison(File file) throws IOException {
-        assertFileExists(file);
-        String content = new String(IOUtils.toByteArray(response.asInputStream()));
-        ContentTypeHelper helper = contentTypeValidators.get(ContentType.TEXT);
-        helper.assertContent(resourceLoader.readFileAsString(file), content, MatchMode.LOOSE);
     }
 
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
