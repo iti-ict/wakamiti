@@ -57,7 +57,7 @@ public class PlanNodeSnapshot {
         this(node, LocalDateTime.now().toString());
     }
 
-
+    
     public PlanNodeSnapshot(PlanNode node, String snapshotInstant) {
         this.executionID = node.executionID();
         this.snapshotInstant = snapshotInstant;
@@ -92,6 +92,37 @@ public class PlanNodeSnapshot {
             this.testCaseResults = countTestCases(node);
         }
     }
+
+
+
+    public PlanNodeSnapshot withoutChildren() {
+        PlanNodeSnapshot copy = new PlanNodeSnapshot();
+        copy.executionID = this.executionID;
+        copy.snapshotInstant = this.snapshotInstant;
+        copy.nodeType = this.nodeType;
+        copy.id = this.id;
+        copy.name = this.name;
+        copy.keyword = this.keyword;
+        copy.language = this.language;
+        copy.source = this.source;
+        copy.displayName = this.displayName;
+        copy.description = this.description;
+        copy.tags = new ArrayList<>(this.tags);
+        copy.properties = new LinkedHashMap<>(this.properties);
+        copy.startInstant = this.startInstant;
+        copy.finishInstant = this.finishInstant;
+        copy.duration = this.duration;
+        copy.result = this.result;
+        copy.document = this.document;
+        copy.documentType = this.documentType;
+        copy.dataTable = this.dataTable;
+        copy.errorMessage = this.errorMessage;
+        copy.errorTrace = this.errorTrace;
+        copy.testCaseResults = this.testCaseResults;
+        return copy;
+    }
+
+
 
 
     private String instantToString(Instant instant) {
