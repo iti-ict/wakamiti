@@ -10,8 +10,13 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
 
     public static final String PREFIX = "kukumo";
 
-      /** Types of resources to be discovered and processed */
+    /** Types of resources to be discovered and processed */
     public static final String RESOURCE_TYPES = "resourceTypes";
+
+
+    /** Default name of configuration file */
+    public static final String DEFAULT_CONF_FILE = "kukumo.yaml";
+
 
     /** Language used by a resource */
     public static final String LANGUAGE = "language";
@@ -29,6 +34,9 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
      * not declared as module
      */
     public static final String NON_REGISTERED_STEP_PROVIDERS = "nonRegisteredStepProviders";
+
+    /** Check if generate output file */
+    public static final String GENERATE_OUTPUT_FILE = "generateOutputFile";
 
     /** Output file path */
     public static final String OUTPUT_FILE_PATH = "outputFilePath";
@@ -91,6 +99,7 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
         .filtered(PREFIX)
         .appendFromPairs(
             RESOURCE_PATH, ".",
+            GENERATE_OUTPUT_FILE, "true",
             OUTPUT_FILE_PATH, "kukumo.json",
             REPORT_GENERATION, "true",
             ID_TAG_PATTERN, "ID-(.*)",

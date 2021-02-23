@@ -1,12 +1,6 @@
 package iti.kukumo.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import iti.kukumo.api.KukumoConfiguration;
-import org.junit.jupiter.api.Test;
+import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,8 +8,14 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import iti.kukumo.api.KukumoConfiguration;
 
 @QuarkusTest
 public class ExecutionResourceTest {
@@ -31,7 +31,6 @@ public class ExecutionResourceTest {
         given()
             .when()
             .get("/executions/{executionID}",executionID)
-         //   .prettyPeek()
             .then()
             .statusCode(200);
     }
@@ -44,7 +43,6 @@ public class ExecutionResourceTest {
         given()
             .when()
             .get("/executions/{executionID}",executionID)
-//            .prettyPeek()
             .then()
             .statusCode(200);
     }
@@ -72,7 +70,6 @@ public class ExecutionResourceTest {
             .contentType(ContentType.TEXT)
             .body(Files.readString(Path.of("src/test/resources/"+feature)))
             .post("/executions?resourceType=gherkin")
-   //         .prettyPeek()
         );
     }
 
@@ -82,7 +79,6 @@ public class ExecutionResourceTest {
             .when()
             .contentType(ContentType.TEXT)
             .post("/executions?workspace="+workspace)
-     //       .prettyPeek()
         );
     }
 

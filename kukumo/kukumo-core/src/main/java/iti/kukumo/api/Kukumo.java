@@ -4,10 +4,7 @@
 package iti.kukumo.api;
 
 
-import static iti.kukumo.api.KukumoConfiguration.OUTPUT_FILE_PATH;
-import static iti.kukumo.api.KukumoConfiguration.REPORT_SOURCE;
-import static iti.kukumo.api.KukumoConfiguration.RESOURCE_PATH;
-import static iti.kukumo.api.KukumoConfiguration.RESOURCE_TYPES;
+import static iti.kukumo.api.KukumoConfiguration.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -130,16 +127,31 @@ public class Kukumo {
     public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
         LOGGER.info("{important}", "Creating the Test Plan...");
-        List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
-        if (resourceTypeNames.isEmpty()) {
-            throw new KukumoException("No resource types configured");
-        }
+
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
             discoveryPaths = Arrays.asList(".");
         }
+
+        // try to load a kukumo.yaml file if exists
+        for (String discoveryPath : discoveryPaths) {
+        	LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
+            Path confFile = Path.of(discoveryPath, DEFAULT_CONF_FILE);
+            if (Files.exists(confFile)) {
+                Configuration confFromFile = Configuration.fromPath(confFile).inner(PREFIX);
+                configuration = configuration.append(confFromFile);
+                LOGGER.debug("Found {}, applying new {}", confFile, configuration);
+            }
+        }
+
+        LOGGER.debug("Using final {}", configuration);
+        List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
+        if (resourceTypeNames.isEmpty()) {
+            new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration);
+        }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {
+        	LOGGER.debug("Creating plan for resource type {resourceType}..., resourceTypeName");
             Optional<PlanNode> plan = createPlanForResourceType(
                 resourceTypeName,
                 discoveryPaths,
@@ -169,7 +181,7 @@ public class Kukumo {
     public PlanNode createPlanFromContent(Configuration configuration, InputStream inputStream) {
         LOGGER.info("{important}", "Creating the Test Plan...");
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
-            .orElseThrow(()->new KukumoException("No resource types configured"));
+            .orElseThrow(()->new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration));
         Optional<PlanNode> plan = createPlanForResourceType(
              resourceTypeName,
              inputStream,
@@ -323,6 +335,13 @@ public class Kukumo {
 
 
     public void writeOutputFile(PlanNode plan, Configuration configuration) {
+
+    	if (!configuration
+			.get(KukumoConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
+			.orElse(Boolean.TRUE)) {
+    		return;
+    	}
+
         Optional<String> outputPath = configuration
             .get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class);
         if (outputPath.isPresent()) {

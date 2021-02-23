@@ -1,22 +1,25 @@
 package iti.kukumo.server.infra.app;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import iti.kukumo.server.domain.ExecutionService;
-import iti.kukumo.server.domain.model.KukumoExecution;
-import org.apache.commons.io.IOUtils;
-
-import javax.inject.Inject;
-import javax.validation.Validation;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import iti.kukumo.server.domain.ExecutionService;
+import iti.kukumo.server.domain.model.KukumoExecution;
 
 @Path("/executions")
 public class ExecutionResource {
@@ -33,8 +36,9 @@ public class ExecutionResource {
 
     @POST
     @Consumes("text/plain;charset=UTF-8,*/*")
-    @Produces(MediaType.APPLICATION_JSON)
-    public KukumoExecution run(
+    @Produces("application/json;charset=UTF-8")
+    @SuppressWarnings("unchecked")
+	public KukumoExecution run(
         @QueryParam("resourceType") String resourceType,
         @QueryParam("workspace") String workspace,
         String body
@@ -52,14 +56,14 @@ public class ExecutionResource {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json;charset=UTF-8")
     public List<KukumoExecution> getAliveExecutions()  {
         return executionManager.getAliveExecutions();
     }
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json;charset=UTF-8")
     @Path("{executionID}")
     public KukumoExecution getExecutionData(@PathParam("executionID") String executionID) throws IOException {
         Objects.requireNonNull(executionID);

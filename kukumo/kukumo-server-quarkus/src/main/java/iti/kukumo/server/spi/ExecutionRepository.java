@@ -21,4 +21,6 @@ public interface ExecutionRepository {
     List<String> getExecutionIDs(ExecutionCriteria criteria);
 
     void removeOldExecutions(int age);
+
+	void saveExecution(KukumoExecution execution);
 }

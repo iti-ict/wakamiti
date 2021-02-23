@@ -27,24 +27,44 @@ If you want to build an _über-jar_, execute the following command:
 
 The application is now runnable using `java -jar target/kukumo-server-quarkus-1.0.0-SNAPSHOT-runner.jar`.
 
-## Creating a native executable
 
-You can create a native executable using: 
+## Docker
+In order to create the Docker image, execute the following:
 ```shell script
-./mvnw package -Pnative
+./mvnw package
+docker build -t iti.kukmo/kukumo-server:latest .
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+And, in order to run the image, type:
+
 ```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
+docker run --rm -p 8080:8080 --name kukumo-server iti.kukmo/kukumo-server:latest
 ```
 
-You can then execute your native executable with: `./target/kukumo-server-quarkus-1.0.0-SNAPSHOT-runner`
+It is possible to add external runtime dependencies mounting a specific directory:
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
+```shell script
+docker run --rm -p 8080:8080 -v <DEPENDENCY-DIR>:/app/lib-ext --name kukumo-server iti.kukmo/kukumo-server:latest
+```
 
-# RESTEasy JAX-RS
+In additions, it is possible to enable the debug port using the following:
+```shell script
+docker run --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" --name kukumo-server iti.kukmo/kukumo-server:latest
+```
 
-<p>A Hello World RESTEasy resource</p>
 
-Guide: https://quarkus.io/guides/rest-json
+
+## Running the demo Docker image
+
+For demonstration purposes, it is possible to create a custom image that includes several
+Kukumo plugins (present in the `demo-lib-ext` folder). For running the image, execute the following:
+
+In order to create the Docker image, execute the following:
+```shell script
+./mvnw package
+docker build -f demo/Dockerfile -t iti.kukmo/kukumo-server-demo:latest .
+docker run --rm -p 8080:8080 --name kukumo-server-demo iti.kukmo/kukumo-server-demo:latest
+```
+
+
+

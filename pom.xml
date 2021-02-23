@@ -34,6 +34,7 @@
         <module>kukumo/kukumo-launcher</module>
         <module>kukumo/kukumo-maven-plugin</module>
         <module>kukumo/kukumo-lsp</module>
+        <module>kukumo/kukumo-server-quarkus</module>
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>

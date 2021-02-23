@@ -29,22 +29,39 @@ import java.util.stream.Stream;
 @ApplicationScoped
 public class FileBasedExecutionRepository implements ExecutionRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedExecutionRepository.class);
+    private static final String OUTPUT_FILE = "kukumo.json";
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedExecutionRepository.class);
     private static final Comparator<File> FILE_COMPARATOR = Comparator.comparing(File::lastModified);
 
     @ConfigProperty(name = "kukumo.executions.path")
-    String executionPath;
+    Optional<String> executionPath;
 
 
     @PostConstruct
-    void prepareFileSystem() {
-        Path executionFolder = Path.of(executionPath);
-        try {
-            Files.createDirectories(executionFolder);
-        } catch (IOException e) {
-            LOGGER.error("Cannot create directory {} : {}", executionFolder, e.getMessage());
-            LOGGER.debug("<caused by>",e);
-        }
+    void prepareExecutionPath() throws IOException {
+    	if (executionPath.isEmpty()) {
+    		executionPath = Optional.of(Files.createTempDirectory("kukumo-executions").toString());
+    	}
+    	Path outputFilePath = Path.of(executionPath.orElseThrow());
+    	if (Files.exists(outputFilePath)) {
+    		Files.createDirectories(outputFilePath);
+    	} else if (!Files.isDirectory(outputFilePath)) {
+    		throw new IOException(outputFilePath+" is not a directory");
+    	} else if (!Files.isWritable(outputFilePath)) {
+    		throw new IOException(outputFilePath+" is not a writtable directory");
+    	} else if (!Files.isReadable(outputFilePath)) {
+    		throw new IOException(outputFilePath+" is not a redable directory");
+    	}
+    	LOGGER.info("Using {} as execution storage", executionPath);
+    }
+
+
+    @Override
+    public void saveExecution(KukumoExecution execution) {
+    	String executionID = execution.getData().getExecutionID();
+    	Path file = resultFile(executionID);
+    	writeFile(execution,file);
+    	LOGGER.debug("Written file {}", file);
     }
 
 
@@ -117,7 +134,7 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
 
     private Path resultFile(String executionID) {
-        return Path.of(executionPath).resolve(executionID).resolve("kukumo.json");
+        return Path.of(executionPath.orElseThrow()).resolve(executionID).resolve(OUTPUT_FILE);
     }
 
 
@@ -130,12 +147,21 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     }
 
 
+    private void writeFile (KukumoExecution execution, Path file) {
+        try {
+        	Files.createDirectories(file.getParent());
+            Kukumo.planSerializer().write(Files.newBufferedWriter(file),execution.getData());
+        } catch (IOException e) {
+            throw new KukumoException(e);
+        }
+    }
+
 
     private Stream<File> executionFiles() {
         try {
-            return Files.walk(Path.of(executionPath))
+            return Files.walk(executionPath.map(Path::of).orElseThrow())
                     .map(Path::toFile)
-                    .filter(file -> file.getName().equals("kukumo.json"));
+                    .filter(file -> file.getName().equals(OUTPUT_FILE));
         } catch (IOException e) {
             throw new KukumoException(e);
         }
@@ -144,6 +170,7 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
     private Stream<File> filteredExecutionFiles(Predicate<File> predicate, int skip, int limit) {
         return executionFiles()
+        		.filter(predicate)
                 .sorted(FILE_COMPARATOR)
                 .skip(skip)
                 .limit(limit);
