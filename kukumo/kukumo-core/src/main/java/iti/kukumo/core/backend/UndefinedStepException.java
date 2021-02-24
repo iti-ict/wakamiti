@@ -6,6 +6,7 @@ package iti.kukumo.core.backend;
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.Either;
 
 
 public class UndefinedStepException extends KukumoException {
@@ -14,10 +15,26 @@ public class UndefinedStepException extends KukumoException {
 
 
     public UndefinedStepException(PlanNode step, String message, String extraInfo) {
+        this(Either.of(step),message,extraInfo);
+    }
+
+
+    public UndefinedStepException(Either<PlanNode,String> step, String message, String extraInfo) {
         super(
-            "Cannot match step at <{}> '{}' : {}\n{}", step.source(), step.name(), message,
-            extraInfo
+            step
+            .value()
+            .map(node ->"Cannot match step at <"+node.source()+"> '{}' : {}\n{}")
+            .orElse("Cannot match step '{}' : {}\n{}"),
+            step.mapValueOrFallback(PlanNode::name),
+            message,extraInfo
         );
     }
+
+
+    public UndefinedStepException(String message, Object... args) {
+        super(message,args);
+    }
+
+
 
 }

@@ -15,9 +15,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.Pair;
-import iti.kukumo.util.ResourceLoader;
-import iti.kukumo.util.ThrowableRunnable;
+import iti.kukumo.util.*;
 
 
 public class RunnableStep {
@@ -70,7 +68,7 @@ public class RunnableStep {
 
 
     public Matcher matcher(
-        PlanNode modelStep,
+        Either<PlanNode,String> modelStep,
         Locale stepLocale,
         Locale dataLocale,
         KukumoDataTypeRegistry typeRegistry

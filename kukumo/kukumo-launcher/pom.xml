@@ -16,7 +16,7 @@
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.0.0-lsp</version>
+    <version>1.0.0</version>
 
 
     <!-- additional information -->

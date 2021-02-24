@@ -7,39 +7,19 @@ package iti.kukumo.core.backend;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoContributors;
-import iti.kukumo.api.KukumoDataType;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.annotations.I18nResource;
-import iti.kukumo.api.annotations.SetUp;
-import iti.kukumo.api.annotations.Step;
-import iti.kukumo.api.annotations.TearDown;
-import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.*;
+import iti.kukumo.api.annotations.*;
+import iti.kukumo.api.extensions.*;
+import iti.kukumo.api.plan.*;
 import iti.kukumo.util.ThrowableRunnable;
 
 
@@ -117,6 +97,9 @@ public class DefaultBackendFactory implements BackendFactory {
             return new NonRunnableBackend(configuration, typeRegistry, steps);
         }
     }
+
+
+
 
 
 
@@ -379,6 +362,30 @@ public class DefaultBackendFactory implements BackendFactory {
             stepDefinition.value(),
             new BackendArguments(runnableObject.getClass(), runnableMethod, typeRegistry),
             (args -> runnableMethod.invoke(runnableObject, args))
+        );
+    }
+
+
+
+    @Override
+    public Hinter createHinter(Configuration configuration) {
+        List<String> restrictedModules = new ArrayList<>(
+                configuration.getList(KukumoConfiguration.MODULES, String.class)
+        );
+        List<StepContributor> stepContributors = createStepContributors(
+            restrictedModules,
+            configuration,
+            true
+        );
+        var dataTypeContributors = resolveDataTypeContributors(restrictedModules);
+        var typeRegistry = loadTypes(dataTypeContributors);
+        List<RunnableStep> steps = createSteps(stepContributors, typeRegistry);
+        var stepResolver = new RunnableStepResolver(typeRegistry, steps);
+        return new StepHinter(
+            steps,
+            configuration,
+            stepResolver,
+            typeRegistry
         );
     }
 

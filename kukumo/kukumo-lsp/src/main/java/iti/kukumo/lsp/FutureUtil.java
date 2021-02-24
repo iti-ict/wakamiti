@@ -1,21 +1,18 @@
 package iti.kukumo.lsp;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.function.Function;
 
-import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import iti.kukumo.util.ThrowableFunction;
 
-public final class Futures {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Futures.class);
+
+public final class FutureUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FutureUtil.class);
 
     private static Executor executor = Executors.newCachedThreadPool();
 
@@ -23,7 +20,7 @@ public final class Futures {
         void run() throws Exception;
     }
 
-    private Futures() { }
+    private FutureUtil() { }
 
 
     public static CompletableFuture<Object> run(ThrowableRunnable runnable) {
@@ -75,4 +72,11 @@ public final class Futures {
 
 
 
+    static <T,U>  CompletableFuture<U> processEvent(String event, T params, Function<T, U> method) {
+        return CompletableFuture
+                .completedFuture(LoggerUtil.logEntry(event, params))
+                .thenApply(method)
+                .thenApply(response -> LoggerUtil.logEntry(event, response));
+
+    }
 }

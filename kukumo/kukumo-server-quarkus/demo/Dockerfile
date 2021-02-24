@@ -26,7 +26,11 @@ COPY target/lib/* /app/lib/
 COPY target/*-runner.jar /app/app.jar
 
 
+# Http port
 EXPOSE 8080
+# Language Server Tcp Port
+EXPOSE 8090
+
 USER 1001
 
-ENTRYPOINT [ "java","-cp", "/app/app.jar:/app/lib/*:/app/lib-ext/*","io.quarkus.runner.GeneratedMain" ]
+ENTRYPOINT [ "java","-cp", "/app/app.jar:/app/lib/*:/app/lib-ext/*","iti.kukumo.server.Runner" ]

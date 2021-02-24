@@ -1,68 +1,91 @@
 package iti.kukumo.lsp.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 /**
- * Store a text document marking positions of 'End-of-Line' symbols
+ * Store a text document allowing the manipulation of the text
+ * using text ranges.
  */
 public class TextDocument {
 
     private static final char EOL = '\n';
 
+    // the raw text document, including eol characters
     private String rawDocument;
-    private int[] indexes;
+    // the positions of each eol character in the overall raw document
+    private int[] endOfLines;
+
 
     public TextDocument(String rawDocument) {
         this.rawDocument = rawDocument;
-        this.indexes = locateLines(rawDocument);
+        this.endOfLines = locateEndOfLines(rawDocument);
     }
 
-    public String line(int lineNumber) {
+    public String extractLine(int lineNumber) {
         int start = start(lineNumber);
         int end = start(lineNumber+1);
-        if (lineNumber < indexes.length) {
+        if (lineNumber < endOfLines.length) {
             end--;
         }
         return rawDocument.substring(start,end);
     }
 
-    public String extract(TextRange range) {
+    public String extractRange(TextRange range) {
         int start = start(range.startLine()) + range.startLinePosition();
         int end = start(range.endLine()) + range.endLinePosition();
         return rawDocument.substring(start,end);
     }
 
-    public TextDocument replace(TextRange range, String text) {
+
+    public TextDocument replaceRange(TextRange range, String text) {
         int start = start(range.startLine()) + range.startLinePosition();
         int end = start(range.endLine()) + range.endLinePosition();
         this.rawDocument = rawDocument.substring(0,start) + text + rawDocument.substring(end);
-        this.indexes = locateLines(rawDocument);
+        this.endOfLines = locateEndOfLines(rawDocument);
         return this;
     }
 
-    public String raw() {
+
+    public String rawText() {
         return rawDocument;
     }
 
-    public int lines() {
-        return indexes[indexes.length-1] < rawDocument.length()-1 ? indexes.length + 1 : indexes.length;
+
+    public boolean isEmpty() {
+        return numberOfLines() == 0;
     }
 
 
+    public int numberOfLines() {
+        if (endOfLines.length == 0) {
+            return 0;
+        }
+        // the text may or not end with a eol char
+        return endOfLines[endOfLines.length-1] < rawDocument.length()-1 ?
+            endOfLines.length + 1 :
+            endOfLines.length;
+    }
+
+   
+    
+    public String[] extractLines() {
+        String[] lines = new String[numberOfLines()];
+        for (int i=0; i<lines.length; i++) {
+            lines[i] = extractLine(i);
+        }
+        return lines;
+    }
+
+    
     private int start(int line) {
-        if (line > indexes.length) {
+        if (line > endOfLines.length) {
             return rawDocument.length();
         }
-        return line == 0 ? 0 : indexes[line-1]+1;
+        return line == 0 ? 0 : endOfLines[line-1]+1;
     }
 
 
 
 
-    private static int[] locateLines(String rawDocument) {
+    private static int[] locateEndOfLines(String rawDocument) {
         int index = 0;
         int start = 0;
         int occurrences = -1;
@@ -79,5 +102,8 @@ public class TextDocument {
         }
         return indexes;
     }
+
+
+
 
 }

@@ -38,18 +38,21 @@ docker build -t iti.kukmo/kukumo-server:latest .
 And, in order to run the image, type:
 
 ```shell script
-docker run --rm -p 8080:8080 --name kukumo-server iti.kukmo/kukumo-server:latest
+docker run --rm -p 8080:8080 -p 8090:8090 --name kukumo-server iti.kukmo/kukumo-server:latest
 ```
+It will map the port 8080 as the HTTP request port, and the port 8090 as the Language
+Server TCP port.
+
 
 It is possible to add external runtime dependencies mounting a specific directory:
 
 ```shell script
-docker run --rm -p 8080:8080 -v <DEPENDENCY-DIR>:/app/lib-ext --name kukumo-server iti.kukmo/kukumo-server:latest
+docker run --rm -p 8080:8080 -p 8090:8090 -v <DEPENDENCY-DIR>:/app/lib-ext --name kukumo-server iti.kukmo/kukumo-server:latest
 ```
 
 In additions, it is possible to enable the debug port using the following:
 ```shell script
-docker run --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" --name kukumo-server iti.kukmo/kukumo-server:latest
+docker run --rm -p 8080:8080 -p 8090:8090 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" --name kukumo-server iti.kukmo/kukumo-server:latest
 ```
 
 

@@ -27,5 +27,5 @@ COPY target/*-runner.jar /app/app.jar
 EXPOSE 8080
 USER 1001
 
-ENTRYPOINT [ "java","-cp", "/app/app.jar:/app/lib/*:/app/lib-ext/*","io.quarkus.runner.GeneratedMain" ]
+ENTRYPOINT [ "java","-cp", "/app/app.jar:/app/lib/*:/app/lib-ext/*","iti.kukumo.server.Runner" ]
 

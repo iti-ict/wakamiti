@@ -4,14 +4,8 @@
 package iti.kukumo.core.backend;
 
 
-import java.time.Clock;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -19,19 +13,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.KukumoSkippedException;
-import iti.kukumo.api.KukumoStepRunContext;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.Result;
+import iti.kukumo.api.*;
+import iti.kukumo.api.plan.*;
 import iti.kukumo.core.model.ExecutionState;
-import iti.kukumo.util.LocaleLoader;
-import iti.kukumo.util.Pair;
-import iti.kukumo.util.ThrowableRunnable;
+import iti.kukumo.util.*;
 
 
 public class RunnableBackend extends AbstractBackend {
@@ -252,7 +237,7 @@ public class RunnableBackend extends AbstractBackend {
         Locale dataLocale
     ) {
         Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
-            .matcher(modelStep, stepLocale, dataLocale, typeRegistry);
+            .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
 
         List<Pair<RunnableStep, Matcher>> locatedSteps = runnableSteps.stream()
             .map(Pair.computeValue(matcher))

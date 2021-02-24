@@ -1,7 +1,5 @@
 package iti.kukumo.lsp.internal;
 
-import java.util.List;
-
 public class TextRange {
 
     public static TextRange of(int startLine, int startLinePosition, int endLine, int endLinePosition) {
@@ -52,10 +50,9 @@ public class TextRange {
         if (startLine < range.startLine && endLine > range.startLine) {
             return true;
         }
-        if (endLine == range.startLine &&
-            startLinePosition < range.startLinePosition && endLinePosition > range.startLinePosition) {
-            return true;
-        }
-        return false;
+        return (
+            endLine == range.startLine &&
+            startLinePosition < range.startLinePosition && endLinePosition > range.startLinePosition
+        );
     }
 }

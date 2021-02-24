@@ -19,6 +19,7 @@ import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.backend.ExpressionMatcher;
+import iti.kukumo.util.Either;
 
 
 
@@ -106,7 +107,7 @@ public class TestExpressionMatcher {
                 expression,
                 coreTypes(),
                 locale,
-                new PlanNodeBuilder(NodeType.STEP).setName(step).build()
+                Either.fallback(step)
             );
             assertTrue("<<" + step + ">> not matching <<" + expression + ">>", matcher.matches());
         }

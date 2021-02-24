@@ -1,17 +1,9 @@
 package iti.kukumo.lsp.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import iti.commons.gherkin.*;
 
-import iti.commons.gherkin.Comment;
-import iti.commons.gherkin.CommentedNode;
-import iti.commons.gherkin.Feature;
-import iti.commons.gherkin.GherkinDocument;
-import iti.commons.gherkin.Location;
-import iti.commons.gherkin.Node;
-import iti.commons.gherkin.ScenarioDefinition;
-import iti.commons.gherkin.Step;
+
 
 class CompletionContextMap {
 

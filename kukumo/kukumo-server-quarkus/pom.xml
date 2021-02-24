@@ -26,6 +26,7 @@
 		<!-- Kukumo versions -->
 		<kukumo-core.version>1.1.0</kukumo-core.version>
 		<kukumo-core-l10n.version>1.0.0</kukumo-core-l10n.version>
+		<kukumo-lsp.version>1.0.0</kukumo-lsp.version>
 		<!-- Container properties -->
 		<docker.expose.port>8080</docker.expose.port>
 		<docker.expose.debug.port>5005</docker.expose.debug.port>
@@ -55,6 +56,11 @@
 			<groupId>iti.kukumo</groupId>
 			<artifactId>kukumo-core-l10n</artifactId>
 			<version>${kukumo-core-l10n.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>iti.kukumo</groupId>
+			<artifactId>kukumo-lsp</artifactId>
+			<version>${kukumo-lsp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>

@@ -1,6 +1,5 @@
 package iti.kukumo.lsp;
 
-import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,15 +11,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import iti.commons.configurer.Configuration;
-
 public class CliArguments {
 
     private static final String ARG_HELP = "h";
-    private static final String ARG_PORT = "p";
-    private static final String ARG_KUKUMO_PROPERTY = "K";
-    private static final String ARG_MAVEN_PROPERTY = "M";
-
+    private static final String ARG_POSITION_BASE = "b";
+    private static final String ARG_LOCAL_REPO = "l";
+    private static final String ARG_REMOTE_REPO = "r";
 
     private final Options cliOptions;
     private CommandLine cliCommand;
@@ -29,23 +25,15 @@ public class CliArguments {
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
-        cliOptions.addOption(ARG_PORT, "port", true, "Port to run the LSP server (any free port if not specified)");
-        cliOptions.addOption(
-            Option.builder(ARG_KUKUMO_PROPERTY)
-            .argName("kukumoProperty=value")
-            .numberOfArgs(2)
-            .valueSeparator('=')
-            .desc("Set a Kukumo-specific property")
+        cliOptions.addOption(Option.builder(ARG_POSITION_BASE)
+            .argName("position-base")
+            .numberOfArgs(1)
+            .required(false)
+            .desc("Base of text position ranges (0 or 1). [0 by default]")
             .build()
         );
-        cliOptions.addOption(
-            Option.builder(ARG_MAVEN_PROPERTY)
-            .argName("mavenFetcherProperty=value")
-            .numberOfArgs(2)
-            .valueSeparator('=')
-            .desc("Set a MavenFetcher-specific property")
-            .build()
-        );
+        cliOptions.addOption(ARG_LOCAL_REPO,"local-repo",false,"Path to the local Kukumo repository");
+        cliOptions.addOption(ARG_REMOTE_REPO,"remote-repo",false,"URL of the remote Maven repository");
     }
 
 
@@ -57,20 +45,15 @@ public class CliArguments {
 
 
     public void printUsage() {
-        new HelpFormatter().printHelp("kukumo [options]", cliOptions);
+        new HelpFormatter().printHelp(
+    		"",
+    		"Open a Kukmo Language Server using the standard input and output channels.\n"+
+    		"LSP clients can use this to open a process directly without requiring a whole server setting.",
+    		cliOptions,
+    		""
+		);
     }
 
-
-    public Configuration kukumoConfiguration() {
-        Properties properties = cliCommand.getOptionProperties(ARG_KUKUMO_PROPERTY);
-        return Configuration.fromProperties(properties);
-    }
-
-
-    public Configuration mavenFetcherConfiguration() {
-        Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
-        return Configuration.fromProperties(properties);
-    }
 
 
     public boolean isHelpActive() {
@@ -78,8 +61,8 @@ public class CliArguments {
     }
 
 
-    public int port() {
-        return Integer.parseInt(cliCommand.getOptionValue(ARG_PORT, "0"));
+    public int positionBase() {
+        return Integer.parseInt(cliCommand.getOptionValue(ARG_POSITION_BASE, "0"));
     }
 
 

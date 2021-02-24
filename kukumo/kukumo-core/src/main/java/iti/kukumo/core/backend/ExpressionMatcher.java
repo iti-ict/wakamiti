@@ -19,6 +19,7 @@ import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.Either;
 
 
 public class ExpressionMatcher {
@@ -39,13 +40,13 @@ public class ExpressionMatcher {
         String translatedDefinition,
         KukumoDataTypeRegistry typeRegistry,
         Locale locale,
-        PlanNode modelStep
+        Either<PlanNode,String> modelStep
     ) {
         ExpressionMatcher matcher = new ExpressionMatcher(
             translatedDefinition, typeRegistry, locale
         );
         String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
-        return Pattern.compile(regex).matcher(modelStep.name());
+        return Pattern.compile(regex).matcher(modelStep.mapValueOrFallback(PlanNode::name));
     }
 
 

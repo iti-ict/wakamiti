@@ -1,36 +1,25 @@
 package iti.kukumo.lsp;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.CompletableFuture;
-
-import org.eclipse.lsp4j.CompletionOptions;
-import org.eclipse.lsp4j.InitializeParams;
-import org.eclipse.lsp4j.InitializeResult;
-import org.eclipse.lsp4j.InitializedParams;
-import org.eclipse.lsp4j.MessageParams;
-import org.eclipse.lsp4j.MessageType;
-import org.eclipse.lsp4j.ServerCapabilities;
-import org.eclipse.lsp4j.TextDocumentSyncKind;
-import org.eclipse.lsp4j.services.LanguageClient;
-import org.eclipse.lsp4j.services.LanguageClientAware;
-import org.eclipse.lsp4j.services.LanguageServer;
-import org.eclipse.lsp4j.services.TextDocumentService;
-import org.eclipse.lsp4j.services.WorkspaceService;
+import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 public class KukumoLanguageServer implements LanguageServer, LanguageClientAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KukumoLspLauncher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KukumoLanguageServer.class);
 
     private final TextDocumentService textDocumentService;
     private final WorkspaceService workspaceService;
     LanguageClient client;
 
 
-    public KukumoLanguageServer() {
-        this.textDocumentService = new KukumoTextDocumentService(this);
+    public KukumoLanguageServer(int baseIndex) {
+        this.textDocumentService = new KukumoTextDocumentService(this, baseIndex);
         this.workspaceService = new KukumoWorkspaceService(this);
     }
 
@@ -39,17 +28,20 @@ public class KukumoLanguageServer implements LanguageServer, LanguageClientAware
         var capabilities = new ServerCapabilities();
         capabilities.setCompletionProvider(new CompletionOptions(true, null));
         capabilities.setTextDocumentSync(TextDocumentSyncKind.Incremental);
+        capabilities.setCodeActionProvider(new CodeActionOptions(List.of("quickfix")));
         return capabilities;
     }
 
 
     @Override
     public CompletableFuture<InitializeResult> initialize(InitializeParams params) {
-        LOGGER.info("EVENT initialize:\n{}",params);
-        InitializeResult result = new InitializeResult();
-        result.setCapabilities(capabilities());
-        return CompletableFuture.completedFuture(result);
+        return FutureUtil.processEvent("languageServer.initialize", params, x -> {
+            InitializeResult result = new InitializeResult();
+            result.setCapabilities(capabilities());
+            return result;
+        });
     }
+
 
     @Override
     public void initialized(InitializedParams params) {
@@ -89,8 +81,10 @@ public class KukumoLanguageServer implements LanguageServer, LanguageClientAware
     public void connect(LanguageClient client) {
         LOGGER.info("EVENT connect");
         this.client = client;
+        /*
         client.logMessage(info("[LSP Server] Connected"));
         client.showMessage(info("Connected to Kukumo LSP Server"));
+         */
 
     }
 

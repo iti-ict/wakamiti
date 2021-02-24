@@ -14,7 +14,7 @@
     <!-- coordinates -->
     <groupId>iti.commons</groupId>
     <artifactId>configurer</artifactId>
-    <version>1.0.1-SERVER</version>
+    <version>1.0.1</version>
 
     <!-- additional information -->
     <name>Configurer</name>

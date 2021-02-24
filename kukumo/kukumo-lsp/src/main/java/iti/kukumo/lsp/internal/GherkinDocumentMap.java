@@ -1,18 +1,20 @@
 package iti.kukumo.lsp.internal;
 
-import static java.util.stream.Collectors.toList;
+import iti.commons.gherkin.*;
+import iti.kukumo.api.KukumoConfiguration;
+
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import iti.commons.gherkin.GherkinDialect;
-import iti.commons.gherkin.GherkinDialectProvider;
-import iti.commons.gherkin.GherkinLanguageConstants;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.util.LocaleLoader;
+import static java.util.stream.Collectors.toList;
 
 
+/*
+ * This class associates each parsed section of a Gherkin documento
+ * to the actual position in the file
+ */
 public class GherkinDocumentMap {
 
     private static final List<String> propertiesRequiringParsing = List.of(
@@ -35,8 +37,8 @@ public class GherkinDocumentMap {
     }
 
 
-    public String raw() {
-        return document.raw();
+    public String rawContent() {
+        return document.rawText();
     }
 
     public TextDocument document() {
@@ -58,37 +60,47 @@ public class GherkinDocumentMap {
         } else {
             requireParsing = true;
         }
-        document.replace(range,text);
+        document.replaceRange(range,text);
         return requireParsing;
     }
 
 
 
     public boolean checkReplaceSingleLineRequireParsing(TextRange range) {
+        if (document.isEmpty()) {
+            return true;
+        }
         boolean requireParsing = false;
         int lineNumber = range.startLine();
-        String strippedLineContent = document.line(lineNumber).strip();
-        boolean isProperty = strippedLineContent.startsWith("#");
+        String stripLineContent = document.extractLine(lineNumber).strip();
+        boolean isProperty = stripLineContent.startsWith("#");
         if (isProperty) {
-            var matcher = propertyPattern.matcher(strippedLineContent);
+            var matcher = propertyPattern.matcher(stripLineContent);
             if (matcher.matches() && propertiesRequiringParsing.contains(matcher.group(1))) {
                 requireParsing = true;
             }
         } else {
-            TextRange keyword = detectKeyword(lineNumber,strippedLineContent,dialect.getKeywords());
-            if (!keyword.isEmpty() && range.intersect(keyword)) {
+            TextRange keywordRange = detectKeyword(lineNumber,stripLineContent,GherkinDialect::getKeywords);
+            if (!keywordRange.isEmpty() && range.intersect(keywordRange)) {
                 requireParsing = true;
             }
         }
         return requireParsing;
     }
 
+    public TextRange detectStepKeyword(int lineNumber, String stripLineContent) {
+        return detectKeyword(lineNumber, stripLineContent, GherkinDialect::getStepKeywords);
+    }
 
 
-    private TextRange detectKeyword(int lineNumber, String strippedLineContent, List<String> keywords) {
+    public TextRange detectKeyword(
+        int lineNumber,
+        String stripLineContent,
+        Function<GherkinDialect,List<String>> keywords
+    ) {
         TextRange keywordRange = TextRange.of(0,0,0,0);
-        for (String keyword : keywords) {
-            if (strippedLineContent.startsWith(keyword)) {
+        for (String keyword : keywords.apply(dialect)) {
+            if (stripLineContent.startsWith(keyword)) {
                 keywordRange = TextRange.of(lineNumber,0,lineNumber,keyword.length());
                 break;
             }
@@ -97,8 +109,8 @@ public class GherkinDocumentMap {
     }
 
 
-    public boolean isStep(int lineNumber, String strippedLineContent) {
-        TextRange keywordRange = detectKeyword(lineNumber,strippedLineContent,dialect.getStepKeywords());
+    public boolean isStep(int lineNumber, String stripLineContent) {
+        TextRange keywordRange = detectKeyword(lineNumber,stripLineContent,GherkinDialect::getStepKeywords);
         if (!keywordRange.isEmpty()) {
             String lastKeyword = lastKeyword(lineNumber-1);
             return dialect.getFeatureContentKeywords().contains(lastKeyword);
@@ -108,15 +120,29 @@ public class GherkinDocumentMap {
     }
 
 
+
+    public String removeKeyword(int lineNumber, String stripLineContent) {
+        var keywordRange = detectKeyword(lineNumber, stripLineContent, GherkinDialect::getKeywords);
+        if (keywordRange.isEmpty()) {
+            return stripLineContent;
+        }
+        return stripLineContent.substring(keywordRange.endLinePosition());
+    }
+
+
+
     private String lastKeyword(int lineNumber) {
-        for (int i = lineNumber; i>0; i--) {
-            String line = document.line(i).stripLeading();
+        for (int i = lineNumber; i>=0; i--) {
+            String line = document.extractLine(i).stripLeading();
             if (line.startsWith("#")) {
                 continue;
             }
             int position = line.indexOf(':');
             if (position > -1) {
-                return line.substring(0, position);
+                String keyword = line.substring(0, position);
+                if (dialect.getKeywords().contains(keyword)) {
+                    return keyword;
+                }
             }
         }
         return null;
@@ -153,8 +179,8 @@ public class GherkinDocumentMap {
 
 
     private String lastLineWithContent(int lineNumber) {
-        for (int i = lineNumber; i>0; i--) {
-            String line = document.line(i);
+        for (int i = lineNumber; i>=0; i--) {
+            String line = document.extractLine(i);
             if (line.stripLeading().isEmpty()) {
                 continue;
             }
@@ -295,8 +321,8 @@ public class GherkinDocumentMap {
 
     private static Optional<String> extractProperty(String property,TextDocument document) {
         Pattern pattern = Pattern.compile("\\s*#*\\s*"+property+"\\s*:\\s*([^\\s]+)\\s*");
-        for (int l=0; l<document.lines(); l++) {
-            var matcher = pattern.matcher(document.line(l));
+        for (int l=0; l<document.numberOfLines(); l++) {
+            var matcher = pattern.matcher(document.extractLine(l));
             if (matcher.matches()) {
                 return Optional.of(matcher.group(1));
             }

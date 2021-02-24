@@ -7,40 +7,23 @@ package iti.kukumo.api;
 import static iti.kukumo.api.KukumoConfiguration.*;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.*;
+import java.time.Clock;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
-import iti.kukumo.api.extensions.ResourceType;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.event.EventDispatcher;
-import iti.kukumo.api.extensions.EventObserver;
-import iti.kukumo.api.extensions.PlanTransformer;
-import iti.kukumo.api.extensions.Reporter;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeBuilder;
-import iti.kukumo.api.plan.PlanNodeSnapshot;
-import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.api.event.*;
+import iti.kukumo.api.extensions.*;
+import iti.kukumo.api.plan.*;
 import iti.kukumo.core.backend.DefaultBackendFactory;
 import iti.kukumo.core.runner.PlanRunner;
-import iti.kukumo.util.KukumoLogger;
-import iti.kukumo.util.ResourceLoader;
-import iti.kukumo.util.TagFilter;
-import iti.kukumo.util.ThrowableFunction;
+import iti.kukumo.util.*;
 
 
 public class Kukumo {
@@ -417,6 +400,12 @@ public class Kukumo {
             }
         }
 
+    }
+
+
+    public Hinter createHinterFor(Configuration configuration) {
+    	var backendFactory = newBackendFactory();
+        return backendFactory.createHinter(configuration);
     }
 
 

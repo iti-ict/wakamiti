@@ -1,18 +1,16 @@
 package iti.kukumo.server.infra.app;
 
-import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.extensions.Contributor;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.extensions.Contributor;
 
 @Path("kukumo")
 public class KukumoResource {
