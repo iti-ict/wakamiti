@@ -1,15 +1,30 @@
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.util;
 
 
-import java.util.Stack;
+import java.util.*;
+import java.util.regex.Pattern;
 
 
-/* CATMA Computer Aided Text Markup and Analysis*    Copyright (C) 2008-2010  University Of Hamburg*    This program is free software: you can redistribute it and/or modify *    it under the terms of the GNU General Public License as published by *    the Free Software Foundation, either version 3 of the License, or *    (at your option) any later version.*    This program is distributed in the hope that it will be useful, *    but WITHOUT ANY WARRANTY; without even the implied warranty of *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the *    GNU General Public License for more details.*    You should have received a copy of the GNU General Public License *    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+/* CATMA Computer Aided Text Markup and Analysis*
+ *  Copyright (C) 2008-2010  University Of Hamburg*
+ *  This program is free software: you can redistribute it and/or modify *
+ *  it under the terms of the GNU General Public License as published by *
+ *  the Free Software Foundation, either version 3 of the License, or *
+ *  (at your option) any later version.*
+ *  This program is distributed in the hope that it will be useful, *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the *
+ *  GNU General Public License for more details.*
+ *  You should have received a copy of the GNU General Public License *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  */
 
-/** Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as * described in the July 1988 issue of <a * href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>* @author Marco Petris*/
+/** Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as *
+ *  described in the July 1988 issue of <a href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>*
+ *   @author Marco Petris
+ *
+ *   @author Luis Iñesta - luiinge@gmail.com (Additional tweaks and fixes)
+ */
 public class Simil {
 
     private final String upBaseInput;
@@ -38,7 +53,7 @@ public class Simil {
      * @return the size of the largets common substring of the two strings which
      *         were on the tops of the incoming stacks.
      */
-    private int compare(Stack<String> baseInputStack, Stack<String> inputStack) {
+    private int compare(Deque<String> baseInputStack, Deque<String> inputStack) {
 
         String comp1 = baseInputStack.pop();
         String comp2 = inputStack.pop();
@@ -62,8 +77,8 @@ public class Simil {
 
                     // yes, so we take the parts that do not belong to our matching
                     // string and push them onto the stack for later examination
-                    String comp2Rest[] = comp2.split(comp1.substring(pos, pos + windowSize), 2);
-                    String comp1Rest[] = comp1.split(comp1.substring(pos, pos + windowSize), 2);
+                    String[] comp2Rest = comp2.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
+                    String[] comp1Rest = comp1.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
 
                     // both rest-arrays should have at least one entry to compare to next time
                     int resultLen = Math.min(comp1Rest.length, comp2Rest.length);
@@ -102,8 +117,8 @@ public class Simil {
      */
     public double getSimilarityInPercentFor(String input) {
         String upInput = input.toUpperCase();
-        Stack<String> inputStack = new Stack<>();
-        Stack<String> baseInputStack = new Stack<>();
+        Deque<String> inputStack = new ArrayDeque<>();
+        Deque<String> baseInputStack = new ArrayDeque<>();
 
         baseInputStack.push(upBaseInput);
         inputStack.push(upInput);
@@ -114,7 +129,7 @@ public class Simil {
         // we loop over the portions of the strings and try to find
         // the lengths of largest substrings
         // the stacks gets filled when common substrings are found
-        while (inputStack.size() > 0 && baseInputStack.size() > 0) {
+        while (!inputStack.isEmpty() && !baseInputStack.isEmpty()) {
 
             compCount += compare(baseInputStack, inputStack);
 

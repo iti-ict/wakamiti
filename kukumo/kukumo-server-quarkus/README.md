@@ -66,7 +66,7 @@ In order to create the Docker image, execute the following:
 ```shell script
 ./mvnw package
 docker build -f demo/Dockerfile -t iti.kukmo/kukumo-server-demo:latest .
-docker run --rm -p 8080:8080 --name kukumo-server-demo iti.kukmo/kukumo-server-demo:latest
+docker run --rm -p 8080:8080 -p 8090:8090 --name kukumo-server-demo iti.kukmo/kukumo-server-demo:latest
 ```
 
 

@@ -79,13 +79,8 @@ public class KukumoLanguageServer implements LanguageServer, LanguageClientAware
 
     @Override
     public void connect(LanguageClient client) {
-        LOGGER.info("EVENT connect");
+        LOGGER.info("EVENT connect\n{}",client);
         this.client = client;
-        /*
-        client.logMessage(info("[LSP Server] Connected"));
-        client.showMessage(info("Connected to Kukumo LSP Server"));
-         */
-
     }
 
 

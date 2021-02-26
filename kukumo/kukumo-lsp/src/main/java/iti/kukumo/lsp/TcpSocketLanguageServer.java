@@ -10,7 +10,7 @@ import org.eclipse.lsp4j.launch.LSPLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.*;
 
 
 public class TcpSocketLanguageServer  {
@@ -39,6 +39,7 @@ public class TcpSocketLanguageServer  {
 
 
    private void run() {
+	    LOGGER.info("Contributors available: {}", Kukumo.contributors().allContributors());
         var threadPool = Executors.newCachedThreadPool();
         while (!serverSocket.isClosed()) {
             Socket socket;

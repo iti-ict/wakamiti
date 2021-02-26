@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 
 public class KukumoTextDocumentService implements TextDocumentService {
 
-    private static final Logger logger = LoggerFactory.getLogger("kukumix.lsp");
+    private static final Logger logger = LoggerFactory.getLogger("iti.kukumo.lsp");
     private final Map<String, GherkinDocumentAssessor> documentAssessors = new HashMap<>();
     private final KukumoLanguageServer server;
     private final int baseIndex;
@@ -72,7 +72,7 @@ public class KukumoTextDocumentService implements TextDocumentService {
         String uri = params.getTextDocument().getUri();
         String type = params.getTextDocument().getLanguageId();
         String content = params.getTextDocument().getText();
-        if (type.equals("kukumix.gherkin")) {
+        if (type.equals("kukumo-gherkin")) {
             documentAssessors.computeIfAbsent(uri, key -> new GherkinDocumentAssessor(content));
             sendDiagnostics(uri);
         }

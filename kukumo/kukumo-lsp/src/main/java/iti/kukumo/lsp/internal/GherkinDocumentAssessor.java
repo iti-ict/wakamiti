@@ -38,6 +38,7 @@ public class GherkinDocumentAssessor {
 
 
     private GherkinDocumentMap documentMap;
+    private iti.commons.gherkin.GherkinDocument parsedDocument;
     private Exception parsingError;
 
 
@@ -81,21 +82,23 @@ public class GherkinDocumentAssessor {
 
 
     public synchronized GherkinDocumentAssessor resetDocument(String document) {
-        if (!document.isBlank()) {
+    	this.documentMap = new GherkinDocumentMap(document);
+    	if (!document.isBlank()) {
             try {
                 this.documentConfiguration = extractDocumentConfiguration(document);
                 this.parsingError = null;
             } catch (Exception e) {
                 this.documentConfiguration = Configuration.empty();
                 this.parsingError = e;
+                this.parsedDocument = null;
             }
         } else {
             this.documentConfiguration = Configuration.empty();
             this.parsingError = null;
+            this.parsedDocument = null;
         }
-        hinterConfiguration = globalConfiguration.append(documentConfiguration);
-        this.hinter = hinterProvider.apply(hinterConfiguration);
-        this.documentMap = new GherkinDocumentMap(document);
+        this.hinter = createHinterFor(documentMap, documentConfiguration);
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("{}{}{}",DOTS,documentMap.document().rawText(),DOTS);
         }
@@ -103,10 +106,30 @@ public class GherkinDocumentAssessor {
     }
 
 
+
+    private Hinter createHinterFor(
+		GherkinDocumentMap documentMap,
+		Configuration documentConfiguration
+	) {
+    	hinterConfiguration = globalConfiguration.append(documentConfiguration);
+        /*
+         * the Gherkin parser do not include the `# language: xx` line as a comment,
+         * we have to include it manually in the configuration:
+         */
+        if (!hinterConfiguration.hasProperty(KukumoConfiguration.LANGUAGE)) {
+        	hinterConfiguration = hinterConfiguration.appendFromPairs(
+    			KukumoConfiguration.LANGUAGE,
+    			documentMap.locale().toString()
+			);
+        }
+        return hinterProvider.apply(hinterConfiguration);
+    }
+
+
     public synchronized GherkinDocumentAssessor updateDocument(TextRange range, String delta) {
-        boolean requiresParsing = documentMap.replace(range,delta);
-        if (requiresParsing) {
-            resetDocument(documentMap.rawContent());
+    	boolean requiresParsing = documentMap.replace(range,delta);
+        if (parsingError != null || requiresParsing) {
+        	resetDocument(documentMap.rawContent());
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("{}{}{}",DOTS,documentMap.document().rawText(),DOTS);
@@ -120,7 +143,7 @@ public class GherkinDocumentAssessor {
         // TODO: parsing is an intensive operation, it should work if we just
         //       take the lines starting with # until the first keyword appears
         //       Parsing should be delayed as long as possible
-        iti.commons.gherkin.GherkinDocument parsedDocument = parser.parse(new StringReader(document));
+        this.parsedDocument = parser.parse(new StringReader(document));
         Feature feature = parsedDocument.getFeature();
         if (feature == null) {
             return Configuration.empty();
@@ -269,13 +292,23 @@ public class GherkinDocumentAssessor {
             diagnostics.add(diagnosticError(errorRange,parsingError.toString()));
         }
         collectDiagnosticsFromUndefinedSteps(diagnostics);
+        if (parsedDocument != null) {
+        	var numScenarios = parsedDocument.getFeature().getChildren().stream()
+    			.filter(ScenarioDefinition.class::isInstance)
+    			.count();
+        	if (numScenarios == 0L) {
+        		diagnostics.add(diagnosticWarn(emptyRange(), "No scenarios defined"));
+        	}
+        }
         return diagnostics;
     }
 
 
 
 
-    private void collectDiagnosticsFromUndefinedSteps(List<Diagnostic> diagnostics) {
+
+
+	private void collectDiagnosticsFromUndefinedSteps(List<Diagnostic> diagnostics) {
         clearUndefinedStepQuickFixes();
         String [] lines = documentMap.document().extractLines();
         for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
@@ -323,8 +356,6 @@ public class GherkinDocumentAssessor {
 
 
     public List<CodeAction> retrieveQuickFixes(Diagnostic errorDiagnostic) {
-        LOGGER.debug("XXXXXXXXXXXXX QuickFix for error {}", errorDiagnostic);
-        LOGGER.debug("XXXXXXXXXXXXX Computed Fixes are: {}", undefinedStepQuickFixes);
         return undefinedStepQuickFixes.getOrDefault(errorDiagnostic.getRange(), List.of());
     }
 
@@ -335,6 +366,16 @@ public class GherkinDocumentAssessor {
             range,
             error,
             DiagnosticSeverity.Error,
+            ""
+        );
+    }
+
+
+    private Diagnostic diagnosticWarn(Range range, String warning) {
+        return new Diagnostic(
+            range,
+            warning,
+            DiagnosticSeverity.Warning,
             ""
         );
     }
@@ -402,5 +443,15 @@ public class GherkinDocumentAssessor {
     Configuration documentConfiguration() {
         return this.documentConfiguration;
     }
+
+
+    public String peekContent() {
+    	return this.documentMap.rawContent();
+    }
+
+
+    private Range emptyRange() {
+		return new Range(new Position(0, 0), new Position(0, 0));
+	}
 
 }

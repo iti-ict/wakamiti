@@ -88,6 +88,30 @@
             <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
+<!--
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db-l10n</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest-l10n</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+ -->
+
+
     </dependencies>
 
 

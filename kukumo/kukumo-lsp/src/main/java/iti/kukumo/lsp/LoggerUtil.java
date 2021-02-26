@@ -14,12 +14,12 @@ public final class LoggerUtil {
     private LoggerUtil() { /* avoid instantiation */ }
 
     static Logger get(String logger) {
-        return loggers.computeIfAbsent("kukumix.lsp." + logger, LoggerFactory::getLogger);
+        return loggers.computeIfAbsent("iti.kukumo.lsp." + logger, LoggerFactory::getLogger);
     }
 
 
     public static <T> T logEntry(String logger, T params) {
-        get(logger).debug("{}\n >> REQUEST {}\n{}\n{}", DASHES, logger, DASHES, params, DASHES);
+        get(logger).debug("{}\n >> REQUEST {}\n{}\n{}\n{}", DASHES, logger, DASHES, params, DASHES);
         return params;
     }
 
