@@ -23,9 +23,9 @@
 
     <properties>
         <!-- dependency versions -->
-        <configurer.version>1.0.0</configurer.version>
+        <configurer.version>1.0.1</configurer.version>
         <jext.version>1.0.0</jext.version>
-        <gherkin-parser.version>1.0.0</gherkin-parser.version>
+        <gherkin-parser.version>1.0.1</gherkin-parser.version>
         <tag-expressions.version>1.1.1</tag-expressions.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>
