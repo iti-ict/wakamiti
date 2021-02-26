@@ -98,7 +98,8 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
         .appendFromSystem()
         .filtered(PREFIX)
         .appendFromPairs(
-            RESOURCE_PATH, ".",
+            LANGUAGE, "en",
+        	RESOURCE_PATH, ".",
             GENERATE_OUTPUT_FILE, "true",
             OUTPUT_FILE_PATH, "kukumo.json",
             REPORT_GENERATION, "true",
