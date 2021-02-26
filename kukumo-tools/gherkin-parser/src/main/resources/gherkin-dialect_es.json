@@ -1,0 +1,45 @@
+{
+	"and": [
+		"* ",
+		"Y que ",
+		"Y ",
+		"E "
+	],
+	"background": [
+		"Antecedentes"
+	],
+	"but": [
+		"* ",
+		"Pero "
+	],
+	"examples": [
+		"Ejemplos"
+	],
+	"feature": [
+		"Característica"
+	],
+	"given": [
+		"* ",
+		"Dado que ",
+		"Dado ",
+		"Dada ",
+		"Dados ",
+		"Dadas "
+	],
+	"name": "Spanish",
+	"native": "español",
+	"scenario": [
+		"Escenario"
+	],
+	"scenarioOutline": [
+		"Esquema del escenario"
+	],
+	"then": [
+		"* ",
+		"Entonces "
+	],
+	"when": [
+		"* ",
+		"Cuando "
+	]
+}

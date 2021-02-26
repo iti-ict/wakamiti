@@ -1,0 +1,44 @@
+{
+	"and": [
+		"* ",
+		"And "
+	],
+	"background": [
+		"Background"
+	],
+	"but": [
+		"* ",
+		"But "
+	],
+	"examples": [
+		"Examples",
+		"Scenarios"
+	],
+	"feature": [
+		"Feature",
+		"Business Need",
+		"Ability"
+	],
+	"given": [
+		"* ",
+		"Given that ",
+		"Given "
+	],
+	"name": "English",
+	"native": "English",
+	"scenario": [
+		"Scenario"
+	],
+	"scenarioOutline": [
+		"Scenario Outline",
+		"Scenario Template"
+	],
+	"then": [
+		"* ",
+		"Then "
+	],
+	"when": [
+		"* ",
+		"When "
+	]
+}
