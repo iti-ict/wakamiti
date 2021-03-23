@@ -12,6 +12,5 @@
         <Root level="debug">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name="iti.kukumo.lsp.textDocument.documentHighlight" level="debug"><AppenderRef ref="Console"/></Logger>
     </Loggers>
 </Configuration>

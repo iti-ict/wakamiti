@@ -12,8 +12,17 @@ public interface Contributor {
 
     default String info() {
         Extension extensionData = this.getClass().getAnnotation(Extension.class);
-        return extensionData.provider() + ":" + extensionData.name() + ":" + extensionData
-            .version();
+        if (extensionData != null) {
+        	return String.format(
+    			"%s:%s:%s",
+    			extensionData.provider(),
+    			extensionData.name(),
+    			extensionData.version()
+    		);
+        } else {
+        	return getClass().getCanonicalName();
+        }
+
     }
 
 

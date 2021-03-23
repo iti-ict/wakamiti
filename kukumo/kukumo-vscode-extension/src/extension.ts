@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { startLanguageClient } from './language-client';
+import { start as startLanguageClient } from './language-client';
 
 
 
@@ -8,6 +8,8 @@ export function activate(context: vscode.ExtensionContext) {
 	startLanguageClient(context);	
 	console.log('Kukumo VSCode extension activated.');
 }
+
+
 
 
 export function deactivate() {

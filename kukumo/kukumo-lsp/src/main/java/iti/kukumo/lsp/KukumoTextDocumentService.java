@@ -1,31 +1,32 @@
 package iti.kukumo.lsp;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
+
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import iti.kukumo.lsp.internal.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import static java.util.stream.Collectors.toList;
-
 public class KukumoTextDocumentService implements TextDocumentService {
 
-    private static final Logger logger = LoggerFactory.getLogger("iti.kukumo.lsp");
-    private final Map<String, GherkinDocumentAssessor> documentAssessors = new HashMap<>();
+	private static final String FILE_TYPE_GHERKIN = "kukumo-gherkin";
+	private static final String FILE_TYPE_CONFIGURATION = "yaml";
+
     private final KukumoLanguageServer server;
     private final int baseIndex;
+
+    private GherkinWorkspace workspace;
 
 
     public KukumoTextDocumentService(KukumoLanguageServer server, int baseIndex) {
         this.server = server;
         this.baseIndex = baseIndex;
+        this.workspace = new GherkinWorkspace(baseIndex);
     }
 
 
@@ -37,8 +38,16 @@ public class KukumoTextDocumentService implements TextDocumentService {
 
 
     @Override
-    public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams params) {
-        return FutureUtil.processEvent("textDocument.completion", params, this::doCompletion);
+    public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(
+		CompletionParams params
+	) {
+        return FutureUtil.processEvent(
+    		"textDocument.completion",
+    		params,
+    		()-> Either.forLeft(
+    			workspace.computeCompletions(params.getTextDocument().getUri(), params.getPosition())
+    		)
+		);
     }
 
 
@@ -49,20 +58,29 @@ public class KukumoTextDocumentService implements TextDocumentService {
         return FutureUtil.processEvent("textDocument.codeAction", params, this::doCodeAction);
     }
 
+    private List<Either<Command, CodeAction>> doCodeAction(CodeActionParams params) {
 
-    private Either<List<CompletionItem>, CompletionList> doCompletion (CompletionParams params) {
-        String uri = params.getTextDocument().getUri();
-        GherkinDocumentAssessor documentAssessor = documentAssessors.get(uri);
-        List<CompletionItem> suggestions;
-        if (documentAssessor == null) {
-            suggestions = List.of();
-        } else {
-            suggestions = documentAssessor.collectCompletions(
-                params.getPosition().getLine() - baseIndex,
-                params.getPosition().getCharacter() - baseIndex
-            );
-        }
-        return Either.forLeft(suggestions);
+    	var uri = params.getTextDocument().getUri();
+
+        VersionedTextDocumentIdentifier textDocument = new VersionedTextDocumentIdentifier(
+            params.getTextDocument().getUri(),
+            null
+        );
+
+        var codeActions = workspace.computeCodeActions(uri, params.getContext().getDiagnostics())
+        	.stream()
+            .map(Either::<Command,CodeAction>forRight)
+            .collect(toList());
+
+        codeActions.stream()
+            .map(Either<Command, CodeAction>::getRight)
+            .map(CodeAction::getEdit)
+            .map(WorkspaceEdit::getDocumentChanges)
+            .flatMap(List<Either<TextDocumentEdit, ResourceOperation>>::stream)
+            .map(Either<TextDocumentEdit, ResourceOperation>::getLeft)
+            .forEach(textDocumentEdit->textDocumentEdit.setTextDocument(textDocument));
+
+        return codeActions;
     }
 
 
@@ -72,9 +90,10 @@ public class KukumoTextDocumentService implements TextDocumentService {
         String uri = params.getTextDocument().getUri();
         String type = params.getTextDocument().getLanguageId();
         String content = params.getTextDocument().getText();
-        if (type.equals("kukumo-gherkin")) {
-            documentAssessors.computeIfAbsent(uri, key -> new GherkinDocumentAssessor(content));
-            sendDiagnostics(uri);
+        if (FILE_TYPE_GHERKIN.equals(type)) {
+            sendDiagnostics(workspace.addGherkin(uri, content) );
+        } else if (FILE_TYPE_CONFIGURATION.equals(type)) {
+        	sendDiagnostics(workspace.addConfiguration(uri, content));
         }
     }
 
@@ -82,52 +101,16 @@ public class KukumoTextDocumentService implements TextDocumentService {
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
         LoggerUtil.logEntry("textDocument.didChange", params);
-        try {
-            var uri = params.getTextDocument().getUri();
-            var documentAssessor = documentAssessors.get(uri);
-            if (documentAssessor != null) {
-                for (var event : params.getContentChanges()) {
-                    documentAssessor.updateDocument(textRange(event.getRange()), event.getText());
-                    sendDiagnostics(uri);
-                }
-            }
-        } catch (Exception e) {
-            // something wrong has happened, ask for the whole file
-            throw e;
-        }
-    }
-
-
-    private List<Either<Command, CodeAction>> doCodeAction(CodeActionParams params) {
-
         var uri = params.getTextDocument().getUri();
-        var documentAssessor = documentAssessors.get(uri);
-        if (documentAssessor == null) {
-            return List.of();
+        for (var event : params.getContentChanges()) {
+            sendDiagnostics(
+        		workspace.update(uri, textRange(event.getRange()), event.getText())
+    		);
         }
-
-        List<Either<Command, CodeAction>> codeActions =  params.getContext().getDiagnostics()
-            .stream()
-            .map(documentAssessor::retrieveQuickFixes)
-            .flatMap(list->list.stream())
-            .map(codeAction->Either.<Command, CodeAction>forRight(codeAction))
-            .collect(toList());
-
-           VersionedTextDocumentIdentifier textDocument = new VersionedTextDocumentIdentifier(
-            params.getTextDocument().getUri(),
-            null
-        );
-
-        codeActions.stream()
-            .map(either->either.getRight())
-            .map(CodeAction::getEdit)
-            .map(edit->edit.getDocumentChanges())
-            .flatMap(list->list.stream())
-            .map(either->either.getLeft())
-            .forEach(textDocumentEdit->textDocumentEdit.setTextDocument(textDocument));
-
-        return codeActions;
     }
+
+
+
 
 
     @Override
@@ -142,20 +125,15 @@ public class KukumoTextDocumentService implements TextDocumentService {
     }
 
 
-    private void sendDocumentAdditionalInfo(String uri) {
-        sendDiagnostics(uri);
-    }
 
-
-    private void sendDiagnostics(String uri) {
-        GherkinDocumentAssessor documentAssessor = documentAssessors.get(uri);
-        if (documentAssessor != null) {
-            List<Diagnostic> diagnostics = documentAssessor.collectDiagnostics();
-            PublishDiagnosticsParams publishDiagnostics = new PublishDiagnosticsParams(uri, diagnostics);
-            LoggerUtil.logEntry("textDocument.publishDiagnostics", publishDiagnostics);
-            server.client.publishDiagnostics(publishDiagnostics);
-        }
-    }
+    private void sendDiagnostics(Stream<DocumentDiagnostics> allDiagnostics) {
+    	allDiagnostics.forEach(document->{
+    		var uri = document.uri();
+			var publishDiagnostics = new PublishDiagnosticsParams(uri, document.diagnostics());
+			LoggerUtil.logEntry("textDocument.publishDiagnostics", publishDiagnostics);
+			server.client.publishDiagnostics(publishDiagnostics);
+    	});
+}
 
 
     private TextRange textRange(Range range) {

@@ -303,10 +303,14 @@ public class DefaultBackendFactory implements BackendFactory {
         Object stepProvider,
         KukumoDataTypeRegistry typeRegistry
     ) {
-        for (Method method : stepProvider.getClass().getMethods()) {
+        String info = (stepProvider instanceof Contributor) ?
+    		((Contributor)stepProvider).info() :
+			stepProvider.getClass().getCanonicalName();
+
+    	for (Method method : stepProvider.getClass().getMethods()) {
             if (method.isAnnotationPresent(Step.class)) {
                 try {
-                    RunnableStep step = createRunnableStep(stepProvider, method, typeRegistry);
+                    RunnableStep step = createRunnableStep(stepProvider, method, typeRegistry, info);
                     output.add(step);
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace(
@@ -327,7 +331,8 @@ public class DefaultBackendFactory implements BackendFactory {
     protected RunnableStep createRunnableStep(
         Object runnableObject,
         Method runnableMethod,
-        KukumoDataTypeRegistry typeRegistry
+        KukumoDataTypeRegistry typeRegistry,
+        String stepProvider
     ) {
         Class<?> stepContributorClass = runnableObject.getClass();
         I18nResource stepDefinitionFile = stepContributorClass.getAnnotation(I18nResource.class);
@@ -361,7 +366,8 @@ public class DefaultBackendFactory implements BackendFactory {
             stepDefinitionFile.value(),
             stepDefinition.value(),
             new BackendArguments(runnableObject.getClass(), runnableMethod, typeRegistry),
-            (args -> runnableMethod.invoke(runnableObject, args))
+            (args -> runnableMethod.invoke(runnableObject, args)),
+            stepProvider
         );
     }
 

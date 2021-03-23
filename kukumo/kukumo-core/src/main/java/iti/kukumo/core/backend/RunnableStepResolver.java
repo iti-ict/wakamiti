@@ -85,5 +85,12 @@ public class RunnableStepResolver {
 
 
 
+    Optional<RunnableStep> obtainRunnableStepByDefinition(String stepDefinition, Locale stepLocale) {
+    	return runnableSteps.stream()
+	        .filter(runnableStep -> stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))
+	        .findAny();
+    }
+
+
 
 }

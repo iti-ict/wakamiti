@@ -11,5 +11,6 @@ module kukumo.lsp {
     requires transitive gherkin.parser;
 	requires org.apache.logging.log4j.core;
 	requires org.apache.logging.log4j;
+	requires org.yaml.snakeyaml;
 
 }

@@ -26,18 +26,21 @@ public class RunnableStep {
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
     private final ResourceLoader resourceLoader = Kukumo.resourceLoader();
+    private final String stepProvider;
 
 
     public RunnableStep(
-                    String definitionFile,
-                    String definitionKey,
-                    BackendArguments arguments,
-                    ThrowableRunnable stepExecutor
+        String definitionFile,
+        String definitionKey,
+        BackendArguments arguments,
+        ThrowableRunnable stepExecutor,
+        String stepProvider
     ) {
         this.definitionFile = definitionFile;
         this.definitionKey = definitionKey;
         this.arguments = arguments;
         this.executor = stepExecutor;
+        this.stepProvider = stepProvider;
     }
 
 
@@ -123,4 +126,9 @@ public class RunnableStep {
     public String getDefinitionKey() {
         return definitionKey;
     }
+
+
+	public String getProvider() {
+		return stepProvider;
+	}
 }

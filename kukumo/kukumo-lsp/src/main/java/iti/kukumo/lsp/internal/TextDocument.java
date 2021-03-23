@@ -1,5 +1,8 @@
 package iti.kukumo.lsp.internal;
 
+import java.util.*;
+import java.util.regex.*;
+
 /**
  * Store a text document allowing the manipulation of the text
  * using text ranges.
@@ -64,8 +67,8 @@ public class TextDocument {
             endOfLines.length;
     }
 
-   
-    
+
+
     public String[] extractLines() {
         String[] lines = new String[numberOfLines()];
         for (int i=0; i<lines.length; i++) {
@@ -74,7 +77,39 @@ public class TextDocument {
         return lines;
     }
 
-    
+
+    public List<TextSegment> extractSegments(Pattern pattern) {
+    	return extractSegments(pattern, 0);
+    }
+
+
+    public List<TextSegment> extractSegments(Pattern pattern, int regexGroup) {
+    	List<TextSegment> segments = new ArrayList<>();
+    	for (int lineNumber = 0; lineNumber < numberOfLines(); lineNumber++) {
+    		segments.addAll(extractSegments(lineNumber, pattern, regexGroup));
+    	}
+    	return segments;
+    }
+
+
+    public List<TextSegment> extractSegments(int lineNumber, Pattern pattern) {
+    	return extractSegments(lineNumber, pattern, 0);
+    }
+
+
+    public List<TextSegment> extractSegments(int lineNumber, Pattern pattern, int regexGroup) {
+    	List<TextSegment> segments = new ArrayList<>();
+    	String line = extractLine(lineNumber);
+    	Matcher matcher = pattern.matcher(line);
+    	while (matcher.find()) {
+    		var content = matcher.group(regexGroup);
+    		var range = TextRange.of(lineNumber, matcher.start(), lineNumber, matcher.end());
+    		segments.add(range.withContent(content));
+    	}
+    	return segments;
+    }
+
+
     private int start(int line) {
         if (line > endOfLines.length) {
             return rawDocument.length();

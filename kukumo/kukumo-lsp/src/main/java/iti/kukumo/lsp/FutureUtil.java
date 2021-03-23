@@ -1,7 +1,7 @@
 package iti.kukumo.lsp;
 
 import java.util.concurrent.*;
-import java.util.function.Function;
+import java.util.function.*;
 
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
 import org.slf4j.*;
@@ -79,4 +79,14 @@ public final class FutureUtil {
                 .thenApply(response -> LoggerUtil.logEntry(event, response));
 
     }
+
+
+    static <T,U>  CompletableFuture<U> processEvent(String event, T params, Supplier<U> method) {
+        return CompletableFuture
+                .completedFuture(LoggerUtil.logEntry(event, params))
+                .thenApply(x -> method.get())
+                .thenApply(response -> LoggerUtil.logEntry(event, response));
+
+    }
+
 }

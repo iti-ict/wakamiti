@@ -17,12 +17,14 @@ public interface Hinter {
 
     List<String> getAvailableProperties();
 
-    boolean isValidStep(String step);
+    boolean isValidStep(String stepLiteral);
 
     List<String> getHintsForInvalidStep(
-        String invalidStep,
+        String invalidStepLiteral,
         int numberOfHints,
         boolean includeVariations
     );
+
+	String getStepProviderByDefinition(String stepDefinition);
 
 }

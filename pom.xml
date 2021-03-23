@@ -314,6 +314,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- copy dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- maven site -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

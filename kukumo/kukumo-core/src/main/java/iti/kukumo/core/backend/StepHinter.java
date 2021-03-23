@@ -75,6 +75,12 @@ public class StepHinter implements Hinter {
 
 
     @Override
+    public String getStepProviderByDefinition(String step) {
+    	return getStepProviderByDefinition(step, defaultTextLocale);
+    }
+
+
+    @Override
     public List<String> getHintsForInvalidStep(
         String invalidStep,
         int numberOfHints,
@@ -91,13 +97,22 @@ public class StepHinter implements Hinter {
     }
 
 
-    public boolean isValidStep(String step, Locale textLocale, Locale dataLocale) {
+    public boolean isValidStep(String stepLiteral, Locale textLocale, Locale dataLocale) {
         try {
-            return stepResolver.locateRunnableStep(step, textLocale, dataLocale, this) != null;
+            return stepResolver.locateRunnableStep(stepLiteral, textLocale, dataLocale, this) != null;
         } catch (UndefinedStepException e) {
             return false;
         }
     }
+
+
+    public String getStepProviderByDefinition(String step, Locale textLocale) {
+        return stepResolver
+        	.obtainRunnableStepByDefinition(step, textLocale)
+        	.map(RunnableStep::getProvider)
+        	.orElse("");
+    }
+
 
 
     public List<String> getHintsForInvalidStep(

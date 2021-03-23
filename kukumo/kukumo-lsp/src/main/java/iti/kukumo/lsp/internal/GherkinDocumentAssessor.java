@@ -1,19 +1,15 @@
 package iti.kukumo.lsp.internal;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.StringReader;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.*;
+import java.util.stream.Stream;
 
 import org.eclipse.lsp4j.*;
-import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.slf4j.*;
 
 import iti.commons.configurer.Configuration;
 import iti.commons.gherkin.*;
-import iti.commons.gherkin.ParserException.CompositeParserException;
 import iti.kukumo.api.*;
 import iti.kukumo.util.Pair;
 
@@ -25,45 +21,69 @@ public class GherkinDocumentAssessor {
     private static final GherkinParser DEFAULT_PARSER = new GherkinParser();
     private static final Kukumo kukumo = Kukumo.instance();
 
-
+    private final String uri;
     private final GherkinParser parser;
     private final Function<Configuration, Hinter> hinterProvider;
-    private final Map<Range,List<CodeAction>> undefinedStepQuickFixes = new HashMap<>();
-
-    private Configuration globalConfiguration;
-    private Configuration documentConfiguration;
-    private Configuration hinterConfiguration;
-    private Hinter hinter;
-    private int maxSuggestions = 20;
 
 
-    private GherkinDocumentMap documentMap;
-    private iti.commons.gherkin.GherkinDocument parsedDocument;
-    private Exception parsingError;
+    Configuration globalConfiguration;
+    Configuration workspaceConfiguration;
+    Configuration documentConfiguration;
+    Configuration effectiveConfiguration;
+    int maxSuggestions = 20;
+    Hinter hinter;
+    GherkinDocumentMap documentMap;
+    DocumentAdditionalInfo additionalInfo;
+    iti.commons.gherkin.GherkinDocument parsedDocument;
+    Exception parsingError;
+    DiagnosticHelper diagnosticHelper;
+    CompletionHelper completionHelper;
 
 
     public GherkinDocumentAssessor(String document) {
+        this("", document);
+    }
+
+
+    public GherkinDocumentAssessor(String uri, String document) {
+        this(uri, document, Configuration.empty());
+    }
+
+
+    public GherkinDocumentAssessor(String uri, String document, Configuration workspaceConfiguration) {
         this(
+    		uri,
             DEFAULT_PARSER,
             kukumo::createHinterFor,
             Kukumo.defaultConfiguration(),
+            workspaceConfiguration,
             document
         );
     }
 
 
     public GherkinDocumentAssessor(
+    	String uri,
         GherkinParser parser,
         Function<Configuration, Hinter> hinterProvider,
         Configuration globalConfiguration,
+        Configuration workspaceConfiguration,
         String document
     ) {
+    	this.uri = uri;
         this.parser = parser;
         this.hinterProvider = hinterProvider;
         this.globalConfiguration = globalConfiguration;
+        this.workspaceConfiguration = workspaceConfiguration;
+        this.diagnosticHelper = new DiagnosticHelper(this);
+        this.completionHelper = new CompletionHelper(this, LOGGER);
         resetDocument(document);
     }
 
+
+    public String uri() {
+    	return this.uri;
+    }
 
 
     public GherkinDocumentAssessor updateGlobalConfiguration(Configuration configuration) {
@@ -77,12 +97,15 @@ public class GherkinDocumentAssessor {
     }
 
 
-
+	public GherkinDocumentAssessor setWorkspaceConfiguration(Configuration workspaceConfiguration) {
+		this.workspaceConfiguration = workspaceConfiguration;
+		resetDocument(documentMap.rawContent());
+		return this;
+	}
 
 
 
     public synchronized GherkinDocumentAssessor resetDocument(String document) {
-    	this.documentMap = new GherkinDocumentMap(document);
     	if (!document.isBlank()) {
             try {
                 this.documentConfiguration = extractDocumentConfiguration(document);
@@ -97,7 +120,26 @@ public class GherkinDocumentAssessor {
             this.parsingError = null;
             this.parsedDocument = null;
         }
-        this.hinter = createHinterFor(documentMap, documentConfiguration);
+
+    	this.effectiveConfiguration = globalConfiguration
+			.append(workspaceConfiguration)
+			.append(documentConfiguration);
+
+    	this.documentMap = new GherkinDocumentMap(document);
+
+    	/*
+         * the Gherkin parser do not include the `# language: xx` line as a comment,
+         * we have to include it manually in the configuration:
+         */
+       	effectiveConfiguration = effectiveConfiguration.appendFromPairs(
+			KukumoConfiguration.LANGUAGE,
+			documentMap.locale().toString()
+		);
+
+        this.hinter = hinterProvider.apply(effectiveConfiguration);
+        this.additionalInfo = new DocumentAdditionalInfo(effectiveConfiguration, parsedDocument);
+
+
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("{}{}{}",DOTS,documentMap.document().rawText(),DOTS);
@@ -106,24 +148,6 @@ public class GherkinDocumentAssessor {
     }
 
 
-
-    private Hinter createHinterFor(
-		GherkinDocumentMap documentMap,
-		Configuration documentConfiguration
-	) {
-    	hinterConfiguration = globalConfiguration.append(documentConfiguration);
-        /*
-         * the Gherkin parser do not include the `# language: xx` line as a comment,
-         * we have to include it manually in the configuration:
-         */
-        if (!hinterConfiguration.hasProperty(KukumoConfiguration.LANGUAGE)) {
-        	hinterConfiguration = hinterConfiguration.appendFromPairs(
-    			KukumoConfiguration.LANGUAGE,
-    			documentMap.locale().toString()
-			);
-        }
-        return hinterProvider.apply(hinterConfiguration);
-    }
 
 
     public synchronized GherkinDocumentAssessor updateDocument(TextRange range, String delta) {
@@ -173,261 +197,18 @@ public class GherkinDocumentAssessor {
 
 
     public List<CompletionItem> collectCompletions(int lineNumber, int rowPosition) {
-        return collectCompletions(
-            lineNumber,
-            documentMap.document().extractRange(TextRange.of(lineNumber,0,lineNumber,rowPosition))
-        );
+        return completionHelper.collectCompletions(lineNumber, rowPosition);
     }
 
 
-
-    private List<CompletionItem> collectCompletions(int lineNumber, String lineContent) {
-        String strippedLine = lineContent.stripLeading();
-        if (strippedLine.startsWith("#") && !strippedLine.contains(":")) {
-            return completeConfigurationProperties(lineContent);
-        } else if (documentMap.isStep(lineNumber,strippedLine)) {
-            return completeSteps(strippedLine);
-        } else {
-            return completeKeywords(lineNumber, strippedLine);
-        }
+    public DocumentDiagnostics collectDiagnostics() {
+    	return new DocumentDiagnostics(uri, diagnosticHelper.collectDiagnostics());
     }
-
-
-
-    private List<CompletionItem> completeConfigurationProperties(String lineContent) {
-        String line = lineContent.strip().replace("#","").strip();
-        return hinter.getAvailableProperties()
-            .stream()
-            .filter(property -> property.startsWith(line))
-            .map(this::completionProperty)
-            .collect(toList());
-    }
-
-
-    private CompletionItem completionProperty(String property) {
-        String suggestion = property+": <value>";
-        var item = new CompletionItem(suggestion);
-        item.setKind(CompletionItemKind.Property);
-        return item;
-    }
-
-
-    private List<CompletionItem> completeSteps(String lineContent) {
-        for (String keyword : documentMap.dialect().getStepKeywords()) {
-            if (lineContent.startsWith(keyword)) {
-                lineContent = lineContent.substring(keyword.length());
-                break;
-            }
-        }
-        var suggestions = hinter.getExpandedAvailableSteps();
-        if (suggestions.isEmpty()) {
-            LOGGER.debug(
-                "no steps available! used configuration for hinter is:\n{}",
-                hinterConfiguration
-            );
-        }
-        if (suggestions.size() > maxSuggestions) {
-            suggestions = hinter.getCompactAvailableSteps();
-        }
-        String suggestionPrefix = lineContent;
-        return suggestions.stream()
-            .filter(suggestion -> suggestion.startsWith(suggestionPrefix))
-            .map(this::completionStep)
-            .collect(toList());
-    }
-
-
-    private CompletionItem completionStep(String step) {
-        var item = new CompletionItem(step);
-        item.setKind(CompletionItemKind.Interface);
-        String insertText = step;
-
-        int snippetArgumentCount = 0;
-        var stepSnippetPattern = Pattern.compile("\\*|\\{[^\\}]*\\}");
-        Matcher m = stepSnippetPattern.matcher(step);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            snippetArgumentCount ++;
-            String capture = insertText.substring(m.start(), m.end());
-            capture = capture.replace("}", "\\}");
-            capture = "${"+snippetArgumentCount+":"+capture+"}";
-            m.appendReplacement(sb, Matcher.quoteReplacement(capture));
-        }
-        m.appendTail(sb);
-
-        if (snippetArgumentCount > 0) {
-            item.setInsertText(sb.toString());
-            item.setInsertTextFormat(InsertTextFormat.Snippet);
-        }
-
-        item.setDocumentation(step);
-        return item;
-    }
-
-
-    private CompletionItem completionItem(String suggestion, CompletionItemKind kind) {
-        var item = new CompletionItem(suggestion);
-        item.setKind(kind);
-        return item;
-    }
-
-
-    private List<CompletionItem> completeKeywords(int lineNumber, String strippedLine) {
-        return documentMap.followingKeywords(lineNumber-1).stream()
-            .filter(k -> k.startsWith(strippedLine))
-            .map(keyword -> completionItem(keyword,CompletionItemKind.Keyword))
-            .collect(toList());
-    }
-
-
-    public List<Diagnostic> collectDiagnostics() {
-        List<Diagnostic> diagnostics = new ArrayList<>();
-        if (parsingError instanceof ParserException) {
-            collectDiagnosticsFromParserException((ParserException)parsingError, diagnostics);
-        } else if (parsingError != null){
-            Range errorRange = new Range(
-                new Position(0,0),
-                new Position(documentMap.document().numberOfLines(),0)
-            );
-            diagnostics.add(diagnosticError(errorRange,parsingError.toString()));
-        }
-        collectDiagnosticsFromUndefinedSteps(diagnostics);
-        if (parsedDocument != null) {
-        	var numScenarios = parsedDocument.getFeature().getChildren().stream()
-    			.filter(ScenarioDefinition.class::isInstance)
-    			.count();
-        	if (numScenarios == 0L) {
-        		diagnostics.add(diagnosticWarn(emptyRange(), "No scenarios defined"));
-        	}
-        }
-        return diagnostics;
-    }
-
-
-
-
-
-
-	private void collectDiagnosticsFromUndefinedSteps(List<Diagnostic> diagnostics) {
-        clearUndefinedStepQuickFixes();
-        String [] lines = documentMap.document().extractLines();
-        for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-            String line = lines[lineNumber];
-            String stripLine = line.strip();
-            if (!documentMap.isStep(lineNumber, stripLine)) {
-                continue;
-            }
-            var keywordRange = documentMap.detectStepKeyword(lineNumber, line);
-            var step = documentMap.removeKeyword(lineNumber, stripLine);
-            if (!hinter.isValidStep(step)) {
-                var errorRange = new Range(
-                    new Position(lineNumber, keywordRange.endLinePosition()),
-                    new Position(lineNumber, line.length())
-                );
-                var stepDiagnostics = diagnosticError(errorRange, "Undefined step");
-                diagnostics.add(stepDiagnostics);
-                registerUndefinedStepQuickFixes(step, stepDiagnostics, errorRange);
-            }
-        }
-    }
-
-
-    private void clearUndefinedStepQuickFixes() {
-        undefinedStepQuickFixes.clear();
-    }
-
-
-    private void registerUndefinedStepQuickFixes(String step, Diagnostic diagnostic, Range range) {
-        var codeActions = undefinedStepQuickFixes
-            .computeIfAbsent(range, x->new ArrayList<>());
-        for (String hint : hinter.getHintsForInvalidStep(step, maxSuggestions, true)) {
-            TextEdit textEdit = new TextEdit(range, hint);
-            TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
-            textDocumentEdit.setEdits(List.of(textEdit));
-            WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
-            CodeAction codeAction = new CodeAction("Replace step with: "+hint);
-            codeAction.setIsPreferred(Boolean.TRUE);
-            codeAction.setDiagnostics(List.of(diagnostic));
-            codeAction.setEdit(edit);
-            codeActions.add(codeAction);
-        }
-    }
-
 
 
     public List<CodeAction> retrieveQuickFixes(Diagnostic errorDiagnostic) {
-        return undefinedStepQuickFixes.getOrDefault(errorDiagnostic.getRange(), List.of());
+        return diagnosticHelper.retrieveQuickFixes(errorDiagnostic);
     }
-
-
-
-    private Diagnostic diagnosticError(Range range, String error) {
-        return new Diagnostic(
-            range,
-            error,
-            DiagnosticSeverity.Error,
-            ""
-        );
-    }
-
-
-    private Diagnostic diagnosticWarn(Range range, String warning) {
-        return new Diagnostic(
-            range,
-            warning,
-            DiagnosticSeverity.Warning,
-            ""
-        );
-    }
-
-
-    private Diagnostic diagnosticHint(Range range, String hint) {
-        return new Diagnostic(
-            range,
-            hint,
-            DiagnosticSeverity.Hint,
-            ""
-        );
-    }
-
-    private void collectDiagnosticsFromParserException(
-        ParserException parsingError,
-        List<Diagnostic> results
-    ) {
-        if (parsingError instanceof CompositeParserException) {
-            for (ParserException e : ((CompositeParserException)parsingError).getErrors()) {
-                collectDiagnosticsFromParserException(e,results);
-            }
-        } else {
-            int lineNumber = parsingError.getLocation().getLine();
-            int column = parsingError.getLocation().getColumn();
-            Range range = (column == 0 ?
-                emptyRange(lineNumber, column) :
-                wholeLineRange(lineNumber-1, column-1)
-            );
-            results.add(diagnosticError(range,parsingError.getMessage()));
-        }
-    }
-
-
-
-
-    private Range wholeLineRange(int lineNumber, int column) {
-        return new Range(
-            new Position(lineNumber,column),
-            new Position(lineNumber,documentMap.document().extractLine(lineNumber).length())
-        );
-    }
-
-
-
-    private Range emptyRange(int lineNumber, int column) {
-        return new Range(
-            new Position(lineNumber,column),
-            new Position(lineNumber,column)
-        );
-    }
-
 
 
     public String content() {
@@ -450,8 +231,27 @@ public class GherkinDocumentAssessor {
     }
 
 
-    private Range emptyRange() {
-		return new Range(new Position(0, 0), new Position(0, 0));
-	}
+    boolean isDefinition() {
+    	return this.additionalInfo.hasRedefinitionDefinitionTag;
+    }
+
+
+    boolean isImplementation() {
+    	return this.additionalInfo.hasRedefinitionImplementationTag;
+    }
+
+
+    Stream<DocumentSegment> retriveIdTagSegment() {
+    	return documentMap.document()
+			.extractSegments(additionalInfo.idTagPattern, 1)
+			.stream()
+			.map(segment -> new DocumentSegment(uri, segment.range().toLspRange(), segment.content()));
+    }
+
+
+
+
+
+
 
 }

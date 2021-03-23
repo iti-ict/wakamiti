@@ -101,7 +101,7 @@ public class TestCompletion {
         );
     	completion.setMaxSuggestions(2);
     	var completions = asStringList(completion.collectCompletions(3, 14));
-        assertThat(completions).containsExactly(
+        assertThat(completions).contains(
             "the set of real numbers ℝ",
             "this step has an integer that {integer-assertion}"
         );

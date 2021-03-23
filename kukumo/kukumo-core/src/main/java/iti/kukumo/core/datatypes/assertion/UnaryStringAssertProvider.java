@@ -53,13 +53,13 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
         } else if (EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
             matchers.add(matcher(Matchers.emptyString(), String.class));
-            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
             matcher = Matchers.anyOf(matchers);
 
         } else if (NULL_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
             matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
-            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
             matcher = Matchers.anyOf(matchers);
 
         } else if (NOT_NULL.equals(expression)) {
@@ -68,14 +68,14 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
         } else if (NOT_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
             matchers.add(matcher(Matchers.emptyString(), String.class));
-            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
             matcher = Matchers.anyOf(matchers);
             matcher = Matchers.not(matcher);
 
         } else if (NOT_NULL_EMPTY.equals(expression)) {
             List<Matcher<? super Object>> matchers = new ArrayList<>();
             matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
-            matchers.add(matcher(Matchers.empty(), Collection.class));
+            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
             matcher = Matchers.anyOf(matchers);
             matcher = Matchers.not(matcher);
         }
@@ -83,12 +83,23 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
     }
 
 
-    @SuppressWarnings("unchecked")
+
+
+	@SuppressWarnings("unchecked")
     private <T> Matcher<? super Object> matcher(
         Matcher<? super T> matcher,
         Class<? super T> expectedType
     ) {
         return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
     }
+
+
+    @SuppressWarnings("unchecked")
+	private Matcher<? super Object> matcherCollection(
+    	Matcher<? super Collection<? extends Object>> matcher,
+		Class<? super Collection<?>> expectedType
+	) {
+    	return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
+	}
 
 }

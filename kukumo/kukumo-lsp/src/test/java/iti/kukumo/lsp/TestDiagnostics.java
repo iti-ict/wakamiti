@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.*;
 import org.junit.Test;
 
 import iti.kukumo.lsp.internal.*;
@@ -19,9 +19,10 @@ public class TestDiagnostics {
     		"# language: en\n"+
     		"# comment\n"+
     		"Feature: This is a feature\n"+
+    		"   @ID-1\n"+
     		"   Scenario: This is my scenario\n"
 		);
-    	var diagnostics = asStringList(completion.collectDiagnostics());
+    	var diagnostics = torrorsAsStringList(completion.collectDiagnostics());
         assertThat(diagnostics).isEmpty();
     }
 
@@ -32,34 +33,35 @@ public class TestDiagnostics {
     		"# language: es\n"+
     		"# comment\n"+
     		"Feature: This is a feature\n"+
+    		"   @ID-1\n"+
     		"   Scenario: This is my scenario\n"
 		);
-    	var diagnostics = asStringList(completion.collectDiagnostics());
+    	var diagnostics = torrorsAsStringList(completion.collectDiagnostics());
         assertThat(diagnostics).containsExactly(
         	"(3:1): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Feature: This is a feature'",
-        	"(4:4): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Scenario: This is my scenario'",
-        	"(5:0): unexpected end of file, expected: #TagLine, #FeatureLine, #Comment, #Empty"
+        	"(5:4): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Scenario: This is my scenario'",
+        	"(6:0): unexpected end of file, expected: #TagLine, #FeatureLine, #Comment, #Empty"
 		);
     }
 
 
     @Test
-    public void documentWithWrongLanguageHasNoDiagnosticsAfterFixingLanguage() {
+    public void documentWithWrongLanguageHasNoDiagnosticsErrorAfterFixingLanguage() {
     	GherkinDocumentAssessor completion = new GherkinDocumentAssessor(
     		"# language: es\n"+
     		"# comment\n"+
     		"Feature: This is a feature\n"+
     		"   Scenario: This is my scenario\n"
 		);
-    	var diagnostics = asStringList(completion.collectDiagnostics());
+    	var diagnostics = torrorsAsStringList(completion.collectDiagnostics());
     	assertThat(diagnostics).containsExactly(
         	"(3:1): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Feature: This is a feature'",
         	"(4:4): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Scenario: This is my scenario'",
         	"(5:0): unexpected end of file, expected: #TagLine, #FeatureLine, #Comment, #Empty"
 		);
     	completion.updateDocument(TextRange.of(0, 12, 0, 14),"en");
-    	diagnostics = asStringList(completion.collectDiagnostics());
-    	assertThat(diagnostics).isEmpty();
+    	diagnostics = torrorsAsStringList(completion.collectDiagnostics());
+    	assertThat(diagnostics).containsExactly("This scenario should have an ID tag");
     }
 
 
@@ -78,14 +80,15 @@ public class TestDiagnostics {
     		"Feature: This is a feature\n"+
     		"   Scenario: This is my scenario\n"
 		);
-    	var diagnostics = asStringList(completion.collectDiagnostics());
+    	var diagnostics = torrorsAsStringList(completion.collectDiagnostics());
     	assertThat(diagnostics).containsExactly(
         	"(3:1): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Feature: This is a feature'",
         	"(4:4): expected: #TagLine, #FeatureLine, #Comment, #Empty, got 'Scenario: This is my scenario'",
         	"(5:0): unexpected end of file, expected: #TagLine, #FeatureLine, #Comment, #Empty"
 		);
     	completion.updateDocument(TextRange.of(2, 0, 2, 7),"Característica");
-    	diagnostics = asStringList(completion.collectDiagnostics());
+    	System.out.println(completion.peekContent());
+    	diagnostics = torrorsAsStringList(completion.collectDiagnostics());
     	assertThat(diagnostics).containsExactly(
         	"No scenarios defined"
 		);
@@ -93,8 +96,9 @@ public class TestDiagnostics {
 
 
 
-	private List<String> asStringList(List<Diagnostic> diagnostics) {
-		return diagnostics.stream().map(Diagnostic::getMessage).collect(Collectors.toList());
+	private List<String> torrorsAsStringList(DocumentDiagnostics diagnostics) {
+		return diagnostics.diagnostics().stream()
+			.map(Diagnostic::getMessage).collect(Collectors.toList());
 	}
 
 

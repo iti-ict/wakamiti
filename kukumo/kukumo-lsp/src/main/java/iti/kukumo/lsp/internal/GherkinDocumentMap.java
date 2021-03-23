@@ -7,6 +7,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,11 +24,13 @@ public class GherkinDocumentMap {
         KukumoConfiguration.MODULES
     );
     private static final Pattern propertyPattern = Pattern.compile("\\s*#*\\s*([^\\s]+)\\s*:\\s*([^\\s]+)\\s*");
+    private static final Pattern tagPattern = Pattern.compile("(\\s*@\\w+\\s*)*");
     private static final GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
 
     private Locale locale;
     private GherkinDialect dialect;
     private TextDocument document;
+
 
 
     public GherkinDocumentMap(String document) {
@@ -72,7 +75,8 @@ public class GherkinDocumentMap {
         }
         boolean requireParsing = false;
         int lineNumber = range.startLine();
-        String stripLineContent = document.extractLine(lineNumber).strip();
+        String rawLine = document.extractLine(lineNumber);
+        String stripLineContent = rawLine.strip();
         boolean isProperty = stripLineContent.startsWith("#");
         if (isProperty) {
             var matcher = propertyPattern.matcher(stripLineContent);
@@ -80,37 +84,67 @@ public class GherkinDocumentMap {
                 requireParsing = true;
             }
         } else {
-            TextRange keywordRange = detectKeyword(lineNumber,stripLineContent,GherkinDialect::getKeywords);
-            if (!keywordRange.isEmpty() && range.intersect(keywordRange)) {
-                requireParsing = true;
-            }
+        	boolean isTag = tagPattern.matcher(stripLineContent).matches();
+        	if (isTag) {
+        		requireParsing = true;
+        	} else {
+	            TextRange keywordRange = detectKeyword(
+            		lineNumber,
+            		stripLineContent,
+            		GherkinDialect::getKeywords
+        		);
+	            if (!keywordRange.isEmpty() && range.intersect(keywordRange)) {
+	                requireParsing = true;
+	            }
+        	}
         }
         return requireParsing;
     }
 
     public TextRange detectStepKeyword(int lineNumber, String stripLineContent) {
-        return detectKeyword(lineNumber, stripLineContent, GherkinDialect::getStepKeywords);
+        return detectKeyword(
+    		lineNumber,
+    		stripLineContent,
+    		GherkinDialect::getStepKeywords
+		);
     }
 
 
-    public TextRange detectKeyword(
+	public TextRange detectScenarioKeyword(int lineNumber, String stripLineContent) {
+		return detectKeyword(
+			lineNumber,
+			stripLineContent,
+			GherkinDialect::getScenarioKeywords,
+			GherkinDialect::getScenarioOutlineKeywords
+		);
+	}
+
+
+    @SafeVarargs
+	public final TextRange detectKeyword(
         int lineNumber,
         String stripLineContent,
-        Function<GherkinDialect,List<String>> keywords
+        Function<GherkinDialect,List<String>>... keywordSets
     ) {
         TextRange keywordRange = TextRange.of(0,0,0,0);
-        for (String keyword : keywords.apply(dialect)) {
-            if (stripLineContent.startsWith(keyword)) {
-                keywordRange = TextRange.of(lineNumber,0,lineNumber,keyword.length());
-                break;
-            }
+        for (var keywordSet : keywordSets) {
+	        for (String keyword : keywordSet.apply(dialect)) {
+	            if (stripLineContent.startsWith(keyword)) {
+	                keywordRange = TextRange.of(lineNumber,0,lineNumber,keyword.length());
+	                break;
+	            }
+	        }
         }
         return keywordRange;
     }
 
 
     public boolean isStep(int lineNumber, String stripLineContent) {
-        TextRange keywordRange = detectKeyword(lineNumber,stripLineContent,GherkinDialect::getStepKeywords);
+        TextRange keywordRange = detectKeyword(
+    		lineNumber,
+    		stripLineContent,
+    		GherkinDialect::getStepKeywords
+		);
         if (!keywordRange.isEmpty()) {
             String lastKeyword = lastKeyword(lineNumber-1);
             return dialect.getFeatureContentKeywords().contains(lastKeyword);
@@ -122,7 +156,11 @@ public class GherkinDocumentMap {
 
 
     public String removeKeyword(int lineNumber, String stripLineContent) {
-        var keywordRange = detectKeyword(lineNumber, stripLineContent, GherkinDialect::getKeywords);
+        var keywordRange = detectKeyword(
+        		lineNumber,
+        		stripLineContent,
+        		GherkinDialect::getKeywords
+		);
         if (keywordRange.isEmpty()) {
             return stripLineContent;
         }
@@ -329,6 +367,22 @@ public class GherkinDocumentMap {
         }
         return Optional.empty();
     }
+
+
+    public List<TextSegment> segmentsInLines(int startLine, int endLine, Pattern pattern, int regexGroup) {
+		List<TextSegment> segments = new ArrayList<>();
+		for (int lineNumber = startLine; lineNumber <= endLine; lineNumber ++) {
+			segments.addAll(document.extractSegments(lineNumber,pattern,regexGroup));
+		}
+		return segments;
+	}
+
+
+	public List<TextSegment> tagsInLines(int startLine, int endLine) {
+		return segmentsInLines(startLine, endLine, Pattern.compile("@(\\w+)"),1);
+	}
+
+
 
 
 }

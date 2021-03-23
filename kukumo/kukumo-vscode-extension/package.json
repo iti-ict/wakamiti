@@ -24,7 +24,8 @@
 	],
 	"activationEvents": [
 		"onLanguage:kukumo-gherkin",
-		"workspaceContains:**/kukumo.yaml"
+		"workspaceContains:**/kukumo.yaml",
+		"onCommand:kukumo.reconnectLanguageServer"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -90,6 +91,13 @@
 				"language": "kukumo-gherkin",
 				"scopeName": "source.kukumo.gherkin",
 				"path": "./syntaxes/kukumo-gherkin.tmLanguage"
+			}
+		],
+		"commands": [
+			{ 
+				"command": "kukumo.reconnectLanguageServer", 
+				"title": "(Re)Connect to Kukumo Language Server", 
+				"icon": "$(sync)" 
 			}
 		]
 	},
