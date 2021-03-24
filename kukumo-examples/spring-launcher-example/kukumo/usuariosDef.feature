@@ -15,8 +15,9 @@ Característica: Operaciones con usuarios
       Cuando se hace algo sobre esa cosa
       Entonces pasa algo maravilloso
 
-   
+      
+   @ID-It2dj
    Escenario: Se hace alguna otra cosa
       Dado que hay una cosa
       Cuando se hace algo sobre esa cosa
-      Entonces pasa algo maravilloso      
+      Entonces pasa algo maravilloso

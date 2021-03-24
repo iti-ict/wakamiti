@@ -3,7 +3,7 @@ package iti.kukumo.lsp.internal;
 import static java.util.stream.Collectors.toList;
 
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import org.eclipse.lsp4j.*;
 import org.yaml.snakeyaml.Yaml;
@@ -35,18 +35,31 @@ public class GherkinWorkspace {
 	public Stream<DocumentDiagnostics> addConfiguration(String uri, String content) {
 		this.configurationUri = uri;
 		this.configurationDocument = new TextDocument(content);
-		return reloadConfiguration();
+		return computeWorkspaceDiagnostics();
 	}
+
+
+	public void addGherkinWithoutDiagnostics(String uri, String content) {
+		documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,content));
+	}
+
+
+	public void addConfigurationWithoutDiagnostics(String uri, String content) {
+		this.configurationUri = uri;
+		this.configurationDocument = new TextDocument(content);
+	}
+
+
 
 
 	public Stream<DocumentDiagnostics> updateConfiguration(TextRange range, String text) {
 		this.configurationDocument.replaceRange(range, text);
-		return reloadConfiguration();
+		return computeWorkspaceDiagnostics();
 	}
 
 
 
-	private Stream<DocumentDiagnostics> reloadConfiguration() {
+	public Stream<DocumentDiagnostics> computeWorkspaceDiagnostics() {
 		try {
 			var workspaceConfiguration = Configuration.fromMap(
 				yaml.load(configurationDocument.rawText())
@@ -95,17 +108,23 @@ public class GherkinWorkspace {
 
 
 	private Stream<DocumentDiagnostics> computeAllDiagnostics() {
-		return Stream.concat(
-			documentAssessors.values().stream().map(GherkinDocumentAssessor::collectDiagnostics),
-			computeInterDocumentDiagnostics()
-		);
+		var documentDiagnostics = documentAssessors.values().stream()
+			.map(GherkinDocumentAssessor::collectDiagnostics)
+			.collect(toList());
+		return computeInterDocumentDiagnostics(documentDiagnostics);
 	}
 
 
 
-	private Stream<DocumentDiagnostics>  computeInterDocumentDiagnostics() {
+	private Stream<DocumentDiagnostics>  computeInterDocumentDiagnostics(
+		List<DocumentDiagnostics> documentDiagnostics
+	) {
 
 		Map<String,List<Diagnostic>> diagnosticsPerDocument = new HashMap<>();
+		documentDiagnostics.forEach(document->
+			diagnosticsPerDocument.put(document.uri(), document.diagnostics())
+		);
+
 
 		var definitionIds = documentAssessors.values().stream()
 			.filter(GherkinDocumentAssessor::isDefinition)

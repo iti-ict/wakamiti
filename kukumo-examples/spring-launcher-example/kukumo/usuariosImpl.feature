@@ -20,6 +20,8 @@ Característica: Operaciones con usuarios
       Entonces el código de respuesta HTTP es 200
       Y la respuesta es parcialmente:
       ```json
-       { "firstName": "Pepe" }
+      { 
+         "firstName": "Pepe" 
+      }
       ```
       

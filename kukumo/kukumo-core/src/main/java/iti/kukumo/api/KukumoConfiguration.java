@@ -103,7 +103,7 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
             GENERATE_OUTPUT_FILE, "true",
             OUTPUT_FILE_PATH, "kukumo.json",
             REPORT_GENERATION, "true",
-            ID_TAG_PATTERN, "ID-(.*)",
+            ID_TAG_PATTERN, "ID-(\\w*)",
             REDEFINITION_ENABLED, "true",
             REDEFINITION_DEFINITION_TAG, "definition",
             REDEFINITION_IMPLEMENTATION_TAG, "implementation",

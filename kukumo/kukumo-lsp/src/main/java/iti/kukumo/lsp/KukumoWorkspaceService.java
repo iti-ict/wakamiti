@@ -4,12 +4,16 @@ import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import org.eclipse.lsp4j.services.WorkspaceService;
 
+import iti.kukumo.lsp.internal.GherkinWorkspace;
+
 public class KukumoWorkspaceService implements WorkspaceService {
 
     private final KukumoLanguageServer server;
+	private final GherkinWorkspace workspace;
 
-    public KukumoWorkspaceService(KukumoLanguageServer server) {
+    KukumoWorkspaceService(KukumoLanguageServer server, GherkinWorkspace workspace) {
         this.server = server;
+        this.workspace = workspace;
     }
 
     @Override

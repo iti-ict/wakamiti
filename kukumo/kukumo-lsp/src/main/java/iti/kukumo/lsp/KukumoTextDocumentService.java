@@ -19,14 +19,13 @@ public class KukumoTextDocumentService implements TextDocumentService {
 
     private final KukumoLanguageServer server;
     private final int baseIndex;
+    private final GherkinWorkspace workspace;
 
-    private GherkinWorkspace workspace;
 
-
-    public KukumoTextDocumentService(KukumoLanguageServer server, int baseIndex) {
+    KukumoTextDocumentService(KukumoLanguageServer server, GherkinWorkspace workspace, int baseIndex) {
         this.server = server;
         this.baseIndex = baseIndex;
-        this.workspace = new GherkinWorkspace(baseIndex);
+        this.workspace = workspace;
     }
 
 
@@ -91,9 +90,9 @@ public class KukumoTextDocumentService implements TextDocumentService {
         String type = params.getTextDocument().getLanguageId();
         String content = params.getTextDocument().getText();
         if (FILE_TYPE_GHERKIN.equals(type)) {
-            sendDiagnostics(workspace.addGherkin(uri, content) );
+            server.sendDiagnostics(workspace.addGherkin(uri, content) );
         } else if (FILE_TYPE_CONFIGURATION.equals(type)) {
-        	sendDiagnostics(workspace.addConfiguration(uri, content));
+        	server.sendDiagnostics(workspace.addConfiguration(uri, content));
         }
     }
 
@@ -103,7 +102,7 @@ public class KukumoTextDocumentService implements TextDocumentService {
         LoggerUtil.logEntry("textDocument.didChange", params);
         var uri = params.getTextDocument().getUri();
         for (var event : params.getContentChanges()) {
-            sendDiagnostics(
+            server.sendDiagnostics(
         		workspace.update(uri, textRange(event.getRange()), event.getText())
     		);
         }
@@ -126,14 +125,6 @@ public class KukumoTextDocumentService implements TextDocumentService {
 
 
 
-    private void sendDiagnostics(Stream<DocumentDiagnostics> allDiagnostics) {
-    	allDiagnostics.forEach(document->{
-    		var uri = document.uri();
-			var publishDiagnostics = new PublishDiagnosticsParams(uri, document.diagnostics());
-			LoggerUtil.logEntry("textDocument.publishDiagnostics", publishDiagnostics);
-			server.client.publishDiagnostics(publishDiagnostics);
-    	});
-}
 
 
     private TextRange textRange(Range range) {

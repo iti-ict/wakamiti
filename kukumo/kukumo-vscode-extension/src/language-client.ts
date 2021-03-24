@@ -137,6 +137,10 @@ function startJavaProcessLanguageCLiente(context: vscode.ExtensionContext) {
         () => runLanguageServerAsJavaProcess(pluginsPath),
         LANGUAGE_CLIENT_OPTIONS
     );
+    languageClient.handleFailedRequest = ( (type, error, defaultValue)=> {
+        console.log('Failed request',type,error,defaultValue);
+        return defaultValue;
+    });
     launchLanguageClient(languageClient, context);
     
 }
@@ -207,10 +211,11 @@ function tcpServerProvider(context: vscode.ExtensionContext, host: string, port:
 
 
 function notifyConnectionLost(context: vscode.ExtensionContext, error? : Error) {
-    console.log('Connection lost', error);
+    console.log('Connection closed', error);
     statusBar.text = STATUS_BAR_TEXT_OFFLINE;
+    client.stop();
     vscode.window.showWarningMessage(
-        'Connection with language server lost',
+        'Connection with language server closed',
         'Reconnect'
     ).then( action => {
         if (action === 'Reconnect' ) {

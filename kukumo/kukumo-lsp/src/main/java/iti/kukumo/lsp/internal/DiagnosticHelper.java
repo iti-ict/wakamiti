@@ -1,6 +1,7 @@
 package iti.kukumo.lsp.internal;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
@@ -171,16 +172,20 @@ public class DiagnosticHelper {
             codeAction.setIsPreferred(Boolean.TRUE);
             codeAction.setDiagnostics(List.of(diagnostic));
             codeAction.setEdit(edit);
+            codeAction.setKind(CodeActionKind.QuickFix);
             codeActions.add(codeAction);
         }
     }
 
 
     private void registerMissingIdQuickFix(Diagnostic diagnostic) {
-    	var codeActions = quickFixes.computeIfAbsent(diagnostic.getRange(), x->new ArrayList<>());
-        TextEdit textEdit = new TextEdit(
-    		startPositionRange(diagnostic.getRange()),
-    		assessor.additionalInfo.idTagPattern.pattern()+"\n"
+    	Range range = diagnostic.getRange();
+		var codeActions = quickFixes.computeIfAbsent(range, x->new ArrayList<>());
+        int marginLeft = range.getStart().getCharacter();
+        String id = assessor.additionalInfo.idTagGenerator.generate();
+		TextEdit textEdit = new TextEdit(
+    		startPositionRange(range),
+    		id+"\n"+" ".repeat(marginLeft)
 		);
         TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
         textDocumentEdit.setEdits(List.of(textEdit));
@@ -189,6 +194,7 @@ public class DiagnosticHelper {
         codeAction.setIsPreferred(Boolean.TRUE);
         codeAction.setDiagnostics(List.of(diagnostic));
         codeAction.setEdit(edit);
+        codeAction.setKind(CodeActionKind.QuickFix);
         codeActions.add(codeAction);
     }
 

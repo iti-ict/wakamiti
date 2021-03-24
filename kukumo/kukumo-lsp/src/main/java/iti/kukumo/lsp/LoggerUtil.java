@@ -19,13 +19,13 @@ public final class LoggerUtil {
 
 
     public static <T> T logEntry(String logger, T params) {
-        get(logger).debug("{}\n >> REQUEST {}\n{}\n{}\n{}", DASHES, logger, DASHES, params, DASHES);
+        get(logger).debug("\n{}\n >> REQUEST {}\n{}\n{}\n{}", DASHES, logger, DASHES, params, DASHES);
         return params;
     }
 
 
     public static <T> T logExit(String logger, T response) {
-        get(logger).debug("{}\n << RESPONSE {}\n{}\n{}\n", DASHES, response, DASHES, DASHES);
+        get(logger).debug("\n{}\n << RESPONSE {}\n{}\n{}\n", DASHES, response, DASHES, DASHES);
         return response;
     }
 
