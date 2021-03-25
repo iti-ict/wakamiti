@@ -148,7 +148,9 @@ public class TextDocument {
 
 
 
-
+    public TextDocument copy() {
+    	return new TextDocument(rawDocument);
+    }
 
 
 }

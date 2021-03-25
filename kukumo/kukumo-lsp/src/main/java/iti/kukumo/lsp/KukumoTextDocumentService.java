@@ -146,7 +146,7 @@ public class KukumoTextDocumentService implements TextDocumentService {
     public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
     	return FutureUtil.processEvent("textDocument.formatting", params, x-> {
         	var uri = params.getTextDocument().getUri();
-        	Pair<Range,String> edit = workspace.format(uri);
+        	Pair<Range,String> edit = workspace.format(uri, params.getOptions().getTabSize());
         	return List.of(new TextEdit(edit.key(), edit.value()));
     	});
     }

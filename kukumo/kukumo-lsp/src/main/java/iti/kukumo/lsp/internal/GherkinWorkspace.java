@@ -60,6 +60,9 @@ public class GherkinWorkspace {
 		return computeWorkspaceDiagnostics();
 	}
 
+	public DocumentDiagnostics computeDiagnostics(String uri) {
+		return document(uri).collectDiagnostics();
+	}
 
 
 	public Stream<DocumentDiagnostics> computeWorkspaceDiagnostics() {
@@ -256,13 +259,13 @@ public class GherkinWorkspace {
 	}
 
 
-	public Pair<Range, String> format(String uri) {
+	public Pair<Range, String> format(String uri, int tabSize) {
 		var document = document(uri);
 		int numberOfLines = document.documentMap.document().numberOfLines();
 		int lastPosition = document.documentMap.document().extractLine(numberOfLines-1).length();
 		Range range = new Range(new Position(0,0), new Position(numberOfLines, lastPosition));
-		GherkinFormatter.format(document.documentMap);
-		return new Pair<>(range,document.documentMap.document().rawText());
+		String formatted = GherkinFormatter.format(document.documentMap, tabSize);
+		return new Pair<>(range,formatted);
 	}
 
 

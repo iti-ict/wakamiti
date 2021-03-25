@@ -1,15 +1,13 @@
 package iti.kukumo.lsp.internal;
 
-import java.util.List;
-import java.util.function.Function;
+import static iti.kukumo.lsp.internal.GherkinFormatter.Type.*;
+
 import java.util.stream.*;
 
 import iti.commons.gherkin.GherkinDialect;
-import static iti.kukumo.lsp.internal.GherkinFormatter.Type.*;
 
 public class GherkinFormatter {
 
-	private static final String MARGIN = "    ";
 	private static final String TRIPLE_QUOTE = "\"\"\"";
 	private static final String TRIPLE_BACKQUOTE = "```";
 
@@ -40,13 +38,14 @@ public class GherkinFormatter {
 	}
 
 
-	public static void format(GherkinDocumentMap documentMap) {
-		var document = documentMap.document();
+	public static String format(GherkinDocumentMap documentMap, int tabSize) {
+		var document = documentMap.document().copy();
 		Type[] lineTypes = classifyLines(documentMap);
 		int[] marginLevels = analyzeMarginLevels(lineTypes);
-
-		formatMargins(document, lineTypes, marginLevels);
-		formatTables(document, lineTypes);
+		String margin = " ".repeat(tabSize);
+		formatMargins(document, lineTypes, marginLevels, margin);
+		formatTables(document, lineTypes, margin);
+		return document.rawText();
 
 	}
 
@@ -55,28 +54,33 @@ public class GherkinFormatter {
 
 
 
-	private static void formatMargins(TextDocument document, Type[] lineTypes, int[] marginLevels) {
-		String margin;
+	private static void formatMargins(
+		TextDocument document,
+		Type[] lineTypes,
+		int[] marginLevels,
+		String margin
+	) {
+		String marginLevel;
 		String line;
 		String formattedLine;
 		for (int lineNumber = 0; lineNumber < document.numberOfLines(); lineNumber++) {
-			margin = MARGIN.repeat(marginLevels[lineNumber]);
+			marginLevel = margin.repeat(marginLevels[lineNumber]);
 			line = document.extractLine(lineNumber);
-			if (lineTypes[lineNumber] == DOCUMENT_CONTENT && line.startsWith(margin)) {
+			if (lineTypes[lineNumber] == DOCUMENT_CONTENT && line.startsWith(marginLevel)) {
 				formattedLine = line;
 			} else {
-				formattedLine = margin + line.strip().replaceAll(" +", " ");
+				formattedLine = marginLevel + line.strip().replaceAll(" +", " ");
 			}
 			document.replaceLine(lineNumber, formattedLine);
 		}
 	}
 
 
-	private static void formatTables(TextDocument document, Type[] lineTypes) {
+	private static void formatTables(TextDocument document, Type[] lineTypes, String margin) {
 		int lineNumber = 0;
 		while (lineNumber < document.numberOfLines()) {
 			if (lineTypes[lineNumber] == TABLE_HEADER) {
-				lineNumber += formatTable(document, lineTypes, lineNumber)	;
+				lineNumber += formatTable(document, lineTypes, lineNumber, margin)	;
 			} else {
 				lineNumber ++;
 			}
@@ -84,7 +88,12 @@ public class GherkinFormatter {
 	}
 
 
-	private static int formatTable(TextDocument document, Type[] lineTypes, int headerLineNumber) {
+	private static int formatTable(
+		TextDocument document,
+		Type[] lineTypes,
+		int headerLineNumber,
+		String margin
+	) {
 		String header = document.extractLine(headerLineNumber);
 		int columns = (int) header.chars().filter(c -> c == '|').count() - 1;
 		int rows = 1;
@@ -116,7 +125,7 @@ public class GherkinFormatter {
 			}
 			String formattedLine = Stream.of(table[r]).collect(Collectors.joining(
 				" | ",
-				MARGIN.repeat(TABLE_ROW.level)+"| ",
+				margin.repeat(TABLE_ROW.level)+"| ",
 				" |"
 			));
 			document.replaceLine(headerLineNumber + r, formattedLine);

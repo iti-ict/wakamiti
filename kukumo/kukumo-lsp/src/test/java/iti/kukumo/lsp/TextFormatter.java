@@ -54,8 +54,7 @@ public class TextFormatter {
 			+ "";
 
 		GherkinDocumentMap documentMap = new GherkinDocumentMap(document);
-		GherkinFormatter.format(documentMap);
-		assertThat(documentMap.rawContent()).isEqualTo(
+		assertThat(GherkinFormatter.format(documentMap, 4)).isEqualTo(
 				  "#language: es\n"
 				+ "\n"
 				+ "\n"
