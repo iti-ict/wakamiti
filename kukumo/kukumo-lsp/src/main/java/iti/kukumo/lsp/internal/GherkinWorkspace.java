@@ -153,8 +153,8 @@ public class GherkinWorkspace {
 		);
 		var nonLinkedImpls = computeNonLinkedID(
 			diagnosticsPerDocument,
-			definitionIds,
 			implementationIds,
+			definitionIds,
 			"There is no definition scenario with this ID"
 		);
 
