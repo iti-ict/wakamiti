@@ -1,9 +1,11 @@
 package iti.kukumo.lsp.internal;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import java.util.*;
 import java.util.stream.*;
+import iti.kukumo.util.Pair;
+
 
 import org.eclipse.lsp4j.*;
 import org.yaml.snakeyaml.Yaml;
@@ -16,6 +18,7 @@ public class GherkinWorkspace {
 	private final Map<String, GherkinDocumentAssessor> documentAssessors = new HashMap<>();
 	private final int baseIndex;
 	private final Yaml yaml = new Yaml();
+	private final Map<String, Pair<DocumentSegment,DocumentSegment>> linkMap = new HashMap<>();
 
 	private String configurationUri;
 	private TextDocument configurationDocument;
@@ -137,22 +140,30 @@ public class GherkinWorkspace {
 			.collect(toList())
 		;
 
-		computeRepeatedID(diagnosticsPerDocument, definitionIds);
-		computeRepeatedID(diagnosticsPerDocument, implementationIds);
-
-		definitionIds.stream()
-		.filter(id -> implementationIds.stream().map(DocumentSegment::content).noneMatch(id.content()::equals))
-		.forEach(segment -> diagnosticsPerDocument
-			.computeIfAbsent(segment.uri(), x->new ArrayList<>())
-			.add(DiagnosticHelper.diagnosticWarn(segment.range(), "There is no implementation scenario with this ID"))
+		var repeatedDefs = computeRepeatedID(diagnosticsPerDocument, definitionIds);
+		var repeatedImpls = computeRepeatedID(diagnosticsPerDocument, implementationIds);
+		var nonLinkedDefs = computeNonLinkedID(
+			diagnosticsPerDocument,
+			definitionIds,
+			implementationIds,
+			"There is no implementation scenario with this ID"
+		);
+		var nonLinkedImpls = computeNonLinkedID(
+			diagnosticsPerDocument,
+			definitionIds,
+			implementationIds,
+			"There is no definition scenario with this ID"
 		);
 
-		implementationIds.stream()
-		.filter(id -> definitionIds.stream().map(DocumentSegment::content).noneMatch(id.content()::equals))
-		.forEach(segment -> diagnosticsPerDocument
-			.computeIfAbsent(segment.uri(), x->new ArrayList<>())
-			.add(DiagnosticHelper.diagnosticWarn(segment.range(), "There is no definition scenario with this ID"))
-		);
+		var linkableIds = Stream.concat(definitionIds.stream(), implementationIds.stream())
+			.map(DocumentSegment::content)
+			.filter(id -> !repeatedDefs.contains(id))
+			.filter(id -> !repeatedImpls.contains(id))
+			.filter(id -> !nonLinkedDefs.contains(id))
+			.filter(id -> !nonLinkedImpls.contains(id))
+			.collect(toSet());
+
+		computeLinkMap(definitionIds, implementationIds, linkableIds);
 
 		return diagnosticsPerDocument.entrySet().stream()
 			.map(entry->new DocumentDiagnostics(entry.getKey(), entry.getValue()));
@@ -160,10 +171,12 @@ public class GherkinWorkspace {
 
 
 
-	private void computeRepeatedID(
+
+	private Set<String> computeRepeatedID(
 		Map<String, List<Diagnostic>> diagnosticsPerDocument,
 		List<DocumentSegment> definitionIds
 	) {
+		Set<String> repeatedIds = new HashSet<>();
 		for (var segment : definitionIds) {
 			boolean idIsRepeated = definitionIds.stream()
 				.filter(id -> segment != id)
@@ -172,17 +185,85 @@ public class GherkinWorkspace {
 
 			if (idIsRepeated) {
 				diagnosticsPerDocument
-				.computeIfAbsent(segment.uri(), x->new ArrayList<>())
-				.add(DiagnosticHelper.diagnosticError(segment.range(), "Identifier already used"));
+					.computeIfAbsent(segment.uri(), x->new ArrayList<>())
+					.add(DiagnosticHelper.diagnosticError(segment.range(), "Identifier already used"));
+				repeatedIds.add(segment.content());
 			}
 		}
+		return repeatedIds;
 	}
+
+
+
+	private Set<String> computeNonLinkedID(
+		Map<String, List<Diagnostic>> diagnosticsPerDocument,
+		List<DocumentSegment> sources,
+		List<DocumentSegment> destinations,
+		String message
+	) {
+		Set<String> nonLinkedIds = new HashSet<>();
+		sources.stream()
+		.filter(id -> destinations.stream().map(DocumentSegment::content).noneMatch(id.content()::equals))
+		.forEach(segment -> {
+			diagnosticsPerDocument
+				.computeIfAbsent(segment.uri(), x->new ArrayList<>())
+				.add(DiagnosticHelper.diagnosticWarn(segment.range(), message));
+			nonLinkedIds.add(segment.content());
+		});
+		return nonLinkedIds;
+	}
+
+
+
+
+
+	private void computeLinkMap(
+		List<DocumentSegment> definitionIds,
+		List<DocumentSegment> implementationIds,
+		Set<String> linkableIds
+	) {
+		linkMap.clear();
+		var definitionsMap = definitionIds.stream().collect(toMap(DocumentSegment::content,x->x));
+		var implementationsMap = implementationIds.stream().collect(toMap(DocumentSegment::content,x->x));
+		for (String id : linkableIds) {
+			var definitionId = definitionsMap.get(id);
+			var implementationId = implementationsMap.get(id);
+			linkMap.put(id, new Pair<>(definitionId, implementationId));
+		}
+	}
+
+
+
+
+
+	public Optional<DocumentSegment> resolveImplementationLink(String uri, Position position) {
+		return Optional.of(document(uri))
+			.filter(GherkinDocumentAssessor::isDefinition)
+			.flatMap(document -> document.obtainIdTagAt(position))
+			.map(TextSegment::content)
+			.map(linkMap::get)
+			.map(Pair::value);
+	}
+
+
+	public Optional<DocumentSegment> resolveDefinitionLink(String uri, Position position) {
+		return Optional.of(document(uri))
+			.filter(GherkinDocumentAssessor::isImplementation)
+			.flatMap(document -> document.obtainIdTagAt(position))
+			.map(TextSegment::content)
+			.map(linkMap::get)
+			.map(Pair::key);
+	}
+
+
 
 
 
 	private GherkinDocumentAssessor document(String uri) {
 		return documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,""));
 	}
+
+
 
 
 

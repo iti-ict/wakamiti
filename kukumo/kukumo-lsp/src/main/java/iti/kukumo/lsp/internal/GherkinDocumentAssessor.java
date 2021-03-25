@@ -3,7 +3,7 @@ package iti.kukumo.lsp.internal;
 import java.io.StringReader;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import org.eclipse.lsp4j.*;
 import org.slf4j.*;
@@ -247,6 +247,20 @@ public class GherkinDocumentAssessor {
 			.stream()
 			.map(segment -> new DocumentSegment(uri, segment.range().toLspRange(), segment.content()));
     }
+
+
+
+	public Optional<TextSegment> obtainIdTagAt(Position position) {
+		for (int lineNumber = position.getLine(); lineNumber >= 0; lineNumber--) {
+			var idTags = documentMap.document().extractSegments(lineNumber, additionalInfo.idTagPattern, 1);
+			if (!idTags.isEmpty()) {
+				return Optional.of(idTags.get(0));
+			}
+		}
+		return Optional.empty();
+
+	}
+
 
 
 

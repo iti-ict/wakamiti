@@ -124,6 +124,45 @@ public class KukumoTextDocumentService implements TextDocumentService {
     }
 
 
+    @Override
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> implementation(
+		ImplementationParams params
+	) {
+    	return FutureUtil.processEvent("textDocument.implementation", params, this::resolveImplementationLink);
+    }
+
+
+    private Either<List<? extends Location>, List<? extends LocationLink>> resolveImplementationLink(
+    	ImplementationParams params
+	) {
+    	var uri = params.getTextDocument().getUri();
+    	var position = params.getPosition();
+    	List<Location> links = workspace.resolveImplementationLink(uri, position).stream()
+			.map(link -> new Location(link.uri(), link.range()))
+			.collect(toList());
+    	return Either.<List<? extends Location>, List<? extends LocationLink>>forLeft(links);
+    }
+
+
+
+    @Override
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(
+		DefinitionParams params
+	) {
+      	return FutureUtil.processEvent("textDocument.definition", params, this::resolveDefinitionLink);
+    }
+
+
+    private Either<List<? extends Location>, List<? extends LocationLink>> resolveDefinitionLink(
+    	DefinitionParams params
+	) {
+    	var uri = params.getTextDocument().getUri();
+    	var position = params.getPosition();
+    	List<Location> links = workspace.resolveDefinitionLink(uri, position).stream()
+			.map(link -> new Location(link.uri(), link.range()))
+			.collect(toList());
+    	return Either.<List<? extends Location>, List<? extends LocationLink>>forLeft(links);
+    }
 
 
 
