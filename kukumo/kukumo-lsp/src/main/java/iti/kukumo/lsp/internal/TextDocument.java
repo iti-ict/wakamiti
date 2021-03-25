@@ -47,6 +47,14 @@ public class TextDocument {
     }
 
 
+	public TextDocument replaceLine(int lineNumber, String line) {
+		return replaceRange(
+			TextRange.of(lineNumber, 0, lineNumber, extractLine(lineNumber).length()),
+			line
+		)	;
+	}
+
+
     public String rawText() {
         return rawDocument;
     }
@@ -137,6 +145,8 @@ public class TextDocument {
         }
         return indexes;
     }
+
+
 
 
 

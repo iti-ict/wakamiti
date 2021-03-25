@@ -139,6 +139,16 @@ public class GherkinDocumentMap {
     }
 
 
+    @SafeVarargs
+	public final boolean hasKeyword(
+        int lineNumber,
+        String stripLineContent,
+        Function<GherkinDialect,List<String>>... keywordSets
+    ) {
+    	return !detectKeyword(lineNumber, stripLineContent, keywordSets).isEmpty();
+    }
+
+
     public boolean isStep(int lineNumber, String stripLineContent) {
         TextRange keywordRange = detectKeyword(
     		lineNumber,

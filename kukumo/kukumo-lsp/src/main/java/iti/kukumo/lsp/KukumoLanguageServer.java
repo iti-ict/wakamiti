@@ -40,6 +40,7 @@ public class KukumoLanguageServer implements LanguageServer, LanguageClientAware
         capabilities.setCodeActionProvider(new CodeActionOptions(List.of("quickfix")));
         capabilities.setImplementationProvider(true);
         capabilities.setDefinitionProvider(true);
+        capabilities.setDocumentFormattingProvider(true);
         return capabilities;
     }
 

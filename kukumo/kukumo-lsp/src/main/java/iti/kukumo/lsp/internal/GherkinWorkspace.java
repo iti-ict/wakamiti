@@ -256,12 +256,21 @@ public class GherkinWorkspace {
 	}
 
 
+	public Pair<Range, String> format(String uri) {
+		var document = document(uri);
+		int numberOfLines = document.documentMap.document().numberOfLines();
+		int lastPosition = document.documentMap.document().extractLine(numberOfLines-1).length();
+		Range range = new Range(new Position(0,0), new Position(numberOfLines, lastPosition));
+		GherkinFormatter.format(document.documentMap);
+		return new Pair<>(range,document.documentMap.document().rawText());
+	}
 
 
 
 	private GherkinDocumentAssessor document(String uri) {
 		return documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,""));
 	}
+
 
 
 

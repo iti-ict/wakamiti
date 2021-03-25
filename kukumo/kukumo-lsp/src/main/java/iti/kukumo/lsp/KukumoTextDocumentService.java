@@ -11,6 +11,7 @@ import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
 
 import iti.kukumo.lsp.internal.*;
+import iti.kukumo.util.Pair;
 
 public class KukumoTextDocumentService implements TextDocumentService {
 
@@ -132,6 +133,26 @@ public class KukumoTextDocumentService implements TextDocumentService {
     }
 
 
+    @Override
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(
+		DefinitionParams params
+	) {
+      	return FutureUtil.processEvent("textDocument.definition", params, this::resolveDefinitionLink);
+    }
+
+
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
+    	return FutureUtil.processEvent("textDocument.formatting", params, x-> {
+        	var uri = params.getTextDocument().getUri();
+        	Pair<Range,String> edit = workspace.format(uri);
+        	return List.of(new TextEdit(edit.key(), edit.value()));
+    	});
+    }
+
+
+
     private Either<List<? extends Location>, List<? extends LocationLink>> resolveImplementationLink(
     	ImplementationParams params
 	) {
@@ -144,13 +165,6 @@ public class KukumoTextDocumentService implements TextDocumentService {
     }
 
 
-
-    @Override
-    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(
-		DefinitionParams params
-	) {
-      	return FutureUtil.processEvent("textDocument.definition", params, this::resolveDefinitionLink);
-    }
 
 
     private Either<List<? extends Location>, List<? extends LocationLink>> resolveDefinitionLink(
