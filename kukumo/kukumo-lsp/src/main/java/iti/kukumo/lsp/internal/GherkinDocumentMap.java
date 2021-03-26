@@ -1,15 +1,13 @@
 package iti.kukumo.lsp.internal;
 
-import iti.commons.gherkin.*;
-import iti.kukumo.api.KukumoConfiguration;
-
+import static java.util.stream.Collectors.toList;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import iti.commons.gherkin.*;
+import iti.kukumo.api.KukumoConfiguration;
 
 
 /*

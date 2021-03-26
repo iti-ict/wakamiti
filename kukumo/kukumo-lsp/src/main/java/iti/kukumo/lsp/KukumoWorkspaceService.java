@@ -1,7 +1,6 @@
 package iti.kukumo.lsp;
 
-import org.eclipse.lsp4j.DidChangeConfigurationParams;
-import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
+import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.services.WorkspaceService;
 
 import iti.kukumo.lsp.internal.GherkinWorkspace;

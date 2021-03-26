@@ -1,23 +1,24 @@
 package iti.kukumo.lsp.internal;
 
 import java.util.*;
-import java.util.regex.Matcher;
+import java.util.stream.*;
 
 import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.Location;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
 import iti.commons.gherkin.*;
 import iti.commons.gherkin.ParserException.CompositeParserException;
 
-public class DiagnosticHelper {
+public class DocumentDiagnosticHelper {
 
 
 	private final GherkinDocumentAssessor assessor;
-    private final Map<Range,List<CodeAction>> quickFixes = new HashMap<>();
+	private final Map<Range,List<CodeAction>> quickFixes = new HashMap<>();
 
 
 
-	public DiagnosticHelper(GherkinDocumentAssessor assessor) {
+	public DocumentDiagnosticHelper(GherkinDocumentAssessor assessor) {
 		this.assessor = assessor;
 	}
 
@@ -48,7 +49,12 @@ public class DiagnosticHelper {
                 new Position(0,0),
                 new Position(assessor.documentMap.document().numberOfLines(),0)
             );
-            diagnostics.add(diagnosticError(errorRange,assessor.parsingError.toString()));
+            diagnostics.add(diagnostic(
+        		DiagnosticSeverity.Error,
+        		uri(),
+        		errorRange,
+        		assessor.parsingError.toString()
+    		));
         }
     }
 
@@ -61,7 +67,12 @@ public class DiagnosticHelper {
     			.filter(ScenarioDefinition.class::isInstance)
     			.count();
         	if (numScenarios == 0L) {
-        		diagnostics.add(diagnosticWarn(emptyRange(), "No scenarios defined"));
+        		diagnostics.add(diagnostic(
+    				DiagnosticSeverity.Warning,
+    				uri(),
+    				emptyRange(),
+    				"No scenarios defined"
+				));
         	}
         }
     }
@@ -92,7 +103,13 @@ public class DiagnosticHelper {
                     new Position(lineNumber, marginLeft),
                     new Position(lineNumber, line.length())
                 );
-                var stepDiagnostics = diagnosticError(errorRange, "Undefined step");
+                var stepDiagnostics = diagnostic(
+            		DiagnosticSeverity.Error,
+            		uri(),
+            		errorRange,
+            		"Undefined step",
+            		step
+        		);
                 diagnostics.add(stepDiagnostics);
                 registerUndefinedStepQuickFixes(step, stepDiagnostics, errorRange);
             }
@@ -126,7 +143,12 @@ public class DiagnosticHelper {
     			);
             	if (ids.isEmpty()) {
             		var range = wholeLineRange(lineNumber, marginLeft);
-            		var diagnostic = diagnosticWarn(range, "This scenario should have an ID tag");
+            		var diagnostic = diagnostic(
+        				DiagnosticSeverity.Warning,
+        				uri(),
+        				range,
+        				"This scenario should have an ID tag"
+    				);
             		diagnostics.add(diagnostic);
             		registerMissingIdQuickFix(diagnostic);
             	}
@@ -155,7 +177,7 @@ public class DiagnosticHelper {
                 emptyRange(lineNumber, column) :
                 wholeLineRange(lineNumber-1, column-1)
             );
-            results.add(diagnosticError(range,parsingError.getMessage()));
+            results.add(diagnostic(DiagnosticSeverity.Error,uri(),range,parsingError.getMessage()));
         }
     }
 
@@ -165,7 +187,9 @@ public class DiagnosticHelper {
         var hinter = assessor.hinter;
         for (String hint : hinter.getHintsForInvalidStep(step, assessor.maxSuggestions, true)) {
             TextEdit textEdit = new TextEdit(range, hint);
+            var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(),null);
             TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
+            textDocumentEdit.setTextDocument(textDocument);
             textDocumentEdit.setEdits(List.of(textEdit));
             WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
             CodeAction codeAction = new CodeAction("Replace step with: "+hint);
@@ -187,8 +211,10 @@ public class DiagnosticHelper {
     		startPositionRange(range),
     		id+"\n"+" ".repeat(marginLeft)
 		);
+		var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(),null);
         TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
         textDocumentEdit.setEdits(List.of(textEdit));
+        textDocumentEdit.setTextDocument(textDocument);
         WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
         CodeAction codeAction = new CodeAction("Add ID tag to this scenario");
         codeAction.setIsPreferred(Boolean.TRUE);
@@ -199,34 +225,27 @@ public class DiagnosticHelper {
     }
 
 
-    public static Diagnostic diagnosticError(Range range, String error) {
-        return new Diagnostic(
-            range,
-            error,
-            DiagnosticSeverity.Error,
-            ""
-        );
+
+    public static Diagnostic diagnostic(
+    		DiagnosticSeverity severity,
+    		String uri,
+    		Range range,
+    		String warning,
+    		String... extra
+    ) {
+        var location = new Location(uri, range);
+        var diagnostic = new Diagnostic();
+        diagnostic.setRange(range);
+        diagnostic.setMessage(warning);
+        diagnostic.setSeverity(severity);
+        diagnostic.setSource("kukumo-language-server");
+        diagnostic.setRelatedInformation(
+    		Stream.of(extra).map(data->new DiagnosticRelatedInformation(location, data))
+    		.collect(Collectors.toList())
+    	);
+        return diagnostic;
     }
 
-
-    public static Diagnostic diagnosticWarn(Range range, String warning) {
-        return new Diagnostic(
-            range,
-            warning,
-            DiagnosticSeverity.Warning,
-            ""
-        );
-    }
-
-
-    public static Diagnostic diagnosticHint(Range range, String hint) {
-        return new Diagnostic(
-            range,
-            hint,
-            DiagnosticSeverity.Hint,
-            ""
-        );
-    }
 
 
     private Range emptyRange() {
@@ -254,5 +273,9 @@ public class DiagnosticHelper {
         return new Range(range.getStart(), range.getStart());
     }
 
+
+    private String uri() {
+    	return assessor.uri();
+    }
 
 }

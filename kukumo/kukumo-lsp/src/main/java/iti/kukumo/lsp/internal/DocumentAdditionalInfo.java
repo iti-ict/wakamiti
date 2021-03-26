@@ -28,7 +28,7 @@ public class DocumentAdditionalInfo {
 
 		this.idTagPattern = effectiveConfiguration
 			.get(KukumoConfiguration.ID_TAG_PATTERN, String.class)
-			.map(pattern -> "@"+pattern)
+			.map(pattern -> "@("+pattern+")")
 			.map(Pattern::compile)
 			.orElseThrow();
 

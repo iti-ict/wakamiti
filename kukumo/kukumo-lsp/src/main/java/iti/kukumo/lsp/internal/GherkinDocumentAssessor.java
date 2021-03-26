@@ -1,6 +1,8 @@
 package iti.kukumo.lsp.internal;
 
 import java.io.StringReader;
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.*;
@@ -36,7 +38,7 @@ public class GherkinDocumentAssessor {
     DocumentAdditionalInfo additionalInfo;
     iti.commons.gherkin.GherkinDocument parsedDocument;
     Exception parsingError;
-    DiagnosticHelper diagnosticHelper;
+    DocumentDiagnosticHelper diagnosticHelper;
     CompletionHelper completionHelper;
 
 
@@ -75,7 +77,7 @@ public class GherkinDocumentAssessor {
         this.hinterProvider = hinterProvider;
         this.globalConfiguration = globalConfiguration;
         this.workspaceConfiguration = workspaceConfiguration;
-        this.diagnosticHelper = new DiagnosticHelper(this);
+        this.diagnosticHelper = new DocumentDiagnosticHelper(this);
         this.completionHelper = new CompletionHelper(this, LOGGER);
         resetDocument(document);
     }
@@ -83,6 +85,11 @@ public class GherkinDocumentAssessor {
 
     public String uri() {
     	return this.uri;
+    }
+
+
+    public Path path() {
+    	return Path.of(URI.create(uri));
     }
 
 
@@ -241,6 +248,16 @@ public class GherkinDocumentAssessor {
     }
 
 
+    String definitionTag() {
+    	return this.additionalInfo.redefinitionDefinitionTag;
+    }
+
+
+    String implementationTag() {
+    	return this.additionalInfo.redefinitionImplementationTag;
+    }
+
+
     Stream<DocumentSegment> retriveIdTagSegment() {
     	return documentMap.document()
 			.extractSegments(additionalInfo.idTagPattern, 1)
@@ -250,7 +267,7 @@ public class GherkinDocumentAssessor {
 
 
 
-	public Optional<TextSegment> obtainIdTagAt(Position position) {
+	public Optional<TextSegment> obtainIdAt(Position position) {
 		for (int lineNumber = position.getLine(); lineNumber >= 0; lineNumber--) {
 			var idTags = documentMap.document().extractSegments(lineNumber, additionalInfo.idTagPattern, 1);
 			if (!idTags.isEmpty()) {
@@ -260,6 +277,37 @@ public class GherkinDocumentAssessor {
 		return Optional.empty();
 
 	}
+
+
+	public List<TextSegment> obtainIdTags() {
+		return documentMap.document().extractSegments(additionalInfo.idTagPattern, 1);
+
+	}
+
+
+	public Optional<ScenarioDefinition> obtainScenarioById(String id) {
+		for (var scenario : parsedDocument.getFeature().getChildren()) {
+			List<Tag> tags;
+			if (scenario instanceof Scenario) {
+				tags = ((Scenario) scenario).getTags();
+			} else if (scenario instanceof ScenarioOutline) {
+				tags = ((ScenarioOutline) scenario).getTags();
+			} else {
+				continue;
+			}
+			if (tags.stream().anyMatch(tag -> tag.getName().equals("@"+id))) {
+				return Optional.of(scenario);
+			}
+		}
+		return Optional.empty();
+	}
+
+
+
+	public int numberOfLines() {
+		return documentMap.document().numberOfLines();
+	}
+
 
 
 

@@ -2,9 +2,8 @@ package iti.kukumo.lsp;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
@@ -58,30 +57,15 @@ public class KukumoTextDocumentService implements TextDocumentService {
         return FutureUtil.processEvent("textDocument.codeAction", params, this::doCodeAction);
     }
 
+
     private List<Either<Command, CodeAction>> doCodeAction(CodeActionParams params) {
-
     	var uri = params.getTextDocument().getUri();
-
-        VersionedTextDocumentIdentifier textDocument = new VersionedTextDocumentIdentifier(
-            params.getTextDocument().getUri(),
-            null
-        );
-
-        var codeActions = workspace.computeCodeActions(uri, params.getContext().getDiagnostics())
+        return workspace.obtainCodeActions(uri, params.getContext().getDiagnostics())
         	.stream()
             .map(Either::<Command,CodeAction>forRight)
             .collect(toList());
-
-        codeActions.stream()
-            .map(Either<Command, CodeAction>::getRight)
-            .map(CodeAction::getEdit)
-            .map(WorkspaceEdit::getDocumentChanges)
-            .flatMap(List<Either<TextDocumentEdit, ResourceOperation>>::stream)
-            .map(Either<TextDocumentEdit, ResourceOperation>::getLeft)
-            .forEach(textDocumentEdit->textDocumentEdit.setTextDocument(textDocument));
-
-        return codeActions;
     }
+
 
 
     @Override
