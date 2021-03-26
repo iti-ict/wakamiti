@@ -82,7 +82,8 @@
 				],
 				"configuration": "./language-configuration.json",
 				"embeddedLanguages": {
-					"meta.embedded.block.json": "json"
+					"meta.embedded.block.json": "json",
+					"meta.embedded.block.xml": "xml"
 				}
 			}
 		],
@@ -90,7 +91,7 @@
 			{
 				"language": "kukumo-gherkin",
 				"scopeName": "source.kukumo.gherkin",
-				"path": "./syntaxes/kukumo-gherkin.tmLanguage"
+				"path": "./syntaxes/kukumo-gherkin.tmLanguage.json"
 			}
 		],
 		"commands": [
