@@ -24,7 +24,7 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 public class KukumoCoreTypes implements DataTypeContributor {
 
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
-    public static final String WORD_REGEX = "[\\w]+";
+    public static final String WORD_REGEX = "[\\w-]+";
     public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+";
     public static final String FILE_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
     public static final String URL_REGEX = "(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]*)?";
