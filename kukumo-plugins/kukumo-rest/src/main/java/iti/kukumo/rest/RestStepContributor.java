@@ -258,6 +258,11 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.contentType(parseContentType(contentType));
     }
 
+    @Step(value = "rest.assert.response.body.header", args = {"name:word", "value:text"})
+    public void assertResponseHeader(String name, String value) {
+        validatableResponse.header(name, value);
+    }
+
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text",
             "matcher:text-assertion"})
     public void assertBodyFragmentAsText(String fragment, Matcher<String> matcher) {
