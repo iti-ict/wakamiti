@@ -24,6 +24,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
+
 
 @I18nResource("iti_kukumo_kukumo-rest")
 @Extension(provider = "iti.kukumo", name = "rest-steps")
@@ -258,9 +260,24 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.contentType(parseContentType(contentType));
     }
 
-    @Step(value = "rest.assert.response.body.header", args = {"name:word", "value:text"})
-    public void assertResponseHeader(String name, String value) {
-        validatableResponse.header(name, value);
+    @Step(value = "rest.assert.response.body.length", args = {"matcher:integer-assertion"})
+    public void assertResponseLength(Matcher<Integer> matcher) {
+        validatableResponse.body(length(matcher));
+    }
+
+    @Step(value = "rest.assert.response.body.header.text", args = {"name:word", "matcher:text-assertion"})
+    public void assertResponseHeaderAsText(String name, Matcher<String> matcher) {
+        validatableResponse.header(name, matcher);
+    }
+
+    @Step(value = "rest.assert.response.body.header.integer", args = {"name:word", "matcher:integer-assertion"})
+    public void assertResponseHeaderAsInteger(String name, Matcher<Integer> matcher) {
+        validatableResponse.header(name, matcher);
+    }
+
+    @Step(value = "rest.assert.response.body.header.decimal", args = {"name:word", "matcher:decimal-assertion"})
+    public void assertResponseHeaderAsDecimal(String name, Matcher<BigDecimal> matcher) {
+        validatableResponse.header(name, matcher);
     }
 
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text",
