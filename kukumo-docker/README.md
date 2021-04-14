@@ -2,16 +2,16 @@
 
 * Windows:
 ```Shell
-$ docker container create --env-file .env -v "%cd%:/kukumo" --privileged --name kukumo docker.iti.upv.es/act/act/devops/kukumo-project
+$ docker container create --env-file .env -v "%cd%:/kukumo" --name kukumo --network=host nexus-kukumo.iti.upv.es/kukumo
 ```
 
 * Linux:
 ```Shell
-$ docker container create --env-file .env -v "$(pwd):/kukumo" --user kukumo --name kukumo --network=host docker.iti.upv.es/act/act/devops/kukumo-project
+$ docker container create --env-file .env -v "$(pwd):/kukumo" --name kukumo --network=host nexus-kukumo.iti.upv.es/kukumo
 ```
 
 #### Ejecutar tests:
 
 ```Shell
-$ docker start --interactive kukumo
+$ docker start -i kukumo
 ```

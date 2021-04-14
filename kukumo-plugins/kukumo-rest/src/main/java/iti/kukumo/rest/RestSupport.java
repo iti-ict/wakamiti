@@ -14,6 +14,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
+import iti.kukumo.rest.log.RestAssuredLogger;
 import iti.kukumo.util.ResourceLoader;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -81,8 +82,7 @@ public class RestSupport {
 
     private RequestSpecification attachLogger(RequestSpecification request) {
         if (LOGGER.isDebugEnabled()) {
-            request.log().all(true);
-            request.expect().log().all(true);
+            request.filter(new RestAssuredLogger());
         } else {
             request.log().ifValidationFails();
             request.expect().log().ifValidationFails();

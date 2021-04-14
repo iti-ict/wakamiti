@@ -8,6 +8,7 @@ import java.net.URL;
 
 import io.restassured.RestAssured;
 import io.restassured.config.LogConfig;
+import iti.kukumo.rest.log.RestAssuredLogger;
 import org.hamcrest.Matchers;
 
 import iti.commons.configurer.Configuration;
@@ -57,9 +58,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     }
 
     private void configure(RestStepContributor contributor, Configuration configuration) {
-        Logger logger = LoggerFactory.getLogger("iti.kukumo.rest");
         RestAssured.config = RestAssured.config().logConfig(
-                new LogConfig().defaultStream(new RestAssuredLogger(logger).getPrintStream())
+                new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())
         );
         RestAssured.useRelaxedHTTPSValidation();
 
