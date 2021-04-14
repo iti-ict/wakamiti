@@ -18,6 +18,7 @@ module kukumo.rest {
     requires iti.commons.jext;
     requires junit;
     requires com.fasterxml.jackson.dataformat.xml;
+    requires org.apache.commons.lang3;
 
 
     uses ConfigContributor;
