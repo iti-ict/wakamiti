@@ -82,7 +82,7 @@ public class RestSupport {
 
     private RequestSpecification attachLogger(RequestSpecification request) {
         if (LOGGER.isDebugEnabled()) {
-            request.filter(new RestAssuredLogger());
+            request.log().all().filter(new RestAssuredLogger());
         } else {
             request.log().ifValidationFails();
             request.expect().log().ifValidationFails();
