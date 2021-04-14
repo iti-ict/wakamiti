@@ -61,7 +61,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+            <!--plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>${dockerfile-maven-version}</version>
@@ -83,8 +83,32 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>${docker.image.name}</repository>
-                    <!--tag>${project.parent.version}</tag-->
+                    <repository>nexus-kukumo.iti.upv.es/kukumo</repository>
+                    <tag>${project.parent.version}</tag>
+                </configuration>
+            </plugin-->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>docker</executable>
+                    <arguments>
+                        <argument>build</argument>
+                        <argument>.</argument>
+                        <argument>-t</argument>
+                        <argument>nexus-kukumo.iti.upv.es/kukumo</argument>
+                    </arguments>
                 </configuration>
             </plugin>
 

@@ -19,6 +19,13 @@ COPY src/log4j2.xml $KUKUMNO_HOME
 COPY src/entrypoint.sh /
 COPY target/assembly/repo $MAVEN_LOCAL_REPOSITORY/
 
+RUN apt-get update \
+    && apt-get install sudo
+
+RUN adduser --disabled-password --gecos '' kukumo \
+    && adduser kukumo sudo \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 RUN curl -f https://repo1.maven.org/maven2/org/jacoco/jacoco/$JACOCO_VERSION/jacoco-$JACOCO_VERSION.zip -o jacoco.zip && \
     mkdir $JACOCO_HOME && \
     unzip jacoco.zip -d $JACOCO_HOME && \
@@ -26,10 +33,7 @@ RUN curl -f https://repo1.maven.org/maven2/org/jacoco/jacoco/$JACOCO_VERSION/jac
 
 RUN mkdir -p $KUKUMO_REPOSITORY
 
-RUN groupadd --gid 1024 kukumo \
-    && useradd --gid 1024 kukumo \
-    && usermod -aG kukumo kukumo \
-    && chmod +x /entrypoint.sh \
+RUN chmod +x /entrypoint.sh \
     && chmod +x $KUKUMO_HOME/kukumo \
     && echo $KUKUMO_HOME >> ~/.profile \
     && ln -s $KUKUMO_HOME/kukumo /usr/local/bin/kukumo \
