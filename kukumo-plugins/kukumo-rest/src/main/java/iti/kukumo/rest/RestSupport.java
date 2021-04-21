@@ -43,6 +43,7 @@ public class RestSupport {
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 
+    private RestAssuredLogger assuredLogger = new RestAssuredLogger();
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
     protected final Map<String, String> queryParams = new LinkedHashMap<>();
     protected URL baseURL;
@@ -82,7 +83,7 @@ public class RestSupport {
 
     private RequestSpecification attachLogger(RequestSpecification request) {
         if (LOGGER.isDebugEnabled()) {
-            request.filter(new RestAssuredLogger());
+            request.log().all().filter(assuredLogger);
         } else {
             request.log().ifValidationFails();
             request.expect().log().ifValidationFails();

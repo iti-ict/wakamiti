@@ -50,11 +50,13 @@ public class RestAssuredLogger implements Filter {
 
         final StringBuilder builder = new StringBuilder();
         builder.append(response.statusLine());
-        final Headers headers = response.headers();
+
+        Headers headers = response.headers();
         if (headers.exist()) {
             builder.append(System.lineSeparator());
             builder.append(toString(headers));
         }
+
         if (ContentType.fromContentType(response.contentType()) != null) {
             String responseBodyToAppend = new Prettifier().getPrettifiedBodyIfPossible(response, response.body());
 
@@ -64,7 +66,9 @@ public class RestAssuredLogger implements Filter {
             builder.append(responseBodyToAppend);
         } else {
             builder.append(System.lineSeparator()).append(System.lineSeparator());
-            builder.append("[Not readable body]");
+            builder.append("[Not readable body] (")
+                    .append(response.body().asString().length())
+                    .append(")");
         }
 
         logger.debug(builder.toString());
