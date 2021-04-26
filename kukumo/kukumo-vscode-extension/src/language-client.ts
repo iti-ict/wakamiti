@@ -249,10 +249,9 @@ function runLanguageServerAsJavaProcess(pluginPath: string): Promise<cp.ChildPro
     return new Promise((resolve, reject) => {
         try {
             const libPath = path.join(__dirname, '..', 'lib');
-            const command = `java -p ${libPath}:${pluginPath} -m kukumo.lsp/iti.kukumo.lsp.Launcher`;
+            const command = `java -p ${libPath}:${pluginPath} -m kukumo.lsp/iti.kukumo.lsp.Launcher -d`;
             console.log(command);
-            const process = cp.exec(command);
-            console.log(process.exitCode);
+            const process = cp.exec(command, (error, stdout, stderr) => console.log(stderr));
             process.addListener('close', (code) => console.log(`Java process close with code ${code}`));
             process.addListener('disconnect', () => console.log(`Java process disconnected`));
             process.addListener('error', (error) => console.log(`Java process error ${error}`));

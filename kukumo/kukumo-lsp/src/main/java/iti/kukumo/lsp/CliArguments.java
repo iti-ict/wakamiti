@@ -17,6 +17,7 @@ public class CliArguments {
     private static final String ARG_POSITION_BASE = "b";
     private static final String ARG_TCP_SERVER = "tcp";
     private static final String ARG_PORT = "p";
+    private static final String ARG_DEBUG = "d";
 
     private final Options cliOptions;
     private CommandLine cliCommand;
@@ -33,7 +34,8 @@ public class CliArguments {
             .required(false)
             .desc("Base of text position ranges (0 or 1). [0 by default]")
             .build()
-        );
+        ); 
+        cliOptions.addOption(ARG_DEBUG, "debug", false, "Enable debug logs");
     }
 
 
@@ -77,7 +79,12 @@ public class CliArguments {
         return Integer.parseInt(cliCommand.getOptionValue(ARG_PORT, "0"));
     }
 
+    
+    public boolean debugEnabled() {
+    	return cliCommand.hasOption(ARG_DEBUG);
+    }
 
+    
     @Override
     public String toString() {
         return Stream.of(cliCommand.getOptions())

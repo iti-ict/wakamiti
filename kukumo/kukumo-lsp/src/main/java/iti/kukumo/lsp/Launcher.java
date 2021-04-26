@@ -1,7 +1,7 @@
 package iti.kukumo.lsp;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.*;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.*;
@@ -20,11 +20,17 @@ public class Launcher extends Thread {
         }
 
         if (arguments.isTcpServer()) {
+        	if (arguments.debugEnabled()) {
+        		enableDebugLogs();
+        	}
         	InetSocketAddress address = new InetSocketAddress(arguments.port());
 			var server = new TcpSocketLanguageServer(address , arguments.positionBase());
 			server.start();
         } else {
-        	disableLogs();
+        	disableConsoleLogs();
+          	if (arguments.debugEnabled()) {
+        		enableDebugLogs();
+        	}
         	var server = new KukumoLanguageServer(arguments.positionBase());
             var launcher = LSPLauncher.createServerLauncher(
                 server,
@@ -37,9 +43,23 @@ public class Launcher extends Thread {
     }
 
 
-	private static void disableLogs() {
-		Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.ERROR);
+
+
+
+	private static void disableConsoleLogs() throws IOException {
+		try {
+			Configurator.reconfigure(
+				Thread.currentThread().getContextClassLoader().getResource("log4j2-noconsole.xml").toURI()
+			);
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
 	}
 
+
+	private static void enableDebugLogs() {
+		Configurator.setRootLevel(Level.DEBUG);
+
+	}
 
 }

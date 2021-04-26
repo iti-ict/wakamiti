@@ -75,18 +75,32 @@ public final class FutureUtil {
     static <T,U>  CompletableFuture<U> processEvent(String event, T params, Function<T, U> method) {
         return CompletableFuture
                 .completedFuture(LoggerUtil.logEntry(event, params))
-                .thenApply(method)
+                .thenApply(loggingError(method))
                 .thenApply(response -> LoggerUtil.logEntry(event, response));
 
     }
 
 
-    static <T,U>  CompletableFuture<U> processEvent(String event, T params, Supplier<U> method) {
+
+	static <T,U>  CompletableFuture<U> processEvent(String event, T params, Supplier<U> method) {
         return CompletableFuture
                 .completedFuture(LoggerUtil.logEntry(event, params))
-                .thenApply(x -> method.get())
+                .thenApply(loggingError(x -> method.get()))
                 .thenApply(response -> LoggerUtil.logEntry(event, response));
 
     }
+
+
+
+    private static <T,U> Function<T,U> loggingError(Function<T, U> method) {
+		return input -> {
+			try {
+				return method.apply(input);
+			} catch (Exception e) {
+				LOGGER.error("UNEXPECTED ERROR", e);
+				throw e;
+			}
+		};
+	}
 
 }

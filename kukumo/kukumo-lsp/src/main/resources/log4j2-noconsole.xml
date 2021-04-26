@@ -4,9 +4,6 @@
 		<Property name="log4j.skipJansi">false</Property>
 	</Properties>
 	<Appenders>
-		<Console name="Console" target="SYSTEM_OUT" follow="true">
-			<PatternLayout pattern="[%d{HH:mm:ss}] >> %m%n" />
-		</Console>
 		<RollingFile name="rollingFile" fileName="kukumo-lsp.log"
 			filePattern="kukumo-lsp.%d{dd-MMM}.log" ignoreExceptions="false">
 			<PatternLayout>
@@ -22,7 +19,6 @@
 	</Appenders>
 	<Loggers>
 		<Root level="info">
-			<AppenderRef ref="Console" />
 			<AppenderRef ref="rollingFile" />
 		</Root>
 	</Loggers>
