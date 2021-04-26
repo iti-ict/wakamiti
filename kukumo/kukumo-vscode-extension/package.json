@@ -95,10 +95,10 @@
 			}
 		],
 		"commands": [
-			{ 
-				"command": "kukumo.reconnectLanguageServer", 
-				"title": "(Re)Connect to Kukumo Language Server", 
-				"icon": "$(sync)" 
+			{
+				"command": "kukumo.reconnectLanguageServer",
+				"title": "(Re)Connect to Kukumo Language Server",
+				"icon": "$(sync)"
 			}
 		]
 	},
@@ -108,20 +108,23 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"package": "vsce package"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@types/vscode": "^1.53.0",
+		"vscode-languageclient": "6.1.4",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
+		"@types/node": "^12.11.7"
+	},
+	"devDependencies": {
 		"eslint": "^7.19.0",
 		"@typescript-eslint/eslint-plugin": "^4.14.1",
 		"@typescript-eslint/parser": "^4.14.1",
 		"glob": "^7.1.6",
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
-		"vscode-test": "^1.5.0",
-		"vscode-languageclient": "^7.0.0"
+		"vscode-test": "^1.5.0"
 	}
 }

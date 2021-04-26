@@ -1,14 +1,13 @@
 import * as vscode from 'vscode';
 import * as net from 'net';
 import { 
-    CancellationSenderStrategy,
     CloseAction, 
     ErrorAction, 
     LanguageClient, 
     LanguageClientOptions, 
     Message, 
     StreamInfo 
-} from 'vscode-languageclient/node';
+} from 'vscode-languageclient';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -50,8 +49,8 @@ const LANGUAGE_CLIENT_OPTIONS : LanguageClientOptions = {
     progressOnInitialization: true
 };
 
-const STATUS_BAR_TEXT_OFFLINE = 'KLS $(sync-ignored)';
-const STATUS_BAR_TEXT_ONLINE = 'KLS $(sync)';
+const STATUS_BAR_TEXT_OFFLINE = 'KLS 🔌';
+const STATUS_BAR_TEXT_ONLINE = 'KLS 🗸';
 
 var client: LanguageClient;
 var statusBar: vscode.StatusBarItem;
@@ -96,7 +95,7 @@ function startLanguageClient(context: vscode.ExtensionContext) {
         if (error instanceof PropertyError) {
             error.showError();
         } else {
-            vscode.window.showErrorMessage(error);
+            vscode.window.showErrorMessage(`${error}`);
         }
     }
 }
@@ -137,10 +136,10 @@ function startJavaProcessLanguageCLiente(context: vscode.ExtensionContext) {
         () => runLanguageServerAsJavaProcess(pluginsPath),
         LANGUAGE_CLIENT_OPTIONS
     );
-    languageClient.handleFailedRequest = ( (type, error, defaultValue)=> {
-        console.log('Failed request',type,error,defaultValue);
-        return defaultValue;
-    });
+    // languageClient.handleFailedRequest = ( (type, error, defaultValue)=> {
+    //     console.log('Failed request',type,error,defaultValue);
+    //     return defaultValue;
+    // });
     launchLanguageClient(languageClient, context);
     
 }

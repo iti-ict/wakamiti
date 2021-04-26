@@ -143,7 +143,7 @@ public class GherkinDocumentAssessor {
 			documentMap.locale().toString()
 		);
 
-        this.hinter = hinterProvider.apply(effectiveConfiguration);
+        this.hinter = createHinter(effectiveConfiguration);
         this.additionalInfo = new DocumentAdditionalInfo(effectiveConfiguration, parsedDocument);
 
 
@@ -154,6 +154,16 @@ public class GherkinDocumentAssessor {
         return this;
     }
 
+
+
+    private Hinter createHinter(Configuration configuration) {
+    	try {
+    		return hinterProvider.apply(effectiveConfiguration);
+    	} catch (Exception e) {
+    		LOGGER.error("Cannot create hinter for configuration {}\n:{}",configuration, e);
+    		throw e;
+    	}
+    }
 
 
 
