@@ -43,11 +43,11 @@ public class ExecutionResource {
         @QueryParam("workspace") String workspace,
         String body
     ) throws IOException {
-        if (body.startsWith("{")) {
+    	if (body == null || body.isEmpty()) {
+    		return executionManager.runWorkspace(Objects.requireNonNull(workspace));
+    	} else if (body.startsWith("{")) {
             Map<String,String> files = mapper.readValue(body, HashMap.class);
             return executionManager.runMultipleResources(files);
-        } else if (workspace != null && !workspace.isBlank()) {
-            return executionManager.runWorkspace(workspace);
         } else {
             Objects.requireNonNull(resourceType);
             return executionManager.runSingleResource(resourceType, body);

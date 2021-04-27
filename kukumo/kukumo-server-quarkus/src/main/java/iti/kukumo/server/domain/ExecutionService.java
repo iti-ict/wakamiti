@@ -103,6 +103,37 @@ public class ExecutionService {
 
 
 
+    public PlanNodeSnapshot analyzeSingleResource(String resourceType, String content) {
+        return analyze(
+            Configuration.fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
+            content
+        );
+    }
+
+
+    public PlanNodeSnapshot analyzeMultipleResources(Map<String,String> contents) throws IOException {
+        Path temporalWorkspace = Files.createTempDirectory("kukumo");
+        for (var fileContent : contents.entrySet()) {
+            Path file = temporalWorkspace.resolve(Path.of(fileContent.getKey()));
+            Files.writeString(file, fileContent.getValue());
+        }
+        return analyzeWorkspace(temporalWorkspace.toString());
+    }
+
+
+
+    public PlanNodeSnapshot analyzeWorkspace(String workspace) {
+    	validateWorkspace(workspace);
+        return analyze(
+            Configuration.fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
+            null
+        );
+    }
+
+
+
+
+
     private void validateWorkspace(String workspace) {
     	Path directory = Path.of(workspace);
     	if (!Files.exists(directory)) {
@@ -115,6 +146,7 @@ public class ExecutionService {
     		throw new KukumoException("Workspace {} is not readable", workspace);
     	}
     }
+
 
 
     private KukumoExecution run(Configuration configuration, @Null String content) {
@@ -141,6 +173,18 @@ public class ExecutionService {
             finishedExecutions.add(executionID);
         }
     }
+
+
+
+    private PlanNodeSnapshot analyze(Configuration configuration, @Null String content) {
+       	configuration = this.defaultConfiguration.append(configuration);
+        var plan = content == null ?
+            Kukumo.instance().createPlanFromConfiguration(configuration) :
+            Kukumo.instance().createPlanFromContent(configuration, IOUtils.toInputStream(content, StandardCharsets.UTF_8))
+        ;
+        return new PlanNodeSnapshot(plan);
+    }
+
 
 
     public Optional<KukumoExecution> getExecution(String executionID) throws IOException {
