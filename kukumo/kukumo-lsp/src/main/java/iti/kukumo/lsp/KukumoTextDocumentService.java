@@ -137,6 +137,20 @@ public class KukumoTextDocumentService implements TextDocumentService {
 
 
 
+    @Override
+    public CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> documentSymbol(
+		DocumentSymbolParams params
+	) {
+    	return FutureUtil.processEvent("textDocument.documentSymbol", params, x-> {
+        	var uri = params.getTextDocument().getUri();
+        	return workspace.documentSymbols(uri).stream()
+    			.map(Either::<SymbolInformation, DocumentSymbol>forRight)
+    			.collect(toList());
+    	});
+    }
+
+
+
     private Either<List<? extends Location>, List<? extends LocationLink>> resolveImplementationLink(
     	ImplementationParams params
 	) {

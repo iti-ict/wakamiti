@@ -392,5 +392,12 @@ public class GherkinDocumentMap {
 
 
 
+	public TextRange lineRangeWithoutKeyword(int lineNumber, String keyword) {
+		String line = document.extractLine(lineNumber);
+		return TextRange.of(lineNumber, line.indexOf(keyword)+1, lineNumber, line.length());
+	}
+
+
+
 
 }

@@ -169,9 +169,9 @@ public class GherkinDocumentAssessor {
 
     public synchronized GherkinDocumentAssessor updateDocument(TextRange range, String delta) {
     	boolean requiresParsing = documentMap.replace(range,delta);
-        if (parsingError != null || requiresParsing) {
+        //if (parsingError != null || requiresParsing) {
         	resetDocument(documentMap.rawContent());
-        }
+       // }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("{}{}{}",DOTS,documentMap.document().rawText(),DOTS);
         }
@@ -314,9 +314,21 @@ public class GherkinDocumentAssessor {
 
 
 
+	public List<DocumentSymbol> collectSymbols() {
+		if (parsedDocument == null || parsedDocument.getFeature() == null) {
+			return List.of();
+		}
+		return List.of(new SymbolCollector(this).collectSymbols(parsedDocument.getFeature()));
+	}
+
+
+
+
 	public int numberOfLines() {
 		return documentMap.document().numberOfLines();
 	}
+
+
 
 
 

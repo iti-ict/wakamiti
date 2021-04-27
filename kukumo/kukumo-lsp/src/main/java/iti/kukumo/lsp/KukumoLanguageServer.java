@@ -41,6 +41,7 @@ public class KukumoLanguageServer implements LanguageServer, LanguageClientAware
         capabilities.setImplementationProvider(true);
         capabilities.setDefinitionProvider(true);
         capabilities.setDocumentFormattingProvider(true);
+        capabilities.setDocumentSymbolProvider(true);
         return capabilities;
     }
 

@@ -111,17 +111,17 @@ public class GherkinWorkspace {
 
 
 
-
-
-
-
-
-
 	public List<CompletionItem> computeCompletions(String uri, Position position) {
 		return document(uri).collectCompletions(
 			position.getLine()- baseIndex,
 			position.getCharacter() - baseIndex
 		);
+	}
+
+
+
+	public List<DocumentSymbol> documentSymbols(String uri) {
+		return document(uri).collectSymbols();
 	}
 
 
@@ -176,6 +176,10 @@ public class GherkinWorkspace {
 	GherkinDocumentAssessor document(String uri) {
 		return documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,""));
 	}
+
+
+
+
 
 
 

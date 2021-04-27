@@ -76,7 +76,7 @@ public final class FutureUtil {
         return CompletableFuture
                 .completedFuture(LoggerUtil.logEntry(event, params))
                 .thenApply(loggingError(method))
-                .thenApply(response -> LoggerUtil.logEntry(event, response));
+                .thenApply(response -> LoggerUtil.logExit(event, response));
 
     }
 
@@ -86,7 +86,7 @@ public final class FutureUtil {
         return CompletableFuture
                 .completedFuture(LoggerUtil.logEntry(event, params))
                 .thenApply(loggingError(x -> method.get()))
-                .thenApply(response -> LoggerUtil.logEntry(event, response));
+                .thenApply(response -> LoggerUtil.logExit(event, response));
 
     }
 

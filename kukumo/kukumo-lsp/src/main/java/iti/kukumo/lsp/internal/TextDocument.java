@@ -152,5 +152,9 @@ public class TextDocument {
     	return new TextDocument(rawDocument);
     }
 
+	public TextRange wholeRange() {
+		return TextRange.of(0,0,numberOfLines(),0);
+	}
+
 
 }
