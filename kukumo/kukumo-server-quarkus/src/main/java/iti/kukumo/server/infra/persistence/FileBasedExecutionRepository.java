@@ -117,6 +117,16 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     }
 
 
+    @Override
+    public Instant prepareExecution(String executionID) {
+    	try {
+    		var dir = Files.createDirectory(Path.of(executionPath.orElseThrow()).resolve(executionID));
+    		return Files.getLastModifiedTime(dir).toInstant();
+    	} catch (IOException e) {
+            throw new KukumoException(e);
+        }
+    }
+
 
     private Predicate<File> toPredicate(ExecutionCriteria criteria) {
         Predicate<File> filter = x->true;

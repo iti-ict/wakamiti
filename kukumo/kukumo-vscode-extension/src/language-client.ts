@@ -11,15 +11,13 @@ import {
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import { PropertyError } from './property-error';
+import { PropertyError } from './shared/property-error';
+import * as settings from './shared/settings';
 
 
 
 const LANGUAGE_ID = 'kukumo-gherkin';
-const PROPERTIES_SECTION = 'kukumo.languageServer';
-const PROPERTY_CONNECTION_MODE = 'kukumo.languageServer.connectionMode';
-const PROPERTY_TCP_CONNECTION = 'kukumo.languageServer.TCPConnection';
-const PROPERTY_JAVA_PLUGIN_PATH = 'kukumo.languageServer.javaProcessPluginPath';
+
 
 const CONNECTION_MODE = {
     tcp: "TCP Connection",
@@ -83,9 +81,9 @@ function startLanguageClient(context: vscode.ExtensionContext) {
         client.stop();
     }
     try {
-        const connectionMode = vscode.workspace.getConfiguration().get(PROPERTY_CONNECTION_MODE, '');
+        const connectionMode = vscode.workspace.getConfiguration().get(settings.PROPERTY_CONNECTION_MODE, '');
         if (connectionMode === '') {
-            throw new PropertyError(PROPERTY_CONNECTION_MODE, 'not configured');
+            throw new PropertyError(settings.PROPERTY_CONNECTION_MODE, 'not configured');
         } else if (connectionMode === CONNECTION_MODE.tcp) {
             startTcpLanguageClient(context);
         } else if (connectionMode === CONNECTION_MODE.java) {
@@ -103,9 +101,9 @@ function startLanguageClient(context: vscode.ExtensionContext) {
 
 
 function startTcpLanguageClient(context: vscode.ExtensionContext) {
-    const tcpServer :string = vscode.workspace.getConfiguration().get(PROPERTY_TCP_CONNECTION, '');
+    const tcpServer :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_TCP_CONNECTION, '');
     if (tcpServer === '') {
-        throw new PropertyError(PROPERTY_TCP_CONNECTION, 'not configured');
+        throw new PropertyError(settings.PROPERTY_TCP_CONNECTION, 'not configured');
     }
     const [host, port] = tcpServer.split(':', 2);
 
@@ -122,12 +120,12 @@ function startTcpLanguageClient(context: vscode.ExtensionContext) {
 
 
 function startJavaProcessLanguageCLiente(context: vscode.ExtensionContext) {
-    const pluginsPath :string = vscode.workspace.getConfiguration().get(PROPERTY_JAVA_PLUGIN_PATH, '');
+    const pluginsPath :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_JAVA_PLUGIN_PATH, '');
     if (pluginsPath === '') {
-        throw new PropertyError(PROPERTY_JAVA_PLUGIN_PATH, 'not configured');
+        throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'not configured');
     }
     if (!fs.existsSync(pluginsPath)) {
-        throw new PropertyError(PROPERTY_JAVA_PLUGIN_PATH, 'path does not exist');
+        throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'path does not exist');
     }
     
     const languageClient = new LanguageClient(
@@ -161,11 +159,11 @@ function launchLanguageClient(languageCliente: LanguageClient, context: vscode.E
 function listenPropertiesChanges(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(event => {
-            if (!event.affectsConfiguration(PROPERTIES_SECTION)) {
+            if (!event.affectsConfiguration(settings.PROPERTIES_SECTION)) {
                 return;
             }
             console.log(`Property changed!`,event);
-            if (event.affectsConfiguration(PROPERTY_CONNECTION_MODE)) {
+            if (event.affectsConfiguration(settings.PROPERTY_CONNECTION_MODE)) {
                 console.log('Kukumo language server connection mode has change, restarting language client...');
                 if (client) {
                     client.stop().then(()=>startLanguageClient(context));

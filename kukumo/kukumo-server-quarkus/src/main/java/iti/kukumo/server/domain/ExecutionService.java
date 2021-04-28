@@ -2,18 +2,18 @@ package iti.kukumo.server.domain;
 
 
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -49,6 +49,10 @@ public class ExecutionService {
     @Inject
     ExecutionRepository executionRepository;
 
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
+
     private Configuration defaultConfiguration;
 
 
@@ -75,29 +79,32 @@ public class ExecutionService {
 	}
 
 
-    public KukumoExecution runSingleResource(String resourceType, String content) {
+    public KukumoExecution runSingleResource(String resourceType, String content, boolean async) {
         return run(
             Configuration.fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
-            content
+            content,
+            async
         );
     }
 
 
-    public KukumoExecution runMultipleResources(Map<String,String> contents) throws IOException {
+    public KukumoExecution runMultipleResources(Map<String,String> contents, boolean async)
+	throws IOException {
         Path temporalWorkspace = Files.createTempDirectory("kukumo");
         for (var fileContent : contents.entrySet()) {
             Path file = temporalWorkspace.resolve(Path.of(fileContent.getKey()));
             Files.writeString(file, fileContent.getValue());
         }
-        return runWorkspace(temporalWorkspace.toString());
+        return runWorkspace(temporalWorkspace.toString(), async);
     }
 
 
-    public KukumoExecution runWorkspace(String workspace) {
+    public KukumoExecution runWorkspace(String workspace, boolean async) {
     	validateWorkspace(workspace);
         return run(
             Configuration.fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
-            null
+            null,
+            async
         );
     }
 
@@ -149,30 +156,51 @@ public class ExecutionService {
 
 
 
-    private KukumoExecution run(Configuration configuration, @Null String content) {
+    private KukumoExecution run(Configuration configuration, @Null String content, boolean async) {
         String executionID = UUID.randomUUID().toString();
         runningExecutions.add(executionID);
-        try {
-        	configuration = this.defaultConfiguration
+        String instant = executionRepository.prepareExecution(executionID).toString();
+
+    	Configuration effectiveConfiguration = this.defaultConfiguration
 			.append(configuration)
-            .appendFromPairs(
-                KukumoConfiguration.EXECUTION_ID, executionID,
-        		KukumoConfiguration.GENERATE_OUTPUT_FILE, "false"
-            );
-            var plan = content == null ?
-                Kukumo.instance().createPlanFromConfiguration(configuration) :
-                Kukumo.instance().createPlanFromContent(configuration, IOUtils.toInputStream(content, StandardCharsets.UTF_8))
-            ;
-            aliveExecutions.put(executionID,plan);
-            var result = Kukumo.instance().executePlan(plan, configuration);
-            var execution = new KukumoExecution(new PlanNodeSnapshot(result));
-            executionRepository.saveExecution(execution);
-            return execution;
-        } finally {
+	        .appendFromPairs(
+	            KukumoConfiguration.EXECUTION_ID, executionID,
+	    		KukumoConfiguration.GENERATE_OUTPUT_FILE, "false"
+	        );
+
+        var plan = content == null ?
+            Kukumo.instance().createPlanFromConfiguration(effectiveConfiguration) :
+            Kukumo.instance().createPlanFromContent(effectiveConfiguration, toInputStream(content))
+        ;
+        if (async) {
+        	executorService.submit(()->run(executionID, plan, effectiveConfiguration));
+        	return new KukumoExecution(new PlanNodeSnapshot(plan), executionID, instant);
+        } else {
+        	return run(executionID, plan, effectiveConfiguration);
+        }
+
+    }
+
+
+
+
+
+
+	private KukumoExecution run(String executionID, PlanNode plan, Configuration configuration) {
+    	try {
+	    	aliveExecutions.put(executionID,plan);
+	        var result = Kukumo.instance().executePlan(plan, configuration);
+	        var execution = new KukumoExecution(new PlanNodeSnapshot(result));
+	        executionRepository.saveExecution(execution);
+	        return execution;
+    	} finally {
             runningExecutions.remove(executionID);
             finishedExecutions.add(executionID);
         }
     }
+
+
+
 
 
 
@@ -214,5 +242,9 @@ public class ExecutionService {
                 .collect(Collectors.toList());
     }
 
+
+    private InputStream toInputStream(@Null String content) {
+    	return IOUtils.toInputStream(content, StandardCharsets.UTF_8);
+	}
 
 }

@@ -1,6 +1,7 @@
 package iti.kukumo.server.domain.model;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -29,17 +30,37 @@ public class KukumoExecution {
     }
 
 
+    private String executionID;
+    private String instant;
     @JsonSerialize(using = SnapshotSerializer.class)
     private PlanNodeSnapshot data;
 
 
+
+
     public KukumoExecution(PlanNodeSnapshot data) {
+        this(data, data.getExecutionID(), data.getStartInstant());
+    }
+
+
+    public KukumoExecution(PlanNodeSnapshot data, String executionID, String instant) {
         this.data = data;
+        this.executionID = executionID;
+        this.instant = instant.toString();
     }
 
 
     public PlanNodeSnapshot getData() {
 		return data;
 	}
+
+
+    public String getExecutionID() {
+    	return executionID;
+    }
+
+    public String getInstant() {
+    	return instant;
+    }
 
 }

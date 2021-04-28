@@ -99,8 +99,73 @@
 				"command": "kukumo.reconnectLanguageServer",
 				"title": "(Re)Connect to Kukumo Language Server",
 				"icon": "$(sync)"
+			},
+			{
+				"command": "kukumo.overview.refresh",
+				"title": "Refresh",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "kukumo.executions.refresh",
+				"title": "Refresh",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "kukumo.executions.run",
+				"title": "Run Test Plan",
+				"icon": "$(run)"
 			}
-		]
+		],
+	    "viewsContainers": {
+			"activitybar" : [
+				{
+					"id": "kukumo-test-plan",
+					"title": "Test Plan",
+					"icon": "resources/kukumo.svg"
+				}
+			]
+		},
+		"views": {
+			"kukumo-test-plan" : [
+				{
+					"id": "kukumo-plan-overview",
+					"name": "Overview",
+					"icon": "resources/kukumo.svg",
+					"contextualTitle": "Test Plan Overview",
+					"visibility": "visible"
+				},
+				{
+					"id": "kukumo-executions",
+					"name": "Executions",
+					"icon": "resources/kukumo.svg",
+					"contextualTitle": "Test Plan Executions",
+					"visibility": "visible"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "kukumo.overview.refresh",
+					"when": "view == kukumo-plan-overview",
+					"group": "navigation"
+				},
+				{
+					"command": "kukumo.executions.run",
+					"when": "view == kukumo-plan-overview",
+					"group": "navigation"
+				},
+				{
+					"command": "kukumo.executions.refresh",
+					"when": "view == kukumo-executions",
+					"group": "navigation"
+				}
+			]
+		}
+		
+
+
+		
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

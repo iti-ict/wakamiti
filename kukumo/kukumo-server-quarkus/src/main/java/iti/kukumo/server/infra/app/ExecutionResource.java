@@ -41,18 +41,31 @@ public class ExecutionResource {
 	public KukumoExecution run(
         @QueryParam("resourceType") String resourceType,
         @QueryParam("workspace") String workspace,
+        @QueryParam("async") Boolean async,
         String body
     ) throws IOException {
+
     	if (body == null || body.isEmpty()) {
-    		return executionManager.runWorkspace(Objects.requireNonNull(workspace));
+    		return executionManager.runWorkspace(
+				Objects.requireNonNull(workspace),
+				Objects.requireNonNullElse(async, false)
+			);
     	} else if (body.startsWith("{")) {
             Map<String,String> files = mapper.readValue(body, HashMap.class);
-            return executionManager.runMultipleResources(files);
+            return executionManager.runMultipleResources(
+        		files,
+        		Objects.requireNonNullElse(async, false)
+    		);
         } else {
             Objects.requireNonNull(resourceType);
-            return executionManager.runSingleResource(resourceType, body);
+            return executionManager.runSingleResource(
+        		resourceType,
+        		body,
+        		Objects.requireNonNullElse(async, false)
+    		);
         }
     }
+
 
 
     @GET
