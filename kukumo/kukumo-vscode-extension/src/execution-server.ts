@@ -26,7 +26,7 @@ export function requestAnalyze(): Promise<PlanNodeSnapshot> {
 }
 
 
-export function launchExecution(): Promise<PlanNodeSnapshot> {
+export function launchExecution(): Promise<Execution> {
     if (!vscode.workspace.workspaceFolders) {
         return Promise.reject('There is no workspace opened');
     }
@@ -35,10 +35,10 @@ export function launchExecution(): Promise<PlanNodeSnapshot> {
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
     if (localWorkspace) {
-        return http.post<PlanNodeSnapshot>(host,port,`executions?async=true&workspace=${workspaceFolder.uri.path}`);
+        return http.post<Execution>(host,port,`executions?async=true&workspace=${workspaceFolder.uri.path}`);
     } else {
         return readWorkspaceContents().then(workspaceContents => 
-            http.post<PlanNodeSnapshot>(host,port,`executions?async=true&contentType=gherkin`, workspaceContents)
+            http.post<Execution>(host,port,`executions?async=true&contentType=gherkin`, workspaceContents)
         );
     }
 }

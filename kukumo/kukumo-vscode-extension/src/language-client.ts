@@ -47,179 +47,188 @@ const LANGUAGE_CLIENT_OPTIONS : LanguageClientOptions = {
     progressOnInitialization: true
 };
 
-const STATUS_BAR_TEXT_OFFLINE = 'KLS 🔌';
-const STATUS_BAR_TEXT_ONLINE = 'KLS 🗸';
+const STATUS_BAR_TEXT_OFFLINE = 'KLS ⮔';
+const STATUS_BAR_TEXT_ONLINE = 'KLS ⭾';
+const STATUS_BAR_TOOLTIP_OFFLINE = 'Not connected with Kukumo Language Server, press to re-try';
+const STATUS_BAR_TOOLTIP_ONLINE = 'Connected with Kukumo Language Server';
 
 var client: LanguageClient;
-var statusBar: vscode.StatusBarItem;
-
-export function start(context: vscode.ExtensionContext) {    
-    statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
-    statusBar.text = STATUS_BAR_TEXT_OFFLINE;
-    statusBar.command = 'kukumo.reconnectLanguageServer';
-    statusBar.tooltip = 'Connection with Kukumo Language Server';
-    statusBar.show();
-    listenPropertiesChanges(context);
-    registerCommands(context);
-    startLanguageClient(context);
-}
 
 
 
-function registerCommands(context: vscode.ExtensionContext) {
-	context.subscriptions.push(
-		vscode.commands.registerCommand(
-			'kukumo.reconnectLanguageServer',
-			() => startLanguageClient(context)
-	    )
-    );
-}
+export class KukumoLanguageClient {
 
+    readonly context: vscode.ExtensionContext;
+    readonly connectionStatus: vscode.StatusBarItem;
+    client: LanguageClient | null = null;
 
-function startLanguageClient(context: vscode.ExtensionContext) {
-    if (client) {
-        client.stop();
+    constructor(context: vscode.ExtensionContext, reconnectCommand: string) {    
+        this.context = context;
+        this.connectionStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+        this.connectionStatus.text = STATUS_BAR_TEXT_OFFLINE;
+        this.connectionStatus.command = reconnectCommand;
+        this.connectionStatus.tooltip = STATUS_BAR_TOOLTIP_OFFLINE;
+        this.connectionStatus.show();
+        this.listenPropertiesChanges();
+        this.start();
     }
-    try {
-        const connectionMode = vscode.workspace.getConfiguration().get(settings.PROPERTY_CONNECTION_MODE, '');
-        if (connectionMode === '') {
-            throw new PropertyError(settings.PROPERTY_CONNECTION_MODE, 'not configured');
-        } else if (connectionMode === CONNECTION_MODE.tcp) {
-            startTcpLanguageClient(context);
-        } else if (connectionMode === CONNECTION_MODE.java) {
-            startJavaProcessLanguageCLiente(context);
+
+
+
+    public start() {
+        if (client) {
+            client.stop();
         }
-    } catch (error) {
-        if (error instanceof PropertyError) {
-            error.showError();
-        } else {
-            vscode.window.showErrorMessage(`${error}`);
-        }
-    }
-}
-
-
-
-function startTcpLanguageClient(context: vscode.ExtensionContext) {
-    const tcpServer :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_TCP_CONNECTION, '');
-    if (tcpServer === '') {
-        throw new PropertyError(settings.PROPERTY_TCP_CONNECTION, 'not configured');
-    }
-    const [host, port] = tcpServer.split(':', 2);
-
-    const languageClient = new LanguageClient(
-        'kukumo-languange-client', 
-        'Kukumo Language Server Client', 
-        () => tcpServerProvider(context, host, parseInt(port)),
-        LANGUAGE_CLIENT_OPTIONS
-    );
-    launchLanguageClient(languageClient, context);
-}
-
-
-
-
-function startJavaProcessLanguageCLiente(context: vscode.ExtensionContext) {
-    const pluginsPath :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_JAVA_PLUGIN_PATH, '');
-    if (pluginsPath === '') {
-        throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'not configured');
-    }
-    if (!fs.existsSync(pluginsPath)) {
-        throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'path does not exist');
-    }
-    
-    const languageClient = new LanguageClient(
-        'kukumo-languange-client', 
-        'Kukumo Language Server Client', 
-        () => runLanguageServerAsJavaProcess(pluginsPath),
-        LANGUAGE_CLIENT_OPTIONS
-    );
-    // languageClient.handleFailedRequest = ( (type, error, defaultValue)=> {
-    //     console.log('Failed request',type,error,defaultValue);
-    //     return defaultValue;
-    // });
-    launchLanguageClient(languageClient, context);
-    
-}
-
-
-function launchLanguageClient(languageCliente: LanguageClient, context: vscode.ExtensionContext) {
-    console.log("Starting Kukumo language client...");
-    languageCliente.onReady().then(() => {
-        console.log('Kukumo language client ready');
-        statusBar.text = STATUS_BAR_TEXT_ONLINE;
-    });
-    context.subscriptions.push( 
-        languageCliente.start() 
-    );
-    client = languageCliente;
-}
-
-
-function listenPropertiesChanges(context: vscode.ExtensionContext) {
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeConfiguration(event => {
-            if (!event.affectsConfiguration(settings.PROPERTIES_SECTION)) {
-                return;
-            }
-            console.log(`Property changed!`,event);
-            if (event.affectsConfiguration(settings.PROPERTY_CONNECTION_MODE)) {
-                console.log('Kukumo language server connection mode has change, restarting language client...');
-                if (client) {
-                    client.stop().then(()=>startLanguageClient(context));
-                }
-            }
-        })
-    );
-}
-
-
-
-
-
-function tcpServerProvider(context: vscode.ExtensionContext, host: string, port: number) : Promise<StreamInfo> {
-    return new Promise((resolve, reject) => {
         try {
-            console.log(`Connecting to Kukumo TCP language server ${host}:${port} ...`);
-            var socketClient = new net.Socket();
-
-            socketClient.addListener('error', error => notifyConnectionLost(context,error));
-            socketClient.addListener('timeout', () => notifyConnectionLost(context));
-            socketClient.addListener('close', () => notifyConnectionLost(context));
-
-            socketClient.connect(
-                port, 
-                host, 
-                () => console.info('Connected to Kukumo language server.')
-            );
-            const streamInfo = {
-                writer: socketClient,
-                reader: socketClient,
-                detached: false
-            };
-            resolve(streamInfo);
+            const connectionMode = vscode.workspace.getConfiguration().get(settings.PROPERTY_CONNECTION_MODE, '');
+            if (connectionMode === '') {
+                throw new PropertyError(settings.PROPERTY_CONNECTION_MODE, 'not configured');
+            } else if (connectionMode === CONNECTION_MODE.tcp) {
+                this.startTcpLanguageClient();
+            } else if (connectionMode === CONNECTION_MODE.java) {
+                this.startJavaProcessLanguageCLiente();
+            }
+        } catch (error) {
+            if (error instanceof PropertyError) {
+                error.showError();
+            } else {
+                vscode.window.showErrorMessage(`${error}`);
+            }
         }
-        catch (error) {
-            console.error('Error connecting to Kukumo TCP language server', error);
-            reject(error);
+    }
+
+
+    private startTcpLanguageClient() {
+        const tcpServer :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_TCP_CONNECTION, '');
+        if (tcpServer === '') {
+            throw new PropertyError(settings.PROPERTY_TCP_CONNECTION, 'not configured');
         }
-    });
+        const [host, port] = tcpServer.split(':', 2);
+    
+        const languageClient = new LanguageClient(
+            'kukumo-languange-client', 
+            'Kukumo Language Server Client', 
+            () => this.tcpServerProvider(host, parseInt(port)),
+            LANGUAGE_CLIENT_OPTIONS
+        );
+        this.launchLanguageClient(languageClient);
+    }
+    
+
+
+
+    private startJavaProcessLanguageCLiente() {
+
+        const pluginsPath :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_JAVA_PLUGIN_PATH, '');
+        if (pluginsPath === '') {
+            throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'not configured');
+        }
+        if (!fs.existsSync(pluginsPath)) {
+            throw new PropertyError(settings.PROPERTY_JAVA_PLUGIN_PATH, 'path does not exist');
+        }
+        
+        const languageClient = new LanguageClient(
+            'kukumo-languange-client', 
+            'Kukumo Language Server Client', 
+            () => runLanguageServerAsJavaProcess(pluginsPath),
+            LANGUAGE_CLIENT_OPTIONS
+        );
+        // languageClient.handleFailedRequest = ( (type, error, defaultValue)=> {
+        //     console.log('Failed request',type,error,defaultValue);
+        //     return defaultValue;
+        // });
+        this.launchLanguageClient(languageClient);
+        
+    }
+
+
+    private launchLanguageClient(newClient: LanguageClient) {
+        console.log("Starting Kukumo language client...");
+        newClient.onReady().then(() => {
+            console.log('Kukumo language client ready');
+            this.connectionStatus.text = STATUS_BAR_TEXT_ONLINE;
+            this.connectionStatus.tooltip = STATUS_BAR_TOOLTIP_ONLINE;
+        });
+        this.context.subscriptions.push( 
+            newClient.start() 
+        );
+        this.client = newClient;
+    }
+
+
+
+    private listenPropertiesChanges() {
+        this.context.subscriptions.push(
+            vscode.workspace.onDidChangeConfiguration(event => {
+                if (!event.affectsConfiguration(settings.PROPERTIES_SECTION)) {
+                    return;
+                }
+                console.log(`Property changed!`,event);
+                if (event.affectsConfiguration(settings.PROPERTY_CONNECTION_MODE)) {
+                    console.log('Kukumo language server connection mode has change, restarting language client...');
+                    if (client) {
+                        client.stop().then(()=>this.start());
+                    }
+                }
+            })
+        );
+    }
+
+
+
+    private tcpServerProvider(host: string, port: number) : Promise<StreamInfo> {
+        return new Promise((resolve, reject) => {
+            try {
+                console.log(`Connecting to Kukumo TCP language server ${host}:${port} ...`);
+                var socketClient = new net.Socket();
+    
+                socketClient.addListener('error', error => this.notifyConnectionLost(error));
+                socketClient.addListener('timeout', () => this.notifyConnectionLost());
+                socketClient.addListener('close', () => this.notifyConnectionLost());
+    
+                socketClient.connect(
+                    port, 
+                    host, 
+                    () => console.info('Connected to Kukumo language server.')
+                );
+                const streamInfo = {
+                    writer: socketClient,
+                    reader: socketClient,
+                    detached: false
+                };
+                resolve(streamInfo);
+            }
+            catch (error) {
+                console.error('Error connecting to Kukumo TCP language server', error);
+                reject(error);
+            }
+        });
+    }
+
+
+    private notifyConnectionLost(error? : Error) {
+        console.log('Connection closed', error);
+        this.connectionStatus.text = STATUS_BAR_TEXT_OFFLINE;
+        this.connectionStatus.tooltip = STATUS_BAR_TOOLTIP_OFFLINE;
+        this.client?.stop();
+        vscode.window.showWarningMessage(
+            'Connection with language server closed',
+            'Reconnect'
+        ).then( action => {
+            if (action === 'Reconnect' ) {
+                this.start();
+            } 
+        });
+    }
+    
+
+
 }
 
 
-function notifyConnectionLost(context: vscode.ExtensionContext, error? : Error) {
-    console.log('Connection closed', error);
-    statusBar.text = STATUS_BAR_TEXT_OFFLINE;
-    client.stop();
-    vscode.window.showWarningMessage(
-        'Connection with language server closed',
-        'Reconnect'
-    ).then( action => {
-        if (action === 'Reconnect' ) {
-            startLanguageClient(context);
-        } 
-    });
-}
+
+
+
 
 
 function onLanguageClientInitializacionFailed(error: any) {

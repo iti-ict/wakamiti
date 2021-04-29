@@ -96,22 +96,22 @@
 		],
 		"commands": [
 			{
-				"command": "kukumo.reconnectLanguageServer",
+				"command": "kukumo.commands.reconnectLanguageServer",
 				"title": "(Re)Connect to Kukumo Language Server",
 				"icon": "$(sync)"
 			},
 			{
-				"command": "kukumo.overview.refresh",
+				"command": "kukumo.commands.planOverview.refresh",
 				"title": "Refresh",
 				"icon": "$(sync)"
 			},
 			{
-				"command": "kukumo.executions.refresh",
+				"command": "kukumo.commands.executions.refresh",
 				"title": "Refresh",
 				"icon": "$(sync)"
 			},
 			{
-				"command": "kukumo.executions.run",
+				"command": "kukumo.commands.executions.run",
 				"title": "Run Test Plan",
 				"icon": "$(run)"
 			}
@@ -119,23 +119,23 @@
 	    "viewsContainers": {
 			"activitybar" : [
 				{
-					"id": "kukumo-test-plan",
+					"id": "kukumo",
 					"title": "Test Plan",
 					"icon": "resources/kukumo.svg"
 				}
 			]
 		},
 		"views": {
-			"kukumo-test-plan" : [
+			"kukumo" : [
 				{
-					"id": "kukumo-plan-overview",
+					"id": "kukumo.views.planOverview",
 					"name": "Overview",
 					"icon": "resources/kukumo.svg",
 					"contextualTitle": "Test Plan Overview",
 					"visibility": "visible"
 				},
 				{
-					"id": "kukumo-executions",
+					"id": "kukumo.views.executions",
 					"name": "Executions",
 					"icon": "resources/kukumo.svg",
 					"contextualTitle": "Test Plan Executions",
@@ -146,18 +146,18 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "kukumo.overview.refresh",
-					"when": "view == kukumo-plan-overview",
+					"command": "kukumo.commands.planOverview.refresh",
+					"when": "view == kukumo.views.planOverview",
 					"group": "navigation"
 				},
 				{
-					"command": "kukumo.executions.run",
-					"when": "view == kukumo-plan-overview",
+					"command": "kukumo.commands.executions.run",
+					"when": "view == kukumo.views.planOverview",
 					"group": "navigation"
 				},
 				{
-					"command": "kukumo.executions.refresh",
-					"when": "view == kukumo-executions",
+					"command": "kukumo.commands.executions.refresh",
+					"when": "view == kukumo.views.executions",
 					"group": "navigation"
 				}
 			]
