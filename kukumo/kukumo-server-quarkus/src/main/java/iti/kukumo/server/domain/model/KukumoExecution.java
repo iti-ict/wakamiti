@@ -31,7 +31,7 @@ public class KukumoExecution {
 
 
     private String executionID;
-    private String instant;
+    private String executionInstant;
     @JsonSerialize(using = SnapshotSerializer.class)
     private PlanNodeSnapshot data;
 
@@ -46,7 +46,7 @@ public class KukumoExecution {
     public KukumoExecution(PlanNodeSnapshot data, String executionID, String instant) {
         this.data = data;
         this.executionID = executionID;
-        this.instant = instant.toString();
+        this.executionInstant = instant;
     }
 
 
@@ -59,8 +59,8 @@ public class KukumoExecution {
     	return executionID;
     }
 
-    public String getInstant() {
-    	return instant;
+    public String getExecutionInstant() {
+    	return executionInstant;
     }
 
 }

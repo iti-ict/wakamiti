@@ -31,7 +31,7 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
     private static final String OUTPUT_FILE = "kukumo.json";
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedExecutionRepository.class);
-    private static final Comparator<File> FILE_COMPARATOR = Comparator.comparing(File::lastModified);
+    private static final Comparator<File> FILE_COMPARATOR = Comparator.comparing(File::lastModified).reversed();
 
     @ConfigProperty(name = "kukumo.executions.path")
     Optional<String> executionPath;
@@ -102,9 +102,8 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
     @Override
     public void removeOldExecutions(int age) {
-        var executionFolders = executionFiles()
-                .filter(file -> lastModified(file).isBefore(LocalDateTime.now().minusDays(age)))
-                .map(File::getParentFile)
+        var executionFolders = executionFolders()
+                .filter(folder -> lastModified(folder).isBefore(LocalDateTime.now().minusDays(age)))
                 .collect(Collectors.toList());
         for (File executionFolder : executionFolders) {
             try {
@@ -157,6 +156,17 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     }
 
 
+    private Optional<KukumoExecution> readOutputFileInExecutionFolder (Path folder) {
+        try {
+            return Optional.of(
+        		new KukumoExecution(Kukumo.planSerializer().read(folder.resolve(OUTPUT_FILE)))
+    		);
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+
     private void writeFile (KukumoExecution execution, Path file) {
         try {
         	Files.createDirectories(file.getParent());
@@ -167,19 +177,18 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     }
 
 
-    private Stream<File> executionFiles() {
+    private Stream<File> executionFolders() {
         try {
-            return Files.walk(executionPath.map(Path::of).orElseThrow())
-                    .map(Path::toFile)
-                    .filter(file -> file.getName().equals(OUTPUT_FILE));
+            return Files.walk(executionPath.map(Path::of).orElseThrow(), 1)
+                .map(Path::toFile);
         } catch (IOException e) {
             throw new KukumoException(e);
         }
     }
 
 
-    private Stream<File> filteredExecutionFiles(Predicate<File> predicate, int skip, int limit) {
-        return executionFiles()
+    private Stream<File> filteredExecutionFolders(Predicate<File> predicate, int skip, int limit) {
+        return executionFolders()
         		.filter(predicate)
                 .sorted(FILE_COMPARATOR)
                 .skip(skip)
@@ -189,18 +198,18 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
 
     private List<KukumoExecution> findExecutions(Predicate<File> predicate, int skip, int limit) {
-        return filteredExecutionFiles(predicate,skip,limit)
-                .map(File::toPath)
-                .map(this::readFile)
-                .collect(Collectors.toList());
+        return filteredExecutionFolders(predicate,skip,limit)
+            .map(File::toPath)
+            .map(this::readOutputFileInExecutionFolder)
+            .flatMap(Optional::stream)
+            .collect(Collectors.toList());
     }
 
 
     private List<String> findExecutionIDs(Predicate<File> predicate, int skip, int limit) {
-        return filteredExecutionFiles(predicate,skip,limit)
-                .map(File::getParentFile)
-                .map(File::getName)
-                .collect(Collectors.toList());
+        return filteredExecutionFolders(predicate,skip,limit)
+            .map(File::getName)
+            .collect(Collectors.toList());
     }
 
 
