@@ -52,6 +52,7 @@ class DataProvider implements vscode.TreeDataProvider<PlanNodeSnapshot> {
             if (this.executionID) {
                 return executionServer
                     .retrieveExecution(this.executionID)
+                    .then ( execution => checkPendingStatus(execution, ()=> this.eventEmitter.fire() ) )
                     .then( execution => [execution.data!!] );
             } else {
                 return null;
@@ -64,6 +65,24 @@ class DataProvider implements vscode.TreeDataProvider<PlanNodeSnapshot> {
 
 
 
+function checkPendingStatus(execution: Execution, callback: ()=>void): Execution {
+    const pending = execution.data ? hasPendingStatus(execution.data) : true;
+    if (pending) {
+        setTimeout(callback, 1000);
+    }
+    return execution;
+}
+
+
+function hasPendingStatus(node: PlanNodeSnapshot): boolean {
+    if (!node.result) {
+        return true;
+    } else if (node.children) {
+        return node.children.map( child => hasPendingStatus(child) ).reduce( (a,b) => a || b);
+    } else {
+        return false;
+    }
+}
 
 
 class ExecutablePlanNodeTreeItem extends PlanNodeTreeItem {
@@ -82,9 +101,9 @@ class ExecutablePlanNodeTreeItem extends PlanNodeTreeItem {
 function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {
     if (node.children === undefined || node.children.length === 0) {
         return vscode.TreeItemCollapsibleState.None;
-    } else if (node.result && node.result ===  'PASSED') {
-        return vscode.TreeItemCollapsibleState.Collapsed;
-    } else {
+    } else if (node.nodeType === 'AGGREGATOR' || (node.result && (node.result ===  'ERROR' || node.result === 'FAILED'))) {
         return vscode.TreeItemCollapsibleState.Expanded;
+    } else {
+        return vscode.TreeItemCollapsibleState.Collapsed;
     }
 }
