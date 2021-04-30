@@ -80,10 +80,6 @@ class ExecutedPlanNodeTreeItem extends PlanNodeTreeItem {
         super(node);
         this.collapsibleState = collapsibleState(node);
         this.iconPath = resources.images.iconByNodeTypeAndResult(node, __filename);
-        if (node.nodeType === 'STEP' && node.errorMessage) {
-            this.tooltip = node.errorMessage;
-            this.contextValue = 'stepWithError';
-        }
         this.description = `${this.description ?? ''} | ${node.result}`;
     }
 

@@ -123,7 +123,17 @@
 			{
 				"command": "kukumo.commands.executions.showError",
 				"title": "Error details",
-				"icon": "$(search)"
+				"icon": "$(info)"
+			},
+			{
+				"command": "kukumo.commands.executions.showStepDocument",
+				"title": "Show Embedded document ",
+				"icon": "$(output)"
+			},
+			{
+				"command": "kukumo.commands.executions.showStepDataTable",
+				"title": "Show Data table ",
+				"icon": "$(calendar)"
 			}
 		],
 	    "viewsContainers": {
@@ -184,11 +194,23 @@
 				}
 			],
 			"view/item/context": [
+			
+				{
+					"command": "kukumo.commands.executions.showStepDocument",
+					"when": "viewItem =~ /.*stepWithDocument.*/",
+					"group": "inline"
+				},
+				{
+					"command": "kukumo.commands.executions.showStepDataTable",
+					"when": "viewItem =~ /.*stepWithDataTable.*/",
+					"group": "inline"
+				},
 				{
 					"command": "kukumo.commands.executions.showError",
-					"when": "viewItem == stepWithError",
+					"when": "viewItem =~ /.*stepWithError.*/",
 					"group": "inline"
-				}			
+				}
+				
 			],
 			"editor/title": [
 			    {
@@ -227,5 +249,8 @@
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
 		"vscode-test": "^1.5.0"
-	}
+	},
+	"extensionDependencies": [
+		"GrapeCity.gc-excelviewer"
+	]
 }

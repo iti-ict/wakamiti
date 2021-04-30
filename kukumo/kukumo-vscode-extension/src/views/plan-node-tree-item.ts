@@ -10,6 +10,17 @@ export class PlanNodeTreeItem extends vscode.TreeItem {
         super(displayName(node) ?? '', collapsibleState(node));
         this.description = description(node);
         this.iconPath = resources.images.iconByNodeType(node, __filename);
+        const contexts = [];
+        if (node.errorMessage) {
+            contexts.push('stepWithError');
+        }
+        if (node.dataTable) {
+            contexts.push('stepWithDataTable');
+        }
+        if (node.document) {
+            contexts.push('stepWithDocument');
+        }
+        this.contextValue = contexts.join(',');
     }
 
 }
@@ -42,7 +53,9 @@ function displayName(node: PlanNodeSnapshot): string | vscode.TreeItemLabel | un
 }
 
 function description(node: PlanNodeSnapshot): string | undefined {
-    if (node.nodeType === 'STEP_AGGREGATOR' || node.nodeType === 'STEP' || node.nodeType === 'VIRTUAL_STEP') {
+    if (node.nodeType === 'STEP' && (node.dataTable || node.document)) {
+        return '...';
+    } else if (node.nodeType === 'STEP' || node.nodeType === 'STEP_AGGREGATOR' || node.nodeType === 'VIRTUAL_STEP') {
         return undefined;
     } else {
         return node.keyword ?? '';
