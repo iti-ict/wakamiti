@@ -1,22 +1,22 @@
 import * as vscode from 'vscode';
 import * as executionServer from '../execution-server';
+import { KukumoLanguageClient } from '../language-client';
 import { Execution } from '../model/Execution';
 import { PlanNodeSnapshot } from '../model/PlanNodeSnapshot';
-import { ExecutionTreeDataProvider } from '../shared/execution-tree-data-provider';
-import { PlanNodeTreeDataProvider } from '../shared/plan-node-tree-data-provider';
 import * as resources from '../shared/resources';
+import { PlanNodeTreeItem } from './plan-node-tree-item';
 
 
-export class ExecutionsView {
+export class ExecutionHistoryView {
     
-    public static readonly viewID = 'kukumo.views.executions';
+    public static readonly viewID = 'kukumo.views.executions.history';
 
     readonly dataProvider = new DataProvider();
 
     constructor(context: vscode.ExtensionContext) {
         context.subscriptions.push( 
             vscode.window.createTreeView(
-                ExecutionsView.viewID,
+                ExecutionHistoryView.viewID,
                 { treeDataProvider: this.dataProvider }
             )
         );
@@ -24,11 +24,6 @@ export class ExecutionsView {
 
     public refresh() {
         this.dataProvider.eventEmitter.fire();
-    }
-
-    public runTestPlan() {
-        executionServer.launchExecution()
-        .then( () => this.refresh() );
     }
 
 }
@@ -44,7 +39,7 @@ class DataProvider implements vscode.TreeDataProvider<Execution | PlanNodeSnapsh
         if (isExecution(node)) {
             return new ExecutionTreeItem(node as Execution);
         } else {
-            return new PlanNodeTreeItem(node as PlanNodeSnapshot);
+            return new ExecutedPlanNodeTreeItem(node as PlanNodeSnapshot);
         }
     }
 
@@ -63,7 +58,8 @@ class DataProvider implements vscode.TreeDataProvider<Execution | PlanNodeSnapsh
 
 
 function isExecution(object: Execution | PlanNodeSnapshot): boolean {
-    return '["executionID","instant","data"]' === JSON.stringify(Object.keys(object));
+    const keys = Object.keys(object);
+    return keys.includes('executionID') && keys.includes('executionInstant');
 }
 
 
@@ -72,38 +68,23 @@ class ExecutionTreeItem extends vscode.TreeItem {
 
     constructor(public node: Execution) {
         super(node.data?.displayName ?? '', vscode.TreeItemCollapsibleState.Collapsed);
-        this.description = node.instant;
-        this.id = node.executionID;
-        if (node.data?.result) {
-            if (node.data.result === 'PASSED') {
-                this.iconPath = resources.images.passed(__filename);
-            } else {
-                this.iconPath = resources.images.error(__filename);
-            }
-        } else {
-            this.iconPath = resources.images.pending(__filename);
-        }
-        
-        
+        this.description = node.executionInstant;
+        this.iconPath = resources.images.iconByNodeTypeAndResult(node.data, __filename);     
     }
 
 }
 
-class PlanNodeTreeItem extends vscode.TreeItem {
+class ExecutedPlanNodeTreeItem extends PlanNodeTreeItem {
 
     constructor(public node: PlanNodeSnapshot) {
-        super(node.displayName ?? '', collapsibleState(node));
-        this.description = node.nodeType ?? false;
-        this.id = `${node.executionID}/${node.id}`;
-        if (node.result) {
-            if (node.result === 'PASSED') {
-                this.iconPath = resources.images.passed(__filename);
-            } else {
-                this.iconPath = resources.images.error(__filename);
-            }
-        } else {
-            this.iconPath = resources.images.pending(__filename);
+        super(node);
+        this.collapsibleState = collapsibleState(node);
+        this.iconPath = resources.images.iconByNodeTypeAndResult(node, __filename);
+        if (node.nodeType === 'STEP' && node.errorMessage) {
+            this.tooltip = node.errorMessage;
+            this.contextValue = 'stepWithError';
         }
+        this.description = `${this.description ?? ''} | ${node.result}`;
     }
 
 }
@@ -113,7 +94,7 @@ class PlanNodeTreeItem extends vscode.TreeItem {
 function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {
     if (node.children === undefined || node.children.length === 0) {
         return vscode.TreeItemCollapsibleState.None;
-    } else if (node.nodeType === 'TEST_CASE') {
+    } else if (node.result && (node.result ===  'PASSED' || node.result === 'SKIPPED')) {
         return vscode.TreeItemCollapsibleState.Collapsed;
     } else {
         return vscode.TreeItemCollapsibleState.Expanded;

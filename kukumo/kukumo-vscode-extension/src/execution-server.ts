@@ -58,6 +58,7 @@ export function retrieveExecution(executionID: string): Promise<Execution> {
 
 
 
+
 function getHostAndPort() {
     const url: String = vscode.workspace.getConfiguration().get(settings.EXECUTION_SERVER_URL, '');
     if (url === '') {

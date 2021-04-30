@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import * as executionServer from '../execution-server';
 import { PlanNodeSnapshot } from '../model/PlanNodeSnapshot';
+import * as resources from '../shared/resources';
+import { PlanNodeTreeItem } from './plan-node-tree-item';
 
 
 export class PlanOverviewView {
@@ -16,6 +18,7 @@ export class PlanOverviewView {
                 { treeDataProvider: this.dataProvider }
             )
         );
+        this.refresh();
     }
 
     
@@ -59,24 +62,3 @@ class DataProvider implements vscode.TreeDataProvider<PlanNodeSnapshot> {
 }
 
 
-class PlanNodeTreeItem extends vscode.TreeItem {
-
-    constructor(public node: PlanNodeSnapshot) {
-        super(node.displayName ?? '', collapsibleState(node));
-        this.description = node.nodeType ?? false;
-        this.id = node.id;
-    }
-
-}
-
-
-
-function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {
-    if (node.children === undefined || node.children.length === 0) {
-        return vscode.TreeItemCollapsibleState.None;
-    } else if (node.nodeType === 'TEST_CASE') {
-        return vscode.TreeItemCollapsibleState.Collapsed;
-    } else {
-        return vscode.TreeItemCollapsibleState.Expanded;
-    }
-}

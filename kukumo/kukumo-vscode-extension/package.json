@@ -106,7 +106,12 @@
 				"icon": "$(sync)"
 			},
 			{
-				"command": "kukumo.commands.executions.refresh",
+				"command": "kukumo.commands.executions.history.refresh",
+				"title": "Refresh",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "kukumo.commands.executions.current.refresh",
 				"title": "Refresh",
 				"icon": "$(sync)"
 			},
@@ -114,6 +119,11 @@
 				"command": "kukumo.commands.executions.run",
 				"title": "Run Test Plan",
 				"icon": "$(run)"
+			},
+			{
+				"command": "kukumo.commands.executions.showError",
+				"title": "Error details",
+				"icon": "$(search)"
 			}
 		],
 	    "viewsContainers": {
@@ -131,14 +141,21 @@
 					"id": "kukumo.views.planOverview",
 					"name": "Overview",
 					"icon": "resources/kukumo.svg",
-					"contextualTitle": "Test Plan Overview",
+					"contextualTitle": "Kukumo - Test Plan Overview",
 					"visibility": "visible"
 				},
 				{
-					"id": "kukumo.views.executions",
-					"name": "Executions",
+					"id": "kukumo.views.executions.current",
+					"name": "Current Execution",
 					"icon": "resources/kukumo.svg",
-					"contextualTitle": "Test Plan Executions",
+					"contextualTitle": "Kukumo - Current Test Plan Execution",
+					"visibility": "hidden"
+				},
+				{
+					"id": "kukumo.views.executions.history",
+					"name": "Execution History",
+					"icon": "resources/kukumo.svg",
+					"contextualTitle": "Kukumo - Test Plan Execution History",
 					"visibility": "visible"
 				}
 			]
@@ -156,8 +173,27 @@
 					"group": "navigation"
 				},
 				{
-					"command": "kukumo.commands.executions.refresh",
-					"when": "view == kukumo.views.executions",
+					"command": "kukumo.commands.executions.history.refresh",
+					"when": "view == kukumo.views.executions.history",
+					"group": "navigation"
+				},
+				{
+					"command": "kukumo.commands.executions.current.refresh",
+					"when": "view == kukumo.views.executions.current",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "kukumo.commands.executions.showError",
+					"when": "viewItem == stepWithError",
+					"group": "inline"
+				}			
+			],
+			"editor/title": [
+			    {
+					"command": "kukumo.commands.executions.run",
+					"when": "resourceLangId == kukumo-gherkin",
 					"group": "navigation"
 				}
 			]
