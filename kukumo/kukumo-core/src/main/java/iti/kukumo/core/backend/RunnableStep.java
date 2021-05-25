@@ -109,7 +109,12 @@ public class RunnableStep {
             try {
                 executor.run(argumentArray);
             } catch (InvocationTargetException e) {
-                throw new KukumoException(e.getTargetException());
+                var originalException = e.getTargetException();
+                if (originalException instanceof AssertionError) {
+                    throw (AssertionError)originalException;
+                } else {
+                    throw new KukumoException(originalException);
+                }
             } catch (Exception e) {
                 throw new KukumoException(e);
             }
