@@ -1,0 +1,11 @@
+/.project
+.factorypath
+**/.~lock*
+kukumo.json
+/src/site/markdown/
+/.classpath
+/target/
+/.classpath
+/kukumo.json
+*.iml
+/.settings
