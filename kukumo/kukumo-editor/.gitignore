@@ -1,4 +1,6 @@
 node_modules/
 lib/
-plugins/vscode-builtin*/
+plugins/**
 *.log
+gen-webpack.config.js
+src-gen/**

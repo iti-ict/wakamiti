@@ -33,6 +33,5 @@ yarn start /my-workspace --hostname 0.0.0.0 --port 8080
 For VSCode extensions that are not yet published, the procedure to integrate into 
 the editor is the following:
 
-1. Package the VSCode extension using `vsce package`
-2. Rename the created file changing the extension from `.vsix` to `.zip`
-3. Extract the ZIP file in a folder under the `plugins` folder 
+1. Drop the `.vsix` file into `local-plugins` folder
+1. Run `node install-local-plugins.js` or `yarn prepare:plugins`

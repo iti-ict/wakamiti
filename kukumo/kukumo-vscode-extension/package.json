@@ -3,6 +3,7 @@
 	"displayName": "Kukumo VSCode Extension",
 	"description": "Editor and execution capabilities of Kukumo projects",
 	"version": "0.0.1",
+	"repository": {},
 	"engines": {
 		"vscode": "^1.53.0"
 	},
@@ -136,8 +137,8 @@
 				"icon": "$(calendar)"
 			}
 		],
-	    "viewsContainers": {
-			"activitybar" : [
+		"viewsContainers": {
+			"activitybar": [
 				{
 					"id": "kukumo",
 					"title": "Test Plan",
@@ -146,7 +147,7 @@
 			]
 		},
 		"views": {
-			"kukumo" : [
+			"kukumo": [
 				{
 					"id": "kukumo.views.planOverview",
 					"name": "Overview",
@@ -194,7 +195,6 @@
 				}
 			],
 			"view/item/context": [
-			
 				{
 					"command": "kukumo.commands.executions.showStepDocument",
 					"when": "viewItem =~ /.*stepWithDocument.*/",
@@ -210,20 +210,15 @@
 					"when": "viewItem =~ /.*stepWithError.*/",
 					"group": "inline"
 				}
-				
 			],
 			"editor/title": [
-			    {
+				{
 					"command": "kukumo.commands.executions.run",
 					"when": "resourceLangId == kukumo-gherkin",
 					"group": "navigation"
 				}
 			]
 		}
-		
-
-
-		
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

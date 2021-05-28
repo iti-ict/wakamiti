@@ -2,7 +2,7 @@ import * as http from 'http';
 
 
 
-export function post<T>(host: string, port: number, path: string, body: any? = null): Promise<T> {
+export function post<T>(host: string, port: number, path: string, body: any | null = null): Promise<T> {
     return send<T>('POST', host, port, path, body);
 }
 
@@ -16,7 +16,7 @@ function send<T>(
     host: string, 
     port: number, 
     path: string, 
-    body: any? = null
+    body: any | null = null
 ): Promise<T> {
   
     return new Promise((resolve, reject) => {
@@ -50,6 +50,6 @@ function send<T>(
             }
         }
         request.end();        
-    }
+    });
 }
         
