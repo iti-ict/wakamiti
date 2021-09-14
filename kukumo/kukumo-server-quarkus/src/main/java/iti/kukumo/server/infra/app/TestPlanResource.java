@@ -5,35 +5,34 @@ import java.util.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
-import org.jboss.resteasy.annotations.Body;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
-
+import io.quarkus.security.Authenticated;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.plan.*;
 import iti.kukumo.server.domain.ExecutionService;
-import iti.kukumo.server.domain.model.KukumoExecution;
+
 
 @Path("/plans")
+@Authenticated
 public class TestPlanResource {
 
 
-    private final ExecutionService executionManager;
+    @Inject
+    ExecutionService executionManager;
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final PlanSerializer serializer = Kukumo.planSerializer();
 
-	@Inject
-    public TestPlanResource(ExecutionService executionManager) {
-        this.executionManager = executionManager;
-    }
 
 
     @POST
     @Consumes("text/plain;charset=UTF-8,*/*")
     @Produces("application/json;charset=UTF-8")
     public String analyze(
+        @Context SecurityContext securityContext,
         @QueryParam("resourceType") String resourceType,
         @QueryParam("workspace") String workspace,
         String body

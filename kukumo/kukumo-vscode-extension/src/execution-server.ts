@@ -6,6 +6,12 @@ import { PlanNodeSnapshot } from './model/PlanNodeSnapshot';
 import * as fs from 'fs';
 import { readWorkspaceContents } from './shared/workspace-util';
 import { Execution } from './model/Execution';
+import jwt_decode from "jwt-decode";
+
+
+var nextTokenExpiration : number | undefined = undefined;
+var token : string | undefined = undefined;
+
 
 
 export function requestAnalyze(): Promise<PlanNodeSnapshot> {
@@ -16,13 +22,16 @@ export function requestAnalyze(): Promise<PlanNodeSnapshot> {
     const { host, port } = getHostAndPort();  
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
-    if (localWorkspace) {
-        return http.post<PlanNodeSnapshot>(host,port,`plans?workspace=${workspaceFolder.uri.path}`);
-    } else {
-        return readWorkspaceContents().then(workspaceContents => 
-            http.post<PlanNodeSnapshot>(host,port,`plans?contentType=gherkin`, workspaceContents)
-        );
-    }
+    return obtainToken(host,port).then( ()=>{
+        if (localWorkspace) {
+            return http.post<PlanNodeSnapshot>(
+                host,port,`plans?workspace=${workspaceFolder.uri.path}`);
+        } else {
+            return readWorkspaceContents().then(workspaceContents => 
+                http.post<PlanNodeSnapshot>(host,port,`plans?contentType=gherkin`, workspaceContents)
+            );
+        }
+    });
 }
 
 
@@ -34,26 +43,32 @@ export function launchExecution(): Promise<Execution> {
     const { host, port } = getHostAndPort();  
     const workspaceFolder = vscode.workspace.workspaceFolders[0];
 
-    if (localWorkspace) {
-        return http.post<Execution>(host,port,`executions?async=true&workspace=${workspaceFolder.uri.path}`);
-    } else {
-        return readWorkspaceContents().then(workspaceContents => 
-            http.post<Execution>(host,port,`executions?async=true&contentType=gherkin`, workspaceContents)
-        );
-    }
+    return obtainToken(host,port).then( ()=>{
+        if (localWorkspace) {
+            return http.post<Execution>(host,port,`executions?async=true&workspace=${workspaceFolder.uri.path}`);
+        } else {
+            return readWorkspaceContents().then(workspaceContents => 
+                http.post<Execution>(host,port,`executions?async=true&contentType=gherkin`, workspaceContents)
+            );
+        }
+    });
 }
 
 
 
 export function retrieveExecutions(): Promise<Execution[]> {
-    const { host, port } = getHostAndPort();  
-    return http.get<Execution[]>(host,port,`executions`);
+    const { host, port } = getHostAndPort(); 
+    return obtainToken(host,port).then( ()=>{ 
+        return http.get<Execution[]>(host,port,`executions`);
+    });
 }
 
 
 export function retrieveExecution(executionID: string): Promise<Execution> {
     const { host, port } = getHostAndPort();  
-    return http.get<Execution>(host,port,`executions/${executionID}`);
+    return obtainToken(host,port).then( ()=>{ 
+        return http.get<Execution>(host,port,`executions/${executionID}`);
+    });
 }
 
 
@@ -69,4 +84,34 @@ function getHostAndPort() {
         port: parseInt(url.split(':')[1])
     };
 
+}
+
+
+function obtainToken(host: string, port: number): Promise<void> {
+    const requireNewToken = 
+        (nextTokenExpiration === undefined) ||
+        nextTokenExpiration < new Date().getTime() - 1 * 60000   
+    ;
+    if (requireNewToken) {
+        return new Promise( (resolve,reject) => {
+            http.get<string>(host,port,'tokens')
+                .then( response => { 
+                    token = response;
+                    const decoded: any = jwt_decode(token);
+                    nextTokenExpiration = decoded.exp * 1000;
+                    http.setAuthorization(`Bearer ${response}`); 
+                    console.info(`new token with expiration ${nextTokenExpiration} (current date is ${new Date().getTime()})`);                    
+                    resolve(); 
+                } )
+                .catch( error => { 
+                    console.info('discard token');
+                    token = undefined;
+                    http.setAuthorization(undefined);
+                    nextTokenExpiration = undefined;
+                    reject(error); 
+                });
+        });
+    } else {
+        return Promise.resolve();
+    }
 }

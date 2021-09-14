@@ -10,28 +10,23 @@
 	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
-		<!-- maven properties -->
 		<compiler-plugin.version>3.8.1</compiler-plugin.version>
+		<docker.expose.debug.port>5005</docker.expose.debug.port>
+		<docker.expose.port>8080</docker.expose.port>
+		<kukumo-core-l10n.version>1.0.0</kukumo-core-l10n.version>
+		<kukumo-core.version>1.1.1</kukumo-core.version>
+		<kukumo-lsp.version>1.0.0</kukumo-lsp.version>
 		<maven.compiler.parameters>true</maven.compiler.parameters>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<!-- Quarkus versions -->
 		<quarkus-plugin.version>1.11.3.Final</quarkus-plugin.version>
 		<quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
 		<quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
 		<quarkus.platform.version>1.11.3.Final</quarkus.platform.version>
 		<surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-		<!-- Kukumo versions -->
-		<kukumo-core.version>1.1.0</kukumo-core.version>
-		<kukumo-core-l10n.version>1.0.0</kukumo-core-l10n.version>
-		<kukumo-lsp.version>1.0.0</kukumo-lsp.version>
-		<!-- Container properties -->
-		<docker.expose.port>8080</docker.expose.port>
-		<docker.expose.debug.port>5005</docker.expose.debug.port>
 	</properties>
-
 
 	<dependencyManagement>
 		<dependencies>
@@ -44,7 +39,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 
 	<dependencies>
 		<dependency>
@@ -75,6 +69,19 @@
 			<artifactId>quarkus-arc</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy-jsonb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-jwt</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-junit5</artifactId>
 			<scope>test</scope>
@@ -84,14 +91,15 @@
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-test-security</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>io.quarkus</groupId>
 				<artifactId>quarkus-maven-plugin</artifactId>
@@ -107,29 +115,23 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler-plugin.version}</version>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
 				<configuration>
 					<systemPropertyVariables>
-						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<java.util.logging.manager>org.jboss.logmanager.LogManager
+						</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-
-
 		</plugins>
 	</build>
-
-
-
 
 	<profiles>
 		<profile>
@@ -152,8 +154,11 @@
 								</goals>
 								<configuration>
 									<systemPropertyVariables>
-										<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-										<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+										<native.image.path>
+											${project.build.directory}/${project.build.finalName}-runner
+										</native.image.path>
+										<java.util.logging.manager>org.jboss.logmanager.LogManager
+										</java.util.logging.manager>
 										<maven.home>${maven.home}</maven.home>
 									</systemPropertyVariables>
 								</configuration>
@@ -167,4 +172,5 @@
 			</properties>
 		</profile>
 	</profiles>
+
 </project>

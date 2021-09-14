@@ -49,7 +49,7 @@ public class KukumoFetcher {
     }
 
 
-    public List<Path> fetch(List<String> modules, boolean mustClean, boolean updateClasspath) {
+    public List<Path> fetch(List<String> modules, boolean mustClean) {
         try {
 
             if (modules.isEmpty()) {
@@ -89,9 +89,9 @@ public class KukumoFetcher {
                 .map(FetchedArtifact::path)
                 .collect(Collectors.toList());
 
-            if (updateClasspath) {
-                mavenFetcher.updateClasspath(paths);
-            }
+//            if (updateClasspath) {
+//                mavenFetcher.updateClasspath(paths);
+//            }
             return paths;
 
         } catch (RuntimeException | MavenFetchException | IOException e) {

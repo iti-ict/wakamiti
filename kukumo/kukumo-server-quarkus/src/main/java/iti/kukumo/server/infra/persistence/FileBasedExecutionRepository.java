@@ -1,41 +1,35 @@
 package iti.kukumo.server.infra.persistence;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.server.domain.model.ExecutionCriteria;
-import iti.kukumo.server.domain.model.KukumoExecution;
-import iti.kukumo.server.spi.ExecutionRepository;
-import org.apache.commons.io.FileUtils;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.*;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.*;
+
+import iti.kukumo.api.*;
+import iti.kukumo.server.domain.model.*;
+import iti.kukumo.server.spi.ExecutionRepository;
 
 @ApplicationScoped
 public class FileBasedExecutionRepository implements ExecutionRepository {
 
     private static final String OUTPUT_FILE = "kukumo.json";
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedExecutionRepository.class);
-    private static final Comparator<File> FILE_COMPARATOR = Comparator.comparing(File::lastModified).reversed();
+
+	private static final Comparator<File> FILE_COMPARATOR = Comparator
+		.comparing(File::lastModified)
+		.reversed();
 
     @ConfigProperty(name = "kukumo.executions.path")
     Optional<String> executionPath;
-
 
     @PostConstruct
     void prepareExecutionPath() throws IOException {
@@ -59,67 +53,92 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     @Override
     public void saveExecution(KukumoExecution execution) {
     	String executionID = execution.getData().getExecutionID();
-    	Path file = resultFile(executionID);
+    	String owner = execution.getOwner();
+    	Path file = resultFile(owner, executionID);
     	writeFile(execution,file);
     	LOGGER.debug("Written file {}", file);
     }
 
 
     @Override
-    public Optional<KukumoExecution> getExecution(String executionID) {
+    public Optional<KukumoExecution> getExecution(String owner, String executionID) {
         return Optional
-                .of(resultFile(executionID))
-                .filter(Files::exists)
-                .map(this::readFile);
+            .of(resultFile(owner, executionID))
+            .filter(Files::exists)
+            .map(file -> readFile(file, owner));
     }
 
 
     @Override
-    public boolean existsExecution(String executionID) {
-        return Files.exists(resultFile(executionID));
+    public boolean existsExecution(String owner, String executionID) {
+        return Files.exists(resultFile(owner, executionID));
     }
 
-    @Override
-    public List<KukumoExecution> getAllExecutions() {
-        return findExecutions(x->true,0,Integer.MAX_VALUE);
-    }
 
     @Override
-    public List<String> getAllExecutionIDs() {
-        return findExecutionIDs(x->true,0,Integer.MAX_VALUE);
+    public List<KukumoExecution> getAllExecutions(String owner) {
+        return findExecutions(owner,x->true,0,Integer.MAX_VALUE);
     }
+
+
+    @Override
+    public List<String> getAllExecutionIDs(String owner) {
+        return findExecutionIDs(owner, x->true,0,Integer.MAX_VALUE);
+    }
+
 
     @Override
     public List<KukumoExecution> getExecutions(ExecutionCriteria criteria) {
-        return findExecutions(toPredicate(criteria),(criteria.getPage()-1)*criteria.getSize(),criteria.getSize());
+        return findExecutions(
+            criteria.getOwner(),
+            toPredicate(criteria),
+            (criteria.getPage()-1)*criteria.getSize(),
+            criteria.getSize()
+        );
     }
+
 
     @Override
     public List<String> getExecutionIDs(ExecutionCriteria criteria) {
-        return findExecutionIDs(toPredicate(criteria),(criteria.getPage()-1)*criteria.getSize(),criteria.getSize());
+        return findExecutionIDs(
+            criteria.getOwner(),
+            toPredicate(criteria),
+            (criteria.getPage()-1)*criteria.getSize(),
+            criteria.getSize()
+        );
     }
 
 
     @Override
     public void removeOldExecutions(int age) {
-        var executionFolders = executionFolders()
-                .filter(folder -> lastModified(folder).isBefore(LocalDateTime.now().minusDays(age)))
-                .collect(Collectors.toList());
-        for (File executionFolder : executionFolders) {
-            try {
-                FileUtils.deleteDirectory(executionFolder);
-            } catch (IOException e) {
-                LOGGER.error("Error removing folder {} : {}", executionFolder, e.getMessage());
-                LOGGER.debug("<caused by>",e);
-            }
+        var executionRootFolder = executionPath.map(Path::of).orElseThrow();
+        try (Stream<Path> allFiles = Files.walk(executionRootFolder)) {
+            allFiles
+                .map(Path::toFile)
+                .filter(File::isFile)
+                .filter(file -> FileUtils.isFileOlder(file, LocalDateTime.now().minusDays(age)))
+                .forEach(File::delete);
+        } catch (IOException e) {
+            LOGGER.error("Error removing old executions : {}",  e.getMessage());
+            LOGGER.debug(e.toString(),e);
+        }
+        try (Stream<Path> allFiles = Files.walk(executionRootFolder)) {
+            allFiles
+                .map(Path::toFile)
+                .filter(File::isDirectory)
+                .filter(folder -> folder.list().length == 0)
+                .forEach(File::delete);
+        } catch (IOException e) {
+            LOGGER.error("Error removing empty folders : {}",  e.getMessage());
+            LOGGER.debug(e.toString(),e);
         }
     }
 
 
     @Override
-    public Instant prepareExecution(String executionID) {
+    public Instant prepareExecution(String owner, String executionID) {
     	try {
-    		var dir = Files.createDirectory(Path.of(executionPath.orElseThrow()).resolve(executionID));
+    		var dir = Files.createDirectory(executionPath(owner).resolve(executionID));
     		return Files.getLastModifiedTime(dir).toInstant();
     	} catch (IOException e) {
             throw new KukumoException(e);
@@ -130,37 +149,51 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     private Predicate<File> toPredicate(ExecutionCriteria criteria) {
         Predicate<File> filter = x->true;
         if (criteria.getExecutionDate() != null) {
-            filter = filter.and(file -> lastModified(file).toLocalDate().equals(criteria.getExecutionDate()));
+            filter = filter.and(
+        		file -> lastModified(file).toLocalDate().equals(criteria.getExecutionDate())
+    		);
         }
         if (criteria.getExecutionIntervalFrom() != null) {
-            filter = filter.and(file -> lastModified(file).compareTo(criteria.getExecutionIntervalFrom()) >= 0);
+            filter = filter.and(
+        		file -> lastModified(file).compareTo(criteria.getExecutionIntervalFrom()) >= 0
+    		);
         }
         if (criteria.getExecutionIntervalTo() != null) {
-            filter = filter.and(file -> lastModified(file).compareTo(criteria.getExecutionIntervalTo()) <= 0);
+            filter = filter.and(
+        		file -> lastModified(file).compareTo(criteria.getExecutionIntervalTo()) <= 0
+    		);
         }
         return filter;
     }
 
 
-    private Path resultFile(String executionID) {
-        return Path.of(executionPath.orElseThrow()).resolve(executionID).resolve(OUTPUT_FILE);
-    }
 
 
-    private KukumoExecution readFile (Path file) {
+    private Path resultFile(String owner, String executionID) {
         try {
-            return new KukumoExecution(Kukumo.planSerializer().read(file));
+            return executionPath(owner).resolve(executionID).resolve(OUTPUT_FILE);
         } catch (IOException e) {
             throw new KukumoException(e);
         }
     }
 
 
-    private Optional<KukumoExecution> readOutputFileInExecutionFolder (Path folder) {
+
+    private KukumoExecution readFile (Path file, String owner) {
         try {
-            return Optional.of(
-        		new KukumoExecution(Kukumo.planSerializer().read(folder.resolve(OUTPUT_FILE)))
-    		);
+            return KukumoExecution.fromSnapshot(Kukumo.planSerializer().read(file), owner);
+        } catch (IOException e) {
+            throw new KukumoException(e);
+        }
+    }
+
+
+    private Optional<KukumoExecution> readOutputFileInExecutionFolder (Path folder, String owner) {
+        try {
+            return Optional.of( KukumoExecution.fromSnapshot(
+                Kukumo.planSerializer().read(folder.resolve(OUTPUT_FILE)),
+                owner
+            ));
         } catch (IOException e) {
             return Optional.empty();
         }
@@ -177,18 +210,19 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
     }
 
 
-    private Stream<File> executionFolders() {
+    private Stream<File> executionFolders(String owner) {
         try {
-            return Files.walk(executionPath.map(Path::of).orElseThrow(), 1)
-                .map(Path::toFile);
+            return Files.walk(executionPath(owner), 1).map(Path::toFile);
         } catch (IOException e) {
-            throw new KukumoException(e);
+            throw new KukumoException(e.toString(),e);
         }
     }
 
 
-    private Stream<File> filteredExecutionFolders(Predicate<File> predicate, int skip, int limit) {
-        return executionFolders()
+
+
+    private Stream<File> filteredExecutionFolders(String owner, Predicate<File> predicate, int skip, int limit) {
+        return executionFolders(owner)
         		.filter(predicate)
                 .sorted(FILE_COMPARATOR)
                 .skip(skip)
@@ -197,17 +231,17 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
 
 
-    private List<KukumoExecution> findExecutions(Predicate<File> predicate, int skip, int limit) {
-        return filteredExecutionFolders(predicate,skip,limit)
+    private List<KukumoExecution> findExecutions(String owner, Predicate<File> predicate, int skip, int limit) {
+        return filteredExecutionFolders(owner, predicate,skip,limit)
             .map(File::toPath)
-            .map(this::readOutputFileInExecutionFolder)
+            .map(path -> readOutputFileInExecutionFolder(path, owner))
             .flatMap(Optional::stream)
             .collect(Collectors.toList());
     }
 
 
-    private List<String> findExecutionIDs(Predicate<File> predicate, int skip, int limit) {
-        return filteredExecutionFolders(predicate,skip,limit)
+    private List<String> findExecutionIDs(String owner, Predicate<File> predicate, int skip, int limit) {
+        return filteredExecutionFolders(owner,predicate,skip,limit)
             .map(File::getName)
             .collect(Collectors.toList());
     }
@@ -215,6 +249,27 @@ public class FileBasedExecutionRepository implements ExecutionRepository {
 
 
     private LocalDateTime lastModified(File file) {
-        return Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return Instant
+    		.ofEpochMilli(file.lastModified())
+    		.atZone(ZoneId.systemDefault())
+    		.toLocalDateTime();
     }
+
+
+
+    private Path executionPath(String owner) throws IOException {
+        var userExecutionPath =
+            Path.of(executionPath.orElseThrow())
+                .resolve("users")
+                .resolve(owner)
+                .resolve("executions");
+
+        if (!Files.exists(userExecutionPath)) {
+            Files.createDirectories(userExecutionPath);
+        }
+
+        return userExecutionPath;
+    }
+
+
 }

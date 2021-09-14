@@ -4,7 +4,7 @@ import java.net.InetSocketAddress;
 
 import io.quarkus.runtime.*;
 import io.quarkus.runtime.annotations.QuarkusMain;
-import iti.kukumo.lsp.*;
+import iti.kukumo.lsp.TcpSocketLanguageServer;
 
 @QuarkusMain
 public class Runner {

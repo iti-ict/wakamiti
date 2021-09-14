@@ -1,7 +1,6 @@
 package iti.kukumo.server.domain.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 
 public class ExecutionCriteria {
 
@@ -11,6 +10,7 @@ public class ExecutionCriteria {
     private LocalDateTime executionIntervalFrom;
     private LocalDateTime executionIntervalTo;
     private boolean complete;
+    private String owner;
 
 
     public int getSize() {
@@ -59,5 +59,13 @@ public class ExecutionCriteria {
 
     public void setComplete(boolean complete) {
         this.complete = complete;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 }

@@ -4,15 +4,8 @@ package iti.kukumo.server.domain;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -22,24 +15,20 @@ import javax.inject.Inject;
 import javax.validation.constraints.Null;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import iti.commons.configurer.Configuration;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeSnapshot;
-import iti.kukumo.server.domain.model.ExecutionCriteria;
-import iti.kukumo.server.domain.model.KukumoExecution;
-import iti.kukumo.server.spi.ExecutionRepository;
+import iti.kukumo.api.*;
+import iti.kukumo.api.plan.*;
+import iti.kukumo.server.domain.model.*;
+import iti.kukumo.server.spi.*;
+
 
 @ApplicationScoped
 public class ExecutionService {
 
-    private static Map<String, PlanNode> aliveExecutions = new ConcurrentHashMap<>();
+    private static Map<String,Map<String, PlanNode>> aliveExecutions = new ConcurrentHashMap<>();
     private static Set<String> runningExecutions = new ConcurrentSkipListSet<>();
     private static Set<String> finishedExecutions = new ConcurrentSkipListSet<>();
 
@@ -49,9 +38,11 @@ public class ExecutionService {
     @Inject
     ExecutionRepository executionRepository;
 
+    @Inject
+    ApplicationContext context;
+
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-
 
     private Configuration defaultConfiguration;
 
@@ -75,7 +66,7 @@ public class ExecutionService {
     @PostConstruct
     void fillFinishedExecutions() {
         executionRepository.removeOldExecutions(executionsOldestAge);
-        finishedExecutions.addAll(executionRepository.getAllExecutionIDs());
+        finishedExecutions.addAll(executionRepository.getAllExecutionIDs(user()));
 	}
 
 
@@ -157,9 +148,10 @@ public class ExecutionService {
 
 
     private KukumoExecution run(Configuration configuration, @Null String content, boolean async) {
+
         String executionID = UUID.randomUUID().toString();
         runningExecutions.add(executionID);
-        String instant = executionRepository.prepareExecution(executionID).toString();
+        String owner = user();
 
     	Configuration effectiveConfiguration = this.defaultConfiguration
 			.append(configuration)
@@ -173,10 +165,11 @@ public class ExecutionService {
             Kukumo.instance().createPlanFromContent(effectiveConfiguration, toInputStream(content))
         ;
         if (async) {
-        	executorService.submit(()->run(executionID, plan, effectiveConfiguration));
-        	return new KukumoExecution(new PlanNodeSnapshot(plan), executionID, instant);
+        	executorService.submit(()->run(owner, executionID, plan, effectiveConfiguration));
+            var instant = executionRepository.prepareExecution(executionID, owner);
+        	return KukumoExecution.fromPlan(plan, executionID, instant.toString(), owner);
         } else {
-        	return run(executionID, plan, effectiveConfiguration);
+        	return run(owner,executionID, plan, effectiveConfiguration);
         }
 
     }
@@ -186,11 +179,11 @@ public class ExecutionService {
 
 
 
-	private KukumoExecution run(String executionID, PlanNode plan, Configuration configuration) {
+	private KukumoExecution run(String owner, String executionID, PlanNode plan, Configuration configuration) {
     	try {
-	    	aliveExecutions.put(executionID,plan);
-	        var result = Kukumo.instance().executePlan(plan, configuration);
-	        var execution = new KukumoExecution(new PlanNodeSnapshot(result));
+            aliveExecutions(owner).put(executionID, plan);
+            var result = Kukumo.instance().executePlan(plan, configuration);
+            var execution = KukumoExecution.fromResult(result, owner);
 	        executionRepository.saveExecution(execution);
 	        return execution;
     	} finally {
@@ -208,24 +201,27 @@ public class ExecutionService {
        	configuration = this.defaultConfiguration.append(configuration);
         var plan = content == null ?
             Kukumo.instance().createPlanFromConfiguration(configuration) :
-            Kukumo.instance().createPlanFromContent(configuration, IOUtils.toInputStream(content, StandardCharsets.UTF_8))
+            Kukumo.instance().createPlanFromContent(
+        		configuration,
+        		IOUtils.toInputStream(content, StandardCharsets.UTF_8)
+    		)
         ;
         return new PlanNodeSnapshot(plan);
     }
 
 
 
-    public Optional<KukumoExecution> getExecution(String executionID) throws IOException {
+    public Optional<KukumoExecution> getExecution(String executionID) {
         if (runningExecutions.contains(executionID)) {
-            return Optional.of(aliveExecution(executionID));
+            return Optional.of(aliveExecution(executionID, user()));
         } else {
-            return executionRepository.getExecution(executionID);
+            return executionRepository.getExecution(user(), executionID);
         }
     }
 
 
-    private KukumoExecution aliveExecution(String executionID) {
-        return new KukumoExecution(new PlanNodeSnapshot(aliveExecutions.get(executionID)));
+    private KukumoExecution aliveExecution(String executionID, String owner) {
+        return KukumoExecution.fromPlan(aliveExecutions.get(owner).get(executionID),owner);
     }
 
 
@@ -235,16 +231,26 @@ public class ExecutionService {
 
 
     public List<KukumoExecution> getAliveExecutions() {
-        return aliveExecutions.values().stream()
-                .map(PlanNodeSnapshot::new)
-                .map(PlanNodeSnapshot::withoutChildren)
-                .map(KukumoExecution::new)
-                .collect(Collectors.toList());
+        return aliveExecutions(user()).values().stream()
+	        .map(PlanNodeSnapshot::new)
+	        .map(PlanNodeSnapshot::withoutChildren)
+	        .map(snapshot -> KukumoExecution.fromSnapshot(snapshot, user()))
+	        .collect(Collectors.toList());
     }
 
 
     private InputStream toInputStream(@Null String content) {
     	return IOUtils.toInputStream(content, StandardCharsets.UTF_8);
+	}
+
+
+	private String user() {
+        return context.user().orElse("anonymous");
+    }
+
+
+	private Map<String, PlanNode> aliveExecutions(String owner) {
+		return aliveExecutions.computeIfAbsent(owner, it -> new HashMap<>() );
 	}
 
 }

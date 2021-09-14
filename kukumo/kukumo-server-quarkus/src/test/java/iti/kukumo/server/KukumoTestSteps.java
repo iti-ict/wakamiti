@@ -4,23 +4,18 @@
 package iti.kukumo.server;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.text.ParseException;
 import java.util.Locale;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
 
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoStepRunContext;
-import iti.kukumo.api.annotations.I18nResource;
-import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.*;
+import iti.kukumo.api.annotations.*;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.api.plan.DataTable;
-import iti.kukumo.api.plan.Document;
+import iti.kukumo.api.plan.*;
 
 
 @I18nResource("test-kukumo-steps")
@@ -107,8 +102,11 @@ public class KukumoTestSteps implements StepContributor {
     }
 
 
-    @Step(value = "simple.step.with.multiple.asserts", args = { "a:integer-assertion", "b:integer",
-            "c:text-assertion" })
+    @Step(value = "simple.step.with.multiple.asserts", args = {
+		"a:integer-assertion",
+		"b:integer",
+        "c:text-assertion"
+	})
     public void simpleStepWithMultipleAsserts(Assertion<Integer> a, Long b, Assertion<String> c) {
         // nothing
     }

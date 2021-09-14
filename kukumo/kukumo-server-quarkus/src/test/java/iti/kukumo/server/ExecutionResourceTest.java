@@ -3,29 +3,29 @@ package iti.kukumo.server;
 import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.*;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import iti.kukumo.api.KukumoConfiguration;
 
 @QuarkusTest
-public class ExecutionResourceTest {
+@TestSecurity(authorizationEnabled = false)
+class ExecutionResourceTest {
 
     private static final int OK = 200;
     private String executionID;
 
 
     @Test
-    public void runKukumoWithSingleFile() throws Exception {
+    void runKukumoWithSingleFile() throws Exception {
         runKukumoExecutionWithContentOf("simpleScenario.feature").then()
             .statusCode(OK);
         given()
@@ -37,7 +37,7 @@ public class ExecutionResourceTest {
 
 
     @Test
-    public void runKukumoWithWorkspace() throws Exception {
+    void runKukumoWithWorkspace() throws Exception {
         runKukumoExecutionWithWorkspace("src/test/resources").then()
             .statusCode(OK);
         given()
@@ -50,7 +50,7 @@ public class ExecutionResourceTest {
 
 
     @Test
-    public void searchExecutions() throws Exception {
+    void searchExecutions() throws Exception {
         runKukumoExecutionWithContentOf("simpleScenario.feature");
         runKukumoExecutionWithContentOf("simpleScenario.feature");
         runKukumoExecutionWithContentOf("simpleScenario.feature");

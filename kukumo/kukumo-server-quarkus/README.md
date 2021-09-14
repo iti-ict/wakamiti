@@ -61,7 +61,7 @@ Images are stored at nexus-kukumo.iti.upv.es
 ## Running the demo Docker image
 
 For demonstration purposes, it is possible to create a custom image that includes several
-Kukumo plugins (present in the `demo-lib-ext` folder). For running the image, execute the following:
+Kukumo plugins (present in the `demo/lib-ext` folder). For running the image, execute the following:
 
 In order to create the Docker image, execute the following:
 ```shell script

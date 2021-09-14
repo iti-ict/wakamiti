@@ -1,21 +1,19 @@
 package iti.kukumo.server.spi;
 
-import iti.kukumo.server.domain.model.ExecutionCriteria;
-import iti.kukumo.server.domain.model.KukumoExecution;
+import java.time.Instant;
+import java.util.*;
 
-import java.time.*;
-import java.util.List;
-import java.util.Optional;
+import iti.kukumo.server.domain.model.*;
 
 public interface ExecutionRepository {
 
-    Optional<KukumoExecution> getExecution(String executionID);
+    Optional<KukumoExecution> getExecution(String owner, String executionID);
 
-    boolean existsExecution(String executionID);
+    boolean existsExecution(String owner, String executionID);
 
-    List<KukumoExecution> getAllExecutions();
+    List<KukumoExecution> getAllExecutions(String owner);
 
-    List<String> getAllExecutionIDs();
+    List<String> getAllExecutionIDs(String owner);
 
     List<KukumoExecution> getExecutions(ExecutionCriteria criteria);
 
@@ -25,5 +23,6 @@ public interface ExecutionRepository {
 
 	void saveExecution(KukumoExecution execution);
 
-	Instant prepareExecution(String executionID);
+	Instant prepareExecution(String owner, String executionID);
+
 }

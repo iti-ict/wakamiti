@@ -1,37 +1,30 @@
 package iti.kukumo.server.infra.app;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.quarkus.security.Authenticated;
 import iti.kukumo.server.domain.ExecutionService;
 import iti.kukumo.server.domain.model.KukumoExecution;
 
+
 @Path("/executions")
+@Authenticated
 public class ExecutionResource {
 
-    private final ExecutionService executionManager;
-    private final ObjectMapper mapper = new ObjectMapper();
-
-
     @Inject
-    public ExecutionResource(ExecutionService executionManager) {
-        this.executionManager = executionManager;
-    }
+    ExecutionService executionManager;
+
+    @Context
+    SecurityContext securityContext;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
 
     @POST
@@ -78,11 +71,14 @@ public class ExecutionResource {
     @GET
     @Produces("application/json;charset=UTF-8")
     @Path("{executionID}")
-    public KukumoExecution getExecutionData(@PathParam("executionID") String executionID) throws IOException {
+    public KukumoExecution getExecutionData(@PathParam("executionID") String executionID) {
         Objects.requireNonNull(executionID);
         return executionManager
             .getExecution(executionID)
             .orElseThrow(NotFoundException::new);
     }
+
+
+
 
 }
