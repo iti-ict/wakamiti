@@ -7,7 +7,7 @@
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
-        <fileSet>
+        <!--fileSet>
             <directory>${maven.repo.local}</directory>
             <outputDirectory>/repo</outputDirectory>
             <includes>
@@ -17,7 +17,7 @@
                 <exclude>%regex[.*sources.jar]</exclude>
                 <exclude>kukumo-docker/**</exclude>
             </excludes>
-        </fileSet>
+        </fileSet-->
         <fileSet>
             <directory>${kukumo.launcher.path}/target/staging</directory>
             <outputDirectory>/staging</outputDirectory>
