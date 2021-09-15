@@ -43,6 +43,8 @@
         <module>kukumo-plugins/kukumo-spring</module>
         <module>kukumo-plugins/kukumo-io</module>
         <module>kukumo-plugins/kukumo-io-i10n</module>
+        <module>kukumo-plugins/kukumo-amqp</module>
+        <module>kukumo-plugins/kukumo-amqp-l10n</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
@@ -454,6 +456,8 @@
                 <module>kukumo-plugins/kukumo-spring</module>
                 <module>kukumo-plugins/kukumo-io</module>
                 <module>kukumo-plugins/kukumo-io-i10n</module>
+                <module>kukumo-plugins/kukumo-amqp</module>
+                <module>kukumo-plugins/kukumo-amqp-l10n</module>
                 <!-- examples -->
                 <module>kukumo-examples/spring-junit-example</module>
                 <module>kukumo-examples/spring-verify-example</module>
