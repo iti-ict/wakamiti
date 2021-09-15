@@ -15,7 +15,7 @@
 
     <!-- coordinates -->
     <groupId>iti.kukumo</groupId>
-    <artifactId>kukumo-io-i10n</artifactId>
+    <artifactId>kukumo-io-l10n</artifactId>
     <version>1.0.0</version>
 
     <!-- additional information -->

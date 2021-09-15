@@ -42,7 +42,7 @@
         <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
         <module>kukumo-plugins/kukumo-io</module>
-        <module>kukumo-plugins/kukumo-io-i10n</module>
+        <module>kukumo-plugins/kukumo-io-l10n</module>
         <module>kukumo-plugins/kukumo-amqp</module>
         <module>kukumo-plugins/kukumo-amqp-l10n</module>
         <!-- examples -->
@@ -455,7 +455,7 @@
                 <module>kukumo-plugins/kukumo-db-l10n</module>
                 <module>kukumo-plugins/kukumo-spring</module>
                 <module>kukumo-plugins/kukumo-io</module>
-                <module>kukumo-plugins/kukumo-io-i10n</module>
+                <module>kukumo-plugins/kukumo-io-l10n</module>
                 <module>kukumo-plugins/kukumo-amqp</module>
                 <module>kukumo-plugins/kukumo-amqp-l10n</module>
                 <!-- examples -->
