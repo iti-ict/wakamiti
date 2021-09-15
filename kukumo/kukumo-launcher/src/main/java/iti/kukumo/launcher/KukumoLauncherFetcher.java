@@ -43,7 +43,7 @@ public class KukumoLauncherFetcher extends KukumoFetcher {
 
 
     public List<Path> fetchAndUpdateClasspath() throws URISyntaxException {
-        return super.fetch(modulesToFetch(), arguments.mustClean(), true);
+        return super.fetch(modulesToFetch(), arguments.mustClean());
     }
 
 

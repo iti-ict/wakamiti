@@ -28,7 +28,7 @@
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
         <aetherVersion>1.1.0</aetherVersion>
         <mavenVersion>3.3.9</mavenVersion>
-        <kukumo-core.version>1.1.0</kukumo-core.version>
+        <kukumo-core.version>1.1.1</kukumo-core.version>
         <appdirs.version>1.0.3</appdirs.version>
     </properties>
 
