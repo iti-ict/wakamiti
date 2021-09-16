@@ -31,6 +31,7 @@
         <module>kukumo-tools/distribution-maven-plugin</module>
         <!-- kukumo -->
         <module>kukumo/kukumo-core</module>
+        <module>kukumo/kukumo-core-l10n</module>
         <module>kukumo/kukumo-launcher</module>
         <module>kukumo/kukumo-maven-plugin</module>
         <module>kukumo/kukumo-lsp</module>
@@ -38,7 +39,6 @@
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>
-        <module>kukumo-plugins/kukumo-core-l10n</module>
         <module>kukumo-plugins/kukumo-rest-l10n</module>
         <module>kukumo-plugins/kukumo-db</module>
         <module>kukumo-plugins/kukumo-db-l10n</module>
@@ -460,12 +460,12 @@
                 <module>kukumo-tools/distribution-maven-plugin</module>
                 <!-- kukumo -->
                 <module>kukumo/kukumo-core</module>
+                <module>kukumo/kukumo-core-l10n</module>
                 <module>kukumo/kukumo-launcher</module>
                 <module>kukumo/kukumo-maven-plugin</module>
                 <!-- plugins -->
                 <module>kukumo-plugins/kukumo-rest</module>
                 <module>kukumo-plugins/kukumo-html-report</module>
-                <module>kukumo-plugins/kukumo-core-l10n</module>
                 <module>kukumo-plugins/kukumo-rest-l10n</module>
                 <module>kukumo-plugins/kukumo-db</module>
                 <module>kukumo-plugins/kukumo-db-l10n</module>
