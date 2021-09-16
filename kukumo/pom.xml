@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+        Since all projects if this directory are tighly coupled,
+        this pom groups them sharing the same version number.
+        The version number is stored in the property ${revision}
+        as stated in https://maven.apache.org/maven-ci-friendly.html
+        (Maven 3.5.0 required)
+
+     -->
+
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+
+    <groupId>iti.kukumo</groupId>
+    <artifactId>kukumo</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>Kukumo</name>
+    <description>Main components of Kukumo</description>
+
+    <modules>
+        <module>kukumo-core</module>
+        <module>kukumo-core-l10n</module>
+        <module>kukumo-launcher</module>
+        <module>kukumo-maven-plugin</module>
+        <module>kukumo-lsp</module>
+    </modules>
+
+    <properties>
+
+        <revision>1.1.1</revision>
+
+        <!-- dependency versions -->
+         <configurer.version>1.0.1</configurer.version>
+         <jext.version>1.0.0</jext.version>
+        <gherkin-parser.version>1.0.1</gherkin-parser.version>
+        <tag-expressions.version>1.1.1</tag-expressions.version>
+        <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+         <maven-fetcher.version>1.0.0</maven-fetcher.version>
+         <aetherVersion>1.1.0</aetherVersion>
+         <appdirs.version>1.0.3</appdirs.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>iti.kukumo</groupId>
+                <artifactId>kukumo-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>iti.kukumo</groupId>
+                <artifactId>kukumo-core-l10n</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>iti.kukumo</groupId>
+                <artifactId>kukumo-lsp</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>iti.commons</groupId>
+                <artifactId>configurer</artifactId>
+                <version>${configurer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>iti.commons</groupId>
+                <artifactId>jext</artifactId>
+                <version>${jext.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>iti.commons</groupId>
+                <artifactId>maven-fetcher</artifactId>
+                <version>${maven-fetcher.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.harawata</groupId>
+                <artifactId>appdirs</artifactId>
+                <version>${appdirs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

@@ -29,13 +29,9 @@
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/maven-aether-provider-java9</module>
         <module>kukumo-tools/distribution-maven-plugin</module>
+        <module>kukumo-server-quarkus</module>
         <!-- kukumo -->
-        <module>kukumo/kukumo-core</module>
-        <module>kukumo/kukumo-core-l10n</module>
-        <module>kukumo/kukumo-launcher</module>
-        <module>kukumo/kukumo-maven-plugin</module>
-        <module>kukumo/kukumo-lsp</module>
-        <module>kukumo/kukumo-server-quarkus</module>
+        <module>kukumo</module>
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>
@@ -459,10 +455,7 @@
                 <module>kukumo-tools/maven-aether-provider-java9</module>
                 <module>kukumo-tools/distribution-maven-plugin</module>
                 <!-- kukumo -->
-                <module>kukumo/kukumo-core</module>
-                <module>kukumo/kukumo-core-l10n</module>
-                <module>kukumo/kukumo-launcher</module>
-                <module>kukumo/kukumo-maven-plugin</module>
+                <module>kukumo</module>
                 <!-- plugins -->
                 <module>kukumo-plugins/kukumo-rest</module>
                 <module>kukumo-plugins/kukumo-html-report</module>

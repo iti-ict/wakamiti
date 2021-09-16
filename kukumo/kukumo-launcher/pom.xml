@@ -8,15 +8,14 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-project</artifactId>
-        <version>1</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>kukumo</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
 
 
     <!-- additional information -->
@@ -25,11 +24,7 @@
     <inceptionYear>2019</inceptionYear>
 
     <properties>
-        <maven-fetcher.version>1.0.0</maven-fetcher.version>
-        <aetherVersion>1.1.0</aetherVersion>
         <mavenVersion>3.3.9</mavenVersion>
-        <kukumo-core.version>1.1.1</kukumo-core.version>
-        <appdirs.version>1.0.3</appdirs.version>
     </properties>
 
 
@@ -39,12 +34,10 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo-core.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -61,28 +54,18 @@
         <dependency>
             <groupId>net.harawata</groupId>
             <artifactId>appdirs</artifactId>
-            <version>${appdirs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>

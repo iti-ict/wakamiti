@@ -6,14 +6,15 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
-        <artifactId>kukumo-project</artifactId>
-        <version>1</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>kukumo</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>iti.kukumo</groupId>
+
     <artifactId>kukumo-core</artifactId>
-    <version>1.1.1</version>
+    <version>${revision}</version>
+
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -22,16 +23,11 @@
 
 
     <properties>
-        <!-- dependency versions -->
-        <configurer.version>1.0.1</configurer.version>
-        <jext.version>1.0.0</jext.version>
         <gherkin-parser.version>1.0.1</gherkin-parser.version>
         <tag-expressions.version>1.1.1</tag-expressions.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
-        <aetherVersion>1.1.0</aetherVersion>
-        <appdirs.version>1.0.3</appdirs.version>
     </properties>
 
 
@@ -39,12 +35,10 @@
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>configurer</artifactId>
-            <version>${configurer.version}</version>
         </dependency>
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>jext</artifactId>
-            <version>${jext.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -107,18 +101,10 @@
         <dependency>
             <groupId>iti.commons</groupId>
             <artifactId>maven-fetcher</artifactId>
-            <version>${maven-fetcher.version}</version>
         </dependency>
         <dependency>
             <groupId>net.harawata</groupId>
             <artifactId>appdirs</artifactId>
-            <version>${appdirs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
