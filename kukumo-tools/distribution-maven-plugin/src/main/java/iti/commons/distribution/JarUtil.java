@@ -1,15 +1,13 @@
 package iti.commons.distribution;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-
-import org.apache.commons.io.IOUtils;
 
 public class JarUtil {
 
@@ -40,9 +38,8 @@ public class JarUtil {
     }
 
 
-
     public void extractJarClasses(File jarFile, File targetFolder) throws IOException {
-        extractJar(jarFile,targetFolder,filename->filename.endsWith(".class"));
+        extractJar(jarFile, targetFolder, filename -> filename.endsWith(".class"));
     }
 
     public void extractJarAll(File jarFile, File targetFolder) throws IOException {
@@ -50,13 +47,9 @@ public class JarUtil {
     }
 
 
-    public static File selfJarFile() throws IOException {
-        try {
-            var location = Distributor.class.getProtectionDomain().getCodeSource().getLocation();
-            return Paths.get(location.toURI().getPath()).toFile();
-        } catch (URISyntaxException e) {
-            throw new IOException(e);
-        }
+    public static File selfJarFile() {
+        var location = Distributor.class.getProtectionDomain().getCodeSource().getLocation();
+        return new File(location.getFile());
     }
 
 }
