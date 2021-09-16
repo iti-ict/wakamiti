@@ -14,7 +14,8 @@ import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import org.hamcrest.Matcher;
+import iti.kukumo.util.MatcherAssertion;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +76,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
     public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = matcher(httpCodeAssertion);
+        this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
@@ -253,7 +254,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
     public void assertHttpCode(Assertion<Integer> assertion) {
-        validatableResponse.statusCode(matcher(assertion));
+        validatableResponse.statusCode(MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.contentType", args = "word")
@@ -262,41 +263,41 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
     @Step(value = "rest.assert.response.body.length", args = {"matcher:integer-assertion"})
-    public void assertResponseLength(Matcher<Integer> matcher) {
-        validatableResponse.body(length(matcher));
+    public void assertResponseLength(Assertion<Integer> assertion) {
+        validatableResponse.body(length(MatcherAssertion.asMatcher(assertion)));
     }
 
     @Step(value = "rest.assert.response.body.header.text", args = {"name:word", "matcher:text-assertion"})
-    public void assertResponseHeaderAsText(String name, Matcher<String> matcher) {
-        validatableResponse.header(name, matcher);
+    public void assertResponseHeaderAsText(String name, Assertion<String> assertion) {
+        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.header.integer", args = {"name:word", "matcher:integer-assertion"})
-    public void assertResponseHeaderAsInteger(String name, Matcher<Integer> matcher) {
-        validatableResponse.header(name, matcher);
+    public void assertResponseHeaderAsInteger(String name, Assertion<Integer> assertion) {
+        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.header.decimal", args = {"name:word", "matcher:decimal-assertion"})
-    public void assertResponseHeaderAsDecimal(String name, Matcher<BigDecimal> matcher) {
-        validatableResponse.header(name, matcher);
+    public void assertResponseHeaderAsDecimal(String name, Assertion<BigDecimal> assertion) {
+        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text",
             "matcher:text-assertion"})
-    public void assertBodyFragmentAsText(String fragment, Matcher<String> matcher) {
-        assertBodyFragment(fragment, matcher, String.class);
+    public void assertBodyFragmentAsText(String fragment, Assertion<String> assertion) {
+        assertBodyFragment(fragment, assertion, String.class);
     }
 
     @Step(value = "rest.assert.response.body.fragment.integer", args = {"fragment:text",
             "matcher:integer-assertion"})
-    public void assertBodyFragmentAsInteger(String fragment, Matcher<Integer> matcher) {
-        assertBodyFragment(fragment, matcher, Integer.class);
+    public void assertBodyFragmentAsInteger(String fragment, Assertion<Integer> assertion) {
+        assertBodyFragment(fragment, assertion, Integer.class);
     }
 
     @Step(value = "rest.assert.response.body.fragment.decimal", args = {"fragment:text",
             "matcher:decimal-assertion"})
-    public void assertBodyFragmentAsDecimal(String fragment, Matcher<BigDecimal> matcher) {
-        assertBodyFragment(fragment, matcher, BigDecimal.class);
+    public void assertBodyFragmentAsDecimal(String fragment, Assertion<BigDecimal> assertion) {
+        assertBodyFragment(fragment, assertion, BigDecimal.class);
     }
 
 

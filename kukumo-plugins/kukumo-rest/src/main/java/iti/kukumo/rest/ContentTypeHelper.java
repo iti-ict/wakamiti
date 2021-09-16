@@ -4,13 +4,12 @@
 package iti.kukumo.rest;
 
 
-import org.hamcrest.Matcher;
-
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.ExtensionPoint;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.Document;
 
 
@@ -45,7 +44,7 @@ public interface ContentTypeHelper {
         String fragment,
         ValidatableResponse response,
         Class<T> dataType,
-        Matcher<T> matcher
+        Assertion<T> matcher
     );
 
 

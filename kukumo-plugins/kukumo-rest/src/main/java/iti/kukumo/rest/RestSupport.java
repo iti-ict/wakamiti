@@ -12,6 +12,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.rest.log.RestAssuredLogger;
@@ -184,9 +185,9 @@ public class RestSupport {
     }
 
 
-    protected <T> void assertBodyFragment(String fragment, Matcher<T> matcher, Class<T> dataType) {
+    protected <T> void assertBodyFragment(String fragment, Assertion<T> assertion, Class<T> dataType) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
-        helper.assertFragment(fragment, validatableResponse, dataType, matcher);
+        helper.assertFragment(fragment, validatableResponse, dataType, assertion);
     }
 
 

@@ -4,7 +4,8 @@
 package iti.kukumo.rest.helpers;
 
 
-import org.hamcrest.Matcher;
+import iti.kukumo.api.datatypes.Assertion;
+import iti.kukumo.util.MatcherAssertion;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -35,9 +36,9 @@ public class JSONHelper implements ContentTypeHelper {
         String fragment,
         ValidatableResponse response,
         Class<T> dataType,
-        Matcher<T> matcher
+        Assertion<T> assertion
     ) {
-        response.body(fragment, matcher);
+        response.body(fragment, MatcherAssertion.asMatcher(assertion));
     }
 
 

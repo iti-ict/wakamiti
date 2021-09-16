@@ -25,7 +25,7 @@
 
     <!-- dependency versions -->
     <properties>
-        <kukumo-core.version>1.0.0</kukumo-core.version>
+        <kukumo-core.version>1.1.1</kukumo-core.version>
         <jext.version>1.0.0</jext.version>
         <rest-assured.version>4.3.2</rest-assured.version>
         <jsonassert.version>1.5.0</jsonassert.version>
