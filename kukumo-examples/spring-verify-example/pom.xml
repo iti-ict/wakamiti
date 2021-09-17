@@ -14,7 +14,7 @@
 
     <groupId>iti.kukumo</groupId>
     <artifactId>spring-verify-example</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,10 +23,10 @@
         <maven.ant.version>1.8</maven.ant.version>
         <spring-boot.version>2.0.5.RELEASE</spring-boot.version>
 
-        <kukumo-maven-plugin.version>1.1.1</kukumo-maven-plugin.version>
-        <kukumo-rest.version>1.0.0</kukumo-rest.version>
-        <kukumo-db.version>1.0.0</kukumo-db.version>
-        <kukumo-html-report.version>1.0.0</kukumo-html-report.version>
+        <kukumo-maven-plugin.version>1.1.0</kukumo-maven-plugin.version>
+        <kukumo-rest.version>1.1.0</kukumo-rest.version>
+        <kukumo-db.version>1.1.0</kukumo-db.version>
+        <kukumo-html-report.version>1.1.0</kukumo-html-report.version>
 
     </properties>
 
