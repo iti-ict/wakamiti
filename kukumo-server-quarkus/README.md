@@ -57,6 +57,12 @@ docker run --rm -p 8080:8080 -p 8090:8090 -p 5005:5005 -e JAVA_ENABLE_DEBUG="tru
 
 Images are stored at nexus-kukumo.iti.upv.es
 
+## Pushing images to Kukumo Nexus
+```shell script
+docker login nexus-kukumo.iti.upv.es
+
+
+
 
 ## Running the demo Docker image
 

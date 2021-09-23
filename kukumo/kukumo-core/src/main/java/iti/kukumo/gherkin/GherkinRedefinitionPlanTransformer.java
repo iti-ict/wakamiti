@@ -42,7 +42,7 @@ import iti.kukumo.core.plan.RuleBasedPlanTransformer;
 
 
 
-@Extension(provider = "iti.kukumo", name = "gherkin-redefinition-transformer")
+@Extension(provider = "iti.kukumo", name = "gherkin-redefinition-transformer", version = "1.1")
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
                 implements PlanTransformer {
 

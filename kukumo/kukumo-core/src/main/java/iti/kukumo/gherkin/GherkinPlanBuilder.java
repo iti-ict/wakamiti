@@ -44,7 +44,7 @@ import iti.kukumo.api.plan.PlanNodeBuilder;
 
 
 
-@Extension(provider = "iti.kukumo", name = "kukumo-gherkin", extensionPoint = "iti.kukumo.api.extensions.PlanBuilder")
+@Extension(provider = "iti.kukumo", name = "kukumo-gherkin", extensionPoint = "iti.kukumo.api.extensions.PlanBuilder", version = "1.1")
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     public static final String GHERKIN_PROPERTY = "gherkinType";

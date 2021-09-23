@@ -11,9 +11,9 @@ import iti.kukumo.api.extensions.ConfigContributor;
 
 
 @Extension(
-    provider = "kukumo",
-    name = "kukumo-database-step-config",
-    version = "1.0",
+    provider = "iti.kukumo",
+    name = "database-step-config",
+    version = "1.1",
     extensionPoint = "iti.kukumo.api.extensions.ConfigContributor"
 )
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {

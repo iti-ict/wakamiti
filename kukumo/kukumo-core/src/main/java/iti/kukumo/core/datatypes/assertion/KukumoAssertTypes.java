@@ -21,7 +21,7 @@ import iti.kukumo.core.datatypes.KukumoNumberDataType;
 import iti.kukumo.util.ThrowableFunction;
 
 
-@Extension(provider = "iti.kukumo", name = "assertion-types", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "assertion-types", version = "1.1")
 public class KukumoAssertTypes implements DataTypeContributor {
 
     @Override

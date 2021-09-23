@@ -20,7 +20,7 @@ import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.extensions.DataTypeContributor;
 
 
-@Extension(provider = "iti.kukumo", name = "core-types", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "core-types", version = "1.1")
 public class KukumoCoreTypes implements DataTypeContributor {
 
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";

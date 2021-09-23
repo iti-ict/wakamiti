@@ -18,7 +18,7 @@ import iti.kukumo.database.ConnectionManager;
 import iti.kukumo.database.ConnectionParameters;
 
 
-@Extension(provider = "iti.kukumo", name = "kukumo-database-springboot-datasource", version = "1.0", externallyManaged = true, // because
+@Extension(provider = "iti.kukumo", name = "database-springboot-datasource", version = "1.1", externallyManaged = true, // because
                                                                                                                                // Spring
                                                                                                                                // bean
                                                                                                                                // infrastructure

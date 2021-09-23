@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-@Extension(provider = "iti.kukumo", name = "files-steps", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "files-steps", version = "1.1")
 @I18nResource("iti_kukumo_kukumo-files")
 public class FilesStepContributor implements StepContributor {
 

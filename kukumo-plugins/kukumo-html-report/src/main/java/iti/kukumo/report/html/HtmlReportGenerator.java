@@ -49,7 +49,7 @@ import j2html.tags.Tag;
 
 
 
-@Extension(provider = "iti.kukumo", name = "html-report")
+@Extension(provider = "iti.kukumo", name = "html-report", version = "1.1")
 public class HtmlReportGenerator implements Reporter {
 
     private static final String INLINE = "inline";

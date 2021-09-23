@@ -17,7 +17,7 @@ import iti.kukumo.api.extensions.ResourceType;
 
 
 
-@Extension(provider = "iti.kukumo", name = GherkinResourceType.NAME, extensionPoint = "iti.kukumo.api.extensions.ResourceType")
+@Extension(provider = "iti.kukumo", name = GherkinResourceType.NAME, extensionPoint = "iti.kukumo.api.extensions.ResourceType", version = "1.1")
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
     public static final String NAME = "gherkin";

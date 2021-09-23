@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Extension(provider = "iti.kukumo", name = "kukumo-files-step-config", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "files-step-config", version = "1.1")
 public class FilesStepConfigurator implements ConfigContributor<FilesStepContributor> {
 
     private static final String ENTRY_SEPARATOR = "=";

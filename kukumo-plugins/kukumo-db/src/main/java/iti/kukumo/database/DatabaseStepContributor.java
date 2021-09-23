@@ -48,7 +48,7 @@ import java.sql.SQLException;
 
 
 
-@Extension(provider = "iti.kukumo", name = "database-steps", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "database-steps", version = "1.1")
 @I18nResource("iti_kukumo_kukumo-database")
 public class DatabaseStepContributor implements StepContributor {
 

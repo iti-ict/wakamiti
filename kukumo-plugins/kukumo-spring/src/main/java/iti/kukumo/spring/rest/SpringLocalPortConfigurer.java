@@ -25,7 +25,7 @@ import iti.kukumo.util.KukumoLogger;
 
 
 @Extension(
-    provider = "kukumo",
+    provider = "iti.kukumo",
     name = "rest-configurator-springboot",
     extensionPoint = "iti.kukumo.api.extensions.ConfigContributor",
     externallyManaged = true,

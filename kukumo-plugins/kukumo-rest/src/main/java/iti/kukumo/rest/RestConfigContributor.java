@@ -18,9 +18,10 @@ import java.net.URL;
 
 
 @Extension(
-        provider = "kukumo",
+        provider = "iti.kukumo",
         name = "rest-configurator",
-        extensionPoint = "iti.kukumo.api.extensions.ConfigContributor"
+        extensionPoint = "iti.kukumo.api.extensions.ConfigContributor",
+        version = "1.1"
 )
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 

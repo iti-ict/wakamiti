@@ -30,7 +30,7 @@ import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
 
 
 @I18nResource("iti_kukumo_kukumo-rest")
-@Extension(provider = "iti.kukumo", name = "rest-steps")
+@Extension(provider = "iti.kukumo", name = "rest-steps", version = "1.1")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
 

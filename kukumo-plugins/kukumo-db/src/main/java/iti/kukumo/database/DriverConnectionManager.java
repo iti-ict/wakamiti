@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import iti.commons.jext.Extension;
 
 
-@Extension(provider = "iti.kukumo", name = "kukumo-database-driver-connection", version = "1.0")
+@Extension(provider = "iti.kukumo", name = "database-driver-connection", version = "1.1")
 public class DriverConnectionManager implements ConnectionManager {
 
     @Override

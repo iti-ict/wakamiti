@@ -16,9 +16,9 @@ import iti.kukumo.util.LocaleLoader;
 
 
 @Extension(
-    provider = "kukumo",
+    provider = "iti.kukumo",
     name = "html-report-config",
-    version = "1.0",
+    version = "1.1",
     extensionPoint = "iti.kukumo.api.extensions.ConfigContributor"
 )
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
