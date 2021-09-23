@@ -28,8 +28,6 @@ variables:
 stages:
   - build
   - verify
-  - assemble
-  - publish
 
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
@@ -61,59 +59,7 @@ verify:
     - 'mvn verify $MAVEN_CLI_OPTS'
 
 
-generate_site:
-  <<: *maven
-  stage: assemble
-  dependencies:
-    - verify
-  script:
-    - 'mvn site site:stage $MAVEN_CLI_OPTS'
-    - mkdir site
-    - cp -rf target/staging/* site/
-  artifacts:
-    paths:
-      - target
-      - site
-  only:
-    - master
-  allow_failure: true    
 
 
-generate_artifacts:
-  <<: *maven
-  stage: assemble
-  dependencies:
-    - verify
-  script:
-    - 'mvn package -DskipTests -Dassemble-zips'
-    - 'mkdir artifacts'
-    - 'find -type f -name "kukumo*.zip" -exec cp {} artifacts/ \;'
-    - 'find -type f  -regex ".*\/target\/[^\/]*\.jar" -exec cp {} artifacts/ \;'
-  artifacts:
-    paths:
-      - target
-      - artifacts
-  only:
-    - master
-    - java11  
-  allow_failure: true
 
 
-pages:
-  image: busybox:latest
-  stage: publish
-  dependencies:
-    - generate_artifacts
-    - generate_site
-  script:
-    - mkdir public
-    - cp -rf site/* public/
-  artifacts:
-    paths:
-      - target
-      - site
-      - public
-      - artifacts
-  only:
-    - master
-  allow_failure: true
