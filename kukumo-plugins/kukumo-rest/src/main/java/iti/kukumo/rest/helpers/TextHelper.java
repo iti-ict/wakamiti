@@ -4,6 +4,7 @@
 package iti.kukumo.rest.helpers;
 
 
+import iti.kukumo.api.datatypes.Assertion;
 import org.hamcrest.Matcher;
 import org.junit.ComparisonFailure;
 
@@ -48,7 +49,7 @@ public class TextHelper implements ContentTypeHelper {
         String fragment,
         ValidatableResponse response,
         Class<T> dataType,
-        Matcher<T> matcher
+        Assertion<T> assertion
     ) {
         throw new UnsupportedOperationException("Not implemented for content type "+contentType());
     }

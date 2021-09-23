@@ -4,9 +4,8 @@
 package iti.kukumo.core.runner;
 
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import iti.commons.configurer.Configuration;
@@ -102,10 +101,11 @@ public class PlanNodeRunner {
     }
 
 
-    protected void runNode() {
+    protected Result runNode() {
         if (state != State.PREPARED) {
             throw new IllegalStateException("run() method can only be invoked once");
         }
+        Result result = null;
         state = State.RUNNING;
         Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, node);
         if (!getChildren().isEmpty()) {
@@ -117,15 +117,19 @@ public class PlanNodeRunner {
                 testCasePostExecution(node);
             }
         } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
-            runStep();
+            result = runStep();
         }
         state = State.FINISHED;
         Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, node);
+        return result;
     }
 
 
     protected void runChildren() {
-        children.forEach(PlanNodeRunner::runNode);
+        children.stream().map(PlanNodeRunner::runNode)
+                .filter(Objects::nonNull)
+                .max(Comparator.naturalOrder())
+                .ifPresent(r -> node.prepareExecution().markFinished(Instant.now(), r));
     }
 
 

@@ -29,20 +29,20 @@
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/maven-aether-provider-java9</module>
         <module>kukumo-tools/distribution-maven-plugin</module>
+        <module>kukumo-server-quarkus</module>
         <!-- kukumo -->
-        <module>kukumo/kukumo-core</module>
-        <module>kukumo/kukumo-launcher</module>
-        <module>kukumo/kukumo-maven-plugin</module>
-        <module>kukumo/kukumo-lsp</module>
-        <module>kukumo/kukumo-server-quarkus</module>
+        <module>kukumo</module>
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>
-        <module>kukumo-plugins/kukumo-core-l10n</module>
         <module>kukumo-plugins/kukumo-rest-l10n</module>
         <module>kukumo-plugins/kukumo-db</module>
         <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
+        <module>kukumo-plugins/kukumo-io</module>
+        <module>kukumo-plugins/kukumo-io-l10n</module>
+        <module>kukumo-plugins/kukumo-amqp</module>
+        <module>kukumo-plugins/kukumo-amqp-l10n</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
@@ -76,7 +76,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <!-- paths -->
-        <maven.repo.local>${env.HOME}/.m2/repository</maven.repo.local>
+        <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
 
         <!-- dependency versions -->
         <lombok.version>1.18.10</lombok.version>
@@ -117,7 +117,7 @@
         <maven.info.reports.version>3.0.0</maven.info.reports.version>
         <maven.javadoc.version>2.8</maven.javadoc.version>
         <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
-
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
     </properties>
 
 
@@ -440,12 +440,41 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>docker</id>
+
+            <modules>
+                <!-- tools -->
+                <module>kukumo-tools/jext</module>
+                <module>kukumo-tools/jext-spring</module>
+                <module>kukumo-tools/configurer</module>
+                <module>kukumo-tools/maven-fetcher</module>
+                <module>kukumo-tools/slf4j-ansi</module>
+                <module>kukumo-tools/gherkin-parser</module>
+                <module>kukumo-tools/maven-aether-provider-java9</module>
+                <module>kukumo-tools/distribution-maven-plugin</module>
+                <!-- kukumo -->
+                <module>kukumo</module>
+                <!-- plugins -->
+                <module>kukumo-plugins/kukumo-rest</module>
+                <module>kukumo-plugins/kukumo-html-report</module>
+                <module>kukumo-plugins/kukumo-rest-l10n</module>
+                <module>kukumo-plugins/kukumo-db</module>
+                <module>kukumo-plugins/kukumo-db-l10n</module>
+                <module>kukumo-plugins/kukumo-spring</module>
+                <module>kukumo-plugins/kukumo-io</module>
+                <module>kukumo-plugins/kukumo-io-l10n</module>
+                <module>kukumo-plugins/kukumo-amqp</module>
+                <module>kukumo-plugins/kukumo-amqp-l10n</module>
+                <!-- examples -->
+                <module>kukumo-examples/spring-junit-example</module>
+                <module>kukumo-examples/spring-verify-example</module>
+                <module>kukumo-examples/spring-launcher-example</module>
+                <!-- docker -->
+                <module>kukumo-docker</module>
+            </modules>
+        </profile>
     </profiles>
-
-
-
-
-
-
 
 </project>

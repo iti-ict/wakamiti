@@ -1,0 +1,12 @@
+/.project
+.factorypath
+**/.~lock*
+kukumo.json
+/src/site/markdown/
+/.classpath
+/target/
+/.classpath
+/kukumo.json
+/kukumo-amqp.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

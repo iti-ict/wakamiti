@@ -1,6 +1,0 @@
-node_modules/
-lib/
-plugins/**
-*.log
-gen-webpack.config.js
-src-gen/**

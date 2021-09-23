@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import iti.kukumo.util.MatcherAssertion;
 import org.hamcrest.Matcher;
 
 import iti.commons.jext.Extension;

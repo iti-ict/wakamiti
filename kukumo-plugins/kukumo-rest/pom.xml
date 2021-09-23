@@ -16,22 +16,22 @@
 	<!-- coordinates -->
 	<groupId>iti.kukumo</groupId>
 	<artifactId>kukumo-rest</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<!-- additional information -->
 	<name>Kukumo::REST Steps</name>
 	<description>REST steps for Kukumo</description>
 	<inceptionYear>2019</inceptionYear>
 
-	<!-- dependency versions -->
-	<properties>
-		<kukumo-core.version>1.1.1</kukumo-core.version>
-		<jext.version>1.0.0</jext.version>
-		<rest-assured.version>4.1.2</rest-assured.version>
-		<jsonassert.version>1.5.0</jsonassert.version>
-		<xmlunit.version>2.6.2</xmlunit.version>
-		<json.version>20190722</json.version>
-	</properties>
+    <!-- dependency versions -->
+    <properties>
+        <kukumo-core.version>1.1.0</kukumo-core.version>
+        <jext.version>1.0.0</jext.version>
+        <rest-assured.version>4.3.2</rest-assured.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <xmlunit.version>2.6.2</xmlunit.version>
+        <json.version>20190722</json.version>
+    </properties>
 
 	<!-- dependencies -->
 	<dependencies>

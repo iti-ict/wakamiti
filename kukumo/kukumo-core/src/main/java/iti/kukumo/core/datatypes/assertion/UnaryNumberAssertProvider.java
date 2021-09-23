@@ -12,8 +12,8 @@ import org.hamcrest.Matchers;
 
 public class UnaryNumberAssertProvider extends AbstractAssertProvider {
 
-    public static final String NULL = "matcher.number.null";
-    public static final String NOT_NULL = "matcher.number.not.null";
+    public static final String NULL = "matcher.generic.null";
+    public static final String NOT_NULL = "matcher.generic.not.null";
 
 
     @Override

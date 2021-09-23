@@ -111,7 +111,7 @@ but keep it disabled for normal executions.
 <dependency>
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-core</artifactId>
-    <version>0.9.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
