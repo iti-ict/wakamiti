@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,12 +81,7 @@ public class HtmlReportGenerator implements Reporter {
             generate(root, writer);
             LOGGER.info("Report generated: {uri}", outputFile);
         } catch (IOException e) {
-            LOGGER.error(
-                "{error} {error}",
-                "Error generating Kukumo HTML report: ",
-                e.getMessage(),
-                e
-            );
+            LOGGER.error("Error generating Kukumo HTML report: "+e.getMessage(),e);
         }
     }
 
@@ -107,6 +103,7 @@ public class HtmlReportGenerator implements Reporter {
     public void setCssFile(String cssFile) {
         this.cssFile = cssFile;
     }
+
 
 
     public void generate(PlanNodeSnapshot plan, Writer writer) throws IOException {
@@ -340,7 +337,8 @@ public class HtmlReportGenerator implements Reporter {
                 span(datetime(plan.getStartInstant()))
             ).withClass(plan.getResult().toString()),
             divPercentage(plan),
-            divStatistics(plan, true).withClass("overallResult")
+            divStatistics(plan, true).withClass("overallResult"),
+            divCharts(plan)
         ).withClasses("overallResult", "_" + plan.getResult());
     }
 
@@ -360,6 +358,30 @@ public class HtmlReportGenerator implements Reporter {
                 .toArray(Tag[]::new)
         ).withClass("percentage");
     }
+
+
+
+
+    private Tag<?> divCharts(PlanNodeSnapshot plan) {
+        String labels = "labels: [ 'PASSED', 'FAILED', 'ERROR', 'SKIPPED', 'UNDEFINED' ]";
+        String backgroundColors = "backgroundColor: [ '#008000', '#ff0000', '#ff0000', '#808080', '#c39644' ]";
+        String data = "data: ["+
+            plan.getTestCaseResults().get(Result.PASSED)+". "+
+            plan.getTestCaseResults().get(Result.FAILED)+", "+
+            plan.getTestCaseResults().get(Result.ERROR)+", "+
+            plan.getTestCaseResults().get(Result.SKIPPED)+", "+
+            plan.getTestCaseResults().get(Result.UNDEFINED)
+        +"] ";
+        String datasets = " datasets: [{ label: 'Chart', "+data+", "+backgroundColors+", hoverOffset: 4 }]";
+        return div(
+            canvas().withId("testCaseChart"),
+            script(
+                "const config = { type: 'doughnut', data: { "+labels+", "+datasets+" } }; \n"+
+                "var testCaseChart = new Chart(document.getElementById('testCaseChart'), config); \n"
+            )
+        );
+    }
+
 
 
     private String formatDuration(long timeInMillis) {
@@ -385,22 +407,42 @@ public class HtmlReportGenerator implements Reporter {
 
 
     private String css() throws IOException {
-        InputStream inputStream = cssFile == null
-                        ? Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream("style.css")
-                        : new FileInputStream(cssFile);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        return (cssFile == null ? resourceFile("style.css") : externalFile(cssFile));
+    }
+
+
+    private String javascript() throws IOException {
+        return resourceFile("function.js")+"\n"+
+               resourceFile("chart.js");
+    }
+
+
+
+
+    private static String resourceFile(String resource) throws IOException {
+        InputStream inputStream = classLoader().getResourceAsStream(resource);
+        try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+        ) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
     }
 
 
-    private String javascript() throws IOException {
-        InputStream inputStream = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("functions.js");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+    private static String externalFile(String file) throws IOException {
+        InputStream inputStream = new FileInputStream(file);
+        try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+        ) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
+    }
+
+
+
+    private static ClassLoader classLoader() {
+        return Thread.currentThread().getContextClassLoader();
     }
 
 

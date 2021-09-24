@@ -43,19 +43,19 @@ h2.SKIPPED {
 
 
 .icon_PASSED::before {
-  content: '\02714'; color: green; font-weight: bold;
+  content: '\02714'; color: #008000; font-weight: bold;
 }
 .icon_SKIPPED::before {
-  content: '\02607'; color: gray; font-weight: bold;
+  content: '\02607'; color: #808080; font-weight: bold;
 }
 .icon_UNDEFINED::before {
   content: '\02205'; color: #c39644; font-weight: bold;
 }
 .icon_FAILED::before {
-  content: '\02718'; color: red; font-weight: bold;
+  content: '\02718'; color: #ff0000; font-weight: bold;
 }
 .icon_ERROR::before {
-  content: '\02622'; color: red; font-weight: bold;
+  content: '\02622'; color: #ff0000; font-weight: bold;
 }
 
 
@@ -298,4 +298,3 @@ table.document td {
 .mark_ERROR_before::before {
   content: '\02715  '; color: red;
 }
-
