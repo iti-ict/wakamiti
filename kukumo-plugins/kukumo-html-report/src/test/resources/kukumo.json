@@ -1,709 +1,306 @@
 {
-  "nodeType" : "AGGREGATOR",
-  "displayName" : "Test Plan",
-  "startInstant" : "2019-09-27T13:45:45.016",
-  "finishInstant" : "2019-09-27T13:45:45.049",
-  "duration" : 6,
-  "result" : "PASSED",
-  "testCaseResults" : {
-    "PASSED" : 4
+  "nodeType": "AGGREGATOR",
+  "name": "Test Plan",
+  "displayName": "Test Plan",
+  "startInstant": "2019-09-27T10:00:00.000",
+  "finishInstant": "2019-09-27T10:00:00.000",
+  "duration": 0,
+  "result": "PASSED",
+  "childrenResults": {
+    "FAILED": 1,
+    "ERROR": 1
   },
-  "children" : [ {
-    "nodeType" : "AGGREGATOR",
-    "name" : "Test Redefined feature - Definition",
-    "keyword" : "Feature",
-    "language" : "en",
-    "source" : "definition.feature[3,1]",
-    "displayName" : "Feature: Test Redefined feature - Definition",
-    "tags" : [ "definition" ],
-    "properties" : {
-      "gherkinType" : "feature"
+  "testCaseResults": {
+    "PASSED": 3,
+    "FAILED": 1,
+    "ERROR": 1
+  },
+  "children": [
+    {
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "result": "FAILED",
+      "name": "Feature esta es la feature 1",
+      "description": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ",
+        "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ",
+        "exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure ",
+        "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      ],
+      "childrenResults": {"PASSED": 1 , "FAILED":  1},
+      "children": [
+        {
+          "id": "CP-A",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "result": "PASSED",
+          "name": "Este es el escenario A",
+          "childrenResults": {"PASSED": 4 },
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Dado",
+              "result": "PASSED",
+              "name": "Paso de negocio A1",
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion A1_1",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion A1_2",
+                  "result": "PASSED",
+                  "dataTable": [
+                     [ "casa", "perro", "arbol"],
+                     [ "1", "2", "3"],
+                     [ "143", "23", "34"]
+                  ]
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio A2",
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Cuando",
+              "result": "PASSED",
+              "name": "Paso de negocio A3",
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_1",
+                  "keyword": "Cuando",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_2",
+                  "keyword": "Y",
+                  "result": "PASSED",
+                  "documentType": "json",
+                  "document": "{\n  \"menu\": {\n    \"id\": \"file\",\n    \"value\": \"File\",\n    \"popup\": {\n      \"menuitem\": [\n        {\n          \"value\": \"New\",\n          \"onclick\": \"CreateNewDoc()\"\n        },\n        {\n          \"value\": \"Open\",\n          \"onclick\": \"OpenDoc()\"\n        },\n        {\n          \"value\": \"Close\",\n          \"onclick\": \"CloseDoc()\"\n        }\n      ]\n    }\n  }\n}"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Entonces",
+              "result": "PASSED",
+              "name": "Paso de negocio A4",
+              "childrenResults": {"PASSED": 1 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A4_1",
+                  "keyword": "Entonces",
+                  "result": "PASSED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeType": "TEST_CASE",
+          "id": "CP-B",
+          "keyword": "Scenario",
+          "result": "FAILED",
+          "name": "Este es el escenario B",
+          "childrenResults": {"PASSED": 2, "FAILED": 1, "SKIPPED": "1" },
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "PASSED",
+              "keyword": "Dado",
+              "name": "Paso de negocio B1",
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion B1_1",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B1_2",
+                  "result": "PASSED"
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio B2",
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "FAILED",
+              "keyword": "Cuando",
+              "name": "Paso de negocio B3",
+              "childrenResults": {"PASSED": 1, "FAILED": 1, "SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de implementacion B3_1",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_2",
+                  "result": "FAILED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_3",
+                  "result": "SKIPPED"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "SKIPPED",
+              "name": "Paso de negocio B4",
+              "keyword": "Entonces",
+              "childrenResults": {"SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de implementacion B4_1",
+                  "result": "SKIPPED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
-    "startInstant" : "2019-09-27T13:45:45.016",
-    "finishInstant" : "2019-09-27T13:45:45.049",
-    "duration" : 6,
-    "result" : "PASSED",
-    "testCaseResults" : {
-      "PASSED" : 4
-    },
-    "children" : [ {
-      "nodeType" : "TEST_CASE",
-      "id" : "ID-1",
-      "name" : "Test scenario",
-      "keyword" : "Scenario",
-      "language" : "en",
-      "source" : "definition.feature[6,1]",
-      "displayName" : "[ID-1] Scenario: Test scenario",
-      "tags" : [ "definition", "ID-1" ],
-      "properties" : {
-        "gherkinType" : "scenario"
-      },
-      "startInstant" : "2019-09-27T13:45:45.016",
-      "finishInstant" : "2019-09-27T13:45:45.028",
-      "duration" : 6,
-      "result" : "PASSED",
-      "testCaseResults" : {
-        "PASSED" : 1
-      },
-      "children" : [ {
-        "nodeType" : "STEP_AGGREGATOR",
-        "name" : "<background>",
-        "displayName" : "<background>",
-        "startInstant" : "2019-09-27T13:45:45.016",
-        "finishInstant" : "2019-09-27T13:45:45.022",
-        "duration" : 6,
-        "result" : "PASSED",
-        "children" : [ {
-          "nodeType" : "STEP",
-          "name" : "el conjunto de números reales ℝ",
-          "keyword" : "Dado",
-          "language" : "es",
-          "source" : "implementation.feature[8,3]",
-          "displayName" : "Dado el conjunto de números reales ℝ",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.016",
-          "finishInstant" : "2019-09-27T13:45:45.022",
-          "duration" : 6,
-          "result" : "PASSED"
-        } ]
-      }, {
-        "nodeType" : "STEP_AGGREGATOR",
-        "name" : "two numbers",
-        "keyword" : "Given",
-        "language" : "en",
-        "source" : "definition.feature[7,2]",
-        "displayName" : "Given two numbers",
-        "properties" : {
-          "gherkinType" : "step"
+    {
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "result": "ERROR",
+      "name": "Feature esta es la feature 2",
+      "childrenResults": {"PASSED": 1, "ERROR": 1 },
+      "children": [
+        {
+          "id": "CP-C",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "result": "PASSED",
+          "name": "Este es el escenario C",
+          "childrenResults": {"PASSED": 3},
+          "children": [
+            {
+              "nodeType": "STEP",
+              "keyword": "Dado",
+              "name": "Paso de escenario C1",
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Cuando",
+              "name": "Paso de escenario C2",
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Entonces",
+              "name": "Paso de escenario C3",
+              "result": "PASSED"
+            }
+          ]
         },
-        "startInstant" : "2019-09-27T13:45:45.024",
-        "finishInstant" : "2019-09-27T13:45:45.025",
-        "duration" : 1,
-        "result" : "PASSED",
-        "children" : [ {
-          "nodeType" : "STEP",
-          "name" : "un número con valor 6,1 y otro número con valor 3",
-          "keyword" : "Dado",
-          "language" : "es",
-          "source" : "implementation.feature[13,2]",
-          "displayName" : "Dado un número con valor 6,1 y otro número con valor 3",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          },
-          "startInstant" : "2019-09-27T13:45:45.024",
-          "finishInstant" : "2019-09-27T13:45:45.024",
-          "duration" : 0,
-          "result" : "PASSED"
-        }, {
-          "nodeType" : "STEP",
-          "name" : "un número con valor 6,1 y otro número con valor 3",
-          "keyword" : "Y",
-          "language" : "es",
-          "source" : "implementation.feature[14,2]",
-          "displayName" : "Y un número con valor 6,1 y otro número con valor 3",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          },
-          "startInstant" : "2019-09-27T13:45:45.024",
-          "finishInstant" : "2019-09-27T13:45:45.025",
-          "duration" : 1,
-          "result" : "PASSED"
-        } ]
-      }, {
-        "nodeType" : "STEP_AGGREGATOR",
-        "name" : "they are multiplied",
-        "keyword" : "When",
-        "language" : "en",
-        "source" : "definition.feature[8,2]",
-        "displayName" : "When they are multiplied",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2019-09-27T13:45:45.025",
-        "finishInstant" : "2019-09-27T13:45:45.025",
-        "duration" : 0,
-        "result" : "PASSED",
-        "children" : [ {
-          "nodeType" : "STEP",
-          "name" : "se multiplican ambos números",
-          "keyword" : "Cuando",
-          "language" : "es",
-          "source" : "implementation.feature[15,2]",
-          "displayName" : "Cuando se multiplican ambos números",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          },
-          "startInstant" : "2019-09-27T13:45:45.025",
-          "finishInstant" : "2019-09-27T13:45:45.025",
-          "duration" : 0,
-          "result" : "PASSED"
-        } ]
-      }, {
-        "nodeType" : "STEP_AGGREGATOR",
-        "name" : "the result is the product",
-        "keyword" : "Then",
-        "language" : "en",
-        "source" : "definition.feature[9,2]",
-        "displayName" : "Then the result is the product",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2019-09-27T13:45:45.026",
-        "finishInstant" : "2019-09-27T13:45:45.028",
-        "duration" : 1,
-        "result" : "PASSED",
-        "children" : [ {
-          "nodeType" : "STEP",
-          "name" : "el resultado es 18,3",
-          "keyword" : "Entonces",
-          "language" : "es",
-          "source" : "implementation.feature[16,2]",
-          "displayName" : "Entonces el resultado es 18,3",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          },
-          "startInstant" : "2019-09-27T13:45:45.026",
-          "finishInstant" : "2019-09-27T13:45:45.027",
-          "duration" : 1,
-          "result" : "PASSED"
-        }, {
-          "nodeType" : "STEP",
-          "name" : "el resultado es 18,3",
-          "keyword" : "Y",
-          "language" : "es",
-          "source" : "implementation.feature[17,2]",
-          "displayName" : "Y el resultado es 18,3",
-          "properties" : {
-            "gherkinType" : "step",
-            "redefinition.stepMap" : "2-1-2"
-          },
-          "startInstant" : "2019-09-27T13:45:45.028",
-          "finishInstant" : "2019-09-27T13:45:45.028",
-          "duration" : 0,
-          "result" : "PASSED"
-        } ]
-      } ]
-    }, {
-      "nodeType" : "AGGREGATOR",
-      "id" : "ID-2",
-      "name" : "Test scenario outline",
-      "keyword" : "Scenario Outline",
-      "language" : "en",
-      "source" : "definition.feature[12,1]",
-      "displayName" : "[ID-2] Scenario Outline: Test scenario outline",
-      "tags" : [ "ID-2", "definition" ],
-      "properties" : {
-        "gherkinType" : "scenarioOutline"
-      },
-      "startInstant" : "2019-09-27T13:45:45.032",
-      "finishInstant" : "2019-09-27T13:45:45.049",
-      "duration" : 1,
-      "result" : "PASSED",
-      "testCaseResults" : {
-        "PASSED" : 3
-      },
-      "children" : [ {
-        "nodeType" : "TEST_CASE",
-        "id" : "ID-2_1",
-        "name" : "Test scenario outline [1]",
-        "language" : "en",
-        "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_1]  Test scenario outline [1]",
-        "tags" : [ "ID-2", "definition" ],
-        "properties" : {
-          "gherkinType" : "scenarioOutline"
-        },
-        "startInstant" : "2019-09-27T13:45:45.032",
-        "finishInstant" : "2019-09-27T13:45:45.037",
-        "duration" : 1,
-        "result" : "PASSED",
-        "testCaseResults" : {
-          "PASSED" : 1
-        },
-        "children" : [ {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "<background>",
-          "displayName" : "<background>",
-          "startInstant" : "2019-09-27T13:45:45.032",
-          "finishInstant" : "2019-09-27T13:45:45.033",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el conjunto de números reales ℝ",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[3,1]",
-            "displayName" : "Dado el conjunto de números reales ℝ",
-            "properties" : {
-              "gherkinType" : "step"
+        {
+          "nodeType": "AGGREGATOR",
+          "result": "ERROR",
+          "id": "CP-D",
+          "keyword": "Scenario Outline",
+          "name": "Este es el escenario D con ejemplos",
+          "childrenResults": {"PASSED": 1, "ERROR": 1 },
+          "children": [
+            {
+              "nodeType": "TEST_CASE",
+              "result": "PASSED",
+              "keyword": "Scenario",
+              "id": "CP-D1",
+              "name": "Scenario D con ejemplo 1",
+              "childrenResults": {"PASSED": 4 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de escenario D1_1",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de escenario D1_2",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de escenario D1_3",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de escenario D1_4",
+                  "result": "PASSED"
+                }
+              ]
             },
-            "startInstant" : "2019-09-27T13:45:45.032",
-            "finishInstant" : "2019-09-27T13:45:45.033",
-            "duration" : 1,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "VIRTUAL_STEP",
-          "name" : "a number with value 1.0",
-          "keyword" : "Given",
-          "language" : "en",
-          "source" : "definition.feature[13,2]",
-          "displayName" : "Given a number with value 1.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.033",
-          "finishInstant" : "2019-09-27T13:45:45.033",
-          "duration" : 0,
-          "result" : "PASSED"
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "another number with value 2",
-          "keyword" : "And",
-          "language" : "en",
-          "source" : "definition.feature[14,2]",
-          "displayName" : "And another number with value 2",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.033",
-          "finishInstant" : "2019-09-27T13:45:45.034",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "un número con valor 1.0 y otro número con valor 2",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 1.0 y otro número con valor 2",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.033",
-            "finishInstant" : "2019-09-27T13:45:45.034",
-            "duration" : 1,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "they are multiplied",
-          "keyword" : "When",
-          "language" : "en",
-          "source" : "definition.feature[15,2]",
-          "displayName" : "When they are multiplied",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.035",
-          "finishInstant" : "2019-09-27T13:45:45.035",
-          "duration" : 0,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.035",
-            "finishInstant" : "2019-09-27T13:45:45.035",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "the result is 2.0",
-          "keyword" : "Then",
-          "language" : "en",
-          "source" : "definition.feature[16,2]",
-          "displayName" : "Then the result is 2.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.036",
-          "finishInstant" : "2019-09-27T13:45:45.037",
-          "duration" : 0,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 2.0",
-            "keyword" : "Entonces",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Entonces el resultado es 2.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.036",
-            "finishInstant" : "2019-09-27T13:45:45.036",
-            "duration" : 0,
-            "result" : "PASSED"
-          }, {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 2.0",
-            "keyword" : "Y",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Y el resultado es 2.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.037",
-            "finishInstant" : "2019-09-27T13:45:45.037",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        } ]
-      }, {
-        "nodeType" : "TEST_CASE",
-        "id" : "ID-2_2",
-        "name" : "Test scenario outline [2]",
-        "language" : "en",
-        "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_2]  Test scenario outline [2]",
-        "tags" : [ "ID-2", "definition" ],
-        "properties" : {
-          "gherkinType" : "scenarioOutline"
-        },
-        "startInstant" : "2019-09-27T13:45:45.040",
-        "finishInstant" : "2019-09-27T13:45:45.044",
-        "duration" : 1,
-        "result" : "PASSED",
-        "testCaseResults" : {
-          "PASSED" : 1
-        },
-        "children" : [ {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "<background>",
-          "displayName" : "<background>",
-          "startInstant" : "2019-09-27T13:45:45.040",
-          "finishInstant" : "2019-09-27T13:45:45.041",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el conjunto de números reales ℝ",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[3,1]",
-            "displayName" : "Dado el conjunto de números reales ℝ",
-            "properties" : {
-              "gherkinType" : "step"
-            },
-            "startInstant" : "2019-09-27T13:45:45.040",
-            "finishInstant" : "2019-09-27T13:45:45.041",
-            "duration" : 1,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "VIRTUAL_STEP",
-          "name" : "a number with value 2.0",
-          "keyword" : "Given",
-          "language" : "en",
-          "source" : "definition.feature[13,2]",
-          "displayName" : "Given a number with value 2.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.041",
-          "finishInstant" : "2019-09-27T13:45:45.041",
-          "duration" : 0,
-          "result" : "PASSED"
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "another number with value 4",
-          "keyword" : "And",
-          "language" : "en",
-          "source" : "definition.feature[14,2]",
-          "displayName" : "And another number with value 4",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.042",
-          "finishInstant" : "2019-09-27T13:45:45.042",
-          "duration" : 0,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "un número con valor 2.0 y otro número con valor 4",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 2.0 y otro número con valor 4",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.042",
-            "finishInstant" : "2019-09-27T13:45:45.042",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "they are multiplied",
-          "keyword" : "When",
-          "language" : "en",
-          "source" : "definition.feature[15,2]",
-          "displayName" : "When they are multiplied",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.043",
-          "finishInstant" : "2019-09-27T13:45:45.043",
-          "duration" : 0,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.043",
-            "finishInstant" : "2019-09-27T13:45:45.043",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "the result is 8.0",
-          "keyword" : "Then",
-          "language" : "en",
-          "source" : "definition.feature[16,2]",
-          "displayName" : "Then the result is 8.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.043",
-          "finishInstant" : "2019-09-27T13:45:45.044",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 8.0",
-            "keyword" : "Entonces",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Entonces el resultado es 8.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.043",
-            "finishInstant" : "2019-09-27T13:45:45.044",
-            "duration" : 1,
-            "result" : "PASSED"
-          }, {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 8.0",
-            "keyword" : "Y",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Y el resultado es 8.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.044",
-            "finishInstant" : "2019-09-27T13:45:45.044",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        } ]
-      }, {
-        "nodeType" : "TEST_CASE",
-        "id" : "ID-2_3",
-        "name" : "Test scenario outline [3]",
-        "language" : "en",
-        "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_3]  Test scenario outline [3]",
-        "tags" : [ "ID-2", "definition" ],
-        "properties" : {
-          "gherkinType" : "scenarioOutline"
-        },
-        "startInstant" : "2019-09-27T13:45:45.046",
-        "finishInstant" : "2019-09-27T13:45:45.049",
-        "duration" : 1,
-        "result" : "PASSED",
-        "testCaseResults" : {
-          "PASSED" : 1
-        },
-        "children" : [ {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "<background>",
-          "displayName" : "<background>",
-          "startInstant" : "2019-09-27T13:45:45.046",
-          "finishInstant" : "2019-09-27T13:45:45.047",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el conjunto de números reales ℝ",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[3,1]",
-            "displayName" : "Dado el conjunto de números reales ℝ",
-            "properties" : {
-              "gherkinType" : "step"
-            },
-            "startInstant" : "2019-09-27T13:45:45.046",
-            "finishInstant" : "2019-09-27T13:45:45.047",
-            "duration" : 1,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "VIRTUAL_STEP",
-          "name" : "a number with value 3.0",
-          "keyword" : "Given",
-          "language" : "en",
-          "source" : "definition.feature[13,2]",
-          "displayName" : "Given a number with value 3.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.047",
-          "finishInstant" : "2019-09-27T13:45:45.047",
-          "duration" : 0,
-          "result" : "PASSED"
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "another number with value 6",
-          "keyword" : "And",
-          "language" : "en",
-          "source" : "definition.feature[14,2]",
-          "displayName" : "And another number with value 6",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.047",
-          "finishInstant" : "2019-09-27T13:45:45.048",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "un número con valor 3.0 y otro número con valor 6",
-            "keyword" : "Dado",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Dado un número con valor 3.0 y otro número con valor 6",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.047",
-            "finishInstant" : "2019-09-27T13:45:45.048",
-            "duration" : 1,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "they are multiplied",
-          "keyword" : "When",
-          "language" : "en",
-          "source" : "definition.feature[15,2]",
-          "displayName" : "When they are multiplied",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.048",
-          "finishInstant" : "2019-09-27T13:45:45.048",
-          "duration" : 0,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "se multiplican ambos números",
-            "keyword" : "Cuando",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Cuando se multiplican ambos números",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.048",
-            "finishInstant" : "2019-09-27T13:45:45.048",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        }, {
-          "nodeType" : "STEP_AGGREGATOR",
-          "name" : "the result is 18.0",
-          "keyword" : "Then",
-          "language" : "en",
-          "source" : "definition.feature[16,2]",
-          "displayName" : "Then the result is 18.0",
-          "properties" : {
-            "gherkinType" : "step"
-          },
-          "startInstant" : "2019-09-27T13:45:45.048",
-          "finishInstant" : "2019-09-27T13:45:45.049",
-          "duration" : 1,
-          "result" : "PASSED",
-          "children" : [ {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 18.0",
-            "keyword" : "Entonces",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Entonces el resultado es 18.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.048",
-            "finishInstant" : "2019-09-27T13:45:45.049",
-            "duration" : 1,
-            "result" : "PASSED"
-          }, {
-            "nodeType" : "STEP",
-            "name" : "el resultado es 18.0",
-            "keyword" : "Y",
-            "language" : "es",
-            "source" : "implementation.feature[24,1]",
-            "displayName" : "Y el resultado es 18.0",
-            "properties" : {
-              "dataFormatLanguage" : "en",
-              "gherkinType" : "step",
-              "redefinition.stepMap" : "0-1-1-2"
-            },
-            "startInstant" : "2019-09-27T13:45:45.049",
-            "finishInstant" : "2019-09-27T13:45:45.049",
-            "duration" : 0,
-            "result" : "PASSED"
-          } ]
-        } ]
-      } ]
-    } ]
-  } ]
+            {
+              "nodeType": "TEST_CASE",
+              "result": "ERROR",
+              "keyword": "Scenario",
+              "id": "CP-D2",
+              "name": "Scenario D con ejemplo 2",
+              "childrenResults": {"PASSED": 2, "ERROR": 1, "SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_1",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_2",
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_3",
+                  "result": "ERROR"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_4",
+                  "result": "SKIPPED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

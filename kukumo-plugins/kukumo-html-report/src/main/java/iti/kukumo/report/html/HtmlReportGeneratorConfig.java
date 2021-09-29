@@ -23,14 +23,14 @@ import iti.kukumo.util.LocaleLoader;
 )
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
 
-    public static final String OUTPUT_FILE = "htmlReport.output";
-    public static final String CSS_FILE = "htmlReport.css";
-    public static final String REPORT_LOCALE = "htmlReport.locale";
+    public static final String PREFIX = "htmlReport";
+    public static final String OUTPUT_FILE = PREFIX+".output";
+    public static final String CSS_FILE = PREFIX+".css";
+
 
     private static final Configuration DEFAULTS = Configuration.fromPairs(
         CSS_FILE, "",
-        OUTPUT_FILE, "kukumo.html",
-        REPORT_LOCALE, ""
+        OUTPUT_FILE, "kukumo.html"
     );
 
     @Override
@@ -50,13 +50,7 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
     }
 
     private void configure(HtmlReportGenerator contributor, Configuration configuration) {
-        configuration.ifPresent(CSS_FILE,String.class,contributor::setCssFile);
-        configuration.ifPresent(OUTPUT_FILE,String.class,contributor::setOutputFile);
-        configuration.get(REPORT_LOCALE,String.class)
-           .or(()->configuration.get(KukumoConfiguration.LANGUAGE,String.class))
-           .map(LocaleLoader::forLanguage)
-           .or(()->Optional.of(Locale.ENGLISH))
-           .ifPresent(contributor::setReportLocale);
+        contributor.setConfiguration(configuration);
     }
 
 }

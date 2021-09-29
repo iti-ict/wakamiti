@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+import iti.commons.configurer.Configuration;
+import iti.kukumo.report.html.HtmlReportGeneratorConfig;
 import org.junit.Test;
 
 import iti.kukumo.api.Kukumo;
@@ -27,12 +29,15 @@ public class TestHtmlReportGenerator {
 
         try (Reader reader = Files
             .newBufferedReader(Paths.get("src/test/resources/kukumo.json"), StandardCharsets.UTF_8);
-                        Writer writer = Files.newBufferedWriter(Paths.get("target/kukumo.html"), StandardCharsets.UTF_8);) {
+        ) {
             Kukumo.instance();
             PlanNodeSnapshot plan = Kukumo.planSerializer().read(reader);
             HtmlReportGenerator generator = new HtmlReportGenerator();
-            generator.setReportLocale(Locale.ENGLISH);
-            generator.generate(plan, writer);
+            generator.setConfiguration(new HtmlReportGeneratorConfig()
+                .defaultConfiguration()
+                .appendProperty("htmlReport.output","target/kukumo.html")
+            );
+            generator.report(plan);
         }
     }
 }
