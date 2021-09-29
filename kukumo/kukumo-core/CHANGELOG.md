@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [1.2.0] 2021-09-28
+### Added
+- New property `childrenResults` in `PlanNodeSnapshot` that collects
+the result count of direct children.
+
 ## [1.1.0] 2021-09-17
 ### Added
 - New field to `PlanNode` called `executionID`, that is set when the test plan is 
