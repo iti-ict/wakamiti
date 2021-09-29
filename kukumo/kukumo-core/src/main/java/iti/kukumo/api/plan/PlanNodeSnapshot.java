@@ -21,6 +21,9 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 
 /** This class is a immutable, non-executable representation of a * {@link PlanNode} in a specific state. * <p> * It is mainly used for serialization/deserialization operations. * </p> */
 public class PlanNodeSnapshot {
@@ -47,6 +50,7 @@ public class PlanNodeSnapshot {
     private String errorTrace;
     private Result result;
     private Map<Result, Long> testCaseResults;
+    private Map<Result, Long> childrenResults;
     private List<PlanNodeSnapshot> children;
 
     public PlanNodeSnapshot() {
@@ -90,6 +94,7 @@ public class PlanNodeSnapshot {
             this.children = node.children().map(child -> new PlanNodeSnapshot(child,snapshotInstant))
                 .collect(Collectors.toList());
             this.testCaseResults = countTestCases(node);
+            this.childrenResults = countChildren(node);
         }
     }
 
@@ -118,7 +123,8 @@ public class PlanNodeSnapshot {
         copy.dataTable = this.dataTable;
         copy.errorMessage = this.errorMessage;
         copy.errorTrace = this.errorTrace;
-        copy.testCaseResults = this.testCaseResults;
+        copy.testCaseResults = new LinkedHashMap<>(this.testCaseResults);
+        copy.childrenResults = new LinkedHashMap<>(this.childrenResults);
         return copy;
     }
 
@@ -170,6 +176,7 @@ public class PlanNodeSnapshot {
                     root.testCaseResults.get(entry.getKey()) + entry.getValue()
                 );
             });
+        root.childrenResults = countChildren(root);
         return root;
     }
 
@@ -187,6 +194,18 @@ public class PlanNodeSnapshot {
                 });
         }
         return results;
+    }
+
+
+    private static Map<Result, Long> countChildren(PlanNode node) {
+        return node.children()
+            .filter(it->it.result().isPresent())
+            .collect(groupingBy(it->it.result().orElseThrow(), counting()));
+    }
+
+
+    private static Map<Result, Long> countChildren(PlanNodeSnapshot node) {
+        return node.getChildren().stream().collect(groupingBy(it->it.getResult(), counting()));
     }
 
 
@@ -310,13 +329,20 @@ public class PlanNodeSnapshot {
     }
 
 
+    public Map<Result, Long> getChildrenResults() {
+        return childrenResults;
+    }
+
+
     public List<PlanNodeSnapshot> getChildren() {
         return children;
     }
 
+
     public String getExecutionID() {
         return executionID;
     }
+
 
     public String getSnapshotInstant() {
         return snapshotInstant;
