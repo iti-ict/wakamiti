@@ -222,6 +222,16 @@
                     </div>
                     </#if>
 
+                    <#if node.errorMessage??>
+                    <div class="panel-body-error <#if node.errorTrace??>decorated collapsed</#if>" onclick="switchVisibility(this)" >
+                      ${node.errorMessage}
+                    </div>
+                      <#if node.errorTrace??>
+                      <pre class="panel-body-trace " style="display:none"><code class="nohighlight">${node.errorTrace}</code></pre>
+                      </#if>
+                    </#if>
+
+
                 </#if>
 
             </div>

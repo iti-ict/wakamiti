@@ -177,3 +177,20 @@
     margin-left: 20px;
     font-size: 0.65rem;
  }
+
+ .panel-body-error {
+    margin-left: 20px;
+    background: #fbd4d4;
+    border: 2px solid #f08787;
+    color: #751c1c;
+    padding: 5px;
+ }
+
+ .panel-body-trace {
+    margin-left: 20px;
+    background: #fbd4d4;
+    border: 2px solid #f08787;
+    color: #751c1c;
+    padding: 5px;
+    font-size: 0.65rem;
+ }

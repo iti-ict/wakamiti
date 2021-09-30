@@ -162,7 +162,8 @@
                   "nodeType": "STEP",
                   "keyword": "Y",
                   "name": "Paso de implementacion B3_2",
-                  "result": "FAILED"
+                  "result": "FAILED",
+                  "errorMessage": "Validación incorrecta"
                 },
                 {
                   "nodeType": "STEP",
@@ -289,7 +290,9 @@
                 {
                   "nodeType": "STEP",
                   "name": "Paso de escenario D2_3",
-                  "result": "ERROR"
+                  "result": "ERROR",
+                  "errorMessage": "Unexpected error in transaction",
+                  "errorTrace": "java.lang.Throwable: A test exception\n  at com.stackify.stacktrace.StackElementExample.methodD(StackElementExample.java:23)\n  at com.stackify.stacktrace.StackElementExample.methodC(StackElementExample.java:15)\n  at com.stackify.stacktrace.StackElementExampleTest\n    .whenElementOneIsReadUsingThrowable_thenMethodCatchingThrowableIsObtained(StackElementExampleTest.java:34)\n..."
                 },
                 {
                   "nodeType": "STEP",
