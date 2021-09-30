@@ -15,7 +15,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-launcher</artifactId>
-    <version>${revision}</version>
+    <version>1.2.0</version>
 
 
     <!-- additional information -->
