@@ -76,5 +76,15 @@ docker build -f demo/Dockerfile -t iti.kukmo/kukumo-server-demo:latest .
 docker run --rm -p 8080:8080 -p 8090:8090 --name kukumo-server-demo iti.kukmo/kukumo-server-demo:latest
 ```
 
+## OpenAPI
 
-
+This server exposes a service that provides the OpenAPI specification for 
+every endpoint. As explained (here)[https://quarkus.io/guides/openapi-swaggerui], the default 
+OpenAPI endpoint in a Quarkus application is:
+```
+GET http://localhost:8080/q/openapi
+```
+Also, a user-friendly user interface can be accessed at 
+```
+http://localhost:8080/q/swagger-ui
+```

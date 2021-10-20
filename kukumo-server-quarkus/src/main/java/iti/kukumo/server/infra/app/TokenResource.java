@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import iti.kukumo.server.spi.TokenAuthentication;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 @Path("/tokens")
 public class TokenResource {
@@ -20,8 +21,15 @@ public class TokenResource {
     TokenAuthentication tokenAuthentication;
 
     @GET
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     @PermitAll
+    @Operation(
+        summary =
+            "Obtain an execution token",
+        description =
+            "Creates a new token for execution operations. If a token is passed to this "+
+            "endpoint, the returned token would be a renewed one but bound to the same session."
+    )
     public String requestToken() {
         if (securityContext.getUserPrincipal() == null) {
            return tokenAuthentication.newToken(randomUser());
