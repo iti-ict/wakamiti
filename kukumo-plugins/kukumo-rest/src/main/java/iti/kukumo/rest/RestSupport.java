@@ -47,6 +47,7 @@ public class RestSupport {
     private RestAssuredLogger assuredLogger = new RestAssuredLogger();
     protected final Map<String, String> requestParams = new LinkedHashMap<>();
     protected final Map<String, String> queryParams = new LinkedHashMap<>();
+    protected final Map<String, String> headers = new LinkedHashMap<>();
     protected URL baseURL;
     protected ContentType requestContentType;
     protected String path;
@@ -68,6 +69,7 @@ public class RestSupport {
         response = null;
         validatableResponse = null;
         RequestSpecification request = RestAssured.given().with()
+                .headers(headers)
                 .params(requestParams)
                 .queryParams(queryParams);
         if (attached != null) {
