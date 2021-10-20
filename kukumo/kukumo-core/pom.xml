@@ -1,40 +1,7 @@
-<!DOCTYPE project [
-        <!ELEMENT project (modelVersion|parent|artifactId|version|name|description|inceptionYear|properties|dependencies|build)*>
-        <!ATTLIST project
-                xmlns CDATA #REQUIRED
-                xmlns:xsi CDATA #REQUIRED
-                xsi:schemaLocation CDATA #REQUIRED>
-        <!ELEMENT modelVersion (#PCDATA)>
-        <!ELEMENT parent (groupId|artifactId|version|relativePath)*>
-        <!ELEMENT groupId (#PCDATA)>
-        <!ELEMENT artifactId (#PCDATA)>
-        <!ELEMENT version (#PCDATA)>
-        <!ELEMENT relativePath (#PCDATA)>
-        <!ELEMENT name (#PCDATA)>
-        <!ELEMENT description (#PCDATA)>
-        <!ELEMENT inceptionYear (#PCDATA)>
-        <!ELEMENT properties (gherkin-parser.version|tag-expressions.version|slf4j-ansi.version|jsonassert.version|maven-fetcher.version)*>
-        <!ELEMENT gherkin-parser.version (#PCDATA)>
-        <!ELEMENT tag-expressions.version (#PCDATA)>
-        <!ELEMENT slf4j-ansi.version (#PCDATA)>
-        <!ELEMENT jsonassert.version (#PCDATA)>
-        <!ELEMENT maven-fetcher.version (#PCDATA)>
-        <!ELEMENT dependencies (dependency)*>
-        <!ELEMENT dependency (groupId|artifactId|version|scope)*>
-        <!ELEMENT scope (#PCDATA)>
-        <!ELEMENT build (plugins)*>
-        <!ELEMENT plugins (plugin)*>
-        <!ELEMENT plugin (groupId|artifactId|version|configuration)*>
-        <!ELEMENT configuration (release|compilerArgs|annotationProcessorPaths)*>
-        <!ELEMENT release (#PCDATA)>
-        <!ELEMENT compilerArgs (arg)*>
-        <!ELEMENT arg (#PCDATA)>
-        <!ELEMENT annotationProcessorPaths (annotationProcessorPath)*>
-        <!ELEMENT annotationProcessorPath (groupId|artifactId|version)*>
-        ]>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- inherited configuration -->
