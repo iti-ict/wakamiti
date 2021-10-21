@@ -90,7 +90,7 @@ public class KukumoFetcher {
                 .collect(Collectors.toList());
 
 //            if (updateClasspath) {
-//                mavenFetcher.updateClasspath(paths);
+                mavenFetcher.updateClasspath(paths);
 //            }
             return paths;
 
