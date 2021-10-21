@@ -37,7 +37,7 @@ public class HtmlReportGenerator implements Reporter {
         templateConfiguration.setLogTemplateExceptions(true);
         templateConfiguration.setWrapUncheckedExceptions(true);
         templateConfiguration.setFallbackOnNullLoopVariable(false);
-        templateConfiguration.setClassLoaderForTemplateLoading(classLoader(), ".");
+        templateConfiguration.setClassLoaderForTemplateLoading(classLoader(), "/");
     }
 
     void setCssFile(String cssFile) {
