@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- coordinates -->
+    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-io</artifactId>
     <version>1.1.0</version>
 
@@ -22,7 +23,7 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-        <kukumo-core.version>1.1.0</kukumo-core.version>
+        <kukumo-core.version>1.2.0</kukumo-core.version>
     </properties>
 
     <dependencies>

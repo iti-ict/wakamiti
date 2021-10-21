@@ -64,6 +64,11 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         queryParams.putAll(tableToMap(dataTable));
     }
 
+    @Step("rest.define.headers")
+    public void setHeaders(DataTable dataTable) {
+        headers.putAll(tableToMap(dataTable));
+    }
+
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
         this.timeoutMillis = Long.valueOf(millis);
