@@ -15,7 +15,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-docker</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.3</version>
 
     <properties>
         <kukumo.launcher.path>${parent.basedir}/kukumo/kukumo-launcher</kukumo.launcher.path>
@@ -95,7 +95,7 @@
                 <executions>
                     <execution>
                         <id>build</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -107,7 +107,7 @@
                         <argument>build</argument>
                         <argument>.</argument>
                         <argument>-t</argument>
-                        <argument>nexus-kukumo.iti.upv.es/kukumo</argument>
+                        <argument>nexus-kukumo.iti.upv.es/kukumo:${version}</argument>
                     </arguments>
                 </configuration>
             </plugin>

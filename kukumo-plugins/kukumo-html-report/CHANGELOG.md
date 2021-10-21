@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.2.1] 2021-10-22
+#### Fixed
+- The base packaging path of `TemplateClassLoader` now is `/`
+
 ## [1.2.0] 2021-09-29
 ### Modified
 - Rework of internal implementation. Switched from `j2html` to
