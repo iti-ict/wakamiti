@@ -4,8 +4,8 @@
 package iti.kukumo.util;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import io.cucumber.tagexpressions.Expression;
 import io.cucumber.tagexpressions.TagExpressionParser;
@@ -22,7 +22,7 @@ public class TagFilter {
 
 
     public boolean filter(Collection<String> tags) {
-        return tagParsedExpression.evaluate(tags.stream().map("@"::concat).collect(Collectors.toList()));
+        return tagParsedExpression.evaluate(new ArrayList<>(tags));
     }
 
 }
