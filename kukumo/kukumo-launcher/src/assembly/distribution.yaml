@@ -1,4 +1,4 @@
-applicationName: Kukumo 1.1.0
+applicationName: Kukumo 1.2.1
 distributions:
   - os: linux
     fileSet:

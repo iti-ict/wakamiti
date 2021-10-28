@@ -5,3 +5,4 @@
 /target/
 /**/.attach_pid*
 /tmp/
+*.log
