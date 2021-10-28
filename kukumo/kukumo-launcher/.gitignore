@@ -12,4 +12,4 @@
 /logFile.log
 .attach_pid*
 /src/site/markdown/
-/src/bin/**
+/src/bin/*.jar
