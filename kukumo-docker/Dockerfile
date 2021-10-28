@@ -6,7 +6,7 @@ ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/
 ENV USER_HOME /home/kukumo
 ENV KUKUMO_HOME /opt/kukumo
 ENV KUKUMO_REPOSITORY $USER_HOME/.local/share/kukumo/repository
-#ENV MAVEN_LOCAL_REPOSITORY /repository
+ENV MAVEN_LOCAL_REPOSITORY /repository
 #ENV JACOCO_VERSION 0.8.5
 #ENV JACOCO_HOME /opt/jacoco
 
@@ -17,7 +17,7 @@ COPY src $KUKUMO_HOME/
 COPY src/kukumo $KUKUMO_HOME
 COPY src/log4j2.xml $KUKUMNO_HOME
 COPY src/entrypoint.sh /
-#COPY target/assembly/repo $MAVEN_LOCAL_REPOSITORY/
+COPY target/assembly/repo $MAVEN_LOCAL_REPOSITORY/
 
 RUN apt-get update \
     && apt-get install sudo
@@ -40,7 +40,7 @@ RUN chmod +x /entrypoint.sh \
     && chmod +x /usr/local/bin/kukumo \
     && chown -R kukumo:kukumo $USER_HOME \
     && chown -R kukumo:kukumo $KUKUMO_HOME \
-#    && chown -R kukumo:kukumo $MAVEN_LOCAL_REPOSITORY \
+    && chown -R kukumo:kukumo $MAVEN_LOCAL_REPOSITORY \
     && chown -R kukumo:kukumo /kukumo
 
 USER kukumo

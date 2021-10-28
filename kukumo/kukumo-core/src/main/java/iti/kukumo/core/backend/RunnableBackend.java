@@ -202,7 +202,7 @@ public class RunnableBackend extends AbstractBackend {
             }
             stepBackend.runnableStep().run(stepBackend.invokingArguments());
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             fillErrorState(step, instant, e);
         } finally {
             KukumoStepRunContext.clear();

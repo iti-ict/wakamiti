@@ -8,17 +8,17 @@
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <fileSets>
-        <!--fileSet>
+        <fileSet>
             <directory>${maven.repo.local}</directory>
             <outputDirectory>target/assembly/repo</outputDirectory>
             <includes>
-                <include>%regex[.*/kukumo/.*]</include>
+                <include>%regex[.*/iti/.*]</include>
             </includes>
             <excludes>
                 <exclude>%regex[.*sources.jar]</exclude>
-                <exclude>kukumo-docker/**</exclude>
+                <exclude>%regex[.*/kukumo-docker/.*]</exclude>
             </excludes>
-        </fileSet-->
+        </fileSet>
         <fileSet>
             <directory>${kukumo.launcher.path}/target/staging</directory>
             <outputDirectory>target/assembly/staging</outputDirectory>

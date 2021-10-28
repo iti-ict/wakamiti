@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
 ## [1.2.1] 2021-10-22
 ### Fixed
 - The `ClassLoader` now loads `StepsContributor` from maven artifacts.
-
+- Now `RunnableBackend.runStep` catch `Throwable` errors instead of `Exception`.
 
 ## [1.2.0] 2021-09-28
 ### Added

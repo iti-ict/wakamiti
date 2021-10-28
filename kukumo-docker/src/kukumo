@@ -12,5 +12,5 @@ then
   exit -2
 fi
 
-#java -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar --module-path "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib" -m kukumo.launcher/iti.kukumo.launcher.KukumoLauncher ${ARGS}
-java -Dlog4j.configurationFile=${KUKUMO_HOME}/log4j2.xml -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar -classpath "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib/*" iti.kukumo.launcher.KukumoLauncher ${ARGS}
+java -Dlog4j.configurationFile=${KUKUMO_HOME}/log4j2.xml -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar --module-path "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib" -m kukumo.launcher/iti.kukumo.launcher.KukumoLauncher ${ARGS}
+#java -Dlog4j.configurationFile=${KUKUMO_HOME}/log4j2.xml -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar -classpath "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib/*" iti.kukumo.launcher.KukumoLauncher ${ARGS}
