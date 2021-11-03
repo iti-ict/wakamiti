@@ -21,27 +21,22 @@ revert_replace_properties() {
 
 replace_properties $KUKUMO_HOME
 
-if ${PING_URL:-false} ; then
-  if [ -z "$KUKUMO_BASE_URL" ]; then
-    echo "KUKUMO_BASE_URL variable is needed"
-    exit 1
-  fi
-  WAS_DISCONNECTED=false
-  while [ $(curl --write-out %{http_code} --silent --output /dev/null --insecure -L $KUKUMO_BASE_URL) -ne 200 ] ; do
-    echo -ne \\r"Waiting for $KUKUMO_BASE_URL to be available... (This could take a few minutes. Please, be patient)"
-    WAS_DISCONNECTED=true
-    sleep 1
-  done
-  if [ $WAS_DISCONNECTED ] ; then
-    echo ""
-    sleep 5
-  fi
-fi
-
 cp -r $MAVEN_LOCAL_REPOSITORY/iti $KUKUMO_REPOSITORY
 
-echo Executing at $(date): kukumo $ARGS
-kukumo $@
+
+# collect arguments
+args=()
+for i in "$@"; do
+	if [[ "$i" =~ \ |\' ]]  #if contains spaces
+	then
+		args+=("\"$i\"")
+	else
+		args+=("$i")
+	fi
+done
+
+echo Executing at $(date): kukumo ${args[@]}
+kukumo "$@"
 
 revert_replace_properties $KUKUMO_HOME
 

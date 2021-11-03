@@ -161,7 +161,7 @@ public class ExecutionService {
 	        );
 
         var plan = content == null ?
-            Kukumo.instance().createPlanFromConfiguration(effectiveConfiguration) :
+            Kukumo.instance().createPlanFromWorkspace(effectiveConfiguration) :
             Kukumo.instance().createPlanFromContent(effectiveConfiguration, toInputStream(content))
         ;
         if (async) {
@@ -200,7 +200,7 @@ public class ExecutionService {
     private PlanNodeSnapshot analyze(Configuration configuration, @Null String content) {
        	configuration = this.defaultConfiguration.append(configuration);
         var plan = content == null ?
-            Kukumo.instance().createPlanFromConfiguration(configuration) :
+            Kukumo.instance().createPlanFromWorkspace(configuration) :
             Kukumo.instance().createPlanFromContent(
         		configuration,
         		IOUtils.toInputStream(content, StandardCharsets.UTF_8)

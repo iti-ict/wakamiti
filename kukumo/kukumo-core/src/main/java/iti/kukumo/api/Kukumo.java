@@ -116,18 +116,6 @@ public class Kukumo {
             discoveryPaths = Arrays.asList(".");
         }
 
-        // try to load a kukumo.yaml file if exists
-        for (String discoveryPath : discoveryPaths) {
-        	LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
-            Path confFile = Path.of(discoveryPath, DEFAULT_CONF_FILE);
-            if (Files.exists(confFile)) {
-                Configuration confFromFile = Configuration.fromPath(confFile).inner(PREFIX);
-                configuration = configuration.append(confFromFile);
-                LOGGER.debug("Found {}, applying new {}", confFile, configuration);
-            }
-        }
-
-        LOGGER.debug("Using final {}", configuration);
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
         if (resourceTypeNames.isEmpty()) {
             new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration);
@@ -151,6 +139,36 @@ public class Kukumo {
     }
 
 
+    /**
+     * Attempt to create a plan using the resource path and the feature path
+     * defined in the received configuration.
+     *
+     * @param configuration
+     * @return A new plan ready to be executed
+     * @throws KukumoException if the plan was not created
+     */
+    public PlanNode createPlanFromWorkspace(Configuration configuration) {
+
+        List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
+        if (discoveryPaths.isEmpty()) {
+            discoveryPaths = Arrays.asList(".");
+        }
+
+        // try to load a kukumo.yaml file if exists
+        for (String discoveryPath : discoveryPaths) {
+        	LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
+            Path confFile = Path.of(discoveryPath, DEFAULT_CONF_FILE);
+            if (Files.exists(confFile)) {
+                Configuration confFromFile = Configuration.fromPath(confFile).inner(PREFIX);
+                configuration = configuration.append(confFromFile);
+                LOGGER.debug("Found {}, applying new {}", confFile, configuration);
+            }
+        }
+
+        LOGGER.debug("Using final {}", configuration);
+
+        return createPlanFromConfiguration(configuration);
+    }
 
 
     /**

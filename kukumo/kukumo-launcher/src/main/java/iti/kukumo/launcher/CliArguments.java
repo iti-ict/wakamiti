@@ -125,7 +125,7 @@ public class CliArguments {
     @Override
     public String toString() {
         return Stream.of(cliCommand.getOptions())
-            .map(opt->opt.getOpt()+"="+opt.getValue())
+            .map(opt->opt.getOpt()+"="+opt.getValuesList())
             .collect(Collectors.joining(", ","arguments: {","}"));
     }
 
