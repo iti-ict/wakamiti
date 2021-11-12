@@ -42,6 +42,11 @@ public class TestJsonHelper {
         "c", map("aa",22,"bb",33, "cc", 44),
         "d", 5.55
     ));
+    private static String jsonEmpty = json(map(
+            "a",1,
+            "b", List.of(),
+            "c", map("aa",22,"bb",33, "cc", 44)
+    ));
 
 
 
@@ -130,6 +135,36 @@ public class TestJsonHelper {
     @Test
     public void testLooseExtra() throws JsonProcessingException {
         helper.assertContent(jsonNormal,jsonExtra,MatchMode.LOOSE);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testStrictEmptyActualList() {
+        helper.assertContent(jsonNormal, jsonEmpty, MatchMode.STRICT);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testStrictAnyOrderEmptyActualList() {
+        helper.assertContent(jsonNormal, jsonEmpty, MatchMode.STRICT_ANY_ORDER);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testLooseEmptyActualList() {
+        helper.assertContent(jsonNormal, jsonEmpty, MatchMode.LOOSE);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testStrictEmptyExpectedList() {
+        helper.assertContent(jsonEmpty, jsonNormal, MatchMode.STRICT);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testStrictAnyOrderEmptyExpectedList() {
+        helper.assertContent(jsonEmpty, jsonNormal, MatchMode.STRICT_ANY_ORDER);
+    }
+
+    @Test
+    public void testLooseEmptyExpectedList() {
+        helper.assertContent(jsonEmpty, jsonNormal, MatchMode.LOOSE);
     }
 
 

@@ -8,9 +8,6 @@ package iti.kukumo.rest.helpers;
 
 
 
-import static iti.kukumo.rest.MatchMode.LOOSE;
-import static iti.kukumo.rest.MatchMode.STRICT;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +25,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.restassured.http.ContentType;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.rest.MatchMode;
+
+import static iti.kukumo.rest.MatchMode.*;
 
 public class JsonXmlDiff  {
 
@@ -127,7 +126,7 @@ public class JsonXmlDiff  {
         List<String> errors
     ) {
         String segmentExpected = literalSegmentExpected(prefix);
-        if (matchMode == STRICT && expectedNode.size() != actualNode.size()) {
+        if (List.of(STRICT, STRICT_ANY_ORDER).contains(matchMode) && expectedNode.size() != actualNode.size()) {
             errors.add(
                 segmentExpected+" size: "+expectedNode.size()+
                 ", actual size: "+actualNode.size()
