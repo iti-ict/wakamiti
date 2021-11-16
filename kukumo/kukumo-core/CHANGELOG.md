@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - The `ClassLoader` now loads `StepsContributor` from maven artifacts.
 - Now `RunnableBackend.runStep` catch `Throwable` errors instead of `Exception`.
+- Now cli command configuration overwrite file configuration.
 
 ## [1.2.0] 2021-09-28
 ### Added

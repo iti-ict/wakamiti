@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [1.2.0] 2021-10-21
 
+## Modified
 - New step to set headers in requests.
+### Fixed
+- Fixed JSON comparator when lists are present in STRICT_ANY_ORDER mode.
 
 ## [1.1.0] 2021-09-17
 
