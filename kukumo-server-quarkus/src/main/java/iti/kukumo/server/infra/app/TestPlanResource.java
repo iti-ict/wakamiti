@@ -13,12 +13,6 @@ import io.quarkus.security.Authenticated;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.plan.*;
 import iti.kukumo.server.domain.ExecutionService;
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 
 @Path("/plans")
@@ -37,28 +31,6 @@ public class TestPlanResource {
     @POST
     @Consumes("text/plain;charset=UTF-8,*/*")
     @Produces("application/json;charset=UTF-8")
-    @Operation(
-        summary =
-            "Obtain the test plan for the given resources",
-        description =
-            "Analyze the given resources and build the resulting test plan, without executing it. "+
-            "The resources can be provided in three ways: single resource directly as text body, " +
-            "a dictionary of resources as a json body, or as a local workspace path (and empty body). "
-    )
-    @Parameters({
-        @Parameter(
-            name = "resourceType",
-            description = "The test resource type passed in the body. Only used when the body is plain text",
-            required = false,
-            example = "gherkin"
-        ),
-        @Parameter(
-            name = "wokrspace",
-            description = "The local workspace path where the resources are located. Only used when the body is empty",
-            required = false,
-            example = "/home/luis/workspaces/myproject"
-        )
-    })
     public String analyze(
         @Context SecurityContext securityContext,
         @QueryParam("resourceType") String resourceType,

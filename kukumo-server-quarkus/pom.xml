@@ -7,7 +7,7 @@
 
 	<groupId>iti.kukumo</groupId>
     <artifactId>kukumo-server-quarkus</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.2.1</version>
 
     <!-- additional information -->
     <name>Kukumo::Execution Server</name>
