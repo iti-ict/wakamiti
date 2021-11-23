@@ -19,8 +19,66 @@
 
     <properties>
         <kukumo.launcher.path>${parent.basedir}/kukumo/kukumo-launcher</kukumo.launcher.path>
-        <docker.image.name>docker.iti.upv.es/act/act/devops/${project.parent.artifactId}</docker.image.name>
+        <docker.image.name>nexus-kukumo.iti.upv.es/kukumo</docker.image.name>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-core-l10n</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-html-report</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-amqp</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-amqp-l10n</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-db-l10n</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-io</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-io-l10n</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>iti.kukumo</groupId>
+            <artifactId>kukumo-rest-l10n</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -61,33 +119,6 @@
                 </executions>
             </plugin>
 
-            <!--plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${dockerfile-maven-version}</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <repository>nexus-kukumo.iti.upv.es/kukumo</repository>
-                    <tag>${project.parent.version}</tag>
-                </configuration>
-            </plugin-->
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -107,7 +138,7 @@
                         <argument>build</argument>
                         <argument>.</argument>
                         <argument>-t</argument>
-                        <argument>nexus-kukumo.iti.upv.es/kukumo:${version}</argument>
+                        <argument>${docker.image.name}:${version}</argument>
                     </arguments>
                 </configuration>
             </plugin>

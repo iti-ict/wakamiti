@@ -21,9 +21,6 @@ revert_replace_properties() {
 
 replace_properties $KUKUMO_HOME
 
-cp -r $MAVEN_LOCAL_REPOSITORY/iti $KUKUMO_REPOSITORY
-
-
 # collect arguments
 args=()
 for i in "$@"; do

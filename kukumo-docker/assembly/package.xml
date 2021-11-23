@@ -7,18 +7,29 @@
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
 
-    <fileSets>
-        <fileSet>
-            <directory>${maven.repo.local}</directory>
-            <outputDirectory>target/assembly/repo</outputDirectory>
-            <includes>
-                <include>%regex[.*/iti/.*]</include>
-            </includes>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/staging/lib-ext</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+
             <excludes>
-                <exclude>%regex[.*sources.jar]</exclude>
-                <exclude>%regex[.*/kukumo-docker/.*]</exclude>
+                <exclude>com.google.code.findbugs:jsr305</exclude>
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+                <exclude>org.hamcrest:hamcrest-library</exclude>
+                <exclude>*:assertj-core</exclude>
+                <exclude>*:commons-codec</exclude>
+                <exclude>*:commons-collections*</exclude>
+                <exclude>*:commons-io</exclude>
+                <exclude>*:httpclient</exclude>
+                <exclude>*:httpcore</exclude>
+                <exclude>*:junit</exclude>
+                <exclude>*:kukumo-core:jar</exclude>
             </excludes>
-        </fileSet>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
         <fileSet>
             <directory>${kukumo.launcher.path}/target/staging</directory>
             <outputDirectory>target/assembly/staging</outputDirectory>
