@@ -264,6 +264,7 @@ public class Kukumo {
         }
 
         PlanNodeBuilder planNodeBuilder = planBuilder.get().createPlan(resources);
+        configuration.ifPresent(TEST_PLAN_NAME, String.class, planNodeBuilder::setName);
 
         List<PlanTransformer> planTransformers = contributors.planTransformers()
                 .collect(Collectors.toList());
