@@ -180,7 +180,7 @@ header .row {
  .panel-body-document {
     margin-left: 20px;
     font-size: 0.65rem;
-    background: lightgray;
+    background-color: #e8e8e8;
  }
 
  .panel-body-error {
