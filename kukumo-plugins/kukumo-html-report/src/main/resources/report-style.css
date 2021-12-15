@@ -74,6 +74,10 @@
     background-color: #ffffff;
  }
 
+content > .panel .panel-body {
+    margin: 5px 20px;
+}
+
  .nodeType-TEST_CASE {
     margin-top: 15px;
     padding-bottom: 15px;
