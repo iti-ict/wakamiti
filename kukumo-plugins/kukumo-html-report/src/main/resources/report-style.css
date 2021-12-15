@@ -174,11 +174,13 @@ header .row {
  }
  table.panel-body-datatable td { 
     border: 1px dotted;
+    padding: 2px 6px;
  }
 
  .panel-body-document {
     margin-left: 20px;
     font-size: 0.65rem;
+    background: lightgray;
  }
 
  .panel-body-error {
