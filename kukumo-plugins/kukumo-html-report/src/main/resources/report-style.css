@@ -163,7 +163,7 @@ header .row {
 
  table.panel-body-datatable {
     font-family: courier, monospace;
-    border: 1px solid #eca55a;
+    border: 1px solid #ffffe1;
     background: #ffffe1;
     margin-left: 20px;
     font-size: 0.85rem;
@@ -184,7 +184,7 @@ header .row {
  .panel-body-document {
     margin-left: 20px;
     font-size: 0.65rem;
-    background-color: #e8e8e8;
+    background-color: #ffffe1;
  }
 
  .panel-body-error {
