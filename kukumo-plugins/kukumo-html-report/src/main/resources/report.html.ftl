@@ -64,8 +64,8 @@
             </div>
             <div class="panel-body" style="display: none">
                 <div>Execution ID: ${plan.executionID!'unknown'}</div>
-                <div>Started at ${plan.startInstant}</div>
-                <div>Finished at ${plan.startInstant}</div>
+                <div>Started at ${plan.startInstant?datetime.xs?string.medium}</div>
+                <div>Finished at ${plan.finishInstant?datetime.xs?string.medium}</div>
                 <div>Duration: ${plan.duration} millisec</div>
             </div>
         </div>
