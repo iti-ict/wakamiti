@@ -18,7 +18,6 @@
                 <exclude>com.google.code.findbugs:jsr305</exclude>
                 <exclude>javax.xml.bind:jaxb-api</exclude>
                 <exclude>org.hamcrest:hamcrest-library</exclude>
-                <exclude>*:assertj-core</exclude>
                 <exclude>*:commons-codec</exclude>
                 <exclude>*:commons-collections*</exclude>
                 <exclude>*:commons-io</exclude>
