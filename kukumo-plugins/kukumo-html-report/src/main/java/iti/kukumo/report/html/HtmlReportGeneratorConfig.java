@@ -26,6 +26,7 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
     public static final String PREFIX = "htmlReport";
     public static final String OUTPUT_FILE = PREFIX+".output";
     public static final String CSS_FILE = PREFIX+".css";
+    public static final String TITLE = PREFIX+".title";
 
 
     private static final Configuration DEFAULTS = Configuration.fromPairs(

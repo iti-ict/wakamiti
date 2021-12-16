@@ -28,6 +28,7 @@ public class HtmlReportGenerator implements Reporter {
     private final Configuration templateConfiguration;
     private String cssFile;
     private String outputFile;
+    private String title;
     private Map<String,Object> parameters;
 
     public HtmlReportGenerator() {
@@ -48,9 +49,14 @@ public class HtmlReportGenerator implements Reporter {
         this.outputFile = outputFile;
     }
 
+    void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setConfiguration(iti.commons.configurer.Configuration configuration) {
         configuration.ifPresent(CSS_FILE,String.class,this::setCssFile);
         configuration.ifPresent(OUTPUT_FILE,String.class,this::setOutputFile);
+        configuration.ifPresent(TITLE, String.class, this::setTitle);
         var reportConfiguration = configuration.inner(PREFIX);
         this.parameters = new HashMap<>(reportConfiguration.asMap());
     }

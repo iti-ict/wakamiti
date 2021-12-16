@@ -41,7 +41,7 @@
         <hr/>
         <div class="col row">
             <div class="logo-left col-1"></div>
-            <h1 class="col-10 text-center report-title">${plan.name!plan.displayName}</h1>
+            <h1 class="col-10 text-center report-title">${title!plan.name!plan.displayName}</h1>
             <div class="logo-right col-1"></div>
         </div>
         <hr/>
