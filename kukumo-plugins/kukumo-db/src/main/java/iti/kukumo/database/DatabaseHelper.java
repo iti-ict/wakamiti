@@ -164,7 +164,9 @@ public class DatabaseHelper {
                 primaryKeys.add(resultSet.getString("COLUMN_NAME"));
             }
             if (primaryKeys.isEmpty() && throwIfAbsent) {
-                throw new KukumoException("Cannot determine primary key for table " + caseSensitivity.format(table));
+                String message = String.format("Cannot determine primary key for table '%s'. Please, disable the '%s' property.",
+                        caseSensitivity.format(table), DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION);
+                throw new KukumoException(message);
             }
             LOGGER.trace("Getting {} primary keys: {}", table, primaryKeys);
             return primaryKeys;
