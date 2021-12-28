@@ -288,7 +288,7 @@ public class DatabaseHelper {
 
     private DataSet getGeneratedKeys(Statement statement, Insert insert) throws SQLException {
         String[] columns = insert.getColumns().stream().map(Objects::toString).toArray(String[]::new);
-        String[] pkColumns = primaryKey(insert.getTable().getName(), false);
+        String[] pkColumns = primaryKey(insert.getTable().getName(), true);
         String[] pkValues = new String[pkColumns.length];
         if (Arrays.asList(columns).containsAll(Arrays.asList(pkColumns))) {
             String[] values = ((ExpressionList) insert.getItemsList()).getExpressions().stream()
