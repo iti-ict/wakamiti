@@ -40,7 +40,7 @@ public class DatabaseHelper {
 
     private static final Logger LOGGER = AnsiLogger.of(LoggerFactory.getLogger("iti.kukumo.database"));
 
-    private final Map<String, List<String>> primaryKeyCache = new HashMap<>();
+    private final Map<String, String[]> primaryKeyCache = new HashMap<>();
     private final Map<String, Map<String, Integer>> nonNullabeColumnCache = new HashMap<>();
     private final ConnectionProvider connectionProvider;
     private final ConnectionParameters connectionParameters;
@@ -154,8 +154,7 @@ public class DatabaseHelper {
         }
     }
 
-
-    private List<String> detectPrimaryKey(String table, boolean throwIfAbsent) {
+    private Optional<String[]> detectPrimaryKey(String table) {
         try {
             DatabaseMetaData metadata = connection().getMetaData();
             ArrayList<String> primaryKeys = new ArrayList<>();
@@ -163,13 +162,7 @@ public class DatabaseHelper {
             while (resultSet != null && resultSet.next()) {
                 primaryKeys.add(resultSet.getString("COLUMN_NAME"));
             }
-            if (primaryKeys.isEmpty() && throwIfAbsent) {
-                String message = String.format("Cannot determine primary key for table '%s'. Please, disable the '%s' property.",
-                        caseSensitivity.format(table), DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION);
-                throw new KukumoException(message);
-            }
-            LOGGER.trace("Getting {} primary keys: {}", table, primaryKeys);
-            return primaryKeys;
+            return primaryKeys.isEmpty() ? Optional.empty() : Optional.of(primaryKeys.toArray(new String[0]));
         } catch (Exception e) {
             throw new KukumoException(e);
         }
@@ -290,7 +283,13 @@ public class DatabaseHelper {
 
     private DataSet getGeneratedKeys(Statement statement, Insert insert) throws SQLException {
         String[] columns = insert.getColumns().stream().map(Objects::toString).toArray(String[]::new);
-        String[] pkColumns = primaryKey(insert.getTable().getName(), true);
+        String table = insert.getTable().getName();
+        String[] pkColumns = primaryKey(insert.getTable().getName())
+                .orElseThrow(() -> {
+                    String message = String.format("Cannot determine primary key for table '%s'. Please, disable the '%s' property.",
+                            caseSensitivity.format(table), DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION);
+                    return new KukumoException(message);
+                });
         String[] pkValues = new String[pkColumns.length];
         if (Arrays.asList(columns).containsAll(Arrays.asList(pkColumns))) {
             String[] values = ((ExpressionList) insert.getItemsList()).getExpressions().stream()
@@ -422,10 +421,12 @@ public class DatabaseHelper {
                     beforeDataSet.origin()
             );
         }
-        String[] primaryKey = primaryKey(beforeDataSet.table(), false);
-        if (primaryKey.length == 0 || !beforeDataSet.containColumns(primaryKey)) {
-            throw new IOException("Primary key " + Arrays.asList(primaryKey) + " is needed");
-        }
+        String[] primaryKey = primaryKey(beforeDataSet.table())
+                .orElseThrow(() -> {
+                    String message = String.format("Cannot determine primary key for table '%s'. Primary key is needed in this step.",
+                            caseSensitivity.format(beforeDataSet.table()));
+                    return new KukumoException(message);
+                });
 
         Update sql = parser.sqlUpdateSet(beforeDataSet, primaryKey);
 
@@ -512,20 +513,21 @@ public class DatabaseHelper {
             LOGGER.debug("Deleting rows in table {} from {}...", caseSensitivity.format(dataSet.table()), dataSet.origin());
         }
 
-        String[] primaryKey = primaryKey(dataSet.table(), false);
-        boolean deleteByPrimaryKey = primaryKey.length > 0 && dataSet.containColumns(primaryKey);
-        Delete sql = parser.sqlDeleteFrom(dataSet.table(), deleteByPrimaryKey ? primaryKey : dataSet.columns());
+        Optional<String[]> primaryKey = primaryKey(dataSet.table()).filter(k -> addCleanUpOperation);
+        String[] columns = primaryKey.orElse(dataSet.columns());
+        Delete sql = parser.sqlDeleteFrom(dataSet.table(), columns);
         if (addCleanUpOperation) {
             Optional<Select> select = parser.toSelect(sql);
             if (select.isPresent()) {
-                DataSet data = executeSelect(select.get(), dataSet, deleteByPrimaryKey ? primaryKey : dataSet.columns());
+
+                DataSet data = executeSelect(select.get(), dataSet, columns);
                 cleanUpOperations.addFirst(insertDataSetRunner(data));
             }
         }
         try (PreparedStatement statement = connection().prepareStatement(sql.toString())) {
             while (dataSet.nextRow()) {
-                if (deleteByPrimaryKey) {
-                    bindRowValues(statement, dataSet, primaryKey, true);
+                if (primaryKey.isPresent()) {
+                    bindRowValues(statement, dataSet, primaryKey.get(), true);
                 } else {
                     bindRowValues(statement, dataSet, true);
                 }
@@ -673,11 +675,12 @@ public class DatabaseHelper {
         String message = "Expected row " + dataSet.rowAsMap() + " existed in table " + dataSet
             .table();
         // try to locate the actual row values according the primary keys
-        String[] primaryKey = primaryKey(dataSet.table(), false);
-        if (primaryKey == null || primaryKey.length == 0 || !dataSet.containColumns(primaryKey)) {
+        Optional<String[]> primaryKey = primaryKey(dataSet.table())
+                .filter(dataSet::containColumns);
+        if (primaryKey.isEmpty()) {
             message += " but was not found";
         } else {
-            message = logRowNotFoundCompared(dataSet, message, primaryKey);
+            message = logRowNotFoundCompared(dataSet, message, primaryKey.get());
         }
         return message;
     }
@@ -716,11 +719,10 @@ public class DatabaseHelper {
     }
 
 
-    public String[] primaryKey(String table, boolean throwIfAbsent) {
-        return primaryKeyCache.computeIfAbsent(table, t -> detectPrimaryKey(t, throwIfAbsent))
-            .toArray(new String[0]);
+    public Optional<String[]> primaryKey(String table) {
+        String[] keys = primaryKeyCache.computeIfAbsent(table, t -> detectPrimaryKey(t).orElse(null));
+        return Optional.ofNullable(keys);
     }
-
 
     public Map<String, Integer> nonNullableColumns(String table) {
         return nonNullabeColumnCache.computeIfAbsent(table, this::collectNonNullableColumns);

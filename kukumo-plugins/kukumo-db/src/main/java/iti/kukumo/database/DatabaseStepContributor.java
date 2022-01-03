@@ -281,7 +281,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.exists.row.single.id", args = { "id:text", "table:word" })
     public void assertRowExistsBySingleId(String id, String table) throws SQLException {
-        String keyColumn = helper.primaryKey(table, true)[0];
+        String keyColumn = helper.primaryKey(table).get()[0];
         helper.assertCountRowsInTableByColumns(
             matcherNonEmpty(),
             table,
@@ -364,7 +364,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.not.exists.row.single.id", args = { "id:text", "table:word" })
     public void assertRowNotExistsBySingleId(String id, String table) throws SQLException {
-        String keyColumn = helper.primaryKey(table, true)[0];
+        String keyColumn = helper.primaryKey(table).get()[0];
         helper.assertCountRowsInTableByColumns(
             matcherEmpty(),
             table,
