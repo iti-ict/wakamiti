@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [1.2.0] 2021-10-21
 
+## Modified
+- Version aligned with `kukumo-core:1.2.0`
 - New step to set headers in requests.
-- 
+
 ## [1.1.0] 2021-09-17
 
 ### Modified
