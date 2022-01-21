@@ -64,6 +64,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         queryParams.putAll(tableToMap(dataTable));
     }
 
+
+    @Step("rest.define.path.parameters")
+    public void setPathParameters(DataTable dataTable) {
+        pathParams.putAll(tableToMap(dataTable));
+    }
+
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
         headers.putAll(tableToMap(dataTable));

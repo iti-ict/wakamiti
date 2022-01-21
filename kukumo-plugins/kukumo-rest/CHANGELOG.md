@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning][2].
 ## Modified
 - Version aligned with `kukumo-core:1.2.0`
 - New step to set headers in requests.
+- New step to set path parameters in requests.
 ### Fixed
 - Fixed JSON comparator when lists are present in STRICT_ANY_ORDER mode.
 
