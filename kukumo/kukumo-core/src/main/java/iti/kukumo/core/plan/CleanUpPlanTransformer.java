@@ -44,7 +44,7 @@ public class CleanUpPlanTransformer extends RuleBasedPlanTransformer implements 
         return propertySubstitution
             .matcher(value)
             .replaceAll(result ->
-                configuration.get(result.group(1), String.class).orElse("<unresolved property: "+result.group(1)+">")
+                configuration.get(result.group(1), String.class).orElse(result.group(0))
             );
     }
 
