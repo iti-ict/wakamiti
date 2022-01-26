@@ -50,7 +50,7 @@ public class TestPlanFactory {
         String tagExpression,
         int testCases
     ) throws IOException, JSONException, ConfigurationException {
-        assertPlan(featureFilename, resultFilename, tagExpression, testCases);
+        assertPlan(featureFilename, resultFilename, tagExpression, testCases, new Properties());
     }
 
 
@@ -60,7 +60,7 @@ public class TestPlanFactory {
         String tagExpression,
         int testCases
     ) throws IOException, JSONException, ConfigurationException {
-        assertPlan(featurePath, resultFilename, tagExpression, testCases);
+        assertPlan(featurePath, resultFilename, tagExpression, testCases, new Properties());
     }
 
 
@@ -68,12 +68,14 @@ public class TestPlanFactory {
         String path,
         String resultFilename,
         String tagExpression,
-        int testCases
+        int testCases,
+        Properties extraProperties
     ) throws JSONException, IOException, ConfigurationException {
         Properties properties = new Properties();
         properties.put(KukumoConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(KukumoConfiguration.RESOURCE_PATH, path);
         properties.put(KukumoConfiguration.OUTPUT_FILE_PATH, "target/kukumo.json");
+        properties.putAll(extraProperties);
         if (tagExpression != null) {
             properties.put(KukumoConfiguration.TAG_FILTER, tagExpression);
         }
@@ -123,6 +125,25 @@ public class TestPlanFactory {
             "src/test/resources/features/test4_tagExpression_plan.json",
             "Test4 and (B and (C or D))",
             1
+        );
+    }
+
+
+    @Test
+    public void test6_propertySubstitution() throws IOException, JSONException, ConfigurationException {
+
+        Properties properties = new Properties();
+        properties.put("number.a", "8.02");
+        properties.put("number.b", "9");
+        properties.put("number.c", "72.18");
+        properties.put("operation", "multiplied");
+
+        assertPlan(
+            "src/test/resources/features/test6_propertySubstitution.feature",
+            "src/test/resources/features/test6_propertySubstitution_plan.json",
+            "",
+            1,
+            properties
         );
     }
 

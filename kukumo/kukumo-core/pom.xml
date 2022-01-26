@@ -8,13 +8,13 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
 
     <artifactId>kukumo-core</artifactId>
-    <version>1.2.1</version>
+    <version>1.3.0</version>
 
 
     <!-- additional information -->

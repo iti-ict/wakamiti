@@ -6,6 +6,7 @@ import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.api.extensions.ResourceType;
 import iti.kukumo.core.datatypes.KukumoCoreTypes;
 import iti.kukumo.core.datatypes.assertion.KukumoAssertTypes;
+import iti.kukumo.core.plan.CleanUpPlanTransformer;
 import iti.kukumo.gherkin.GherkinPlanBuilder;
 import iti.kukumo.gherkin.GherkinRedefinitionPlanTransformer;
 import iti.kukumo.gherkin.GherkinResourceType;
@@ -48,7 +49,7 @@ open module kukumo.core {
 
     provides ResourceType with GherkinResourceType;
     provides PlanBuilder with GherkinPlanBuilder;
-    provides PlanTransformer with GherkinRedefinitionPlanTransformer;
+    provides PlanTransformer with GherkinRedefinitionPlanTransformer, CleanUpPlanTransformer;
     provides DataTypeContributor with KukumoCoreTypes, KukumoAssertTypes;
     provides ConfigContributor with KukumoConfiguration;
 

@@ -135,6 +135,10 @@ public class PlanNodeBuilderRules {
             .ifPresent(rightNode -> action.accept(leftNode, rightNode));
     }
 
+    public static PlanNodeBuilderRuleConsumer forEachNode() {
+        return forEachNode(it->true);
+    }
+
 
     public static PlanNodeBuilderRuleConsumer forEachNode(Predicate<PlanNodeBuilder> predicate) {
         return new PlanNodeBuilderRuleConsumer(predicate, x -> {
