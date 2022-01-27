@@ -19,6 +19,32 @@ Scenario: Get a user from a service
   { "name": "User One" }
  """
  And the text from response fragment 'contact.email' is 'user1@mail'
- 
-
- 
+ And the response satisfies the following schema:
+ ```json
+ {
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "type": "object",
+   "properties": {
+     "id":         { "type": "string", "pattern": "[a-zA-Z0-9]+" },
+     "name":       { "type": "string" },
+     "age":        { "type": "integer", "minimum": 5 },
+     "vegetables": {
+       "type": "array",
+       "items": [ {
+           "type": "object",
+           "properties": {
+             "id":          { "type": "integer" },
+             "description": { "type": "string"  }
+           },
+           "required": [ "id", "description" ]
+       } ]
+     },
+     "contact": {
+       "type": "object",
+       "properties": {
+         "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\\.]+$" }
+       }
+     }
+   }
+ }
+ ```

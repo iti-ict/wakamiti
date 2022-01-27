@@ -48,4 +48,6 @@ public interface ContentTypeHelper {
     );
 
 
+    void assertContentSchema(String expectedSchema, String content);
+
 }

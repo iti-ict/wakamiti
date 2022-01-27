@@ -6,9 +6,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.3.0] 2022-01-27
+
+## Added
+- Steps to validate responses against an schema (either JSON Schema or XML Schema)
+
+
 ## [1.2.0] 2021-10-21
 
-## Modified
+### Modified
 - Version aligned with `kukumo-core:1.2.0`
 - New step to set headers in requests.
 - New step to set path parameters in requests.

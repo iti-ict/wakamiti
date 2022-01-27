@@ -312,5 +312,16 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
+    @Step(value = "rest.assert.response.body.schema.from.document")
+    public void assertBodyContentSchema(Document document) {
+        assertContentSchema(document.getContent());
+    }
+
+
+    @Step(value = "rest.assert.response.body.schema.from.file")
+    public void assertBodyContentSchema(File file) {
+        assertFileExists(file);
+        assertContentSchema(resourceLoader.readFileAsString(file));
+    }
 
 }

@@ -12,6 +12,13 @@ import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.rest.MatchMode;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.SchemaException;
+import org.everit.json.schema.ValidationException;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.junit.ComparisonFailure;
 
 @Extension(provider = "iti.kukumo", name = "rest-json-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class JSONHelper implements ContentTypeHelper {
@@ -41,5 +48,17 @@ public class JSONHelper implements ContentTypeHelper {
         response.body(fragment, MatcherAssertion.asMatcher(assertion));
     }
 
+
+    @Override
+    public void assertContentSchema(String expectedSchema, String content) {
+        JSONObject jsonSchema = new JSONObject(new JSONTokener(expectedSchema));
+        JSONObject jsonSubject = new JSONObject(new JSONTokener(content));
+        Schema schemaValidator = SchemaLoader.load(jsonSchema);
+        try {
+            schemaValidator.validate(jsonSubject);
+        } catch (ValidationException e) {
+            throw new AssertionError(e.getMessage());
+        }
+    }
 
 }

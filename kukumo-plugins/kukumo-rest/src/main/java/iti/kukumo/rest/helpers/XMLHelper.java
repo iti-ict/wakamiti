@@ -4,6 +4,7 @@
 package iti.kukumo.rest.helpers;
 
 
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.util.MatcherAssertion;
 import org.hamcrest.Matcher;
@@ -13,13 +14,43 @@ import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.rest.MatchMode;
+import org.xml.sax.*;
+import org.xml.sax.helpers.XMLFilterImpl;
+import org.xml.sax.helpers.XMLReaderFactory;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
 
 
 @Extension(provider = "iti.kukumo", name = "rest-xml-helper", extensionPoint = "iti.kukumo.rest.ContentTypeHelper")
 public class XMLHelper extends JSONHelper implements ContentTypeHelper {
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
+    private final SchemaFactory schemaFactory;
+
+
+    public XMLHelper() {
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            // to be compliant, completely disable DOCTYPE declaration:
+            schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // or prohibit the use of all protocols by external entities:
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        } catch (Exception e) {
+            throw new KukumoException(e);
+        }
+    }
+
 
     @Override
     public ContentType contentType() {
@@ -43,107 +74,23 @@ public class XMLHelper extends JSONHelper implements ContentTypeHelper {
         response.body(fragment, MatcherAssertion.asMatcher(assertion));
     }
 
-/*
-    private static final DifferenceEvaluator looseDifferenceEvaluator =
-    (Comparison comparison, ComparisonResult outcome) -> {
-        // ignore when the test has more elements than the control
-        if (outcome == ComparisonResult.DIFFERENT) {
-            if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH) {
-                Integer controlNodes = (Integer) comparison.getControlDetails().getValue();
-                Integer testNodes = (Integer) comparison.getTestDetails().getValue();
-                return testNodes.compareTo(controlNodes) > 0 ? ComparisonResult.SIMILAR
-                                : ComparisonResult.DIFFERENT;
-            } else if (comparison.getType() == ComparisonType.CHILD_LOOKUP
-                            && comparison.getControlDetails().getValue() == null) {
-                return ComparisonResult.SIMILAR;
-            } else if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-                return ComparisonResult.SIMILAR;
-            }
-        }
-        return outcome;
-    };
-
-
-    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
-    (Comparison comparison, ComparisonResult outcome) -> {
-        // ignore when the test has more elements than the control
-        if (outcome == ComparisonResult.DIFFERENT) {
-            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-                return ComparisonResult.SIMILAR;
-            }
-        }
-        return outcome;
-    };
-
-
-    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
-    (Comparison comparison, ComparisonResult outcome) -> {
-        // ignore when the test has more elements than the control
-        if (outcome == ComparisonResult.DIFFERENT) {
-            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-                return ComparisonResult.SIMILAR;
-            }
-        }
-        return outcome;
-    };
-
-
-    private static final DifferenceEvaluator anyOrderDifferenceEvaluator =
-    (Comparison comparison, ComparisonResult outcome) -> {
-        // ignore when the test has more elements than the control
-        if (outcome == ComparisonResult.DIFFERENT) {
-            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-                return ComparisonResult.SIMILAR;
-            }
-        }
-        return outcome;
-    };
-
 
     @Override
-    public ContentType contentType() {
-        return ContentType.XML;
-    }
-
-
-    @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
-        DiffBuilder diffBuilder = diffBuilder(expected, actual);
-        if (matchMode == MatchMode.LOOSE) {
-            diffBuilder = diffBuilder
-                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName))
-                .withDifferenceEvaluator(looseDifferenceEvaluator);
-        } else if (matchMode == MatchMode.STRICT_ANY_ORDER) {
-            diffBuilder = diffBuilder
-                    .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName))
-                    .withDifferenceEvaluator(anyOrderDifferenceEvaluator);
+    public void assertContentSchema(String expectedSchema, String content) {
+        try {
+            Schema schema = schemaFactory.newSchema(new SAXSource(new InputSource(new StringReader(expectedSchema))));
+            Validator validator = schema.newValidator();
+            try {
+                validator.validate(new StreamSource(new StringReader(content)));
+            }
+            catch (SAXParseException e) {
+                throw new AssertionError(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new KukumoException(e);
         }
-        Diff diff = diffBuilder.build();
-        if (diff.hasDifferences()) {
-            throw new ComparisonFailure(diff.toString(), expected, actual);
-        }
+
     }
 
 
-
-    private DiffBuilder diffBuilder(String expected, String actual) {
-        return DiffBuilder.compare(expected).withTest(actual)
-            .ignoreComments()
-            .ignoreElementContentWhitespace()
-            .ignoreWhitespace()
-            .normalizeWhitespace()
-            .checkForSimilar();
-    }
-
-
-    @Override
-    public <T> void assertFragment(
-        String fragment,
-        ValidatableResponse response,
-        Class<T> dataType,
-        Matcher<T> matcher
-    ) {
-        response.body(fragment,matcher);
-    }
-    */
 }

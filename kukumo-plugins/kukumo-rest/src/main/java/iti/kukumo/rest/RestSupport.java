@@ -208,6 +208,11 @@ public class RestSupport {
     }
 
 
+    protected void assertContentSchema(String expectedSchema) {
+        ContentTypeHelper helper = contentTypeHelperForResponse();
+        helper.assertContentSchema(expectedSchema,validatableResponse.extract().asString());
+    }
+
 
     private String readFile(File file) {
         return resourceLoader.readFileAsString(file);

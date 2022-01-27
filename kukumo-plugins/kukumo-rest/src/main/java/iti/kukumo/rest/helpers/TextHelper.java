@@ -54,4 +54,9 @@ public class TextHelper implements ContentTypeHelper {
         throw new UnsupportedOperationException("Not implemented for content type "+contentType());
     }
 
+
+    @Override
+    public void assertContentSchema(String expectedSchema, String content) {
+        throw new UnsupportedOperationException("Not implemented for content type "+contentType());
+    }
 }

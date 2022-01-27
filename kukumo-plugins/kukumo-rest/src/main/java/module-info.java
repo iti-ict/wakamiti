@@ -19,6 +19,8 @@ module kukumo.rest {
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.commons.lang3;
     requires org.hamcrest;
+    requires org.everit.json.schema;
+    requires java.xml;
 
     uses ConfigContributor;
     uses StepContributor;
