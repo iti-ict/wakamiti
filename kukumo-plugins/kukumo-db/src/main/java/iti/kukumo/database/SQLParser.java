@@ -127,7 +127,7 @@ public class SQLParser {
                     f.setName("trim");
                     f.setParameters(new ExpressionList(new Column(column)));
                     exp.setLeftExpression(f);
-                    exp.setRightExpression(new LongValue("?"));
+                    exp.setRightExpression(new JdbcParameter());
                     return exp;
                 })
                 .map(exp -> {
@@ -194,7 +194,7 @@ public class SQLParser {
                         .collect(Collectors.toCollection(LinkedList::new))
         );
         insert.setItemsList(new ExpressionList(
-                Stream.of(dataSet.columns()).map(column -> new LongValue("?"))
+                Stream.of(dataSet.columns()).map(column -> new JdbcParameter())
                         .collect(Collectors.toCollection(LinkedList::new))
         ));
         return insert;
@@ -207,7 +207,7 @@ public class SQLParser {
                 .filter(column -> !columns[0].equals(column))
                 .collect(Collectors.toCollection(LinkedList::new));
         update.setColumns(setColumns.stream().map(Column::new).collect(Collectors.toCollection(LinkedList::new)));
-        update.setExpressions(setColumns.stream().map(column -> new LongValue("?")).collect(Collectors.toCollection(LinkedList::new)));
+        update.setExpressions(setColumns.stream().map(column -> new JdbcParameter()).collect(Collectors.toCollection(LinkedList::new)));
         update.setWhere(createWhere(columns, false));
         return update;
     }
@@ -221,13 +221,16 @@ public class SQLParser {
             }
 
             @Override
+            public void visit(JdbcParameter value) { builder.append("?"); }
+
+            @Override
             public void visit(DoubleValue value) {
                 builder.append(value.getValue());
             }
 
             @Override
             public void visit(LongValue value) {
-                builder.append(value.getValue());
+                builder.append(value.getStringValue());
             }
 
             @Override

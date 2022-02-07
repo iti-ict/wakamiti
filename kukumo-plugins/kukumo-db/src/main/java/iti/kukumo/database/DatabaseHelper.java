@@ -9,6 +9,8 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.database.dataset.*;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
@@ -291,17 +293,13 @@ public class DatabaseHelper {
                     return new KukumoException(message);
                 });
         String[] pkValues = new String[pkColumns.length];
+        boolean pkValuesValid = false;
+
         if (Arrays.asList(columns).containsAll(Arrays.asList(pkColumns))) {
-            String[] values = ((ExpressionList) insert.getItemsList()).getExpressions().stream()
-                    .map(parser::extractValue).toArray(String[]::new);
-            int n = 0;
-            for (int i = 0; i < columns.length; i++) {
-                if (Arrays.asList(pkColumns).contains(columns[i])) {
-                    pkValues[n] = values[i];
-                    n++;
-                }
-            }
-        } else {
+            pkValuesValid = extractPrimaryKeyFromInsert(insert, columns, pkColumns, pkValues);
+        }
+
+        if (!pkValuesValid) {
             ResultSet rs = statement.getGeneratedKeys();
             while (rs.next()) {
                 for (int i = 0; i < pkColumns.length; i++) {
@@ -311,6 +309,26 @@ public class DatabaseHelper {
         }
         return new InlineDataSet(insert.getTable().getName(), pkColumns, pkValues, nullSymbol.get());
     }
+
+
+
+    private boolean extractPrimaryKeyFromInsert(Insert insert, String[] columns, String[] pkColumns, String[] pkValues) {
+        List<Expression> expressions = ((ExpressionList) insert.getItemsList()).getExpressions();
+        // if any of the expressions is a parameter, it can't be sued
+        if (expressions.stream().anyMatch(JdbcParameter.class::isInstance)) {
+            return false;
+        }
+        String[] values = expressions.stream().map(parser::extractValue).toArray(String[]::new);
+        int n = 0;
+        for (int i = 0; i < columns.length; i++) {
+            if (Arrays.asList(pkColumns).contains(columns[i])) {
+                pkValues[n] = values[i];
+                n++;
+            }
+        }
+        return true;
+    }
+
 
     private void sqlCleanUpOperations(net.sf.jsqlparser.statement.Statement statement) {
         statement.accept(new StatementVisitorAdapter() {

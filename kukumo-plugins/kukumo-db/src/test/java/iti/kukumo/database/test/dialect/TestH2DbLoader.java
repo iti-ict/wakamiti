@@ -17,12 +17,13 @@ import iti.kukumo.junit.KukumoJUnitRunner;
 @AnnotatedConfiguration(properties = {
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = "gherkin"),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
-    @Property(key = DatabaseConfigContributor.DATABASE_CONNECTION_URL, value = "jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/create-schema.sql'"),
+    @Property(key = DatabaseConfigContributor.DATABASE_CONNECTION_URL, value = "jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/db/create-schema.sql'"),
     @Property(key = DatabaseConfigContributor.DATABASE_CONNECTION_USERNAME, value = "sa"),
     @Property(key = DatabaseConfigContributor.DATABASE_CONNECTION_PASSWORD, value = ""),
-    @Property(key = DatabaseConfigContributor.DATABASE_METADATA_CASE_SENSITIVITY, value = "upper_cased")
+    @Property(key = DatabaseConfigContributor.DATABASE_METADATA_CASE_SENSITIVITY, value = "upper_cased"),
+    @Property(key = DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
-public class H2DbLoader {
+public class TestH2DbLoader {
 
 
 }

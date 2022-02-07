@@ -1,4 +1,9 @@
+import iti.kukumo.api.extensions.ConfigContributor;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.database.ConnectionManager;
+
 module kukumo.db {
+    exports iti.kukumo.database;
 
     requires kukumo.core;
     requires java.sql;
@@ -13,4 +18,8 @@ module kukumo.db {
     requires jsqlparser;
     requires org.apache.commons.io;
     requires java.sql.rowset;
+
+    provides StepContributor with iti.kukumo.database.DatabaseStepContributor;
+    provides ConfigContributor with iti.kukumo.database.DatabaseConfigContributor;
+    provides ConnectionManager with iti.kukumo.database.DriverConnectionManager;
 }
