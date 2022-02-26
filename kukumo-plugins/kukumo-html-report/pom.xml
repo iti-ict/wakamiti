@@ -2,21 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
+
+    <!--
+     The Kukumo Plugins depend on Kukumo::CORE version (${revision} property)
+  -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-html-report</artifactId>
-    <version>1.2.1</version>
 
     <!-- additional information -->
     <name>Kukumo::HTML Report</name>
@@ -27,7 +28,6 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-        <kukumo-core.version>1.2.1</kukumo-core.version>
     </properties>
 
 
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo-core.version}</version>
+            <version>${revision}</version>
         </dependency>
          <dependency>
             <groupId>org.hamcrest</groupId>

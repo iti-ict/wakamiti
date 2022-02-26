@@ -2,21 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
+
+    <!--
+      The Kukumo Plugins depend on Kukumo::CORE version (${revision} property)
+   -->
+
     <parent>
         <artifactId>kukumo-project</artifactId>
         <groupId>iti.kukumo</groupId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-io-l10n</artifactId>
-    <version>1.1.0</version>
 
     <!-- additional information -->
     <name>Kukumo::Files Steps (localization)</name>

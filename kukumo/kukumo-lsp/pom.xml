@@ -9,13 +9,12 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo</artifactId>
-        <version>1.3.0</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-
+    <!-- coordinates -->
     <artifactId>kukumo-lsp</artifactId>
-    <version>1.3.0</version>
 
     <!-- additional information -->
     <name>Kukumo::Language Server Protocol</name>

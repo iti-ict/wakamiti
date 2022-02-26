@@ -2,20 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
+
+    <!--
+        The Kukumo docker image depends on Kukumo::CORE version (${revision} property)
+     -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
     <artifactId>kukumo-docker</artifactId>
-    <version>1.2.3</version>
+
+
+    <!-- additional information -->
+    <name>Kukumo::Docker</name>
+    <description>Docker image of Kukumo</description>
+    <inceptionYear>2020</inceptionYear>
+
 
     <properties>
         <kukumo.launcher.path>${parent.basedir}/kukumo/kukumo-launcher</kukumo.launcher.path>
@@ -26,63 +35,62 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
-            <version>1.2.1</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-html-report</artifactId>
-            <version>1.2.1</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-amqp</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-amqp-l10n</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-io</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-io-l10n</artifactId>
-            <version>1.1.0</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>1.2.0</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
-            <version>1.2.0</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
             <!-- assemble staging folder distribution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -118,32 +126,41 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>docker</executable>
-                    <arguments>
-                        <argument>build</argument>
-                        <argument>.</argument>
-                        <argument>-t</argument>
-                        <argument>${docker.image.name}:${version}</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>build</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>.</argument>
+                                <argument>-t</argument>
+                                <argument>${docker.image.name}:${project.version}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
