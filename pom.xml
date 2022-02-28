@@ -29,7 +29,6 @@
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/maven-aether-provider-java9</module>
         <module>kukumo-tools/distribution-maven-plugin</module>
-        <module>kukumo-server-quarkus</module>
         <!-- kukumo -->
         <module>kukumo</module>
         <!-- plugins -->
@@ -47,6 +46,7 @@
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
         <module>kukumo-examples/spring-launcher-example</module>
+        <module>kukumo-server-quarkus</module>
     </modules>
 
 

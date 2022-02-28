@@ -29,6 +29,7 @@
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
+        <groovy.version>3.0.8</groovy.version>
     </properties>
 
 
@@ -106,6 +107,18 @@
         <dependency>
             <groupId>net.harawata</groupId>
             <artifactId>appdirs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-api.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
