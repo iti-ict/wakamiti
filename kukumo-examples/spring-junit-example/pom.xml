@@ -5,19 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <!-- inherited configuration -->
+    <!--
+       The Kukumo Examples depend on Kukumo::CORE version (${revision} property)
+    -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-
-
-    <groupId>iti.kukumo</groupId>
+    <!-- coordinates -->
     <artifactId>spring-junit-example</artifactId>
-    <version>1.1.0</version>
+
 
     <properties>
         <java.version>1.8</java.version>
@@ -28,14 +29,6 @@
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
         <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
-
-        <kukumo-spring.version>1.1.0</kukumo-spring.version>
-        <kukumo-rest.version>1.3.0</kukumo-rest.version>
-        <kukumo-db.version>1.2.1</kukumo-db.version>
-        <kukumo-core-l10n.version>1.3.0</kukumo-core-l10n.version>
-        <kukumo-rest-l10n.version>1.3.0</kukumo-rest-l10n.version>
-        <kukumo-db-l10n.version>1.1.0</kukumo-db-l10n.version>
-
     </properties>
 
 
@@ -127,38 +120,38 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-spring</artifactId>
-            <version>${kukumo-spring.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>${kukumo-rest.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>${kukumo-db.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <!-- Localization -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
-            <version>${kukumo-core-l10n.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
-            <version>${kukumo-rest-l10n.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
-            <version>${kukumo-db-l10n.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
 

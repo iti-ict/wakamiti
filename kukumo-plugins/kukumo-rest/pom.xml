@@ -2,30 +2,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- inherited configuration -->
+
+	<!--
+      The Kukumo Plugins depend on Kukumo::CORE version (${revision} property)
+   -->
+
 	<parent>
 		<groupId>iti.kukumo</groupId>
 		<artifactId>kukumo-project</artifactId>
-		<version>1</version>
+		<version>${revision}</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<!-- coordinates -->
-	<groupId>iti.kukumo</groupId>
 	<artifactId>kukumo-rest</artifactId>
-	<version>1.3.0</version>
 
 	<!-- additional information -->
 	<name>Kukumo::REST Steps</name>
 	<description>REST steps for Kukumo</description>
 	<inceptionYear>2019</inceptionYear>
 
+
     <!-- dependency versions -->
     <properties>
-        <kukumo-core.version>1.3.0</kukumo-core.version>
         <jext.version>1.0.0</jext.version>
         <rest-assured.version>4.3.2</rest-assured.version>
         <jsonassert.version>1.5.0</jsonassert.version>
@@ -33,19 +34,20 @@
         <json.version>20190722</json.version>
     </properties>
 
+
 	<!-- dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>iti.kukumo</groupId>
 			<artifactId>kukumo-core</artifactId>
-			<version>${kukumo-core.version}</version>
+			<version>${revision}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest</artifactId>
-			<version>${hamcrest.version}</version>
-			<scope>compile</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.hamcrest</groupId>-->
+<!--			<artifactId>hamcrest</artifactId>-->
+<!--			<version>${hamcrest.version}</version>-->
+<!--			<scope>compile</scope>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>

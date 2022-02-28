@@ -5,18 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <!-- inherited configuration -->
+    <!--
+       The Kukumo Examples depend on Kukumo::CORE version (${revision} property)
+    -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-
-    <groupId>iti.kukumo</groupId>
+    <!-- coordinates -->
     <artifactId>spring-launcher-example</artifactId>
-    <version>1.0.0</version>
 
 
     <properties>

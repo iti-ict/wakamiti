@@ -5,9 +5,20 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-	<groupId>iti.kukumo</groupId>
+
+    <!--
+      The Kukumo Server depends on Kukumo::CORE version (${revision} property)
+   -->
+
+    <parent>
+        <groupId>iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- coordinates -->
     <artifactId>kukumo-server-quarkus</artifactId>
-	<version>1.2.1</version>
 
     <!-- additional information -->
     <name>Kukumo::Execution Server</name>
@@ -19,7 +30,6 @@
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <docker.expose.debug.port>5005</docker.expose.debug.port>
         <docker.expose.port>8080</docker.expose.port>
-		<kukumo.version>1.3.0</kukumo.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -48,17 +58,17 @@
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-			<version>${kukumo.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
-			<version>${kukumo.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-lsp</artifactId>
-			<version>${kukumo.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
