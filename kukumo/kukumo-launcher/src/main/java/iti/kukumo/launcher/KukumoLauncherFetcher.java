@@ -43,7 +43,9 @@ public class KukumoLauncherFetcher extends KukumoFetcher {
 
 
     public List<Path> fetchAndUpdateClasspath() throws URISyntaxException {
-        return super.fetch(modulesToFetch(), arguments.mustClean());
+        List<Path> modules = super.fetch(modulesToFetch(), arguments.mustClean());
+        super.loadGroovyClasses();
+        return modules;
     }
 
 

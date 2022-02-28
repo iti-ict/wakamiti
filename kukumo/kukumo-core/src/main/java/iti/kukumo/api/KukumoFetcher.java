@@ -6,6 +6,7 @@ package iti.kukumo.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import groovy.lang.GroovyClassLoader;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
@@ -26,6 +29,7 @@ import iti.commons.maven.fetcher.MavenFetcher;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
+import static org.apache.commons.io.FileUtils.listFiles;
 
 
 public class KukumoFetcher {
@@ -100,7 +104,6 @@ public class KukumoFetcher {
         }
     }
 
-
     private void cleanCache(Path mavenRepo) throws IOException {
         try (Stream<Path> walker = Files.walk(mavenRepo)) {
             walker
@@ -110,5 +113,42 @@ public class KukumoFetcher {
         }
     }
 
+    public List<Path> loadGroovyClasses() throws URISyntaxException {
+        logger.info("Fetching groovy files...");
+        List<Path> groovyPaths = listGroovyPaths(conf);
+
+        if (groovyPaths.isEmpty()) {
+            logger.debug("No groovy classes to load");
+            return Collections.emptyList();
+        } else {
+            groovyPaths.forEach(path -> logger.debug("Groovy file [{}] found", path.getFileName()));
+        }
+
+        CompilerConfiguration config = new CompilerConfiguration();
+        config.setSourceEncoding("UTF-8");
+        GroovyClassLoader groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
+        groovyPaths.forEach(p -> groovyClassLoader.addClasspath(p.getParent().toString()));
+        Thread.currentThread().setContextClassLoader(groovyClassLoader);
+
+        groovyPaths.forEach(path -> {
+            try {
+                Class cls = groovyClassLoader.parseClass(path.toFile());
+                logger.debug("Parsed class [{}]", cls.getName());
+            } catch (IOException e) {
+                logger.error("Cannot parse file [{}]", path, e);
+            }
+        });
+
+        return groovyPaths;
+    }
+
+    private List<Path> listGroovyPaths(Configuration conf) {
+        return conf.getList(KukumoConfiguration.RESOURCE_PATH, String.class).stream()
+                .map(File::new)
+                .flatMap(file -> listFiles(file, new String[]{"groovy"}, true).stream()
+                        .map(File::toURI))
+                .map(Path::of)
+                .collect(Collectors.toList());
+    }
 
 }
