@@ -36,7 +36,6 @@ open module kukumo.core {
     requires com.fasterxml.jackson.databind;
     requires transitive gherkin.parser;
     requires net.harawata.appdirs;
-    requires org.apache.commons.io;
     requires org.codehaus.groovy;
 
 

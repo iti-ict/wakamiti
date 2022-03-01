@@ -4,9 +4,7 @@
 package iti.kukumo.api;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,11 +25,11 @@ public class KukumoContributors {
 
     private ExtensionManager extensionManager = new ExtensionManager();
 
-
     public void setClassLoaders(ClassLoader... loaders) {
         this.extensionManager = new ExtensionManager(loaders);
     }
 
+    private final List<StepContributor> nonRegisteredStepContributors = new LinkedList<>();
 
     public Map<Class<?>,List<Contributor>> allContributors() {
         Class<?>[] contributorTypes = {
@@ -44,11 +42,25 @@ public class KukumoContributors {
                 ResourceType.class,
                 StepContributor.class
         } ;
-        return Stream.of(contributorTypes)
+        Map<Class<?>,List<Contributor>> map = Stream.of(contributorTypes)
             .map(type -> new Pair<>(type,extensionManager.getExtensions(type).map(Contributor.class::cast).collect(Collectors.toList())))
             .collect(Collectors.toMap(Pair::key,Pair::value));
+        map.get(StepContributor.class).addAll(nonRegisteredStepContributors);
+        return map;
     }
 
+    public <T extends Contributor> T getContributor(Class<T> contributorClass) {
+        return allContributors().entrySet().stream()
+                .flatMap(e -> e.getValue().stream())
+                .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
+                .map(contributorClass::cast)
+                .findFirst()
+                .orElseThrow(() -> new KukumoException(String.format("Contributor [%s] not found", contributorClass)));
+    }
+
+    public void addNonRegisteredContributors(List<StepContributor> contributor) {
+        nonRegisteredStepContributors.addAll(contributor);
+    }
 
     public Stream<EventObserver> eventObservers() {
         return extensionManager.getExtensions(EventObserver.class);

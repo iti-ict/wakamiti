@@ -170,7 +170,8 @@ public class ResourceLoader {
      * @return
      */
     public ResourceBundle resourceBundle(String resourceBundle, Locale locale) {
-    	return ResourceBundle.getBundle(resourceBundle, locale);
+    	return ResourceBundle.getBundle(resourceBundle, locale,
+                Thread.currentThread().getContextClassLoader());
     }
 
 
