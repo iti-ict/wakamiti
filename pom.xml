@@ -14,7 +14,7 @@
     <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-project</artifactId>
     <packaging>pom</packaging>
-    <version>1</version>
+    <version>${revision}</version>
 
     <name>Kukumo</name>
     <description>Project containing Kukumo as well as other useful tools</description>
@@ -29,7 +29,6 @@
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/maven-aether-provider-java9</module>
         <module>kukumo-tools/distribution-maven-plugin</module>
-        <module>kukumo-server-quarkus</module>
         <!-- kukumo -->
         <module>kukumo</module>
         <!-- plugins -->
@@ -47,6 +46,9 @@
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
         <module>kukumo-examples/spring-launcher-example</module>
+        <!-- other -->
+        <module>kukumo-server-quarkus</module>
+        <module>kukumo-docker</module>
     </modules>
 
 
@@ -66,6 +68,9 @@
 
 
     <properties>
+        <!-- kukumo version -->
+        <revision>1.3.0</revision>
+
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -126,6 +131,8 @@
     <!-- dependency management -->
     <dependencyManagement>
         <dependencies>
+
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>

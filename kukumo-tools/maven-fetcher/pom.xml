@@ -2,16 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
+
 
     <!-- inherited configuration -->
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+
 
     <!-- coordinates -->
     <groupId>iti.commons</groupId>
@@ -22,6 +23,7 @@
     <name>Maven Fetcher</name>
     <description>Java utility to fetch Maven dependencies</description>
     <inceptionYear>2019</inceptionYear>
+
 
     <properties>
         <aetherVersion>1.0.2.v20150114</aetherVersion>

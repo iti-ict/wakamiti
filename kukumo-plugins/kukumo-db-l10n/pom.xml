@@ -4,23 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- inherited configuration -->
+
+    <!--
+      The Kukumo Plugins depend on Kukumo::CORE version (${revision} property)
+   -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-db-l10n</artifactId>
-    <version>1.1.0</version>
 
     <!-- additional information -->
     <name>Kukumo::Database Steps (localization)</name>
     <description>Localization for DB steps</description>
     <inceptionYear>2019</inceptionYear>
-
 
 </project>

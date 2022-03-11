@@ -2,38 +2,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+      The Kukumo Plugins depend on Kukumo::CORE version (${revision} property)
+   -->
+
     <parent>
         <artifactId>kukumo-project</artifactId>
         <groupId>iti.kukumo</groupId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <!-- coordinates -->
-    <groupId>iti.kukumo</groupId>
     <artifactId>kukumo-amqp</artifactId>
-    <version>1.1.0</version>
 
     <!-- additional information -->
     <name>Kukumo::AMQP Steps</name>
     <description>AMQP steps for Kukumo</description>
     <inceptionYear>2021</inceptionYear>
 
+
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-        <kukumo-core.version>1.2.1</kukumo-core.version>
         <amqp-client.version>5.12.0</amqp-client.version>
         <awaitility.version>3.0.0</awaitility.version>
     </properties>
+
 
     <dependencies>
         <!-- Kukumo CORE -->
         <dependency>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
-            <version>${kukumo-core.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

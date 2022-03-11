@@ -4,17 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <!-- inherited configuration -->
+    <!--
+       The Kukumo Examples depend on Kukumo::CORE version (${revision} property)
+    -->
+
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>iti.kukumo</groupId>
+    <!-- coordinates -->
     <artifactId>spring-verify-example</artifactId>
-    <version>1.1.0</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -22,12 +24,6 @@
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
         <spring-boot.version>2.0.5.RELEASE</spring-boot.version>
-
-        <kukumo-maven-plugin.version>1.2.1</kukumo-maven-plugin.version>
-        <kukumo-rest.version>1.2.0</kukumo-rest.version>
-        <kukumo-db.version>1.1.0</kukumo-db.version>
-        <kukumo-html-report.version>1.2.1</kukumo-html-report.version>
-
     </properties>
 
 
@@ -120,7 +116,7 @@
                     <plugin>
                         <groupId>iti.kukumo</groupId>
                         <artifactId>kukumo-maven-plugin</artifactId>
-                        <version>${kukumo-maven-plugin.version}</version>
+                        <version>${revision}</version>
                         <executions>
                             <!-- Executed at integration-test phase -->
                             <execution>
@@ -154,7 +150,7 @@
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-rest</artifactId>
-                                <version>${kukumo-rest.version}</version>
+                                <version>${revision}</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.h2database</groupId>
@@ -164,12 +160,12 @@
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-db</artifactId>
-                                <version>${kukumo-db.version}</version>
+                                <version>${revision}</version>
                             </dependency>
                             <dependency>
                                 <groupId>iti.kukumo</groupId>
                                 <artifactId>kukumo-html-report</artifactId>
-                                <version>${kukumo-html-report.version}</version>
+                                <version>${revision}</version>
                             </dependency>
                         </dependencies>
                     </plugin>

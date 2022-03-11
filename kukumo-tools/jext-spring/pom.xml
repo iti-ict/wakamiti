@@ -8,7 +8,7 @@
     <parent>
         <groupId>iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
-        <version>1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -22,6 +22,7 @@
     <name>jExt - Spring integration</name>
     <description>Integration of Spring managed beans with jExt</description>
     <inceptionYear>2019</inceptionYear>
+
 
     <!-- dependencies -->
     <dependencies>
