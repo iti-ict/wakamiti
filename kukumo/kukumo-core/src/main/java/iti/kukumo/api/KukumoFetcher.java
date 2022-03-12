@@ -6,15 +6,16 @@ package iti.kukumo.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import groovy.lang.GroovyClassLoader;
 import org.slf4j.Logger;
 
 import iti.commons.configurer.Configuration;
@@ -26,6 +27,7 @@ import iti.commons.maven.fetcher.MavenFetcher;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
+//import static org.apache.commons.io.FileUtils.listFiles;
 
 
 public class KukumoFetcher {
@@ -89,9 +91,7 @@ public class KukumoFetcher {
                 .map(FetchedArtifact::path)
                 .collect(Collectors.toList());
 
-//            if (updateClasspath) {
-                mavenFetcher.updateClasspath(paths);
-//            }
+            mavenFetcher.updateClasspath(paths);
             return paths;
 
         } catch (RuntimeException | MavenFetchException | IOException e) {
@@ -99,7 +99,6 @@ public class KukumoFetcher {
             throw new KukumoException(e);
         }
     }
-
 
     private void cleanCache(Path mavenRepo) throws IOException {
         try (Stream<Path> walker = Files.walk(mavenRepo)) {
@@ -110,5 +109,50 @@ public class KukumoFetcher {
         }
     }
 
+    public List<Path> loadGroovyClasses() {
+        logger.info("Fetching groovy files...");
+        List<Path> groovyPaths = listGroovyPaths();
 
+        if (groovyPaths.isEmpty()) {
+            logger.debug("No groovy classes to load");
+            return Collections.emptyList();
+        } else {
+            groovyPaths.forEach(path -> logger.debug("Groovy file [{}] found", path.getFileName()));
+        }
+
+        GroovyClassLoader groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
+        groovyPaths.stream().map(Path::getParent).map(Objects::toString).distinct()
+                .forEach(groovyClassLoader::addClasspath);
+        Thread.currentThread().setContextClassLoader(groovyClassLoader);
+
+        groovyPaths.forEach(path -> {
+            try {
+                Class<?> cls = groovyClassLoader.parseClass(path.toFile());
+                logger.debug("Parsed class [{}]", cls.getName());
+            } catch (IOException e) {
+                logger.error("Cannot parse file [{}]", path, e);
+            }
+        });
+
+        return groovyPaths;
+    }
+
+    private List<Path> listGroovyPaths() {
+        return conf.getList(KukumoConfiguration.RESOURCE_PATH, String.class).stream()
+                .map(Paths::get)
+                .flatMap(this::listFiles)
+                .filter(file -> file.toFile().getName().endsWith(".groovy"))
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Path> listFiles(Path dir) {
+        try {
+            return Stream.concat(
+                Files.list(dir).filter(Files::isDirectory).flatMap(this::listFiles),
+                Files.list(dir).filter(Files::isRegularFile)
+            );
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

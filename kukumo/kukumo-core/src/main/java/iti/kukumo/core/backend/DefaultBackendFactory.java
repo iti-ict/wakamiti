@@ -5,6 +5,7 @@ package iti.kukumo.core.backend;
 
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Clock;
 import java.util.*;
@@ -137,6 +138,7 @@ public class DefaultBackendFactory implements BackendFactory {
             configuration
         );
 
+        Kukumo.contributors().addNonRegisteredContributors(nonRegisteredContributors);
         stepContributors.addAll(nonRegisteredContributors);
 
         if (stepContributors.isEmpty() && !allowEmptySteps) {
@@ -288,10 +290,13 @@ public class DefaultBackendFactory implements BackendFactory {
                 );
             } catch (ReflectiveOperationException e) {
                 LOGGER.warn(
-                    "Error loading non-registered step provider class {} : {}",
+                    "Error loading non-registered step provider class {}: {}",
                     nonRegisteredContributorClass,
                     e.toString()
                 );
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.error("<exception stack trace>", e);
+                }
             }
         }
         return nonRegisteredContributors;

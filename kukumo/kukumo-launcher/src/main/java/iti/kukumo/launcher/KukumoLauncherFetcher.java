@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import iti.commons.configurer.Configuration;
+import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoFetcher;
 import net.harawata.appdirs.AppDirsFactory;
 
@@ -35,15 +36,18 @@ public class KukumoLauncherFetcher extends KukumoFetcher {
         Path mavenRepo = Paths.get(
             AppDirsFactory.getInstance().getUserDataDir("kukumo", "repository", "iti")
         );
-        return arguments
-        .mavenFetcherConfiguration()
-        .appendProperty("localRepository", mavenRepo.toString());
+        return Kukumo.defaultConfiguration().append(
+                arguments.mavenFetcherConfiguration()
+                        .appendProperty("localRepository", mavenRepo.toString())
+        ).append(arguments.kukumoConfiguration());
     }
 
 
 
     public List<Path> fetchAndUpdateClasspath() throws URISyntaxException {
-        return super.fetch(modulesToFetch(), arguments.mustClean());
+        List<Path> modules = super.fetch(modulesToFetch(), arguments.mustClean());
+        super.loadGroovyClasses();
+        return modules;
     }
 
 
