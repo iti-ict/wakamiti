@@ -136,7 +136,6 @@
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
 
         <profile>
@@ -151,7 +150,7 @@
                         <executions>
                             <execution>
                                 <id>build</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>

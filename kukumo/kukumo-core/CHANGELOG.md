@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [1.3.0] 2022-01-26
 ### Added
-- Steps can use property substitution using the syntax`${property.name}`
+- Steps can use property substitution using the syntax `${property.name}`
+- Loading extra steps as `NON_REGISTERED_STEP_PROVIDERS` at runtime in groovy language
 
 
 ## [1.2.1] 2021-10-22
