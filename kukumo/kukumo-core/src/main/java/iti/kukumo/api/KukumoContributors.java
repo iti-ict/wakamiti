@@ -16,7 +16,6 @@ import iti.commons.configurer.Configuration;
 import iti.commons.configurer.ConfigurationBuilder;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
-import iti.kukumo.api.event.Event;
 import iti.kukumo.api.extensions.*;
 import iti.kukumo.util.Pair;
 
@@ -29,7 +28,7 @@ public class KukumoContributors {
         this.extensionManager = new ExtensionManager(loaders);
     }
 
-    private final List<StepContributor> nonRegisteredStepContributors = new LinkedList<>();
+    private final List<StepContributor> stepContributors = new LinkedList<>();
 
     public Map<Class<?>,List<Contributor>> allContributors() {
         Class<?>[] contributorTypes = {
@@ -45,21 +44,20 @@ public class KukumoContributors {
         Map<Class<?>,List<Contributor>> map = Stream.of(contributorTypes)
             .map(type -> new Pair<>(type,extensionManager.getExtensions(type).map(Contributor.class::cast).collect(Collectors.toList())))
             .collect(Collectors.toMap(Pair::key,Pair::value));
-        map.get(StepContributor.class).addAll(nonRegisteredStepContributors);
+        map.get(StepContributor.class).addAll(stepContributors);
         return map;
     }
 
     public <T extends Contributor> T getContributor(Class<T> contributorClass) {
-        return allContributors().entrySet().stream()
-                .flatMap(e -> e.getValue().stream())
+        return stepContributors.stream()
                 .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
                 .map(contributorClass::cast)
                 .findFirst()
                 .orElseThrow(() -> new KukumoException(String.format("Contributor [%s] not found", contributorClass)));
     }
 
-    public void addNonRegisteredContributors(List<StepContributor> contributor) {
-        nonRegisteredStepContributors.addAll(contributor);
+    public void addStepContributors(List<StepContributor> contributor) {
+        stepContributors.addAll(contributor);
     }
 
     public Stream<EventObserver> eventObservers() {

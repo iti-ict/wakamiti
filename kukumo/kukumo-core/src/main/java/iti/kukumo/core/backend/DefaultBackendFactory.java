@@ -5,7 +5,6 @@ package iti.kukumo.core.backend;
 
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Clock;
 import java.util.*;
@@ -138,7 +137,6 @@ public class DefaultBackendFactory implements BackendFactory {
             configuration
         );
 
-        Kukumo.contributors().addNonRegisteredContributors(nonRegisteredContributors);
         stepContributors.addAll(nonRegisteredContributors);
 
         if (stepContributors.isEmpty() && !allowEmptySteps) {
@@ -148,6 +146,7 @@ public class DefaultBackendFactory implements BackendFactory {
 
         stepContributors
             .forEach(stepContributor -> contributors.configure(stepContributor, configuration));
+        Kukumo.contributors().addStepContributors(stepContributors);
         return stepContributors;
     }
 
