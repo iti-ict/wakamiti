@@ -27,7 +27,6 @@
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <maven-fetcher.version>1.0.0</maven-fetcher.version>
-        <groovy.version>3.0.9</groovy.version>
     </properties>
 
     <dependencies>
@@ -115,16 +114,25 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-dateutil</artifactId>
             <version>${groovy.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-datetime</artifactId>
             <version>${groovy.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-json</artifactId>
             <version>${groovy.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>${groovy.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

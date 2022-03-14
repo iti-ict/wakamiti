@@ -25,6 +25,7 @@
                 <exclude>*:httpcore</exclude>
                 <exclude>*:junit</exclude>
                 <exclude>*:kukumo-core:jar</exclude>
+                <exclude>*:groovy*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
