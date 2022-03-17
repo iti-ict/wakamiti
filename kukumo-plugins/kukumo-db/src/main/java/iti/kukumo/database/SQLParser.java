@@ -1,6 +1,5 @@
 package iti.kukumo.database;
 
-import iti.kukumo.database.CaseSensitivity;
 import iti.kukumo.database.dataset.DataSet;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
@@ -21,14 +20,15 @@ import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SQLParser {
 
-    private CaseSensitivity caseSensitivity;
+    private final CaseSensitivity caseSensitivity;
 
     public SQLParser(CaseSensitivity caseSensitivity) {
         this.caseSensitivity = caseSensitivity;
@@ -164,6 +164,16 @@ public class SQLParser {
         return select;
     }
 
+    public Select sqlSelectCountFrom(String table, String where) throws JSQLParserException {
+        Select select = new Select();
+        Function count = new Function();
+        count.setName("count");
+        count.setAllColumns(true);
+        SelectItem countAll = new SelectExpressionItem(count);
+        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, CCJSqlParserUtil.parseCondExpression(where)));
+        return select;
+    }
+
     public Select sqlSelectCountFrom(String table, String[] columns) {
         Select select = new Select();
         Function count = new Function();
@@ -221,7 +231,9 @@ public class SQLParser {
             }
 
             @Override
-            public void visit(JdbcParameter value) { builder.append("?"); }
+            public void visit(JdbcParameter value) {
+                builder.append("?");
+            }
 
             @Override
             public void visit(DoubleValue value) {
