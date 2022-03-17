@@ -224,8 +224,8 @@ public class DatabaseHelper {
         Assertion<Long> matcher,
         String table,
         String clause
-    ) throws SQLException {
-        StringBuilder sql = new StringBuilder(parser.sqlSelectCountFrom(table).toString()).append(" where ").append(clause);
+    ) throws SQLException, JSQLParserException {
+        String sql = parser.sqlSelectCountFrom(table, clause).toString();
         try (PreparedStatement statement = createRowStatement(
             sql,
             new EmptyDataSet(table),

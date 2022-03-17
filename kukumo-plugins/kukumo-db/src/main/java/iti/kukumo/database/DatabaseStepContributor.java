@@ -325,9 +325,9 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.assert.table.exists.sql.where", args = { "table:word", "sql:text" })
-    public void assertRowExistsByClause(String table, String clause) throws SQLException {
-        helper.assertCountRowsInTableByClause(matcherNonEmpty(), table, clause);
+    @Step(value = "db.assert.table.exists.sql.where", args = { "table:word" })
+    public void assertRowExistsByClause(String table, Document clause) throws SQLException, JSQLParserException {
+        helper.assertCountRowsInTableByClause(matcherNonEmpty(), table, clause.getContent());
     }
 
 
@@ -408,9 +408,9 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.assert.table.not.exists.sql.where", args = { "table:word", "sql:text" })
-    public void assertRowNotExistsByClause(String table, String clause) throws SQLException {
-        helper.assertCountRowsInTableByClause(matcherEmpty(), table, clause);
+    @Step(value = "db.assert.table.not.exists.sql.where", args = { "table:word" })
+    public void assertRowNotExistsByClause(String table, Document clause) throws SQLException, JSQLParserException {
+        helper.assertCountRowsInTableByClause(matcherEmpty(), table, clause.getContent());
     }
 
 
@@ -461,14 +461,13 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "db.assert.table.count.sql.where", args = { "table:word", "sql:text",
-                    "matcher:long-assertion" })
+    @Step(value = "db.assert.table.count.sql.where", args = { "table:word", "matcher:long-assertion" })
     public void assertRowCountByClause(
         String table,
-        String clause,
-        Assertion<Long> matcher
-    ) throws SQLException {
-        helper.assertCountRowsInTableByClause(matcher, table, clause);
+        Assertion<Long> matcher,
+        Document clause
+    ) throws SQLException, JSQLParserException {
+        helper.assertCountRowsInTableByClause(matcher, table, clause.getContent());
     }
 
 
@@ -505,13 +504,13 @@ public class DatabaseStepContributor implements StepContributor {
 
 
     @Step(value = "db.assert.table.empty", args = "word")
-    public void assertTableIsEmpty(String table) throws SQLException {
+    public void assertTableIsEmpty(String table) throws SQLException, JSQLParserException {
         helper.assertCountRowsInTableByClause(matcherEmpty(), table, "1=1");
     }
 
 
     @Step(value = "db.assert.table.not.empty", args = "word")
-    public void assertTableIsNotEmpty(String table) throws SQLException {
+    public void assertTableIsNotEmpty(String table) throws SQLException, JSQLParserException {
         helper.assertCountRowsInTableByClause(matcherNonEmpty(), table, "1=1");
     }
 
