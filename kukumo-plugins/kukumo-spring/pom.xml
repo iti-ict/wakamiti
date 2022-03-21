@@ -16,7 +16,7 @@
    -->
 
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
@@ -41,7 +41,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -52,18 +52,18 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>iti.commons</groupId>
+            <groupId>es.iti.commons</groupId>
             <artifactId>jext-spring</artifactId>
             <version>${jext-spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
             <version>${revision}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
             <version>${revision}</version>
             <optional>true</optional>

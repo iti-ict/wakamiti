@@ -13,7 +13,7 @@
 
 
     <!-- coordinates -->
-    <groupId>iti.commons</groupId>
+    <groupId>es.iti.commons</groupId>
     <artifactId>gherkin-parser</artifactId>
     <version>1.0.1</version>
 

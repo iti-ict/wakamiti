@@ -13,7 +13,7 @@
 
     <!-- inherited configuration -->
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -37,7 +37,7 @@
 
         <!-- Kukumo Core -->
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
         </dependency>
         <dependency>
@@ -52,7 +52,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>iti.commons</groupId>
+            <groupId>es.iti.commons</groupId>
             <artifactId>maven-fetcher</artifactId>
             <version>${maven-fetcher.version}</version>
         </dependency>
@@ -130,7 +130,7 @@
             </plugin>
 
             <plugin>
-                <groupId>iti.commons</groupId>
+                <groupId>es.iti.commons</groupId>
                 <artifactId>distribution-maven-plugin</artifactId>
                 <version>1.0.0</version>
                 <configuration>

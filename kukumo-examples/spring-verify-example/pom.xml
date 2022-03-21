@@ -15,7 +15,7 @@
     -->
 
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
@@ -120,7 +120,7 @@
 
                     <!-- Attach Kukumo to the verify phase of the project -->
                     <plugin>
-                        <groupId>iti.kukumo</groupId>
+                        <groupId>es.iti.kukumo</groupId>
                         <artifactId>kukumo-maven-plugin</artifactId>
                         <version>${revision}</version>
                         <executions>
@@ -154,7 +154,7 @@
                         <dependencies>
                             <!-- Kukumo plugins -->
                             <dependency>
-                                <groupId>iti.kukumo</groupId>
+                                <groupId>es.iti.kukumo</groupId>
                                 <artifactId>kukumo-rest</artifactId>
                                 <version>${revision}</version>
                             </dependency>
@@ -164,12 +164,12 @@
                                 <version>1.4.197</version>
                             </dependency>
                             <dependency>
-                                <groupId>iti.kukumo</groupId>
+                                <groupId>es.iti.kukumo</groupId>
                                 <artifactId>kukumo-db</artifactId>
                                 <version>${revision}</version>
                             </dependency>
                             <dependency>
-                                <groupId>iti.kukumo</groupId>
+                                <groupId>es.iti.kukumo</groupId>
                                 <artifactId>kukumo-html-report</artifactId>
                                 <version>${revision}</version>
                             </dependency>

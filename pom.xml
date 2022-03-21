@@ -11,7 +11,7 @@
         have not to be align with the defined here. The version number will be always
         RELEASE regardless the versions of the children. -->
 
-    <groupId>iti.kukumo</groupId>
+    <groupId>es.iti.kukumo</groupId>
     <artifactId>kukumo-project</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>

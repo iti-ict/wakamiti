@@ -17,7 +17,7 @@
 
     <parent>
         <artifactId>kukumo-project</artifactId>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>

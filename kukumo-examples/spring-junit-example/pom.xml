@@ -16,7 +16,7 @@
     -->
 
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
@@ -124,38 +124,38 @@
 
         <!-- Kukumo Spring DB and REST connector -->
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-spring</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <!-- Localization -->
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
