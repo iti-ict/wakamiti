@@ -83,9 +83,9 @@ kukumo:
     resourceTypes: 
       - gherkin
     modules:
-      - iti.kukumo:kukumo-rest:0.9.0
-      - iti.kukumo:kukumo-db:0.9.0
-      - iti.kukumo:kukumo-html-report:0.9.0
+      - es.iti.kukumo:kukumo-rest:1.3.0
+      - es.iti.kukumo:kukumo-db:1.3.0
+      - es.iti.kukumo:kukumo-html-report:1.3.0
       - com.h2database:h2:1.4.199
     htmlReport:
         output: target/reports/kukumo/html/kukumo-report.html
@@ -99,19 +99,19 @@ case you are working with a Maven project, you can alternatively include them as
     ...
     <dependencies>
        <dependency>
-          <artifactId>iti.kukumo</artifactId>
+          <artifactId>es.iti.kukumo</artifactId>
           <groupId>kukumo-core</groupId> 
-          <version>0.9.0</version>
+          <version>1.3.0</version>
        </dependency>
        <dependency>
-          <artifactId>iti.kukumo</artifactId>
+          <artifactId>es.iti.kukumo</artifactId>
           <groupId>kukumo-db</groupId>
-          <version>0.9.0</version>
+          <version>1.3.0</version>
        </dependency>
        <dependency>
-          <artifactId>iti.kukumo</artifactId>
+          <artifactId>es.iti.kukumo</artifactId>
           <groupId>kukumo-rest</groupId>
-          <version>0.9.0</version>
+          <version>1.3.0</version>
        </dependency>
     </dependencies>
 ``` 
