@@ -12,7 +12,7 @@
 
     <!-- inherited configuration -->
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -32,7 +32,7 @@
     <!-- dependencies -->
     <dependencies>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
         </dependency>
         <dependency>

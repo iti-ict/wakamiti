@@ -12,14 +12,14 @@
 
     <!-- inherited configuration -->
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.commons</groupId>
+    <groupId>es.iti.commons</groupId>
     <artifactId>jext-spring</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
@@ -33,7 +33,7 @@
     <!-- dependencies -->
     <dependencies>
         <dependency>
-            <groupId>iti.commons</groupId>
+            <groupId>es.iti.commons</groupId>
             <artifactId>jext</artifactId>
             <version>[1.0.0,)</version>
         </dependency>
@@ -59,7 +59,7 @@
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <annotationProcessorPath>
-                            <groupId>iti.commons</groupId>
+                            <groupId>es.iti.commons</groupId>
                             <artifactId>jext</artifactId>
                             <version>1.0.0</version>
                         </annotationProcessorPath>

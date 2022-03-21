@@ -6,14 +6,14 @@
 
     <!-- inherited configuration -->
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
-    <groupId>iti.commons</groupId>
+    <groupId>es.iti.commons</groupId>
     <artifactId>maven-aether-provider-java9</artifactId>
     <version>3.3.9</version>
 

@@ -13,7 +13,7 @@
 
     <!-- inherited configuration -->
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
@@ -21,7 +21,7 @@
 
 
     <!-- coordinates -->
-    <groupId>iti.commons</groupId>
+    <groupId>es.iti.commons</groupId>
     <artifactId>maven-fetcher</artifactId>
     <version>1.0.0</version>
 
@@ -87,7 +87,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>iti.commons</groupId>
+            <groupId>es.iti.commons</groupId>
             <artifactId>maven-aether-provider-java9</artifactId>
             <version>${mavenAetherVersion}</version>
         </dependency>

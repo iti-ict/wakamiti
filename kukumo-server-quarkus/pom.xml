@@ -17,7 +17,7 @@
    -->
 
     <parent>
-        <groupId>iti.kukumo</groupId>
+        <groupId>es.iti.kukumo</groupId>
         <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -62,17 +62,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>iti.kukumo</groupId>
+            <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-lsp</artifactId>
             <version>${revision}</version>
         </dependency>
