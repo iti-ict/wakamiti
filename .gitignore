@@ -7,3 +7,4 @@
 /tmp/
 *.log
 /kukumo-examples/spring-launcher-example/kukumo/.vscode/settings.json
+.vscode/**
