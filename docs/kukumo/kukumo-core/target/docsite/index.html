@@ -1,0 +1,95 @@
+<html><head><title>Kukumo::CORE - index</title><meta name="description" content="Core functionality of Kukumo"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="profile" href="http://www.w3.org/2005/10/profile"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" integrity="sha512-BnbUDfEUfV0Slx6TunuB042k9tuKe3xrD6q4mg5Ed72LTgzDIcLPxg6yI2gcMFRyomt+yJJxE+zJwNmxki6/RA==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" integrity="sha512-YBk7HhgDZvBxmtOfUdvX0z8IH2d10Hp3aEygaMNhtF8fSOvBZ16D/1bXZTJV6ndk/L/DlXxYStP8jrF77v2MIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link href="css/common.css" rel="stylesheet"><link href="css/style.css" rel="stylesheet"><style>:root {
+--menu-regular-background-color: #575757;
+--menu-bold-background-color: #413e3e;
+--menu-foreground-color: #f1f4f4;
+--menu-decoration-color: #b7d4da;
+--gui-element-color: #f08080;
+}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-java.min.js" integrity="sha512-PWHY6Vao4E9K4LsGBYCY0ttDeiWZwuUozTbJvSy9UFHRz2J4Bl7rcWML3wEnJTVuCJhSwGne/8My5gTo/gnbpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-yaml.min.js" integrity="sha512-QRKKJS95wG2dOCdc7Cm0Zbu+L04xY8fTwhHG3UnqZPMiFrAN8uXrqVTx//eqvTaoYwNJ7oFN3Vej5gnJ+GAxkw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script></head><body><a id="jump-to-content" href="#content">jump to content</a><header><div class="title-and-subtitle"><h1 class="title label"><i class="hidden"></i><span>Kukumo::CORE</span></h1><span class="subtitle">Core functionality of Kukumo</span></div><nav class="sections"><ul><li><a class="label internal" href="changelog.html"><i class="fas fa-clipboard-list"></i><span>Changelog</span></a></li><li><a class="label internal" href="reports.html"><i class="fas fa-file-medical-alt"></i><span>Reports</span></a><ul class="dropdown"><li><a class="label internal" href="javadoc.html"><i class="fab fa-java"></i><span>Javadoc</span></a></li></ul></li><li><a class="label internal" href="license.html"><i class="fas fa-balance-scale"></i><span>License</span></a></li></ul></nav><div class="company"><img class="hidden"></div></header><nav class="breadcrumbs"><ol><li><a class="internal" href="index.html">Kukumo::CORE</a></li></ol></nav><aside><nav class="toc"><ol><li><a class="internal" href="#overview">Overview</a></li><li><a class="internal" href="#test-plan">Test Plan</a></li><li><a class="internal" href="#usage">Usage</a></li><ol><li><a class="internal" href="#kukumo-junit-runner">Kukumo JUnit runner</a></li><li><a class="internal" href="#maven-dependency">Maven dependency</a></li><li><a class="internal" href="#launchin-kukumo-programatically">Launchin Kukumo programatically</a></li></ol><li><a class="internal" href="#plugin-development">Plugin development</a></li></ol></ol></nav></aside><section class="content" id="content"><h1 id="kukumo::core">Kukumo::CORE</h1>
+<h2 id="overview">Overview</h2>
+<h2 id="test-plan">Test Plan</h2>
+<p>The test plan is the main piece of an execution. It is build according a set of test definition sources,
+(e.g. Gherkin files) and a configuration (e.i. a set of valued properties). From a topological view,
+a test plan is just a tree of nodes of different categories:</p>
+<p>| Node type |Description|Children node types| Rearrange | Walk order
+|---|---|---|---|---
+|Aggregator|Node that aggregates other nodes|Aggregator, Test Case| yes | free |
+|Test Case|Node representing an atomic test case|Step Agregator, Step, Virtual Step|no|strict|
+|Step Aggregator|Node representing a subset of steps within a test case|Step Aggregator, Step, Virtual Step|no|strict
+|Step|Node representing an executable step wihtin a test case|--|--|--
+|Virtual Step|Node representing an <em>non</em>-executable step wihtin a test case|--|--|--</p>
+<p>For example, for a traditional Gherkin feature file, the built test plan would correspond
+to the following diagram:</p>
+<p align="center"><img src="images/index/image-1.png"/></p>
+<p>The idea of representing the test plan as a tree of nodes allows to adapt the original resulting plan
+prior to execution, by applying regular graph transformations during a <code>plan redefinition</code> stage.</p>
+<h2 id="usage">Usage</h2>
+<p>The regular use of Kukumo is via one of the launchers available: the Kukumo JUnit Runner,
+the Kukumo Maven plugin, and the Kukumo stand-alone launcher. This document focus on the
+first one, if you require information about any of the other two check their corresponding
+documentation page.</p>
+<h3 id="kukumo-junit-runner">Kukumo JUnit runner</h3>
+<p>Kukumo provides, as a part of the core componente, a JUnit 4.x runner that can be used to execute a
+test plan built according the received configuration. In order to do this, create a regular
+Java class annotated with <code>@RunWith</code> in order to use the Kukumo runner instead of the by-default
+JUnit runner.</p>
+<p>Also, you should provide a configuration using the annotation <code>@Configuration</code> (see the Kukumo tool
+<code>Configurer</code> for further explanation of this mechanism).</p>
+<pre><code class="language-java">@Configurator(properties = {
+   @Property(key=&quot;resourceTypes&quot;,value=&quot;gherkin&quot;),
+   @Property(key=&quot;resourcePath&quot;, value=&quot;src/test/resources/features&quot;),
+   @Property(key=&quot;outputFilePath&quot;, value=&quot;target/kukumo.json&quot;),
+   @Property(key=&quot;junit.treatStepsAsTests&quot;,value=&quot;false&quot;)
+})
+@RunWith(KukumoJUnitRunner.class)
+public class KukumoTestPlan {
+    
+}
+</code></pre>
+<p>An alternative (or complementary) way to define the configuration is use an external file. The following
+example would be equivalent to the one shown above.</p>
+<h6 id="kukumotestplan.java">KukumoTestPlan.java</h6>
+<pre><code class="language-java">@Configurator(path = &quot;classpath:kukumo.yaml&quot;, pathPrefix = &quot;kukumo&quot;)
+@RunWith(KukumoJUnitRunner.class)
+public class KukumoTestPlan {
+    
+}
+</code></pre>
+<h6 id="kukumo.yaml">kukumo.yaml</h6>
+<pre><code class="language-yaml">kukumo:
+  resourceTypes:
+    - gherkin
+  resourcePath: src/test/resources/features 
+  outputFilePath: target/kukumo.json
+  junit:
+    treatStepsAsTests: false
+</code></pre>
+<p>Notice that, in both cases, the test class is empty; since the test cases are discovered via the
+configuration, no code is required. In actuality, if you write methods annotated with <code>@Test</code>, <code>@Before</code>
+and <code>@After</code>, the runner will complain at execution time and abort the run in order to avoid misleading
+dead test code.</p>
+<p>You <em>can</em>, however, annotate static methods with <code>@BeforeClass</code> and <code>@AfterClass</code>, if you require
+some code to be executed prior to or following the Kukumo execution.</p>
+<h4 id="test-case-notification">Test case notification <em>vs</em> step notification</h4>
+<p>The regular behaviour of the Kukumo JUnit runner is notify to JUnit each test case result but not
+individual step results. It means that, for example, if your testing inside an IDE with JUnit integration,
+the graphical view will not mark an specific step has failed but the whole test case.</p>
+<p>In order to provide more descriptive info, you can force Kukumo to notify each step as a test case,
+so they will be shown in the graphical tools and reports. One drawback is that the number of tests
+would be no longer accurate since it will represent the total number of steps instead of the real
+number of test cases. Thus, you may use this option as a debugging feature when a test case has failed,
+but keep it disabled for normal executions.</p>
+<h4 id="configuration">Configuration</h4>
+<p>| Key | Accepted values | Default value | Comments
+|---|---|---|---
+|<code>junit.treatStepsAsTests</code>|<code>true</code>,<code>false</code>|<code>false</code>| When enabled, any step will be notified to JUnit as an individual test case</p>
+<hr />
+<h3 id="maven-dependency">Maven dependency</h3>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;iti.kukumo&lt;/groupId&gt;
+    &lt;artifactId&gt;kukumo-core&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="launchin-kukumo-programatically">Launchin Kukumo programatically</h3>
+<h2 id="plugin-development">Plugin development</h2>
+<div class="footer">Generated with <a href="https://luiinge.github.io/docsite-maven-plugin/">Docsite</a>. Last published on 2022-03-22</div></section></body></html>

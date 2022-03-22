@@ -1,0 +1,290 @@
+<html><head><title>Kukumo::Database Steps - index</title><meta name="description" content="Database steps for Kukumo"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="profile" href="http://www.w3.org/2005/10/profile"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" integrity="sha512-BnbUDfEUfV0Slx6TunuB042k9tuKe3xrD6q4mg5Ed72LTgzDIcLPxg6yI2gcMFRyomt+yJJxE+zJwNmxki6/RA==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" integrity="sha512-YBk7HhgDZvBxmtOfUdvX0z8IH2d10Hp3aEygaMNhtF8fSOvBZ16D/1bXZTJV6ndk/L/DlXxYStP8jrF77v2MIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link href="css/common.css" rel="stylesheet"><link href="css/style.css" rel="stylesheet"><style>:root {
+--menu-regular-background-color: #575757;
+--menu-bold-background-color: #413e3e;
+--menu-foreground-color: #f1f4f4;
+--menu-decoration-color: #b7d4da;
+--gui-element-color: #f08080;
+}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-gherkin.min.js" integrity="sha512-mIOZdB9UVqzUuNdWFcaqJssGJd6q7aaJpg+Q0z3kAWycvIrtcdiwELnKd2izg/ZlPqphj7rtqiUcmVS4bnd7RQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script></head><body><a id="jump-to-content" href="#content">jump to content</a><header><div class="title-and-subtitle"><h1 class="title label"><i class="hidden"></i><span>Kukumo::Database Steps</span></h1><span class="subtitle">Database steps for Kukumo</span></div><nav class="sections"><ul><li><a class="label internal" href="changelog.html"><i class="fas fa-clipboard-list"></i><span>Changelog</span></a></li></ul></nav><div class="company"><img class="hidden"></div></header><nav class="breadcrumbs"><ol><li><a class="internal" href="index.html">Kukumo::Database Steps</a></li></ol></nav><aside><nav class="toc"><ol><li><a class="internal" href="#usage">Usage</a></li><ol><li><a class="internal" href="#configuration-properties">Configuration properties</a></li><li><a class="internal" href="#steps">Steps</a></li></ol><li><a class="internal" href="#references">References</a></li></ol></ol></nav></aside><section class="content" id="content"><h1 id="database-steps">Database Steps</h1>
+<p>This plugin provides a set of steps that interact with a database via JDBC, easing the effort
+required to load and assert data.</p>
+<p>Data set can be defined in different ways:</p>
+<ul>
+<li>From CSV files, for a single table</li>
+<li>From XLSX files, for multiple tables</li>
+<li>From data tables included directly in the document, using the format:</li>
+</ul>
+<pre><code class="language-gherkin"> | columnA | columnB | columnC |
+ | row1A   | row1B   | row1C   |
+ | row2A   | row2B   | row2C   |
+</code></pre>
+<p>The plugin source code provides a convenient way to implement new data sources extending the abstract
+class <code>DataSet</code>, which can be used by third-party contributors.</p>
+<blockquote>
+<p><strong>KEEP IN MIND</strong><br />
+Regarding the multiple database implementations existing, this plugin <strong>does not</strong> include
+any specific driver. In order to work properly, do not forget to include the module with the JDBC driver(s)
+that your database connection would require.</p>
+</blockquote>
+<h2 id="usage">Usage</h2>
+<h3 id="configuration-properties">Configuration properties</h3>
+<blockquote>
+<p><strong>KEEP IN MIND</strong><br />
+These properties must have the <code>kukumo.</code> prefix when defined in an external configuration file.</p>
+</blockquote>
+<h4><code>database.connection.url</code></h4>
+<p>The JDBC database connection URL. The driver used to access the database will be determined by the URL format.</p>
+<h4><code>database.connection.username</code></h4>
+<p>The connection username, required to connect.</p>
+<h4><code>database.connection.password</code></h4>
+<p>The connection password, required to connect.</p>
+<h4><code>database.metadata.schema</code></h4>
+<p>The schema that should be used in order to retrieve meta-data as primary keys and nullability. If not specified,
+the default schema returned by the connection will be used.</p>
+<h4><code>database.metadata.catalog</code></h4>
+<p>The catalog that should be used in order to retrieve meta-data as primary keys and nullability. If not specified, the default catalog returned by the connection will be used (in case the database system
+uses one).</p>
+<h4><code>database.metadata.caseSensititvy</code> = [<code>INSENSITIVE</code>] | <code>LOWER_CASED</code> | <code>UPPER_CASED</code></h4>
+<p>Configure whether any upper/lower case transformation should be done when trying to access meta-data.
+Some engines are very strict regarding this issue, and can cause unexpected errors if this property is not properly configured.</p>
+<h4><code>database.csv.format</code> = [<code>DEFAULT</code>], <code>INFORMIX_UNLOAD</code>, <code>INFORMIX_UNLOAD_CSV</code>, <code>MYSQL</code>, <code>ORACLE</code>, <code>POSTGRESQL_CSV</code>, <code>POSTGRESQL_TEXT</code>, <code>RFC4180</code></h4>
+<p>The format used to parse CSV files. The accepted values are directly imported from the <a class="external" target="_blank" rel="external noreferrer noopener nofollow" href="https://commons.apache.org/proper/commons-csv/">Commons CSV</a>
+project, check it for detailed explanation of each format.</p>
+<h4><code>database.xls.ignoreSheetPattern</code> = <code>#.*</code></h4>
+<p>Regex pattern used to determine what sheets to be ignored when loading XLSX files.</p>
+<h4><code>database.nullSymbol</code> = <code>&lt;null&gt;</code></h4>
+<p>Literal used to handle a specific cell value as the SQL <code>NULL</code> element. It is used in any data source like CSV, XLS, and in-line tables.</p>
+<h4><code>database.enableCleanupUponCompletion</code> = <code>true | [false]</code></h4>
+<p>The default behaviour does not perform any clean-up operation following the test plan execution so that
+you can check the resulting data afterwards. Switching this parameter to <code>true</code> will force
+clean-up operations so no test data will remain in the database after the execution of the tests.</p>
+<h3 id="steps">Steps</h3>
+<blockquote>
+<p><strong>NOTE</strong><br />
+The keywords appearing within brackets refer to Gherkin keyword examples, but have no actual meaning</p>
+</blockquote>
+<h4 id="configuration-steps">Configuration steps</h4>
+<h5><em>[Given]</em> the database connection URL <code>{url:text}</code> using the user <code>{username:text}</code> and the password <code>{password:text}</code></h5>
+<p>Configure the database connection URL, username and password for following connections.</p>
+<p>This step is the declarative equivalent to set the configuration properties <code>database.connection.url</code>,
+<code>database.connection.username</code>, <code>database.connection.password</code>.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given the database connection URL 'jdbc:h2:tcp://localhost:9092/~/test' using the user 'sa' and the password ''
+</code></pre>
+</blockquote>
+<h4 id="script-execution-steps">Script execution steps</h4>
+<h5><em>[Given that/When]</em> the following SQL script is executed:</h5>
+<p>Execute a in-line SQL script.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the following SQL script is executed:
+&quot;&quot;&quot;
+ UPDATE USER SET STATE = 2 WHERE BLOCKING_DATE IS NULL;
+ DELETE FROM USER WHERE STATE = 3;
+&quot;&quot;&quot;
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the SQL script file {file} is executed</h5>
+<p>Execute a SQL script file.</p>
+<blockquote>
+<pre><code class="language-gherkin">When the SQL script file 'data/insert-users.sql' is executed
+
+</code></pre>
+</blockquote>
+<h4 id="delete-row-execution-steps">Delete row execution steps</h4>
+<h5><em>[Given that/When]</em> the database table {word} is cleared</h5>
+<p>Clear the given table, first attempting to execute <code>TRUNCATE</code>, and then using <code>DELETE FROM</code> as fallback.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the database table USER is cleared
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> * having {column:word} = {value:text} is|are deleted from the database table {table:word}</h5>
+<p>Delete the rows in the given table that match the specified value.</p>
+<blockquote>
+<pre><code class="language-gherkin">When users having STATE = '2' are deleted from the database table USER 
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> * having {column1:word} = {value1:text} and {column2:word} = {value2:text} is|are deleted from the database table {table:word}</h5>
+<p>Delete the rows in the given table that match both specified values.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that users having STATE = '2' and BLOCKING_DATE = '&lt;null&gt;' are deleted from the database table USER 
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the following * (is|are) deleted from the database table {word}:</h5>
+<p>Delete the following in-line rows from the given table.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the following is deleted from the database table USER:
+ | USER  | STATE | BLOCKING_DATE |   
+ | user1 | 2     | &lt;null&gt;        |
+ | user2 | 3     | 2020-02-13    |
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the content of the XLS file {file} (is) deleted from the database</h5>
+<p>Delete the rows contained in the specified XLS file, one sheet per table.</p>
+<blockquote>
+<pre><code class="language-gherkin">When the content of the XLS file 'data/users.xls' is deleted from the database
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the content of the CSV file {csv:file} (is) deleted from the database table {table:word}</h5>
+<p>Delete the rows contained in the specified CSV file from the given table.</p>
+<blockquote>
+<pre><code class="language-gherkin">When the content of the CSV file 'data/users.csv' is deleted from the database table USER
+</code></pre>
+</blockquote>
+<h4 id="insert-row-execution-steps">Insert row execution steps</h4>
+<h5><em>[Given that/When]</em> the following * (is|are) inserted into the database table {word}:</h5>
+<p>Insert the following in-line rows into the given table. Non-specified but required columns will be populated with random values.</p>
+<blockquote>
+<pre><code class="language-gherkin">When the following is inserted into the database table USER:
+ | USER  | STATE | BLOCKING_DATE |   
+ | user1 | 2     | &lt;null&gt;        |
+ | user2 | 3     | 2020-02-13    |
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the content of the XLS file {file} (is) inserted into the database</h5>
+<p>Insert the rows contained in the specified XLS file, one sheet per table. Non-specified but required columns will be populated with random values.</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the content of the XLS file 'data/users.xls' is inserted into the database
+</code></pre>
+</blockquote>
+<h5><em>[Given that/When]</em> the content of the CSV file {csv:file} (is) inserted into the database table {table:word}</h5>
+<p>Insert the rows contained in the specified CSV file into the given table. Non-specified but required columns will be populated with random values.</p>
+<blockquote>
+<pre><code class="language-gherkin">When the content of the CSV file 'data/users.csv' is inserted into the database table USER
+</code></pre>
+</blockquote>
+<h4 id="data-presence-assertion-steps">Data presence assertion steps</h4>
+<h5><em>[Given that/Then]</em> * identified by {id:text} exist(s) in the database table {table:word}</h5>
+<p>Assert that a row in the given table has a primary key matching the specified value. The table must have a single-column
+primary key accessible from the database metadata.</p>
+<blockquote>
+<pre><code class="language-gherkin">Then a user identified by 'user1' exists in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * identified by {id:text} do(es) not exist in the database table {table:word}</h5>
+<p>Assert that no row in the given table has a primary key matching the specified value. The table must have a single-column
+primary key accessible from the database metadata.</p>
+<blockquote>
+<pre><code class="language-gherkin"> Given that a user identified by 'user1' does not exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * having {column:word} = {value:text} exist(s) in the database table {table:word}</h5>
+<p>Assert that at least one row in the given table matches the specified value for a column</p>
+<blockquote>
+<pre><code class="language-gherkin">Then several users having STATE = '1' exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * having {column:word} = {value:text} do(es) not exist in the database table {table:word}</h5>
+<p>Assert that no row in the given table matches the specified value for a column</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that users having STATE = '1' do no exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the number of * having {column:word} = {value:text} in the database table {table:word} {matcher:long-assertion}</h5>
+<p>Assert that the number of rows in the given table matching the specified value for one column satisfies a numeric assertion</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the number of users having STATE = '1' in the database table USER is greater than 5
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * having {column1:word} = {value1:text} and {column2:word} = {value2:text} exist(s) in the database table {table:word}</h5>
+<p>Assert that at least one row in the given table matches the specified values for two columns</p>
+<blockquote>
+<pre><code class="language-gherkin">Then several users having STATE = '1' and BLOCKING_DATE = '&lt;null&gt;' exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * having {column1:word} = {value1:text} and {column2:word} = {value2:text} do(es) not exists in the database table {table:word}</h5>
+<p>Assert that no row in the given table matches the specified values for two columns</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that users having STATE = '1' and BLOCKING_DATE = '&lt;null&gt;' do not exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the number of * having {column1:word} = {value1:text} and {column2:word} = {value2:text} in the database table {table:word} {matcher:long-assertion}</h5>
+<p>Assert that the number of rows in the given table matching the specified values for two columns satisfies a numeric assertion</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the number of users having STATE = '1' and BLOCKING_DATE = '&lt;null&gt;' in the database table USER is not 7
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * satisfying the SQL clause {sql:text} exist(s) in the database table {table:word}</h5>
+<p>Assert that at least one row in the given table satisfies the specified SQL clause exist</p>
+<blockquote>
+<pre><code class="language-gherkin">Then a user satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' exists in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> * satisfying the SQL clause {sql:text} do(es) not exist in the database table {table:word}</h5>
+<p>Assert that no row in the given table satisfies the specified SQL clause exist</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that a user satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' does not exist in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the number of * satisfying the SQL clause {sql:text} in the database table {table:word} {matcher:long-assertion}</h5>
+<p>Assert that the number of rows in the given table matching the SQL clause satisfies a numeric assertion</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the number of users satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' in the database table USER is less than 10
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the following * exist(s) in the database table {word}:</h5>
+<p>Assert that all of the subsequent data rows exist in the given table</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the following users exist in the database table USER:
+ | USER  | STATE | BLOCKING_DATE |   
+ | user1 | 2     | &lt;null&gt;        |
+ | user2 | 3     | 2020-02-13    |
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the following * do(es) not exist in the database table {word}:</h5>
+<p>Assert that none of the subsequent data rows exist in the given table</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the following users do not exist in the database table USER:
+ | USER  | STATE | BLOCKING_DATE |   
+ | user1 | 2     | &lt;null&gt;        |
+ | user2 | 3     | 2020-02-13    |
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the number of * satisfying the following * in the database table {table:word} {matcher:long-assertion}:</h5>
+<p>Assert that the number of rows in the given table matching the specified values for every column satisfies a numeric expression.
+Only the first row of the given data is considered.</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the number of users satisfying the following data in the database table USER is 0
+ | USER  | STATE | BLOCKING_DATE |   
+ | user1 | 2     | &lt;null&gt;        |
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the content of the XLS file {file} exists in the database</h5>
+<p>Assert that all of the data rows included in the specified XLS file exist in the database, using one sheet per table</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the content of the XLS file 'data/users.xls' exists in the database
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the content of the XLS file {file} does not exist in the database</h5>
+<p>Assert that none of the data rows included in the specified XLS file exist in the database, using one sheet per table</p>
+<blockquote>
+<pre><code class="language-gherkin">Given that the content of the XLS file 'data/users.xls' does not exist in the database
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the content of the CSV file {csv:file} exists in the database table {table:word}</h5>
+<p>Assert that all of the data rows included in the specified CSV file exists in the given table</p>
+<blockquote>
+<pre><code class="language-gherkin">Then the content of the CSV file 'data/users.csv' exists in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the content of the CSV file {csv:file} does not exist in the database table {table:word}</h5>
+<p>Assert that all of the data rows included in the specified CSV file exists in the given table</p>
+<blockquote>
+<pre><code class="language-gherkin"> Given that the content of the CSV file 'data/users.csv' does not exists in the database table USER
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the database table {word} is empty</h5>
+<p>Assert that the given table has no data</p>
+<blockquote>
+<pre><code class="language-gherkin"> Then the database table USER is empty
+</code></pre>
+</blockquote>
+<h5><em>[Given that/Then]</em> the database table {word} is not empty</h5>
+<p>Assert that the given tabla has some data</p>
+<blockquote>
+<pre><code class="language-gherkin"> Then the database table USER is not empty
+</code></pre>
+</blockquote>
+<h2 id="references">References</h2>
+<ul>
+<li>[<strong>1</strong>] <em>Common CSV</em> -  https://commons.apache.org/proper/commons-csv/</li>
+</ul>
+<div class="footer">Generated with <a href="https://luiinge.github.io/docsite-maven-plugin/">Docsite</a>. Last published on 2022-03-22</div></section></body></html>
