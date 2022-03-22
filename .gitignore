@@ -3,6 +3,7 @@
 /kukumo-project.iml
 /.settings/
 /target/
+!/docs/**/target/
 /**/.attach_pid*
 /tmp/
 *.log
