@@ -13,12 +13,11 @@ package iti.kukumo.test.gherkin;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
 import org.json.JSONException;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -28,8 +27,7 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
+
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;

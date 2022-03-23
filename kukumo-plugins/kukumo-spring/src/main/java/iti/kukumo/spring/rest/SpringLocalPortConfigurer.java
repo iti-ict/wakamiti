@@ -15,15 +15,16 @@ import static iti.kukumo.spring.db.SpringConnectionProvider.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
+import imconfig.Configurer;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
-import iti.commons.configurer.Configurer;
+
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.rest.RestStepContributor;
@@ -44,7 +45,7 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
     private static final Logger LOGGER = KukumoLogger.forClass(SpringLocalPortConfigurer.class);
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "kukumo.rest.useSpringLocalServerPort";
 
-    private static final Configuration DEFAULTS = Configuration.fromPairs(
+    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
         USE_SPRING_LOCAL_SERVER_PORT, "false",
         USE_SPRING_DATASOURCE, "false"
     );

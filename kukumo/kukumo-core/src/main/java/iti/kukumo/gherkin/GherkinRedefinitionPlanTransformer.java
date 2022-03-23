@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.commons.gherkin.Examples;
 import iti.commons.gherkin.Feature;
 import iti.commons.gherkin.ScenarioOutline;

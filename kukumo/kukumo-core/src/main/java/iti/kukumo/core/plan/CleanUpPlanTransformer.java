@@ -6,20 +6,12 @@
 
 package iti.kukumo.core.plan;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.PlanTransformer;
-import iti.kukumo.api.plan.DataTable;
-import iti.kukumo.api.plan.Document;
-import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.api.plan.PlanNodeData;
-import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static iti.kukumo.core.plan.PlanNodeBuilderRules.forEachNode;

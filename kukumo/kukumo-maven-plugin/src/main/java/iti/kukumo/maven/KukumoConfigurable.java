@@ -10,13 +10,15 @@
 package iti.kukumo.maven;
 
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
 import org.apache.maven.plugin.logging.Log;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
+
 import iti.kukumo.api.Kukumo;
 
 
@@ -29,7 +31,7 @@ public interface KukumoConfigurable {
         Configuration configuration = Kukumo.defaultConfiguration();
         if (confFiles != null) {
             for (String confFile : confFiles) {
-                configuration = configuration.appendFromClasspathResourceOrURI(confFile)
+                configuration = configuration.appendFromPath(Path.of(confFile))
                     .inner("kukumo");
             }
         }

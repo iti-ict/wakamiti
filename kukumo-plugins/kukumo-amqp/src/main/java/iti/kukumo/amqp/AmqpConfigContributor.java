@@ -10,8 +10,9 @@
 package iti.kukumo.amqp;
 
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
+
+import imconfig.Configuration;
+import imconfig.Configurer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 
@@ -32,7 +33,7 @@ public class AmqpConfigContributor implements ConfigContributor<AmqpStepContribu
     public static final String AMQP_QUEUE_EXCLUSIVE = "amqp.queue.exclusive";
     public static final String AMQP_QUEUE_AUTODELETE = "amqp.queue.autodelete";
 
-    private static final Configuration DEFAULTS = Configuration.fromPairs(
+    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             AMQP_QUEUE_DURABLE,  "false",
             AMQP_QUEUE_EXCLUSIVE,  "false",
             AMQP_QUEUE_AUTODELETE, "false"
@@ -65,10 +66,9 @@ public class AmqpConfigContributor implements ConfigContributor<AmqpStepContribu
             configuration.get(AMQP_CONNECTION_PASSWORD, String.class).orElse(null)
         ));
 
-        configuration
-                .ifPresent(AMQP_QUEUE_DURABLE, Boolean.class, contributor::setDurable)
-                .ifPresent(AMQP_QUEUE_EXCLUSIVE, Boolean.class, contributor::setExclusive)
-                .ifPresent(AMQP_QUEUE_AUTODELETE, Boolean.class, contributor::setAutoDelete);
+        configuration.get(AMQP_QUEUE_DURABLE, Boolean.class).ifPresent(contributor::setDurable);
+        configuration.get(AMQP_QUEUE_EXCLUSIVE, Boolean.class).ifPresent(contributor::setExclusive);
+        configuration.get(AMQP_QUEUE_AUTODELETE, Boolean.class).ifPresent(contributor::setAutoDelete);
     }
 
 }

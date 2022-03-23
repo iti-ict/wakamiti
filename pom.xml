@@ -23,7 +23,6 @@
         <!-- tools -->
         <module>kukumo-tools/jext</module>
         <module>kukumo-tools/jext-spring</module>
-        <module>kukumo-tools/configurer</module>
         <module>kukumo-tools/maven-fetcher</module>
         <module>kukumo-tools/slf4j-ansi</module>
         <module>kukumo-tools/gherkin-parser</module>

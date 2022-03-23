@@ -18,7 +18,6 @@ module kukumo.db {
     requires poi.ooxml.schemas;
     requires commons.csv;
     requires org.assertj.core;
-    requires iti.commons.configurer;
     requires org.hamcrest;
     requires junit;
     requires jsqlparser;

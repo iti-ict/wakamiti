@@ -13,12 +13,13 @@ package iti.kukumo.rest.test;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import iti.commons.configurer.AnnotatedConfiguration;
-import iti.commons.configurer.Property;
+
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.junit.KukumoJUnitRunner;
@@ -27,7 +28,7 @@ import iti.kukumo.rest.test.mockserver.InMemoryServer;
 
 
 
-@AnnotatedConfiguration(properties = {
+@AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/test-rest-xml.feature"),
     @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json")

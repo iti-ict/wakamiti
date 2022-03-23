@@ -12,7 +12,7 @@ package iti.kukumo.core.plan;
 
 import java.util.List;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.extensions.PlanTransformer;
 import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;

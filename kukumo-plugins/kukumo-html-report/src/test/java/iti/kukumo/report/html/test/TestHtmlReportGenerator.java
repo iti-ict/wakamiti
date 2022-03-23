@@ -12,13 +12,10 @@ package iti.kukumo.report.html.test;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Locale;
-
-import iti.commons.configurer.Configuration;
+;
 import iti.kukumo.report.html.HtmlReportGeneratorConfig;
 import org.junit.Test;
 

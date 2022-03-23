@@ -6,20 +6,17 @@
 
 package iti.kukumo.test.api;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoFetcher;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.util.LocaleLoader;
-import iti.kukumo.util.ResourceLoader;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 import static iti.kukumo.api.KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS;

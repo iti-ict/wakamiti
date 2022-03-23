@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
@@ -45,11 +45,11 @@ public class PlanNodeRunner {
 
 
     public PlanNodeRunner(
-                    PlanNode node,
-                    Configuration configuration,
-                    BackendFactory backendFactory,
-                    Optional<Backend> backend,
-                    PlanNodeLogger logger
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        Optional<Backend> backend,
+        PlanNodeLogger logger
     ) {
         this.node = node;
         this.configuration = configuration;
@@ -62,10 +62,10 @@ public class PlanNodeRunner {
 
 
     public PlanNodeRunner(
-                    PlanNode node,
-                    Configuration configuration,
-                    BackendFactory backendFactory,
-                    PlanNodeLogger logger
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        PlanNodeLogger logger
     ) {
         this(node, configuration, backendFactory, Optional.empty(), logger);
     }

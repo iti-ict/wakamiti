@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
+import imconfig.ConfigurationFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,15 +32,12 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
-import iti.commons.configurer.ConfigurationException;
+
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.core.runner.PlanNodeLogger;
 
 
@@ -50,7 +50,7 @@ public class KukumoJUnitRunner extends Runner {
     public static final String TREAT_STEPS_AS_TESTS = "junit.treatStepsAsTests";
 
     protected static final Logger LOGGER = Kukumo.LOGGER;
-    protected static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
+    protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
 
     protected final Configuration configuration;
     protected final Class<?> configurationClass;
@@ -137,7 +137,7 @@ public class KukumoJUnitRunner extends Runner {
         BackendFactory backendFactory = kukumo.newBackendFactory();
         return getPlan().children().map(node -> {
             Configuration featureConfiguration = configuration.append(
-                confBuilder.buildFromMap(node.properties())
+                confBuilder.fromMap(node.properties())
             );
             return treatStepsAsTests ? new JUnitPlanNodeStepRunner(
                 node, featureConfiguration, backendFactory, planNodeLogger

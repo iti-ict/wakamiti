@@ -10,7 +10,7 @@
 package iti.kukumo.api;
 
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 

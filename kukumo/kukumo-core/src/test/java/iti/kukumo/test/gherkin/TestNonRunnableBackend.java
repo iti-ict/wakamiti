@@ -11,9 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Locale;
 
+import imconfig.Configuration;
 import org.junit.Test;
 
-import iti.commons.configurer.Configuration;
+
 import iti.kukumo.api.Kukumo;
 
 public class TestNonRunnableBackend {

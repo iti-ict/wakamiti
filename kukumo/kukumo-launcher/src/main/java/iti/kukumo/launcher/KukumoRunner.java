@@ -12,8 +12,9 @@ package iti.kukumo.launcher;
 
 import java.net.URISyntaxException;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
+
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;

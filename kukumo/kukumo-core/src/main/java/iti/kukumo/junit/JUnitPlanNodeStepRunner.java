@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.plan.NodeType;
@@ -26,8 +26,11 @@ import iti.kukumo.core.runner.PlanNodeRunner;
 public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
 
     JUnitPlanNodeStepRunner(
-                    PlanNode node, Configuration configuration, BackendFactory backendFactory,
-                    Optional<Backend> backend, PlanNodeLogger logger
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        Optional<Backend> backend,
+        PlanNodeLogger logger
     ) {
         super(node, configuration, backendFactory, backend, logger);
     }

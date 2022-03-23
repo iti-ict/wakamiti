@@ -6,8 +6,9 @@
 
 package iti.kukumo.files;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
+
+import imconfig.Configuration;
+import imconfig.Configurer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 
@@ -24,7 +25,7 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
     public static String FILES_LINKS = "files.links";
     public static String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
 
-    private static final Configuration DEFAULTS = Configuration.fromPairs(
+    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             FILES_ACCESS_TIMEOUT, "60",
             FILES_ENABLE_CLEANUP_UPON_COMPLETION, "false"
     );

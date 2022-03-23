@@ -19,9 +19,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;

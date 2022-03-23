@@ -6,8 +6,9 @@
 
 package iti.kukumo.api;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
+
+import imconfig.Configuration;
+import imconfig.Configurer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 
@@ -99,7 +100,7 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     public static final String EXECUTION_ID = "executionID";
 
 
-    static final Configuration DEFAULTS = Configuration
+    static final Configuration DEFAULTS = Configuration.factory()
         .fromEnvironment()
         .appendFromSystem()
         .filtered(PREFIX)

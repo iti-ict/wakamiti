@@ -10,8 +10,9 @@
 package iti.kukumo.api.extensions;
 
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
+
+import imconfig.Configuration;
+import imconfig.Configurer;
 import iti.commons.jext.ExtensionPoint;
 
 

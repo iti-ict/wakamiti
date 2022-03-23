@@ -29,7 +29,7 @@ open module kukumo.core {
     exports iti.kukumo.junit;
     exports iti.kukumo.util;
 
-    requires transitive iti.commons.configurer;
+    requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive iti.commons.slf4jansi;
     requires transitive iti.commons.maven.fetcher;

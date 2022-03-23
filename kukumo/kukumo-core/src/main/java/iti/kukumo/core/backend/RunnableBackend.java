@@ -16,9 +16,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.*;
 import iti.kukumo.api.plan.*;
 import iti.kukumo.core.model.ExecutionState;

@@ -14,21 +14,20 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationFactory;
 import iti.kukumo.api.KukumoConfiguration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeSnapshot;
 
 
 public class PlanRunner {
 
-    private static final ConfigurationBuilder confBuilder = ConfigurationBuilder.instance();
+    private static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
     private static final Logger LOGGER = Kukumo.LOGGER;
 
     private final Kukumo kukumo;
@@ -81,7 +80,7 @@ public class PlanRunner {
         BackendFactory backendFactory = kukumo.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(
-                confBuilder.buildFromMap(feature.properties())
+                confBuilder.fromMap(feature.properties())
             );
             return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger);
         }).collect(Collectors.toList());

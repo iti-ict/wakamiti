@@ -13,10 +13,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.*;
 
+import imconfig.Configuration;
 import org.eclipse.lsp4j.*;
 import org.slf4j.*;
 
-import iti.commons.configurer.Configuration;
 import iti.commons.gherkin.*;
 import iti.kukumo.api.*;
 import iti.kukumo.util.Pair;
@@ -54,7 +54,7 @@ public class GherkinDocumentAssessor {
 
 
     public GherkinDocumentAssessor(String uri, String document) {
-        this(uri, document, Configuration.empty());
+        this(uri, document, Configuration.factory().empty());
     }
 
 
@@ -124,12 +124,12 @@ public class GherkinDocumentAssessor {
                 this.documentConfiguration = extractDocumentConfiguration(document);
                 this.parsingError = null;
             } catch (Exception e) {
-                this.documentConfiguration = Configuration.empty();
+                this.documentConfiguration = Configuration.factory().empty();
                 this.parsingError = e;
                 this.parsedDocument = null;
             }
         } else {
-            this.documentConfiguration = Configuration.empty();
+            this.documentConfiguration = Configuration.factory().empty();
             this.parsingError = null;
             this.parsedDocument = null;
         }
@@ -193,7 +193,7 @@ public class GherkinDocumentAssessor {
         this.parsedDocument = parser.parse(new StringReader(document));
         Feature feature = parsedDocument.getFeature();
         if (feature == null) {
-            return Configuration.empty();
+            return Configuration.factory().empty();
         }
         return extractConfigurationFromComments(feature.getComments());
     }
@@ -202,9 +202,9 @@ public class GherkinDocumentAssessor {
 
     private Configuration extractConfigurationFromComments(List<Comment> comments) {
         if (comments == null) {
-            return Configuration.empty();
+            return Configuration.factory().empty();
         }
-        return Configuration.fromMap(
+        return Configuration.factory().fromMap(
             comments.stream()
             .map(Comment::getText)
             .filter(s->s.contains(":"))

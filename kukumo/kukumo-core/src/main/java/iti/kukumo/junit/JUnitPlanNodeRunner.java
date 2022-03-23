@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import imconfig.Configuration;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
 import iti.kukumo.api.KukumoException;
@@ -37,8 +37,11 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
 
     JUnitPlanNodeRunner(
-                    PlanNode node, Configuration configuration, BackendFactory backendFactory,
-                    Optional<Backend> backend, PlanNodeLogger logger
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        Optional<Backend> backend,
+        PlanNodeLogger logger
     ) {
         super(node, configuration, backendFactory, backend, logger);
     }

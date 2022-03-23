@@ -10,18 +10,27 @@
 package iti.kukumo.examples.spring.junit;
 
 
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-import iti.commons.configurer.AnnotatedConfiguration;
 import iti.kukumo.spring.junit.KukumoSpringJUnitRunner;
 
 
 // Kukumo Configuration
 @RunWith(KukumoSpringJUnitRunner.class)
-@AnnotatedConfiguration(path = "classpath:application-test.yaml", pathPrefix = "kukumo")
+@AnnotatedConfiguration({
+    @Property(key="resourceTypes",value="gherkin"),
+    @Property(key="resourcePath",value="src/test/resources"),
+    @Property(key="outputFilePath",value="target/kukumo/kukumo.json"),
+    @Property(key="junit.treatStepsAsTests",value="true"),
+    @Property(key="logs.showStepSource",value="false"),
+    @Property(key="database.useSpringDataSource",value="true"),
+    @Property(key="rest.useSpringLocalServerPort",value="true")
+})
 
 // Spring Configuration
 @ContextConfiguration(classes = AppTestConfig.class)

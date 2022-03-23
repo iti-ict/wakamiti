@@ -16,10 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-
-import iti.commons.configurer.Configurable;
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationBuilder;
+import imconfig.Configurable;
+import imconfig.Configuration;
+import imconfig.ConfigurationFactory;
 import iti.commons.jext.Extension;
 import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.extensions.*;
@@ -175,7 +174,7 @@ public class KukumoContributors {
     public Configuration globalDefaultConfiguration() {
         return extensionManager.getExtensions(ConfigContributor.class)
         .map(ConfigContributor::defaultConfiguration)
-        .reduce(ConfigurationBuilder.instance().empty(), Configuration::append);
+        .reduce(ConfigurationFactory.instance().empty(), Configuration::append);
     }
 
 

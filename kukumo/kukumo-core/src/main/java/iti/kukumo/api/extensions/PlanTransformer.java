@@ -10,7 +10,7 @@
 package iti.kukumo.api.extensions;
 
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.commons.jext.ExtensionPoint;
 import iti.kukumo.api.plan.PlanNodeBuilder;
 

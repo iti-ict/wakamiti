@@ -42,7 +42,7 @@
 
     <properties>
         <!-- dependency versions -->
-         <configurer.version>1.0.1</configurer.version>
+         <immutable-config.version>1.1.0</immutable-config.version>
          <jext.version>1.0.0</jext.version>
          <gherkin-parser.version>1.0.1</gherkin-parser.version>
          <tag-expressions.version>1.1.1</tag-expressions.version>
@@ -71,11 +71,10 @@
                 <artifactId>kukumo-lsp</artifactId>
                 <version>${revision}</version>
             </dependency>
-
             <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>configurer</artifactId>
-                <version>${configurer.version}</version>
+                <groupId>io.github.luiinge</groupId>
+                <artifactId>immutable-config</artifactId>
+                <version>${immutable-config.version}</version>
             </dependency>
             <dependency>
                 <groupId>es.iti.commons</groupId>

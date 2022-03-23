@@ -20,9 +20,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.*;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.commons.jext.ExtensionManager;
 import iti.kukumo.api.event.*;
 import iti.kukumo.api.extensions.*;
@@ -165,7 +165,7 @@ public class Kukumo {
         	LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
             Path confFile = Path.of(discoveryPath, DEFAULT_CONF_FILE);
             if (Files.exists(confFile)) {
-                Configuration confFromFile = Configuration.fromPath(confFile).inner(PREFIX);
+                Configuration confFromFile = Configuration.factory().fromPath(confFile).inner(PREFIX);
                 configuration = configuration.append(confFromFile);
                 LOGGER.debug("Found {}, applying new {}", confFile, configuration);
             }

@@ -10,9 +10,10 @@
 package iti.kukumo.api;
 
 
+import imconfig.Configuration;
+
 import java.util.Locale;
 
-import iti.commons.configurer.Configuration;
 
 
 public class KukumoStepRunContext {
@@ -42,8 +43,10 @@ public class KukumoStepRunContext {
 
 
     public KukumoStepRunContext(
-                    Configuration configuration, Backend backend, Locale stepLocale,
-                    Locale dataLocale
+        Configuration configuration,
+        Backend backend,
+        Locale stepLocale,
+        Locale dataLocale
     ) {
         this.configuration = configuration;
         this.backend = backend;

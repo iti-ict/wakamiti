@@ -2,7 +2,7 @@ module kukumo.lsp {
 
     exports iti.kukumo.lsp;
 
-    requires transitive iti.commons.configurer;
+    requires transitive imconfig;
     requires commons.cli;
     requires transitive org.eclipse.lsp4j;
     requires transitive org.eclipse.lsp4j.jsonrpc;

@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import groovy.lang.GroovyClassLoader;
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.commons.maven.fetcher.FetchedArtifact;
 import iti.commons.maven.fetcher.MavenFetchException;
 import iti.commons.maven.fetcher.MavenFetchRequest;

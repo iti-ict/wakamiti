@@ -2,7 +2,7 @@ module kukumo.launcher {
 
     exports iti.kukumo.launcher;
 
-    requires transitive iti.commons.configurer;
+    requires transitive imconfig;
     requires kukumo.core;
     requires junit;
     requires iti.commons.maven.fetcher;

@@ -15,9 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import imconfig.Configuration;
 import org.junit.Test;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.PlanNode;

@@ -10,17 +10,18 @@
 package iti.kukumo.database.test.dialect;
 
 
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.junit.runner.RunWith;
 
-import iti.commons.configurer.AnnotatedConfiguration;
-import iti.commons.configurer.Property;
+
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.database.DatabaseConfigContributor;
 import iti.kukumo.junit.KukumoJUnitRunner;
 
 
 @RunWith(KukumoJUnitRunner.class)
-@AnnotatedConfiguration(properties = {
+@AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = "gherkin"),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
     @Property(key = DatabaseConfigContributor.DATABASE_CONNECTION_URL, value = "jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/db/create-schema.sql'"),

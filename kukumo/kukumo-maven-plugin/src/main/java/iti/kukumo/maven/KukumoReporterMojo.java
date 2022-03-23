@@ -13,6 +13,8 @@ package iti.kukumo.maven;
 import java.util.List;
 import java.util.Map;
 
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -20,8 +22,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.ConfigurationException;
+
 import iti.kukumo.api.Kukumo;
 
 

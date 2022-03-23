@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import imconfig.Configuration;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -24,7 +25,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import iti.commons.configurer.Configuration;
 
 public class CliArguments {
 
@@ -118,12 +118,12 @@ public class CliArguments {
         Path launcherProperties = JarUtil.jarFolder().resolve("launcher.properties");
         Path projectProperties = Paths.get(confFileName);
         Configuration launcherConf = (Files.exists(launcherProperties))
-            ? Configuration.fromPath(launcherProperties).inner(qualifier)
-            : Configuration.empty();
+            ? Configuration.factory().fromPath(launcherProperties).inner(qualifier)
+            : Configuration.factory().empty();
         Configuration projectConf = (Files.exists(projectProperties))
-            ? Configuration.fromPath(projectProperties).inner(qualifier)
-            : Configuration.empty();
-        Configuration argumentConf = Configuration.fromProperties(arguments);
+            ? Configuration.factory().fromPath(projectProperties).inner(qualifier)
+            : Configuration.factory().empty();
+        Configuration argumentConf = Configuration.factory().fromProperties(arguments);
         return launcherConf.append(projectConf).append(argumentConf);
     }
 
