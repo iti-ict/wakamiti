@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import maven.fetcher.MavenFetchException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -25,7 +26,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.yaml.snakeyaml.Yaml;
 
 import iti.commons.distribution.DistributionSet;
-import iti.commons.maven.fetcher.MavenFetchException;
 
 
 @Mojo(defaultPhase = LifecyclePhase.PACKAGE, name = "generate-installer")

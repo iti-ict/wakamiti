@@ -52,7 +52,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>es.iti.commons</groupId>
+            <groupId>io.github.luiinge</groupId>
             <artifactId>maven-fetcher</artifactId>
             <version>${maven-fetcher.version}</version>
         </dependency>
@@ -98,9 +98,9 @@
                     <archive>
                         <manifestEntries>
                             <Main-Class>iti.kukumo.launcher.KukumoLauncher</Main-Class>
-                            <Launcher-Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Launcher-Agent-Class>
-                            <Agent-Class>iti.commons.maven.fetcher.ClasspathAgent</Agent-Class>
-                            <Premain-Class>iti.commons.maven.fetcher.ClasspathAgent</Premain-Class>
+                            <Launcher-Agent-Class>iti.kukumo.api.ClasspathAgent</Launcher-Agent-Class>
+                            <Agent-Class>iti.kukumo.api.ClasspathAgent</Agent-Class>
+                            <Premain-Class>iti.kukumo.api.ClasspathAgent</Premain-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>

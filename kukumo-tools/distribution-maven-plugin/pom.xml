@@ -91,7 +91,7 @@
             <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
-            <groupId>es.iti.commons</groupId>
+            <groupId>io.github.luiinge</groupId>
             <artifactId>maven-fetcher</artifactId>
             <version>${maven-fetcher.version}</version>
         </dependency>

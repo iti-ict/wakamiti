@@ -5,7 +5,7 @@ module kukumo.launcher {
     requires transitive imconfig;
     requires kukumo.core;
     requires junit;
-    requires iti.commons.maven.fetcher;
+    requires maven.fetcher;
     requires java.instrument;
     requires org.slf4j;
     requires slf4jansi;

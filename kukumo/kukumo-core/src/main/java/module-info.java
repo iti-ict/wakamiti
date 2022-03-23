@@ -32,7 +32,7 @@ open module kukumo.core {
     requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
-    requires transitive iti.commons.maven.fetcher;
+    requires transitive maven.fetcher;
 
     requires transitive junit;
     requires org.hamcrest;
@@ -43,6 +43,7 @@ open module kukumo.core {
     requires transitive gherkin.parser;
     requires net.harawata.appdirs;
     requires org.codehaus.groovy;
+    requires java.instrument;
 
 
     uses iti.kukumo.api.extensions.ResourceType;

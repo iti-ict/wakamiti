@@ -66,7 +66,7 @@
             <artifactId>immutable-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>es.iti.commons</groupId>
+            <groupId>io.github.luiinge</groupId>
             <artifactId>maven-fetcher</artifactId>
         </dependency>
         <dependency>
