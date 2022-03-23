@@ -8,7 +8,7 @@ module kukumo.launcher {
     requires iti.commons.maven.fetcher;
     requires java.instrument;
     requires org.slf4j;
-    requires iti.commons.slf4jansi;
+    requires slf4jansi;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
     requires net.harawata.appdirs;

@@ -77,6 +77,11 @@
                 <version>${immutable-config.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.github.luiinge</groupId>
+                <artifactId>slf4j-ansi</artifactId>
+                <version>${slf4j-ansi.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>es.iti.commons</groupId>
                 <artifactId>jext</artifactId>
                 <version>${jext.version}</version>

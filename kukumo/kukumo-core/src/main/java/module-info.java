@@ -31,7 +31,7 @@ open module kukumo.core {
 
     requires transitive imconfig;
     requires transitive iti.commons.jext;
-    requires transitive iti.commons.slf4jansi;
+    requires transitive slf4jansi;
     requires transitive iti.commons.maven.fetcher;
 
     requires transitive junit;

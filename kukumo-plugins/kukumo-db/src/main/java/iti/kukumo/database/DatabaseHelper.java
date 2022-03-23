@@ -10,7 +10,6 @@
 package iti.kukumo.database;
 
 
-import iti.commons.slf4jansi.AnsiLogger;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.database.dataset.*;
@@ -28,6 +27,7 @@ import net.sf.jsqlparser.statement.update.Update;
 import org.assertj.core.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import slf4jansi.AnsiLogger;
 
 import java.io.IOException;
 import java.sql.*;

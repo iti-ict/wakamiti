@@ -24,7 +24,6 @@
         <module>kukumo-tools/jext</module>
         <module>kukumo-tools/jext-spring</module>
         <module>kukumo-tools/maven-fetcher</module>
-        <module>kukumo-tools/slf4j-ansi</module>
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/maven-aether-provider-java9</module>
         <module>kukumo-tools/distribution-maven-plugin</module>

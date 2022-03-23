@@ -98,7 +98,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>es.iti.commons</groupId>
+            <groupId>io.github.luiinge</groupId>
             <artifactId>slf4j-ansi</artifactId>
             <version>${slf4j-ansi.version}</version>
         </dependency>
