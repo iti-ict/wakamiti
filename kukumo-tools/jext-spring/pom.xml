@@ -29,13 +29,24 @@
     <description>Integration of Spring managed beans with jExt</description>
     <inceptionYear>2019</inceptionYear>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <!-- dependencies -->
     <dependencies>
         <dependency>
             <groupId>es.iti.commons</groupId>
             <artifactId>jext</artifactId>
-            <version>[1.0.0,)</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

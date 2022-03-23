@@ -28,17 +28,11 @@
     <inceptionYear>2020</inceptionYear>
 
 
-    <properties>
-        <!-- dependency versions -->
-        <eclipse.lsp4j.version>0.9.0</eclipse.lsp4j.version>
-    </properties>
-
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.lsp4j</groupId>
             <artifactId>org.eclipse.lsp4j</artifactId>
-            <version>${eclipse.lsp4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -59,7 +53,6 @@
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>${commons-cli.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.luiinge</groupId>
@@ -78,40 +71,34 @@
             <artifactId>kukumo-core-l10n</artifactId>
         </dependency>
         <dependency>
-    		<groupId>com.github.curious-odd-man</groupId>
-    		<artifactId>rgxgen</artifactId>
-    		<version>1.3</version>
-		</dependency>
+            <groupId>com.github.curious-odd-man</groupId>
+            <artifactId>rgxgen</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
+
 
         <!--
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>1.0.0</version>
         </dependency>
         -->
-
 
 
 

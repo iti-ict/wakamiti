@@ -37,6 +37,19 @@
         <docker.image.name>nexus-kukumo.iti.upv.es/kukumo</docker.image.name>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
 
     <profiles>
         <profile>
@@ -49,57 +62,42 @@
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-core-l10n</artifactId>
-                    <version>${revision}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-html-report</artifactId>
-                    <version>${revision}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-amqp</artifactId>
-                    <version>${revision}</version>
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-amqp-l10n</artifactId>
-                    <version>${revision}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-db</artifactId>
-                    <version>${revision}</version>
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-db-l10n</artifactId>
-                    <version>${revision}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-io</artifactId>
-                    <version>${revision}</version>
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-io-l10n</artifactId>
-                    <version>${revision}</version>
                 </dependency>
-
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-rest</artifactId>
-                    <version>${revision}</version>
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-rest-l10n</artifactId>
-                    <version>${revision}</version>
                 </dependency>
             </dependencies>
 
