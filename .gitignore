@@ -9,3 +9,5 @@
 *.log
 /kukumo-examples/spring-launcher-example/kukumo/.vscode/settings.json
 .vscode/**
+.flattened-pom.xml
+.mvn/wrapper/maven-wrapper.jar

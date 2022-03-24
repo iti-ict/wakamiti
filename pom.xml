@@ -199,8 +199,37 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <phase>prepare-package</phase>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- flatten prior install, required since ${revision} is used -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <flattenedPomFilename>.flattened-pom.xml</flattenedPomFilename>
+                            <updatePomFile>false</updatePomFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- install using flattened pom, ,required since ${revision} is used -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <pomFile>.flattened-pom.xml</pomFile>
+                </configuration>
             </plugin>
 
         </plugins>
