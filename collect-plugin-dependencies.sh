@@ -1,17 +1,25 @@
 #!/bin/bash
 
-set lib=plugin-lib
+#  collect all jar and dependencies from plugins
+#  example:
+#  $ ./collect-plugin-dependencies.sh pluginA pluginB ...
+#
+#  IMPORTANT:
+#  It requires to be run from the project root folder
+#  Also, a previous execution of `./mvnw clean package` is needed
+
+lib=plugin-lib
 rm -rf $lib
 mkdir $lib
 
-for folder in kukumo-plugins/*/
+for plugin in "$@"
 do
-  module=${folder::-1}
-  cp ${module}/target/${module}*.jar $lib/ 2>/dev/null
-  cp ${module}/target/dependency/*.jar $lib/ 2>/dev/null
+  cp kukumo-plugins/${plugin}/target/${plugin}*.jar ${lib}/ 2>/dev/null
+  cp kukumo-plugins/${plugin}-l10n/target/${plugin}*.jar ${lib}/ 2>/dev/null
+  cp kukumo-plugins/${plugin}/target/dependency/*.jar ${lib}/ 2>/dev/null
 done
-rm $lib/*jar-with-dependencies.jar
-rm $lib/*-sources.jar
+rm ${lib}/*jar-with-dependencies.jar 2>/dev/null
+rm ${lib}/*-sources.jar 2>/dev/null
 
 for file in kukumo/kukumo-core/target/dependency
 do
