@@ -14,8 +14,7 @@ import iti.commons.jext.Extension;
 import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.PlanNodeSnapshot;
-import iti.kukumo.util.KukumoLogger;
-import iti.kukumo.util.ResourceLoader;
+
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -59,10 +58,10 @@ public class HtmlReportGenerator implements Reporter {
         this.title = title;
     }
 
-    public void setConfiguration(iti.commons.configurer.Configuration configuration) {
-        configuration.ifPresent(CSS_FILE,String.class,this::setCssFile);
-        configuration.ifPresent(OUTPUT_FILE,String.class,this::setOutputFile);
-        configuration.ifPresent(TITLE, String.class, this::setTitle);
+    public void setConfiguration(imconfig.Configuration configuration) {
+        configuration.get(CSS_FILE,String.class).ifPresent(this::setCssFile);
+        configuration.get(OUTPUT_FILE,String.class).ifPresent(this::setOutputFile);
+        configuration.get(TITLE, String.class).ifPresent(this::setTitle);
         var reportConfiguration = configuration.inner(PREFIX);
         this.parameters = new HashMap<>(reportConfiguration.asMap());
     }

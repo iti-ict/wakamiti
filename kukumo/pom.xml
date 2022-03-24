@@ -40,84 +40,15 @@
         <module>kukumo-lsp</module>
     </modules>
 
-    <properties>
-        <!-- dependency versions -->
-         <configurer.version>1.0.1</configurer.version>
-         <jext.version>1.0.0</jext.version>
-         <gherkin-parser.version>1.0.1</gherkin-parser.version>
-         <tag-expressions.version>1.1.1</tag-expressions.version>
-         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
-         <jsonassert.version>1.5.0</jsonassert.version>
-         <maven-fetcher.version>1.0.0</maven-fetcher.version>
-         <aetherVersion>1.1.0</aetherVersion>
-         <appdirs.version>1.0.3</appdirs.version>
-    </properties>
-
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>es.iti.kukumo</groupId>
-                <artifactId>kukumo-core</artifactId>
+                <artifactId>kukumo-bom</artifactId>
                 <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.kukumo</groupId>
-                <artifactId>kukumo-core-l10n</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.kukumo</groupId>
-                <artifactId>kukumo-lsp</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>configurer</artifactId>
-                <version>${configurer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>jext</artifactId>
-                <version>${jext.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>maven-fetcher</artifactId>
-                <version>${maven-fetcher.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.harawata</groupId>
-                <artifactId>appdirs</artifactId>
-                <version>${appdirs.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j-impl</artifactId>
-                <version>${log4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -13,12 +13,13 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import maven.fetcher.MavenFetchException;
+import maven.fetcher.MavenFetchRequest;
+import maven.fetcher.MavenFetcher;
 import org.apache.commons.io.FileUtils;
 
 import iti.commons.distribution.JarUtil;
-import iti.commons.maven.fetcher.MavenFetchException;
-import iti.commons.maven.fetcher.MavenFetchRequest;
-import iti.commons.maven.fetcher.MavenFetcher;
+
 
 public class BinaryCollector {
 

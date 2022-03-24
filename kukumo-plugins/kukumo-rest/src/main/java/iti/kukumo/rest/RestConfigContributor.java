@@ -10,10 +10,10 @@
 package iti.kukumo.rest;
 
 
+import imconfig.Configuration;
+import imconfig.Configurer;
 import io.restassured.RestAssured;
 import io.restassured.config.LogConfig;
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.rest.log.RestAssuredLogger;
@@ -39,7 +39,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String OAUTH2_CLIENT_ID = "rest.oauth2.clientId";
     public static final String OAUTH2_CLIENT_SECRET = "rest.oauth2.clientSecret";
 
-    private static final Configuration DEFAULTS = Configuration.fromPairs(
+    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             BASE_URL, "http://localhost:8080",
             CONTENT_TYPE, "JSON",
             FAILURE_HTTP_CODE_THRESHOLD, "500"
@@ -70,16 +70,16 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(BASE_URL, String.class)
                 .map(ThrowableFunction.unchecked(URL::new))
                 .ifPresent(contributor::setBaseURL);
-        configuration.ifPresent(CONTENT_TYPE, String.class, contributor::setContentType);
+        configuration.get(CONTENT_TYPE, String.class).ifPresent(contributor::setContentType);
         configuration.get(FAILURE_HTTP_CODE_THRESHOLD, Integer.class)
                 .map(Matchers::lessThan)
                 .ifPresent(contributor::setFailureHttpCodeAssertion);
 
         Oauth2ProviderConfiguration oauth2ProviderConfiguration = contributor.oauth2ProviderConfiguration;
-        configuration.ifPresent(OAUTH2_URL, URL.class, oauth2ProviderConfiguration::url)
-                .ifPresent(OAUTH2_CLIENT_ID, String.class, oauth2ProviderConfiguration::clientId)
-                .ifPresent(OAUTH2_CLIENT_SECRET, String.class, oauth2ProviderConfiguration::clientSecret)
-        ;
+        configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2ProviderConfiguration::url);
+        configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2ProviderConfiguration::clientId);
+        configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2ProviderConfiguration::clientSecret);
+
     }
 
 }

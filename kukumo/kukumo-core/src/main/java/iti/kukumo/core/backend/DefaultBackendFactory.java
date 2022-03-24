@@ -18,9 +18,9 @@ import java.util.Map.Entry;
 import java.util.function.ToIntFunction;
 import java.util.stream.*;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.*;
 import iti.kukumo.api.annotations.*;

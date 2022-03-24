@@ -10,16 +10,17 @@
 package iti.kukumo.test.gherkin;
 
 
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.junit.runner.RunWith;
 
-import iti.commons.configurer.AnnotatedConfiguration;
-import iti.commons.configurer.Property;
+
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.gherkin.GherkinResourceType;
 import iti.kukumo.junit.KukumoJUnitRunner;
 
 
-@AnnotatedConfiguration(properties = {
+@AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features/redefining"),
     @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json"),

@@ -12,12 +12,10 @@ package iti.kukumo.util;
 
 import static iti.kukumo.api.KukumoConfiguration.*;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import iti.commons.configurer.Configuration;
-import iti.commons.slf4jansi.AnsiLogger;
-
+import slf4jansi.AnsiLogger;
 
 
 public class KukumoLogger {

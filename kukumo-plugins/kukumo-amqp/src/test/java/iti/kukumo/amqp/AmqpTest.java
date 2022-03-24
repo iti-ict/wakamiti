@@ -10,8 +10,8 @@
 package iti.kukumo.amqp;
 
 
-import iti.commons.configurer.AnnotatedConfiguration;
-import iti.commons.configurer.Property;
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.junit.KukumoJUnitRunner;
 import org.junit.AfterClass;
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(KukumoJUnitRunner.class)
-@AnnotatedConfiguration(properties = {
+@AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = "gherkin"),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features")
 })

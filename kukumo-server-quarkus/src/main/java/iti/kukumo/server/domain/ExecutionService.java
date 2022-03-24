@@ -20,11 +20,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.constraints.Null;
 
+import imconfig.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.*;
 import iti.kukumo.api.plan.*;
 import iti.kukumo.server.domain.model.*;
@@ -64,7 +64,7 @@ public class ExecutionService {
     		}
     	});
         this.defaultConfiguration = Kukumo.defaultConfiguration().append(
-        	Configuration.fromMap(properties).inner(KukumoConfiguration.PREFIX)
+        	Configuration.factory().fromMap(properties).inner(KukumoConfiguration.PREFIX)
         );
     }
 
@@ -78,7 +78,7 @@ public class ExecutionService {
 
     public KukumoExecution runSingleResource(String resourceType, String content, boolean async) {
         return run(
-            Configuration.fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
+            Configuration.factory().fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
             content,
             async
         );
@@ -99,7 +99,7 @@ public class ExecutionService {
     public KukumoExecution runWorkspace(String workspace, boolean async) {
     	validateWorkspace(workspace);
         return run(
-            Configuration.fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
+            Configuration.factory().fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
             null,
             async
         );
@@ -109,7 +109,7 @@ public class ExecutionService {
 
     public PlanNodeSnapshot analyzeSingleResource(String resourceType, String content) {
         return analyze(
-            Configuration.fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
+            Configuration.factory().fromPairs(KukumoConfiguration.RESOURCE_TYPES, resourceType),
             content
         );
     }
@@ -129,7 +129,7 @@ public class ExecutionService {
     public PlanNodeSnapshot analyzeWorkspace(String workspace) {
     	validateWorkspace(workspace);
         return analyze(
-            Configuration.fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
+            Configuration.factory().fromPairs(KukumoConfiguration.RESOURCE_PATH, workspace),
             null
         );
     }

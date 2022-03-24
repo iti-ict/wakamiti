@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;

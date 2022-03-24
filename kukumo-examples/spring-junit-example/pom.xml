@@ -47,6 +47,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -126,38 +133,32 @@
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-spring</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <!-- Localization -->
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core-l10n</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-rest-l10n</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db-l10n</artifactId>
-            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
 

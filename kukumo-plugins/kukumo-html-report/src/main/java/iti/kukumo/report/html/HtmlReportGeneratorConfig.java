@@ -10,15 +10,10 @@
 package iti.kukumo.report.html;
 
 
-import java.util.Locale;
-import java.util.Optional;
-
-import iti.commons.configurer.Configuration;
-import iti.commons.configurer.Configurer;
+import imconfig.Configuration;
+import imconfig.Configurer;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.extensions.ConfigContributor;
-import iti.kukumo.util.LocaleLoader;
 
 
 @Extension(
@@ -35,7 +30,7 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
     public static final String TITLE = PREFIX+".title";
 
 
-    private static final Configuration DEFAULTS = Configuration.fromPairs(
+    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
         CSS_FILE, "",
         OUTPUT_FILE, "kukumo.html"
     );

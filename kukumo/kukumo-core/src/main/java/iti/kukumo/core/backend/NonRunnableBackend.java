@@ -12,7 +12,7 @@ package iti.kukumo.core.backend;
 
 import java.util.List;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.plan.PlanNode;
 

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.github.curiousoddman.rgxgen.RgxGen;
 
-import iti.commons.configurer.Configuration;
+import imconfig.Configuration;
 import iti.commons.gherkin.*;
 import iti.kukumo.api.KukumoConfiguration;
 

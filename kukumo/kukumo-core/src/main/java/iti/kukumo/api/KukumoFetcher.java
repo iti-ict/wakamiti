@@ -13,23 +13,20 @@ package iti.kukumo.api;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import groovy.lang.GroovyClassLoader;
+import imconfig.Configuration;
+import maven.fetcher.*;
 import org.slf4j.Logger;
 
-import iti.commons.configurer.Configuration;
-import iti.commons.maven.fetcher.FetchedArtifact;
-import iti.commons.maven.fetcher.MavenFetchException;
-import iti.commons.maven.fetcher.MavenFetchRequest;
-import iti.commons.maven.fetcher.MavenFetchResult;
-import iti.commons.maven.fetcher.MavenFetcher;
+
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
@@ -85,8 +82,7 @@ public class KukumoFetcher {
                 );
             }
             MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
-                .scopes("compile", "provided")
-                .retrieveOptionals(false);
+                .scopes("compile", "provided");
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
 
             if (logger.isDebugEnabled()) {
@@ -97,10 +93,10 @@ public class KukumoFetcher {
                 .map(FetchedArtifact::path)
                 .collect(Collectors.toList());
 
-            mavenFetcher.updateClasspath(paths);
+            updateClasspath(paths);
             return paths;
 
-        } catch (RuntimeException | MavenFetchException | IOException e) {
+        } catch (RuntimeException | IOException e) {
             logger.error("Error fetching dependencies");
             throw new KukumoException(e);
         }
@@ -159,6 +155,29 @@ public class KukumoFetcher {
             );
         } catch (IOException e) {
             return null;
+        }
+    }
+
+
+    private void updateClasspath(List<Path> artifacts) {
+        for (Path artifact : artifacts) {
+            if (artifact.toString().endsWith(".jar")) {
+                if (!artifact.toFile().exists()) {
+                    logger.warn(
+                        "Cannot include JAR in the classpath (the file no exists): {}",
+                        artifact
+                    );
+                    continue;
+                }
+                try {
+                    JarFile jarFile = new JarFile(artifact.toFile());
+                    ClasspathAgent.appendJarFile(jarFile);
+                    logger.debug("Added JAR {} to the classpath", artifact);
+                } catch (IOException e) {
+                    logger.error("Cannot include JAR in the classpath: {}", artifact);
+                    logger.debug(e.getMessage(), e);
+                }
+            }
         }
     }
 }
