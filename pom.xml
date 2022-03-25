@@ -93,6 +93,11 @@
 
         <!-- annotation processor versions -->
         <jext.version>1.0.0</jext.version>
+        
+        <!-- sonar cloud -->
+        <sonar.organization>iti-ict</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
 
     </properties>
 
