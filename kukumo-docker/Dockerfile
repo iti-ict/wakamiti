@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 
 RUN apk add --no-cache bash
 
-ENV KUKUMO_REMOTE_REPOSITORIES https://repo.maven.apache.org/maven2/
+ENV KUKUMO_REMOTE_REPOSITORIES maven-central=https://repo.maven.apache.org/maven2/
 ENV KUKUMO_HOME /opt/kukumo
 ENV KUKUMO_REPOSITORY /root/.local/share/kukumo/repository
 
