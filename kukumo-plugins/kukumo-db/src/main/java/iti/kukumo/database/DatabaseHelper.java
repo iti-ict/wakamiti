@@ -268,10 +268,9 @@ public class DatabaseHelper {
 
         long count = 0;
         for (net.sf.jsqlparser.statement.Statement statementLine : statements) {
-            try (PreparedStatement statement = connection().prepareStatement(statementLine.toString(), Statement.RETURN_GENERATED_KEYS)) {
-                statement.addBatch();
+            try (Statement statement = connection().createStatement()) {
                 LOGGER.trace("[SQL] {sql}", statementLine);
-                count = count + countResults(statement.executeBatch());
+                count = count + countResults(statement.executeUpdate(statementLine.toString(), Statement.RETURN_GENERATED_KEYS));
                 if (statementLine instanceof Insert && addCleanUpOperation) {
                     DataSet pks = getGeneratedKeys(statement, (Insert) statementLine);
                     cleanUpOperations.addFirst(deleteDataSetRunner(pks));
@@ -738,7 +737,7 @@ public class DatabaseHelper {
     }
 
 
-    private long countResults(int[] results) {
+    private long countResults(int... results) {
         return IntStream.of(results).filter(count -> count > 0).count();
     }
 
