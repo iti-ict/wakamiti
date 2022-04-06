@@ -122,20 +122,20 @@
                                     <finalName>assembly</finalName>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>make-package</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>assembly/package.xml</descriptor>
-                                    </descriptors>
-                                    <appendAssemblyId>false</appendAssemblyId>
-                                    <finalName>kukumo-docker</finalName>
-                                </configuration>
-                            </execution>
+<!--                            <execution>-->
+<!--                                <id>make-package</id>-->
+<!--                                <phase>prepare-package</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>single</goal>-->
+<!--                                </goals>-->
+<!--                                <configuration>-->
+<!--                                    <descriptors>-->
+<!--                                        <descriptor>assembly/package.xml</descriptor>-->
+<!--                                    </descriptors>-->
+<!--                                    <appendAssemblyId>false</appendAssemblyId>-->
+<!--                                    <finalName>kukumo-docker</finalName>-->
+<!--                                </configuration>-->
+<!--                            </execution>-->
                         </executions>
                     </plugin>
                 </plugins>
