@@ -176,6 +176,20 @@ public class DatabaseHelper {
         }
     }
 
+    private Map<String, Class> collectColumnTypes(String table) {
+        try {
+            DatabaseMetaData metadata = connection().getMetaData();
+            Map<String, Class> types = new LinkedHashMap<>();
+            ResultSet resultSet = metadata.getColumns(catalog(), schema(), caseSensitivity.format(table), null);
+            while (resultSet != null && resultSet.next()) {
+                types.put(resultSet.getString("COLUMN_NAME"), SQLTypeMap.toClass(resultSet.getInt("DATA_TYPE")));
+            }
+            return types;
+        } catch (Exception e) {
+            throw new KukumoException(e);
+        }
+    }
+
 
     private Map<String, Integer> collectNonNullableColumns(String table) {
         try {
@@ -209,7 +223,12 @@ public class DatabaseHelper {
         String[] columns,
         Object[] values
     ) throws SQLException {
-        String sql = parser.sqlSelectCountFrom(table, columns).toString();
+        Class[] types = Arrays.stream(columns)
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(table).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        String sql = parser.sqlSelectCountFrom(table, columns, types).toString();
         try (PreparedStatement statement =  createRowStatement(
             sql,
             new InlineDataSet(table, columns, values, nullSymbol.get()),
@@ -451,7 +470,12 @@ public class DatabaseHelper {
                     return new KukumoException(message);
                 });
 
-        Update sql = parser.sqlUpdateSet(beforeDataSet, primaryKey);
+        Class[] types = Arrays.stream(primaryKey)
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(beforeDataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        Update sql = parser.sqlUpdateSet(beforeDataSet, primaryKey, types);
 
         //list to get ordered column replacements in prepared statement
         List<String> setColumns = sql.getColumns().stream().map(Object::toString).collect(Collectors.toCollection(LinkedList::new));
@@ -538,7 +562,13 @@ public class DatabaseHelper {
 
         Optional<String[]> primaryKey = primaryKey(dataSet.table()).filter(k -> addCleanUpOperation);
         String[] columns = primaryKey.orElse(dataSet.columns());
-        Delete sql = parser.sqlDeleteFrom(dataSet.table(), columns);
+
+        Class[] types = Arrays.stream(columns)
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(dataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        Delete sql = parser.sqlDeleteFrom(dataSet.table(), columns, types);
         if (addCleanUpOperation) {
             Optional<Select> select = parser.toSelect(sql);
             if (select.isPresent()) {
@@ -613,8 +643,13 @@ public class DatabaseHelper {
     }
 
 
-    public void assertDataSetExists(DataSet dataSet) throws SQLException {
-        String sql = parser.sqlSelectFrom(dataSet.table(), dataSet.columns()).toString();
+    public void assertDataSetExists(DataSet dataSet) throws SQLException, IOException {
+        Class[] types = Arrays.stream(dataSet.columns())
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(dataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        String sql = parser.sqlSelectFrom(dataSet.table(), dataSet.columns(), types).toString();
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             while (dataSet.nextRow()) {
                 bindRowValues(statement, dataSet, true);
@@ -624,8 +659,13 @@ public class DatabaseHelper {
     }
 
 
-    public void assertDataSetNotExists(DataSet dataSet) throws SQLException {
-        String sql = parser.sqlSelectFrom(dataSet.table(), dataSet.columns()).toString();
+    public void assertDataSetNotExists(DataSet dataSet) throws SQLException, IOException {
+        Class[] types = Arrays.stream(dataSet.columns())
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(dataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        String sql = parser.sqlSelectFrom(dataSet.table(), dataSet.columns(), types).toString();
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             while (dataSet.nextRow()) {
                 bindRowValues(statement, dataSet, true);
@@ -666,7 +706,12 @@ public class DatabaseHelper {
         DataSet dataSet,
         Assertion<Long> matcher
     ) throws SQLException {
-        String sql = parser.sqlSelectCountFrom(dataSet.table(), dataSet.columns()).toString();
+        Class[] types = Arrays.stream(dataSet.columns())
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(dataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        String sql = parser.sqlSelectCountFrom(dataSet.table(), dataSet.columns(), types).toString();
         long count = 0;
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             while (dataSet.nextRow()) {
@@ -680,14 +725,14 @@ public class DatabaseHelper {
     }
 
 
-    public void assertMultiDataSetExists(MultiDataSet multiDataSet) throws SQLException {
+    public void assertMultiDataSetExists(MultiDataSet multiDataSet) throws SQLException, IOException {
         for (DataSet dataSet : multiDataSet) {
             assertDataSetExists(dataSet);
         }
     }
 
 
-    public void assertMultiDataSetNotExists(MultiDataSet multiDataSet) throws SQLException {
+    public void assertMultiDataSetNotExists(MultiDataSet multiDataSet) throws SQLException, IOException {
         for (DataSet dataSet : multiDataSet) {
             assertDataSetNotExists(dataSet);
         }
@@ -714,7 +759,13 @@ public class DatabaseHelper {
         String message,
         String[] primaryKey
     ) throws SQLException {
-        String sql = parser.sqlSelectFrom(dataSet.table(), primaryKey).toString();
+        Class[] types = Arrays.stream(primaryKey)
+                .map(String::toUpperCase)
+                .map(column -> collectColumnTypes(dataSet.table()).get(column))
+                .map(type -> type == null ? String.class : type)
+                .toArray(Class[]::new);
+        String sql = parser.sqlSelectFrom(dataSet.table(), primaryKey, types).toString();
+
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             bindRowValues(statement, dataSet, primaryKey, true);
             try (ResultSet resultSet = statement.executeQuery()) {

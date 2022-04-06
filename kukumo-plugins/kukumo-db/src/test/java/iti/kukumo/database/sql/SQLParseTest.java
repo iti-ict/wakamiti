@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -88,14 +89,15 @@ public class SQLParseTest {
         try (OoxmlDataSet multiDataSet = new OoxmlDataSet(file, "#.*", "<null>")) {
             Iterator<DataSet> iterator = multiDataSet.iterator();
             DataSet clients = iterator.next();
-            Select result = parser.toSelect(clients);
+            Class[] types = new Class[]{ Integer.class, String.class, String.class, Boolean.class, Date.class};
+            Select result = parser.toSelect(clients, types);
             log.debug("Result: {}", result);
             String expected = "SELECT * FROM client " +
-                    "WHERE ((trim(id) = ? OR (trim(id) IS NULL AND ? IS NULL)) " +
+                    "WHERE ((id = ? OR (id IS NULL AND ? IS NULL)) " +
                     "AND (trim(first_name) = ? OR (trim(first_name) IS NULL AND ? IS NULL)) " +
                     "AND (trim(second_name) = ? OR (trim(second_name) IS NULL AND ? IS NULL)) " +
-                    "AND (trim(active) = ? OR (trim(active) IS NULL AND ? IS NULL)) " +
-                    "AND (trim(birth_date) = ? OR (trim(birth_date) IS NULL AND ? IS NULL)))";
+                    "AND (active = ? OR (active IS NULL AND ? IS NULL)) " +
+                    "AND (birth_date = ? OR (birth_date IS NULL AND ? IS NULL)))";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
@@ -123,14 +125,15 @@ public class SQLParseTest {
         try (OoxmlDataSet multiDataSet = new OoxmlDataSet(file, "#.*", "<null>")) {
             Iterator<DataSet> iterator = multiDataSet.iterator();
             DataSet clients = iterator.next();
-            Select result = parser.sqlSelectCountFrom(clients.table(), clients.columns());
+            Class[] types = new Class[]{ Integer.class, String.class, String.class, Boolean.class, Date.class};
+            Select result = parser.sqlSelectCountFrom(clients.table(), clients.columns(), types);
             log.debug("Result: {}", result);
             String expected = "SELECT count(*) FROM client " +
-                    "WHERE ((trim(id) = ? OR (trim(id) IS NULL AND ? IS NULL)) " +
+                    "WHERE ((id = ? OR (id IS NULL AND ? IS NULL)) " +
                     "AND (trim(first_name) = ? OR (trim(first_name) IS NULL AND ? IS NULL)) " +
                     "AND (trim(second_name) = ? OR (trim(second_name) IS NULL AND ? IS NULL)) " +
-                    "AND (trim(active) = ? OR (trim(active) IS NULL AND ? IS NULL)) " +
-                    "AND (trim(birth_date) = ? OR (trim(birth_date) IS NULL AND ? IS NULL)))";
+                    "AND (active = ? OR (active IS NULL AND ? IS NULL)) " +
+                    "AND (birth_date = ? OR (birth_date IS NULL AND ? IS NULL)))";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
@@ -168,10 +171,11 @@ public class SQLParseTest {
         try (OoxmlDataSet multiDataSet = new OoxmlDataSet(file, "#.*", "<null>")) {
             Iterator<DataSet> iterator = multiDataSet.iterator();
             DataSet clients = iterator.next();
-            Update result = parser.sqlUpdateSet(clients, new String[] {"id"});
+            Class[] types = new Class[]{ Integer.class};
+            Update result = parser.sqlUpdateSet(clients, new String[] {"id"}, types);
             log.debug("Result: {}", result);
             String expected = "UPDATE client SET first_name = ?, second_name = ?, active = ?, birth_date = ? " +
-                    "WHERE (trim(id) = ?)";
+                    "WHERE (id = ?)";
             assertEquals(expected, result.toString());
         } catch (IOException e) {
             log.error("Test error", e);
