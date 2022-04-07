@@ -166,7 +166,7 @@ public class DatabaseStepContributor implements StepContributor {
         value = "db.define.connection.parameters",
            args = { "url:text", "username:text", "password:text" }
     )
-    public void setConnectionParameters(String url, String username, String password) {
+    public void setConnectionParameters(String url, String username, String password) throws SQLException {
         LOGGER.debug(
             "Setting database connection parameters [url={}, username={}, password={}]",
             url,
@@ -174,6 +174,9 @@ public class DatabaseStepContributor implements StepContributor {
             password
         );
         this.connectionParameters.url(url).username(username).password(password);
+        if (connection != null) {
+            connection.close();
+        }
     }
 
 
