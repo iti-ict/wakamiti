@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -42,15 +41,6 @@ import iti.kukumo.database.dataset.OoxmlDataSet;
 import iti.kukumo.util.KukumoLogger;
 import net.sf.jsqlparser.JSQLParserException;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
 
@@ -174,9 +164,7 @@ public class DatabaseStepContributor implements StepContributor {
             password
         );
         this.connectionParameters.url(url).username(username).password(password);
-        if (connection != null) {
-            connection.close();
-        }
+        this.releaseConnection();
     }
 
 
