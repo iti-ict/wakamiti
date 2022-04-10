@@ -27,6 +27,9 @@ class `DataSet`, which can be used by third-party contributors.
 any specific driver. In order to work properly, do not forget to include the module with the JDBC driver(s)
 that your database connection would require.
 
+
+
+
 ## Usage
 
 ### Configuration properties
@@ -244,7 +247,7 @@ Assert that the number of rows in the given table matching the SQL clause satisf
 >```
 
 ##### *[Given that/Then]* the following * exist(s) in the database table {word}:
-Assert that all of the subsequent data rows exist in the given table
+Assert that all the subsequent data rows exist in the given table
 >```gherkin
 > Then the following users exist in the database table USER:
 >  | USER  | STATE | BLOCKING_DATE |   
@@ -284,13 +287,13 @@ Assert that none of the data rows included in the specified XLS file exist in th
 >```
 
 ##### *[Given that/Then]* the content of the CSV file {csv:file} exists in the database table {table:word}
-Assert that all of the data rows included in the specified CSV file exists in the given table
+Assert that all the data rows included in the specified CSV file exists in the given table
 >```gherkin
 > Then the content of the CSV file 'data/users.csv' exists in the database table USER
 >```
 
 ##### *[Given that/Then]* the content of the CSV file {csv:file} does not exist in the database table {table:word}
-Assert that all of the data rows included in the specified CSV file exists in the given table
+Assert that all the data rows included in the specified CSV file exists in the given table
 >```gherkin
 >  Given that the content of the CSV file 'data/users.csv' does not exists in the database table USER
 >```

@@ -23,15 +23,25 @@ body, div, a, p, header, nav, aside, main, section, ol, iframe {
     height: 1em;
 }
 
+section {
+  scroll-behavior: smooth;
+}
+
 section img {
     max-width: 100%;
     height: auto;
 }
 
 section blockquote {
-    background: #e7f5f7;
+    background: #f4f4f4;
     border-left: 0.5em solid #cfd1d1;
     margin-inline-start: 0;
     padding: 1em;
     font-size: 0.8em;
+}
+
+section :not(pre) > code {
+    background-color: #f0ecec;
+    padding: 0.1rem;
+    border-radius: 0.2rem;
 }

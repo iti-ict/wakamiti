@@ -8,13 +8,13 @@ The test plan is the main piece of an execution. It is build according a set of 
 (e.g. Gherkin files) and a configuration (e.i. a set of valued properties). From a topological view, 
 a test plan is just a tree of nodes of different categories:
 
-| Node type |Description|Children node types| Rearrange | Walk order
-|---|---|---|---|---
-|Aggregator|Node that aggregates other nodes|Aggregator, Test Case| yes | free |
-|Test Case|Node representing an atomic test case|Step Agregator, Step, Virtual Step|no|strict|
-|Step Aggregator|Node representing a subset of steps within a test case|Step Aggregator, Step, Virtual Step|no|strict
-|Step|Node representing an executable step wihtin a test case|--|--|--
-|Virtual Step|Node representing an _non_-executable step wihtin a test case|--|--|--
+| Node type       | Description                                                   | Children node types                 | Rearrange | Walk order |
+|-----------------|---------------------------------------------------------------|-------------------------------------|-----------|------------|
+| Aggregator      | Node that aggregates other nodes                              | Aggregator, Test Case               | yes       | free       |
+| Test Case       | Node representing an atomic test case                         | Step Agregator, Step, Virtual Step  | no        | strict     |
+| Step Aggregator | Node representing a subset of steps within a test case        | Step Aggregator, Step, Virtual Step | no        | strict     |
+| Step            | Node representing an executable step wihtin a test case       | --                                  | --        | --         |
+| Virtual Step    | Node representing an _non_-executable step wihtin a test case | --                                  | --        | --         |
 
 For example, for a traditional Gherkin feature file, the built test plan would correspond 
 to the following diagram:
