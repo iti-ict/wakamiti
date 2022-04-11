@@ -1,38 +1,49 @@
-<p align="center"><img src="images/kukumo.png"/></p>
+> Please check the [site version](https://iti-ict.github.io/kukumo/) in case you are 
+> reading this document directly from the repository
 
-## Overview
 
-> The content of this document is a very brief presentation of the overall concept. In order to get further 
-explanation or the specifics, check the documentation inside each component.
+Kukumo is a Cucumber-inspired tool written in Java focused on **blackbox testing**
+using **natural language**.
 
-Kukumo is a Cucumber-inspired automatic testing tool written in Java. 
+<br/>
 
-Just like Cucumber, you can define your tests using 
-natural, human-readable language by adopting (for example) the Gherkin _grammar_. However, with Kukumo you
- _do not_ bind each step to your test code; instead, steps are bound to reusable, 
-common-purpose code provided by external plugins. Thus, Kukumo turns out to be a convenient tool if your aim is 
-test your system via standarized accesses such as 
-REST web services or JDBC connection, which tend to be a great deal of percentage of the tests written for most 
-of applications. **No test code is required to be written**, so even non-programmers can define and execute 
+Just like Cucumber, you can define your tests using natural, human-readable language by adopting 
+(for example) the Gherkin _grammar_. However, with Kukumo you  _do not_ bind each step to your 
+test code; instead, steps are bound to reusable, common-purpose code provided by external plugins. 
+
+<br/>
+
+Thus, Kukumo turns out to be a convenient tool if your aim is test your system via standardized 
+protocols such as REST web services or JDBC connection, which tend to be a great deal of percentage
+of the tests written for most applications. This *blackbox-testing* approach allows using Kukumo
+regardless the specific technology used by the target application.
+
+<br/>
+
+Also, **no test code is required to be written**, so even non-programmers can define and execute 
 their own tests.
+
+<br/>
 
 Other features provided by Kukumo are:
 
-- **Alternative launchers**: execute Kukumo as a JUnit test suite, as a Maven verify goal, or directly as 
-a console command.
-- **Fully internationalizable**: you can use your own language as long as you provided Kukumo with a translation file  
-- **Easily extensible**: write your own plugins for any extension point (steps, reporters, language parsers, etc.) 
-and share them with the community
-- **Not only Gherkin**: Gherkin feature files are the initial test definition source implemented, 
-but it is not internally bound to Kukumo; any plugin can provide other ways to collect the test definitions to be used
+- **Two-layered Gherkin**: you can make use of the Gherkin grammar at two levels of abstraction, 
+one aimed to customer communication, and other aimed to system details
+- **Fully localizable**: you can use your own language as long as you provided Kukumo with a 
+translation file  
+- **Easily extensible**: write your own plugins for any extension point (steps, reporters, 
+language parsers, etc.) and share them with the community
+- **Alternative launchers**: execute Kukumo as a JUnit test suite, as a Maven verify goal, 
+or directly as a console command.
 
 
 > **REMEMBER**  
 > Kukumo is a _tool_, not a _testing framework_. Use it when fits the circumstances. Neither is it 
-a replacement for Cucumber: according your necessities, you can use _both_!    
+a replacement for Cucumber: according your necessities, you might use _both_!    
 
 
-## Usage  
+Usage
+----------------------------------------------------------------------------------------------------
  
 Running tests with Kukumo is very easy. Just write your test specification, 
 define a basic configuration with the step providers (and any other plugin) that you require,
@@ -44,7 +55,8 @@ that, we want to test that the name of the users is retrieved correctly when usi
 REST service.
 
 The following Gherkin specification define a test that use steps from two different plugins, 
-`Kukumo::REST` and `Kukumo::Database` (further explanation about them can be found in the documentation of each plugin).
+`REST steps` and `Database steps` (further explanation about them can be found in the 
+documentation of each plugin).
 
 ###### users.feature
 ```gherkin
@@ -70,68 +82,48 @@ Feature: Testing the user data retrieval service
 
 Now we define the execution configuration, that is simply a set of properties that Kukumo would take 
 into account for several aspects. There are several ways to define them; in this example we will just 
-write them in the default configuration file `kukumo.yaml`. 
+write them in the default configuration file `kukumo.yaml`:
 
-> **INFO**   
-> Besides the core functionality properties, each plugin can make use 
-of its own set of properties. They all are described in their respective 
-documentation.
-
-###### kukumo.yaml
 ```yaml
+# kukumo.yaml
 kukumo:
     resourceTypes: 
       - gherkin
     modules:
-      - es.iti.kukumo:kukumo-rest:1.3.0
-      - es.iti.kukumo:kukumo-db:1.3.0
-      - es.iti.kukumo:kukumo-html-report:1.3.0
+      - es.iti.kukumo:kukumo-rest:1.3.1
+      - es.iti.kukumo:kukumo-db:1.3.1
+      - es.iti.kukumo:kukumo-html-report:1.3.1
       - com.h2database:h2:1.4.199
     htmlReport:
         output: target/reports/kukumo/html/kukumo-report.html
 ``` 
 
-The plugins (and other extra libraries) required are defined in the `modules` property, but in the 
-case you are working with a Maven project, you can alternatively include them as regular dependencies:
+> In addition to the core functionality properties, each plugin can make use
+of its own set of properties. They all are described in their respective
+documentation.
 
-###### pom.xml
-```xml
-    ...
-    <dependencies>
-       <dependency>
-          <artifactId>es.iti.kukumo</artifactId>
-          <groupId>kukumo-core</groupId> 
-          <version>1.3.0</version>
-       </dependency>
-       <dependency>
-          <artifactId>es.iti.kukumo</artifactId>
-          <groupId>kukumo-db</groupId>
-          <version>1.3.0</version>
-       </dependency>
-       <dependency>
-          <artifactId>es.iti.kukumo</artifactId>
-          <groupId>kukumo-rest</groupId>
-          <version>1.3.0</version>
-       </dependency>
-    </dependencies>
-``` 
+Once you have configured the test execution, the only thing remaining is run the test plan. 
+There are several ways of launching it (see `Runners` below); in this example, we will use the 
+console command launcher. Assuming it is correctly installed, you just have to type:
 
-One you have configured the test execution, the only thing remaining is run the test plan. There are 
-three different ways of launching it (see `Runners` below); in this example, we will use the console 
-command launcher. Assuming it is correctly installed, you just have to type:
-```
+```shell
 kukumo
 ```
+
 and the test will be executed.
 
-<p align="center"><img src="images/kukumo-run.png"/></p>
+<br/>
+
+![](images/kukumo-run.png)
+
+<br/>
 
 
-The results of the test execution, besides the console output, are stored in an output file, named by default 
-```kukumo.json```. Additional plugins can read this file and generate reports or do any other post-execution 
-tasks.
+The results of the test execution, besides the console output, are stored in an output file, 
+named by default ```kukumo.json```. Additional plugins can read this file and generate reports 
+or do any other post-execution tasks.
 
-[[back to top](#top)]
+
 
 ## Runners
 
@@ -163,54 +155,77 @@ stand-alone command-line based launcher, that will manage the plugin dependencie
    
      
 
-[[back to top](#top)]
 
-
-## Plugins
+Plugins
+----------------------------------------------------------------------------------------------------
 
 The following Kukumo plugins are provided as a part of the project:
 
-- **Kukumo::REST Steps**: a set of steps aimed to test RESTful operations. It includes `GET`,`POST`,`PUT`,`PATCH`,
-`DELETE` requests, validation of HTTP codes, and validation of response bodies when the content type is JSON, XML, 
-or text. 
-- **Kukumo::Database Steps**: a set of steps aimed to test database contents via JDBC. It includes data load/comparison 
-from several sources such as CSV files, Excel files, and in-document tables.
-- **Kukumo::HTML Report**: this plugin creates a dynamic HTML report that shows the results of a test plan execution
-- **Kukumo::Spring**: Spring-Boot integration for configuring other plugins like `Kukumo::REST Steps` (using the 
-same random port used by Spring for tests) and `Kukumo::Database Steps` (getting the database connection from 
-the `DataSource` bean). 
-
-This set of plugins are provided as an initial stage. However, the long-term goal is get an ecosystem with a 
-wide range of plugins from third-party contributors covering different needs. 
-
-
-[[back to top](#top)]
-
-
-## Other tools
-
-Along with the Kukumo core components, a set of tools have been developed. Rather than being included
-inside the core, they are independent general-purpose libraries that can be used in other projects of any nature.
-Feel free to use them at your will.
-
-- **Configurer**: library to load property-based configurations from several sources and combine 
-them in several ways
-- **jExt**: advanced infrastructure for Java plugins (a.k.a _Java extensions_)
-- **Maven Fetcher**: library with very convenient methods to retrieve artifacts from a Maven repository
-- **SLF4J ANSI**: a simple wrapper over SLF4J that allows use _styles_ (based on ANSI characters) in your 
-log parameters   
-
-[[back to top](#top)]
+- [REST Steps](kukumo-plugins/kukumo-rest/target/docsite/index.html): 
+a set of steps aimed to test RESTful operations. It includes 
+`GET`,`POST`,`PUT`,`PATCH`, and `DELETE` requests, validation of HTTP codes, 
+and validation of response bodies when the content type is JSON, XML, or plain text.
+- [Database Steps](kukumo-plugins/kukumo-db/target/docsite/index.html): 
+a set of steps aimed to test database contents via JDBC. 
+It includes data load/comparison from several sources such as CSV files, Excel files, 
+and in-document tables.
+- [AMQP Steps](kukumo-plugins/kukumo-amqp/target/docsite/index.html):
+a set of steps aimed to test AMQP messaging
+- [I/O Steps](kukumo-plugins/kukumo-amqp/target/docsite/index.html):
+a set of steps to work with local files
+- [HTML Report](kukumo-plugins/kukumo-html-report/target/docsite/index.html): 
+this plugin creates a static HTML report that shows the results of a test plan 
+execution.
 
 
-## Contributing
-
-Currently the project is closed to external contributions but this may change in the future.
-
-[[back to top](#top)]
+> This set of plugins are provided as an initial stage and some of them are at an early state. 
+> The long-term goal is get an ecosystem with a wide range of plugins from third-party contributors 
+> covering different needs. 
 
 
-## License
+Kukumo Editor
+----------------------------------------------------------------------------------------------------
+
+Kukumo implements the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)
+in order to allow editors to provide auto-completion and validation features. As an example, a 
+[Visual Studio Code](https://code.visualstudio.com/) extension is provided 
+[here](https://github.com/iti-ict/kukumo/raw/main/kukumo-vscode-extension/kukumo-vscode-extension-latest.vsix).
+Check [this section](xxx) to learn more about it.
+
+
+
+Contributing
+----------------------------------------------------------------------------------------------------
+
+There are several ways in which you can contribute to this project:
+
+### Reporting a defect / requesting a new feature
+
+If you have detected a potential defect, or there is a missing feature that you really would 
+need, feel free to open a new issue in the 
+[Github page](https://github.com/iti-ict/kukumo/issues). Please check before that a similar
+issue is not already reported.
+
+
+### Fixing a bug / implementing a feature
+
+If there is any [open issue](https://github.com/iti-ict/kukumo/issues) that you want to implement,
+follow these steps:
+1. Fork the [source code](https://github.com/iti-ict/kukumo)
+2. Create a new branch in your forked repository
+3. Commit the changes
+4. Open a pull request clearly stating the issue that you are attempting to solve
+5. Your pull request would be reviewed and subsequently either accepted or rejected. In the later
+case, you shall be provided with enough feedback in order to make changes and repeat the request.
+
+> Feel free to engage in a **friendly** discussion if you disagree with the given feedback. 
+> Any rude or inappropriate form of communication will be automatically dismissed.
+
+
+
+
+License
+----------------------------------------------------------------------------------------------------
 
 ```
     Mozilla Public License 2.0
@@ -220,14 +235,12 @@ Currently the project is closed to external contributions but this may change in
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
 
-[[back to top](#top)]
 
 
-## Authors
+Authors
+----------------------------------------------------------------------------------------------------
 
-- **Luis Iñesta Gelabert**
-
-    - linesta@iti.es
-    - luiinge@gmail.com
+- **Luis Iñesta Gelabert**   linesta@iti.es | luiinge@gmail.com
+- **María Galbis**  mgalbis@iti.es
     
-[[back to top](#top)]    
+ 

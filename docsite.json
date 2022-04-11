@@ -1,0 +1,88 @@
+{
+  "title": "Kukumo",
+  "description": "A human-friendly BDD testing tool",
+  "logo": "images/logo.png",
+  "favicon": "images/logo.png",
+  "companyLogo": "images/iti.png",
+  "companyLink": "https://iti.es",
+  "index": "README.md",
+  "sections": [
+    {
+      "name": "Guides",
+      "type": "group",
+      "icon": "fas:book",
+      "subsections": [
+        {
+          "name": "Installation",
+          "type": "generated",
+          "icon": "fas:cog",
+          "source": "installation.md"
+        }
+      ]
+    },
+    {
+      "name": "Components",
+      "type": "group",
+      "icon": "fas:cogs",
+      "subsections": [
+        {
+          "name": "Core",
+          "type": "copy",
+          "icon": "fas:cogs",
+          "source": "kukumo/kukumo-core/target/docsite"
+        },
+        {
+          "name": "Editor",
+          "type": "generated",
+          "icon": "fas:edit",
+          "source": "kukumo-vscode-extension/docs/guide.md"
+        }
+      ]
+    },
+    {
+      "name": "Plugins",
+      "type": "group",
+      "icon": "fas:plug",
+      "subsections": [
+        {
+          "name": "REST steps",
+          "type": "copy",
+          "source": "kukumo-plugins/kukumo-rest/target/docsite"
+        },
+        {
+          "name": "DB steps",
+          "type": "copy",
+          "source": "kukumo-plugins/kukumo-db/target/docsite"
+        },
+        {
+          "name": "AMQP steps",
+          "type": "copy",
+          "source": "kukumo-plugins/kukumo-amqp/target/docsite"
+        },
+        {
+          "name": "I/O steps",
+          "type": "copy",
+          "source": "kukumo-plugins/kukumo-io/target/docsite"
+        },
+        {
+          "name": "HTML report",
+          "type": "copy",
+          "source": "kukumo-plugins/kukumo-html-report/target/docsite"
+        }
+      ]
+    },
+    {
+      "name": "License",
+      "type": "generated",
+      "icon": "fas:balance-scale",
+      "source": "LICENSE.md"
+    },
+    {
+      "type": "link",
+      "icon": "fab:github",
+      "source": "https://github.com/iti-ict/kukumo"
+    }
+
+
+  ]
+}
