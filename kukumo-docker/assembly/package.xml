@@ -23,12 +23,6 @@
             <excludes>
                 <exclude>com.google.code.findbugs:jsr305</exclude>
                 <exclude>javax.xml.bind:jaxb-api</exclude>
-                <exclude>org.hamcrest:hamcrest-library</exclude>
-                <exclude>*:commons-codec</exclude>
-                <exclude>*:commons-collections*</exclude>
-                <exclude>*:commons-io</exclude>
-                <exclude>*:httpclient</exclude>
-                <exclude>*:httpcore</exclude>
                 <exclude>*:junit</exclude>
                 <exclude>*:kukumo-core:jar</exclude>
                 <exclude>*:groovy*</exclude>
