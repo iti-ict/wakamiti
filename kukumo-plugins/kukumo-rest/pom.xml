@@ -34,10 +34,7 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-
         <jsonassert.version>1.5.0</jsonassert.version>
-
-
     </properties>
 
 
@@ -146,6 +143,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+
         </plugins>
     </build>
 

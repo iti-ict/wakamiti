@@ -7,9 +7,9 @@ the best option is to build and install the Kukumo packages locally:
 
 1. Clone the whole repository:
 ```
-git clone git@github.com:iti-ict/kukumo.git
+git clone git@github.com:iti-ict/kukumo.git 
 ```
-2. Compile and install the packages in the local repository
+2. Compile and install the packages in the local repository (use Java 11 or later)
 ```
 ./mvnw install -DskipTests -DskipExampleTests -DcreateChecksum
 ```

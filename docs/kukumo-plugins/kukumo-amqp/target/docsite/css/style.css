@@ -91,13 +91,12 @@ header > nav {
     border-top: solid var(--menu-decoration-color);
     border-top-width: 0;
     margin-left: auto;
+    overflow-y: hidden;
 }
 header > nav > ul {
-    display: flex;
-    align-items: stretch;
+    display: inline-flex;
     justify-content: flex-end;
     margin: 0.5em;
-    overflow-x: auto;
     padding-inline-start: 0;
 }
 
@@ -121,6 +120,16 @@ header > nav > ul > li:hover > ul, header > nav > ul > li:focus-within > ul {
     max-width: 15em;
 }
 
+header > nav .label {
+    min-height: 1.5rem;
+}
+
+header .company img {
+    max-height: 4rem;
+}
+header .company .label:hover {
+     background: var(--menu-regular-background-color);
+}
 
 
 
@@ -199,6 +208,9 @@ section {
     overflow-y: auto;
     overflow-x: hidden;
 }
+section table {
+    font-size: 0.9em;
+}
 section p {
     text-align: justify;
 }
@@ -217,6 +229,19 @@ section.embedded > iframe {
 section ol {
     padding-inline-start: 1em;
 }
+
+section h1 {
+    border-bottom: 0.2em solid black;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+section h2 {
+    border-bottom: 0.1em solid black;
+    margin-top: 2em;
+}
+
+
 
 .label {
     color: var(--menu-foreground-color);
@@ -263,6 +288,7 @@ div.footer {
     }
     header {
         flex-direction: column;
+        justify-content: space-evenly;
     }
     header .title-and-subtitle {
         justify-content: center;
@@ -279,6 +305,8 @@ div.footer {
         justify-content: space-evenly;
         border-top-width: 0.1em;
         margin-left: inherit;
+        overflow-y: scroll;
+        padding-top: 0.2em;
     }
     header > nav > ul {
         margin: 0;
@@ -294,17 +322,20 @@ div.footer {
     }
 
     .breadcrumbs {
-        font-size: 0.7em
+        font-size: 0.7em;
     }
     .label {
-        padding: .3em .8em .3em .8em
-        font-size: 0.7em
+        padding: 0.2em 0.8em 0.3em 0.8em;
+        font-size: 0.8em;
     }
     aside {
         font-size: 0.8em;
         display: inherit;
     }
     section {
+        font-size: 0.8em;
+    }
+    section table {
         font-size: 0.8em;
     }
 }
@@ -322,6 +353,7 @@ div.footer {
     aside {
         display: none;
     }
+
 
 }
 
