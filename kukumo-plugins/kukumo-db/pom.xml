@@ -34,7 +34,7 @@
     <!-- dependency versions -->
     <properties>
         <jext.version>1.0.0</jext.version>
-        <h2.version>1.4.199</h2.version>
+        <h2.version>2.1.210</h2.version>
 
     </properties>
 
@@ -86,6 +86,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

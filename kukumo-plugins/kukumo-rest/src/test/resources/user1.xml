@@ -15,7 +15,7 @@
     <vegetables>
         <id>2</id>
         <description>Gherkin</description>
-    </vegetables>"src/test/resources/data.json"
+    </vegetables>
     <contact>
         <email>user1@mail</email>
     </contact>

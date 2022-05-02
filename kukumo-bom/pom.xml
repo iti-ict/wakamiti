@@ -33,11 +33,12 @@
         <slf4j-api.version>1.7.29</slf4j-api.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
         <maven-fetcher.version>1.3.0</maven-fetcher.version>
-        <log4j.version>2.13.0</log4j.version>
-        <junit.version>4.13-rc-2</junit.version>
+        <log4j.version>2.17.2</log4j.version>
+        <junit.version>4.13.2</junit.version>
         <assertj-core.version>3.14.0</assertj-core.version>
-        <jackson.version>2.10.1</jackson.version>
-        <snakeyaml.version>1.25</snakeyaml.version>
+        <jackson.version>2.13.2</jackson.version>
+        <jackson-databind.version>2.13.2.2</jackson-databind.version>
+        <snakeyaml.version>1.30</snakeyaml.version>
         <hamcrest.version>2.2</hamcrest.version>
         <plexus-utils.version>3.2.0</plexus-utils.version>
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
@@ -45,9 +46,9 @@
         <plexus-interpolation.version>1.26</plexus-interpolation.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-cli.version>1.4</commons-cli.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.11.0</commons-io.version>
         <commons-logging.version>1.2</commons-logging.version>
-        <commons-configuration2.version>2.6</commons-configuration2.version>
+        <commons-configuration2.version>2.7</commons-configuration2.version>
         <maven-plugin-api.version>3.6.1</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <maven-artifact.version>3.8.1</maven-artifact.version>
@@ -182,6 +183,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -232,7 +239,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
