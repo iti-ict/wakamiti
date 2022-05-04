@@ -3,7 +3,7 @@
 	"displayName": "Kukumo VSCode Extension",
 	"description": "Editor and execution capabilities of Kukumo projects",
 	"icon": "resources/kukumo-icon.png",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"repository": {},
 	"engines": {
 		"vscode": "^1.53.0"
@@ -239,11 +239,10 @@
 		"jwt-decode": "3.1.2"
 	},
 	"devDependencies": {
-		"eslint": "^7.19.0",
-		"@typescript-eslint/eslint-plugin": "^4.14.1",
-		"@typescript-eslint/parser": "^4.14.1",
+		"eslint": "^8.14.0",
+		"@typescript-eslint/eslint-plugin": "^5.0.0",
+		"@typescript-eslint/parser": "^5.0.0",
 		"glob": "^7.1.6",
-		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
 		"vscode-test": "^1.5.0"
 	},
