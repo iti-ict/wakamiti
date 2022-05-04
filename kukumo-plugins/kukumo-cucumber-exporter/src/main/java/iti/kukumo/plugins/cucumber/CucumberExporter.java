@@ -25,6 +25,26 @@ import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
 public class CucumberExporter implements Reporter {
 
 
+    private static final String DOC_STRING = "doc_string";
+    private static final String CELLS = "cells";
+    private static final String ROWS = "rows";
+    private static final String NAME = "name";
+    private static final String CONTENT_TYPE = "content_type";
+    private static final String VALUE = "value";
+    private static final String RESULT = "result";
+    private static final String OUTPUT = "output";
+    private static final String ERROR_MESSAGE = "error_message";
+    private static final String DURATION = "duration";
+    private static final String STATUS = "status";
+    private static final String KEYWORD = "keyword";
+    private static final String DESCRIPTION = "description";
+    private static final String TAGS = "tags";
+    private static final String TYPE = "type";
+    private static final String STEPS = "steps";
+    private static final String ID = "id";
+    private static final String ELEMENTS = "elements";
+    private static final String URI = "uri";
+
     public enum Strategy {INNERSTEPS, OUTERSTEPS}
 
     private final ObjectMapper mapper = new ObjectMapper()
@@ -65,29 +85,29 @@ public class CucumberExporter implements Reporter {
 
     private Map<String,Object> mapFeature(PlanNodeSnapshot feature) {
         Map<String,Object> map = new LinkedHashMap<>();
-        map.put("uri",feature.getSource());
-        map.put("keyword",keyword(feature));
-        map.put("id",feature.getId());
-        map.put("name", feature.getName());
-        map.put("description", description(feature));
-        map.put("tags", mapTags(feature));
+        map.put(URI,feature.getSource());
+        map.put(KEYWORD,keyword(feature));
+        map.put(ID,feature.getId());
+        map.put(NAME, feature.getName());
+        map.put(DESCRIPTION, description(feature));
+        map.put(TAGS, mapTags(feature));
         var elements = stream(feature)
             .filter(it -> it.getNodeType() == NodeType.TEST_CASE)
             .map(this::mapScenario)
             .collect(Collectors.toList());
-        map.put("elements", elements);
+        map.put(ELEMENTS, elements);
         return map;
     }
 
 
     private Map<String,Object> mapScenario(PlanNodeSnapshot scenario) {
         Map<String,Object> map = new LinkedHashMap<>();
-        map.put("keyword",keyword(scenario));
-        map.put("id",scenario.getId());
-        map.put("name", scenario.getName());
-        map.put("description", description(scenario));
-        map.put("tags", mapTags(scenario));
-        map.put("type","scenario");
+        map.put(KEYWORD,keyword(scenario));
+        map.put(ID,scenario.getId());
+        map.put(NAME, scenario.getName());
+        map.put(DESCRIPTION, description(scenario));
+        map.put(TAGS, mapTags(scenario));
+        map.put(TYPE,"scenario");
         if (scenario.getChildren() != null && !scenario.getChildren().isEmpty()) {
             List<Map<String,Object>> steps = new LinkedList<>();
             for (var child : scenario.getChildren()) {
@@ -97,7 +117,7 @@ public class CucumberExporter implements Reporter {
                     steps.addAll(mapStepAggregator(child));
                 }
             }
-            map.put("steps", steps);
+            map.put(STEPS, steps);
         }
         return map;
     }
@@ -106,8 +126,8 @@ public class CucumberExporter implements Reporter {
 
     private Map<String,Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
         Map<String,Object> map = new LinkedHashMap<>();
-        map.put("keyword",keyword(definitionStep));
-        map.put("name", definitionStep.getName());
+        map.put(KEYWORD,keyword(definitionStep));
+        map.put(NAME, definitionStep.getName());
         Map<String,Object> result = new LinkedHashMap<>();
         String status = "pending";
         switch (definitionStep.getResult()) {
@@ -117,25 +137,25 @@ public class CucumberExporter implements Reporter {
             case SKIPPED: status = "skipped"; break;
             case UNDEFINED: status = "ambiguous"; break;
         }
-        result.put("status", status);
-        result.put("duration",definitionStep.getDuration() );
+        result.put(STATUS, status);
+        result.put(DURATION,definitionStep.getDuration() );
         if (resultStep != null) {
-            result.put("error_message", resultStep.getErrorMessage());
-            result.put("output", resultStep.getErrorTrace());
+            result.put(ERROR_MESSAGE, resultStep.getErrorMessage());
+            result.put(OUTPUT, resultStep.getErrorTrace());
         }
-        map.put("result",result);
+        map.put(RESULT,result);
         if (definitionStep.getDocument() != null) {
             Map<String,Object> docstring = new LinkedHashMap<>();
-            docstring.put("content_type",definitionStep.getDocumentType());
-            docstring.put("value", definitionStep.getDocument());
-            map.put("doc_string",docstring);
+            docstring.put(CONTENT_TYPE,definitionStep.getDocumentType());
+            docstring.put(VALUE, definitionStep.getDocument());
+            map.put(DOC_STRING,docstring);
         }
         if (definitionStep.getDataTable() != null) {
             List<Map<String,Object>> rows = new LinkedList<>();
             for (String[] row : definitionStep.getDataTable()) {
-                rows.add(Map.of("cells",Arrays.asList(row)));
+                rows.add(Map.of(CELLS,Arrays.asList(row)));
             }
-            map.put("rows",rows);
+            map.put(ROWS,rows);
         }
         return map;
     }
@@ -165,7 +185,7 @@ public class CucumberExporter implements Reporter {
         }
         return node.getTags().stream()
             .filter(tag -> !tag.equals(node.getId()))
-            .map(tag -> Map.of("name","@"+tag))
+            .map(tag -> Map.of(NAME,"@"+tag))
             .collect(Collectors.toList());
     }
 
