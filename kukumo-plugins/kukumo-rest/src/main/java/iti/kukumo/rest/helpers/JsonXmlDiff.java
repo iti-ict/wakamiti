@@ -167,14 +167,13 @@ public class JsonXmlDiff  {
         String segmentExpected
     ) {
         if (expectedNode.size() != actualNode.size()) {
-            errors.add(segmentExpected +" size: "+ expectedNode.size()+", actual size: "+ actualNode.size());
+            errors.add(errorSize(expectedNode, actualNode, segmentExpected));
             return;
         }
         for (int i = 0; i< expectedNode.size(); i++) {
             compareJsonNode(STRICT,expectedNode.get(i),actualNode.get(i),prefix +"["+i+"]",errors);
         }
     }
-
 
 
     private void compareJsonArrayStrictAnyOrder(
@@ -185,7 +184,7 @@ public class JsonXmlDiff  {
         String segmentExpected
     ) {
         if (expectedNode.size() != actualNode.size()) {
-            errors.add(segmentExpected +" size: "+ expectedNode.size()+", actual size: "+ actualNode.size());
+            errors.add(errorSize(expectedNode, actualNode, segmentExpected));
             return;
         }
         boolean currentElementMatch;
@@ -289,6 +288,11 @@ public class JsonXmlDiff  {
         List<T> list = new ArrayList<>();
         i.forEachRemaining(list::add);
         return list;
+    }
+
+
+    private static String errorSize(JsonNode expectedNode, JsonNode actualNode, String segmentExpected) {
+        return segmentExpected + " size: " + expectedNode.size() + ", actual size: " + actualNode.size();
     }
 
 }
