@@ -16,6 +16,7 @@ package iti.kukumo.rest.helpers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -86,6 +87,19 @@ public class JsonXmlDiff  {
 
 
 
+    private boolean compareJsonNode(
+        MatchMode matchMode,
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix
+    ) {
+        List<String> errors = new LinkedList<>();
+        compareJsonNode(matchMode,expectedNode,actualNode,prefix,errors);
+        return errors.isEmpty();
+    }
+
+
+
     private void compareJsonNode(
         MatchMode matchMode,
         JsonNode expectedNode,
@@ -132,34 +146,80 @@ public class JsonXmlDiff  {
         List<String> errors
     ) {
         String segmentExpected = literalSegmentExpected(prefix);
-        if (List.of(STRICT, STRICT_ANY_ORDER).contains(matchMode) && expectedNode.size() != actualNode.size()) {
-            errors.add(
-                segmentExpected+" size: "+expectedNode.size()+
-                ", actual size: "+actualNode.size()
-            );
-            return;
+        switch (matchMode) {
+            case STRICT:
+                compareJsonArrayStrict(expectedNode, actualNode, prefix, errors, segmentExpected);
+                break;
+            case STRICT_ANY_ORDER:
+                compareJsonArrayStrictAnyOrder(expectedNode, actualNode, prefix, errors, segmentExpected);
+                break;
+            case LOOSE:
+                compareJsonArrayLoose(expectedNode, actualNode, prefix, errors, segmentExpected);
+                break;
         }
-        if (matchMode == LOOSE && expectedNode.size() > actualNode.size()) {
-            errors.add(
-                segmentExpected+" minimum size: "+expectedNode.size()+
-                ", actual size: "+actualNode.size()
-            );
-            return;
-        }
-        for (int i=0;i<expectedNode.size();i++) {
-            compareJsonNode(
-                matchMode,
-                expectedNode.get(i),
-                actualNode.get(i),
-                prefix+"["+i+"]",
-                errors
-            );
-        }
+    }
 
+    private void compareJsonArrayStrict(
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List<String> errors,
+        String segmentExpected
+    ) {
+        if (expectedNode.size() != actualNode.size()) {
+            errors.add(segmentExpected +" size: "+ expectedNode.size()+", actual size: "+ actualNode.size());
+            return;
+        }
+        for (int i = 0; i< expectedNode.size(); i++) {
+            compareJsonNode(STRICT,expectedNode.get(i),actualNode.get(i),prefix +"["+i+"]",errors);
+        }
     }
 
 
 
+    private void compareJsonArrayStrictAnyOrder(
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List<String> errors,
+        String segmentExpected
+    ) {
+        if (expectedNode.size() != actualNode.size()) {
+            errors.add(segmentExpected +" size: "+ expectedNode.size()+", actual size: "+ actualNode.size());
+            return;
+        }
+        boolean currentElementMatch;
+        for (int i = 0; i< expectedNode.size(); i++) {
+            currentElementMatch = false;
+            for (int j = 0; j < actualNode.size() && !currentElementMatch; j++) {
+                if (compareJsonNode(LOOSE,expectedNode.get(i),actualNode.get(j),prefix +"["+i+"]")) {
+                    currentElementMatch = true;
+                }
+            }
+            if (!currentElementMatch) {
+                compareJsonNode(LOOSE, expectedNode.get(i), actualNode.get(i), prefix + "[" + i + "]", errors);
+                return;
+            }
+        }
+    }
+
+
+
+    private void compareJsonArrayLoose(
+            JsonNode expectedNode,
+            JsonNode actualNode,
+            String prefix,
+            List<String> errors,
+            String segmentExpected
+    ) {
+        if (expectedNode.size() > actualNode.size()) {
+            errors.add(segmentExpected +" minimum size: "+ expectedNode.size()+", actual size: "+ actualNode.size());
+            return;
+        }
+        for (int i = 0; i< expectedNode.size(); i++) {
+            compareJsonNode(LOOSE,expectedNode.get(i),actualNode.get(i),prefix +"["+i+"]",errors);
+        }
+    }
 
 
     private void compareJsonObject(
