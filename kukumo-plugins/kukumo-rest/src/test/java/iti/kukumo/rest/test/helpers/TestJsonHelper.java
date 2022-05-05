@@ -21,34 +21,39 @@ import iti.kukumo.rest.helpers.JSONHelper;
 
 public class TestJsonHelper {
 
-    private static JSONHelper helper = new JSONHelper();
+    private static final JSONHelper helper = new JSONHelper();
 
-    private static String jsonNormal = json(map(
+    private static final String jsonNormal = json(map(
         "a",1,
         "b", List.of("x","y","z"),
         "c", map("aa",22,"bb",33, "cc", 44)
     ));
-    private static String jsonMissing = json(map(
+    private static final String jsonReordered = json(map(
+        "b", List.of("x","y","z"),
+        "a",1,
+        "c", map("bb",33, "aa",22,"cc", 44)
+    ));
+    private static final String jsonMissing = json(map(
         "a",1,
         "c", map("aa",22,"bb",33, "cc", 44)
     ));
-    private static String jsonUnordererd = json(map(
+    private static final String jsonUnordererd = json(map(
         "b", List.of("x","y","z"),
         "c", map("aa",22,"bb",33, "cc", 44),
         "a",1
     ));
-    private static String jsonWrong = json(map(
+    private static final String jsonWrong = json(map(
         "a",2,
         "b", List.of("x","y","w"),
         "c", map("aa",22,"bb",34, "cc", 44)
     ));
-    private static String jsonExtra = json(map(
+    private static final String jsonExtra = json(map(
         "a",1,
         "b", List.of("x","y","z"),
         "c", map("aa",22,"bb",33, "cc", 44),
         "d", 5.55
     ));
-    private static String jsonEmpty = json(map(
+    private static final String jsonEmpty = json(map(
             "a",1,
             "b", List.of(),
             "c", map("aa",22,"bb",33, "cc", 44)
@@ -57,89 +62,89 @@ public class TestJsonHelper {
 
 
     @Test
-    public void testStrictNormal() throws JsonProcessingException {
+    public void testStrictNormal() {
         helper.assertContent(jsonNormal,jsonNormal,MatchMode.STRICT);
     }
 
     @Test
-    public void testStrictAnyOrderNormal() throws JsonProcessingException {
+    public void testStrictAnyOrderNormal(){
         helper.assertContent(jsonNormal,jsonNormal,MatchMode.STRICT_ANY_ORDER);
     }
 
     @Test
-    public void testLooseNormal() throws JsonProcessingException {
+    public void testLooseNormal(){
         helper.assertContent(jsonNormal,jsonNormal,MatchMode.LOOSE);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictWrong() throws JsonProcessingException {
+    public void testStrictWrong(){
         helper.assertContent(jsonNormal,jsonWrong,MatchMode.STRICT);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictAnyOrderWrong() throws JsonProcessingException {
+    public void testStrictAnyOrderWrong(){
         helper.assertContent(jsonNormal,jsonWrong,MatchMode.STRICT_ANY_ORDER);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testLooseWrong() throws JsonProcessingException {
+    public void testLooseWrong() {
         helper.assertContent(jsonNormal,jsonWrong,MatchMode.LOOSE);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictMissing() throws JsonProcessingException {
+    public void testStrictMissing(){
         helper.assertContent(jsonNormal,jsonMissing,MatchMode.STRICT);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictAnyOrderMissing() throws JsonProcessingException {
+    public void testStrictAnyOrderMissing(){
         helper.assertContent(jsonNormal,jsonMissing,MatchMode.STRICT_ANY_ORDER);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testLooseMissing() throws JsonProcessingException {
+    public void testLooseMissing(){
         helper.assertContent(jsonNormal,jsonMissing,MatchMode.LOOSE);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictUnordered() throws JsonProcessingException {
+    public void testStrictUnordered() {
         helper.assertContent(jsonNormal,jsonUnordererd,MatchMode.STRICT);
     }
 
 
     @Test
-    public void testStrictAnyOrderUnordered() throws JsonProcessingException {
+    public void testStrictAnyOrderUnordered(){
         helper.assertContent(jsonNormal,jsonUnordererd,MatchMode.STRICT_ANY_ORDER);
     }
 
 
     @Test
-    public void testLooseUnordered() throws JsonProcessingException {
+    public void testLooseUnordered(){
         helper.assertContent(jsonNormal,jsonUnordererd,MatchMode.LOOSE);
     }
 
 
     @Test(expected = ComparisonFailure.class)
-    public void testStrictExtra() throws JsonProcessingException {
+    public void testStrictExtra(){
         helper.assertContent(jsonNormal,jsonExtra,MatchMode.STRICT);
     }
 
 
     @Test
-    public void testStrictAnyOrderExtra() throws JsonProcessingException {
+    public void testStrictAnyOrderExtra(){
         helper.assertContent(jsonNormal,jsonExtra,MatchMode.STRICT_ANY_ORDER);
     }
 
 
     @Test
-    public void testLooseExtra() throws JsonProcessingException {
+    public void testLooseExtra(){
         helper.assertContent(jsonNormal,jsonExtra,MatchMode.LOOSE);
     }
 
@@ -173,6 +178,11 @@ public class TestJsonHelper {
         helper.assertContent(jsonEmpty, jsonNormal, MatchMode.LOOSE);
     }
 
+    
+    @Test
+    public void testStrictAnyOrder() {
+        helper.assertContent(jsonNormal, jsonReordered, MatchMode.STRICT_ANY_ORDER);
+    }
 
     private static String json (Map<?,?> map) {
         try {

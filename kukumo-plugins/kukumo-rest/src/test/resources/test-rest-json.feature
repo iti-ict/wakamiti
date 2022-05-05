@@ -48,3 +48,45 @@ Scenario: Get a user from a service
    }
  }
  ```
+
+Scenario: Obtain complex JSON in any order
+  When the users are queried
+  Then the response is (in any order):
+  ```json
+  [
+            {
+                "id" : "user3",
+                "name" : "User Three",
+                "age" : 13,
+                "vegetables": [],
+                "contact" : {
+                  "email": "user3@mail"
+                }
+            },
+          {
+              "id" : "user1",
+              "name" : "User One",
+              "age" : 11,
+              "vegetables": [
+                  { "id": 1, "description": "Cucumber" },
+                  { "id": 2, "description": "Gherkin" }
+              ],
+              "contact" : {
+                "email": "user1@mail"
+              }
+          },
+          {
+              "id" : "user2",
+              "name" : "User Two",
+              "age" : 12,
+              "vegetables": [
+                 { "id": 1, "description": "Cucumber" },
+                 { "id": 3, "description": "Pickle" }
+              ],
+              "contact" : {
+                "email": "user2@mail"
+              }
+          }
+
+      ]
+  ```
