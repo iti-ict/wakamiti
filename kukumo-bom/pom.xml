@@ -18,7 +18,7 @@
         <!-- internal dependencies -->
         <gherkin-parser.version>1.0.2</gherkin-parser.version>
         <kukumo.version>1.3.2</kukumo.version>
-        <kukumo-rest.version>1.3.2</kukumo-rest.version>
+        <kukumo-rest.version>1.3.3</kukumo-rest.version>
         <kukumo-db.version>1.3.2</kukumo-db.version>
         <kukumo-amqp.version>1.3.2</kukumo-amqp.version>
         <kukumo-io.version>1.3.2</kukumo-io.version>

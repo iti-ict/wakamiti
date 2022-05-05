@@ -15,10 +15,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name="iti.kukumo.logs" level="info"/>
+        <Logger name="iti.kukumo.logs" level="debug"/>
         <Logger name="iti.kukumo.core.backend.ExpressionMatcher" level="info"/>
         <Logger name="iti.kukumo.core.backend.DefaultBackendFactory" level="info"/>
     </Loggers>

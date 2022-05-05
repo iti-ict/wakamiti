@@ -90,3 +90,20 @@ Scenario: Obtain complex JSON in any order
 
       ]
   ```
+
+
+
+Scenario: URL with parameters
+    Given the REST service '/users/{user}/{subject}'
+    And the following path parameters:
+        | name    | value      |
+        | user    | user1      |
+        | subject | vegetables |
+    When the subject is queried
+    Then the response is:
+    ```json
+    [
+        { "id": 1, "description": "Cucumber" },
+        { "id": 2, "description": "Gherkin" }
+    ]
+    ```

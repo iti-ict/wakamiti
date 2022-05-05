@@ -6,15 +6,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [Unreleased]
+## [1.3.3] 2022-05-05
 
 ## Fixed
 - #6 : Comparador JSON no ignora el orden
+- #20 : Error cuando la ruta del servicio está parametrizada
+
+
 
 ## [1.3.0] 2022-01-27
 
 ## Added
 - Steps to validate responses against an schema (either JSON Schema or XML Schema)
+
+
 
 
 ## [1.2.0] 2021-10-21
@@ -40,5 +45,5 @@ and this project adheres to [Semantic Versioning][2].
 Initial release.  
 
 
-[1]: <https://keepachangelog.com/en/1.0.0/>
+[1]: <https://keepachangelog.com>
 [2]: <https://semver.org>

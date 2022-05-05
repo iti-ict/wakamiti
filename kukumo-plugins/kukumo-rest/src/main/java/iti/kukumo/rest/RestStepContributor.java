@@ -88,7 +88,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.define.timeout.secs")
     public void setTimeoutInSecs(Integer secs) {
-        this.timeoutMillis = Long.valueOf(secs * 1000L);
+        this.timeoutMillis = secs * 1000L;
     }
 
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
@@ -127,7 +127,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                     .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
         }
 
-        String token_key = specification
+        String token = specification
                 .contentType("application/x-www-form-urlencoded; charset=UTF-8")
                 .body(document.getContent())
                 .log().all()
@@ -137,7 +137,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 .statusCode(200)
                 .extract().body().jsonPath().getString("access_token");
 
-        setBearerAuth(token_key);
+        setBearerAuth(token);
     }
 
     @Step("rest.define.attached.file")
@@ -161,64 +161,54 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.GET.subject")
     public void executeGetSubject() {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::get);
     }
 
     @Step("rest.execute.DELETE.subject")
     public void executeDeleteSubject() {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::delete);
     }
 
     @Step("rest.execute.PUT.subject.from.document")
     public void executePutSubjectUsingDocument(Document document) {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::put, document.getContent());
     }
 
     @Step("rest.execute.PUT.subject.from.file")
     public void executePutSubjectUsingFile(File file) {
-        assertSubjectDefined();
         assertFileExists(file);
         executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));
     }
 
     @Step("rest.execute.PATCH.subject.from.document")
     public void executePatchSubjectUsingDocument(Document document) {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::patch, document.getContent());
     }
 
     @Step("rest.execute.PATCH.subject.from.file")
     public void executePatchSubjectUsingFile(File file) {
-        assertSubjectDefined();
         assertFileExists(file);
         executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
     }
 
     @Step("rest.execute.PATCH.subject.empty")
     public void executePatchSubject() {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::patch);
     }
 
     @Step("rest.execute.POST.subject.from.file")
     public void executePostSubjectUsingFile(File file) {
-        assertSubjectDefined();
         assertFileExists(file);
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
     }
 
     @Step("rest.execute.POST.subject.from.document")
     public void executePostSubjectUsingDocument(Document document) {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::post, document.getContent());
     }
 
     @Step("rest.execute.POST.subject.empty")
     public void executePostSubject() {
-        assertSubjectDefined();
         executeRequest(RequestSpecification::post);
     }
 
@@ -229,8 +219,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.POST.data.from.file")
     public void executePostDataUsingFile(File file) {
-        assertFileExists(file);
-        executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
+        executePostSubjectUsingFile(file);
     }
 
     @Step("rest.execute.POST.data.empty")
