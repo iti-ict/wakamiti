@@ -22,7 +22,7 @@
         <kukumo-db.version>1.3.2</kukumo-db.version>
         <kukumo-amqp.version>1.3.2</kukumo-amqp.version>
         <kukumo-io.version>1.3.2</kukumo-io.version>
-        <kukumo-html-report.version>1.3.2</kukumo-html-report.version>
+        <kukumo-html-report.version>1.3.3</kukumo-html-report.version>
         <kukumo-spring.version>1.3.2</kukumo-spring.version>
         <jext.version>1.0.0</jext.version>
 
