@@ -11,6 +11,7 @@ package iti.kukumo.examples.spring.junit;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -27,17 +28,18 @@ public class UserDAO {
     private EntityManager entityManager;
 
 
-    public List<User> getAllUsers() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+    public List<UserDTO> getAllUsers() {
+        return entityManager.createQuery("select u from User u", User.class).getResultList()
+                .stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
 
-    public User getUserById(int id) {
+    public UserDTO getUserById(int id) {
         User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new EntityNotFoundException();
         }
-        return user;
+        return new UserDTO(user);
     }
 
 
@@ -47,14 +49,17 @@ public class UserDAO {
 
 
     @Transactional
-    public User createUser(User user) {
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = new User();
+        user.firstName = userDTO.firstName;
+        user.lastName = userDTO.lastName;
         entityManager.persist(user);
-        return user;
+        return new UserDTO(user);
     }
 
 
     public void deleteUser(int id) {
-        User user = getUserById(id);
+        User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new EntityNotFoundException();
         }
@@ -62,7 +67,7 @@ public class UserDAO {
     }
 
 
-    public User modifyUser(int id, User user) {
+    public UserDTO modifyUser(int id, UserDTO user) {
         if (!userExists(id)) {
             throw new EntityNotFoundException();
         }

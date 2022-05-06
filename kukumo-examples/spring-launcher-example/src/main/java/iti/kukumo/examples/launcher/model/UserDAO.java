@@ -25,11 +25,13 @@ public class UserDAO {
 
 
     public List<UserDTO> getAllUsers() {
-        return entityManager.createQuery("select u from User u",User.class).getResultList()
-            .stream()
-            .map(UserDTO::new)
-            .collect(Collectors.toList());
+        return entityManager.createQuery("select u from User u", User.class)
+                .getResultList()
+                .stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
     }
+
 
     public UserDTO getUserById(int id) {
         User user = entityManager.find(User.class, id);
@@ -39,9 +41,11 @@ public class UserDAO {
         return new UserDTO(user);
     }
 
+
     public boolean userExists(int id) {
         return getUserById(id) != null;
     }
+
 
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
@@ -52,6 +56,7 @@ public class UserDAO {
         return new UserDTO(user);
     }
 
+
     public void deleteUser(int id) {
         User user = entityManager.find(User.class, id);
         if (user == null) {
@@ -60,14 +65,15 @@ public class UserDAO {
         entityManager.remove(user);
     }
 
+
     public UserDTO modifyUser(int id, UserDTO userDTO) {
-        User user = entityManager.find(User.class, id);
-        if (user == null) {
+        if (!userExists(id)) {
             throw new EntityNotFoundException();
         }
+        User user = entityManager.find(User.class, id);
         user.firstName = userDTO.firstName;
         user.lastName = userDTO.lastName;
-        return userDTO;
-    }
+        return new UserDTO(user);
 
+    }
 }

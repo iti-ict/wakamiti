@@ -37,26 +37,26 @@ public class UserController {
 
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userDAO.getAllUsers();
     }
 
 
     @GetMapping("{id}")
-    public User getUser(@PathVariable int id) {
+    public UserDTO getUser(@PathVariable int id) {
         return userDAO.getUserById(id);
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
+    public UserDTO createUser(@RequestBody UserDTO user) {
         return userDAO.createUser(user);
     }
 
 
     @PutMapping
-    public User modifyUser(@PathVariable int id, @RequestBody User user) {
+    public UserDTO modifyUser(@PathVariable int id, @RequestBody UserDTO user) {
         return userDAO.modifyUser(id, user);
     }
 
