@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 
 
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.gherkin.GherkinResourceType;
-import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.core.gherkin.GherkinResourceType;
+import iti.kukumo.core.junit.KukumoJUnitRunner;
 import iti.kukumo.rest.test.mockserver.HttpServerAdapter;
 import iti.kukumo.rest.test.mockserver.InMemoryServer;
 

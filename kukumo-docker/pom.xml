@@ -61,10 +61,6 @@
             <dependencies>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
-                    <artifactId>kukumo-core-l10n</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-html-report</artifactId>
                 </dependency>
                 <dependency>
@@ -73,15 +69,7 @@
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
-                    <artifactId>kukumo-amqp-l10n</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-db</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.kukumo</groupId>
-                    <artifactId>kukumo-db-l10n</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
@@ -89,15 +77,7 @@
                 </dependency>
                 <dependency>
                     <groupId>es.iti.kukumo</groupId>
-                    <artifactId>kukumo-io-l10n</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.kukumo</groupId>
                     <artifactId>kukumo-rest</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.kukumo</groupId>
-                    <artifactId>kukumo-rest-l10n</artifactId>
                 </dependency>
             </dependencies>
 

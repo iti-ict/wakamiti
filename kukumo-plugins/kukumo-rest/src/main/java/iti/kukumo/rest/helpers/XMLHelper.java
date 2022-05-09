@@ -12,28 +12,21 @@ package iti.kukumo.rest.helpers;
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
-import iti.kukumo.util.MatcherAssertion;
-import org.hamcrest.Matcher;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
+import iti.kukumo.api.util.MatcherAssertion;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.rest.MatchMode;
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
 import java.io.StringReader;
 
 

@@ -16,13 +16,13 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoAPI;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
+import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.rest.log.RestAssuredLogger;
-import iti.kukumo.util.ResourceLoader;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -42,9 +42,9 @@ import java.util.stream.Stream;
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
-    public static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
+    public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
 
-    protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = Kukumo
+    protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));

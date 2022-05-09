@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import imconfig.Configuration;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.KukumoFetcher;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.core.KukumoFetcher;
 import net.harawata.appdirs.AppDirsFactory;
 
 

@@ -7,7 +7,7 @@
 package iti.kukumo.custom
 
 import groovy.util.logging.Slf4j
-import iti.kukumo.api.Kukumo
+import iti.kukumo.core.Kukumo
 import iti.kukumo.api.annotations.I18nResource
 import iti.kukumo.api.annotations.Step
 import iti.kukumo.api.extensions.StepContributor

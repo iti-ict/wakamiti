@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNodeSnapshot;
+import iti.kukumo.api.util.KukumoLogger;
+import org.slf4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -19,11 +20,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static iti.kukumo.gherkin.GherkinPlanBuilder.*;
 
 @Extension(name = "cucumber-exporter")
 public class CucumberExporter implements Reporter {
 
+    public static final Logger LOGGER = KukumoLogger.forClass(CucumberExporter.class);
 
     private static final String DOC_STRING = "doc_string";
     private static final String CELLS = "cells";
@@ -76,7 +77,7 @@ public class CucumberExporter implements Reporter {
                 .collect(Collectors.toList());
             mapper.writeValue(writer, features);
         } catch (IOException e) {
-            Kukumo.LOGGER.error("Error exporting to Cucumber format: {}", e.getMessage(), e);
+            LOGGER.error("Error exporting to Cucumber format: {}", e.getMessage(), e);
         }
 
 
@@ -213,7 +214,7 @@ public class CucumberExporter implements Reporter {
 
 
     private boolean gherkinFeature(PlanNodeSnapshot node) {
-        return node.getProperties() != null && iti.kukumo.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE.equals(node.getProperties().get(GHERKIN_PROPERTY));
+        return node.getProperties() != null && "feature".equals(node.getProperties().get("gherkinType"));
     }
 
 

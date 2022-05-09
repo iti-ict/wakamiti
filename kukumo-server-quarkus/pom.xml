@@ -70,11 +70,11 @@
     <dependencies>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core</artifactId>
+            <artifactId>kukumo-api</artifactId>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core-l10n</artifactId>
+            <artifactId>kukumo-core</artifactId>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>

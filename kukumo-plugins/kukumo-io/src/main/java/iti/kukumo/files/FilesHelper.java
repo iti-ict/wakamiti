@@ -6,7 +6,8 @@
 
 package iti.kukumo.files;
 
-import iti.kukumo.util.KukumoLogger;
+
+import iti.kukumo.api.util.KukumoLogger;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

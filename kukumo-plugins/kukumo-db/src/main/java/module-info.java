@@ -11,7 +11,7 @@ import iti.kukumo.database.ConnectionManager;
 module kukumo.db {
     exports iti.kukumo.database;
 
-    requires kukumo.core;
+    requires kukumo.api;
     requires java.sql;
     requires poi;
     requires poi.ooxml;
@@ -23,6 +23,7 @@ module kukumo.db {
     requires jsqlparser;
     requires org.apache.commons.io;
     requires java.sql.rowset;
+    requires slf4jansi;
 
     provides StepContributor with iti.kukumo.database.DatabaseStepContributor;
     provides ConfigContributor with iti.kukumo.database.DatabaseConfigContributor;

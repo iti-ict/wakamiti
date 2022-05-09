@@ -11,9 +11,10 @@ package iti.kukumo.report.html;
 
 import freemarker.template.*;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.PlanNodeSnapshot;
+import iti.kukumo.api.util.KukumoLogger;
+import org.slf4j.Logger;
 
 
 import java.io.*;
@@ -29,6 +30,8 @@ import static iti.kukumo.report.html.HtmlReportGeneratorConfig.*;
 
 @Extension(provider = "iti.kukumo", name = "html-report", version = "1.2")
 public class HtmlReportGenerator implements Reporter {
+
+    private static final Logger LOGGER = KukumoLogger.forClass(HtmlReportGenerator.class);
 
     private final Configuration templateConfiguration;
     private String cssFile;
@@ -81,7 +84,7 @@ public class HtmlReportGenerator implements Reporter {
                 template("report.html.ftl").process(parameters, writer);
             }
         } catch (IOException | TemplateException e) {
-            Kukumo.LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
+            LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
             e.printStackTrace();
         }
 

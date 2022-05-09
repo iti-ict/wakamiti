@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import iti.kukumo.api.KukumoException;
-import iti.kukumo.util.TokenParser;
+import iti.kukumo.core.util.TokenParser;
 
 
 public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTypeBase<T> {

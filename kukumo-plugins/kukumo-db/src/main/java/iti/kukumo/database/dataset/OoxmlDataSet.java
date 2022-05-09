@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import iti.kukumo.api.util.KukumoLogger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,14 +25,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 
-import iti.kukumo.api.Kukumo;
+
 import iti.kukumo.api.KukumoException;
 
 
 
 public class OoxmlDataSet extends MultiDataSet {
 
-    private static final Logger logger = Kukumo.LOGGER;
+    private static final Logger logger = KukumoLogger.forClass(OoxmlDataSet.class);
 
     private final File file;
     private final String ignoreSheetRegex;

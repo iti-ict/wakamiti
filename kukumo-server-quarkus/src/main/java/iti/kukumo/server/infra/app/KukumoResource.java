@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.extensions.Contributor;
 
 @Path("kukumo")

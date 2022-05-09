@@ -17,11 +17,16 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoAPI;
+import iti.kukumo.api.util.Either;
+import iti.kukumo.api.util.Pair;
+import iti.kukumo.api.util.ResourceLoader;
+import iti.kukumo.api.util.ThrowableRunnable;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.*;
+
 
 
 public class RunnableStep {
@@ -31,7 +36,7 @@ public class RunnableStep {
     private final Map<Locale, String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
-    private final ResourceLoader resourceLoader = Kukumo.resourceLoader();
+    private final ResourceLoader resourceLoader = new ResourceLoader();
     private final String stepProvider;
 
 

@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import iti.kukumo.util.MatcherAssertion;
+
+import iti.kukumo.api.util.MatcherAssertion;
+import iti.kukumo.api.util.ThrowableFunction;
 import org.hamcrest.Matcher;
 
 import iti.commons.jext.Extension;
@@ -24,7 +26,7 @@ import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.core.datatypes.KukumoDataTypeBase;
 import iti.kukumo.core.datatypes.KukumoNumberDataType;
-import iti.kukumo.util.ThrowableFunction;
+
 
 
 @Extension(provider = "iti.kukumo", name = "assertion-types", version = "1.1")

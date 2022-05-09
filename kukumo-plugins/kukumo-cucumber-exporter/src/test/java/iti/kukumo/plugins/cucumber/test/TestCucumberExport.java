@@ -1,7 +1,7 @@
 package iti.kukumo.plugins.cucumber.test;
 
 import iti.kukumo.api.plan.PlanNodeSnapshot;
-import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.core.JsonPlanSerializer;
 import iti.kukumo.plugins.cucumber.CucumberExporter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
@@ -20,7 +20,7 @@ public class TestCucumberExport {
     @Test
     public void testCucumberExport() throws IOException {
 
-        PlanSerializer serializer = new PlanSerializer();
+        JsonPlanSerializer serializer = new JsonPlanSerializer();
         PlanNodeSnapshot planOk = serializer.read(Path.of("src/test/resources/kukumo-ok.json"));
         PlanNodeSnapshot planFailed = serializer.read(Path.of("src/test/resources/kukumo-failed.json"));
 

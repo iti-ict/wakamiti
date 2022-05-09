@@ -11,7 +11,6 @@ package iti.kukumo.rest.helpers;
 
 
 import iti.kukumo.api.datatypes.Assertion;
-import org.hamcrest.Matcher;
 import org.junit.ComparisonFailure;
 
 import io.restassured.http.ContentType;

@@ -27,18 +27,18 @@
         <module>kukumo-tools/gherkin-parser</module>
         <module>kukumo-tools/distribution-maven-plugin</module>
         <!-- kukumo -->
-        <module>kukumo</module>
+        <module>kukumo/kukumo-api</module>
+        <module>kukumo/kukumo-core</module>
+        <module>kukumo/kukumo-lsp</module>
+        <module>kukumo/kukumo-maven-plugin</module>
+        <module>kukumo/kukumo-launcher</module>
         <!-- plugins -->
         <module>kukumo-plugins/kukumo-rest</module>
         <module>kukumo-plugins/kukumo-html-report</module>
-        <module>kukumo-plugins/kukumo-rest-l10n</module>
         <module>kukumo-plugins/kukumo-db</module>
-        <module>kukumo-plugins/kukumo-db-l10n</module>
         <module>kukumo-plugins/kukumo-spring</module>
         <module>kukumo-plugins/kukumo-io</module>
-        <module>kukumo-plugins/kukumo-io-l10n</module>
         <module>kukumo-plugins/kukumo-amqp</module>
-        <module>kukumo-plugins/kukumo-amqp-l10n</module>
         <module>kukumo-plugins/kukumo-cucumber-exporter</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
@@ -67,7 +67,7 @@
 
     <properties>
         <!-- kukumo version -->
-        <revision>1.3.2</revision>
+        <revision>1.4.0</revision>
 
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

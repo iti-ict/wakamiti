@@ -12,7 +12,7 @@ package iti.kukumo.core.backend;
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.Either;
+import iti.kukumo.api.util.Either;
 
 
 public class UndefinedStepException extends KukumoException {

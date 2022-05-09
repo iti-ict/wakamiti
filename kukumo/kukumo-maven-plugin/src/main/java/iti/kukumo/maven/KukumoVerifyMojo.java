@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;

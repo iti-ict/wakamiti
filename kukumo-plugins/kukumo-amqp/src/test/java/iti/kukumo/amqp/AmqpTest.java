@@ -13,7 +13,7 @@ package iti.kukumo.amqp;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.core.junit.KukumoJUnitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

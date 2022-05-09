@@ -13,9 +13,9 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>es.iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>kukumo-project</artifactId>
+        <version>1.4.0</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
@@ -27,7 +27,23 @@
     <inceptionYear>2019</inceptionYear>
 
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.github.luiinge</groupId>
             <artifactId>immutable-config</artifactId>

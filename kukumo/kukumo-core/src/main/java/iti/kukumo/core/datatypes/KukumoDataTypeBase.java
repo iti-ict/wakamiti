@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoException;
-import iti.kukumo.util.ThrowableFunction;
+import iti.kukumo.api.util.ThrowableFunction;
 
 
 public class KukumoDataTypeBase<T> implements KukumoDataType<T> {

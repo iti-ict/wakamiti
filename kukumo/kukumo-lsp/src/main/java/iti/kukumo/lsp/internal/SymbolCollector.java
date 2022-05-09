@@ -13,7 +13,7 @@ import org.eclipse.lsp4j.*;
 
 import iti.commons.gherkin.*;
 import iti.commons.gherkin.Location;
-import iti.kukumo.util.Pair;
+
 
 public class SymbolCollector {
 

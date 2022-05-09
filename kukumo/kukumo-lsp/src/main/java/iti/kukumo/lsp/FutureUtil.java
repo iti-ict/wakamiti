@@ -9,10 +9,11 @@ package iti.kukumo.lsp;
 import java.util.concurrent.*;
 import java.util.function.*;
 
+import iti.kukumo.api.util.ThrowableFunction;
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
 import org.slf4j.*;
 
-import iti.kukumo.util.ThrowableFunction;
+
 
 
 

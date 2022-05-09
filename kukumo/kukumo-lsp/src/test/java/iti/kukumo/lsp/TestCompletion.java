@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import org.eclipse.lsp4j.CompletionItem;
 import org.junit.Test;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.lsp.internal.*;
 
 

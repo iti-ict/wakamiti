@@ -14,9 +14,9 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>es.iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>kukumo-project</artifactId>
+        <version>1.4.0</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
@@ -27,6 +27,18 @@
     <description>Implementation of Language Server Protocol</description>
     <inceptionYear>2020</inceptionYear>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
     <dependencies>
@@ -67,10 +79,6 @@
             <artifactId>kukumo-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core-l10n</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.curious-odd-man</groupId>
             <artifactId>rgxgen</artifactId>
         </dependency>
@@ -82,14 +90,6 @@
 
 
         <!--
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-db-l10n</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-rest-l10n</artifactId>
-        </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-db</artifactId>

@@ -16,8 +16,10 @@ import javax.ws.rs.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.security.Authenticated;
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.api.plan.*;
+import iti.kukumo.api.plan.PlanSerializer;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
+import iti.kukumo.core.JsonPlanSerializer;
 import iti.kukumo.server.domain.ExecutionService;
 
 

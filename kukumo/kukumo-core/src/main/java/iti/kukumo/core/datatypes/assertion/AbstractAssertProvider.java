@@ -21,12 +21,13 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import iti.kukumo.api.util.ResourceLoader;
 import org.hamcrest.Matcher;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.util.ResourceLoader;
+;
 
 
 public abstract class AbstractAssertProvider {
@@ -34,7 +35,7 @@ public abstract class AbstractAssertProvider {
     public static final String MATCHERS_RESOURCE = "iti_kukumo_core-matchers";
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = Kukumo.resourceLoader();
+    protected static final ResourceLoader resourceLoader = new ResourceLoader();
 
     private final Map<Locale, ResourceBundle> bundles = new HashMap<>();
     private final Map<Locale, Map<String, Pattern>> translatedExpressions = new HashMap<>();

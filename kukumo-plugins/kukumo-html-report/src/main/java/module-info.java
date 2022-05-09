@@ -1,5 +1,5 @@
 module kukumo.report.html {
 	
-	requires kukumo.core;
+	requires kukumo.api;
     requires freemarker;
 }

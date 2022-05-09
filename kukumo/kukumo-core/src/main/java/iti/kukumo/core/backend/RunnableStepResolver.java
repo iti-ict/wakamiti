@@ -12,8 +12,12 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import iti.kukumo.api.*;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.*;
+import iti.kukumo.api.util.Either;
+import iti.kukumo.api.util.Pair;
+
 
 public class RunnableStepResolver {
 
@@ -31,7 +35,7 @@ public class RunnableStepResolver {
 
 
 
-    Pair<RunnableStep, Matcher> locateRunnableStep(PlanNode step,  StepHinter hinter) {
+    Pair<RunnableStep, Matcher> locateRunnableStep(PlanNode step, StepHinter hinter) {
         Locale stepLocale = Locale.forLanguageTag(step.language());
         Locale dataLocale = Locale.forLanguageTag(
             step.properties().getOrDefault(KukumoConfiguration.DATA_FORMAT_LANGUAGE,step.language())

@@ -145,22 +145,6 @@
             <artifactId>kukumo-db</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Localization -->
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-rest-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-db-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
 
 
         <!-- Logj2 dependencies -->

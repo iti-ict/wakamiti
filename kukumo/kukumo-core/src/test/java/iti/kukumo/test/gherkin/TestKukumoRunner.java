@@ -12,12 +12,13 @@ package iti.kukumo.test.gherkin;
 
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
+import iti.kukumo.core.junit.KukumoJUnitRunner;
 import org.junit.runner.RunWith;
 
 
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.gherkin.GherkinResourceType;
-import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.core.gherkin.GherkinResourceType;
+
 
 
 @AnnotatedConfiguration({
