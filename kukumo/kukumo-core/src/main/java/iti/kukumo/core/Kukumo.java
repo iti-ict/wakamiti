@@ -132,7 +132,7 @@ public class Kukumo {
 
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
         if (resourceTypeNames.isEmpty()) {
-            new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration);
+            throw new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration);
         }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {

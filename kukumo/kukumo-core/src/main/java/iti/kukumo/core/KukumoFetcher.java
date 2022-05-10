@@ -153,11 +153,18 @@ public class KukumoFetcher {
     private Stream<Path> listFiles(Path dir) {
         try {
             return Stream.concat(
-                Files.list(dir).filter(Files::isDirectory).flatMap(this::listFiles),
-                Files.list(dir).filter(Files::isRegularFile)
+                list(dir).filter(Files::isDirectory).flatMap(this::listFiles),
+                list(dir).filter(Files::isRegularFile)
             );
         } catch (IOException e) {
             return null;
+        }
+    }
+
+
+    private Stream<Path> list (Path dir) throws IOException {
+        try(var stream = Files.list(dir)) {
+            return stream.collect(Collectors.toList()).stream();
         }
     }
 
