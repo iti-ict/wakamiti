@@ -22,10 +22,10 @@ rm ${lib}/*-sources.jar 2>/dev/null
 
 for file in kukumo/kukumo-core/target/dependency
 do
-  rm $lib/$file
+  rm $lib/$file 2>/dev/null
 done
 
 for file in kukumo/kukumo-api/target/dependency
 do
-  rm $lib/$file
+  rm $lib/$file 2>/dev/null
 done

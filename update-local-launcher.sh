@@ -25,6 +25,8 @@ cp -rf kukumo/kukumo-launcher/target/staging/* $kukumo/
 
 cp -f kukumo/kukumo-core/target/kukumo-core*.jar $kukumo/lib/
 cp -f kukumo/kukumo-core/target/dependency/*.jar $kukumo/lib/
+cp -f kukumo/kukumo-api/target/kukumo-api*.jar $kukumo/lib/
+cp -f kukumo/kukumo-api/target/dependency/*.jar $kukumo/lib/
 
 cp kukumo/kukumo-launcher/target/staging/kukumo /usr/local/bin/kukumo
 chmod +x /usr/local/bin/kukumo
