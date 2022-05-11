@@ -30,8 +30,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+
 
 
 public class ResourceLoader {
@@ -67,7 +66,7 @@ public class ResourceLoader {
 
     public <T> Resource<T> fromInputStream(ResourceType<T> resourceType, InputStream inputStream) {
         try {
-            return new Resource<T>("", "", resourceType.parse(inputStream,charset));
+            return new Resource<>("", "", resourceType.parse(inputStream,charset));
         } catch (IOException e) {
             throw new KukumoException("Error reading input stream: ",e);
         }
@@ -252,7 +251,7 @@ public class ResourceLoader {
                 discoverResourcesInURL(path, url, filenameFilter, parser, discovered);
             }
         } catch (IOException e) {
-            LOGGER.debug("{!error} Error discovering resource: {}", e.getMessage(), e);
+            LOGGER.debug("Error discovering resource: {}", e.getMessage(), e);
         }
         return discovered;
     }
@@ -302,9 +301,6 @@ public class ResourceLoader {
             for (File child : file.listFiles()) {
                 discoverResouresInFile(startPath, child, filenameFilter, parser, discovered);
             }
-        } else if (file.getName().endsWith(".zip") || file.getName().endsWith(".ZIP")) {
-            discoverResourcesInZipFile(startPath, file, filenameFilter, parser, discovered);
-
         } else if (filenameFilter.test(file.getName())) {
             try (InputStream stream = new FileInputStream(file)) {
                 discovered.add(
@@ -322,35 +318,6 @@ public class ResourceLoader {
     }
 
 
-    private <T> void discoverResourcesInZipFile(
-        String startPath,
-        File file,
-        Predicate<String> filenameFilter,
-        Parser<T> parser,
-        List<Resource<?>> discovered
-    ) {
-        try (ZipFile zipFile = new ZipFile(file)) {
-            Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
-            while (zipEntries.hasMoreElements()) {
-                ZipEntry zipEntry = zipEntries.nextElement();
-                if (!zipEntry.isDirectory() && filenameFilter.test(zipEntry.getName())) {
-                    try (InputStream stream = new ZipFile(file).getInputStream(zipEntry)) {
-                        discovered.add(
-                            new Resource<>(
-                                "jar:file:" + file.getAbsolutePath() + "!/" + zipEntry.getName(),
-                                relative(startPath, file.getAbsolutePath()) + "!/" + zipEntry.getName(),
-                                parser.parse(stream, charset)
-                            )
-                        );
-                    } catch (IOException e) {
-                        LOGGER.error("{error}", e.getMessage(), e);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("{error}", e.getMessage(), e);
-        }
-    }
 
 
     private String relative(String startPath, String absolutePath) {

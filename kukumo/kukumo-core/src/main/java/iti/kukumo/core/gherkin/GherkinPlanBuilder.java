@@ -22,7 +22,6 @@ import imconfig.Configurable;
 import imconfig.Configuration;
 import iti.commons.gherkin.*;
 import iti.commons.jext.Extension;
-import iti.kukumo.api.*;
 import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
@@ -188,7 +187,6 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
             PlanNodeBuilder exampleScenario = new PlanNodeBuilder(NodeType.TEST_CASE)
                 .setId(id(
-                    scenarioOutlineNode.id(),
                     scenarioOutline.getTags(),
                     scenarioOutline.getName(),
                     ("_" + (row + 1))
@@ -229,7 +227,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         String location
     ) {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
-            .setId(id("",feature.getTags(), feature.getName(), ""))
+            .setId(id(feature.getTags(), feature.getName(), ""))
             .setName(feature.getName())
             .setDisplayNamePattern("{keyword}: {name}")
             .setLanguage(language)
@@ -249,7 +247,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.TEST_CASE)
-            .setId(id(parentNode.id(), scenario.getTags(), scenario.getName(), ""))
+            .setId(id(scenario.getTags(), scenario.getName(), ""))
             .setName(trim(scenario.getName()))
             .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
@@ -268,7 +266,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
-            .setId(id(parentNode.id(),scenarioOutline.getTags(), scenarioOutline.getName(), ""))
+            .setId(id(scenarioOutline.getTags(), scenarioOutline.getName(), ""))
             .setName(trim(scenarioOutline.getName()))
             .setDisplayNamePattern("[{id}] {keyword}: {name}")
             .setLanguage(parentNode.language())
@@ -462,7 +460,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
 
 
-    protected String id(String parentId, List<Tag> tags, String nodeName, String suffix) {
+    protected String id(List<Tag> tags, String nodeName, String suffix) {
         String idTag = null;
         if (idTagPattern != null ) {
             List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1))
@@ -498,11 +496,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             properties.putAll(inheritedProperties);
         }
         if (node instanceof CommentedNode) {
-            Pattern pattern = Pattern.compile("\\s*#+\\s*([^\\s]+)\\s*:\\s*([^\\s]+)\\s*");
             for (Comment comment : ((CommentedNode) node).getComments()) {
-                Matcher matcher = pattern.matcher(comment.getText());
-                if (matcher.matches()) {
-                    properties.put(matcher.group(1), matcher.group(2));
+                String text = comment.getText().strip();
+                if (text.startsWith("#") && text.contains(":")) {
+                    String[] parts = text.split(":",2);
+                    properties.put(parts[0].substring(1).strip(), parts[1].strip());
                 }
             }
         }
