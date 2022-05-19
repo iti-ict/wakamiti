@@ -222,6 +222,18 @@ case, you shall be provided with enough feedback in order to make changes and re
 > Any rude or inappropriate form of communication will be automatically dismissed.
 
 
+Acknowledgements
+----------------------------------------------------------------------------------------------------
+
+This software has been developed as a part of the Plan of Non-Economical Activities of 
+**Instituto Tecnológico de Informática (ITI)** for the year 2021, funded by 
+**Institut Valencià de Competitivitat Empresarial (IVACE)** and **Generalitat Valenciana**,
+by means of the colaboration agreement between IVACE and ITI aimed to enhance their activity 
+and capabilities of developing excellence in the matter of independant R&D, spreading 
+the results of conducted researches, and driving knowledge transfer among companies from the 
+*Comunitat Valenciana*. 
+
+File Number: IMAMCN/2021/1
 
 
 License
