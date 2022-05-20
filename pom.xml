@@ -336,7 +336,7 @@
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
-                        <phase>post-integration-test</phase>
+                        <phase>verify</phase>
                         <configuration>
                             <docsiteFile>docsite.json</docsiteFile>
                             <languages>
