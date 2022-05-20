@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"kukumo.rest","l":"iti.kukumo.rest"}]

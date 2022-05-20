@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"iti.kukumo.report.html","l":"HtmlReportGenerator"},{"p":"iti.kukumo.report.html","l":"HtmlReportGeneratorConfig"}]
