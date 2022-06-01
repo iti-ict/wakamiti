@@ -169,7 +169,7 @@
                     <#if depth == 1 && node.description??>
                     <div class="panel-body-description">
                     <#list node.description as line>
-                    ${line}
+                    <#outputformat "HTML">${line}</#outputformat>
                     </#list>
                     </div>
                     </#if>
@@ -224,10 +224,10 @@
 
                     <#if node.errorMessage??>
                     <div class="panel-body-error <#if node.errorTrace??>decorated collapsed</#if>" onclick="switchVisibility(this)" >
-                      ${node.errorMessage}
+                    <#outputformat "HTML">${node.errorMessage}</#outputformat>
                     </div>
                       <#if node.errorTrace??>
-                      <pre class="panel-body-trace " style="display:none"><code class="nohighlight">${node.errorTrace}</code></pre>
+                      <pre class="panel-body-trace " style="display:none"><code class="nohighlight"><#outputformat "HTML">${node.errorTrace}</#outputformat></code></pre>
                       </#if>
                     </#if>
 

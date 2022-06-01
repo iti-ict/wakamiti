@@ -1,0 +1,216 @@
+[ {
+  "uri" : "dueños.feature[3,1]",
+  "keyword" : "Característica",
+  "id" : "#c36fc",
+  "name" : "Operaciones con dueños de mascotas",
+  "description" : "-------------------------------------------------",
+  "tags" : [ {
+    "name" : "@definition"
+  } ],
+  "elements" : [ {
+    "keyword" : "Escenario",
+    "id" : "ID-1",
+    "name" : "Se consulta un dueño existente",
+    "tags" : [ {
+      "name" : "@definition"
+    } ],
+    "type" : "scenario",
+    "steps" : [ {
+      "keyword" : "Dada",
+      "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "la URL base http://localhost:9966/petclinic/api",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "el servicio REST '/owners'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Dado",
+      "name" : "un usuario identificado por '20'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y que",
+      "name" : "se ha insertado los siguientes datos en la tabla de BBDD owners:",
+      "result" : {
+        "status" : "passed",
+        "duration" : 256
+      },
+      "rows" : [ {
+        "cells" : [ "ID", "FIRST_NAME", "LAST_NAME" ]
+      }, {
+        "cells" : [ "20", "Pepe", "Perez Martinez" ]
+      } ]
+    }, {
+      "keyword" : "Cuando",
+      "name" : "se consulta el usuario",
+      "result" : {
+        "status" : "passed",
+        "duration" : 983
+      }
+    }, {
+      "keyword" : "Entonces",
+      "name" : "el código de respuesta HTTP es 200",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "la respuesta es parcialmente:",
+      "result" : {
+        "status" : "passed",
+        "duration" : 12
+      },
+      "doc_string" : {
+        "content_type" : "json",
+        "value" : "    {\n        \"id\": 20,\n        \"firstName\": \"Pepe\",\n        \"lastName\": \"Perez Martinez\"\n    }"
+      }
+    } ]
+  }, {
+    "keyword" : "Escenario",
+    "id" : "ID-2",
+    "name" : "Se crea un nuevo dueño",
+    "tags" : [ {
+      "name" : "@definition"
+    } ],
+    "type" : "scenario",
+    "steps" : [ {
+      "keyword" : "Dada",
+      "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "la URL base http://localhost:9966/petclinic/api",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "el servicio REST '/owners'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "*",
+      "name" : "Al finalizar, se ejecuta el siguiente script SQL:",
+      "result" : {
+        "status" : "passed",
+        "duration" : 1
+      },
+      "doc_string" : {
+        "content_type" : "sql",
+        "value" : "   delete from owners where first_name = 'Pascual'"
+      }
+    }, {
+      "keyword" : "Dado que",
+      "name" : "un dueño con first_name = 'Pascual' no existe en la tabla de BBDD owners",
+      "result" : {
+        "status" : "passed",
+        "duration" : 15
+      }
+    }, {
+      "keyword" : "Cuando",
+      "name" : "se crea el dueño con los siguientes datos:",
+      "result" : {
+        "status" : "passed",
+        "duration" : 182
+      },
+      "doc_string" : {
+        "content_type" : "json",
+        "value" : "    {\n      \"firstName\": \"Pascual\",\n      \"lastName\": \"Iniesta\",\n      \"telephone\": \"6085551023\",\n      \"address\": \"C/ Piruleta\",\n      \"city\": \"Valencia\"\n   }"
+      }
+    }, {
+      "keyword" : "Entonces",
+      "name" : "el código de respuesta HTTP es 201",
+      "result" : {
+        "status" : "passed",
+        "duration" : 1
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "el siguiente registro existe en la tabla de BBDD owners:",
+      "result" : {
+        "status" : "failed",
+        "duration" : 0,
+        "error_message" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+        "output" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat iti.kukumo.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat iti.kukumo.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat iti.kukumo.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat iti.kukumo.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat iti.kukumo.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat iti.kukumo.api.Kukumo.executePlan(Kukumo.java:330)\n\tat iti.kukumo.launcher.KukumoRunner.run(KukumoRunner.java:43)\n\tat iti.kukumo.launcher.KukumoLauncher.main(KukumoLauncher.java:52)\n"
+      },
+      "rows" : [ {
+        "cells" : [ "first_name", "last_name", "telephone", "address", "city" ]
+      }, {
+        "cells" : [ "Pascual", "Iniesta", "6085551023", "C/ Piruleta", "Valencio" ]
+      } ]
+    } ]
+  }, {
+    "keyword" : "Escenario",
+    "id" : "ID-3",
+    "name" : "Se elimina un dueño",
+    "tags" : [ {
+      "name" : "@definition"
+    } ],
+    "type" : "scenario",
+    "steps" : [ {
+      "keyword" : "Dada",
+      "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "la URL base http://localhost:9966/petclinic/api",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Y",
+      "name" : "el servicio REST '/owners'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Dado",
+      "name" : "un usuario identificado por '30'",
+      "result" : {
+        "status" : "passed",
+        "duration" : 0
+      }
+    }, {
+      "keyword" : "Cuando",
+      "name" : "se elimina el usuario",
+      "result" : {
+        "status" : "passed",
+        "duration" : 85
+      }
+    }, {
+      "keyword" : "Entonces",
+      "name" : "el código de respuesta HTTP es 404",
+      "result" : {
+        "status" : "passed",
+        "duration" : 1
+      }
+    } ]
+  } ]
+} ]

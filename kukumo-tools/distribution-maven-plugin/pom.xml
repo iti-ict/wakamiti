@@ -23,7 +23,7 @@
     <groupId>es.iti.commons</groupId>
     <artifactId>distribution-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <!-- additional information -->
     <name>Distribution Maven Plugin</name>

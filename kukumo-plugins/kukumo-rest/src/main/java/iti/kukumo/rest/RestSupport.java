@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -108,7 +107,7 @@ public class RestSupport {
     }
 
 
-    protected URI uri() {
+    protected String uri() {
         String base = baseURL.toString();
         if (base.endsWith("/")) {
             base = base.substring(0, base.length() - 1);
@@ -120,7 +119,7 @@ public class RestSupport {
         if (subject != null) {
             url.append("/").append(subject);
         }
-        return URI.create(url.toString());
+        return url.toString();
     }
 
 
@@ -131,14 +130,14 @@ public class RestSupport {
     }
 
 
-    protected void executeRequest(BiFunction<RequestSpecification, URI, Response> function) {
+    protected void executeRequest(BiFunction<RequestSpecification, String, Response> function) {
         this.response = function.apply(newRequest(), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
 
 
     protected void executeRequest(
-            BiFunction<RequestSpecification, URI, Response> function,
+            BiFunction<RequestSpecification, String, Response> function,
             String body
     ) {
         this.response = function.apply(newRequest().body(body), uri());
@@ -152,18 +151,11 @@ public class RestSupport {
     }
 
 
-    protected void assertSubjectDefined() {
-        //todo: make path parameterization more flexible
-        if (subject == null) {
-            //throw new KukumoException("Subject not defined");
-        }
-    }
-
     protected Map<String, String> tableToMap(DataTable dataTable) {
         if (dataTable.columns() != 2) {
             throw new KukumoException("Table must have 2 columns [key, value]");
         }
-        Map map = new LinkedHashMap();
+        Map<String,String> map = new LinkedHashMap<>();
         for (int i = 1; i < dataTable.rows(); i++) {
             map.put(dataTable.value(i, 0), dataTable.value(i, 1));
         }

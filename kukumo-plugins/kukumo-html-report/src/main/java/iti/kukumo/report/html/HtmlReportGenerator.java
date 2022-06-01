@@ -76,11 +76,12 @@ public class HtmlReportGenerator implements Reporter {
             ));
             parameters.put("localStyles", readStyles());
             parameters.put("plan", rootNode);
+            parameters.put("title",title);
             try (var writer = new FileWriter(output)) {
                 template("report.html.ftl").process(parameters, writer);
             }
         } catch (IOException | TemplateException e) {
-            Kukumo.LOGGER.error("Error generating HTML report: e", e.getMessage(), e);
+            Kukumo.LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
             e.printStackTrace();
         }
 

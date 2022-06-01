@@ -275,7 +275,7 @@ public class FilesStepContributorTest {
         }
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void moveToFileWhenSrcIsADirectoryWithError() throws IOException {
         // prepare
         File src = temporaryFolder.newFolder("src");
@@ -316,7 +316,7 @@ public class FilesStepContributorTest {
     /**
      * The method must create a destination folder and copy there the files in the source folder.
      *
-     * @throws IOException
+     * @throws IllegalArgumentException
      */
     @Test
     public void copyToDirWhenSrcIsAnExistentDirectoryAndDestIsANotExistentDirectoryWithSuccess() throws IOException {
@@ -476,7 +476,7 @@ public class FilesStepContributorTest {
         }
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void copyToFileWhenSrcIsADirectoryWithError() throws IOException {
         // prepare
         File src = temporaryFolder.newFolder("src");

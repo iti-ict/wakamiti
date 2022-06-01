@@ -7,11 +7,13 @@
 package iti.kukumo.examples.launcher.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
+import iti.kukumo.examples.launcher.dto.UserDTO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +24,19 @@ public class UserDAO {
     private EntityManager entityManager;
 
 
-    public List<User> getAllUsers() {
-        return entityManager.createQuery("select u from User u",User.class).getResultList();
+    public List<UserDTO> getAllUsers() {
+        return entityManager.createQuery("select u from User u",User.class).getResultList()
+            .stream()
+            .map(UserDTO::new)
+            .collect(Collectors.toList());
     }
 
-    public User getUserById(int id) {
+    public UserDTO getUserById(int id) {
         User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new EntityNotFoundException();
         }
-        return user;
+        return new UserDTO(user);
     }
 
     public boolean userExists(int id) {
@@ -39,26 +44,30 @@ public class UserDAO {
     }
 
     @Transactional
-    public User createUser(User user) {
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = new User();
+        user.firstName = userDTO.firstName;
+        user.lastName = userDTO.lastName;
         entityManager.persist(user);
-        return user;
+        return new UserDTO(user);
     }
 
     public void deleteUser(int id) {
-        User user = getUserById(id);
+        User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new EntityNotFoundException();
         }
         entityManager.remove(user);
     }
 
-    public User modifyUser(int id, User user) {
-        if (!userExists(id)) {
+    public UserDTO modifyUser(int id, UserDTO userDTO) {
+        User user = entityManager.find(User.class, id);
+        if (user == null) {
             throw new EntityNotFoundException();
         }
-        user.id = id;
-        return entityManager.merge(user);
-
+        user.firstName = userDTO.firstName;
+        user.lastName = userDTO.lastName;
+        return userDTO;
     }
 
 }

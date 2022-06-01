@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 ;
 import iti.kukumo.report.html.HtmlReportGeneratorConfig;
@@ -23,6 +24,7 @@ import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.report.html.HtmlReportGenerator;
 
+import static org.junit.Assert.assertEquals;
 
 
 public class TestHtmlReportGenerator {
@@ -39,8 +41,14 @@ public class TestHtmlReportGenerator {
             generator.setConfiguration(new HtmlReportGeneratorConfig()
                 .defaultConfiguration()
                 .appendProperty("htmlReport.output","target/kukumo.html")
+                .appendProperty("htmlReport.title", "Test Report Title")
             );
             generator.report(plan);
+
+            assertEquals(
+                Files.readString(Path.of("src/test/resources/kukumo.html")),
+                Files.readString(Path.of("target/kukumo.html"))
+            );
         }
     }
 }

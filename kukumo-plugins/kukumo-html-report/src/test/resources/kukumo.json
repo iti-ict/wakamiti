@@ -163,7 +163,7 @@
                   "keyword": "Y",
                   "name": "Paso de implementacion B3_2",
                   "result": "FAILED",
-                  "errorMessage": "Validación incorrecta"
+                  "errorMessage": "Validación incorrecta: <div class=\"other-modules\">Otros modulos</div>"
                 },
                 {
                   "nodeType": "STEP",

@@ -24,6 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-rest-l10n</artifactId>
+    <version>1.3.3</version>
 
     <!-- additional information -->
     <name>Kukumo::REST Steps (localization)</name>
