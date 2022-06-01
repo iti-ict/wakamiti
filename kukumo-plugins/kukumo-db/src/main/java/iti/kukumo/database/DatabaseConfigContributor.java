@@ -40,12 +40,14 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
 
     /* The CSV format name as specified at {@link CSVFormat} */
     public static final String DATABASE_CSV_FORMAT = "database.csv.format";
+    public static final String DATABASE_CSV_DELIMITER = "database.csv.delimiter";
 
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
         DATABASE_XLS_IGNORE_SHEET_PATTERN,  "#.*",
         DATABASE_NULL_SYMBOL,  "<null>",
-        DATABASE_CSV_FORMAT, "DEFAULT",
+        DATABASE_CSV_FORMAT, "Default",
+        DATABASE_CSV_DELIMITER, ",",
         DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, "false"
     );
 
@@ -76,6 +78,7 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
         configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class).ifPresent(contributor::setXlsIgnoreSheetRegex);
         configuration.get(DATABASE_NULL_SYMBOL, String.class).ifPresent(contributor::setNullSymbol);
         configuration.get(DATABASE_CSV_FORMAT, String.class).ifPresent(contributor::setCsvFormat);
+        configuration.get(DATABASE_CSV_DELIMITER, char.class).ifPresent(contributor::setCsvDelimiter);
         configuration.get(DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.class).ifPresent(contributor::setEnableCleanupUponCompletion);
 
         configuration.get(DATABASE_METADATA_CASE_SENSITIVITY, String.class)

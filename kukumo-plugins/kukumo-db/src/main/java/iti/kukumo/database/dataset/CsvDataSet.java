@@ -31,8 +31,8 @@ public class CsvDataSet extends DataSet {
     private CSVRecord currentRecord;
 
 
-    public CsvDataSet(String table, File file, String csvFormat, String nullSymbol) throws IOException {
-        this(table, file, CSVFormat.valueOf(csvFormat), nullSymbol);
+    public CsvDataSet(String table, File file, String csvFormat, char csvDelimiter, String nullSymbol) throws IOException {
+        this(table, file, CSVFormat.valueOf(csvFormat).withDelimiter(csvDelimiter), nullSymbol);
     }
 
 

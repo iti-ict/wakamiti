@@ -26,6 +26,7 @@ import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -67,12 +68,12 @@ public class SQLParser {
         return result.getSelectBody() == null ? Optional.empty() : Optional.of(result);
     }
 
-    public Select toSelect(DataSet dataSet) {
+    public Select toSelect(DataSet dataSet, Class[] types) {
         Select result = new Select();
         PlainSelect body = new PlainSelect();
         body.addSelectItems(new AllColumns());
         body.setFromItem(new Table(dataSet.table()));
-        body.setWhere(createWhere(dataSet.columns()));
+        body.setWhere(createWhere(dataSet.columns(), types));
         result.setSelectBody(body);
         return result;
     }
@@ -120,19 +121,24 @@ public class SQLParser {
         return new MultiAndExpression(result);
     }
 
-    public Expression createWhere(String[] columns) {
-        return createWhere(columns, true);
+    public Expression createWhere(String[] columns, Class[] types) {
+        return createWhere(columns, types, true);
     }
 
-    public Expression createWhere(String[] columns, boolean nullControl) {
+    public Expression createWhere(String[] columns, Class[] types, boolean nullControl) {
         List<Expression> expressions = Stream.of(columns)
-                .map(caseSensitivity::format)
                 .map(column -> {
                     EqualsTo exp = new EqualsTo();
-                    Function f = new Function();
-                    f.setName("trim");
-                    f.setParameters(new ExpressionList(new Column(column)));
-                    exp.setLeftExpression(f);
+                    Class<?> type = types[Arrays.asList(columns).indexOf(column)];
+                    column = caseSensitivity.format(column);
+                    if (String.class.isAssignableFrom(type)) {
+                        Function f = new Function();
+                        f.setName("trim");
+                        f.setParameters(new ExpressionList(new Column(column)));
+                        exp.setLeftExpression(f);
+                    } else {
+                        exp.setLeftExpression(new Column(column));
+                    }
                     exp.setRightExpression(new JdbcParameter());
                     return exp;
                 })
@@ -154,9 +160,9 @@ public class SQLParser {
         return select;
     }
 
-    public Select sqlSelectFrom(String table, String[] columns) {
+    public Select sqlSelectFrom(String table, String[] columns, Class[] types) {
         Select select = new Select();
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), createWhere(columns)));
+        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), createWhere(columns, types)));
         return select;
     }
 
@@ -180,24 +186,24 @@ public class SQLParser {
         return select;
     }
 
-    public Select sqlSelectCountFrom(String table, String[] columns) {
+    public Select sqlSelectCountFrom(String table, String[] columns, Class[] types) {
         Select select = new Select();
         Function count = new Function();
         count.setName("count");
         count.setAllColumns(true);
         SelectItem countAll = new SelectExpressionItem(count);
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, createWhere(columns)));
+        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, createWhere(columns, types)));
         return select;
     }
 
     public Delete sqlDeleteFrom(String table) {
-        return sqlDeleteFrom(table, null);
+        return sqlDeleteFrom(table, null, null);
     }
 
-    public Delete sqlDeleteFrom(String table, String[] columns) {
+    public Delete sqlDeleteFrom(String table, String[] columns, Class[] types) {
         Delete delete = new Delete();
         delete.setTable(new Table(caseSensitivity.format(table)));
-        if (columns != null && columns.length > 0) delete.setWhere(createWhere(columns));
+        if (columns != null && columns.length > 0) delete.setWhere(createWhere(columns, types));
         return delete;
     }
 
@@ -216,7 +222,7 @@ public class SQLParser {
         return insert;
     }
 
-    public Update sqlUpdateSet(DataSet dataSet, String[] columns) {
+    public Update sqlUpdateSet(DataSet dataSet, String[] columns, Class[] types) {
         Update update = new Update();
         update.setTable(new Table(caseSensitivity.format(dataSet.table())));
         List<String> setColumns = Stream.of(dataSet.columns())
@@ -224,7 +230,7 @@ public class SQLParser {
                 .collect(Collectors.toCollection(LinkedList::new));
         update.setColumns(setColumns.stream().map(Column::new).collect(Collectors.toCollection(LinkedList::new)));
         update.setExpressions(setColumns.stream().map(column -> new JdbcParameter()).collect(Collectors.toCollection(LinkedList::new)));
-        update.setWhere(createWhere(columns, false));
+        update.setWhere(createWhere(columns, types, false));
         return update;
     }
 

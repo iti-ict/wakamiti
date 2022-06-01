@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -42,15 +41,6 @@ import iti.kukumo.database.dataset.OoxmlDataSet;
 import iti.kukumo.util.KukumoLogger;
 import net.sf.jsqlparser.JSQLParserException;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
 
@@ -72,6 +62,7 @@ public class DatabaseStepContributor implements StepContributor {
     private String xlsIgnoreSheetRegex;
     private String nullSymbol;
     private String csvFormat;
+    private char csvDelimiter;
     private boolean enableCleanupUponCompletion;
 
 
@@ -106,6 +97,10 @@ public class DatabaseStepContributor implements StepContributor {
 
     public void setCsvFormat(String csvFormat) {
         this.csvFormat = csvFormat;
+    }
+
+    public void setCsvDelimiter(char csvDelimiter) {
+        this.csvDelimiter = csvDelimiter;
     }
 
 
@@ -161,7 +156,7 @@ public class DatabaseStepContributor implements StepContributor {
         value = "db.define.connection.parameters",
            args = { "url:text", "username:text", "password:text" }
     )
-    public void setConnectionParameters(String url, String username, String password) {
+    public void setConnectionParameters(String url, String username, String password) throws SQLException {
         LOGGER.debug(
             "Setting database connection parameters [url={}, username={}, password={}]",
             url,
@@ -169,6 +164,7 @@ public class DatabaseStepContributor implements StepContributor {
             password
         );
         this.connectionParameters.url(url).username(username).password(password);
+        this.releaseConnection();
     }
 
 
@@ -209,7 +205,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.insert.from.csv", args = { "csv:file", "table:word" })
     public void insertFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, csvDelimiter, nullSymbol)) {
             helper.deleteDataSet(dataSet, false);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
@@ -241,7 +237,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.delete.from.csv", args = { "csv:file", "table:word" })
     public void deleteFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, csvDelimiter, nullSymbol)) {
             helper.deleteDataSet(dataSet, enableCleanupUponCompletion);
         }
     }
@@ -362,7 +358,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, csvDelimiter, nullSymbol)) {
             helper.assertDataSetExists(dataSet);
         }
     }
@@ -503,7 +499,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.not.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileNotExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, csvDelimiter, nullSymbol)) {
             helper.assertDataSetNotExists(dataSet);
         }
     }
