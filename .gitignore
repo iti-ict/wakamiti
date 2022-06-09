@@ -1,6 +1,6 @@
 /.project
 /.idea
-/kukumo-project.iml
+/**/*.iml
 /.settings/
 /target/
 !/docs/**/target/
