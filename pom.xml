@@ -275,25 +275,20 @@
                 <version>1.2.7</version>
                 <executions>
                     <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>flatten</goal>
                         </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <flattenedPomFilename>.flattened-pom.xml</flattenedPomFilename>
-                            <updatePomFile>false</updatePomFile>
-                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- install using flattened pom, ,required since ${revision} is used -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <configuration>
-                    <pomFile>.flattened-pom.xml</pomFile>
-                </configuration>
             </plugin>
 
 
