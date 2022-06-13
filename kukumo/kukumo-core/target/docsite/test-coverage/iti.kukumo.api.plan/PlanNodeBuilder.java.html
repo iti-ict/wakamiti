@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanNodeBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api.plan</a> &gt; <span class="el_source">PlanNodeBuilder.java</span></div><h1>PlanNodeBuilder.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api.plan;
+
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import iti.kukumo.core.model.TreeNodeBuilder;
+
+
+public class PlanNodeBuilder extends TreeNodeBuilder&lt;PlanNodeBuilder&gt; {
+
+<span class="pc" id="L29">    private final List&lt;String&gt; description = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L30">    private final Set&lt;String&gt; tags = new HashSet&lt;&gt;();</span>
+<span class="pc" id="L31">    private final Map&lt;String, String&gt; properties = new HashMap&lt;&gt;();</span>
+
+    private NodeType nodeType;
+    private String language;
+    private String id;
+    private String source;
+    private String keyword;
+    private String name;
+<span class="pc" id="L39">    private String displayNamePattern = &quot;[{id}] {keyword} {name}&quot;;</span>
+<span class="pc" id="L40">    private Optional&lt;PlanNodeData&gt; data = Optional.empty();</span>
+    private Object underlyingModel;
+
+
+<span class="fc" id="L44">    public PlanNodeBuilder(NodeType nodeType) {</span>
+<span class="fc" id="L45">        this.nodeType = nodeType;</span>
+<span class="fc" id="L46">    }</span>
+
+
+    public PlanNodeBuilder(NodeType nodeType, Collection&lt;PlanNodeBuilder&gt; children) {
+<span class="nc" id="L50">        super(children);</span>
+<span class="nc" id="L51">        this.nodeType = nodeType;</span>
+<span class="nc" id="L52">    }</span>
+
+
+
+    public String name() {
+<span class="fc" id="L57">        return name;</span>
+    }
+
+
+    public String keyword() {
+<span class="fc" id="L62">        return keyword;</span>
+    }
+
+
+    public String id() {
+<span class="fc" id="L67">        return id;</span>
+    }
+
+
+    public String language() {
+<span class="fc" id="L72">        return language;</span>
+    }
+
+
+    public NodeType nodeType() {
+<span class="fc" id="L77">        return nodeType;</span>
+    }
+
+
+    public List&lt;String&gt; description() {
+<span class="fc" id="L82">        return description;</span>
+    }
+
+
+    public Set&lt;String&gt; tags() {
+<span class="fc" id="L87">        return tags;</span>
+    }
+
+
+    public String source() {
+<span class="fc" id="L92">        return source;</span>
+    }
+
+
+    public Map&lt;String, String&gt; properties() {
+<span class="fc" id="L97">        return properties;</span>
+    }
+
+
+    public String displayNamePattern() {
+<span class="nc" id="L102">        return displayNamePattern;</span>
+    }
+
+
+    public String displayName() {
+<span class="fc" id="L107">        String displayName = displayNamePattern;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        displayName = displayName.replace(&quot;{id}&quot;, id == null ? &quot;&quot; : id);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        displayName = displayName.replace(&quot;{keyword}&quot;, keyword == null ? &quot;&quot; : keyword);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        displayName = displayName.replace(&quot;{name}&quot;, name == null ? &quot;&quot; : name);</span>
+<span class="fc" id="L111">        return displayName;</span>
+    }
+
+
+    public Optional&lt;PlanNodeData&gt; data() {
+<span class="fc" id="L116">        return data;</span>
+    }
+
+
+    public Object getUnderlyingModel() {
+<span class="fc" id="L121">        return underlyingModel;</span>
+    }
+
+
+    public PlanNodeBuilder setId(String id) {
+<span class="fc" id="L126">        this.id = id;</span>
+<span class="fc" id="L127">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setKeyword(String keyword) {
+<span class="fc" id="L132">        this.keyword = keyword;</span>
+<span class="fc" id="L133">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setLanguage(String language) {
+<span class="fc" id="L138">        this.language = language;</span>
+<span class="fc" id="L139">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setName(String name) {
+<span class="fc" id="L144">        this.name = name;</span>
+<span class="fc" id="L145">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setNodeType(NodeType nodeType) {
+<span class="fc" id="L150">        this.nodeType = nodeType;</span>
+<span class="fc" id="L151">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setDisplayNamePattern(String displayNamePattern) {
+<span class="fc" id="L156">        this.displayNamePattern = displayNamePattern;</span>
+<span class="fc" id="L157">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setSource(String source) {
+<span class="fc" id="L162">        this.source = source;</span>
+<span class="fc" id="L163">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder addTags(Collection&lt;String&gt; tags) {
+<span class="fc" id="L168">        this.tags.addAll(tags);</span>
+<span class="fc" id="L169">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder addDescription(Collection&lt;String&gt; description) {
+<span class="fc" id="L174">        this.description.addAll(description);</span>
+<span class="fc" id="L175">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder addProperties(Map&lt;String, String&gt; properties) {
+<span class="fc" id="L180">        this.properties.putAll(properties);</span>
+<span class="fc" id="L181">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder addProperty(String key, String value) {
+<span class="fc" id="L186">        this.properties.put(key, value);</span>
+<span class="fc" id="L187">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setUnderlyingModel(Object gherkinModel) {
+<span class="fc" id="L192">        this.underlyingModel = gherkinModel;</span>
+<span class="fc" id="L193">        return this;</span>
+    }
+
+
+    public PlanNodeBuilder setData(PlanNodeData data) {
+<span class="fc" id="L198">        this.data = Optional.ofNullable(data);</span>
+<span class="fc" id="L199">        return this;</span>
+    }
+
+
+    @Override
+    public PlanNodeBuilder copy() {
+<span class="fc" id="L205">        return copy(new PlanNodeBuilder(nodeType));</span>
+    }
+
+
+    @Override
+    protected PlanNodeBuilder copy(PlanNodeBuilder copy) {
+<span class="fc" id="L211">        copy.setLanguage(this.language);</span>
+<span class="fc" id="L212">        copy.setId(this.id);</span>
+<span class="fc" id="L213">        copy.setKeyword(this.keyword);</span>
+<span class="fc" id="L214">        copy.setName(this.name);</span>
+<span class="fc" id="L215">        copy.setDisplayNamePattern(this.displayNamePattern);</span>
+<span class="fc" id="L216">        copy.addTags(this.tags);</span>
+<span class="fc" id="L217">        copy.setSource(this.source());</span>
+<span class="fc" id="L218">        copy.addDescription(this.description);</span>
+<span class="fc" id="L219">        copy.properties.putAll(this.properties);</span>
+<span class="fc" id="L220">        copy.data = this.data.map(PlanNodeData::copy);</span>
+<span class="fc" id="L221">        super.copy(copy);</span>
+<span class="fc" id="L222">        return copy;</span>
+    }
+
+
+
+    public PlanNode build() {
+<span class="fc" id="L228">        PlanNode node = new PlanNode(</span>
+<span class="fc" id="L229">            this.nodeType(),</span>
+<span class="fc" id="L230">            this.children().map(PlanNodeBuilder::build).collect(Collectors.toList()))</span>
+        ;
+<span class="fc" id="L232">        node.description = Collections.unmodifiableList(this.description());</span>
+<span class="fc" id="L233">        node.tags = Collections.unmodifiableSet(this.tags());</span>
+<span class="fc" id="L234">        node.properties = Collections.unmodifiableMap(this.properties());</span>
+<span class="fc" id="L235">        node.language = this.language();</span>
+<span class="fc" id="L236">        node.id = this.id();</span>
+<span class="fc" id="L237">        node.source = this.source();</span>
+<span class="fc" id="L238">        node.keyword = this.keyword();</span>
+<span class="fc" id="L239">        node.name = this.name();</span>
+<span class="fc" id="L240">        node.displayName = this.displayName();</span>
+<span class="fc" id="L241">        node.data = this.data();</span>
+<span class="fc" id="L242">        return node;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

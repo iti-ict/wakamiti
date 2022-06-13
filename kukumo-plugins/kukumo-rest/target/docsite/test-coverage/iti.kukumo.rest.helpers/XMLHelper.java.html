@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XMLHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::REST Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.rest.helpers</a> &gt; <span class="el_source">XMLHelper.java</span></div><h1>XMLHelper.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.rest.helpers;
+
+
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.datatypes.Assertion;
+import iti.kukumo.util.MatcherAssertion;
+import org.hamcrest.Matcher;
+
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
+import iti.commons.jext.Extension;
+import iti.kukumo.rest.ContentTypeHelper;
+import iti.kukumo.rest.MatchMode;
+import org.xml.sax.*;
+import org.xml.sax.helpers.XMLFilterImpl;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.StringReader;
+
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;rest-xml-helper&quot;, extensionPoint = &quot;iti.kukumo.rest.ContentTypeHelper&quot;)
+public class XMLHelper extends JSONHelper implements ContentTypeHelper {
+
+<span class="fc" id="L43">    private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);</span>
+    private final SchemaFactory schemaFactory;
+
+
+<span class="fc" id="L47">    public XMLHelper() {</span>
+        try {
+<span class="fc" id="L49">            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);</span>
+            // to be compliant, completely disable DOCTYPE declaration:
+<span class="fc" id="L51">            schemaFactory.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;, true);</span>
+            // or prohibit the use of all protocols by external entities:
+<span class="fc" id="L53">            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, &quot;&quot;);</span>
+<span class="fc" id="L54">            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, &quot;&quot;);</span>
+<span class="nc" id="L55">        } catch (Exception e) {</span>
+<span class="nc" id="L56">            throw new KukumoException(e);</span>
+<span class="fc" id="L57">        }</span>
+<span class="fc" id="L58">    }</span>
+
+
+    @Override
+    public ContentType contentType() {
+<span class="fc" id="L63">        return ContentType.XML;</span>
+    }
+
+
+    @Override
+    public void assertContent(String expected, String actual, MatchMode matchMode) {
+<span class="fc" id="L69">       diff.assertContent(expected, actual, matchMode);</span>
+<span class="fc" id="L70">    }</span>
+
+
+    @Override
+    public &lt;T&gt; void assertFragment(
+        String fragment,
+        ValidatableResponse response,
+        Class&lt;T&gt; dataType,
+        Assertion&lt;T&gt; assertion
+    ) {
+<span class="fc" id="L80">        response.body(fragment, MatcherAssertion.asMatcher(assertion));</span>
+<span class="fc" id="L81">    }</span>
+
+
+    @Override
+    public void assertContentSchema(String expectedSchema, String content) {
+        try {
+<span class="fc" id="L87">            Schema schema = schemaFactory.newSchema(new SAXSource(new InputSource(new StringReader(expectedSchema))));</span>
+<span class="fc" id="L88">            Validator validator = schema.newValidator();</span>
+            try {
+<span class="fc" id="L90">                validator.validate(new StreamSource(new StringReader(content)));</span>
+            }
+<span class="nc" id="L92">            catch (SAXParseException e) {</span>
+<span class="nc" id="L93">                throw new AssertionError(e.getMessage());</span>
+<span class="fc" id="L94">            }</span>
+<span class="nc" id="L95">        } catch (Exception e) {</span>
+<span class="nc" id="L96">            throw new KukumoException(e);</span>
+<span class="fc" id="L97">        }</span>
+
+<span class="fc" id="L99">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

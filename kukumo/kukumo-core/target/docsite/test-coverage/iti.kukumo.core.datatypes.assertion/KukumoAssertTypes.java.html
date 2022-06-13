@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KukumoAssertTypes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.datatypes.assertion</a> &gt; <span class="el_source">KukumoAssertTypes.java</span></div><h1>KukumoAssertTypes.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.datatypes.assertion;
+
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import iti.kukumo.util.MatcherAssertion;
+import org.hamcrest.Matcher;
+
+import iti.commons.jext.Extension;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.datatypes.Assertion;
+import iti.kukumo.api.extensions.DataTypeContributor;
+import iti.kukumo.core.datatypes.KukumoDataTypeBase;
+import iti.kukumo.core.datatypes.KukumoNumberDataType;
+import iti.kukumo.util.ThrowableFunction;
+
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;assertion-types&quot;, version = &quot;1.1&quot;)
+<span class="fc" id="L31">public class KukumoAssertTypes implements DataTypeContributor {</span>
+
+    @Override
+    public List&lt;KukumoDataType&lt;?&gt;&gt; contributeTypes() {
+<span class="fc" id="L35">        List&lt;KukumoDataType&lt;?&gt;&gt; types = new ArrayList&lt;&gt;();</span>
+        // functional datatypes
+<span class="fc" id="L37">        types.add(binaryNumberAssert(&quot;integer-assertion&quot;, false, Number::intValue));</span>
+<span class="pc" id="L38">        types.add(binaryBigDecimalAssert(&quot;decimal-assertion&quot;, true, x -&gt; x));</span>
+<span class="fc" id="L39">        types.add(binaryStringAssert(&quot;text-assertion&quot;));</span>
+        // java datatypes
+<span class="fc" id="L41">        types.add(binaryNumberAssert(&quot;short-assertion&quot;, false, Number::shortValue));</span>
+<span class="fc" id="L42">        types.add(binaryNumberAssert(&quot;int-assertion&quot;, false, Number::intValue));</span>
+<span class="fc" id="L43">        types.add(binaryNumberAssert(&quot;long-assertion&quot;, false, Number::longValue));</span>
+<span class="fc" id="L44">        types.add(binaryBigDecimalAssert(&quot;biginteger-assertion&quot;, true, BigDecimal::toBigInteger));</span>
+<span class="fc" id="L45">        types.add(binaryBigDecimalAssert(&quot;float-assertion&quot;, true, BigDecimal::floatValue));</span>
+<span class="fc" id="L46">        types.add(binaryBigDecimalAssert(&quot;double-assertion&quot;, true, BigDecimal::doubleValue));</span>
+<span class="pc" id="L47">        types.add(binaryBigDecimalAssert(&quot;bigdecimal-assertion&quot;, true, x -&gt; x));</span>
+<span class="fc" id="L48">        return types;</span>
+    }
+
+
+    public static &lt;T extends Comparable&lt;T&gt;&gt; KukumoAssertDataType binaryNumberAssert(
+        String name,
+        boolean includeDecimals,
+        ThrowableFunction&lt;Number, T&gt; mapper
+    ) {
+<span class="fc" id="L57">        return new KukumoAssertDataType(</span>
+            name,
+            &quot;matcher.number&quot;,
+<span class="fc" id="L60">            BinaryNumberAssertProvider.createFromNumber(</span>
+<span class="fc" id="L61">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
+                mapper
+            ),
+            new UnaryNumberAssertProvider()
+        );
+    }
+
+
+    public static &lt;T extends Comparable&lt;T&gt;&gt; KukumoAssertDataType binaryBigDecimalAssert(
+        String name,
+        boolean includeDecimals,
+        ThrowableFunction&lt;BigDecimal, T&gt; mapper
+    ) {
+<span class="fc" id="L74">        return new KukumoAssertDataType(</span>
+            name,
+            &quot;matcher.number&quot;,
+<span class="fc" id="L77">            BinaryNumberAssertProvider.createFromBigDecimal(</span>
+<span class="fc" id="L78">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
+                mapper
+            ),
+            new UnaryNumberAssertProvider()
+        );
+    }
+
+
+    public static KukumoAssertDataType binaryStringAssert(String name) {
+<span class="fc" id="L87">        return new KukumoAssertDataType(</span>
+            name,
+            &quot;matcher.string&quot;,
+            new BinaryStringAssertProvider(),
+            new UnaryStringAssertProvider()
+        );
+    }
+
+
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    private static class KukumoAssertDataType extends KukumoDataTypeBase&lt;Assertion&gt; {
+        public KukumoAssertDataType(
+            String name,
+            String prefix,
+            AbstractAssertProvider... matcherProviders
+        ) {
+<span class="fc" id="L103">            super(</span>
+                name,
+                Assertion.class,
+<span class="fc" id="L106">                locale -&gt; &quot;.*&quot;,</span>
+<span class="fc" id="L107">                locale -&gt; AbstractAssertProvider.getAllExpressions(locale,prefix),</span>
+<span class="fc" id="L108">                parseProvider(matcherProviders)</span>
+            );
+<span class="fc" id="L110">        }</span>
+    }
+
+
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    protected static KukumoDataTypeBase.LocaleTypeParser&lt;Assertion&gt; parseProvider(
+        AbstractAssertProvider[] assertProviders
+    ) {
+<span class="fc" id="L118">        return locale -&gt; expression -&gt; {</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            for (AbstractAssertProvider assertProvider : assertProviders) {</span>
+<span class="fc" id="L120">                Optional&lt;Matcher&lt;?&gt;&gt; matcher = assertProvider</span>
+<span class="fc" id="L121">                    .matcherFromExpression(locale, expression);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">                if (matcher.isPresent()) {</span>
+<span class="fc" id="L123">                    return adapt(matcher.get());</span>
+                }
+            }
+<span class="nc" id="L126">            return null;</span>
+        };
+    }
+
+
+
+    private static &lt;T&gt; Assertion&lt;T&gt; adapt(Matcher&lt;T&gt; matcher) {
+<span class="fc" id="L133">        return new MatcherAssertion&lt;&gt;(matcher);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

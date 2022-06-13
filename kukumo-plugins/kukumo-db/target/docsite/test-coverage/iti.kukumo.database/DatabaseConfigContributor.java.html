@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseConfigContributor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::Database Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.database</a> &gt; <span class="el_source">DatabaseConfigContributor.java</span></div><h1>DatabaseConfigContributor.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.database;
+
+
+import imconfig.Configuration;
+import imconfig.Configurer;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ConfigContributor;
+
+
+@Extension(
+    provider = &quot;iti.kukumo&quot;,
+    name = &quot;database-step-config&quot;,
+    version = &quot;1.1&quot;,
+    extensionPoint = &quot;iti.kukumo.api.extensions.ConfigContributor&quot;
+)
+<span class="fc" id="L25">public class DatabaseConfigContributor implements ConfigContributor&lt;DatabaseStepContributor&gt; {</span>
+
+    public static final String DATABASE_CONNECTION_URL = &quot;database.connection.url&quot;;
+    public static final String DATABASE_CONNECTION_USERNAME = &quot;database.connection.username&quot;;
+    public static final String DATABASE_CONNECTION_PASSWORD = &quot;database.connection.password&quot;;
+    public static final String DATABASE_CONNECTION_DRIVER = &quot;database.connection.driver&quot;;
+
+    public static final String DATABASE_METADATA_SCHEMA = &quot;database.metadata.schema&quot;;
+    public static final String DATABASE_METADATA_CATALOG = &quot;database.metadata.catalog&quot;;
+    public static final String DATABASE_METADATA_CASE_SENSITIVITY = &quot;database.metadata.caseSensitivity&quot;;
+
+    public static final String DATABASE_NULL_SYMBOL = &quot;database.nullSymbol&quot;;
+    public static final String DATABASE_ENABLE_CLEANUP_UPON_COMPLETION = &quot;database.enableCleanupUponCompletion&quot;;
+
+    public static final String DATABASE_XLS_IGNORE_SHEET_PATTERN = &quot;database.xls.ignoreSheetPattern&quot;;
+
+    /* The CSV format name as specified at {@link CSVFormat} */
+    public static final String DATABASE_CSV_FORMAT = &quot;database.csv.format&quot;;
+
+
+<span class="fc" id="L45">    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(</span>
+        DATABASE_XLS_IGNORE_SHEET_PATTERN,  &quot;#.*&quot;,
+        DATABASE_NULL_SYMBOL,  &quot;&lt;null&gt;&quot;,
+        DATABASE_CSV_FORMAT, &quot;DEFAULT&quot;,
+        DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, &quot;false&quot;
+    );
+
+    @Override
+    public boolean accepts(Object contributor) {
+<span class="fc" id="L54">        return contributor instanceof DatabaseStepContributor;</span>
+    }
+
+    @Override
+    public Configuration defaultConfiguration() {
+<span class="fc" id="L59">        return DEFAULTS;</span>
+    }
+
+    @Override
+    public Configurer&lt;DatabaseStepContributor&gt; configurer() {
+<span class="fc" id="L64">        return this::configure;</span>
+    }
+
+    private void configure(DatabaseStepContributor contributor, Configuration configuration) {
+
+<span class="fc" id="L69">        ConnectionParameters connectionParameters = contributor.getConnectionParameters();</span>
+<span class="fc" id="L70">        configuration.get(DATABASE_CONNECTION_URL, String.class).ifPresent(connectionParameters::url);</span>
+<span class="fc" id="L71">        configuration.get(DATABASE_CONNECTION_USERNAME, String.class).ifPresent(connectionParameters::username);</span>
+<span class="fc" id="L72">        configuration.get(DATABASE_CONNECTION_PASSWORD, String.class).ifPresent(connectionParameters::password);</span>
+<span class="fc" id="L73">        configuration.get(DATABASE_CONNECTION_DRIVER, String.class).ifPresent(connectionParameters::driver);</span>
+<span class="fc" id="L74">        configuration.get(DATABASE_METADATA_SCHEMA, String.class).ifPresent(connectionParameters::schema);</span>
+<span class="fc" id="L75">        configuration.get(DATABASE_METADATA_CATALOG, String.class).ifPresent(connectionParameters::catalog);</span>
+<span class="fc" id="L76">        configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class).ifPresent(contributor::setXlsIgnoreSheetRegex);</span>
+<span class="fc" id="L77">        configuration.get(DATABASE_NULL_SYMBOL, String.class).ifPresent(contributor::setNullSymbol);</span>
+<span class="fc" id="L78">        configuration.get(DATABASE_CSV_FORMAT, String.class).ifPresent(contributor::setCsvFormat);</span>
+<span class="fc" id="L79">        configuration.get(DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.class).ifPresent(contributor::setEnableCleanupUponCompletion);</span>
+
+<span class="fc" id="L81">        configuration.get(DATABASE_METADATA_CASE_SENSITIVITY, String.class)</span>
+<span class="fc" id="L82">            .map(String::toUpperCase)</span>
+<span class="fc" id="L83">            .map(CaseSensitivity::valueOf)</span>
+<span class="fc" id="L84">            .ifPresent(contributor::setCaseSensitivity);</span>
+
+<span class="fc" id="L86">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

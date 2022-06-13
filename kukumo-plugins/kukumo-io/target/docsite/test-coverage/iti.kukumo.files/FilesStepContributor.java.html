@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FilesStepContributor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::Files Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.files</a> &gt; <span class="el_source">FilesStepContributor.java</span></div><h1>FilesStepContributor.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.files;
+
+import iti.commons.jext.Extension;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.SetUp;
+import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.annotations.TearDown;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.DataTable;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.util.KukumoLogger;
+import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Assertions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.time.temporal.ValueRange;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;files-steps&quot;, version = &quot;1.1&quot;)
+@I18nResource(&quot;iti_kukumo_kukumo-files&quot;)
+<span class="fc" id="L34">public class FilesStepContributor implements StepContributor {</span>
+
+<span class="fc" id="L36">    private static final Logger LOGGER = KukumoLogger</span>
+<span class="fc" id="L37">            .of(LoggerFactory.getLogger(&quot;iti.kukumo.files&quot;));</span>
+
+<span class="fc" id="L39">    private FilesHelper helper = new FilesHelper();</span>
+
+    private Long timeout;
+    private boolean enableCleanupUponCompletion;
+<span class="fc" id="L43">    private Map&lt;Path, Path&gt; links = new LinkedHashMap&lt;&gt;();</span>
+
+    @SetUp
+    public void setUp() {
+<span class="fc" id="L47">        links.forEach(helper::createSymLink);</span>
+<span class="fc" id="L48">    }</span>
+
+    @TearDown
+    public void cleanUp() throws IOException {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (!enableCleanupUponCompletion) {</span>
+<span class="nc" id="L53">            return;</span>
+        }
+<span class="fc" id="L55">        LOGGER.debug(&quot;Performing clean-up files operations...&quot;);</span>
+<span class="fc" id="L56">        helper.cleanup();</span>
+<span class="fc" id="L57">        LOGGER.debug(&quot;Clean-up files finished&quot;);</span>
+<span class="fc" id="L58">    }</span>
+
+    @Step(value = &quot;io.define.timeout&quot;, args = {&quot;value:long&quot;})
+    public void setTimeout(Long value) {
+<span class="nc" id="L62">        LOGGER.debug(&quot;Setting timeout [{}]&quot;, value);</span>
+<span class="nc" id="L63">        this.timeout = value;</span>
+<span class="nc" id="L64">    }</span>
+
+    public void setEnableCleanupUponCompletion(boolean flag) {
+<span class="fc" id="L67">        this.enableCleanupUponCompletion = flag;</span>
+<span class="fc" id="L68">    }</span>
+
+    public void setLinks(Map&lt;Path, Path&gt; links) {
+<span class="fc" id="L71">        LOGGER.debug(&quot;Setting links {}&quot;, links);</span>
+<span class="fc" id="L72">        this.links.putAll(links);</span>
+<span class="fc" id="L73">    }</span>
+
+    @Step(value = &quot;io.action.move.file&quot;, args = {&quot;src:file&quot;, &quot;dest:file&quot;})
+    public void moveToFile(File src, File dest) throws IOException {
+<span class="fc" id="L77">        LOGGER.debug(</span>
+                &quot;Moving {} [{}] to file [{}]&quot;,
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                src.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="fc" id="L80">                src.getAbsolutePath(),</span>
+<span class="fc" id="L81">                dest.getAbsolutePath()</span>
+        );
+
+        try {
+<span class="fc" id="L85">            helper.moveToFile(src, dest);</span>
+<span class="fc" id="L86">        } catch (FilesHelperException e) {</span>
+<span class="fc" id="L87">            throw (IOException) e.getCause();</span>
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">    }</span>
+
+    @Step(value = &quot;io.action.move.dir&quot;, args = {&quot;src:file&quot;, &quot;dest:file&quot;})
+    public void moveToDir(File src, File dest) throws IOException {
+<span class="fc" id="L93">        LOGGER.debug(</span>
+                &quot;Moving {} [{}] to directory [{}]&quot;,
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                src.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="fc" id="L96">                src.getAbsolutePath(),</span>
+<span class="fc" id="L97">                dest.getAbsolutePath()</span>
+        );
+
+        try {
+<span class="fc" id="L101">            helper.moveToDir(src, dest);</span>
+<span class="nc" id="L102">        } catch (FilesHelperException e) {</span>
+<span class="nc" id="L103">            throw (IOException) e.getCause();</span>
+<span class="fc" id="L104">        }</span>
+<span class="fc" id="L105">    }</span>
+
+    @Step(value = &quot;io.action.copy.file&quot;, args = {&quot;src:file&quot;, &quot;dest:file&quot;})
+    public void copyToFile(File src, File dest) throws IOException {
+<span class="fc" id="L109">        LOGGER.debug(</span>
+                &quot;Copying {} [{}] to file [{}]&quot;,
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                src.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="fc" id="L112">                src.getAbsolutePath(),</span>
+<span class="fc" id="L113">                dest.getAbsolutePath()</span>
+        );
+
+        try {
+<span class="fc" id="L117">            helper.copyToFile(src, dest);</span>
+<span class="fc" id="L118">        } catch (FilesHelperException e) {</span>
+<span class="fc" id="L119">            throw (IOException) e.getCause();</span>
+<span class="fc" id="L120">        }</span>
+<span class="fc" id="L121">    }</span>
+
+    @Step(value = &quot;io.action.copy.dir&quot;, args = {&quot;src:file&quot;, &quot;dest:file&quot;})
+    public void copyToDir(File src, File dest) throws IOException {
+<span class="fc" id="L125">        LOGGER.debug(</span>
+                &quot;Copying {} [{}] to directory [{}]&quot;,
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                src.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="fc" id="L128">                src.getAbsolutePath(),</span>
+<span class="fc" id="L129">                dest.getAbsolutePath()</span>
+        );
+
+        try {
+<span class="fc" id="L133">            helper.copyToDir(src, dest);</span>
+<span class="nc" id="L134">        } catch (FilesHelperException e) {</span>
+<span class="nc" id="L135">            throw (IOException) e.getCause();</span>
+<span class="fc" id="L136">        }</span>
+<span class="fc" id="L137">    }</span>
+
+    @Step(value = &quot;io.action.delete&quot;, args = {&quot;file&quot;})
+    public void delete(File file) throws IOException {
+<span class="fc" id="L141">        LOGGER.debug(</span>
+                &quot;Deleting {} [{}]&quot;,
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                file.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="fc" id="L144">                file.getAbsolutePath()</span>
+        );
+
+        try {
+<span class="fc" id="L148">            helper.delete(file);</span>
+<span class="nc" id="L149">        } catch (FilesHelperException e) {</span>
+<span class="nc" id="L150">            throw (IOException) e.getCause();</span>
+<span class="fc" id="L151">        }</span>
+<span class="fc" id="L152">    }</span>
+
+    @Step(value = &quot;io.action.wait.file.deletion&quot;, args = {&quot;file&quot;})
+    public void waitForFileDeletion(File file) throws IOException, InterruptedException, TimeoutException {
+<span class="nc" id="L156">        LOGGER.debug(</span>
+                &quot;Waiting for {} [{}] deletion&quot;,
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                file.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="nc" id="L159">                file.getAbsolutePath()</span>
+        );
+
+<span class="nc" id="L162">        helper.waitForFile(file, StandardWatchEventKinds.ENTRY_DELETE, timeout);</span>
+<span class="nc" id="L163">    }</span>
+
+    @Step(value = &quot;io.action.wait.file.creation&quot;, args = {&quot;file&quot;})
+    public void waitForFileCreation(File file) throws IOException, InterruptedException, TimeoutException {
+<span class="nc" id="L167">        LOGGER.debug(</span>
+                &quot;Waiting for {} [{}] creation&quot;,
+<span class="nc bnc" id="L169" title="All 2 branches missed.">                file.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="nc" id="L170">                file.getAbsolutePath()</span>
+        );
+
+<span class="nc" id="L173">        helper.waitForFile(file, StandardWatchEventKinds.ENTRY_CREATE, timeout);</span>
+<span class="nc" id="L174">    }</span>
+
+    @Step(value = &quot;io.action.wait.file.modification&quot;, args = {&quot;file&quot;})
+    public void waitForFileModification(File file) throws IOException, InterruptedException, TimeoutException {
+<span class="nc" id="L178">        LOGGER.debug(</span>
+                &quot;Waiting for {} [{}] modification&quot;,
+<span class="nc bnc" id="L180" title="All 2 branches missed.">                file.isFile() ? &quot;file&quot; : &quot;directory&quot;,</span>
+<span class="nc" id="L181">                file.getAbsolutePath()</span>
+        );
+
+<span class="nc" id="L184">        helper.waitForFile(file, StandardWatchEventKinds.ENTRY_MODIFY, timeout);</span>
+<span class="nc" id="L185">    }</span>
+
+    @Step(value = &quot;io.assert.file.exists&quot;, args = {&quot;file&quot;})
+    public void checkExists(File file) {
+<span class="fc" id="L189">        Assertions.assertThat(file.exists()).as(&quot;The file must exist&quot;).isTrue();</span>
+<span class="fc" id="L190">    }</span>
+
+    @Step(value = &quot;io.assert.file.not.exists&quot;, args = {&quot;file&quot;})
+    public void checkNotExists(File file) {
+<span class="fc" id="L194">        Assertions.assertThat(file.exists()).as(&quot;The file mustn't exist&quot;).isFalse();</span>
+<span class="fc" id="L195">    }</span>
+
+    @Step(value = &quot;io.assert.file.contains.document&quot;, args = {&quot;file&quot;})
+    public void checkContainsText(File file, Document document) throws IOException {
+<span class="fc" id="L199">        Assertions.assertThat(FileUtils.readFileToString(file, &quot;UTF-8&quot;).trim())</span>
+<span class="fc" id="L200">                .isEqualTo(document.getContent().trim());</span>
+<span class="fc" id="L201">    }</span>
+
+    @Step(value = &quot;io.assert.file.contains.table&quot;, args = {&quot;file&quot;})
+    public void checkContainsTable(File file, DataTable table) throws IOException {
+<span class="fc" id="L205">        DataTableHelper helper = new DataTableHelper(table);</span>
+<span class="fc" id="L206">        String content = FileUtils.readFileToString(file, &quot;UTF-8&quot;).trim();</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        for (int row = 0; row &lt; helper.count(); row++) {</span>
+<span class="fc" id="L208">            ValueRange range = helper.getRange(row);</span>
+<span class="fc" id="L209">            Assertions.assertThat(content.substring((int) range.getMinimum(), (int) range.getMaximum()))</span>
+<span class="fc" id="L210">                    .as(&quot;The value of row %s is not as expected&quot;, row + 1)</span>
+<span class="fc" id="L211">                    .isEqualTo(helper.getExpectedValue(row).trim());</span>
+        }
+<span class="fc" id="L213">    }</span>
+
+    @Step(value = &quot;io.assert.file.length&quot;, args = {&quot;file&quot;, &quot;chars:int&quot;})
+    public void checkFileLength(File file, Integer chars) {
+<span class="nc" id="L217">        Assertions.assertThat(file.length()).isEqualTo(chars);</span>
+<span class="nc" id="L218">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClasspathAgent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api</a> &gt; <span class="el_source">ClasspathAgent.java</span></div><h1>ClasspathAgent.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api;
+
+
+import java.lang.instrument.Instrumentation;
+import java.util.jar.JarFile;
+
+
+<span class="nc" id="L17">public class ClasspathAgent {</span>
+
+    public static Instrumentation instrumentation;
+
+
+    public static void premain(String args, Instrumentation instrumentation) {
+<span class="nc" id="L23">        ClasspathAgent.instrumentation = instrumentation;</span>
+<span class="nc" id="L24">    }</span>
+
+
+    public static void agentmain(String args, Instrumentation instrumentation) {
+<span class="nc" id="L28">        ClasspathAgent.instrumentation = instrumentation;</span>
+<span class="nc" id="L29">    }</span>
+
+
+    public static void appendJarFile(JarFile file) {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (instrumentation == null) {</span>
+<span class="nc" id="L34">            throw new IllegalStateException(</span>
+            &quot;ClasspathAgent was not instrumentialized.\n&quot;+
+            &quot;You must include the following in the MANIFEST.MF file of the jar with the main class:\n&quot;+
+            &quot;Launcher-Agent-Class: iti.commons.maven.fetcher.ClasspathAgent\n&quot;+
+            &quot;Agent-Class: iti.commons.maven.fetcher.ClasspathAgent\n&quot;+
+            &quot;Premain-Class: iti.commons.maven.fetcher.ClasspathAgent\n&quot;
+            );
+        }
+<span class="nc" id="L42">        instrumentation.appendToSystemClassLoaderSearch(file);</span>
+<span class="nc" id="L43">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

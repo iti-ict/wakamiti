@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestStepContributor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::REST Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.rest</a> &gt; <span class="el_source">RestStepContributor.java</span></div><h1>RestStepContributor.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.rest;
+
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.datatypes.Assertion;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.DataTable;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.util.MatcherAssertion;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
+
+
+@I18nResource(&quot;iti_kukumo_kukumo-rest&quot;)
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;rest-steps&quot;, version = &quot;1.1&quot;)
+<span class="fc" id="L40">public class RestStepContributor extends RestSupport implements StepContributor {</span>
+
+
+    @Step(value = &quot;rest.define.contentType&quot;, args = &quot;word&quot;)
+    public void setContentType(String contentType) {
+<span class="fc" id="L45">        this.requestContentType = parseContentType(contentType);</span>
+<span class="fc" id="L46">    }</span>
+
+    @Step(value = &quot;rest.define.baseURL&quot;, args = &quot;url&quot;)
+    public void setBaseURL(URL url) {
+<span class="fc" id="L50">        this.baseURL = url;</span>
+<span class="fc" id="L51">    }</span>
+
+    @Step(value = &quot;rest.define.service&quot;)
+    public void setService(String service) {
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        this.path = (service.startsWith(&quot;/&quot;) ? service.substring(1) : service);</span>
+<span class="fc" id="L56">    }</span>
+
+    @Step(&quot;rest.define.subject&quot;)
+    public void setSubject(String subject) {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        this.subject = (subject.startsWith(&quot;/&quot;) ? subject.substring(1) : subject);</span>
+<span class="fc" id="L61">    }</span>
+
+    @Step(&quot;rest.define.request.parameters&quot;)
+    public void setRequestParameters(DataTable dataTable) {
+<span class="nc" id="L65">        requestParams.putAll(tableToMap(dataTable));</span>
+<span class="nc" id="L66">    }</span>
+
+    @Step(&quot;rest.define.query.parameters&quot;)
+    public void setQueryParameters(DataTable dataTable) {
+<span class="nc" id="L70">        queryParams.putAll(tableToMap(dataTable));</span>
+<span class="nc" id="L71">    }</span>
+
+
+    @Step(&quot;rest.define.path.parameters&quot;)
+    public void setPathParameters(DataTable dataTable) {
+<span class="fc" id="L76">        pathParams.putAll(tableToMap(dataTable));</span>
+<span class="fc" id="L77">    }</span>
+
+    @Step(&quot;rest.define.headers&quot;)
+    public void setHeaders(DataTable dataTable) {
+<span class="nc" id="L81">        headers.putAll(tableToMap(dataTable));</span>
+<span class="nc" id="L82">    }</span>
+
+    @Step(&quot;rest.define.timeout.millis&quot;)
+    public void setTimeoutInMillis(Integer millis) {
+<span class="nc" id="L86">        this.timeoutMillis = Long.valueOf(millis);</span>
+<span class="nc" id="L87">    }</span>
+
+    @Step(&quot;rest.define.timeout.secs&quot;)
+    public void setTimeoutInSecs(Integer secs) {
+<span class="nc" id="L91">        this.timeoutMillis = secs * 1000L;</span>
+<span class="nc" id="L92">    }</span>
+
+    @Step(value = &quot;rest.define.failure.http.code.assertion&quot;, args = &quot;integer-assertion&quot;)
+    public void setFailureHttpCodeAssertion(Assertion&lt;Integer&gt; httpCodeAssertion) {
+<span class="nc" id="L96">        this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);</span>
+<span class="nc" id="L97">    }</span>
+
+    @Step(value = &quot;rest.define.auth.basic&quot;, args = {&quot;username:text&quot;, &quot;password:text&quot;})
+    public void setBasicAuth(String username, String password) {
+<span class="nc" id="L101">        this.authenticator = requestSpecification -&gt; requestSpecification.auth()</span>
+<span class="nc" id="L102">                .basic(username, password);</span>
+<span class="nc" id="L103">    }</span>
+
+    @Step(value = &quot;rest.define.auth.bearer&quot;)
+    public void setBearerAuth(String token) {
+<span class="nc" id="L107">        LOGGER.debug(&quot;Setting header [Authorization: Bearer {}]&quot;, token);</span>
+<span class="nc" id="L108">        this.authenticator = requestSpecification -&gt; requestSpecification.auth().oauth2(token);</span>
+<span class="nc" id="L109">    }</span>
+
+    @Step(&quot;rest.define.auth.bearer.file&quot;)
+    public void setBearerAuthFile(File file) {
+<span class="nc" id="L113">        String token = resourceLoader.readFileAsString(file).trim();</span>
+<span class="nc" id="L114">        setBearerAuth(token);</span>
+<span class="nc" id="L115">    }</span>
+
+    @Step(&quot;rest.define.auth.provider&quot;)
+    public void setAuthentication(Document document) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (oauth2ProviderConfiguration.url() == null) {</span>
+<span class="nc" id="L120">            throw new NoSuchElementException(&quot;Provider url is required&quot;);</span>
+        }
+<span class="nc" id="L122">        RequestSpecification specification = RestAssured.given();</span>
+
+<span class="nc" id="L124">        if (Stream.of(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret())</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">                .allMatch(Objects::nonNull)) {</span>
+<span class="nc" id="L126">            specification = specification.auth().preemptive()</span>
+<span class="nc" id="L127">                    .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());</span>
+        }
+
+<span class="nc" id="L130">        String token = specification</span>
+<span class="nc" id="L131">                .contentType(&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;)</span>
+<span class="nc" id="L132">                .body(document.getContent())</span>
+<span class="nc" id="L133">                .log().all()</span>
+<span class="nc" id="L134">                .with().post(oauth2ProviderConfiguration.url())</span>
+<span class="nc" id="L135">                .then()</span>
+<span class="nc" id="L136">                .log().all()</span>
+<span class="nc" id="L137">                .statusCode(200)</span>
+<span class="nc" id="L138">                .extract().body().jsonPath().getString(&quot;access_token&quot;);</span>
+
+<span class="nc" id="L140">        setBearerAuth(token);</span>
+<span class="nc" id="L141">    }</span>
+
+    @Step(&quot;rest.define.attached.file&quot;)
+    public void setAttachedFile(File file) throws IOException {
+<span class="nc" id="L145">        assertFileExists(file);</span>
+<span class="nc" id="L146">        this.attached = new AttachedFile(file.getName(), Files.probeContentType(file.toPath()),</span>
+<span class="nc" id="L147">                Files.readAllBytes(file.toPath()));</span>
+<span class="nc" id="L148">    }</span>
+
+    @Step(&quot;rest.define.attached.data&quot;)
+    public void setAttachedFile(Document document) {
+<span class="nc" id="L152">        this.attached = new AttachedFile(&quot;kukumo_test.txt&quot;, ContentType.TEXT.getAcceptHeader(),</span>
+<span class="nc" id="L153">                document.getContent().getBytes());</span>
+<span class="nc" id="L154">    }</span>
+
+
+    @Step(&quot;rest.execute.GET.query&quot;)
+    public void executeGetQuery() {
+<span class="fc" id="L159">        executeRequest(RequestSpecification::get);</span>
+<span class="fc" id="L160">    }</span>
+
+    @Step(&quot;rest.execute.GET.subject&quot;)
+    public void executeGetSubject() {
+<span class="fc" id="L164">        executeRequest(RequestSpecification::get);</span>
+<span class="fc" id="L165">    }</span>
+
+    @Step(&quot;rest.execute.DELETE.subject&quot;)
+    public void executeDeleteSubject() {
+<span class="nc" id="L169">        executeRequest(RequestSpecification::delete);</span>
+<span class="nc" id="L170">    }</span>
+
+    @Step(&quot;rest.execute.PUT.subject.from.document&quot;)
+    public void executePutSubjectUsingDocument(Document document) {
+<span class="nc" id="L174">        executeRequest(RequestSpecification::put, document.getContent());</span>
+<span class="nc" id="L175">    }</span>
+
+    @Step(&quot;rest.execute.PUT.subject.from.file&quot;)
+    public void executePutSubjectUsingFile(File file) {
+<span class="nc" id="L179">        assertFileExists(file);</span>
+<span class="nc" id="L180">        executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));</span>
+<span class="nc" id="L181">    }</span>
+
+    @Step(&quot;rest.execute.PATCH.subject.from.document&quot;)
+    public void executePatchSubjectUsingDocument(Document document) {
+<span class="nc" id="L185">        executeRequest(RequestSpecification::patch, document.getContent());</span>
+<span class="nc" id="L186">    }</span>
+
+    @Step(&quot;rest.execute.PATCH.subject.from.file&quot;)
+    public void executePatchSubjectUsingFile(File file) {
+<span class="nc" id="L190">        assertFileExists(file);</span>
+<span class="nc" id="L191">        executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));</span>
+<span class="nc" id="L192">    }</span>
+
+    @Step(&quot;rest.execute.PATCH.subject.empty&quot;)
+    public void executePatchSubject() {
+<span class="nc" id="L196">        executeRequest(RequestSpecification::patch);</span>
+<span class="nc" id="L197">    }</span>
+
+    @Step(&quot;rest.execute.POST.subject.from.file&quot;)
+    public void executePostSubjectUsingFile(File file) {
+<span class="nc" id="L201">        assertFileExists(file);</span>
+<span class="nc" id="L202">        executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));</span>
+<span class="nc" id="L203">    }</span>
+
+    @Step(&quot;rest.execute.POST.subject.from.document&quot;)
+    public void executePostSubjectUsingDocument(Document document) {
+<span class="nc" id="L207">        executeRequest(RequestSpecification::post, document.getContent());</span>
+<span class="nc" id="L208">    }</span>
+
+    @Step(&quot;rest.execute.POST.subject.empty&quot;)
+    public void executePostSubject() {
+<span class="nc" id="L212">        executeRequest(RequestSpecification::post);</span>
+<span class="nc" id="L213">    }</span>
+
+    @Step(&quot;rest.execute.POST.data.from.document&quot;)
+    public void executePostDataUsingDocument(Document document) {
+<span class="nc" id="L217">        executeRequest(RequestSpecification::post, document.getContent());</span>
+<span class="nc" id="L218">    }</span>
+
+    @Step(&quot;rest.execute.POST.data.from.file&quot;)
+    public void executePostDataUsingFile(File file) {
+<span class="nc" id="L222">        executePostSubjectUsingFile(file);</span>
+<span class="nc" id="L223">    }</span>
+
+    @Step(&quot;rest.execute.POST.data.empty&quot;)
+    public void executePostData() {
+<span class="nc" id="L227">        executeRequest(RequestSpecification::post);</span>
+<span class="nc" id="L228">    }</span>
+
+
+    @Step(&quot;rest.assert.response.body.strict.from.file&quot;)
+    public void assertStrictFileContent(File file) {
+<span class="fc" id="L233">        assertContentIs(file, MatchMode.STRICT);</span>
+<span class="fc" id="L234">    }</span>
+
+    @Step(&quot;rest.assert.response.body.strict.from.file.anyorder&quot;)
+    public void assertStrictFileContentAnyOrder(File file) {
+<span class="nc" id="L238">        assertContentIs(file, MatchMode.STRICT_ANY_ORDER);</span>
+<span class="nc" id="L239">    }</span>
+
+    @Step(&quot;rest.assert.response.body.loose.from.file&quot;)
+    public void assertLooseFileContent(File file) {
+<span class="nc" id="L243">        assertContentIs(file, MatchMode.LOOSE);</span>
+<span class="nc" id="L244">    }</span>
+
+    @Step(&quot;rest.assert.response.body.strict.from.document&quot;)
+    public void assertBodyStrictComparison(Document document) {
+<span class="fc" id="L248">        assertContentIs(document, MatchMode.STRICT);</span>
+<span class="fc" id="L249">    }</span>
+
+    @Step(&quot;rest.assert.response.body.strict.from.document.anyorder&quot;)
+    public void assertBodyStrictComparisonAnyOrder(Document document) {
+<span class="fc" id="L253">        assertContentIs(document, MatchMode.STRICT_ANY_ORDER);</span>
+<span class="fc" id="L254">    }</span>
+
+    @Step(&quot;rest.assert.response.body.loose.from.document&quot;)
+    public void assertBodyLooseComparison(Document document) {
+<span class="fc" id="L258">        assertContentIs(document, MatchMode.LOOSE);</span>
+<span class="fc" id="L259">    }</span>
+
+    @Step(value = &quot;rest.assert.response.HTTP.code&quot;, args = &quot;integer-assertion&quot;)
+    public void assertHttpCode(Assertion&lt;Integer&gt; assertion) {
+<span class="fc" id="L263">        validatableResponse.statusCode(MatcherAssertion.asMatcher(assertion));</span>
+<span class="fc" id="L264">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.contentType&quot;, args = &quot;word&quot;)
+    public void assertResponseContentType(String contentType) {
+<span class="fc" id="L268">        validatableResponse.contentType(parseContentType(contentType));</span>
+<span class="fc" id="L269">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.length&quot;, args = {&quot;matcher:integer-assertion&quot;})
+    public void assertResponseLength(Assertion&lt;Integer&gt; assertion) {
+<span class="nc" id="L273">        validatableResponse.body(length(MatcherAssertion.asMatcher(assertion)));</span>
+<span class="nc" id="L274">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.header.text&quot;, args = {&quot;name:word&quot;, &quot;matcher:text-assertion&quot;})
+    public void assertResponseHeaderAsText(String name, Assertion&lt;String&gt; assertion) {
+<span class="nc" id="L278">        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));</span>
+<span class="nc" id="L279">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.header.integer&quot;, args = {&quot;name:word&quot;, &quot;matcher:integer-assertion&quot;})
+    public void assertResponseHeaderAsInteger(String name, Assertion&lt;Integer&gt; assertion) {
+<span class="nc" id="L283">        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));</span>
+<span class="nc" id="L284">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.header.decimal&quot;, args = {&quot;name:word&quot;, &quot;matcher:decimal-assertion&quot;})
+    public void assertResponseHeaderAsDecimal(String name, Assertion&lt;BigDecimal&gt; assertion) {
+<span class="nc" id="L288">        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));</span>
+<span class="nc" id="L289">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.fragment.text&quot;, args = {&quot;fragment:text&quot;,
+            &quot;matcher:text-assertion&quot;})
+    public void assertBodyFragmentAsText(String fragment, Assertion&lt;String&gt; assertion) {
+<span class="fc" id="L294">        assertBodyFragment(fragment, assertion, String.class);</span>
+<span class="fc" id="L295">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.fragment.integer&quot;, args = {&quot;fragment:text&quot;,
+            &quot;matcher:integer-assertion&quot;})
+    public void assertBodyFragmentAsInteger(String fragment, Assertion&lt;Integer&gt; assertion) {
+<span class="nc" id="L300">        assertBodyFragment(fragment, assertion, Integer.class);</span>
+<span class="nc" id="L301">    }</span>
+
+    @Step(value = &quot;rest.assert.response.body.fragment.decimal&quot;, args = {&quot;fragment:text&quot;,
+            &quot;matcher:decimal-assertion&quot;})
+    public void assertBodyFragmentAsDecimal(String fragment, Assertion&lt;BigDecimal&gt; assertion) {
+<span class="nc" id="L306">        assertBodyFragment(fragment, assertion, BigDecimal.class);</span>
+<span class="nc" id="L307">    }</span>
+
+
+    @Step(value = &quot;rest.assert.response.body.schema.from.document&quot;)
+    public void assertBodyContentSchema(Document document) {
+<span class="fc" id="L312">        assertContentSchema(document.getContent());</span>
+<span class="fc" id="L313">    }</span>
+
+
+    @Step(value = &quot;rest.assert.response.body.schema.from.file&quot;)
+    public void assertBodyContentSchema(File file) {
+<span class="nc" id="L318">        assertFileExists(file);</span>
+<span class="nc" id="L319">        assertContentSchema(resourceLoader.readFileAsString(file));</span>
+<span class="nc" id="L320">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

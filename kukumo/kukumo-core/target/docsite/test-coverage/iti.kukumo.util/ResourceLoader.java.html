@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResourceLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.util</a> &gt; <span class="el_source">ResourceLoader.java</span></div><h1>ResourceLoader.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.util;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.slf4j.Logger;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.Resource;
+import iti.kukumo.api.extensions.ResourceType;
+
+
+public class ResourceLoader {
+
+    private static final String CLASSPATH_PROTOCOL = &quot;classpath:&quot;;
+    private static final String FILE_PROTOCOL = &quot;file&quot;;
+<span class="fc" id="L56">    private static final File APPLICATION_FOLDER = new File(System.getProperty(&quot;user.dir&quot;));</span>
+<span class="fc" id="L57">    private static final Logger LOGGER = Kukumo.LOGGER;</span>
+    private static final int BUFFER_SIZE = 2048;
+
+
+
+    public interface Parser&lt;T&gt; {
+        T parse(InputStream stream, Charset charset) throws IOException;
+    }
+
+
+    private final Charset charset;
+
+
+<span class="nc" id="L70">    public ResourceLoader(Charset charset) {</span>
+<span class="nc" id="L71">        this.charset = charset;</span>
+<span class="nc" id="L72">    }</span>
+
+
+<span class="fc" id="L75">    public ResourceLoader() {</span>
+<span class="fc" id="L76">        this.charset = StandardCharsets.UTF_8;</span>
+<span class="fc" id="L77">        Locale.setDefault(Locale.ENGLISH); // avoid different behaviours regarding the OS language</span>
+<span class="fc" id="L78">    }</span>
+
+
+
+
+    public &lt;T&gt; Resource&lt;T&gt; fromInputStream(ResourceType&lt;T&gt; resourceType, InputStream inputStream) {
+        try {
+<span class="nc" id="L85">            return new Resource&lt;T&gt;(&quot;&quot;, &quot;&quot;, resourceType.parse(inputStream,charset));</span>
+<span class="nc" id="L86">        } catch (IOException e) {</span>
+<span class="nc" id="L87">            throw new KukumoException(&quot;Error reading input stream: &quot;,e);</span>
+        }
+    }
+
+
+
+
+    public Reader reader(URL url) throws IOException {
+<span class="nc" id="L95">        try (InputStream inputStream = url.openStream()) {</span>
+<span class="nc" id="L96">            byte[] bytes = toByteArray(inputStream);</span>
+<span class="nc" id="L97">            CharsetDecoder decoder = charset.newDecoder();</span>
+<span class="nc" id="L98">            CharBuffer resourceBuffer = decoder.decode(ByteBuffer.wrap(bytes));</span>
+<span class="nc" id="L99">            return new CharArrayReader(resourceBuffer.array());</span>
+<span class="nc" id="L100">        } catch (CharacterCodingException e) {</span>
+<span class="nc" id="L101">            LOGGER.error(</span>
+                &quot;ERROR CHECKING CHARSET {} IN RESOURCE {uri} : {error}&quot;,
+                charset,
+                url
+            );
+<span class="nc" id="L106">            throw e;</span>
+        }
+    }
+
+
+
+
+
+    public String readFileAsString(File file) {
+<span class="nc" id="L115">        return readFileAsString(file, StandardCharsets.UTF_8);</span>
+    }
+
+
+    public String readFileAsString(File file, Charset charset) {
+        try {
+<span class="nc" id="L121">            try (FileInputStream inputStream = new FileInputStream(file)) {</span>
+<span class="nc" id="L122">                return toString(inputStream, charset);</span>
+            }
+<span class="nc" id="L124">        } catch (IOException e) {</span>
+<span class="nc" id="L125">            throw new KukumoException(&quot;Error reading text file {} : {}&quot;, file, e.getMessage(), e);</span>
+        }
+    }
+
+
+
+
+    /**
+     * Creates a new reader based on the received path:
+     * &lt;li&gt;If starts with &lt;tt&gt;classpath:&lt;/tt&gt; it will try to locate the resource
+     * in the classpath&lt;/li&gt;
+     * &lt;li&gt;If starts with &lt;tt&gt;http:&lt;/tt&gt; it will try to download the resource
+     * from the web&lt;/li&gt;
+     * &lt;li&gt;If starts with &lt;tt&gt;file:&lt;/tt&gt; it will try to locate the resource in
+     * the filesystem with the absolute path&lt;/li&gt;
+     * &lt;li&gt;Otherwise, it will try to locate the resource in the filesystem from
+     * the application directory&lt;/li&gt;
+     * &lt;p&gt;
+     * The obtained reader is not automatically managed, it should be closed
+     * manually after using it.
+     * &lt;/p&gt;
+     *
+     * @param path
+     * @return A new reader
+     * @throws IOException
+     */
+    public Reader reader(String path) throws IOException {
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (path.startsWith(CLASSPATH_PROTOCOL)) {</span>
+<span class="nc" id="L153">            URL url = Thread.currentThread().getContextClassLoader()</span>
+<span class="nc" id="L154">                .getResource(path.replace(CLASSPATH_PROTOCOL, &quot;&quot;));</span>
+<span class="nc" id="L155">            return reader(url);</span>
+        } else {
+<span class="nc" id="L157">            return reader(URI.create(path).toURL());</span>
+        }
+    }
+
+
+    /**
+     * Obtains a resource bundle according the name and locale specified.
+     * &lt;p&gt;
+     * This method differs from {@link ResourceBundle#getBundle(String, Locale)}
+     * in two aspects:
+     * &lt;li&gt;The content will be read using the charset defined in the resource
+     * loader instance&lt;/li&gt;
+     * &lt;li&gt;If there is more than one resource available (e.g. a plugin redefines
+     * an existing property file), the resource bundle will contain the
+     * composition of values.&lt;/li&gt;
+     * &lt;/p&gt;
+     *
+     * @param resourceBundle
+     * @param locale
+     * @return
+     */
+    public ResourceBundle resourceBundle(String resourceBundle, Locale locale) {
+<span class="fc" id="L179">    	return ResourceBundle.getBundle(resourceBundle, locale,</span>
+<span class="fc" id="L180">                Thread.currentThread().getContextClassLoader());</span>
+    }
+
+
+
+    public String readResourceAsString(String path) {
+<span class="fc" id="L186">        return discoverResources(Arrays.asList(path), x -&gt; true, this::toString).get(0).content()</span>
+<span class="fc" id="L187">            .toString();</span>
+    }
+
+
+
+
+    public &lt;T&gt; List&lt;Resource&lt;?&gt;&gt; discoverResources(
+        List&lt;String&gt; paths,
+        ResourceType&lt;T&gt; resourceType
+    ) {
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">        if (LOGGER.isInfoEnabled()) {</span>
+<span class="fc" id="L198">            List&lt;Path&gt; absolutePaths = paths.stream().map(Paths::get).map(Path::toAbsolutePath)</span>
+<span class="fc" id="L199">                .collect(Collectors.toList());</span>
+<span class="fc" id="L200">            LOGGER.info(</span>
+                &quot;Discovering resources of type {resourceType} in paths: {uri} ...&quot;,
+<span class="fc" id="L202">                resourceType.extensionMetadata().name(),</span>
+                absolutePaths
+            );
+        }
+<span class="fc" id="L206">        return discoverResources(paths, resourceType::acceptsFilename, resourceType::parse);</span>
+    }
+
+
+    public &lt;T&gt; List&lt;Resource&lt;?&gt;&gt; discoverResources(String path, ResourceType&lt;T&gt; resourceType) {
+<span class="nc" id="L211">        return discoverResources(path, resourceType::acceptsFilename, resourceType::parse);</span>
+    }
+
+
+    public &lt;T&gt; List&lt;Resource&lt;?&gt;&gt; discoverResources(
+        List&lt;String&gt; paths,
+        Predicate&lt;String&gt; filenameFilter,
+        Parser&lt;T&gt; parser
+    ) {
+<span class="fc" id="L220">        List&lt;Resource&lt;?&gt;&gt; discovered = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        for (String path : paths) {</span>
+<span class="fc" id="L222">            discovered.addAll(discoverResources(path, filenameFilter, parser));</span>
+<span class="fc" id="L223">        }</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        if (LOGGER.isInfoEnabled()) {</span>
+<span class="fc" id="L225">            discovered.forEach(</span>
+<span class="fc" id="L226">                resource -&gt; LOGGER.info(</span>
+                    &quot;Discovered resource {uri}&quot;,
+<span class="fc" id="L228">                    resource.absolutePath()</span>
+                )
+            );
+        }
+<span class="fc" id="L232">        return discovered;</span>
+    }
+
+
+    public &lt;T&gt; List&lt;Resource&lt;?&gt;&gt; discoverResources(
+        String path,
+        Predicate&lt;String&gt; filenameFilter,
+        Parser&lt;T&gt; parser
+    ) {
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">        if (path.endsWith(&quot;/&quot;) || path.endsWith(&quot;\\&quot;)) {</span>
+<span class="nc" id="L242">            path = path.substring(0, path.length() - 1);</span>
+        }
+<span class="fc" id="L244">        List&lt;Resource&lt;?&gt;&gt; discovered = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc bfc" id="L246" title="All 2 branches covered.">            if (path.startsWith(CLASSPATH_PROTOCOL)) {</span>
+<span class="fc" id="L247">                String classPath = path.replace(CLASSPATH_PROTOCOL, &quot;&quot;);</span>
+<span class="fc" id="L248">                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();</span>
+<span class="fc" id="L249">                String absoluteClassPath = classLoaderFolder(classLoader) + classPath;</span>
+<span class="fc" id="L250">                Enumeration&lt;URL&gt; urls = loadFromClasspath(path, classLoader);</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">                while (urls.hasMoreElements()) {</span>
+<span class="nc" id="L252">                    discoverResourcesInURL(</span>
+                        absoluteClassPath,
+<span class="nc" id="L254">                        urls.nextElement(),</span>
+                        filenameFilter,
+                        parser,
+                        discovered
+                    );
+                }
+<span class="fc" id="L260">            } else {</span>
+                URL url;
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">                if (Paths.get(path).isAbsolute()) {</span>
+<span class="nc" id="L263">                    url = Paths.get(path).toUri().toURL();</span>
+                } else {
+<span class="fc" id="L265">                    url = new File(APPLICATION_FOLDER, path).toURI().toURL();</span>
+                }
+<span class="fc" id="L267">                discoverResourcesInURL(path, url, filenameFilter, parser, discovered);</span>
+            }
+<span class="nc" id="L269">        } catch (IOException e) {</span>
+<span class="nc" id="L270">            LOGGER.debug(&quot;{!error} Error discovering resource: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L271">        }</span>
+<span class="fc" id="L272">        return discovered;</span>
+    }
+
+
+    protected &lt;T&gt; void discoverResourcesInURL(
+        String startPath,
+        URL url,
+        Predicate&lt;String&gt; filenameFilter,
+        Parser&lt;T&gt; parser,
+        List&lt;Resource&lt;?&gt;&gt; discovered
+    ) {
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">        if (FILE_PROTOCOL.equals(url.getProtocol())) {</span>
+            try {
+<span class="fc" id="L285">                discoverResouresInFile(</span>
+                    startPath,
+<span class="fc" id="L287">                    new File(url.toURI()),</span>
+                    filenameFilter,
+                    parser,
+                    discovered
+                );
+<span class="nc" id="L292">            } catch (URISyntaxException e) {</span>
+<span class="nc" id="L293">                LOGGER.debug(&quot;{!error} Error discovering resource: {}&quot;, e.getMessage(), e);</span>
+<span class="pc" id="L294">            }</span>
+        } else {
+            try {
+<span class="nc" id="L297">                discovered.add(</span>
+                    new Resource&lt;&gt;(
+<span class="nc" id="L299">                        url.toString(), url.toString(), parser.parse(url.openStream(), charset)</span>
+                    )
+                );
+<span class="nc" id="L302">            } catch (IOException e) {</span>
+<span class="nc" id="L303">                LOGGER.debug(&quot;{!error} Error discovering resource: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L304">            }</span>
+        }
+<span class="fc" id="L306">    }</span>
+
+
+    protected &lt;T&gt; void discoverResouresInFile(
+        String startPath,
+        File file,
+        Predicate&lt;String&gt; filenameFilter,
+        Parser&lt;T&gt; parser,
+        List&lt;Resource&lt;?&gt;&gt; discovered
+    ) {
+<span class="pc bpc" id="L316" title="1 of 4 branches missed.">        if (file.isDirectory() &amp;&amp; file.listFiles() != null) {</span>
+<span class="fc bfc" id="L317" title="All 2 branches covered.">            for (File child : file.listFiles()) {</span>
+<span class="fc" id="L318">                discoverResouresInFile(startPath, child, filenameFilter, parser, discovered);</span>
+            }
+<span class="pc bpc" id="L320" title="2 of 4 branches missed.">        } else if (file.getName().endsWith(&quot;.zip&quot;) || file.getName().endsWith(&quot;.ZIP&quot;)) {</span>
+<span class="nc" id="L321">            discoverResourcesInZipFile(startPath, file, filenameFilter, parser, discovered);</span>
+
+<span class="fc bfc" id="L323" title="All 2 branches covered.">        } else if (filenameFilter.test(file.getName())) {</span>
+<span class="fc" id="L324">            try (InputStream stream = new FileInputStream(file)) {</span>
+<span class="fc" id="L325">                discovered.add(</span>
+                    new Resource&lt;&gt;(
+<span class="fc" id="L327">                        &quot;file:&quot; + file.getAbsolutePath(),</span>
+<span class="fc" id="L328">                        relative(startPath, file.getAbsolutePath()),</span>
+<span class="fc" id="L329">                        parser.parse(stream, charset)</span>
+                    )
+                );
+<span class="nc" id="L332">            } catch (IOException e) {</span>
+<span class="nc" id="L333">                LOGGER.error(e.toString(), e);</span>
+<span class="fc" id="L334">            }</span>
+        }
+
+<span class="fc" id="L337">    }</span>
+
+
+    private &lt;T&gt; void discoverResourcesInZipFile(
+        String startPath,
+        File file,
+        Predicate&lt;String&gt; filenameFilter,
+        Parser&lt;T&gt; parser,
+        List&lt;Resource&lt;?&gt;&gt; discovered
+    ) {
+<span class="nc" id="L347">        try (ZipFile zipFile = new ZipFile(file)) {</span>
+<span class="nc" id="L348">            Enumeration&lt;? extends ZipEntry&gt; zipEntries = zipFile.entries();</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">            while (zipEntries.hasMoreElements()) {</span>
+<span class="nc" id="L350">                ZipEntry zipEntry = zipEntries.nextElement();</span>
+<span class="nc bnc" id="L351" title="All 4 branches missed.">                if (!zipEntry.isDirectory() &amp;&amp; filenameFilter.test(zipEntry.getName())) {</span>
+<span class="nc" id="L352">                    try (InputStream stream = new ZipFile(file).getInputStream(zipEntry)) {</span>
+<span class="nc" id="L353">                        discovered.add(</span>
+                            new Resource&lt;&gt;(
+<span class="nc" id="L355">                                &quot;jar:file:&quot; + file.getAbsolutePath() + &quot;!/&quot; + zipEntry.getName(),</span>
+<span class="nc" id="L356">                                relative(startPath, file.getAbsolutePath()) + &quot;!/&quot; + zipEntry.getName(),</span>
+<span class="nc" id="L357">                                parser.parse(stream, charset)</span>
+                            )
+                        );
+<span class="nc" id="L360">                    } catch (IOException e) {</span>
+<span class="nc" id="L361">                        LOGGER.error(&quot;{error}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L362">                    }</span>
+                }
+<span class="nc" id="L364">            }</span>
+<span class="nc" id="L365">        } catch (IOException e) {</span>
+<span class="nc" id="L366">            LOGGER.error(&quot;{error}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L367">        }</span>
+<span class="nc" id="L368">    }</span>
+
+
+    private String relative(String startPath, String absolutePath) {
+<span class="fc bfc" id="L372" title="All 2 branches covered.">        if (absolutePath.endsWith(startPath)) {</span>
+<span class="fc" id="L373">            return startPath;</span>
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">        } else if (absolutePath.contains(startPath)) {</span>
+<span class="fc" id="L375">            String partialPath = absolutePath.substring(absolutePath.indexOf(startPath));</span>
+<span class="fc" id="L376">            return partialPath.substring(startPath.length() + 1);</span>
+        } else {
+<span class="nc" id="L378">            String partialPath = absolutePath.substring(startPath.length() - 1);</span>
+<span class="nc" id="L379">            return partialPath.substring(startPath.length() + 1);</span>
+        }
+    }
+
+
+    protected Enumeration&lt;URL&gt; loadFromClasspath(String classPath, ClassLoader classLoader) {
+        try {
+<span class="fc" id="L386">            return classLoader.getResources(classPath);</span>
+<span class="nc" id="L387">        } catch (IOException e) {</span>
+<span class="nc" id="L388">            LOGGER.error(&quot;{error}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L389">            return Collections.emptyEnumeration();</span>
+        }
+    }
+
+
+    private String classLoaderFolder(ClassLoader classLoader) throws IOException {
+        try {
+<span class="fc" id="L396">            return classLoader.getResource(&quot;.&quot;).toURI().getPath();</span>
+<span class="nc" id="L397">        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L398">            throw new IOException(e);</span>
+        }
+    }
+
+
+
+    private byte[] toByteArray(InputStream inputStream) throws IOException {
+<span class="fc" id="L405">        try (var outputStream = new ByteArrayOutputStream()) {</span>
+<span class="fc" id="L406">            transfer(inputStream, outputStream, new byte[BUFFER_SIZE]);</span>
+<span class="fc" id="L407">            return outputStream.toByteArray();</span>
+        }
+    }
+
+
+    private String toString(InputStream inputStream, Charset stringCharset) throws IOException {
+<span class="fc" id="L413">        return new String(toByteArray(inputStream),stringCharset);</span>
+    }
+
+
+    private void transfer(InputStream input, OutputStream output,byte[] buffer) throws IOException {
+         int n;
+<span class="fc bfc" id="L419" title="All 2 branches covered.">         while ((n = input.read(buffer)) &gt; 0) {</span>
+<span class="fc" id="L420">             output.write(buffer, 0, n);</span>
+         }
+<span class="fc" id="L422">    }</span>
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

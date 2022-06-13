@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanNodeRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.runner</a> &gt; <span class="el_source">PlanNodeRunner.java</span></div><h1>PlanNodeRunner.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.runner;
+
+
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import imconfig.Configuration;
+import iti.kukumo.api.Backend;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
+import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.model.ExecutionState;
+
+
+public class PlanNodeRunner {
+
+<span class="fc" id="L31">    protected enum State {</span>
+<span class="fc" id="L32">        PREPARED, RUNNING, FINISHED</span>
+    }
+
+
+    private final PlanNode node;
+    private final String uniqueId;
+    private final Configuration configuration;
+    private final PlanNodeLogger logger;
+    private final BackendFactory backendFactory;
+
+    private List&lt;PlanNodeRunner&gt; children;
+    private Optional&lt;Backend&gt; backend;
+    private State state;
+
+
+    public PlanNodeRunner(
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        Optional&lt;Backend&gt; backend,
+        PlanNodeLogger logger
+<span class="fc" id="L53">    ) {</span>
+<span class="fc" id="L54">        this.node = node;</span>
+<span class="fc" id="L55">        this.configuration = configuration;</span>
+<span class="fc" id="L56">        this.uniqueId = UUID.randomUUID().toString();</span>
+<span class="fc" id="L57">        this.state = State.PREPARED;</span>
+<span class="fc" id="L58">        this.backendFactory = backendFactory;</span>
+<span class="fc" id="L59">        this.backend = backend;</span>
+<span class="fc" id="L60">        this.logger = logger;</span>
+<span class="fc" id="L61">    }</span>
+
+
+    public PlanNodeRunner(
+        PlanNode node,
+        Configuration configuration,
+        BackendFactory backendFactory,
+        PlanNodeLogger logger
+    ) {
+<span class="fc" id="L70">        this(node, configuration, backendFactory, Optional.empty(), logger);</span>
+<span class="fc" id="L71">    }</span>
+
+
+    public List&lt;PlanNodeRunner&gt; getChildren() {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (children == null) {</span>
+<span class="fc" id="L76">            children = createChildren();</span>
+        }
+<span class="fc" id="L78">        return children;</span>
+    }
+
+
+    public String getUniqueId() {
+<span class="fc" id="L83">        return uniqueId;</span>
+    }
+
+
+    protected Optional&lt;Backend&gt; getBackend() {
+<span class="fc bfc" id="L88" title="All 4 branches covered.">        if (!backend.isPresent() &amp;&amp; node.nodeType() == NodeType.TEST_CASE) {</span>
+<span class="fc" id="L89">            backend = Optional.of(backendFactory.createBackend(node, configuration));</span>
+        }
+<span class="fc" id="L91">        return backend;</span>
+    }
+
+
+    protected Configuration configuration() {
+<span class="fc" id="L96">        return configuration;</span>
+    }
+
+
+    protected BackendFactory backendFactory() {
+<span class="fc" id="L101">        return backendFactory;</span>
+    }
+
+
+    protected PlanNodeLogger getLogger() {
+<span class="fc" id="L106">        return logger;</span>
+    }
+
+
+    protected Result runNode() {
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (state != State.PREPARED) {</span>
+<span class="nc" id="L112">            throw new IllegalStateException(&quot;run() method can only be invoked once&quot;);</span>
+        }
+<span class="fc" id="L114">        Result result = null;</span>
+<span class="fc" id="L115">        state = State.RUNNING;</span>
+<span class="fc" id="L116">        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, node);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (!getChildren().isEmpty()) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            if (node.nodeType() == NodeType.TEST_CASE) {</span>
+<span class="fc" id="L119">                testCasePreExecution(node);</span>
+            }
+<span class="fc" id="L121">            runChildren();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (node.nodeType() == NodeType.TEST_CASE) {</span>
+<span class="fc" id="L123">                testCasePostExecution(node);</span>
+            }
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {</span>
+<span class="fc" id="L126">            result = runStep();</span>
+        }
+<span class="fc" id="L128">        state = State.FINISHED;</span>
+<span class="fc" id="L129">        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, node);</span>
+<span class="fc" id="L130">        return result;</span>
+    }
+
+
+    protected void runChildren() {
+<span class="fc" id="L135">        children.stream().map(PlanNodeRunner::runNode)</span>
+<span class="fc" id="L136">                .filter(Objects::nonNull)</span>
+<span class="fc" id="L137">                .max(Comparator.naturalOrder())</span>
+<span class="fc" id="L138">                .ifPresent(r -&gt; node.prepareExecution().markFinished(Instant.now(), r));</span>
+<span class="fc" id="L139">    }</span>
+
+
+    protected Result runStep() {
+<span class="fc" id="L143">        stepPreExecution(node);</span>
+<span class="fc" id="L144">        getBackend().ifPresent(stepBackend -&gt; stepBackend.runStep(node));</span>
+<span class="fc" id="L145">        stepPostExecution(node);</span>
+<span class="fc" id="L146">        return node.executionState().flatMap(ExecutionState::result).orElse(null);</span>
+    }
+
+
+    protected List&lt;PlanNodeRunner&gt; createChildren() {
+<span class="fc" id="L151">        return node.children()</span>
+<span class="fc" id="L152">            .map(</span>
+<span class="fc" id="L153">                child -&gt; new PlanNodeRunner(</span>
+<span class="fc" id="L154">                    child, configuration, backendFactory, getBackend(), logger</span>
+                )
+            )
+<span class="fc" id="L157">            .collect(Collectors.toList());</span>
+    }
+
+
+    public PlanNode getNode() {
+<span class="fc" id="L162">        return node;</span>
+    }
+
+
+    protected void testCasePreExecution(PlanNode node) {
+<span class="fc" id="L167">        logger.logTestCaseHeader(node);</span>
+<span class="fc" id="L168">        getBackend().ifPresent(Backend::setUp);</span>
+<span class="fc" id="L169">    }</span>
+
+
+    protected void testCasePostExecution(PlanNode node) {
+<span class="fc" id="L173">        getBackend().ifPresent(Backend::tearDown);</span>
+<span class="fc" id="L174">    }</span>
+
+
+    protected void stepPreExecution(PlanNode step) {
+        /* nothing by default */
+<span class="fc" id="L179">    }</span>
+
+
+    protected void stepPostExecution(PlanNode step) {
+<span class="fc" id="L183">        logger.logStepResult(step);</span>
+<span class="fc" id="L184">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

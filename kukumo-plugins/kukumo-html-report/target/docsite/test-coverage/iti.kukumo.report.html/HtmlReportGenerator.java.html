@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HtmlReportGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::HTML Report</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.report.html</a> &gt; <span class="el_source">HtmlReportGenerator.java</span></div><h1>HtmlReportGenerator.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.report.html;
+
+import freemarker.template.*;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.extensions.Reporter;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
+
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static iti.kukumo.report.html.HtmlReportGeneratorConfig.*;
+
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;html-report&quot;, version = &quot;1.2&quot;)
+public class HtmlReportGenerator implements Reporter {
+
+    private final Configuration templateConfiguration;
+    private String cssFile;
+    private String outputFile;
+    private String title;
+    private Map&lt;String,Object&gt; parameters;
+
+<span class="fc" id="L39">    public HtmlReportGenerator() {</span>
+<span class="fc" id="L40">        templateConfiguration = new Configuration(Configuration.VERSION_2_3_29);</span>
+<span class="fc" id="L41">        templateConfiguration.setDefaultEncoding(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L42">        templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);</span>
+<span class="fc" id="L43">        templateConfiguration.setLogTemplateExceptions(true);</span>
+<span class="fc" id="L44">        templateConfiguration.setWrapUncheckedExceptions(true);</span>
+<span class="fc" id="L45">        templateConfiguration.setFallbackOnNullLoopVariable(false);</span>
+<span class="fc" id="L46">        templateConfiguration.setClassLoaderForTemplateLoading(classLoader(), &quot;/&quot;);</span>
+<span class="fc" id="L47">    }</span>
+
+    void setCssFile(String cssFile) {
+<span class="nc" id="L50">        this.cssFile = cssFile;</span>
+<span class="nc" id="L51">    }</span>
+
+    void setOutputFile(String outputFile) {
+<span class="fc" id="L54">        this.outputFile = outputFile;</span>
+<span class="fc" id="L55">    }</span>
+
+    void setTitle(String title) {
+<span class="fc" id="L58">        this.title = title;</span>
+<span class="fc" id="L59">    }</span>
+
+    public void setConfiguration(imconfig.Configuration configuration) {
+<span class="fc" id="L62">        configuration.get(CSS_FILE,String.class).ifPresent(this::setCssFile);</span>
+<span class="fc" id="L63">        configuration.get(OUTPUT_FILE,String.class).ifPresent(this::setOutputFile);</span>
+<span class="fc" id="L64">        configuration.get(TITLE, String.class).ifPresent(this::setTitle);</span>
+<span class="fc" id="L65">        var reportConfiguration = configuration.inner(PREFIX);</span>
+<span class="fc" id="L66">        this.parameters = new HashMap&lt;&gt;(reportConfiguration.asMap());</span>
+<span class="fc" id="L67">    }</span>
+
+
+    @Override
+    public void report(PlanNodeSnapshot rootNode) {
+        try {
+<span class="fc" id="L73">            File output = new File(Objects.requireNonNull(</span>
+                this.outputFile,
+                &quot;Output file not configured&quot;
+            ));
+<span class="fc" id="L77">            parameters.put(&quot;localStyles&quot;, readStyles());</span>
+<span class="fc" id="L78">            parameters.put(&quot;plan&quot;, rootNode);</span>
+<span class="fc" id="L79">            parameters.put(&quot;title&quot;,title);</span>
+<span class="fc" id="L80">            try (var writer = new FileWriter(output)) {</span>
+<span class="fc" id="L81">                template(&quot;report.html.ftl&quot;).process(parameters, writer);</span>
+            }
+<span class="nc" id="L83">        } catch (IOException | TemplateException e) {</span>
+<span class="nc" id="L84">            Kukumo.LOGGER.error(&quot;Error generating HTML report: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="fc" id="L86">        }</span>
+
+<span class="fc" id="L88">    }</span>
+
+
+    private String readStyles() throws IOException {
+<span class="fc" id="L92">        var localStyles = readResource(&quot;report-style.css&quot;);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (this.cssFile == null) {</span>
+<span class="fc" id="L94">            return localStyles;</span>
+        } else {
+<span class="nc" id="L96">            var extraStyles = Files.readString(Paths.get(this.cssFile), StandardCharsets.UTF_8);</span>
+<span class="nc" id="L97">            return localStyles + &quot;\n&quot; + extraStyles;</span>
+        }
+    }
+
+
+
+
+    private Template template(String resource) throws IOException {
+<span class="fc" id="L105">        return templateConfiguration.getTemplate(resource);</span>
+    }
+
+
+    private static ClassLoader classLoader() {
+<span class="fc" id="L110">        return Thread.currentThread().getContextClassLoader();</span>
+    }
+
+
+
+    private String readResource(String resource) throws IOException {
+<span class="fc" id="L116">        try (var reader = new InputStreamReader(</span>
+<span class="fc" id="L117">            Objects.requireNonNull(classLoader().getResourceAsStream(resource)),</span>
+            StandardCharsets.UTF_8
+        )) {
+<span class="fc" id="L120">            StringWriter writer = new StringWriter();</span>
+<span class="fc" id="L121">            reader.transferTo(writer);</span>
+<span class="fc" id="L122">            return writer.toString();</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

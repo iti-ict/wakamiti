@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunnableStepResolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.backend</a> &gt; <span class="el_source">RunnableStepResolver.java</span></div><h1>RunnableStepResolver.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.core.backend;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
+import iti.kukumo.api.*;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.*;
+
+public class RunnableStepResolver {
+
+    private final KukumoDataTypeRegistry typeRegistry;
+    private final List&lt;RunnableStep&gt; runnableSteps;
+
+
+    RunnableStepResolver(
+    	KukumoDataTypeRegistry typeRegistry,
+        List&lt;RunnableStep&gt; runnableSteps
+<span class="nc" id="L27">    ) {</span>
+<span class="nc" id="L28">        this.typeRegistry = typeRegistry;</span>
+<span class="nc" id="L29">        this.runnableSteps = runnableSteps;</span>
+<span class="nc" id="L30">    }</span>
+
+
+
+    Pair&lt;RunnableStep, Matcher&gt; locateRunnableStep(PlanNode step,  StepHinter hinter) {
+<span class="nc" id="L35">        Locale stepLocale = Locale.forLanguageTag(step.language());</span>
+<span class="nc" id="L36">        Locale dataLocale = Locale.forLanguageTag(</span>
+<span class="nc" id="L37">            step.properties().getOrDefault(KukumoConfiguration.DATA_FORMAT_LANGUAGE,step.language())</span>
+        );
+<span class="nc" id="L39">        return locateRunnableStep(Either.of(step), stepLocale, dataLocale, hinter);</span>
+    }
+
+
+    Pair&lt;RunnableStep, Matcher&gt; locateRunnableStep(
+        String step,
+        Locale stepLocale,
+        Locale dataLocale,
+        StepHinter hinter
+    ) {
+<span class="nc" id="L49">        return locateRunnableStep(Either.fallback(step), stepLocale, dataLocale, hinter);</span>
+    }
+
+
+    private Pair&lt;RunnableStep, Matcher&gt; locateRunnableStep(
+        Either&lt;PlanNode,String&gt; step,
+        Locale stepLocale,
+        Locale dataLocale,
+        StepHinter hinter
+    ) {
+
+<span class="nc" id="L60">        Function&lt;RunnableStep, Matcher&gt; matcher = runnableStep -&gt; runnableStep</span>
+<span class="nc" id="L61">            .matcher(step, stepLocale, dataLocale, typeRegistry);</span>
+
+<span class="nc" id="L63">        String stepName = step.mapValueOrFallback(PlanNode::name);</span>
+
+<span class="nc" id="L65">        List&lt;Pair&lt;RunnableStep, Matcher&gt;&gt; locatedSteps = runnableSteps.stream()</span>
+<span class="nc" id="L66">            .map(Pair.compute(matcher))</span>
+<span class="nc" id="L67">            .filter(pair -&gt; pair.value().matches())</span>
+<span class="nc" id="L68">            .collect(Collectors.toList());</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (locatedSteps.isEmpty()) {</span>
+<span class="nc" id="L71">            throw new UndefinedStepException(</span>
+                step,
+                &quot;Cannot match step with any defined step&quot;,
+<span class="nc" id="L74">                hinter.getHintFor(stepName, stepLocale, dataLocale)</span>
+            );
+        }
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (locatedSteps.size() &gt; 1) {</span>
+<span class="nc" id="L78">            String locatedStepsInfo = locatedSteps.stream()</span>
+<span class="nc" id="L79">                .map(Pair::key)</span>
+<span class="nc" id="L80">                .map(locatedStep -&gt; locatedStep.getTranslatedDefinition(stepLocale))</span>
+<span class="nc" id="L81">                .collect(Collectors.joining(&quot;\n\t&quot;));</span>
+
+<span class="nc" id="L83">            throw new UndefinedStepException(</span>
+                stepName,
+                &quot;Step matches more than one defined step&quot;,
+                locatedStepsInfo
+            );
+        }
+<span class="nc" id="L89">        return locatedSteps.get(0);</span>
+    }
+
+
+
+    Optional&lt;RunnableStep&gt; obtainRunnableStepByDefinition(String stepDefinition, Locale stepLocale) {
+<span class="nc" id="L95">    	return runnableSteps.stream()</span>
+<span class="nc" id="L96">	        .filter(runnableStep -&gt; stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))</span>
+<span class="nc" id="L97">	        .findAny();</span>
+    }
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryStringAssertProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.datatypes.assertion</a> &gt; <span class="el_source">BinaryStringAssertProvider.java</span></div><h1>BinaryStringAssertProvider.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.datatypes.assertion;
+
+
+import java.text.ParseException;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+
+<span class="fc" id="L22">public class BinaryStringAssertProvider extends AbstractAssertProvider {</span>
+
+    public static final String EQUALS = &quot;matcher.string.equals&quot;;
+    public static final String EQUALS_IGNORE_CASE = &quot;matcher.string.equals.ignore.case&quot;;
+    public static final String EQUALS_IGNORE_WHITESPACE = &quot;matcher.string.equals.ignore.whitespace&quot;;
+    public static final String STARTS_WITH = &quot;matcher.string.starts.with&quot;;
+    public static final String STARTS_WITH_IGNORE_CASE = &quot;matcher.string.starts.with.ignore.case&quot;;
+    public static final String ENDS_WITH = &quot;matcher.string.ends.with&quot;;
+    public static final String ENDS_WITH_IGNORE_CASE = &quot;matcher.string.ends.with.ignore.case&quot;;
+    public static final String CONTAINS = &quot;matcher.string.contains&quot;;
+    public static final String CONTAINS_IGNORE_CASE = &quot;matcher.string.contains.ignore.case&quot;;
+
+    public static final String NOT_EQUALS = &quot;matcher.string.not.equals&quot;;
+    public static final String NOT_EQUALS_IGNORE_CASE = &quot;matcher.string.not.equals.ignore.case&quot;;
+    public static final String NOT_EQUALS_IGNORE_WHITESPACE = &quot;matcher.string.not.equals.ignore.whitespace&quot;;
+    public static final String NOT_STARTS_WITH = &quot;matcher.string.not.starts.with&quot;;
+    public static final String NOT_STARTS_WITH_IGNORE_CASE = &quot;matcher.string.not.starts.with.ignore.case&quot;;
+    public static final String NOT_ENDS_WITH = &quot;matcher.string.not.ends.with&quot;;
+    public static final String NOT_ENDS_WITH_IGNORE_CASE = &quot;matcher.string.not.ends.with.ignore.case&quot;;
+    public static final String NOT_CONTAINS = &quot;matcher.string.not.contains&quot;;
+    public static final String NOT_CONTAINS_IGNORE_CASE = &quot;matcher.string.not.contains.ignore.case&quot;;
+
+
+    @Override
+    protected LinkedHashMap&lt;String, Pattern&gt; translatedExpressions(Locale locale) {
+        // binary numeric matchers
+<span class="nc" id="L48">        String[] expressions = {</span>
+                        EQUALS,
+                        EQUALS_IGNORE_CASE,
+                        EQUALS_IGNORE_WHITESPACE,
+                        STARTS_WITH,
+                        ENDS_WITH,
+                        CONTAINS
+        };
+<span class="nc" id="L56">        LinkedHashMap&lt;String, Pattern&gt; translatedExpressions = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (String expression : expressions) {</span>
+<span class="nc" id="L58">            translatedExpressions.put(</span>
+                expression,
+<span class="nc" id="L60">                Pattern.compile(</span>
+<span class="nc" id="L61">                    translateBundleExpression(</span>
+                        locale,
+                        expression,
+                        &quot;\&quot;([^\&quot;\\\\]*(\\\\.[^\&quot;\\\\]*)*)\&quot;|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'&quot;
+                    )
+                )
+            );
+        }
+<span class="nc" id="L69">        return translatedExpressions;</span>
+    }
+
+
+    @Override
+    protected Matcher&lt;?&gt; createMatcher(
+        Locale locale,
+        String key,
+        String value
+    ) throws ParseException {
+<span class="nc" id="L79">        value = prepareString(value);</span>
+<span class="nc" id="L80">        Matcher&lt;String&gt; matcher = null;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (EQUALS.equals(key)) {</span>
+<span class="nc" id="L82">            matcher = Matchers.equalTo(value);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        } else if (EQUALS_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L84">            matcher = Matchers.equalToIgnoringCase(value);</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        } else if (EQUALS_IGNORE_WHITESPACE.equals(key)) {</span>
+<span class="nc" id="L86">            matcher = Matchers.equalToCompressingWhiteSpace(value);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (STARTS_WITH.equals(key)) {</span>
+<span class="nc" id="L88">            matcher = Matchers.startsWith(value);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        } else if (STARTS_WITH_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L90">            matcher = Matchers.startsWithIgnoringCase(value);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        } else if (ENDS_WITH.equals(key)) {</span>
+<span class="nc" id="L92">            matcher = Matchers.endsWith(value);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        } else if (ENDS_WITH_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L94">            matcher = Matchers.endsWithIgnoringCase(value);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        } else if (CONTAINS.equals(key)) {</span>
+<span class="nc" id="L96">            matcher = Matchers.containsString(value);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        } else if (CONTAINS_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L98">            matcher = Matchers.containsStringIgnoringCase(value);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        } else if (NOT_EQUALS.equals(key)) {</span>
+<span class="nc" id="L100">            matcher = Matchers.not(Matchers.equalTo(value));</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        } else if (NOT_EQUALS_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L102">            matcher = Matchers.not(Matchers.equalToIgnoringCase(value));</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        } else if (NOT_EQUALS_IGNORE_WHITESPACE.equals(key)) {</span>
+<span class="nc" id="L104">            matcher = Matchers.not(Matchers.equalToCompressingWhiteSpace(value));</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        } else if (NOT_STARTS_WITH.equals(key)) {</span>
+<span class="nc" id="L106">            matcher = Matchers.not(Matchers.startsWith(value));</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        } else if (NOT_STARTS_WITH_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L108">            matcher = Matchers.not(Matchers.startsWithIgnoringCase(value));</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        } else if (NOT_ENDS_WITH.equals(key)) {</span>
+<span class="nc" id="L110">            matcher = Matchers.not(Matchers.endsWith(value));</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        } else if (NOT_ENDS_WITH_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L112">            matcher = Matchers.not(Matchers.endsWithIgnoringCase(value));</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        } else if (NOT_CONTAINS.equals(key)) {</span>
+<span class="nc" id="L114">            matcher = Matchers.not(Matchers.containsString(value));</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (NOT_CONTAINS_IGNORE_CASE.equals(key)) {</span>
+<span class="nc" id="L116">            matcher = Matchers.not(Matchers.containsStringIgnoringCase(value));</span>
+        }
+
+<span class="nc" id="L119">        return matcher;</span>
+    }
+
+
+    /* remove leading and tailing &quot; or ' , and replace escaped characters */
+    private static String prepareString(String input) {
+<span class="nc" id="L125">        return input</span>
+<span class="nc" id="L126">            .substring(1, input.length() - 1)</span>
+<span class="nc" id="L127">            .replaceAll(&quot;\\\\\&quot;&quot;, &quot;\&quot;&quot;)</span>
+<span class="nc" id="L128">            .replaceAll(&quot;\\\\'&quot;, &quot;'&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

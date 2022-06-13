@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExpressionMatcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.backend</a> &gt; <span class="el_source">ExpressionMatcher.java</span></div><h1>ExpressionMatcher.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.backend;
+
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.Either;
+
+
+public class ExpressionMatcher {
+
+<span class="fc" id="L33">    private static final Logger LOGGER = Kukumo.LOGGER;</span>
+
+    private static final String NAMED_ARGUMENT_REGEX = &quot;\\{(\\w+)\\:(\\w+\\-?\\w+)\\}&quot;;
+    private static final String UNNAMED_ARGUMENT_REGEX = &quot;\\{(\\w+\\-?\\w+)\\}&quot;;
+
+<span class="fc" id="L38">    private static final Map&lt;ExpressionMatcher, String&gt; cache = new HashMap&lt;&gt;();</span>
+
+    private final String translatedDefinition;
+    private final KukumoDataTypeRegistry typeRegistry;
+    private final Locale locale;
+
+
+    public static Matcher matcherFor(
+        String translatedDefinition,
+        KukumoDataTypeRegistry typeRegistry,
+        Locale locale,
+        Either&lt;PlanNode,String&gt; modelStep
+    ) {
+<span class="fc" id="L51">        ExpressionMatcher matcher = new ExpressionMatcher(</span>
+            translatedDefinition, typeRegistry, locale
+        );
+<span class="fc" id="L54">        String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);</span>
+<span class="fc" id="L55">        return Pattern.compile(regex).matcher(modelStep.mapValueOrFallback(PlanNode::name));</span>
+    }
+
+
+    private ExpressionMatcher(
+                    String translatedDefinition,
+                    KukumoDataTypeRegistry typeRegistry,
+                    Locale locale
+<span class="fc" id="L63">    ) {</span>
+<span class="fc" id="L64">        this.translatedDefinition = translatedDefinition;</span>
+<span class="fc" id="L65">        this.typeRegistry = typeRegistry;</span>
+<span class="fc" id="L66">        this.locale = locale;</span>
+<span class="fc" id="L67">    }</span>
+
+
+    public static String computeRegularExpression(String translatedExpression) {
+<span class="fc" id="L71">        String regex = regexPriorAdjustments(translatedExpression);</span>
+<span class="fc" id="L72">        regex = regexFinalAdjustments(regex);</span>
+<span class="fc" id="L73">        LOGGER.trace(&quot;Expression Matcher: {} ==&gt; {}&quot;, translatedExpression, regex);</span>
+<span class="fc" id="L74">        return regex;</span>
+    }
+
+
+    protected String computeRegularExpression() {
+<span class="fc" id="L79">        String regex = regexPriorAdjustments(translatedDefinition);</span>
+<span class="fc" id="L80">        regex = regexArgumentSubstitution(regex);</span>
+<span class="fc" id="L81">        regex = regexFinalAdjustments(regex);</span>
+<span class="fc" id="L82">        LOGGER.trace(&quot;Expression Matcher: {} ==&gt; {}&quot;, translatedDefinition, regex);</span>
+<span class="fc" id="L83">        return regex;</span>
+    }
+
+
+    protected static String regexPriorAdjustments(String sourceExpression) {
+<span class="fc" id="L88">        String regex = sourceExpression;</span>
+        // a|b|c -&gt; (a|b|c)
+<span class="fc" id="L90">        regex = regex.replaceAll(&quot;[^ |(]*(\\|[^ |)]+)+&quot;, &quot;\\($0\\)&quot;);</span>
+        // (( -&gt; ( and )) -&gt; (
+<span class="fc" id="L92">        regex = regex.replace(&quot;((&quot;, &quot;(&quot;).replace(&quot;))&quot;, &quot;)&quot;);</span>
+        // * -&gt; any value
+<span class="fc" id="L94">        regex = regex.replaceAll(&quot;(?&lt;!\\\\)\\*&quot;, &quot;(.*)&quot;);</span>
+        // ( ) -&gt; optional
+<span class="fc" id="L96">        regex = regex.replaceAll(&quot;(?&lt;!\\\\)\\(([^!][^)]*)\\)&quot;, &quot;(?:$1)?&quot;);</span>
+        // (...)?_ -&gt; (?:(...)?_)?
+<span class="fc" id="L98">        regex = regex.replaceAll(&quot;\\(\\?:[^)]+\\)\\? &quot;, &quot;(?:$0)?&quot;);</span>
+        // _(?:.*)? -&gt; (?:.*)?
+<span class="fc" id="L100">        regex = regex.replace(&quot; (?:.*)?&quot;, &quot;(?:.*)?&quot;);</span>
+        // (!a) -&gt; ((?!a).)*
+<span class="fc" id="L102">        regex = regex.replaceAll(&quot;(?&lt;!\\\\)\\(!([^)]*)\\)&quot;, &quot;((?!$1).)*&quot;);</span>
+<span class="fc" id="L103">        return regex;</span>
+    }
+
+
+    protected String regexArgumentSubstitution(String computingRegex) {
+<span class="fc" id="L108">        String regex = computingRegex;</span>
+        // unnamed arguments
+<span class="fc" id="L110">        Matcher unnamedArgs = Pattern.compile(UNNAMED_ARGUMENT_REGEX).matcher(regex);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        while (unnamedArgs.find()) {</span>
+<span class="fc" id="L112">            String typeName = unnamedArgs.group(1);</span>
+<span class="fc" id="L113">            KukumoDataType&lt;?&gt; type = typeRegistry.getType(typeName);</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">            if (type == null) {</span>
+<span class="nc" id="L115">                throwTypeNotRegistered(typeName);</span>
+            } else {
+<span class="fc" id="L117">                regex = regex.replace(</span>
+                    &quot;{&quot; + typeName + &quot;}&quot;,
+<span class="fc" id="L119">                    &quot;(?&lt;&quot; + RunnableBackend.UNNAMED_ARG + &quot;&gt;&quot; + type.getRegex(locale) + &quot;)&quot;</span>
+                );
+            }
+<span class="fc" id="L122">        }</span>
+        // named arguments
+<span class="fc" id="L124">        Matcher namedArgs = Pattern.compile(NAMED_ARGUMENT_REGEX).matcher(regex);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        while (namedArgs.find()) {</span>
+<span class="fc" id="L126">            String argName = namedArgs.group(1);</span>
+<span class="fc" id="L127">            String argType = namedArgs.group(2);</span>
+<span class="fc" id="L128">            KukumoDataType&lt;?&gt; type = typeRegistry.getType(argType);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (type == null) {</span>
+<span class="nc" id="L130">                throwTypeNotRegistered(argType);</span>
+            } else {
+<span class="fc" id="L132">                regex = regex.replace(</span>
+                    &quot;{&quot; + argName + &quot;:&quot; + argType + &quot;}&quot;,
+<span class="fc" id="L134">                    &quot;(?&lt;&quot; + argName + &quot;&gt;&quot; + type.getRegex(locale) + &quot;)&quot;</span>
+                );
+            }
+<span class="fc" id="L137">        }</span>
+<span class="fc" id="L138">        return regex;</span>
+    }
+
+
+    protected static String regexFinalAdjustments(String computingRegex) {
+<span class="fc" id="L143">        String regex = computingRegex;</span>
+<span class="fc" id="L144">        regex = regex.replace(&quot; $&quot;, &quot;$&quot;);</span>
+<span class="fc" id="L145">        regex = regex.replace(&quot;$&quot;, &quot;\\s*$&quot;);</span>
+<span class="fc" id="L146">        return regex;</span>
+    }
+
+
+    protected void throwTypeNotRegistered(String type) {
+<span class="nc" id="L151">        throw new KukumoException(</span>
+            &quot;Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}&quot;,
+            translatedDefinition, type,
+<span class="nc" id="L154">            typeRegistry.allTypeNames().sorted().collect(Collectors.joining(&quot;, &quot;))</span>
+        );
+    }
+
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L161">        return Objects.hash(translatedDefinition, typeRegistry, locale);</span>
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (obj instanceof ExpressionMatcher) {</span>
+<span class="fc" id="L168">            ExpressionMatcher other = (ExpressionMatcher) obj;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">            return other.typeRegistry == this.typeRegistry &amp;&amp;</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">                            other.locale.equals(this.locale) &amp;&amp;</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">                            other.translatedDefinition.equals(this.translatedDefinition);</span>
+        }
+<span class="nc" id="L173">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

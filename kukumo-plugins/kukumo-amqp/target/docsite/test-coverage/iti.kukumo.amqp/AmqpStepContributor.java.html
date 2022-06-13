@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AmqpStepContributor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::AMQP Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.amqp</a> &gt; <span class="el_source">AmqpStepContributor.java</span></div><h1>AmqpStepContributor.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.amqp;
+
+import com.rabbitmq.client.*;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.Step;
+import iti.kukumo.api.annotations.TearDown;
+import iti.kukumo.api.extensions.StepContributor;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.util.KukumoLogger;
+import org.awaitility.Duration;
+import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.GeneralSecurityException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.awaitility.Awaitility.await;
+
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = &quot;amqp-steps&quot;, version = &quot;1.1&quot;)
+@I18nResource(&quot;iti_kukumo_kukumo-amqp&quot;)
+<span class="fc" id="L37">public class AmqpStepContributor implements StepContributor {</span>
+
+<span class="fc" id="L39">    private final Logger logger = KukumoLogger.forClass(AmqpStepContributor.class);</span>
+
+    private AmqpConnectionParams connectionParams;
+    private Connection connection;
+    private Channel channel;
+<span class="fc" id="L44">    private Map&lt;String,List&lt;String&gt;&gt; receivedMessages = new HashMap&lt;&gt;();</span>
+    private String destination;
+
+    private boolean durable;
+    private boolean exclusive;
+    private boolean autoDelete;
+
+
+    public void setConnectionParams(AmqpConnectionParams connectionParams) {
+<span class="fc" id="L53">        this.connectionParams = connectionParams;</span>
+<span class="fc" id="L54">    }</span>
+
+
+    protected Channel channel() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (this.channel == null) {</span>
+            try {
+<span class="fc" id="L60">                var connectionFactory = new ConnectionFactory();</span>
+<span class="fc" id="L61">                connectionFactory.setUri(connectionParams.host());</span>
+<span class="fc" id="L62">                connectionFactory.setUsername(connectionParams.username());</span>
+<span class="fc" id="L63">                connectionFactory.setPassword(connectionParams.password());</span>
+<span class="fc" id="L64">                this.connection = connectionFactory.newConnection();</span>
+<span class="fc" id="L65">                this.channel = connection.createChannel();</span>
+<span class="nc" id="L66">            } catch (URISyntaxException | GeneralSecurityException | IOException | TimeoutException e) {</span>
+<span class="nc" id="L67">                throw new KukumoException(&quot;Error connecting to AMQP server: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L68">            }</span>
+        }
+<span class="fc" id="L70">        return channel;</span>
+    }
+
+    public void setDurable(boolean durable) {
+<span class="fc" id="L74">        this.durable = durable;</span>
+<span class="fc" id="L75">    }</span>
+
+    public void setExclusive(boolean exclusive) {
+<span class="fc" id="L78">        this.exclusive = exclusive;</span>
+<span class="fc" id="L79">    }</span>
+
+    public void setAutoDelete(boolean autoDelete) {
+<span class="fc" id="L82">        this.autoDelete = autoDelete;</span>
+<span class="fc" id="L83">    }</span>
+
+
+    @TearDown
+    public void releaseConnection() {
+        try {
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            if (this.channel != null) {</span>
+<span class="fc" id="L90">                this.channel.close();</span>
+            }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (this.connection != null) {</span>
+<span class="fc" id="L93">                this.connection.close();</span>
+            }
+<span class="nc" id="L95">        } catch (IOException | TimeoutException e) {</span>
+<span class="nc" id="L96">            logger.warn(&quot;There were problems releasing the connection: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L97">            logger.debug(e.toString(),e);</span>
+<span class="fc" id="L98">        }</span>
+<span class="fc" id="L99">    }</span>
+
+
+    void sendJsonMessageToQueue(String queueName, String text) {
+<span class="fc" id="L103">        sendTextMessageToQueue(queueName, text, &quot;application/json&quot;);</span>
+<span class="fc" id="L104">    }</span>
+
+
+    void sendTextMessageToQueue(String queueName, String text, String contentType) {
+        try {
+<span class="fc" id="L109">            declareQueue(queueName);</span>
+<span class="fc" id="L110">            var bytes = text.getBytes(StandardCharsets.UTF_8);</span>
+<span class="fc" id="L111">            AMQP.BasicProperties props = new AMQP.BasicProperties(</span>
+                contentType,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
+<span class="fc" id="L127">            channel().basicPublish(&quot;&quot;, queueName, props, bytes);</span>
+<span class="nc" id="L128">        } catch (IOException e) {</span>
+<span class="nc" id="L129">            throw new KukumoException(e);</span>
+<span class="fc" id="L130">        }</span>
+<span class="fc" id="L131">    }</span>
+
+
+    void consumeQueue(String queueName) {
+        try {
+<span class="fc" id="L136">            declareQueue(queueName);</span>
+<span class="fc" id="L137">            boolean ack = false;</span>
+<span class="fc" id="L138">            Consumer callback = new DefaultConsumer(channel()) {</span>
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+<span class="fc" id="L141">                    receivedMessages</span>
+<span class="fc" id="L142">                            .computeIfAbsent(queueName, x -&gt; new ArrayList&lt;&gt;())</span>
+<span class="fc" id="L143">                            .add(new String(body, StandardCharsets.UTF_8))</span>
+                    ;
+<span class="fc" id="L145">                    channel().basicAck(envelope.getDeliveryTag(), true);</span>
+<span class="fc" id="L146">                }</span>
+            };
+<span class="fc" id="L148">            channel().basicConsume(queueName, ack, callback);</span>
+<span class="nc" id="L149">        } catch (IOException e) {</span>
+<span class="nc" id="L150">            throw new KukumoException(e);</span>
+<span class="fc" id="L151">        }</span>
+<span class="fc" id="L152">    }</span>
+
+
+    private boolean messageExistsInReceived(String message) {
+<span class="fc" id="L156">        Objects.requireNonNull(destination, &quot;Destination queue is not defined&quot;);</span>
+<span class="fc" id="L157">        return receivedMessages</span>
+<span class="pc" id="L158">            .computeIfAbsent(destination, x-&gt;new ArrayList&lt;&gt;())</span>
+<span class="fc" id="L159">            .stream()</span>
+<span class="fc" id="L160">            .anyMatch(receivedMessage -&gt; receivedMessage.equals(message));</span>
+    }
+
+
+    private void checkMessageExistsInReceived(String message, Long seconds) {
+        try {
+<span class="fc" id="L166">            await()</span>
+<span class="fc" id="L167">                    .atMost(seconds, TimeUnit.SECONDS)</span>
+<span class="fc" id="L168">                    .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)</span>
+<span class="fc" id="L169">                    .until(() -&gt; messageExistsInReceived(message));</span>
+<span class="nc" id="L170">        } catch (ConditionTimeoutException e) {</span>
+<span class="nc" id="L171">            throw new AssertionError(&quot;Message not received in &quot;+seconds+&quot; seconds&quot;);</span>
+<span class="fc" id="L172">        }</span>
+<span class="fc" id="L173">    }</span>
+
+
+
+    private void declareQueue(String queueName) throws IOException {
+<span class="fc" id="L178">        Map&lt;String, Object&gt; arguments = Map.of();</span>
+<span class="fc" id="L179">        channel().queueDeclare(queueName, durable, exclusive, autoDelete, arguments);</span>
+<span class="fc" id="L180">    }</span>
+
+
+    private String readFile(File file) {
+        try {
+<span class="nc" id="L185">            return Files.readString(file.toPath(), StandardCharsets.UTF_8);</span>
+<span class="nc" id="L186">        } catch (IOException e) {</span>
+<span class="nc" id="L187">            throw new KukumoException(e);</span>
+        }
+    }
+
+
+    @Step(value=&quot;amqp.define.connection.parameters&quot;, args = {&quot;url:text&quot;, &quot;username:text&quot;, &quot;password:text&quot;})
+    public void defineConnectionParameters(String url, String username, String password) {
+<span class="fc" id="L194">        this.connectionParams = new AmqpConnectionParams(url, username, password);</span>
+<span class="fc" id="L195">    }</span>
+
+
+    @Step(value = &quot;amqp.define.destination.queue&quot;, args = {&quot;word&quot;})
+    public void defineDestinationQueue(String queueName) {
+<span class="fc" id="L200">        this.destination = queueName;</span>
+<span class="fc" id="L201">        consumeQueue(queueName);</span>
+<span class="fc" id="L202">    }</span>
+
+
+    @Step(value = &quot;amqp.send.json.from.string&quot;, args = {&quot;word&quot;})
+    public void sendJSONFromString(String queueName, Document document) {
+<span class="fc" id="L207">        sendJsonMessageToQueue(queueName, document.getContent());</span>
+<span class="fc" id="L208">    }</span>
+
+
+    @Step(value = &quot;amqp.send.json.from.file&quot;, args = { &quot;queue:word&quot;, &quot;file:file&quot; })
+    public void sendJSONFromFile(String queueName, File file) {
+<span class="nc" id="L213">        sendJsonMessageToQueue(queueName, readFile(file));</span>
+<span class="nc" id="L214">    }</span>
+
+
+    @Step(&quot;amqp.send.await&quot;)
+    public void awaitFor(Long seconds) {
+<span class="nc" id="L219">        await().timeout(seconds+1, TimeUnit.SECONDS).pollDelay(seconds, TimeUnit.SECONDS).until(() -&gt; true);</span>
+<span class="nc" id="L220">    }</span>
+
+
+    @Step(&quot;amqp.check.received.json.from.string&quot;)
+    public void checkReceivedJSONFromString(Long seconds, Document json) {
+<span class="fc" id="L225">        checkMessageExistsInReceived(json.getContent(), seconds);</span>
+<span class="fc" id="L226">    }</span>
+
+
+    @Step(value=&quot;amqp.check.received.json.from.file&quot;, args={&quot;seconds:integer&quot;, &quot;file:file&quot;})
+    public void checkReceivedJSONFromString(Long seconds, File file) {
+<span class="nc" id="L231">        checkMessageExistsInReceived(readFile(file), seconds);</span>
+<span class="nc" id="L232">    }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

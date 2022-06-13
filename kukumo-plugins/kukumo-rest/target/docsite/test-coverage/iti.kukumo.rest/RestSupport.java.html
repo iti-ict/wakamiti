@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::REST Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.rest</a> &gt; <span class="el_source">RestSupport.java</span></div><h1>RestSupport.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.rest;
+
+
+import io.restassured.RestAssured;
+import io.restassured.builder.MultiPartSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.datatypes.Assertion;
+import iti.kukumo.api.plan.DataTable;
+import iti.kukumo.api.plan.Document;
+import iti.kukumo.rest.log.RestAssuredLogger;
+import iti.kukumo.util.ResourceLoader;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+<span class="fc" id="L42">public class RestSupport {</span>
+
+<span class="fc" id="L44">    public static final Logger LOGGER = LoggerFactory.getLogger(&quot;iti.kukumo.rest&quot;);</span>
+<span class="fc" id="L45">    public static final ResourceLoader resourceLoader = Kukumo.resourceLoader();</span>
+
+<span class="fc" id="L47">    protected final Map&lt;ContentType, ContentTypeHelper&gt; contentTypeValidators = Kukumo</span>
+<span class="fc" id="L48">            .extensionManager()</span>
+<span class="fc" id="L49">            .getExtensions(ContentTypeHelper.class)</span>
+<span class="fc" id="L50">            .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));</span>
+
+<span class="fc" id="L52">    private RestAssuredLogger assuredLogger = new RestAssuredLogger();</span>
+<span class="fc" id="L53">    protected final Map&lt;String, String&gt; requestParams = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L54">    protected final Map&lt;String, String&gt; queryParams = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L55">    protected final Map&lt;String, String&gt; pathParams = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L56">    protected final Map&lt;String, String&gt; headers = new LinkedHashMap&lt;&gt;();</span>
+    protected URL baseURL;
+    protected ContentType requestContentType;
+    protected String path;
+    protected String subject;
+    protected Long timeoutMillis;
+    protected Consumer&lt;RequestSpecification&gt; authenticator;
+    protected AttachedFile attached;
+    protected Matcher&lt;Integer&gt; failureHttpCodeAssertion;
+    protected Response response;
+    protected ValidatableResponse validatableResponse;
+<span class="fc" id="L67">    protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();</span>
+
+    public void setFailureHttpCodeAssertion(Matcher&lt;Integer&gt; httpCodeAssertion) {
+<span class="fc" id="L70">        this.failureHttpCodeAssertion = httpCodeAssertion;</span>
+<span class="fc" id="L71">    }</span>
+
+
+    protected RequestSpecification newRequest() {
+<span class="fc" id="L75">        response = null;</span>
+<span class="fc" id="L76">        validatableResponse = null;</span>
+<span class="fc" id="L77">        RequestSpecification request = RestAssured.given().with()</span>
+<span class="fc" id="L78">                .headers(headers)</span>
+<span class="fc" id="L79">                .params(requestParams)</span>
+<span class="fc" id="L80">                .queryParams(queryParams)</span>
+<span class="fc" id="L81">                .pathParams(pathParams);</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (attached != null) {</span>
+<span class="nc" id="L83">            request.multiPart(new MultiPartSpecBuilder(attached.getContent())</span>
+<span class="nc" id="L84">                    .fileName(attached.getName())</span>
+<span class="nc" id="L85">                    .mimeType(attached.getMimeType())</span>
+<span class="nc" id="L86">                    .controlName(&quot;file&quot;)</span>
+<span class="nc" id="L87">                    .build()</span>
+            );
+        } else {
+<span class="fc" id="L90">            request.contentType(requestContentType);</span>
+        }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (authenticator != null) {</span>
+<span class="nc" id="L93">            authenticator.accept(request);</span>
+        }
+<span class="fc" id="L95">        return attachLogger(request);</span>
+    }
+
+
+    private RequestSpecification attachLogger(RequestSpecification request) {
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L101">            request.log().all().filter(assuredLogger);</span>
+        } else {
+<span class="fc" id="L103">            request.log().ifValidationFails();</span>
+<span class="fc" id="L104">            request.expect().log().ifValidationFails();</span>
+        }
+<span class="fc" id="L106">        return request;</span>
+    }
+
+
+    protected String uri() {
+<span class="fc" id="L111">        String base = baseURL.toString();</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (base.endsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L113">            base = base.substring(0, base.length() - 1);</span>
+        }
+<span class="fc" id="L115">        StringBuilder url = new StringBuilder(base);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (path != null) {</span>
+<span class="fc" id="L117">            url.append(&quot;/&quot;).append(path);</span>
+        }
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (subject != null) {</span>
+<span class="fc" id="L120">            url.append(&quot;/&quot;).append(subject);</span>
+        }
+<span class="fc" id="L122">        return url.toString();</span>
+    }
+
+
+    protected ValidatableResponse commonResponseAssertions(Response response) {
+<span class="fc" id="L127">        return response.then()</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">                .time(timeoutMillis != null ? Matchers.lessThan(timeoutMillis) : Matchers.any(Long.class), TimeUnit.MILLISECONDS)</span>
+<span class="fc" id="L129">                .statusCode(failureHttpCodeAssertion);</span>
+    }
+
+
+    protected void executeRequest(BiFunction&lt;RequestSpecification, String, Response&gt; function) {
+<span class="fc" id="L134">        this.response = function.apply(newRequest(), uri());</span>
+<span class="fc" id="L135">        this.validatableResponse = commonResponseAssertions(response);</span>
+<span class="fc" id="L136">    }</span>
+
+
+    protected void executeRequest(
+            BiFunction&lt;RequestSpecification, String, Response&gt; function,
+            String body
+    ) {
+<span class="nc" id="L143">        this.response = function.apply(newRequest().body(body), uri());</span>
+<span class="nc" id="L144">        this.validatableResponse = commonResponseAssertions(response);</span>
+<span class="nc" id="L145">    }</span>
+
+    protected void assertFileExists(File file) {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (!file.exists()) {</span>
+<span class="nc" id="L149">            throw new KukumoException(&quot;File {} not found&quot;, file.getAbsolutePath());</span>
+        }
+<span class="nc" id="L151">    }</span>
+
+
+    protected Map&lt;String, String&gt; tableToMap(DataTable dataTable) {
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (dataTable.columns() != 2) {</span>
+<span class="nc" id="L156">            throw new KukumoException(&quot;Table must have 2 columns [key, value]&quot;);</span>
+        }
+<span class="fc" id="L158">        Map&lt;String,String&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        for (int i = 1; i &lt; dataTable.rows(); i++) {</span>
+<span class="fc" id="L160">            map.put(dataTable.value(i, 0), dataTable.value(i, 1));</span>
+        }
+<span class="fc" id="L162">        return map;</span>
+    }
+
+    protected ContentTypeHelper contentTypeHelperForResponse() {
+<span class="fc" id="L166">        ContentType responseContentType = ContentType.fromContentType(response.contentType());</span>
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (responseContentType == null) {</span>
+<span class="nc" id="L168">            throw new KukumoException(&quot;The content type of the response is undefined&quot;);</span>
+        }
+<span class="fc" id="L170">        ContentTypeHelper helper = contentTypeValidators.get(responseContentType);</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (helper == null) {</span>
+<span class="nc" id="L172">            throw new KukumoException(&quot;There is no content type helper for &quot; + responseContentType);</span>
+        }
+<span class="fc" id="L174">        return helper;</span>
+    }
+
+
+    protected void assertContentIs(Document expected, MatchMode matchMode) {
+<span class="fc" id="L179">        ContentTypeHelper helper = contentTypeHelperForResponse();</span>
+<span class="fc" id="L180">        helper.assertContent(expected, validatableResponse.extract(), matchMode);</span>
+<span class="fc" id="L181">    }</span>
+
+
+    protected void assertContentIs(File expected, MatchMode matchMode) {
+<span class="fc" id="L185">        ContentTypeHelper helper = contentTypeHelperForResponse();</span>
+<span class="fc" id="L186">        helper.assertContent(readFile(expected), validatableResponse.extract(), matchMode);</span>
+<span class="fc" id="L187">    }</span>
+
+
+    protected &lt;T&gt; void assertBodyFragment(String fragment, Assertion&lt;T&gt; assertion, Class&lt;T&gt; dataType) {
+<span class="fc" id="L191">        ContentTypeHelper helper = contentTypeHelperForResponse();</span>
+<span class="fc" id="L192">        helper.assertFragment(fragment, validatableResponse, dataType, assertion);</span>
+<span class="fc" id="L193">    }</span>
+
+
+    protected ContentType parseContentType(String contentType) {
+        try {
+<span class="fc" id="L198">            return ContentType.valueOf(contentType.toUpperCase());</span>
+<span class="nc" id="L199">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L200">            String validNames = Stream.of(ContentType.values()).map(Enum::name)</span>
+<span class="nc" id="L201">                    .collect(Collectors.joining(&quot;, &quot;));</span>
+<span class="nc" id="L202">            throw new KukumoException(</span>
+                    &quot;REST content type must be one of the following: {}&quot;, validNames, e
+            );
+        }
+    }
+
+
+    protected void assertContentSchema(String expectedSchema) {
+<span class="fc" id="L210">        ContentTypeHelper helper = contentTypeHelperForResponse();</span>
+<span class="fc" id="L211">        helper.assertContentSchema(expectedSchema,validatableResponse.extract().asString());</span>
+<span class="fc" id="L212">    }</span>
+
+
+    private String readFile(File file) {
+<span class="fc" id="L216">        return resourceLoader.readFileAsString(file);</span>
+    }
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

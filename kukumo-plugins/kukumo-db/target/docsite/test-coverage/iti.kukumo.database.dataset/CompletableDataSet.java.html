@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompletableDataSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::Database Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.database.dataset</a> &gt; <span class="el_source">CompletableDataSet.java</span></div><h1>CompletableDataSet.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.database.dataset;
+
+
+import java.io.IOException;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
+
+
+public class CompletableDataSet extends DataSet {
+
+<span class="nc" id="L29">    private final Map&lt;String, Object&gt; nonNullableColumns = new LinkedHashMap&lt;&gt;();</span>
+    private final Map&lt;String, Integer&gt; nonNullableColumnsWithType;
+    private final DataSet wrapped;
+
+
+    public CompletableDataSet(DataSet wrapped, Map&lt;String, Integer&gt; nonNullableColumnsWithType) {
+<span class="nc" id="L35">        super(wrapped.table(), wrapped.origin(), wrapped.nullSymbol());</span>
+<span class="nc" id="L36">        this.wrapped = wrapped;</span>
+<span class="nc" id="L37">        this.nonNullableColumnsWithType = nonNullableColumnsWithType;</span>
+<span class="nc" id="L38">        List&lt;String&gt; originalColumnList = Arrays.asList(wrapped.columns());</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (Entry&lt;String, Integer&gt; nonNullableColumnWithType : nonNullableColumnsWithType</span>
+<span class="nc" id="L40">            .entrySet()) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">            if (!containsIgnoringCase(originalColumnList, nonNullableColumnWithType.getKey())) {</span>
+<span class="nc" id="L42">                this.nonNullableColumns.put(</span>
+<span class="nc" id="L43">                    nonNullableColumnWithType.getKey(),</span>
+<span class="nc" id="L44">                    nonNullValueFor(nonNullableColumnWithType.getValue())</span>
+                );
+            }
+<span class="nc" id="L47">        }</span>
+<span class="nc" id="L48">        this.columns = Stream.concat(</span>
+<span class="nc" id="L49">            Stream.of(wrapped.columns()),</span>
+<span class="nc" id="L50">            nonNullableColumns.keySet().stream()</span>
+<span class="nc" id="L51">        ).toArray(String[]::new);</span>
+<span class="nc" id="L52">    }</span>
+
+
+    @Override
+    public Object rowValue(int columnIndex) {
+<span class="nc" id="L57">        Object value = getIgnoringCase(nonNullableColumns, columns[columnIndex]);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        return value == null ? wrapped.rowValue(columnIndex) : value;</span>
+    }
+
+
+    private Object getIgnoringCase(Map&lt;String, Object&gt; map, String key) {
+<span class="nc" id="L63">        return map.getOrDefault(key, map.get(key.toUpperCase()));</span>
+    }
+
+
+    @Override
+    public boolean nextRow() {
+<span class="nc" id="L69">        return wrapped.nextRow();</span>
+    }
+
+
+    @Override
+    public void close() throws IOException {
+<span class="nc" id="L75">        wrapped.close();</span>
+<span class="nc" id="L76">    }</span>
+
+
+    @Override
+    public DataSet copy() throws IOException {
+<span class="nc" id="L81">        return new CompletableDataSet(wrapped.copy(), nonNullableColumnsWithType);</span>
+    }
+
+
+    private static Object nonNullValueFor(Integer sqlType) {
+<span class="nc bnc" id="L86" title="All 5 branches missed.">        switch (sqlType) {</span>
+        case Types.BIT:
+        case Types.BIGINT:
+        case Types.BOOLEAN:
+        case Types.INTEGER:
+        case Types.SMALLINT:
+        case Types.TINYINT:
+        case Types.FLOAT:
+        case Types.REAL:
+        case Types.DOUBLE:
+        case Types.DECIMAL:
+        case Types.NUMERIC:
+<span class="nc" id="L98">            return 1;</span>
+        case Types.CHAR:
+        case Types.LONGNVARCHAR:
+        case Types.LONGVARCHAR:
+        case Types.NCHAR:
+        case Types.NVARCHAR:
+        case Types.VARCHAR:
+<span class="nc" id="L105">            return &quot;A&quot;;</span>
+        case Types.DATE:
+        case Types.TIMESTAMP:
+        case Types.TIMESTAMP_WITH_TIMEZONE:
+<span class="nc" id="L109">            return Date.valueOf(LocalDate.of(2000, 1, 1));</span>
+        case Types.TIME:
+        case Types.TIME_WITH_TIMEZONE:
+<span class="nc" id="L112">            return Time.valueOf(LocalTime.of(12, 0));</span>
+        default:
+<span class="nc" id="L114">            return 0;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

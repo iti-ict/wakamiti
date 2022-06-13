@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultBackendFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.backend</a> &gt; <span class="el_source">DefaultBackendFactory.java</span></div><h1>DefaultBackendFactory.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.backend;
+
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.Clock;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.ToIntFunction;
+import java.util.stream.*;
+
+import imconfig.Configuration;
+import org.slf4j.Logger;
+
+import iti.commons.jext.Extension;
+import iti.kukumo.api.*;
+import iti.kukumo.api.annotations.*;
+import iti.kukumo.api.extensions.*;
+import iti.kukumo.api.plan.*;
+import iti.kukumo.util.ThrowableRunnable;
+
+
+public class DefaultBackendFactory implements BackendFactory {
+
+<span class="fc" id="L34">    private static final Logger LOGGER = Kukumo.LOGGER;</span>
+<span class="fc" id="L35">    private static final List&lt;String&gt; DEFAULT_MODULES = Collections.unmodifiableList(</span>
+<span class="fc" id="L36">        Arrays.asList(</span>
+            &quot;core-types&quot;,
+            &quot;assertion-types&quot;
+        )
+    );
+
+    private final KukumoContributors contributors;
+
+
+<span class="fc" id="L45">    public DefaultBackendFactory(KukumoContributors contributors) {</span>
+<span class="fc" id="L46">        this.contributors = contributors;</span>
+<span class="fc" id="L47">    }</span>
+
+
+    @Override
+    public Backend createBackend(PlanNode testCase, Configuration configuration) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (testCase.nodeType() != NodeType.TEST_CASE) {</span>
+<span class="nc" id="L53">            throw new IllegalArgumentException(&quot;Plan node must be of type TEST_CASE&quot;);</span>
+        }
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L56">            LOGGER.debug(</span>
+                &quot;Creating backend for Test Case {}::'{}'&quot;,
+<span class="fc" id="L58">                testCase.source(),</span>
+<span class="fc" id="L59">                testCase.displayName()</span>
+            );
+        }
+<span class="fc" id="L62">        return doCreateBackend(testCase, configuration);</span>
+    }
+
+
+
+    @Override
+    public Backend createNonRunnableBackend(Configuration configuration) {
+<span class="fc" id="L69">        return doCreateBackend(null, configuration);</span>
+    }
+
+
+
+    private Backend doCreateBackend(PlanNode testCase, Configuration configuration) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        boolean runnableBackend = (testCase != null);</span>
+<span class="fc" id="L76">        List&lt;String&gt; restrictedModules = new ArrayList&lt;&gt;(</span>
+<span class="fc" id="L77">            configuration.getList(KukumoConfiguration.MODULES, String.class)</span>
+        );
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        List&lt;StepContributor&gt; stepContributors = createStepContributors(</span>
+            restrictedModules,
+            configuration,
+            !runnableBackend
+        );
+
+<span class="fc" id="L85">        Stream&lt;DataTypeContributor&gt; dataTypeContributors = resolveDataTypeContributors(</span>
+            restrictedModules
+        );
+
+<span class="fc" id="L89">        KukumoDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);</span>
+<span class="fc" id="L90">        List&lt;RunnableStep&gt; steps = createSteps(stepContributors, typeRegistry);</span>
+<span class="fc" id="L91">        Clock clock = Clock.systemUTC();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (runnableBackend) {</span>
+<span class="fc" id="L93">            return new RunnableBackend(</span>
+                testCase,
+                configuration,
+                typeRegistry,
+                steps,
+<span class="fc" id="L98">                getSetUpOperations(stepContributors),</span>
+<span class="fc" id="L99">                getTearDownOperations(stepContributors),</span>
+                clock
+            );
+        } else {
+<span class="fc" id="L103">            return new NonRunnableBackend(configuration, typeRegistry, steps);</span>
+        }
+    }
+
+
+
+
+
+
+
+
+    private List&lt;ThrowableRunnable&gt; getSetUpOperations(List&lt;StepContributor&gt; stepContributors) {
+<span class="fc" id="L115">        return loadMethods(stepContributors, SetUp.class, SetUp::order);</span>
+    }
+
+
+    private List&lt;ThrowableRunnable&gt; getTearDownOperations(List&lt;StepContributor&gt; stepContributors) {
+<span class="fc" id="L120">        return loadMethods(stepContributors, TearDown.class, TearDown::order);</span>
+    }
+
+
+    protected List&lt;StepContributor&gt; createStepContributors(
+        List&lt;String&gt; restrictedModules,
+        Configuration configuration,
+        boolean allowEmptySteps
+    ) {
+
+<span class="fc" id="L130">        List&lt;StepContributor&gt; stepContributors = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (restrictedModules.isEmpty()) {</span>
+<span class="fc" id="L132">            stepContributors.addAll(contributors.createAllStepContributors(configuration));</span>
+        } else {
+<span class="nc" id="L134">            List&lt;String&gt; modules = new ArrayList&lt;&gt;(restrictedModules);</span>
+<span class="nc" id="L135">            modules.addAll(DEFAULT_MODULES);</span>
+<span class="nc" id="L136">            stepContributors.addAll(contributors.createStepContributors(modules, configuration));</span>
+        }
+
+<span class="fc" id="L139">        List&lt;String&gt; nonRegisteredContributorClasses = configuration</span>
+<span class="fc" id="L140">            .getList(KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS, String.class);</span>
+<span class="fc" id="L141">        List&lt;StepContributor&gt; nonRegisteredContributors = resolveNonRegisteredContributors(</span>
+            nonRegisteredContributorClasses,
+            configuration
+        );
+
+<span class="fc" id="L146">        stepContributors.addAll(nonRegisteredContributors);</span>
+
+<span class="pc bpc" id="L148" title="3 of 4 branches missed.">        if (stepContributors.isEmpty() &amp;&amp; !allowEmptySteps) {</span>
+<span class="nc" id="L149">            logTipForNoStepContributors(restrictedModules);</span>
+<span class="nc" id="L150">            throw new KukumoException(&quot;Cannot build backend without step contributors&quot;);</span>
+        }
+
+<span class="fc" id="L153">        stepContributors</span>
+<span class="fc" id="L154">            .forEach(stepContributor -&gt; contributors.configure(stepContributor, configuration));</span>
+<span class="fc" id="L155">        Kukumo.contributors().addStepContributors(stepContributors);</span>
+<span class="fc" id="L156">        return stepContributors;</span>
+    }
+
+
+    protected Stream&lt;DataTypeContributor&gt; resolveDataTypeContributors(
+        List&lt;String&gt; restrictedModules
+    ) {
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if (restrictedModules.isEmpty()) {</span>
+<span class="fc" id="L164">            return contributors.allDataTypeContributors();</span>
+        } else {
+<span class="nc" id="L166">            List&lt;String&gt; modules = new ArrayList&lt;&gt;(restrictedModules);</span>
+<span class="nc" id="L167">            modules.addAll(DEFAULT_MODULES);</span>
+<span class="nc" id="L168">            return contributors.dataTypeContributors(modules);</span>
+        }
+    }
+
+
+    protected void logTipForNoStepContributors(List&lt;String&gt; restrictedModules) {
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (restrictedModules.isEmpty()) {</span>
+<span class="nc" id="L175">            LOGGER.error(</span>
+                &quot;No step contributors found. You must either declare step modules with &quot; + &quot;property '{}' or non-registered step provider classes with property '{}'&quot;,
+                KukumoConfiguration.MODULES,
+                KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS
+            );
+        } else {
+<span class="nc" id="L181">            String availableStepContributors = contributors.allStepContributorMetadata()</span>
+<span class="nc" id="L182">                .map(Extension::name)</span>
+<span class="nc" id="L183">                .collect(Collectors.joining(&quot;\n\t&quot;));</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            if (availableStepContributors.isEmpty()) {</span>
+<span class="nc" id="L185">                LOGGER.error(</span>
+                    &quot;No step contributors found. You must include at least one Kukumo plugin &quot; + &quot;with a StepContributor in the classpath&quot;
+                );
+            } else {
+<span class="nc" id="L189">                LOGGER.error(</span>
+                    &quot;No step contributors found for the modules {}, please check the spelling.\n&quot; + &quot;The available step contributors are:\n\t{}&quot;,
+                    restrictedModules,
+                    availableStepContributors
+                );
+            }
+        }
+<span class="nc" id="L196">    }</span>
+
+
+    private &lt;A extends Annotation&gt; List&lt;ThrowableRunnable&gt; loadMethods(
+        List&lt;StepContributor&gt; stepContributors,
+        Class&lt;A&gt; annotation,
+        ToIntFunction&lt;A&gt; orderGetter
+    ) {
+<span class="fc" id="L204">        LinkedHashMap&lt;ThrowableRunnable, A&gt; runnables = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        for (StepContributor stepContributor : stepContributors) {</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">            for (Method method : stepContributor.getClass().getMethods()) {</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">                if (method.isAnnotationPresent(annotation)) {</span>
+<span class="nc" id="L208">                    runnables.put(</span>
+<span class="nc" id="L209">                        args -&gt; method.invoke(stepContributor),</span>
+<span class="nc" id="L210">                        method.getAnnotation(annotation)</span>
+                    );
+                }
+            }
+<span class="fc" id="L214">        }</span>
+
+<span class="fc" id="L216">        Comparator&lt;? super Entry&lt;ThrowableRunnable, A&gt;&gt; sorter = Comparator</span>
+<span class="pc" id="L217">            .comparingInt(e -&gt; orderGetter.applyAsInt(e.getValue()));</span>
+
+<span class="fc" id="L219">        return runnables.entrySet().stream()</span>
+<span class="fc" id="L220">            .sorted(sorter)</span>
+<span class="fc" id="L221">            .map(Map.Entry::getKey)</span>
+<span class="fc" id="L222">            .collect(Collectors.toList());</span>
+    }
+
+
+    protected KukumoDataTypeRegistry loadTypes(Stream&lt;DataTypeContributor&gt; contributors) {
+
+<span class="fc" id="L228">        Map&lt;String, KukumoDataType&lt;?&gt;&gt; types = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L229">        contributors.forEach(contributor -&gt; {</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">            for (KukumoDataType&lt;?&gt; type : contributor.contributeTypes()) {</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">                if (LOGGER.isTraceEnabled()) {</span>
+<span class="nc" id="L232">                    LOGGER.trace(</span>
+                        &quot;using type {resourceType}({}) provided by {contributor}&quot;,
+<span class="nc" id="L234">                        type.getName(),</span>
+<span class="nc" id="L235">                        type.getJavaType(),</span>
+<span class="nc" id="L236">                        contributor.info()</span>
+                    );
+                }
+<span class="fc" id="L239">                KukumoDataType&lt;?&gt; replacedType = types.put(type.getName(), type);</span>
+<span class="pc bpc" id="L240" title="3 of 4 branches missed.">                if (replacedType != null &amp;&amp; LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L241">                    LOGGER.warn(</span>
+                        &quot;Module {contributor} overrides type {resourceType}&quot;,
+<span class="nc" id="L243">                        contributor.info(),</span>
+<span class="nc" id="L244">                        replacedType.getName()</span>
+                    );
+                }
+<span class="fc" id="L247">            }</span>
+<span class="fc" id="L248">        });</span>
+<span class="fc" id="L249">        return new KukumoDataTypeRegistry(types);</span>
+    }
+
+
+    protected List&lt;RunnableStep&gt; createSteps(
+        List&lt;StepContributor&gt; stepContributors,
+        KukumoDataTypeRegistry typeRegistry
+    ) {
+<span class="fc" id="L257">        ArrayList&lt;RunnableStep&gt; resultSteps = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">        for (Object stepContributor : stepContributors) {</span>
+<span class="fc" id="L259">            createContributorSteps(resultSteps, stepContributor, typeRegistry);</span>
+<span class="fc" id="L260">        }</span>
+<span class="fc" id="L261">        return resultSteps;</span>
+    }
+
+
+    protected List&lt;StepContributor&gt; resolveNonRegisteredContributors(
+        List&lt;String&gt; nonRegisteredContributorClasses,
+        Configuration configuration
+    ) {
+<span class="fc" id="L269">        List&lt;StepContributor&gt; nonRegisteredContributors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L270">        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">        for (String nonRegisteredContributorClass : nonRegisteredContributorClasses) {</span>
+            try {
+<span class="fc" id="L273">                Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass)</span>
+<span class="fc" id="L274">                    .getConstructor()</span>
+<span class="fc" id="L275">                    .newInstance();</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">                if (newStepContributor instanceof StepContributor) {</span>
+<span class="fc" id="L277">                    contributors.configure(newStepContributor, configuration);</span>
+<span class="fc" id="L278">                    nonRegisteredContributors.add((StepContributor) newStepContributor);</span>
+                } else {
+<span class="nc" id="L280">                    LOGGER.warn(</span>
+                        &quot;Class {} does not implement {}&quot;,
+                        nonRegisteredContributorClass,
+                        StepContributor.class
+                    );
+                }
+<span class="nc" id="L286">            } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L287">                LOGGER.warn(</span>
+                    &quot;Cannot find non-registered step provider class: {}\n\tEnsure the class &quot; + &quot;exists, is fully qualified, and its accesible from the main class loader&quot;,
+                    nonRegisteredContributorClass
+                );
+<span class="nc" id="L291">            } catch (NoSuchMethodException e) {</span>
+<span class="nc" id="L292">                LOGGER.warn(</span>
+                    &quot;Non-registered step provider class {} requieres empty constructor&quot;,
+                    nonRegisteredContributorClass
+                );
+<span class="nc" id="L296">            } catch (ReflectiveOperationException e) {</span>
+<span class="nc" id="L297">                LOGGER.warn(</span>
+                    &quot;Error loading non-registered step provider class {}: {}&quot;,
+                    nonRegisteredContributorClass,
+<span class="nc" id="L300">                    e.toString()</span>
+                );
+<span class="nc bnc" id="L302" title="All 2 branches missed.">                if (LOGGER.isDebugEnabled()) {</span>
+<span class="nc" id="L303">                    LOGGER.error(&quot;&lt;exception stack trace&gt;&quot;, e);</span>
+                }
+<span class="pc" id="L305">            }</span>
+<span class="fc" id="L306">        }</span>
+<span class="fc" id="L307">        return nonRegisteredContributors;</span>
+    }
+
+
+    protected void createContributorSteps(
+        List&lt;RunnableStep&gt; output,
+        Object stepProvider,
+        KukumoDataTypeRegistry typeRegistry
+    ) {
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">        String info = (stepProvider instanceof Contributor) ?</span>
+<span class="fc" id="L317">    		((Contributor)stepProvider).info() :</span>
+<span class="pc" id="L318">			stepProvider.getClass().getCanonicalName();</span>
+
+<span class="fc bfc" id="L320" title="All 2 branches covered.">    	for (Method method : stepProvider.getClass().getMethods()) {</span>
+<span class="fc bfc" id="L321" title="All 2 branches covered.">            if (method.isAnnotationPresent(Step.class)) {</span>
+                try {
+<span class="fc" id="L323">                    RunnableStep step = createRunnableStep(stepProvider, method, typeRegistry, info);</span>
+<span class="fc" id="L324">                    output.add(step);</span>
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">                    if (LOGGER.isTraceEnabled()) {</span>
+<span class="nc" id="L326">                        LOGGER.trace(</span>
+                            &quot;using step &lt;{}::'{}' {}&gt;&quot;,
+<span class="nc" id="L328">                            stepProvider.getClass().getSimpleName(),</span>
+<span class="nc" id="L329">                            step.getDefinitionKey(),</span>
+<span class="nc" id="L330">                            step.getArguments()</span>
+                        );
+                    }
+<span class="nc" id="L333">                } catch (Exception e) {</span>
+<span class="nc" id="L334">                    throw new KukumoException(e);</span>
+<span class="fc" id="L335">                }</span>
+            }
+        }
+<span class="fc" id="L338">    }</span>
+
+
+    protected RunnableStep createRunnableStep(
+        Object runnableObject,
+        Method runnableMethod,
+        KukumoDataTypeRegistry typeRegistry,
+        String stepProvider
+    ) {
+<span class="fc" id="L347">        Class&lt;?&gt; stepContributorClass = runnableObject.getClass();</span>
+<span class="fc" id="L348">        I18nResource stepDefinitionFile = stepContributorClass.getAnnotation(I18nResource.class);</span>
+<span class="pc bpc" id="L349" title="1 of 2 branches missed.">        if (stepDefinitionFile == null) {</span>
+<span class="nc" id="L350">            throw new KukumoException(</span>
+                &quot;Class {} must be annotated with {}&quot;,
+<span class="nc" id="L352">                runnableObject.getClass().getCanonicalName(),</span>
+<span class="nc" id="L353">                I18nResource.class.getCanonicalName()</span>
+            );
+        }
+<span class="fc" id="L356">        final Step stepDefinition = runnableMethod.getAnnotation(Step.class);</span>
+<span class="pc bpc" id="L357" title="1 of 2 branches missed.">        if (stepDefinition == null) {</span>
+<span class="nc" id="L358">            throw new KukumoException(</span>
+                &quot;Method {}::{} must be annotated with {}&quot;,
+<span class="nc" id="L360">                runnableObject.getClass().getCanonicalName(),</span>
+<span class="nc" id="L361">                runnableMethod.getName(),</span>
+<span class="nc" id="L362">                Step.class.getCanonicalName()</span>
+            );
+        }
+<span class="fc bfc" id="L365" title="All 2 branches covered.">        for (Class&lt;?&gt; methodArgumentType : runnableMethod.getParameterTypes()) {</span>
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">            if (methodArgumentType.isPrimitive()) {</span>
+<span class="nc" id="L367">                throw new KukumoException(</span>
+                    &quot;Method {}::{} must not use primitive argument type {}; &quot; + &quot;use equivalent boxed type&quot;,
+<span class="nc" id="L369">                    runnableObject.getClass().getCanonicalName(),</span>
+<span class="nc" id="L370">                    runnableMethod.getName(),</span>
+<span class="nc" id="L371">                    methodArgumentType.getName()</span>
+                );
+            }
+        }
+<span class="fc" id="L375">        return new RunnableStep(</span>
+<span class="fc" id="L376">            stepDefinitionFile.value(),</span>
+<span class="fc" id="L377">            stepDefinition.value(),</span>
+<span class="fc" id="L378">            new BackendArguments(runnableObject.getClass(), runnableMethod, typeRegistry),</span>
+<span class="fc" id="L379">            (args -&gt; runnableMethod.invoke(runnableObject, args)),</span>
+            stepProvider
+        );
+    }
+
+
+
+    @Override
+    public Hinter createHinter(Configuration configuration) {
+<span class="nc" id="L388">        List&lt;String&gt; restrictedModules = new ArrayList&lt;&gt;(</span>
+<span class="nc" id="L389">                configuration.getList(KukumoConfiguration.MODULES, String.class)</span>
+        );
+<span class="nc" id="L391">        List&lt;StepContributor&gt; stepContributors = createStepContributors(</span>
+            restrictedModules,
+            configuration,
+            true
+        );
+<span class="nc" id="L396">        var dataTypeContributors = resolveDataTypeContributors(restrictedModules);</span>
+<span class="nc" id="L397">        var typeRegistry = loadTypes(dataTypeContributors);</span>
+<span class="nc" id="L398">        List&lt;RunnableStep&gt; steps = createSteps(stepContributors, typeRegistry);</span>
+<span class="nc" id="L399">        var stepResolver = new RunnableStepResolver(typeRegistry, steps);</span>
+<span class="nc" id="L400">        return new StepHinter(</span>
+            steps,
+            configuration,
+            stepResolver,
+            typeRegistry
+        );
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

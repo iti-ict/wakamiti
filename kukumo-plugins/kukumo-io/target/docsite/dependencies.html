@@ -1,0 +1,1477 @@
+<html><head><title>Kukumo::Files Steps - Dependencies</title><meta name="description" content="Collection of artifacts that this project uses"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="profile" href="http://www.w3.org/2005/10/profile"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" integrity="sha512-BnbUDfEUfV0Slx6TunuB042k9tuKe3xrD6q4mg5Ed72LTgzDIcLPxg6yI2gcMFRyomt+yJJxE+zJwNmxki6/RA==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" integrity="sha512-YBk7HhgDZvBxmtOfUdvX0z8IH2d10Hp3aEygaMNhtF8fSOvBZ16D/1bXZTJV6ndk/L/DlXxYStP8jrF77v2MIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link href="css/common.css" rel="stylesheet"><link href="css/style.css" rel="stylesheet"><style>:root {
+--menu-regular-background-color: #575757;
+--menu-bold-background-color: #413e3e;
+--menu-foreground-color: #f1f4f4;
+--menu-decoration-color: #b7d4da;
+--gui-element-color: #f08080;
+}</style></head><body class="empty-aside"><a id="jump-to-content" href="#content">jump to content</a><header><div class="title-and-subtitle"><h1 class="title label"><i class="external-icon" style="background-image: url(&#x27;data:image/png;base64,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&#x27;)"></i><span>Kukumo::Files Steps</span></h1><span class="subtitle">Files steps for Kukumo</span></div><nav class="sections"><ul><li><a class="label internal" href="changelog.html"><i class="fas fa-clipboard-list"></i><span>Changelog</span></a></li><li><a class="label internal" href="reports.html"><i class="fas fa-file-medical-alt"></i><span>Reports</span></a><ul class="dropdown"><li><a class="label internal" href="javadoc.html"><i class="fab fa-java"></i><span>Javadoc</span></a></li><li><a class="label internal" href="dependencies.html"><i class="hidden"></i><span>Dependencies</span></a></li><li><a class="label internal" href="test-coverage.html"><i class="hidden"></i><span>Test Coverage</span></a></li><li><a class="label internal" href="test-results.html"><i class="hidden"></i><span>Test Results</span></a></li></ul></li><li><a class="label internal" href="license.html"><i class="fas fa-balance-scale"></i><span>License</span></a></li></ul></nav><div class="company"><img class="hidden"></div></header><nav class="breadcrumbs"><ol><li><a class="internal" href="index.html">Kukumo::Files Steps</a></li><li><a class="internal" href="reports.html">Reports</a></li><li><a>Dependencies</a></li></ol><select class="language-selection" onchange="redirectLanguage(this.value)"><option value="en" selected>🇬🇧</option><option value="es">🇪🇸</option><script>function redirectLanguage(language) {
+if (language==='en') location.href = 'dependencies.html';
+if (language==='es') location.href = 'dependencies_es.html';
+}</script></select></nav><aside></aside><section class="content" id="content"><div></div><!DOCTYPE html>
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 1.9.2 at 2022-06-13
+
+ | Rendered using Apache Maven Default Skin
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="Apache Maven Doxia Site Renderer 1.9.2" />
+    <title>Dependencies &#x2013; Project Dependencies</title>
+    <link rel="stylesheet" href="./css/maven-base.css" />
+    <link rel="stylesheet" href="./css/maven-theme.css" />
+    <link rel="stylesheet" href="./css/site.css" />
+    <link rel="stylesheet" href="./css/print.css" media="print" />
+  </head>
+  <body class="composite">
+    <div id="banner">
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+      <div class="xleft">
+        <span id="publishDate">Last Published: 2022-06-13</span>
+          &#xA0;| <span id="projectVersion">Version: 1.3.2</span>
+      </div>
+      <div class="xright">      </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+      <a target="_blank" rel="external noreferrer noopener nofollow" href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+        <img class="poweredBy" alt="Built by Maven" src="images/Dependencies/image-1.png" />
+      </a>
+      </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+<a name="Project_Dependencies"></a><section>
+<h2><a name="Project_Dependencies"></a>Project Dependencies</h2><a name="Project_Dependencies_compile"></a><section>
+<h3><a name="compile"></a>compile</h3>
+<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>Licenses</th></tr>
+<tr class="b">
+<td>commons-io</td>
+<td><a class="externalLink" href="https://commons.apache.org/proper/commons-io/">commons-io</a></td>
+<td>2.11.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>es.iti.kukumo</td>
+<td>kukumo-core</td>
+<td>1.3.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.mozilla.org/en-US/MPL/2.0/">MPL-2.0</a></td></tr>
+<tr class="b">
+<td>junit</td>
+<td><a class="externalLink" href="http://junit.org">junit</a></td>
+<td>4.13.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a></td></tr>
+<tr class="a">
+<td>org.assertj</td>
+<td><a class="externalLink" href="http://assertj.org/assertj-core">assertj-core</a></td>
+<td>3.14.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr></table></section><a name="Project_Dependencies_test"></a><section>
+<h3><a name="test"></a>test</h3>
+<p>The following is a list of test dependencies for this project. These dependencies are only required to compile and run unit tests for the application:</p>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>Licenses</th></tr>
+<tr class="b">
+<td>org.hamcrest</td>
+<td><a class="externalLink" href="http://hamcrest.org/JavaHamcrest/">hamcrest</a></td>
+<td>2.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://opensource.org/licenses/BSD-3-Clause">BSD License 3</a></td></tr>
+<tr class="a">
+<td>org.slf4j</td>
+<td><a class="externalLink" href="http://www.slf4j.org">slf4j-simple</a></td>
+<td>1.7.29</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></td></tr></table></section></section><a name="Project_Transitive_Dependencies"></a><section>
+<h2><a name="Project_Transitive_Dependencies"></a>Project Transitive Dependencies</h2>
+<p>The following is a list of transitive dependencies for this project. Transitive dependencies are the dependencies of the project dependencies.</p><a name="Project_Transitive_Dependencies_compile"></a><section>
+<h3><a name="compile"></a>compile</h3>
+<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>Licenses</th></tr>
+<tr class="b">
+<td>com.fasterxml.jackson.core</td>
+<td><a class="externalLink" href="http://github.com/FasterXML/jackson">jackson-annotations</a></td>
+<td>2.13.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>com.fasterxml.jackson.core</td>
+<td><a class="externalLink" href="https://github.com/FasterXML/jackson-core">jackson-core</a></td>
+<td>2.13.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>com.fasterxml.jackson.core</td>
+<td><a class="externalLink" href="http://github.com/FasterXML/jackson">jackson-databind</a></td>
+<td>2.13.2.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>com.fasterxml.jackson.datatype</td>
+<td><a class="externalLink" href="https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310">jackson-datatype-jsr310</a></td>
+<td>2.13.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>commons-beanutils</td>
+<td><a class="externalLink" href="https://commons.apache.org/proper/commons-beanutils/">commons-beanutils</a></td>
+<td>1.9.4</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>commons-codec</td>
+<td><a class="externalLink" href="http://commons.apache.org/proper/commons-codec/">commons-codec</a></td>
+<td>1.11</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>commons-collections</td>
+<td><a class="externalLink" href="http://commons.apache.org/collections/">commons-collections</a></td>
+<td>3.2.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>commons-logging</td>
+<td><a class="externalLink" href="http://commons.apache.org/proper/commons-logging/">commons-logging</a></td>
+<td>1.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>es.iti.commons</td>
+<td>gherkin-parser</td>
+<td>1.0.2</td>
+<td>jar</td>
+<td>-</td></tr>
+<tr class="a">
+<td>es.iti.commons</td>
+<td>jext</td>
+<td>1.0.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.mozilla.org/en-US/MPL/2.0/">MPL-2.0</a></td></tr>
+<tr class="b">
+<td>io.cucumber</td>
+<td><a class="externalLink" href="https://github.com/cucumber/tag-expressions-java">tag-expressions</a></td>
+<td>1.1.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.opensource.org/licenses/mit-license">MIT License</a></td></tr>
+<tr class="a">
+<td>io.github.luiinge</td>
+<td><a class="externalLink" href="https://github.com/luiinge/immutable-config">immutable-config</a></td>
+<td>1.1.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></td></tr>
+<tr class="b">
+<td>io.github.luiinge</td>
+<td><a class="externalLink" href="https://github.com/luiinge/maven-fetcher">maven-fetcher</a></td>
+<td>1.3.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></td></tr>
+<tr class="a">
+<td>io.github.luiinge</td>
+<td><a class="externalLink" href="https://github.com/luiinge/slf4j-ansi">slf4j-ansi</a></td>
+<td>1.0.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></td></tr>
+<tr class="b">
+<td>javax.annotation</td>
+<td><a class="externalLink" href="http://jcp.org/en/jsr/detail?id=250">javax.annotation-api</a></td>
+<td>1.3.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://github.com/javaee/javax.annotation/blob/master/LICENSE">CDDL + GPLv2 with classpath exception</a></td></tr>
+<tr class="a">
+<td>javax.inject</td>
+<td><a class="externalLink" href="http://code.google.com/p/atinject/">javax.inject</a></td>
+<td>1</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>net.harawata</td>
+<td><a class="externalLink" href="https://github.com/harawata/appdirs">appdirs</a></td>
+<td>1.0.3</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>net.java.dev.jna</td>
+<td><a class="externalLink" href="https://github.com/java-native-access/jna">jna</a></td>
+<td>4.5.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.gnu.org/licenses/licenses.html">LGPL, version 2.1</a><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License v2.0</a></td></tr>
+<tr class="b">
+<td>net.java.dev.jna</td>
+<td><a class="externalLink" href="https://github.com/java-native-access/jna">jna-platform</a></td>
+<td>4.5.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.gnu.org/licenses/licenses.html">LGPL, version 2.1</a><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License v2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.commons</td>
+<td><a class="externalLink" href="https://commons.apache.org/proper/commons-configuration/">commons-configuration2</a></td>
+<td>2.7</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.commons</td>
+<td><a class="externalLink" href="http://commons.apache.org/proper/commons-lang/">commons-lang3</a></td>
+<td>3.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.commons</td>
+<td><a class="externalLink" href="https://commons.apache.org/proper/commons-text">commons-text</a></td>
+<td>1.8</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.httpcomponents</td>
+<td><a class="externalLink" href="http://hc.apache.org/httpcomponents-client">httpclient</a></td>
+<td>4.5.13</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.httpcomponents</td>
+<td><a class="externalLink" href="http://hc.apache.org/httpcomponents-core-ga">httpcore</a></td>
+<td>4.4.14</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-artifact/">maven-artifact</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-builder-support/">maven-builder-support</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-model/">maven-model</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-model-builder/">maven-model-builder</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-repository-metadata/">maven-repository-metadata</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-resolver-provider/">maven-resolver-provider</a></td>
+<td>3.8.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-api/">maven-resolver-api</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-connector-basic/">maven-resolver-connector-basic</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-impl/">maven-resolver-impl</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-named-locks/">maven-resolver-named-locks</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-spi/">maven-resolver-spi</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-transport-file/">maven-resolver-transport-file</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-transport-http/">maven-resolver-transport-http</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven.resolver</td>
+<td><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-util/">maven-resolver-util</a></td>
+<td>1.7.2</td>
+<td>jar</td>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="https://groovy-lang.org">groovy</a></td>
+<td>3.0.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="https://groovy-lang.org">groovy-datetime</a></td>
+<td>3.0.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="https://groovy-lang.org">groovy-dateutil</a></td>
+<td>3.0.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="https://groovy-lang.org">groovy-json</a></td>
+<td>3.0.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.codehaus.groovy</td>
+<td><a class="externalLink" href="https://groovy-lang.org">groovy-xml</a></td>
+<td>3.0.9</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.codehaus.plexus</td>
+<td><a class="externalLink" href="http://codehaus-plexus.github.io/plexus-interpolation/">plexus-interpolation</a></td>
+<td>1.25</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="b">
+<td>org.codehaus.plexus</td>
+<td><a class="externalLink" href="http://codehaus-plexus.github.io/plexus-utils/">plexus-utils</a></td>
+<td>3.2.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.eclipse.sisu</td>
+<td><a class="externalLink" href="http://www.eclipse.org/sisu/org.eclipse.sisu.inject/">org.eclipse.sisu.inject</a></td>
+<td>0.3.4</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License, Version 1.0</a></td></tr>
+<tr class="b">
+<td>org.fusesource.jansi</td>
+<td><a class="externalLink" href="http://fusesource.github.io/jansi/jansi">jansi</a></td>
+<td>1.18</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.slf4j</td>
+<td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td>
+<td>1.7.29</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></td></tr>
+<tr class="b">
+<td>org.yaml</td>
+<td><a class="externalLink" href="https://bitbucket.org/snakeyaml/snakeyaml">snakeyaml</a></td>
+<td>1.30</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr></table></section></section><a name="Project_Dependency_Graph"></a><section>
+<h2><a name="Project_Dependency_Graph"></a>Project Dependency Graph</h2>
+<script language="javascript" type="text/javascript">
+      function toggleDependencyDetails( divId, imgId )
+      {
+        var div = document.getElementById( divId );
+        var img = document.getElementById( imgId );
+        if( div.style.display == '' )
+        {
+          div.style.display = 'none';
+          img.src='./images/icon_info_sml.gif';
+          img.alt='[Information]';
+        }
+        else
+        {
+          div.style.display = '';
+          img.src='./images/close.gif';
+          img.alt='[Close]';
+        }
+      }
+</script>
+<a name="Dependency_Tree"></a><section>
+<h3><a name="Dependency_Tree"></a>Dependency Tree</h3>
+<ul>
+<li>es.iti.kukumo:kukumo-io:jar:1.3.2 <img id="_img1" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep0', '_img1' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep0" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Kukumo::Files Steps</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Files steps for Kukumo</p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.mozilla.org/en-US/MPL/2.0/">MPL-2.0</a></p></td></tr></table></div>
+<ul>
+<li>es.iti.kukumo:kukumo-core:jar:1.3.2 (compile) <img id="_img3" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep2', '_img3' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep2" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Kukumo::CORE</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Core functionality of Kukumo</p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.mozilla.org/en-US/MPL/2.0/">MPL-2.0</a></p></td></tr></table></div>
+<ul>
+<li>io.github.luiinge:immutable-config:jar:1.1.0 (compile) <img id="_img5" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep4', '_img5' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep4" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Immutable Configurations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Configuration utility library</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/luiinge/immutable-config">https://github.com/luiinge/immutable-config</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></p></td></tr></table></div>
+<ul>
+<li>commons-beanutils:commons-beanutils:jar:1.9.4 (compile) <img id="_img7" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep6', '_img7' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep6" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons BeanUtils</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache Commons BeanUtils provides an easy-to-use but flexible wrapper around reflection and introspection.</p>
+<p><b>URL: </b><a class="externalLink" href="https://commons.apache.org/proper/commons-beanutils/">https://commons.apache.org/proper/commons-beanutils/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>commons-collections:commons-collections:jar:3.2.2 (compile) <img id="_img9" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep8', '_img9' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep8" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Collections</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Types that extend and augment the Java Collections Framework.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/collections/">http://commons.apache.org/collections/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>commons-logging:commons-logging:jar:1.2 (compile) <img id="_img11" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep10', '_img11' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep10" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Logging</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache Commons Logging is a thin adapter allowing configurable bridging to other,
+    well known logging systems.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/proper/commons-logging/">http://commons.apache.org/proper/commons-logging/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.commons:commons-configuration2:jar:2.7 (compile) <img id="_img13" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep12', '_img13' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep12" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Configuration</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Tools to assist in the reading of configuration/preferences files in
+        various formats</p>
+<p><b>URL: </b><a class="externalLink" href="https://commons.apache.org/proper/commons-configuration/">https://commons.apache.org/proper/commons-configuration/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.commons:commons-text:jar:1.8 (compile) <img id="_img15" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep14', '_img15' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep14" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Text</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache Commons Text is a library focused on algorithms working on strings.</p>
+<p><b>URL: </b><a class="externalLink" href="https://commons.apache.org/proper/commons-text">https://commons.apache.org/proper/commons-text</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.commons:commons-lang3:jar:3.9 (compile) <img id="_img17" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep16', '_img17' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep16" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Lang</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache Commons Lang, a package of Java utility classes for the
+  classes that are in java.lang's hierarchy, or are considered to be so
+  standard as to justify existence in java.lang.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/proper/commons-lang/">http://commons.apache.org/proper/commons-lang/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.yaml:snakeyaml:jar:1.30 (compile) <img id="_img19" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep18', '_img19' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep18" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>SnakeYAML</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>YAML 1.1 parser and emitter for Java</p>
+<p><b>URL: </b><a class="externalLink" href="https://bitbucket.org/snakeyaml/snakeyaml">https://bitbucket.org/snakeyaml/snakeyaml</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>es.iti.commons:jext:jar:1.0.0 (compile) <img id="_img21" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep20', '_img21' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep20" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>jExt</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Simple plug-in extension support for Java</p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.mozilla.org/en-US/MPL/2.0/">MPL-2.0</a></p></td></tr></table></div>
+<ul>
+<li>javax.annotation:javax.annotation-api:jar:1.3.2 (compile) <img id="_img23" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep22', '_img23' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep22" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>javax.annotation API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Common Annotations for the JavaTM Platform API</p>
+<p><b>URL: </b><a class="externalLink" href="http://jcp.org/en/jsr/detail?id=250">http://jcp.org/en/jsr/detail?id=250</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://github.com/javaee/javax.annotation/blob/master/LICENSE">CDDL + GPLv2 with classpath exception</a></p></td></tr></table></div></li></ul></li>
+<li>es.iti.commons:gherkin-parser:jar:1.0.2 (compile) <img id="_img25" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep24', '_img25' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep24" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>gherkin-parser</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>Project Licenses: </b>No licenses are defined for this project.</p></td></tr></table></div></li>
+<li>io.cucumber:tag-expressions:jar:1.1.1 (compile) <img id="_img27" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep26', '_img27' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep26" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Cucumber Tag Expressions</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Parses boolean infix expressions</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/cucumber/tag-expressions-java">https://github.com/cucumber/tag-expressions-java</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license">MIT License</a></p></td></tr></table></div></li>
+<li>com.fasterxml.jackson.core:jackson-databind:jar:2.13.2.2 (compile) <img id="_img29" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep28', '_img29' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep28" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>jackson-databind</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>General data-binding functionality for Jackson: works on core streaming API</p>
+<p><b>URL: </b><a class="externalLink" href="http://github.com/FasterXML/jackson">http://github.com/FasterXML/jackson</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>com.fasterxml.jackson.core:jackson-core:jar:2.13.2 (compile) <img id="_img31" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep30', '_img31' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep30" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson-core</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson-core">https://github.com/FasterXML/jackson-core</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.13.2 (compile) <img id="_img33" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep32', '_img33' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep32" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson datatype: JSR310</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310">https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>com.fasterxml.jackson.core:jackson-annotations:jar:2.13.2 (compile) <img id="_img35" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep34', '_img35' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep34" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Jackson-annotations</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Core annotations used for value types, used by Jackson data binding package.</p>
+<p><b>URL: </b><a class="externalLink" href="http://github.com/FasterXML/jackson">http://github.com/FasterXML/jackson</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>io.github.luiinge:slf4j-ansi:jar:1.0.0 (compile) <img id="_img37" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep36', '_img37' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep36" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>SLF4J-Ansi</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Use Ansi styles in SLF4J logger messages</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/luiinge/slf4j-ansi">https://github.com/luiinge/slf4j-ansi</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></p></td></tr></table></div>
+<ul>
+<li>org.fusesource.jansi:jansi:jar:1.18 (compile) <img id="_img39" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep38', '_img39' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep38" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>jansi</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Jansi is a java library for generating and interpreting ANSI escape sequences.</p>
+<p><b>URL: </b><a class="externalLink" href="http://fusesource.github.io/jansi/jansi">http://fusesource.github.io/jansi/jansi</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>io.github.luiinge:maven-fetcher:jar:1.3.0 (compile) <img id="_img41" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep40', '_img41' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep40" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Fetcher</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Java utility to fetch Maven dependencies</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/luiinge/maven-fetcher">https://github.com/luiinge/maven-fetcher</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://repository.jboss.org/licenses/mit.txt">MIT License</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.maven.resolver:maven-resolver-impl:jar:1.7.2 (compile) <img id="_img43" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep42', '_img43' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep42" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Implementation</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>An implementation of the repository system.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-impl/">https://maven.apache.org/resolver/maven-resolver-impl/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.maven.resolver:maven-resolver-api:jar:1.7.2 (compile) <img id="_img45" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep44', '_img45' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep44" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The application programming interface for the repository system.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-api/">https://maven.apache.org/resolver/maven-resolver-api/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven.resolver:maven-resolver-spi:jar:1.7.2 (compile) <img id="_img47" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep46', '_img47' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep46" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver SPI</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The service provider interface for repository system implementations and repository connectors.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-spi/">https://maven.apache.org/resolver/maven-resolver-spi/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven.resolver:maven-resolver-named-locks:jar:1.7.2 (compile) <img id="_img49" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep48', '_img49' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep48" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Named Locks</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A synchronization utility implementation using Named locks.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-named-locks/">https://maven.apache.org/resolver/maven-resolver-named-locks/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven.resolver:maven-resolver-util:jar:1.7.2 (compile) <img id="_img51" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep50', '_img51' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep50" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Utilities</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A collection of utility classes to ease usage of the repository system.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-util/">https://maven.apache.org/resolver/maven-resolver-util/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.7.2 (compile) <img id="_img53" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep52', '_img53' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep52" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Connector Basic</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A repository connector implementation for repositories using URI-based layouts.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-connector-basic/">https://maven.apache.org/resolver/maven-resolver-connector-basic/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven.resolver:maven-resolver-transport-file:jar:1.7.2 (compile) <img id="_img55" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep54', '_img55' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep54" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Transport File</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A transport implementation for repositories using file:// URLs.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-transport-file/">https://maven.apache.org/resolver/maven-resolver-transport-file/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven.resolver:maven-resolver-transport-http:jar:1.7.2 (compile) <img id="_img57" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep56', '_img57' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep56" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Transport HTTP</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A transport implementation for repositories using http:// and https:// URLs.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/resolver/maven-resolver-transport-http/">https://maven.apache.org/resolver/maven-resolver-transport-http/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.httpcomponents:httpclient:jar:4.5.13 (compile) <img id="_img59" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep58', '_img59' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep58" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache HttpClient</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache HttpComponents Client</p>
+<p><b>URL: </b><a class="externalLink" href="http://hc.apache.org/httpcomponents-client">http://hc.apache.org/httpcomponents-client</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>commons-codec:commons-codec:jar:1.11 (compile) <img id="_img61" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep60', '_img61' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep60" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons Codec</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The Apache Commons Codec package contains simple encoder and decoders for
+     various formats such as Base64 and Hexadecimal.  In addition to these
+     widely used encoders and decoders, the codec package also maintains a
+     collection of phonetic encoding utilities.</p>
+<p><b>URL: </b><a class="externalLink" href="http://commons.apache.org/proper/commons-codec/">http://commons.apache.org/proper/commons-codec/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.httpcomponents:httpcore:jar:4.4.14 (compile) <img id="_img63" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep62', '_img63' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep62" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache HttpCore</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Apache HttpComponents Core (blocking I/O)</p>
+<p><b>URL: </b><a class="externalLink" href="http://hc.apache.org/httpcomponents-core-ga">http://hc.apache.org/httpcomponents-core-ga</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.maven:maven-model:jar:3.8.1 (compile) <img id="_img65" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep64', '_img65' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep64" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Model</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Model for Maven POM (Project Object Model)</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-model/">https://maven.apache.org/ref/3.8.1/maven-model/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.codehaus.plexus:plexus-utils:jar:3.2.0 (compile) <img id="_img67" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep66', '_img67' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep66" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Plexus Common Utilities</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>A collection of various utility classes to ease working with strings, files, command lines, XML and
+    more.</p>
+<p><b>URL: </b><a class="externalLink" href="http://codehaus-plexus.github.io/plexus-utils/">http://codehaus-plexus.github.io/plexus-utils/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.maven:maven-resolver-provider:jar:3.8.1 (compile) <img id="_img69" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep68', '_img69' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep68" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact Resolver Provider</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Extensions to Maven Resolver for utilizing Maven POM and repository metadata.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-resolver-provider/">https://maven.apache.org/ref/3.8.1/maven-resolver-provider/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.apache.maven:maven-model-builder:jar:3.8.1 (compile) <img id="_img71" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep70', '_img71' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep70" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Model Builder</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The effective model builder, with inheritance, profile activation, interpolation, ...</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-model-builder/">https://maven.apache.org/ref/3.8.1/maven-model-builder/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>org.codehaus.plexus:plexus-interpolation:jar:1.25 (compile) <img id="_img73" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep72', '_img73' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep72" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Plexus Interpolation API</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The Plexus project provides a full software stack for creating and executing software projects.</p>
+<p><b>URL: </b><a class="externalLink" href="http://codehaus-plexus.github.io/plexus-interpolation/">http://codehaus-plexus.github.io/plexus-interpolation/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven:maven-artifact:jar:3.8.1 (compile) <img id="_img75" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep74', '_img75' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep74" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Artifact</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Maven is a software build management and
+    comprehension tool. Based on the concept of a project object model:
+    builds, dependency management, documentation creation, site
+    publication, and distribution publication are all controlled from
+    the declarative file. Maven can be extended by plugins to utilise a
+    number of other development tools for reporting or the build
+    process.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-artifact/">https://maven.apache.org/ref/3.8.1/maven-artifact/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.apache.maven:maven-builder-support:jar:3.8.1 (compile) <img id="_img77" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep76', '_img77' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep76" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Builder Support</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Support for descriptor builders (model, setting, toolchains)</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-builder-support/">https://maven.apache.org/ref/3.8.1/maven-builder-support/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4 (compile) <img id="_img79" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep78', '_img79' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep78" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>org.eclipse.sisu.inject</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JSR330-based container; supports classpath scanning, auto-binding, and dynamic auto-wiring</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/sisu/org.eclipse.sisu.inject/">http://www.eclipse.org/sisu/org.eclipse.sisu.inject/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License, Version 1.0</a></p></td></tr></table></div></li></ul></li>
+<li>org.apache.maven:maven-repository-metadata:jar:3.8.1 (compile) <img id="_img81" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep80', '_img81' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep80" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Maven Repository Metadata Model</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Per-directory local and remote repository metadata.</p>
+<p><b>URL: </b><a class="externalLink" href="https://maven.apache.org/ref/3.8.1/maven-repository-metadata/">https://maven.apache.org/ref/3.8.1/maven-repository-metadata/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>javax.inject:javax.inject:jar:1 (compile) <img id="_img83" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep82', '_img83' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep82" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>javax.inject</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The javax.inject API</p>
+<p><b>URL: </b><a class="externalLink" href="http://code.google.com/p/atinject/">http://code.google.com/p/atinject/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li></ul></li>
+<li>net.harawata:appdirs:jar:1.0.3 (compile) <img id="_img85" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep84', '_img85' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep84" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Java AppDirs</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Returns paths to platform dependent special directories.</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/harawata/appdirs">https://github.com/harawata/appdirs</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></p></td></tr></table></div>
+<ul>
+<li>net.java.dev.jna:jna-platform:jar:4.5.2 (compile) <img id="_img87" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep86', '_img87' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep86" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Java Native Access Platform</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Java Native Access Platform</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/java-native-access/jna">https://github.com/java-native-access/jna</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.gnu.org/licenses/licenses.html">LGPL, version 2.1</a>, <a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License v2.0</a></p></td></tr></table></div>
+<ul>
+<li>net.java.dev.jna:jna:jar:4.5.2 (compile) <img id="_img89" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep88', '_img89' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep88" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Java Native Access</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Java Native Access</p>
+<p><b>URL: </b><a class="externalLink" href="https://github.com/java-native-access/jna">https://github.com/java-native-access/jna</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.gnu.org/licenses/licenses.html">LGPL, version 2.1</a>, <a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License v2.0</a></p></td></tr></table></div></li></ul></li></ul></li>
+<li>org.codehaus.groovy:groovy:jar:3.0.9 (compile) <img id="_img91" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep90', '_img91' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep90" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="https://groovy-lang.org">https://groovy-lang.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.groovy:groovy-dateutil:jar:3.0.9 (compile) <img id="_img93" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep92', '_img93' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep92" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="https://groovy-lang.org">https://groovy-lang.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.groovy:groovy-datetime:jar:3.0.9 (compile) <img id="_img95" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep94', '_img95' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep94" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="https://groovy-lang.org">https://groovy-lang.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.groovy:groovy-json:jar:3.0.9 (compile) <img id="_img97" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep96', '_img97' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep96" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="https://groovy-lang.org">https://groovy-lang.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.codehaus.groovy:groovy-xml:jar:3.0.9 (compile) <img id="_img99" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep98', '_img99' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep98" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Groovy</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Groovy: A powerful, dynamic language for the JVM</p>
+<p><b>URL: </b><a class="externalLink" href="https://groovy-lang.org">https://groovy-lang.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
+<li>junit:junit:jar:4.13.2 (compile) <img id="_img101" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep100', '_img101' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep100" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>JUnit</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.</p>
+<p><b>URL: </b><a class="externalLink" href="http://junit.org">http://junit.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a></p></td></tr></table></div></li>
+<li>commons-io:commons-io:jar:2.11.0 (compile) <img id="_img103" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep102', '_img103' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep102" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Apache Commons IO</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The Apache Commons IO library contains utility classes, stream implementations, file filters,
+file comparators, endian transformation classes, and much more.</p>
+<p><b>URL: </b><a class="externalLink" href="https://commons.apache.org/proper/commons-io/">https://commons.apache.org/proper/commons-io/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.assertj:assertj-core:jar:3.14.0 (compile) <img id="_img105" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep104', '_img105' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep104" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>AssertJ fluent assertions</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Rich and fluent assertions for testing for Java</p>
+<p><b>URL: </b><a class="externalLink" href="http://assertj.org/assertj-core">http://assertj.org/assertj-core</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li>
+<li>org.slf4j:slf4j-simple:jar:1.7.29 (test) <img id="_img107" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep106', '_img107' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep106" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>SLF4J Simple Binding</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>SLF4J Simple binding</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div>
+<ul>
+<li>org.slf4j:slf4j-api:jar:1.7.29 (compile) <img id="_img109" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep108', '_img109' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep108" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>SLF4J API Module</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>The slf4j API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a></p></td></tr></table></div></li></ul></li>
+<li>org.hamcrest:hamcrest:jar:2.2 (test) <img id="_img111" src="images/Dependencies/image-2.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep110', '_img111' );" style="cursor: pointer; vertical-align: text-bottom;"></img><div id="_dep110" style="display:none">
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Hamcrest</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>Core API and libraries of hamcrest matcher framework.</p>
+<p><b>URL: </b><a class="externalLink" href="http://hamcrest.org/JavaHamcrest/">http://hamcrest.org/JavaHamcrest/</a></p>
+<p><b>Project Licenses: </b><a class="externalLink" href="http://opensource.org/licenses/BSD-3-Clause">BSD License 3</a></p></td></tr></table></div></li></ul></li></ul></section></section><a name="Licenses"></a><section>
+<h2><a name="Licenses"></a>Licenses</h2>
+<p><b>Eclipse Public License, Version 1.0: </b>org.eclipse.sisu.inject</p>
+<p><b>Unknown: </b>gherkin-parser</p>
+<p><b>The Apache License, Version 2.0: </b>Java AppDirs</p>
+<p><b>Eclipse Public License 1.0: </b>JUnit</p>
+<p><b>MPL-2.0: </b>Kukumo::CORE, Kukumo::Files Steps, jExt</p>
+<p><b>MIT License: </b>Cucumber Tag Expressions, Immutable Configurations, Maven Fetcher, SLF4J API Module, SLF4J Simple Binding, SLF4J-Ansi</p>
+<p><b>BSD License 3: </b>Hamcrest</p>
+<p><b>Apache License, Version 2.0: </b>Apache Commons BeanUtils, Apache Commons Codec, Apache Commons Collections, Apache Commons Configuration, Apache Commons IO, Apache Commons Lang, Apache Commons Text, Apache HttpClient, Apache HttpCore, AssertJ fluent assertions, Maven Artifact, Maven Artifact Resolver API, Maven Artifact Resolver Connector Basic, Maven Artifact Resolver Implementation, Maven Artifact Resolver Named Locks, Maven Artifact Resolver Provider, Maven Artifact Resolver SPI, Maven Artifact Resolver Transport File, Maven Artifact Resolver Transport HTTP, Maven Artifact Resolver Utilities, Maven Builder Support, Maven Model, Maven Model Builder, Maven Repository Metadata Model, Plexus Common Utilities, Plexus Interpolation API, SnakeYAML</p>
+<p><b>CDDL + GPLv2 with classpath exception: </b>javax.annotation API</p>
+<p><b>LGPL, version 2.1: </b>Java Native Access, Java Native Access Platform</p>
+<p><b>The Apache Software License, Version 2.0: </b>Apache Commons Logging, Apache Groovy, Jackson datatype: JSR310, Jackson-annotations, Jackson-core, jackson-databind, jansi, javax.inject</p>
+<p><b>Apache License v2.0: </b>Java Native Access, Java Native Access Platform</p></section><a name="Dependency_File_Details"></a><section>
+<h2><a name="Dependency_File_Details"></a>Dependency File Details</h2>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Filename</th>
+<th>Size</th>
+<th>Entries</th>
+<th>Classes</th>
+<th>Packages</th>
+<th>Java Version</th>
+<th title="Indicates whether these dependencies have been compiled with debug information.">Debug Information</th></tr>
+<tr class="b">
+<td>jackson-annotations-2.13.2.jar</td>
+<td>75.7 kB</td>
+<td>84</td>
+<td>72</td>
+<td>2</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>jackson-core-2.13.2.jar</td>
+<td>374.7 kB</td>
+<td>156</td>
+<td>128</td>
+<td>13</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>jackson-databind-2.13.2.2.jar</td>
+<td>1.5 MB</td>
+<td>745</td>
+<td>707</td>
+<td>23</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>jackson-datatype-jsr310-2.13.2.jar</td>
+<td>121.2 kB</td>
+<td>81</td>
+<td>59</td>
+<td>7</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>commons-beanutils-1.9.4.jar</td>
+<td>246.9 kB</td>
+<td>154</td>
+<td>137</td>
+<td>5</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>commons-codec-1.11.jar</td>
+<td>335 kB</td>
+<td>243</td>
+<td>96</td>
+<td>7</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>commons-collections-3.2.2.jar</td>
+<td>588.3 kB</td>
+<td>484</td>
+<td>460</td>
+<td>12</td>
+<td>1.3</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>commons-io-2.11.0.jar</td>
+<td>327.1 kB</td>
+<td>224</td>
+<td>201</td>
+<td>11</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>commons-logging-1.2.jar</td>
+<td>61.8 kB</td>
+<td>42</td>
+<td>28</td>
+<td>2</td>
+<td>1.2</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>gherkin-parser-1.0.2.jar</td>
+<td>69.8 kB</td>
+<td>65</td>
+<td>52</td>
+<td>3</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>jext-1.0.0.jar</td>
+<td>22.7 kB</td>
+<td>23</td>
+<td>11</td>
+<td>2</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>kukumo-core-1.3.2.jar</td>
+<td>208.9 kB</td>
+<td>136</td>
+<td>104</td>
+<td>16</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>tag-expressions-1.1.1.jar</td>
+<td>14.6 kB</td>
+<td>22</td>
+<td>12</td>
+<td>1</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>immutable-config-1.1.0.jar</td>
+<td>38.1 kB</td>
+<td>37</td>
+<td>24</td>
+<td>5</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-fetcher-1.3.0.jar</td>
+<td>25.5 kB</td>
+<td>23</td>
+<td>12</td>
+<td>3</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>slf4j-ansi-1.0.0.jar</td>
+<td>11.6 kB</td>
+<td>15</td>
+<td>6</td>
+<td>3</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>javax.annotation-api-1.3.2.jar</td>
+<td>26.6 kB</td>
+<td>29</td>
+<td>15</td>
+<td>3</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>javax.inject-1.jar</td>
+<td>2.5 kB</td>
+<td>8</td>
+<td>6</td>
+<td>1</td>
+<td>1.5</td>
+<td>No</td></tr>
+<tr class="b">
+<td>junit-4.13.2.jar</td>
+<td>384.6 kB</td>
+<td>389</td>
+<td>350</td>
+<td>32</td>
+<td>1.5</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>appdirs-1.0.3.jar</td>
+<td>13.4 kB</td>
+<td>21</td>
+<td>10</td>
+<td>2</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>jna-4.5.2.jar</td>
+<td>1.5 MB</td>
+<td>163</td>
+<td>112</td>
+<td>3</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>jna-platform-4.5.2.jar</td>
+<td>2.3 MB</td>
+<td>1015</td>
+<td>978</td>
+<td>12</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>commons-configuration2-2.7.jar</td>
+<td>622.6 kB</td>
+<td>396</td>
+<td>364</td>
+<td>18</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>commons-lang3-3.9.jar</td>
+<td>503.9 kB</td>
+<td>306</td>
+<td>281</td>
+<td>13</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>commons-text-1.8.jar</td>
+<td>207 kB</td>
+<td>152</td>
+<td>134</td>
+<td>6</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>httpclient-4.5.13.jar</td>
+<td>780.3 kB</td>
+<td>511</td>
+<td>470</td>
+<td>24</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>httpcore-4.4.14.jar</td>
+<td>328.4 kB</td>
+<td>283</td>
+<td>253</td>
+<td>17</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-artifact-3.8.1.jar</td>
+<td>57.8 kB</td>
+<td>59</td>
+<td>34</td>
+<td>11</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-builder-support-3.8.1.jar</td>
+<td>14.3 kB</td>
+<td>24</td>
+<td>10</td>
+<td>1</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-model-3.8.1.jar</td>
+<td>215.4 kB</td>
+<td>94</td>
+<td>77</td>
+<td>3</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-model-builder-3.8.1.jar</td>
+<td>192.3 kB</td>
+<td>156</td>
+<td>123</td>
+<td>16</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-repository-metadata-3.8.1.jar</td>
+<td>27.2 kB</td>
+<td>27</td>
+<td>9</td>
+<td>2</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-resolver-provider-3.8.1.jar</td>
+<td>66.2 kB</td>
+<td>43</td>
+<td>26</td>
+<td>1</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-resolver-api-1.7.2.jar</td>
+<td>149.5 kB</td>
+<td>156</td>
+<td>132</td>
+<td>12</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-resolver-connector-basic-1.7.2.jar</td>
+<td>45.8 kB</td>
+<td>36</td>
+<td>19</td>
+<td>1</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-resolver-impl-1.7.2.jar</td>
+<td>195.9 kB</td>
+<td>125</td>
+<td>101</td>
+<td>8</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-resolver-named-locks-1.7.2.jar</td>
+<td>25.2 kB</td>
+<td>35</td>
+<td>17</td>
+<td>3</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-resolver-spi-1.7.2.jar</td>
+<td>39.3 kB</td>
+<td>58</td>
+<td>35</td>
+<td>9</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-resolver-transport-file-1.7.2.jar</td>
+<td>15.8 kB</td>
+<td>21</td>
+<td>4</td>
+<td>1</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>maven-resolver-transport-http-1.7.2.jar</td>
+<td>42.6 kB</td>
+<td>35</td>
+<td>18</td>
+<td>1</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>maven-resolver-util-1.7.2.jar</td>
+<td>171.5 kB</td>
+<td>130</td>
+<td>103</td>
+<td>13</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>assertj-core-3.14.0.jar</td>
+<td>4.5 MB</td>
+<td>3103</td>
+<td>3027</td>
+<td>61</td>
+<td>-</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>groovy-3.0.9.jar</td>
+<td>8 MB</td>
+<td>4915</td>
+<td>4738</td>
+<td>135</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>groovy-datetime-3.0.9.jar</td>
+<td>19.5 kB</td>
+<td>16</td>
+<td>3</td>
+<td>1</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>groovy-dateutil-3.0.9.jar</td>
+<td>11.7 kB</td>
+<td>15</td>
+<td>2</td>
+<td>1</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>groovy-json-3.0.9.jar</td>
+<td>133 kB</td>
+<td>81</td>
+<td>66</td>
+<td>3</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>groovy-xml-3.0.9.jar</td>
+<td>296 kB</td>
+<td>198</td>
+<td>171</td>
+<td>11</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>plexus-interpolation-1.25.jar</td>
+<td>85.3 kB</td>
+<td>79</td>
+<td>62</td>
+<td>7</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>plexus-utils-3.2.0.jar</td>
+<td>262.8 kB</td>
+<td>130</td>
+<td>105</td>
+<td>9</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>org.eclipse.sisu.inject-0.3.4.jar</td>
+<td>379.2 kB</td>
+<td>289</td>
+<td>271</td>
+<td>9</td>
+<td>1.6</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>jansi-1.18.jar</td>
+<td>287.4 kB</td>
+<td>113</td>
+<td>55</td>
+<td>3</td>
+<td>1.8</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>hamcrest-2.2.jar</td>
+<td>123.4 kB</td>
+<td>122</td>
+<td>108</td>
+<td>11</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>slf4j-api-1.7.29.jar</td>
+<td>41.4 kB</td>
+<td>46</td>
+<td>34</td>
+<td>4</td>
+<td>1.5</td>
+<td>Yes</td></tr>
+<tr class="a">
+<td>slf4j-simple-1.7.29.jar</td>
+<td>15.2 kB</td>
+<td>20</td>
+<td>10</td>
+<td>1</td>
+<td>1.5</td>
+<td>Yes</td></tr>
+<tr class="b">
+<td>snakeyaml-1.30.jar</td>
+<td>331.6 kB</td>
+<td>265</td>
+<td>227</td>
+<td>21</td>
+<td>1.7</td>
+<td>Yes</td></tr>
+<tr class="a">
+<th>Total</th>
+<th>Size</th>
+<th>Entries</th>
+<th>Classes</th>
+<th>Packages</th>
+<th>Java Version</th>
+<th>Debug Information</th></tr>
+<tr class="b">
+<td>55</td>
+<td>26.5 MB</td>
+<td>16198</td>
+<td>14669</td>
+<td>605</td>
+<td>1.8</td>
+<td>54</td></tr>
+<tr class="a">
+<td>compile: 53</td>
+<td>compile: 26.4 MB</td>
+<td>compile: 16056</td>
+<td>compile: 14551</td>
+<td>compile: 593</td>
+<td>-</td>
+<td>compile: 52</td></tr>
+<tr class="b">
+<td>test: 2</td>
+<td>test: 138.6 kB</td>
+<td>test: 142</td>
+<td>test: 118</td>
+<td>test: 12</td>
+<td>-</td>
+<td>test: 2</td></tr></table></section>
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">
+        Copyright &#169;      2020&#x2013;2022<a class="external" target="_blank" rel="external noreferrer noopener nofollow" href="https://www.iti.es">ITI - Instituto Tecnológico de Informática</a>.
+.      </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html></section></body></html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunnableStep.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.backend</a> &gt; <span class="el_source">RunnableStep.java</span></div><h1>RunnableStep.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.backend;
+
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+
+import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.util.*;
+
+
+public class RunnableStep {
+
+    private final String definitionFile;
+    private final String definitionKey;
+<span class="fc" id="L31">    private final Map&lt;Locale, String&gt; translatedDefinitions = new HashMap&lt;&gt;();</span>
+    private final BackendArguments arguments;
+    private final ThrowableRunnable executor;
+<span class="fc" id="L34">    private final ResourceLoader resourceLoader = Kukumo.resourceLoader();</span>
+    private final String stepProvider;
+
+
+    public RunnableStep(
+        String definitionFile,
+        String definitionKey,
+        BackendArguments arguments,
+        ThrowableRunnable stepExecutor,
+        String stepProvider
+<span class="fc" id="L44">    ) {</span>
+<span class="fc" id="L45">        this.definitionFile = definitionFile;</span>
+<span class="fc" id="L46">        this.definitionKey = definitionKey;</span>
+<span class="fc" id="L47">        this.arguments = arguments;</span>
+<span class="fc" id="L48">        this.executor = stepExecutor;</span>
+<span class="fc" id="L49">        this.stepProvider = stepProvider;</span>
+<span class="fc" id="L50">    }</span>
+
+
+    public String getTranslatedDefinition(Locale locale) {
+<span class="fc" id="L54">        String translatedDefinition = translatedDefinitions.get(locale);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (translatedDefinition == null) {</span>
+<span class="fc" id="L56">            ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile, locale);</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            if (resourceBundle == null) {</span>
+<span class="nc" id="L58">                throw new KukumoException(</span>
+                    &quot;Cannot find step definition file {} for locale {}&quot;,
+                    definitionFile,
+                    locale
+                );
+            }
+<span class="fc" id="L64">            translatedDefinition = resourceBundle.getString(definitionKey).trim();</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">            if (translatedDefinition == null) {</span>
+<span class="nc" id="L66">                throw new KukumoException(</span>
+                    &quot;Cannot find step definition entry '{}' in file '{}' for locale {}&quot;,
+                    definitionKey,
+                    definitionFile,
+                    locale
+                );
+            }
+<span class="fc" id="L73">            translatedDefinitions.put(locale, translatedDefinition);</span>
+        }
+<span class="fc" id="L75">        return translatedDefinition;</span>
+    }
+
+
+    public Matcher matcher(
+        Either&lt;PlanNode,String&gt; modelStep,
+        Locale stepLocale,
+        Locale dataLocale,
+        KukumoDataTypeRegistry typeRegistry
+    ) {
+<span class="fc" id="L85">        String translatedDefinition = getTranslatedDefinition(stepLocale);</span>
+<span class="fc" id="L86">        return ExpressionMatcher</span>
+<span class="fc" id="L87">            .matcherFor(translatedDefinition, typeRegistry, dataLocale, modelStep);</span>
+    }
+
+
+    public void run(Map&lt;String, Object&gt; invokeArguments) {
+
+<span class="fc" id="L93">        boolean error = false;</span>
+        // re-arrange argument order
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (invokeArguments.size() != this.arguments.size()) {</span>
+<span class="nc" id="L96">            error = true;</span>
+        }
+<span class="fc" id="L98">        Object[] argumentArray = new Object[this.arguments.size()];</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (int i = 0; i &lt; argumentArray.length; i++) {</span>
+<span class="fc" id="L100">            Pair&lt;String, String&gt; argument = this.arguments.get(i);</span>
+<span class="fc" id="L101">            Object invokeArgument = invokeArguments.get(argument.key());</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if (invokeArgument == null) {</span>
+<span class="nc" id="L103">                error = true;</span>
+<span class="nc" id="L104">                break;</span>
+            } else {
+<span class="fc" id="L106">                argumentArray[i] = invokeArgument;</span>
+            }
+        }
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (error) {</span>
+<span class="nc" id="L110">            throw new KukumoException(</span>
+                &quot;Cannot run step: wrong arguments (expected {} but received {})&quot;,
+                arguments,
+                invokeArguments
+            );
+        } else {
+            try {
+<span class="fc" id="L117">                executor.run(argumentArray);</span>
+<span class="nc" id="L118">            } catch (InvocationTargetException e) {</span>
+<span class="nc" id="L119">                var originalException = e.getTargetException();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                if (originalException instanceof AssertionError) {</span>
+<span class="nc" id="L121">                    throw (AssertionError)originalException;</span>
+                } else {
+<span class="nc" id="L123">                    throw new KukumoException(originalException);</span>
+                }
+<span class="nc" id="L125">            } catch (Exception e) {</span>
+<span class="nc" id="L126">                throw new KukumoException(e);</span>
+<span class="fc" id="L127">            }</span>
+        }
+<span class="fc" id="L129">    }</span>
+
+
+    public BackendArguments getArguments() {
+<span class="fc" id="L133">        return arguments;</span>
+    }
+
+
+    public String getDefinitionKey() {
+<span class="nc" id="L138">        return definitionKey;</span>
+    }
+
+
+	public String getProvider() {
+<span class="nc" id="L143">		return stepProvider;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

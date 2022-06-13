@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GherkinResourceType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.gherkin</a> &gt; <span class="el_source">GherkinResourceType.java</span></div><h1>GherkinResourceType.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.gherkin;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+
+import iti.commons.gherkin.GherkinDocument;
+import iti.commons.gherkin.GherkinParser;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ResourceType;
+
+
+
+@Extension(provider = &quot;iti.kukumo&quot;, name = GherkinResourceType.NAME, extensionPoint = &quot;iti.kukumo.api.extensions.ResourceType&quot;, version = &quot;1.1&quot;)
+<span class="fc" id="L27">public class GherkinResourceType implements ResourceType&lt;GherkinDocument&gt; {</span>
+
+    public static final String NAME = &quot;gherkin&quot;;
+
+<span class="fc" id="L31">    public static final GherkinResourceType INSTANCE = new GherkinResourceType();</span>
+
+
+    @Override
+    public Class&lt;GherkinDocument&gt; contentType() {
+<span class="fc" id="L36">        return GherkinDocument.class;</span>
+    }
+
+
+    @Override
+    public String description() {
+<span class="nc" id="L42">        return &quot;GherkinResource File&quot;;</span>
+    }
+
+
+    @Override
+    public GherkinDocument parse(InputStream stream, Charset charset) throws IOException {
+<span class="fc" id="L48">        try (Reader reader = new InputStreamReader(stream, charset)) {</span>
+<span class="fc" id="L49">            return parse(reader);</span>
+        }
+    }
+
+
+    @Override
+    public GherkinDocument parse(Reader reader) throws IOException {
+<span class="fc" id="L56">        return new GherkinParser().parse(reader);</span>
+    }
+
+
+    @Override
+    public boolean acceptsFilename(String filename) {
+<span class="pc bpc" id="L62" title="1 of 4 branches missed.">        return filename.endsWith(&quot;.feature&quot;) || filename.endsWith(&quot;.FEATURE&quot;);</span>
+    }
+
+
+    @Override
+    public String toString() {
+<span class="nc" id="L68">        return description();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

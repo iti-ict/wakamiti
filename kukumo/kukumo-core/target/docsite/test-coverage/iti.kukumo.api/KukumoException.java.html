@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KukumoException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api</a> &gt; <span class="el_source">KukumoException.java</span></div><h1>KukumoException.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api;
+
+
+import java.util.Arrays;
+
+
+public class KukumoException extends RuntimeException {
+
+    private static final long serialVersionUID = 3126782976719868151L;
+
+
+    public KukumoException() {
+<span class="nc" id="L22">        super();</span>
+<span class="nc" id="L23">    }</span>
+
+
+    public KukumoException(String message, Throwable throwable) {
+<span class="nc" id="L27">        super(message, throwable);</span>
+<span class="nc" id="L28">    }</span>
+
+
+    public KukumoException(String message) {
+<span class="fc" id="L32">        super(message);</span>
+<span class="fc" id="L33">    }</span>
+
+
+    public KukumoException(String message, Object... args) {
+<span class="fc" id="L37">        super(replace(message, argsWithoutThrowable(args)), throwable(args));</span>
+<span class="fc" id="L38">    }</span>
+
+
+    public KukumoException(Throwable throwable) {
+<span class="fc" id="L42">        super(throwable.getMessage(), throwable);</span>
+<span class="fc" id="L43">    }</span>
+
+
+    private static String replace(String message, Object[] args) {
+<span class="fc" id="L47">        StringBuilder s = new StringBuilder(message);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (Object arg : args) {</span>
+<span class="fc" id="L49">            int pos = s.indexOf(&quot;{}&quot;);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            if (pos == -1) {</span>
+<span class="nc" id="L51">                break;</span>
+            }
+<span class="fc" id="L53">            s.replace(pos, pos + 2, String.valueOf(arg));</span>
+        }
+<span class="fc" id="L55">        return s.toString();</span>
+    }
+
+
+    private static Object[] argsWithoutThrowable(Object[] args) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);</span>
+    }
+
+
+    private static Throwable throwable(Object... args) {
+<span class="pc bpc" id="L65" title="2 of 4 branches missed.">        if (args == null || args.length == 0) {</span>
+<span class="nc" id="L66">            return null;</span>
+        }
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        return args[args.length - 1] instanceof Throwable ? (Throwable) args[args.length - 1]</span>
+<span class="fc" id="L69">                        : null;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

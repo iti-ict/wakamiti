@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryNumberAssertProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.datatypes.assertion</a> &gt; <span class="el_source">BinaryNumberAssertProvider.java</span></div><h1>BinaryNumberAssertProvider.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.datatypes.assertion;
+
+
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import iti.kukumo.core.datatypes.KukumoNumberDataType;
+import iti.kukumo.util.ThrowableFunction;
+
+
+public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; extends AbstractAssertProvider {
+
+    public static final String EQUALS = &quot;matcher.number.equals&quot;;
+    public static final String GREATER = &quot;matcher.number.greater&quot;;
+    public static final String LESS = &quot;matcher.number.less&quot;;
+    public static final String GREATER_EQUALS = &quot;matcher.number.greater.equals&quot;;
+    public static final String LESS_EQUALS = &quot;matcher.number.less.equals&quot;;
+
+    public static final String NOT_EQUALS = &quot;matcher.number.not.equals&quot;;
+    public static final String NOT_GREATER = &quot;matcher.number.not.greater&quot;;
+    public static final String NOT_LESS = &quot;matcher.number.not.less&quot;;
+    public static final String NOT_GREATER_EQUALS = &quot;matcher.number.not.greater.equals&quot;;
+    public static final String NOT_LESS_EQUALS = &quot;matcher.number.not.less.equals&quot;;
+
+    private final ThrowableFunction&lt;Locale, String&gt; numberRegexProvider;
+    private final ThrowableFunction&lt;Number, T&gt; mapper;
+    private final ThrowableFunction&lt;Locale, NumberFormat&gt; formatter;
+
+
+    public static &lt;T extends Comparable&lt;T&gt;&gt; BinaryNumberAssertProvider&lt;T&gt; createFromNumber(
+        ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
+        ThrowableFunction&lt;Number, T&gt; converter
+    ) {
+<span class="fc" id="L50">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
+            numberRegexProvider,
+            converter,
+<span class="fc" id="L53">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, false)</span>
+        );
+    }
+
+
+    public static &lt;T extends Comparable&lt;T&gt;&gt; BinaryNumberAssertProvider&lt;T&gt; createFromBigDecimal(
+        ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
+        ThrowableFunction&lt;BigDecimal, T&gt; converter
+    ) {
+<span class="fc" id="L62">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
+            numberRegexProvider,
+<span class="fc" id="L64">            KukumoNumberDataType.castConverter(BigDecimal.class::cast, converter),</span>
+<span class="fc" id="L65">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, true)</span>
+        );
+    }
+
+
+    protected BinaryNumberAssertProvider(
+        ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
+        ThrowableFunction&lt;Number, T&gt; mapper,
+        ThrowableFunction&lt;Locale, NumberFormat&gt; formatter
+<span class="fc" id="L74">    ) {</span>
+<span class="fc" id="L75">        this.numberRegexProvider = numberRegexProvider;</span>
+<span class="fc" id="L76">        this.mapper = mapper;</span>
+<span class="fc" id="L77">        this.formatter = formatter;</span>
+<span class="fc" id="L78">    }</span>
+
+
+    @Override
+    protected LinkedHashMap&lt;String, Pattern&gt; translatedExpressions(Locale locale) {
+        // binary numeric matchers
+<span class="fc" id="L84">        String[] expressions = {</span>
+            EQUALS,
+            GREATER,
+            GREATER_EQUALS,
+            LESS,
+            LESS_EQUALS,
+            NOT_EQUALS,
+            NOT_GREATER,
+            NOT_GREATER_EQUALS,
+            NOT_LESS,
+            NOT_LESS_EQUALS,
+        };
+
+<span class="fc" id="L97">        LinkedHashMap&lt;String, Pattern&gt; translatedExpressions = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (String expression : expressions) {</span>
+<span class="fc" id="L99">            translatedExpressions.put(</span>
+                expression,
+<span class="fc" id="L101">                Pattern.compile(</span>
+<span class="fc" id="L102">                    translateBundleExpression(locale, expression, numberRegexProvider.apply(locale))</span>
+                )
+            );
+        }
+<span class="fc" id="L106">        return translatedExpressions;</span>
+    }
+
+
+    @Override
+    protected Matcher&lt;?&gt; createMatcher(
+        Locale locale,
+        String key,
+        String value
+    ) throws ParseException {
+<span class="fc" id="L116">        Matcher&lt;T&gt; matcher = null;</span>
+<span class="fc" id="L117">        T numericValue = mapper.apply(formatter.apply(locale).parse(value));</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (EQUALS.equals(key)) {</span>
+<span class="fc" id="L119">            matcher = Matchers.comparesEqualTo(numericValue);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        } else if (GREATER.equals(key)) {</span>
+<span class="fc" id="L121">            matcher = Matchers.greaterThan(numericValue);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        } else if (LESS.equals(key)) {</span>
+<span class="fc" id="L123">            matcher = Matchers.lessThan(numericValue);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        } else if (GREATER_EQUALS.equals(key)) {</span>
+<span class="fc" id="L125">            matcher = Matchers.greaterThanOrEqualTo(numericValue);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        } else if (LESS_EQUALS.equals(key)) {</span>
+<span class="fc" id="L127">            matcher = Matchers.lessThanOrEqualTo(numericValue);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        } else if (NOT_EQUALS.equals(key)) {</span>
+<span class="fc" id="L129">            matcher = Matchers.not(Matchers.comparesEqualTo(numericValue));</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        } else if (NOT_GREATER.equals(key)) {</span>
+<span class="fc" id="L131">            matcher = Matchers.not(Matchers.greaterThan(numericValue));</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        } else if (NOT_LESS.equals(key)) {</span>
+<span class="fc" id="L133">            matcher = Matchers.not(Matchers.lessThan(numericValue));</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        } else if (NOT_GREATER_EQUALS.equals(key)) {</span>
+<span class="fc" id="L135">            matcher = Matchers.not(Matchers.greaterThanOrEqualTo(numericValue));</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        } else if (NOT_LESS_EQUALS.equals(key)) {</span>
+<span class="fc" id="L137">            matcher = Matchers.not(Matchers.lessThanOrEqualTo(numericValue));</span>
+        }
+<span class="fc" id="L139">        return matcher;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

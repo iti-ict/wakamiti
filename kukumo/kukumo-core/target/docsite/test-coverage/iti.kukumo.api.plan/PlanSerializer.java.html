@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanSerializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api.plan</a> &gt; <span class="el_source">PlanSerializer.java</span></div><h1>PlanSerializer.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api.plan;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import iti.kukumo.util.ThrowableFunction;
+
+
+<span class="fc" id="L33">public class PlanSerializer {</span>
+
+<span class="fc" id="L35">    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()</span>
+<span class="fc" id="L36">        .registerModule(new JavaTimeModule())</span>
+<span class="fc" id="L37">        .setSerializationInclusion(JsonInclude.Include.NON_NULL)</span>
+<span class="fc" id="L38">        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)</span>
+<span class="fc" id="L39">        .enable(SerializationFeature.INDENT_OUTPUT);</span>
+
+
+    /**
+     * Deserialize the given string into a {@link PlanNodeSnapshot} object
+     *
+     * @throws IOException
+     */
+    public PlanNodeSnapshot deserialize(String json) throws IOException {
+<span class="nc" id="L48">        return OBJECT_MAPPER.readValue(json, PlanNodeSnapshot.class);</span>
+    }
+
+
+    /**
+     * Serialize the given
+     *
+     * @throws IOException
+     */
+    public String serialize(PlanNodeSnapshot node) throws IOException {
+<span class="fc" id="L58">        return OBJECT_MAPPER.writeValueAsString(node);</span>
+    }
+
+
+    /**
+     * Serialize the given iti.kukumo.test.gherkin.plan or
+     * iti.kukumo.test.gherkin.plan node into a string
+     */
+    public String serialize(PlanNode node) throws IOException {
+<span class="fc" id="L67">        return serialize(new PlanNodeSnapshot(node));</span>
+    }
+
+
+    public void write(Writer writer, PlanNodeSnapshot node) throws IOException {
+<span class="fc" id="L72">        OBJECT_MAPPER.writeValue(writer, node);</span>
+<span class="fc" id="L73">    }</span>
+
+
+    public void write(Writer writer, PlanNode node) throws IOException {
+<span class="fc" id="L77">        write(writer, new PlanNodeSnapshot(node));</span>
+<span class="fc" id="L78">    }</span>
+
+
+    public PlanNodeSnapshot read(InputStream inputStream) throws IOException {
+<span class="nc" id="L82">        try (InputStreamReader reader = new InputStreamReader(</span>
+            inputStream, StandardCharsets.UTF_8
+        )) {
+<span class="nc" id="L85">            return read(reader);</span>
+        }
+    }
+
+
+    public PlanNodeSnapshot read(File file) throws IOException {
+<span class="nc" id="L91">        try (InputStream stream = new FileInputStream(file)) {</span>
+<span class="nc" id="L92">            return read(stream);</span>
+        }
+    }
+
+
+    public PlanNodeSnapshot read(Path path) throws IOException {
+<span class="nc" id="L98">        try (InputStream stream = new FileInputStream(path.toFile())) {</span>
+<span class="nc" id="L99">            return read(stream);</span>
+        }
+    }
+
+
+    public PlanNodeSnapshot read(Reader reader) throws IOException {
+<span class="nc" id="L105">        return OBJECT_MAPPER.readValue(reader, PlanNodeSnapshot.class);</span>
+    }
+
+
+    public Collection&lt;PlanNodeSnapshot&gt; read(Collection&lt;Path&gt; paths) throws IOException {
+<span class="nc" id="L110">        return paths.stream().map(ThrowableFunction.unchecked(path -&gt; read(path)))</span>
+<span class="nc" id="L111">            .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

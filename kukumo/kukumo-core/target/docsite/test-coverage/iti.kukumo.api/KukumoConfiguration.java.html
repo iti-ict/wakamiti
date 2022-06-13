@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KukumoConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api</a> &gt; <span class="el_source">KukumoConfiguration.java</span></div><h1>KukumoConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.api;
+
+
+import imconfig.Configuration;
+import imconfig.Configurer;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ConfigContributor;
+
+@Extension(name = &quot;core-properties&quot;, provider = &quot;iti.kukumo&quot;)
+<span class="fc" id="L16">public class KukumoConfiguration implements ConfigContributor&lt;Void&gt; {</span>
+
+    public static final String PREFIX = &quot;kukumo&quot;;
+
+    /** Types of resources to be discovered and processed */
+    public static final String RESOURCE_TYPES = &quot;resourceTypes&quot;;
+
+
+    /** Default name of configuration file */
+    public static final String DEFAULT_CONF_FILE = &quot;kukumo.yaml&quot;;
+
+
+    /** Language used by a resource */
+    public static final String LANGUAGE = &quot;language&quot;;
+
+    /**
+     * Path (file-based or classpath-based) where the resource files are located
+     */
+    public static final String RESOURCE_PATH = &quot;resourcePath&quot;;
+
+    /** List of names of the modules required */
+    public static final String MODULES = &quot;modules&quot;;
+
+    /**
+     * List of full-qualified classes implementing KukumoStepProvider that are
+     * not declared as module
+     */
+    public static final String NON_REGISTERED_STEP_PROVIDERS = &quot;nonRegisteredStepProviders&quot;;
+
+    /** Check if generate output file */
+    public static final String GENERATE_OUTPUT_FILE = &quot;generateOutputFile&quot;;
+
+    /** Output file path */
+    public static final String OUTPUT_FILE_PATH = &quot;outputFilePath&quot;;
+
+    /** Report sources */
+    public static final String REPORT_SOURCE = &quot;report.source&quot;;
+
+    /** Enable / disable the report generation */
+    public static final String REPORT_GENERATION = &quot;report.generation&quot;;
+
+    /** Tag Expression filter */
+    public static final String TAG_FILTER = &quot;tagFilter&quot;;
+
+    /** Pattern for use specific tag as an identifier */
+    public static final String ID_TAG_PATTERN = &quot;idTagPattern&quot;;
+
+    /** Overriden locale for data formatting */
+    public static final String DATA_FORMAT_LANGUAGE = &quot;dataFormatLanguage&quot;;
+
+    /** Set if the redefinition feature is enabled */
+    public static final String REDEFINITION_ENABLED = &quot;redefinition.enabled&quot;;
+
+    /**
+     * Dash-separated number list that indicates how many implementation steps
+     * correspond to each definition step
+     */
+    public static final String REDEFINITION_STEP_MAP = &quot;redefinition.stepMap&quot;;
+
+    /** Tag used for annotate a feature as a definition */
+    public static final String REDEFINITION_DEFINITION_TAG = &quot;redefinition.definitionTag&quot;;
+
+    /** Tag used for annotate a feature as an implementation */
+    public static final String REDEFINITION_IMPLEMENTATION_TAG = &quot;redefinition.implementationTag&quot;;
+
+    /** Use Ansi characters in the logs */
+    public static final String LOGS_ANSI_ENABLED = &quot;logs.ansi.enabled&quot;;
+
+    /** Use Ansi styles in the logs */
+    public static final String LOGS_ANSI_STYLES = &quot;logs.ansi.styles&quot;;
+
+    /** Show the Kukumo logo in the logs */
+    public static final String LOGS_SHOW_LOGO = &quot;logs.showLogo&quot;;
+
+    /** Show the source for each step in the logs */
+    public static final String LOGS_SHOW_STEP_SOURCE = &quot;logs.showStepSource&quot;;
+
+    /** Show the elapsed time for each step in the logs */
+    public static final String LOGS_SHOW_ELAPSED_TIME = &quot;logs.showElapsedTime&quot;;
+
+    /** Set if the steps are treated as tests. */
+    public static final String TREAT_STEPS_AS_TESTS = &quot;junit.treatStepsAsTests&quot;;
+
+    /** Set specific execution ID, otherwise a unique execution ID will be autogenerated */
+    public static final String EXECUTION_ID = &quot;executionID&quot;;
+
+
+<span class="fc" id="L103">    static final Configuration DEFAULTS = Configuration.factory()</span>
+<span class="fc" id="L104">        .fromEnvironment()</span>
+<span class="fc" id="L105">        .appendFromSystem()</span>
+<span class="fc" id="L106">        .filtered(PREFIX)</span>
+<span class="fc" id="L107">        .appendFromPairs(</span>
+            LANGUAGE, &quot;en&quot;,
+        	RESOURCE_PATH, &quot;.&quot;,
+            GENERATE_OUTPUT_FILE, &quot;true&quot;,
+            OUTPUT_FILE_PATH, &quot;kukumo.json&quot;,
+            REPORT_GENERATION, &quot;true&quot;,
+            ID_TAG_PATTERN, &quot;ID-(\\w*)&quot;,
+            REDEFINITION_ENABLED, &quot;true&quot;,
+            REDEFINITION_DEFINITION_TAG, &quot;definition&quot;,
+            REDEFINITION_IMPLEMENTATION_TAG, &quot;implementation&quot;,
+            LOGS_SHOW_LOGO, &quot;true&quot;,
+            LOGS_SHOW_STEP_SOURCE, &quot;false&quot;,
+            LOGS_SHOW_ELAPSED_TIME, &quot;true&quot;,
+            TREAT_STEPS_AS_TESTS, &quot;false&quot;,
+            &quot;logs.ansi.styles.keyword&quot;, &quot;blue&quot;,
+            &quot;logs.ansi.styles.source&quot;, &quot;faint&quot;,
+            &quot;logs.ansi.styles.time&quot;, &quot;faint&quot;,
+            &quot;logs.ansi.styles.resourceType&quot;, &quot;cyan&quot;,
+            &quot;logs.ansi.styles.contributor&quot;, &quot;green&quot;,
+            &quot;logs.ansi.styles.stepResult.PASSED&quot;, &quot;green,bold&quot;,
+            &quot;logs.ansi.styles.stepResult.SKIPPED&quot;, &quot;faint&quot;,
+            &quot;logs.ansi.styles.stepResult.UNDEFINED&quot;, &quot;yellow&quot;,
+            &quot;logs.ansi.styles.stepResult.FAILED&quot;, &quot;red,bold&quot;,
+            &quot;logs.ansi.styles.stepResult.ERROR&quot;, &quot;red,bold&quot;
+        );
+
+
+    @Override
+    public Configuration defaultConfiguration() {
+<span class="nc" id="L136">        return DEFAULTS;</span>
+    }
+
+
+    @Override
+    public boolean accepts(Object contributor) {
+<span class="fc" id="L142">        return false;</span>
+    }
+
+
+    @Override
+    public Configurer&lt;Void&gt; configurer() {
+<span class="nc" id="L148">        return (x,y)-&gt;{};</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

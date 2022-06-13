@@ -1,0 +1,18 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Kukumo::REST Steps,iti.kukumo.rest.log,RestAssuredLogger.new PrintStream() {...},4,5,0,0,2,1,1,1,1,1
+Kukumo::REST Steps,iti.kukumo.rest.log,RestAssuredLogger,119,19,8,2,28,5,6,4,2,3
+Kukumo::REST Steps,iti.kukumo.rest.helpers,JSONHelper,7,51,0,0,2,13,0,5,0,5
+Kukumo::REST Steps,iti.kukumo.rest.helpers,XMLHelper,19,76,0,0,6,19,0,5,0,5
+Kukumo::REST Steps,iti.kukumo.rest.helpers,JsonXmlDiff,31,470,10,54,7,100,8,39,0,14
+Kukumo::REST Steps,iti.kukumo.rest.helpers,TextHelper,46,5,7,0,8,2,7,2,3,2
+Kukumo::REST Steps,iti.kukumo.rest,RestConfiguration,3,0,0,0,1,0,1,0,1,0
+Kukumo::REST Steps,iti.kukumo.rest,MatchMode,0,34,0,0,0,1,0,1,0,1
+Kukumo::REST Steps,iti.kukumo.rest,AssertionMatcher,23,0,0,0,7,0,4,0,4,0
+Kukumo::REST Steps,iti.kukumo.rest,ContentTypeHelper,0,15,0,0,0,4,0,2,0,2
+Kukumo::REST Steps,iti.kukumo.rest,RestStepContributor,413,109,6,2,92,31,50,18,46,18
+Kukumo::REST Steps,iti.kukumo.rest,RestConfigContributor,0,121,0,0,0,20,0,6,0,6
+Kukumo::REST Steps,iti.kukumo.rest,AttachedFile,33,0,0,0,14,0,7,0,7,0
+Kukumo::REST Steps,iti.kukumo.rest,RestSupport,121,271,11,13,21,68,12,18,2,16
+Kukumo::REST Steps,iti.kukumo.rest,Oauth2ProviderConfiguration,24,3,0,0,9,1,6,1,6,1
+Kukumo::REST Steps,iti.kukumo.rest,RestConfiguration.DefaultValues,6,0,0,0,1,0,1,0,1,0
+Kukumo::REST Steps,iti.kukumo.rest.matcher,CharSequenceLengthMatcher,50,0,4,0,10,0,8,0,6,0

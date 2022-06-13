@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanNodeSnapshot.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api.plan</a> &gt; <span class="el_source">PlanNodeSnapshot.java</span></div><h1>PlanNodeSnapshot.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api.plan;
+
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
+
+/** This class is a immutable, non-executable representation of a * {@link PlanNode} in a specific state. * &lt;p&gt; * It is mainly used for serialization/deserialization operations. * &lt;/p&gt; */
+public class PlanNodeSnapshot {
+
+    private String executionID;
+    private String snapshotInstant;
+    private NodeType nodeType;
+    private String id;
+    private String name;
+    private String keyword;
+    private String language;
+    private String source;
+    private String displayName;
+    private List&lt;String&gt; description;
+    private List&lt;String&gt; tags;
+    private Map&lt;String, String&gt; properties;
+    private String startInstant;
+    private String finishInstant;
+    private Long duration;
+    private String document;
+    private String documentType;
+    private String[][] dataTable;
+    private String errorMessage;
+    private String errorTrace;
+    private Result result;
+    private Map&lt;Result, Long&gt; testCaseResults;
+    private Map&lt;Result, Long&gt; childrenResults;
+    private List&lt;PlanNodeSnapshot&gt; children;
+
+<span class="nc" id="L62">    public PlanNodeSnapshot() {</span>
+
+<span class="nc" id="L64">    }</span>
+
+    public PlanNodeSnapshot(PlanNode node) {
+<span class="fc" id="L67">        this(node, LocalDateTime.now().toString());</span>
+<span class="fc" id="L68">    }</span>
+
+    
+<span class="fc" id="L71">    public PlanNodeSnapshot(PlanNode node, String snapshotInstant) {</span>
+<span class="fc" id="L72">        this.executionID = node.executionID();</span>
+<span class="fc" id="L73">        this.snapshotInstant = snapshotInstant;</span>
+<span class="fc" id="L74">        this.nodeType = node.nodeType();</span>
+<span class="fc" id="L75">        this.id = node.id();</span>
+<span class="fc" id="L76">        this.name = node.name();</span>
+<span class="fc" id="L77">        this.keyword = node.keyword();</span>
+<span class="fc" id="L78">        this.language = node.language();</span>
+<span class="fc" id="L79">        this.source = node.source();</span>
+<span class="fc" id="L80">        this.displayName = node.displayName();</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        this.description = (node.description() == null ? null</span>
+<span class="fc" id="L82">                        : new ArrayList&lt;&gt;(node.description()));</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        this.tags = (node.tags() == null ? null : new ArrayList&lt;&gt;(node.tags()));</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        this.properties = (node.properties() == null ? null</span>
+<span class="fc" id="L85">                        : new LinkedHashMap&lt;&gt;(node.properties()));</span>
+<span class="fc" id="L86">        this.startInstant = node.startInstant().map(this::instantToString).orElse(null);</span>
+<span class="fc" id="L87">        this.finishInstant = node.finishInstant().map(this::instantToString).orElse(null);</span>
+<span class="fc" id="L88">        this.duration = node.duration().map(Duration::toMillis).orElse(null);</span>
+<span class="fc" id="L89">        this.result = node.result().orElse(null);</span>
+<span class="fc" id="L90">        this.document = node.data().filter(Document.class::isInstance).map(Document.class::cast)</span>
+<span class="fc" id="L91">            .map(Document::getContent).orElse(null);</span>
+<span class="fc" id="L92">        this.documentType = node.data().filter(Document.class::isInstance).map(Document.class::cast)</span>
+<span class="fc" id="L93">            .map(Document::getContentType).orElse(null);</span>
+<span class="fc" id="L94">        this.dataTable = node.data().filter(DataTable.class::isInstance).map(DataTable.class::cast)</span>
+<span class="fc" id="L95">            .map(DataTable::getValues).orElse(null);</span>
+<span class="fc" id="L96">        this.errorMessage = node.errors().findFirst().map(Throwable::getLocalizedMessage)</span>
+<span class="fc" id="L97">            .orElse(null);</span>
+<span class="fc" id="L98">        this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (node.hasChildren()) {</span>
+<span class="fc" id="L100">            this.children = node.children().map(child -&gt; new PlanNodeSnapshot(child,snapshotInstant))</span>
+<span class="fc" id="L101">                .collect(Collectors.toList());</span>
+<span class="fc" id="L102">            this.testCaseResults = countTestCases(node);</span>
+<span class="fc" id="L103">            this.childrenResults = countChildren(node);</span>
+        }
+<span class="fc" id="L105">    }</span>
+
+
+
+    public PlanNodeSnapshot withoutChildren() {
+<span class="nc" id="L110">        PlanNodeSnapshot copy = new PlanNodeSnapshot();</span>
+<span class="nc" id="L111">        copy.executionID = this.executionID;</span>
+<span class="nc" id="L112">        copy.snapshotInstant = this.snapshotInstant;</span>
+<span class="nc" id="L113">        copy.nodeType = this.nodeType;</span>
+<span class="nc" id="L114">        copy.id = this.id;</span>
+<span class="nc" id="L115">        copy.name = this.name;</span>
+<span class="nc" id="L116">        copy.keyword = this.keyword;</span>
+<span class="nc" id="L117">        copy.language = this.language;</span>
+<span class="nc" id="L118">        copy.source = this.source;</span>
+<span class="nc" id="L119">        copy.displayName = this.displayName;</span>
+<span class="nc" id="L120">        copy.description = this.description;</span>
+<span class="nc" id="L121">        copy.tags = new ArrayList&lt;&gt;(this.tags);</span>
+<span class="nc" id="L122">        copy.properties = new LinkedHashMap&lt;&gt;(this.properties);</span>
+<span class="nc" id="L123">        copy.startInstant = this.startInstant;</span>
+<span class="nc" id="L124">        copy.finishInstant = this.finishInstant;</span>
+<span class="nc" id="L125">        copy.duration = this.duration;</span>
+<span class="nc" id="L126">        copy.result = this.result;</span>
+<span class="nc" id="L127">        copy.document = this.document;</span>
+<span class="nc" id="L128">        copy.documentType = this.documentType;</span>
+<span class="nc" id="L129">        copy.dataTable = this.dataTable;</span>
+<span class="nc" id="L130">        copy.errorMessage = this.errorMessage;</span>
+<span class="nc" id="L131">        copy.errorTrace = this.errorTrace;</span>
+<span class="nc" id="L132">        copy.testCaseResults = new LinkedHashMap&lt;&gt;(this.testCaseResults);</span>
+<span class="nc" id="L133">        copy.childrenResults = new LinkedHashMap&lt;&gt;(this.childrenResults);</span>
+<span class="nc" id="L134">        return copy;</span>
+    }
+
+
+
+
+    private String instantToString(Instant instant) {
+<span class="fc" id="L141">        return LocalDateTime.ofInstant(instant, ZoneOffset.UTC).toString();</span>
+    }
+
+
+    private String errorTrace(Throwable error) {
+<span class="fc" id="L146">        StringWriter errorWriter = new StringWriter();</span>
+<span class="fc" id="L147">        error.printStackTrace(new PrintWriter(errorWriter));</span>
+<span class="fc" id="L148">        return errorWriter.toString();</span>
+    }
+
+
+    /**
+     * Creates a new node descriptor as a parent of the specified nodes
+     *
+     * @param nodes The nodes to be grouped
+     * @return A new parent node descriptor
+     */
+    public static PlanNodeSnapshot group(PlanNodeSnapshot... nodes) {
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (nodes.length == 1) {</span>
+<span class="nc" id="L160">            return nodes[0];</span>
+        }
+<span class="nc" id="L162">        PlanNodeSnapshot root = new PlanNodeSnapshot();</span>
+<span class="nc" id="L163">        root.children = Arrays.asList(nodes);</span>
+<span class="nc" id="L164">        root.startInstant = childLocalDateTime(</span>
+            root,
+            PlanNodeSnapshot::getStartInstant,
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            (x, y) -&gt; x.compareTo(y) &lt; 0 ? x : y</span>
+        );
+<span class="nc" id="L169">        root.finishInstant = childLocalDateTime(</span>
+            root,
+            PlanNodeSnapshot::getFinishInstant,
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            (x, y) -&gt; x.compareTo(y) &gt; 0 ? x : y</span>
+        );
+<span class="nc" id="L174">        root.duration = maxChild(root, PlanNodeSnapshot::getDuration);</span>
+<span class="nc" id="L175">        root.result = maxChild(root, PlanNodeSnapshot::getResult);</span>
+<span class="nc" id="L176">        root.testCaseResults = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L177">        root.children.stream().map(PlanNodeSnapshot::getTestCaseResults).filter(Objects::nonNull)</span>
+<span class="nc" id="L178">            .flatMap(map -&gt; map.entrySet().stream()).forEach(entry -&gt; {</span>
+<span class="nc" id="L179">                root.testCaseResults.computeIfAbsent(entry.getKey(), x -&gt; 0L);</span>
+<span class="nc" id="L180">                root.testCaseResults.put(</span>
+<span class="nc" id="L181">                    entry.getKey(),</span>
+<span class="nc" id="L182">                    root.testCaseResults.get(entry.getKey()) + entry.getValue()</span>
+                );
+<span class="nc" id="L184">            });</span>
+<span class="nc" id="L185">        root.childrenResults = countChildren(root);</span>
+<span class="nc" id="L186">        return root;</span>
+    }
+
+
+    private static Map&lt;Result, Long&gt; countTestCases(PlanNode node) {
+<span class="fc" id="L191">        LinkedHashMap&lt;Result, Long&gt; results = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (node.nodeType() == NodeType.TEST_CASE) {</span>
+<span class="fc" id="L193">            node.result().ifPresent(testCaseResult -&gt; results.put(testCaseResult, 1L));</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        } else if (node.hasChildren()) {</span>
+<span class="fc" id="L195">            node.children().map(PlanNodeSnapshot::countTestCases).filter(Objects::nonNull)</span>
+<span class="fc" id="L196">                .flatMap(map -&gt; map.entrySet().stream())</span>
+<span class="fc" id="L197">                .forEach(entry -&gt; {</span>
+<span class="fc" id="L198">                    results.computeIfAbsent(entry.getKey(), x -&gt; 0L);</span>
+<span class="fc" id="L199">                    results.put(entry.getKey(), results.get(entry.getKey()) + entry.getValue());</span>
+<span class="fc" id="L200">                });</span>
+        }
+<span class="fc" id="L202">        return results;</span>
+    }
+
+
+    private static Map&lt;Result, Long&gt; countChildren(PlanNode node) {
+<span class="fc" id="L207">        return node.children()</span>
+<span class="fc" id="L208">            .filter(it-&gt;it.result().isPresent())</span>
+<span class="fc" id="L209">            .collect(groupingBy(it-&gt;it.result().orElseThrow(), counting()));</span>
+    }
+
+
+    private static Map&lt;Result, Long&gt; countChildren(PlanNodeSnapshot node) {
+<span class="nc" id="L214">        return node.getChildren().stream().collect(groupingBy(it-&gt;it.getResult(), counting()));</span>
+    }
+
+
+    private static String childLocalDateTime(
+        PlanNodeSnapshot node,
+        Function&lt;PlanNodeSnapshot, String&gt; method,
+        BinaryOperator&lt;LocalDateTime&gt; reductor
+    ) {
+<span class="nc" id="L223">        return node.children.stream().map(method).filter(Objects::nonNull).map(LocalDateTime::parse)</span>
+<span class="nc" id="L224">            .reduce(reductor)</span>
+<span class="nc" id="L225">            .map(LocalDateTime::toString).orElse(null);</span>
+    }
+
+
+    private static &lt;T extends Comparable&lt;T&gt;&gt; T maxChild(
+        PlanNodeSnapshot node,
+        Function&lt;PlanNodeSnapshot, T&gt; mapper
+    ) {
+<span class="nc" id="L233">        return node.children.stream().map(mapper).filter(Objects::nonNull)</span>
+<span class="nc" id="L234">            .max(Comparator.naturalOrder()).orElse(null);</span>
+    }
+
+
+    public NodeType getNodeType() {
+<span class="fc" id="L239">        return nodeType;</span>
+    }
+
+
+    public String getId() {
+<span class="fc" id="L244">        return id;</span>
+    }
+
+
+    public String getName() {
+<span class="fc" id="L249">        return name;</span>
+    }
+
+
+    public String getKeyword() {
+<span class="fc" id="L254">        return keyword;</span>
+    }
+
+
+    public String getLanguage() {
+<span class="fc" id="L259">        return language;</span>
+    }
+
+
+    public String getSource() {
+<span class="fc" id="L264">        return source;</span>
+    }
+
+
+    public String getDisplayName() {
+<span class="fc" id="L269">        return displayName;</span>
+    }
+
+
+    public List&lt;String&gt; getDescription() {
+<span class="fc" id="L274">        return description;</span>
+    }
+
+
+    public List&lt;String&gt; getTags() {
+<span class="fc" id="L279">        return tags;</span>
+    }
+
+
+    public Map&lt;String, String&gt; getProperties() {
+<span class="fc" id="L284">        return properties;</span>
+    }
+
+
+    public String getStartInstant() {
+<span class="fc" id="L289">        return startInstant;</span>
+    }
+
+
+    public String getFinishInstant() {
+<span class="fc" id="L294">        return finishInstant;</span>
+    }
+
+
+    public Long getDuration() {
+<span class="fc" id="L299">        return duration;</span>
+    }
+
+
+    public String getDocument() {
+<span class="fc" id="L304">        return document;</span>
+    }
+
+
+    public String getDocumentType() {
+<span class="fc" id="L309">        return documentType;</span>
+    }
+
+
+    public String[][] getDataTable() {
+<span class="fc" id="L314">        return dataTable;</span>
+    }
+
+
+    public String getErrorMessage() {
+<span class="fc" id="L319">        return errorMessage;</span>
+    }
+
+
+    public String getErrorTrace() {
+<span class="fc" id="L324">        return errorTrace;</span>
+    }
+
+
+    public Result getResult() {
+<span class="fc" id="L329">        return result;</span>
+    }
+
+
+    public Map&lt;Result, Long&gt; getTestCaseResults() {
+<span class="fc" id="L334">        return testCaseResults;</span>
+    }
+
+
+    public Map&lt;Result, Long&gt; getChildrenResults() {
+<span class="fc" id="L339">        return childrenResults;</span>
+    }
+
+
+    public List&lt;PlanNodeSnapshot&gt; getChildren() {
+<span class="fc" id="L344">        return children;</span>
+    }
+
+
+    public String getExecutionID() {
+<span class="fc" id="L349">        return executionID;</span>
+    }
+
+
+    public String getSnapshotInstant() {
+<span class="fc" id="L354">        return snapshotInstant;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

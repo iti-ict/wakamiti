@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanNodeLogger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.runner</a> &gt; <span class="el_source">PlanNodeLogger.java</span></div><h1>PlanNodeLogger.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.runner;
+
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
+
+import imconfig.Configuration;
+import org.slf4j.Logger;
+
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.model.ExecutionState;
+
+
+
+public class PlanNodeLogger {
+
+    private final boolean showStepSource;
+    private final boolean showElapsedTime;
+    private final Logger logger;
+
+    private final long totalNumberTestCases;
+    private long currentTestCaseNumber;
+
+
+<span class="fc" id="L39">    public PlanNodeLogger(Logger logger, Configuration configuration, PlanNode plan) {</span>
+<span class="fc" id="L40">        this.logger = logger;</span>
+<span class="fc" id="L41">        this.showStepSource = configuration</span>
+<span class="fc" id="L42">            .get(KukumoConfiguration.LOGS_SHOW_STEP_SOURCE, Boolean.class)</span>
+<span class="fc" id="L43">            .orElse(true);</span>
+<span class="fc" id="L44">        this.showElapsedTime = configuration</span>
+<span class="fc" id="L45">            .get(KukumoConfiguration.LOGS_SHOW_ELAPSED_TIME, Boolean.class)</span>
+<span class="fc" id="L46">            .orElse(true);</span>
+<span class="fc" id="L47">        this.totalNumberTestCases = plan.numDescendants(NodeType.TEST_CASE);</span>
+<span class="fc" id="L48">    }</span>
+
+
+    public void logTestPlanHeader(PlanNode plan) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L53">            int numTestCases = plan.numDescendants(NodeType.TEST_CASE);</span>
+<span class="fc" id="L54">            logger.info(&quot;{!important} Running Test Plan with {} Test Cases...&quot;, numTestCases);</span>
+        }
+<span class="fc" id="L56">    }</span>
+
+
+    public void logTestPlanResult(PlanNode plan) {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L61">            Result result = plan.result().orElse(Result.ERROR);</span>
+<span class="fc" id="L62">            int numTestCases = plan.numDescendants(NodeType.TEST_CASE);</span>
+<span class="fc" id="L63">            int numTestCasesPassed = plan.numDescendants(NodeType.TEST_CASE, Result.PASSED);</span>
+<span class="fc" id="L64">            String resultStyle = &quot;stepResult.&quot; + plan.result().orElse(null);</span>
+<span class="fc" id="L65">            logger.info(&quot;{!&quot; + resultStyle + &quot;}=========================&quot;);</span>
+<span class="fc" id="L66">            logger</span>
+<span class="fc" id="L67">                .info(</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                    &quot;{!&quot; + resultStyle + &quot;}Test Plan {}&quot; + (result.isPassed() ? &quot;&quot;</span>
+<span class="fc" id="L69">                                    : &quot;  ({} of {} test cases not passed)&quot;),</span>
+                    result,
+<span class="fc" id="L71">                    numTestCases - numTestCasesPassed,</span>
+<span class="fc" id="L72">                    numTestCases</span>
+                );
+<span class="fc" id="L74">            logger.info(&quot;{!&quot; + resultStyle + &quot;}=========================&quot;);</span>
+        }
+<span class="fc" id="L76">    }</span>
+
+
+    public void logTestCaseHeader(PlanNode node) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (node.nodeType() != NodeType.TEST_CASE) {</span>
+<span class="fc" id="L81">            return;</span>
+        }
+<span class="fc" id="L83">        currentTestCaseNumber++;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L85">            StringJoiner name = new StringJoiner(&quot; : &quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            if (node.keyword() != null) {</span>
+<span class="fc" id="L87">                name.add(node.keyword());</span>
+            }
+<span class="fc" id="L89">            name.add(node.name());</span>
+<span class="fc" id="L90">            logger.info(&quot;{highlight}&quot;, repeat(&quot;-&quot;, name.length() + 4));</span>
+<span class="fc" id="L91">            logger.info(</span>
+                &quot;{highlight} (Test Case {}/{})&quot;,
+                &quot;| &quot; + name + &quot; |&quot;,
+<span class="fc" id="L94">                currentTestCaseNumber,</span>
+<span class="fc" id="L95">                totalNumberTestCases</span>
+            );
+<span class="fc" id="L97">            logger.info(&quot;{highlight}&quot;, repeat(&quot;-&quot;, name.length() + 4));</span>
+        }
+<span class="fc" id="L99">    }</span>
+
+
+
+
+
+
+
+
+	public void logStepResult(PlanNode step) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (step.nodeType() != NodeType.STEP) {</span>
+<span class="fc" id="L110">            return;</span>
+        }
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L113">            logger.info(buildMessage(step), buildMessageArgs(step));</span>
+        }
+<span class="fc" id="L115">        step.executionState().flatMap(ExecutionState::error)</span>
+<span class="fc" id="L116">            .ifPresent(error -&gt; logger.debug(&quot;stack trace:&quot;, error));</span>
+<span class="fc" id="L117">    }</span>
+
+
+    private String buildMessage(PlanNode step) {
+<span class="fc" id="L121">        String resultStyle = &quot;stepResult.&quot; + step.result().orElse(null);</span>
+<span class="fc" id="L122">        StringBuilder message = new StringBuilder();</span>
+<span class="fc" id="L123">        message.append(&quot;{highlight} {&quot; + resultStyle + &quot;} {highlight} &quot;);</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (showStepSource) {</span>
+<span class="nc" id="L125">            message.append(&quot;{source} :&quot;);</span>
+        }
+<span class="fc" id="L127">        message.append(&quot; {keyword} {}&quot;);</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (showElapsedTime) {</span>
+<span class="fc" id="L129">            message.append(&quot; {time} &quot;);</span>
+        }
+<span class="fc" id="L131">        message.append(&quot;{&quot; + resultStyle + &quot;}&quot;);</span>
+<span class="fc" id="L132">        return message.toString();</span>
+    }
+
+
+    private Object[] buildMessageArgs(PlanNode step) {
+<span class="fc" id="L137">        ExecutionState&lt;Result&gt; execution = step.executionState().orElse(null);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (execution == null) {</span>
+<span class="nc" id="L139">        	return new Object[0];</span>
+        }
+<span class="fc" id="L141">        List&lt;Object&gt; args = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L142">        args.add(&quot;[&quot;);</span>
+<span class="fc" id="L143">        args.add(execution.result().orElse(null));</span>
+<span class="fc" id="L144">        args.add(&quot;]&quot;);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (showStepSource) {</span>
+<span class="nc" id="L146">            args.add(step.source());</span>
+        }
+<span class="fc" id="L148">        args.add(emptyIfNull(step.keyword()));</span>
+<span class="fc" id="L149">        args.add(step.name());</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (showElapsedTime) {</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            String duration = (execution.result().orElse(null) == Result.SKIPPED ? &quot;&quot;</span>
+<span class="fc" id="L152">                            : &quot;(&quot; + (execution.duration().map(Duration::toMillis).orElse(0L) / 1000f) + &quot;)&quot;);</span>
+<span class="fc" id="L153">            args.add(duration);</span>
+        }
+<span class="fc" id="L155">        args.add(execution.error().map(Throwable::getLocalizedMessage).orElse(&quot;&quot;));</span>
+<span class="fc" id="L156">        return args.toArray();</span>
+    }
+
+
+    private static Object emptyIfNull(Object value) {
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        return value == null ? &quot;&quot; : value;</span>
+    }
+
+
+    private String repeat(String string, int count) {
+<span class="fc" id="L166">		StringBuilder s = new StringBuilder();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">		for (int i=0;i&lt;count;i++) {</span>
+<span class="fc" id="L168">			s.append(string);</span>
+		}
+<span class="fc" id="L170">		return s.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

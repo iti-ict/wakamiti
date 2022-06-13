@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonXmlDiff.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::REST Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.rest.helpers</a> &gt; <span class="el_source">JsonXmlDiff.java</span></div><h1>JsonXmlDiff.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.rest.helpers;
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+
+
+
+
+
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import org.junit.ComparisonFailure;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import io.restassured.http.ContentType;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.rest.MatchMode;
+
+import static iti.kukumo.rest.MatchMode.*;
+
+public class JsonXmlDiff  {
+
+    private final ObjectMapper mapper;
+
+
+<span class="fc" id="L43">    public JsonXmlDiff(ContentType contentType) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (contentType == ContentType.JSON) {</span>
+<span class="fc" id="L45">            this.mapper = new ObjectMapper();</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        } else if (contentType == ContentType.XML){</span>
+<span class="fc" id="L47">            this.mapper = new XmlMapper();</span>
+        } else {
+<span class="nc" id="L49">            throw new IllegalArgumentException(&quot;Only either JSON or XML types are allowed&quot;);</span>
+        }
+<span class="fc" id="L51">        this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);</span>
+<span class="fc" id="L52">    }</span>
+
+
+
+    public void assertContent(String expected, String actual, MatchMode matchMode) {
+        try {
+<span class="fc" id="L58">            List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L59">            JsonNode expectedJson = mapper.readTree(expected);</span>
+<span class="fc" id="L60">            JsonNode actualJson = mapper.readTree(actual);</span>
+<span class="fc" id="L61">            compareJsonNode(matchMode,expectedJson,actualJson,&quot;&quot;,errors);</span>
+<span class="fc" id="L62">            throwExceptionIfHasErrors(errors, expected, actual);</span>
+<span class="nc" id="L63">        } catch (JsonProcessingException e) {</span>
+<span class="nc" id="L64">            throw new KukumoException(e);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">    }</span>
+
+
+
+    private void throwExceptionIfHasErrors(List&lt;String&gt; errors, String expected, String actual)
+    throws ComparisonFailure, JsonProcessingException {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (!errors.isEmpty()) {</span>
+<span class="fc" id="L73">            var message = errors.stream().collect(Collectors.joining(</span>
+                &quot;\n\t-&quot;, &quot;The expected and actual responses have differences:\n\t-&quot;, &quot;\n&quot;
+            ));
+<span class="fc" id="L76">            throw new ComparisonFailure(message, format(expected), format(actual));</span>
+        }
+<span class="fc" id="L78">    }</span>
+
+
+
+
+
+    private String format(String content) throws JsonProcessingException {
+<span class="fc" id="L85">        return mapper.writeValueAsString(mapper.readTree(content));</span>
+    }
+
+
+
+    private boolean compareJsonNode(
+        MatchMode matchMode,
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix
+    ) {
+<span class="fc" id="L96">        List&lt;String&gt; errors = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L97">        compareJsonNode(matchMode,expectedNode,actualNode,prefix,errors);</span>
+<span class="fc" id="L98">        return errors.isEmpty();</span>
+    }
+
+
+
+    private void compareJsonNode(
+        MatchMode matchMode,
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List&lt;String&gt; errors
+    ) {
+<span class="fc" id="L110">        var expectedType = expectedNode.getNodeType();</span>
+<span class="fc" id="L111">        var actualType = actualNode.getNodeType();</span>
+<span class="fc" id="L112">        String segmentExpected = literalSegmentExpected(prefix);</span>
+
+<span class="pc bpc" id="L114" title="5 of 6 branches missed.">        if (actualNode.isMissingNode() &amp;&amp; !expectedNode.isMissingNode() &amp;&amp; matchMode == STRICT) {</span>
+<span class="nc" id="L115">            errors.add(segmentExpected+&quot;, but is not present&quot;);</span>
+<span class="nc" id="L116">            return;</span>
+        }
+
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if (expectedType != actualType) {</span>
+<span class="nc" id="L120">            errors.add(segmentExpected+&quot; to be a &quot;+expectedType+&quot;, but it is &quot;+actualType);</span>
+<span class="nc" id="L121">            return;</span>
+        }
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (expectedNode.isArray()) {</span>
+<span class="fc" id="L125">            compareJsonArray(matchMode, expectedNode, actualNode, prefix, errors);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        } else if (expectedNode.isContainerNode()) {</span>
+<span class="fc" id="L127">            compareJsonObject(matchMode, expectedNode, actualNode, prefix, errors);</span>
+<span class="pc bpc" id="L128" title="1 of 4 branches missed.">        } else if (expectedNode.isValueNode() &amp;&amp; !expectedNode.equals(actualNode)) {</span>
+<span class="fc" id="L129">            errors.add(</span>
+<span class="fc" id="L130">                segmentExpected+&quot;: '&quot;+expectedNode.asText()+</span>
+<span class="fc" id="L131">                &quot;', actual: '&quot;+actualNode.asText()+&quot;'&quot;</span>
+            );
+        }
+<span class="fc" id="L134">    }</span>
+
+
+
+
+
+
+    private void compareJsonArray(
+        MatchMode matchMode,
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List&lt;String&gt; errors
+    ) {
+<span class="fc" id="L148">        String segmentExpected = literalSegmentExpected(prefix);</span>
+<span class="pc bpc" id="L149" title="1 of 4 branches missed.">        switch (matchMode) {</span>
+            case STRICT:
+<span class="fc" id="L151">                compareJsonArrayStrict(expectedNode, actualNode, prefix, errors, segmentExpected);</span>
+<span class="fc" id="L152">                break;</span>
+            case STRICT_ANY_ORDER:
+<span class="fc" id="L154">                compareJsonArrayStrictAnyOrder(expectedNode, actualNode, prefix, errors, segmentExpected);</span>
+<span class="fc" id="L155">                break;</span>
+            case LOOSE:
+<span class="fc" id="L157">                compareJsonArrayLoose(expectedNode, actualNode, prefix, errors, segmentExpected);</span>
+                break;
+        }
+<span class="fc" id="L160">    }</span>
+
+    private void compareJsonArrayStrict(
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List&lt;String&gt; errors,
+        String segmentExpected
+    ) {
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (expectedNode.size() != actualNode.size()) {</span>
+<span class="fc" id="L170">            errors.add(errorSize(expectedNode, actualNode, segmentExpected));</span>
+<span class="fc" id="L171">            return;</span>
+        }
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        for (int i = 0; i&lt; expectedNode.size(); i++) {</span>
+<span class="fc" id="L174">            compareJsonNode(STRICT,expectedNode.get(i),actualNode.get(i),prefix +&quot;[&quot;+i+&quot;]&quot;,errors);</span>
+        }
+<span class="fc" id="L176">    }</span>
+
+
+    private void compareJsonArrayStrictAnyOrder(
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List&lt;String&gt; errors,
+        String segmentExpected
+    ) {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (expectedNode.size() != actualNode.size()) {</span>
+<span class="fc" id="L187">            errors.add(errorSize(expectedNode, actualNode, segmentExpected));</span>
+<span class="fc" id="L188">            return;</span>
+        }
+        boolean currentElementMatch;
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for (int i = 0; i&lt; expectedNode.size(); i++) {</span>
+<span class="fc" id="L192">            currentElementMatch = false;</span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">            for (int j = 0; j &lt; actualNode.size() &amp;&amp; !currentElementMatch; j++) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">                if (compareJsonNode(LOOSE,expectedNode.get(i),actualNode.get(j),prefix +&quot;[&quot;+i+&quot;]&quot;)) {</span>
+<span class="fc" id="L195">                    currentElementMatch = true;</span>
+                }
+            }
+<span class="fc bfc" id="L198" title="All 2 branches covered.">            if (!currentElementMatch) {</span>
+<span class="fc" id="L199">                compareJsonNode(LOOSE, expectedNode.get(i), actualNode.get(i), prefix + &quot;[&quot; + i + &quot;]&quot;, errors);</span>
+<span class="fc" id="L200">                return;</span>
+            }
+        }
+<span class="fc" id="L203">    }</span>
+
+
+
+    private void compareJsonArrayLoose(
+            JsonNode expectedNode,
+            JsonNode actualNode,
+            String prefix,
+            List&lt;String&gt; errors,
+            String segmentExpected
+    ) {
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (expectedNode.size() &gt; actualNode.size()) {</span>
+<span class="fc" id="L215">            errors.add(segmentExpected +&quot; minimum size: &quot;+ expectedNode.size()+&quot;, actual size: &quot;+ actualNode.size());</span>
+<span class="fc" id="L216">            return;</span>
+        }
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        for (int i = 0; i&lt; expectedNode.size(); i++) {</span>
+<span class="fc" id="L219">            compareJsonNode(LOOSE,expectedNode.get(i),actualNode.get(i),prefix +&quot;[&quot;+i+&quot;]&quot;,errors);</span>
+        }
+<span class="fc" id="L221">    }</span>
+
+
+    private void compareJsonObject(
+        MatchMode matchMode,
+        JsonNode expectedNode,
+        JsonNode actualNode,
+        String prefix,
+        List&lt;String&gt; errors
+    ) {
+
+<span class="fc" id="L232">        String segmentExpected = literalSegmentExpected(prefix);</span>
+<span class="fc" id="L233">        var expectedFields = asList(expectedNode.fieldNames());</span>
+<span class="fc" id="L234">        var actualFields = asList(actualNode.fieldNames());</span>
+
+<span class="fc" id="L236">        var missingExpectedFields = expectedFields.stream()</span>
+<span class="fc" id="L237">            .filter(Predicate.not(actualFields::contains))</span>
+<span class="fc" id="L238">            .collect(Collectors.toList());</span>
+<span class="fc" id="L239">        var nonExpectedActualFields = actualFields.stream()</span>
+<span class="fc" id="L240">            .filter(Predicate.not(expectedFields::contains))</span>
+<span class="fc" id="L241">            .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (!missingExpectedFields.isEmpty()) {</span>
+<span class="fc" id="L244">            errors.add(</span>
+                segmentExpected+&quot; to have fields &quot;+missingExpectedFields+
+                &quot;, but they are not present&quot;
+            );
+<span class="fc" id="L248">            return;</span>
+        }
+
+<span class="fc bfc" id="L251" title="All 4 branches covered.">        if (!nonExpectedActualFields.isEmpty() &amp;&amp; matchMode == STRICT) {</span>
+<span class="fc" id="L252">            errors.add(</span>
+                segmentExpected+&quot; not to have fields &quot;+nonExpectedActualFields+
+                &quot;, but they are present&quot;
+            );
+<span class="fc" id="L256">            return;</span>
+        }
+
+<span class="fc bfc" id="L259" title="All 2 branches covered.">        for (int i=0;i&lt;expectedFields.size();i++) {</span>
+<span class="fc" id="L260">            String expectedField = expectedFields.get(i);</span>
+<span class="fc" id="L261">            String actualFieldInSamePosition = actualFields.get(i);</span>
+<span class="fc bfc" id="L262" title="All 4 branches covered.">            if (matchMode == STRICT &amp;&amp; !expectedField.equals(actualFieldInSamePosition)) {</span>
+<span class="fc" id="L263">                errors.add(</span>
+                    segmentExpected+&quot; to have field '&quot;+expectedField+&quot;' at position &quot;+
+                    i + &quot; but it was '&quot;+actualFieldInSamePosition+&quot;'&quot;
+                );
+<span class="fc" id="L267">                continue;</span>
+            }
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">            if (!missingExpectedFields.contains(expectedField)) {</span>
+<span class="fc" id="L270">                compareJsonNode(</span>
+                    matchMode,
+<span class="fc" id="L272">                    expectedNode.get(expectedField),</span>
+<span class="fc" id="L273">                    actualNode.get(expectedField),</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">                    prefix + (prefix.isEmpty() ? &quot;&quot; : &quot;.&quot; )+expectedField,errors)</span>
+                ;
+            }
+
+        }
+<span class="fc" id="L279">    }</span>
+
+
+    private static String literalSegmentExpected(String prefix) {
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        return prefix.isEmpty() ? &quot;root segment expected&quot; : &quot;segment '&quot;+prefix+&quot;' expected&quot;;</span>
+    }
+
+
+    private static &lt;T&gt; List&lt;T&gt; asList(Iterator&lt;T&gt; i) {
+<span class="fc" id="L288">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L289">        i.forEachRemaining(list::add);</span>
+<span class="fc" id="L290">        return list;</span>
+    }
+
+
+    private static String errorSize(JsonNode expectedNode, JsonNode actualNode, String segmentExpected) {
+<span class="fc" id="L295">        return segmentExpected + &quot; size: &quot; + expectedNode.size() + &quot;, actual size: &quot; + actualNode.size();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

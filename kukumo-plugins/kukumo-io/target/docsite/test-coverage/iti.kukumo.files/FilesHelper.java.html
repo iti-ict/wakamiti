@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FilesHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::Files Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.files</a> &gt; <span class="el_source">FilesHelper.java</span></div><h1>FilesHelper.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package iti.kukumo.files;
+
+import iti.kukumo.util.KukumoLogger;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.DosFileAttributeView;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+<span class="fc" id="L26">public class FilesHelper {</span>
+
+<span class="fc" id="L28">    private static final Logger LOGGER = KukumoLogger</span>
+<span class="fc" id="L29">            .of(LoggerFactory.getLogger(&quot;iti.kukumo.files&quot;));</span>
+    private static final String TMP_PREFIX = &quot;kukumo&quot;;
+
+<span class="fc" id="L32">    private final Deque&lt;Runnable&gt; cleanUpOperations = new LinkedList&lt;&gt;();</span>
+
+    public void waitForFile(File file, WatchEvent.Kind&lt;Path&gt; eventKind, long timeout) throws IOException, InterruptedException, TimeoutException {
+<span class="fc" id="L35">        WatchService watcher = FileSystems.getDefault().newWatchService();</span>
+<span class="fc" id="L36">        Path.of(file.getParent()).register(watcher, eventKind);</span>
+
+        WATCH:
+        while (true) {
+<span class="fc" id="L40">            WatchKey watchKey = watcher.poll(timeout, TimeUnit.SECONDS);</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">            if (watchKey != null) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">                for (WatchEvent&lt;?&gt; event : watchKey.pollEvents()) {</span>
+<span class="fc" id="L43">                    String eventFile = event.context().toString();</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">                    if (file.getName().equals(eventFile)) {</span>
+<span class="fc" id="L45">                        break WATCH;</span>
+                    }
+<span class="nc" id="L47">                }</span>
+<span class="nc" id="L48">                watchKey.reset();</span>
+            } else {
+<span class="nc" id="L50">                throw new TimeoutException(&quot;Timeout to access to file [&quot; + file.getAbsolutePath() + &quot;] exceeded&quot;);</span>
+            }
+<span class="nc" id="L52">        }</span>
+<span class="fc" id="L53">    }</span>
+
+    public void cleanup() {
+<span class="fc" id="L56">        cleanUpOperations.forEach(Runnable::run);</span>
+<span class="fc" id="L57">    }</span>
+
+    public void createSymLink(Path link, Path path) {
+<span class="fc" id="L60">        Path symLink = FilesHelper.createSymbolicLink(link, path);</span>
+<span class="fc" id="L61">        cleanUpOperations.addLast(() -&gt; FilesHelper.deleteSymbolicLink(symLink));</span>
+<span class="fc" id="L62">    }</span>
+
+    public void moveToFile(File source, File target) throws IOException {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (!source.exists()) {</span>
+<span class="fc" id="L66">            throw new FileNotFoundException(&quot;Source '&quot; + source + &quot;' does not exist&quot;);</span>
+        }
+
+<span class="fc" id="L69">        File p = getFirstExistingParent(target);</span>
+<span class="fc" id="L70">        File tmp = File.createTempFile(TMP_PREFIX, null);</span>
+<span class="fc" id="L71">        FilesHelper.copyFile(source, tmp);</span>
+
+<span class="fc" id="L73">        FilesHelper.moveFile(source, target);</span>
+
+<span class="fc" id="L75">        cleanUpOperations.addFirst(() -&gt; {</span>
+<span class="fc" id="L76">            FilesHelper.cleanDirectory(p);</span>
+<span class="fc" id="L77">            FilesHelper.copyFile(tmp, source);</span>
+<span class="fc" id="L78">        });</span>
+<span class="fc" id="L79">    }</span>
+
+    public void moveToDir(File source, File target) throws IOException {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (!source.exists()) {</span>
+<span class="fc" id="L83">            throw new FileNotFoundException(&quot;Source '&quot; + source + &quot;' does not exist&quot;);</span>
+        }
+
+<span class="fc" id="L86">        File p = getFirstExistingParent(target);</span>
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (source.isDirectory()) {</span>
+<span class="fc" id="L89">            File tmp = Files.createTempDirectory(TMP_PREFIX).toFile();</span>
+<span class="fc" id="L90">            FilesHelper.copyDirectory(source, tmp);</span>
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            if (target.exists()) {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">                for (File file : Optional.ofNullable(source.listFiles()).orElse(new File[0])) {</span>
+<span class="fc" id="L94">                    FilesHelper.moveFileToDirectory(file, target);</span>
+                }
+<span class="fc" id="L96">                FilesHelper.deleteDirectory(source);</span>
+            } else {
+<span class="fc" id="L98">                FilesHelper.moveDirectory(source, target);</span>
+            }
+
+<span class="fc" id="L101">            cleanUpOperations.addFirst(() -&gt; {</span>
+<span class="fc" id="L102">                FilesHelper.cleanDirectory(p);</span>
+<span class="fc" id="L103">                FilesHelper.copyDirectory(tmp, source);</span>
+<span class="fc" id="L104">            });</span>
+<span class="fc" id="L105">        } else {</span>
+<span class="fc" id="L106">            File tmp = File.createTempFile(TMP_PREFIX, null);</span>
+<span class="fc" id="L107">            FilesHelper.copyFile(source, tmp);</span>
+
+<span class="fc" id="L109">            FilesHelper.moveFileToDirectory(source, target);</span>
+
+<span class="fc" id="L111">            cleanUpOperations.addFirst(() -&gt; {</span>
+<span class="fc" id="L112">                FilesHelper.cleanDirectory(p);</span>
+<span class="fc" id="L113">                FilesHelper.copyFile(tmp, source);</span>
+<span class="fc" id="L114">            });</span>
+        }
+<span class="fc" id="L116">    }</span>
+
+    public void copyToFile(File source, File target) {
+<span class="fc" id="L119">        File p = getFirstExistingParent(target);</span>
+
+<span class="fc" id="L121">        FilesHelper.copyFile(source, target);</span>
+
+<span class="fc" id="L123">        cleanUpOperations.addFirst(() -&gt; FilesHelper.cleanDirectory(p));</span>
+<span class="fc" id="L124">    }</span>
+
+    public void copyToDir(File source, File target) throws FileNotFoundException {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (!source.exists()) {</span>
+<span class="fc" id="L128">            throw new FileNotFoundException(&quot;Source '&quot; + source + &quot;' does not exist&quot;);</span>
+        }
+
+<span class="fc" id="L131">        File p = getFirstExistingParent(target);</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (source.isDirectory()) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">            if (target.exists()) {</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">                for (File file : Optional.ofNullable(source.listFiles()).orElse(new File[0])) {</span>
+<span class="fc" id="L136">                    FilesHelper.copyFileToDirectory(file, target);</span>
+                }
+            } else {
+<span class="fc" id="L139">                FilesHelper.copyDirectory(source, target);</span>
+            }
+        } else {
+<span class="fc" id="L142">            FilesHelper.copyFileToDirectory(source, target);</span>
+        }
+
+<span class="fc" id="L145">        cleanUpOperations.addFirst(() -&gt; FilesHelper.cleanDirectory(p));</span>
+<span class="fc" id="L146">    }</span>
+
+    public void delete(File file) throws IOException {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (!file.exists()) {</span>
+<span class="fc" id="L150">            throw new FileNotFoundException(&quot;Source '&quot; + file + &quot;' does not exist&quot;);</span>
+        }
+
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (file.isDirectory()) {</span>
+<span class="fc" id="L154">            File tmp = Files.createTempDirectory(TMP_PREFIX).toFile();</span>
+<span class="fc" id="L155">            FilesHelper.copyDirectory(file, tmp);</span>
+
+<span class="fc" id="L157">            FilesHelper.deleteDirectory(file);</span>
+
+<span class="fc" id="L159">            cleanUpOperations.addFirst(() -&gt; FilesHelper.copyDirectory(tmp, file));</span>
+<span class="fc" id="L160">        } else {</span>
+<span class="fc" id="L161">            File tmp = File.createTempFile(TMP_PREFIX, null);</span>
+<span class="fc" id="L162">            FilesHelper.copyFile(file, tmp);</span>
+
+<span class="fc" id="L164">            file.delete();</span>
+
+<span class="fc" id="L166">            cleanUpOperations.addFirst(() -&gt; FilesHelper.copyFile(tmp, file));</span>
+        }
+<span class="fc" id="L168">    }</span>
+
+    private File getFirstExistingParent(File file) {
+<span class="fc" id="L171">        File parent = file.getParentFile();</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">        if (parent == null) {</span>
+<span class="nc" id="L173">            return file;</span>
+        }
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (!parent.exists()) {</span>
+<span class="fc" id="L176">            return getFirstExistingParent(parent);</span>
+        }
+<span class="fc" id="L178">        return parent;</span>
+    }
+
+    private static Path createSymbolicLink(Path link, Path path) {
+        try {
+<span class="fc" id="L183">            LOGGER.debug(&quot;Creating symbolic link [{}] to [{}]&quot;, link, path);</span>
+<span class="fc" id="L184">            return Files.createSymbolicLink(link, path);</span>
+<span class="nc" id="L185">        } catch (IOException e) {</span>
+<span class="nc" id="L186">            throw new FilesHelperException(e);</span>
+        }
+    }
+
+    private static void deleteSymbolicLink(Path path) {
+        try {
+<span class="fc" id="L192">            LOGGER.debug(&quot;Deleting symbolic link [{}]&quot;, path);</span>
+<span class="fc" id="L193">            Files.delete(path);</span>
+<span class="nc" id="L194">        } catch (IOException e) {</span>
+<span class="nc" id="L195">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L196">        }</span>
+<span class="fc" id="L197">    }</span>
+
+    private static void moveFile(File source, File target) {
+        try {
+<span class="fc" id="L201">            LOGGER.debug(&quot;Moving file [{}] to [{}]&quot;, source, target);</span>
+<span class="fc" id="L202">            FileUtils.moveFile(source, target);</span>
+<span class="fc" id="L203">        } catch (IOException e) {</span>
+<span class="fc" id="L204">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L205">        }</span>
+<span class="fc" id="L206">    }</span>
+
+    private static void moveFileToDirectory(File source, File target) {
+        try {
+<span class="fc" id="L210">            LOGGER.debug(&quot;Moving [{}] to directory [{}]&quot;, source, target);</span>
+<span class="fc" id="L211">            FileUtils.moveFileToDirectory(source, target, true);</span>
+<span class="nc" id="L212">        } catch (IOException e) {</span>
+<span class="nc" id="L213">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L214">        }</span>
+<span class="fc" id="L215">    }</span>
+
+    private static void deleteDirectory(File file) {
+        try {
+<span class="fc" id="L219">            LOGGER.debug(&quot;Deleting directory [{}]&quot;, file);</span>
+<span class="fc" id="L220">            FileUtils.deleteDirectory(file);</span>
+<span class="nc" id="L221">        } catch (IOException e) {</span>
+<span class="nc" id="L222">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L223">        }</span>
+<span class="fc" id="L224">    }</span>
+
+    private static void moveDirectory(File source, File target) {
+        try {
+<span class="fc" id="L228">            LOGGER.debug(&quot;Moving [{}] to directory [{}]&quot;, source, target);</span>
+<span class="fc" id="L229">            FileUtils.moveDirectory(source, target);</span>
+<span class="nc" id="L230">        } catch (IOException e) {</span>
+<span class="nc" id="L231">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L232">        }</span>
+<span class="fc" id="L233">    }</span>
+
+    private static void copyFile(File source, File target) {
+        try {
+<span class="fc" id="L237">            LOGGER.debug(&quot;Copying file [{}] to [{}]&quot;, source, target);</span>
+<span class="fc" id="L238">            FileUtils.copyFile(source, target, true);</span>
+<span class="fc" id="L239">        } catch (IOException e) {</span>
+<span class="fc" id="L240">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L241">        }</span>
+<span class="fc" id="L242">    }</span>
+
+    private static void copyFileToDirectory(File source, File target) {
+        try {
+<span class="fc" id="L246">            LOGGER.debug(&quot;Creating [{}] to directory [{}]&quot;, source, target);</span>
+<span class="fc" id="L247">            FileUtils.copyFileToDirectory(source, target, true);</span>
+<span class="nc" id="L248">        } catch (IOException e) {</span>
+<span class="nc" id="L249">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L250">        }</span>
+<span class="fc" id="L251">    }</span>
+
+    private static void copyDirectory(File source, File target) {
+        try {
+<span class="fc" id="L255">            LOGGER.debug(&quot; Copy[{}] to directory [{}]&quot;, source, target);</span>
+<span class="fc" id="L256">            FileUtils.copyDirectory(source, target, true);</span>
+<span class="nc" id="L257">        } catch (IOException e) {</span>
+<span class="nc" id="L258">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L259">        }</span>
+<span class="fc" id="L260">    }</span>
+
+    private static void cleanDirectory(File dir) {
+        try {
+<span class="fc" id="L264">            LOGGER.debug(&quot;Cleaning up directory [{}]&quot;, dir);</span>
+<span class="fc" id="L265">            FileUtils.cleanDirectory(dir);</span>
+<span class="nc" id="L266">        } catch (IOException e) {</span>
+<span class="nc" id="L267">            throw new FilesHelperException(e);</span>
+<span class="fc" id="L268">        }</span>
+<span class="fc" id="L269">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

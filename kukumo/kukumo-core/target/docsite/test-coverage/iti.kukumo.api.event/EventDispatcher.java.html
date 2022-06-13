@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventDispatcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.api.event</a> &gt; <span class="el_source">EventDispatcher.java</span></div><h1>EventDispatcher.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.api.event;
+
+
+import java.time.Clock;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import iti.kukumo.api.extensions.EventObserver;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
+
+
+<span class="fc" id="L20">public class EventDispatcher {</span>
+
+<span class="fc" id="L22">    private final CopyOnWriteArraySet&lt;EventObserver&gt; observers = new CopyOnWriteArraySet&lt;&gt;();</span>
+<span class="fc" id="L23">    private final Clock clock = Clock.systemUTC();</span>
+
+
+    public void addObserver(EventObserver observer) {
+<span class="nc" id="L27">        this.observers.add(observer);</span>
+<span class="nc" id="L28">    }</span>
+
+
+    public void removeObserver(EventObserver observer) {
+<span class="nc" id="L32">        this.observers.remove(observer);</span>
+<span class="nc" id="L33">    }</span>
+
+
+    public  void publishEvent(String type, PlanNodeSnapshot data) {
+<span class="fc" id="L37">        Event event = new Event(type, clock.instant(), data);</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        for (EventObserver observer : this.observers) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (observer.acceptType(type)) {</span>
+<span class="nc" id="L40">                observer.eventReceived(event);</span>
+            }
+<span class="nc" id="L42">        }</span>
+<span class="fc" id="L43">    }</span>
+
+
+    public Iterable&lt;EventObserver&gt; observers() {
+<span class="fc" id="L47">        return observers;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

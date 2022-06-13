@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TreeNode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.model</a> &gt; <span class="el_source">TreeNode.java</span></div><h1>TreeNode.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.model;
+
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+
+public abstract class TreeNode&lt;S extends TreeNode&lt;S&gt;&gt; {
+
+    private final List&lt;S&gt; children;
+
+
+<span class="fc" id="L24">    public TreeNode(List&lt;S&gt; children) {</span>
+<span class="fc" id="L25">        this.children = Collections.unmodifiableList(children);</span>
+<span class="fc" id="L26">    }</span>
+
+
+    public Stream&lt;S&gt; children() {
+<span class="fc" id="L30">        return children.stream();</span>
+    }
+
+
+    public int numChildren() {
+<span class="nc" id="L35">        return children.size();</span>
+    }
+
+
+    public boolean hasChildren() {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        return !children.isEmpty();</span>
+    }
+
+
+    public Stream&lt;S&gt; descendants() {
+<span class="fc" id="L45">        return Stream.concat(children(), children().flatMap(S::descendants));</span>
+    }
+
+
+    public int numDescendants(Predicate&lt;S&gt; predicate) {
+<span class="fc" id="L50">        return (int) descendants().filter(predicate).count();</span>
+    }
+
+
+    public boolean hasChild(S child) {
+<span class="fc" id="L55">        return children.contains(child);</span>
+    }
+
+
+    public boolean hasDescendant(S descendant) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        return hasChild(descendant) ||</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                        children().anyMatch(child -&gt; child.hasDescendant(descendant));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

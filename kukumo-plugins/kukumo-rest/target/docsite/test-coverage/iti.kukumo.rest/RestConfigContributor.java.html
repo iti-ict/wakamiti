@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestConfigContributor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::REST Steps</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.rest</a> &gt; <span class="el_source">RestConfigContributor.java</span></div><h1>RestConfigContributor.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.rest;
+
+
+import imconfig.Configuration;
+import imconfig.Configurer;
+import io.restassured.RestAssured;
+import io.restassured.config.LogConfig;
+import iti.commons.jext.Extension;
+import iti.kukumo.api.extensions.ConfigContributor;
+import iti.kukumo.rest.log.RestAssuredLogger;
+import iti.kukumo.util.ThrowableFunction;
+import org.hamcrest.Matchers;
+
+import java.net.URL;
+
+
+@Extension(
+        provider = &quot;iti.kukumo&quot;,
+        name = &quot;rest-configurator&quot;,
+        extensionPoint = &quot;iti.kukumo.api.extensions.ConfigContributor&quot;,
+        version = &quot;1.1&quot;
+)
+<span class="fc" id="L32">public class RestConfigContributor implements ConfigContributor&lt;RestStepContributor&gt; {</span>
+
+
+    public static final String BASE_URL = &quot;rest.baseURL&quot;;
+    public static final String CONTENT_TYPE = &quot;rest.contentType&quot;;
+    public static final String FAILURE_HTTP_CODE_THRESHOLD = &quot;rest.httpCodeThreshold&quot;;
+    public static final String OAUTH2_URL = &quot;rest.oauth2.url&quot;;
+    public static final String OAUTH2_CLIENT_ID = &quot;rest.oauth2.clientId&quot;;
+    public static final String OAUTH2_CLIENT_SECRET = &quot;rest.oauth2.clientSecret&quot;;
+
+<span class="fc" id="L42">    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(</span>
+            BASE_URL, &quot;http://localhost:8080&quot;,
+            CONTENT_TYPE, &quot;JSON&quot;,
+            FAILURE_HTTP_CODE_THRESHOLD, &quot;500&quot;
+    );
+
+
+    @Override
+    public boolean accepts(Object contributor) {
+<span class="fc" id="L51">        return RestStepContributor.class.isAssignableFrom(contributor.getClass());</span>
+    }
+
+    @Override
+    public Configuration defaultConfiguration() {
+<span class="fc" id="L56">        return DEFAULTS;</span>
+    }
+
+    @Override
+    public Configurer&lt;RestStepContributor&gt; configurer() {
+<span class="fc" id="L61">        return this::configure;</span>
+    }
+
+    private void configure(RestStepContributor contributor, Configuration configuration) {
+<span class="fc" id="L65">        RestAssured.config = RestAssured.config().logConfig(</span>
+<span class="fc" id="L66">                new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())</span>
+        );
+<span class="fc" id="L68">        RestAssured.useRelaxedHTTPSValidation();</span>
+
+<span class="fc" id="L70">        configuration.get(BASE_URL, String.class)</span>
+<span class="fc" id="L71">                .map(ThrowableFunction.unchecked(URL::new))</span>
+<span class="fc" id="L72">                .ifPresent(contributor::setBaseURL);</span>
+<span class="fc" id="L73">        configuration.get(CONTENT_TYPE, String.class).ifPresent(contributor::setContentType);</span>
+<span class="fc" id="L74">        configuration.get(FAILURE_HTTP_CODE_THRESHOLD, Integer.class)</span>
+<span class="fc" id="L75">                .map(Matchers::lessThan)</span>
+<span class="fc" id="L76">                .ifPresent(contributor::setFailureHttpCodeAssertion);</span>
+
+<span class="fc" id="L78">        Oauth2ProviderConfiguration oauth2ProviderConfiguration = contributor.oauth2ProviderConfiguration;</span>
+<span class="fc" id="L79">        configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2ProviderConfiguration::url);</span>
+<span class="fc" id="L80">        configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2ProviderConfiguration::clientId);</span>
+<span class="fc" id="L81">        configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2ProviderConfiguration::clientSecret);</span>
+
+<span class="fc" id="L83">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
