@@ -25,7 +25,6 @@ public class App {
     public static void main(String[] args) throws SQLException {
         Server server = Server.createTcpServer("-tcpPort", "9092").start();
         ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
-        context.addApplicationListener((ContextClosedEvent event) -> server.stop());
     }
 
 }
