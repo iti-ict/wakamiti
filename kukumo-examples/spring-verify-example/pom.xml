@@ -104,8 +104,8 @@
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <wait>30000</wait>
-                            <maxAttempts>3</maxAttempts>
+                            <wait>500</wait>
+                            <maxAttempts>30</maxAttempts>
                         </configuration>
                         <executions>
                             <execution>
