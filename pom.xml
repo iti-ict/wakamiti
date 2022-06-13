@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
 
@@ -94,7 +94,7 @@
 
         <!-- annotation processor versions -->
         <jext.version>1.0.0</jext.version>
-        
+
         <!-- sonar cloud -->
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -200,7 +200,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>post-integration-test</phase>
+                        <phase>pre-site</phase>
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
@@ -214,7 +214,7 @@
                 <version>3.1.2</version>
                 <executions>
                     <execution>
-                        <phase>post-integration-test</phase>
+                        <phase>pre-site</phase>
                         <goals>
                             <goal>dependencies</goal>
                         </goals>
@@ -228,7 +228,7 @@
                 <version>2.18.1</version>
                 <executions>
                     <execution>
-                        <phase>post-integration-test</phase>
+                        <phase>pre-site</phase>
                         <goals>
                             <goal>report-only</goal>
                             <goal>failsafe-report-only</goal>
@@ -296,6 +296,7 @@
                 </configuration>
             </plugin>
 
+
             <plugin>
                 <groupId>io.github.luiinge</groupId>
                 <artifactId>docsite-maven-plugin</artifactId>
@@ -309,7 +310,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <phase>post-integration-test</phase>
+                        <phase>site</phase>
                         <configuration>
                             <languages>
                                 <language>en:gb</language>
@@ -336,7 +337,7 @@
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
-                        <phase>verify</phase>
+                        <phase>site-deploy</phase>
                         <configuration>
                             <docsiteFile>docsite.json</docsiteFile>
                             <languages>

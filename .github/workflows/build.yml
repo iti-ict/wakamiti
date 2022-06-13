@@ -38,7 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: ./mvnw verify site site-deploy org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dmaven.site.skip -Dmaven.site.deploy.skip -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     
       - name: Generate site
         uses: s0/git-publish-subdir-action@develop
