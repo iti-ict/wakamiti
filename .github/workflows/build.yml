@@ -40,6 +40,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
            ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+           ./mvnw -B install -DskipTests
            ./mvnw -B site -Dmaven.site.skip -DskipTests
            ./mvnw -B site-deploy -Dmaven.site.skip -Dmaven.site.deploy.skip -DskipTests
 
