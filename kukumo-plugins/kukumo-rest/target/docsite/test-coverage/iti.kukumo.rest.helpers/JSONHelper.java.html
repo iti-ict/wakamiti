@@ -11,37 +11,36 @@ package iti.kukumo.rest.helpers;
 
 
 import iti.kukumo.api.datatypes.Assertion;
-import iti.kukumo.util.MatcherAssertion;
+
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
+import iti.kukumo.api.util.MatcherAssertion;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.rest.MatchMode;
 import org.everit.json.schema.Schema;
-import org.everit.json.schema.SchemaException;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.junit.ComparisonFailure;
 
 @Extension(provider = &quot;iti.kukumo&quot;, name = &quot;rest-json-helper&quot;, extensionPoint = &quot;iti.kukumo.rest.ContentTypeHelper&quot;)
-<span class="fc" id="L30">public class JSONHelper implements ContentTypeHelper {</span>
+<span class="fc" id="L29">public class JSONHelper implements ContentTypeHelper {</span>
 
 
-<span class="fc" id="L33">    private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.JSON);</span>
+<span class="fc" id="L32">    private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.JSON);</span>
 
     @Override
     public ContentType contentType() {
-<span class="fc" id="L37">        return ContentType.JSON;</span>
+<span class="fc" id="L36">        return ContentType.JSON;</span>
     }
 
 
     @Override
     public void assertContent(String expected, String actual, MatchMode matchMode) {
-<span class="fc" id="L43">       diff.assertContent(expected, actual, matchMode);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L42">       diff.assertContent(expected, actual, matchMode);</span>
+<span class="fc" id="L43">    }</span>
 
 
     @Override
@@ -51,21 +50,21 @@ import org.junit.ComparisonFailure;
         Class&lt;T&gt; dataType,
         Assertion&lt;T&gt; assertion
     ) {
-<span class="fc" id="L54">        response.body(fragment, MatcherAssertion.asMatcher(assertion));</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L53">        response.body(fragment, MatcherAssertion.asMatcher(assertion));</span>
+<span class="fc" id="L54">    }</span>
 
 
     @Override
     public void assertContentSchema(String expectedSchema, String content) {
-<span class="fc" id="L60">        JSONObject jsonSchema = new JSONObject(new JSONTokener(expectedSchema));</span>
-<span class="fc" id="L61">        JSONObject jsonSubject = new JSONObject(new JSONTokener(content));</span>
-<span class="fc" id="L62">        Schema schemaValidator = SchemaLoader.load(jsonSchema);</span>
+<span class="fc" id="L59">        JSONObject jsonSchema = new JSONObject(new JSONTokener(expectedSchema));</span>
+<span class="fc" id="L60">        JSONObject jsonSubject = new JSONObject(new JSONTokener(content));</span>
+<span class="fc" id="L61">        Schema schemaValidator = SchemaLoader.load(jsonSchema);</span>
         try {
-<span class="fc" id="L64">            schemaValidator.validate(jsonSubject);</span>
-<span class="nc" id="L65">        } catch (ValidationException e) {</span>
-<span class="nc" id="L66">            throw new AssertionError(e.getMessage());</span>
-<span class="fc" id="L67">        }</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L63">            schemaValidator.validate(jsonSubject);</span>
+<span class="nc" id="L64">        } catch (ValidationException e) {</span>
+<span class="nc" id="L65">            throw new AssertionError(e.getMessage());</span>
+<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

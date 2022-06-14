@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import iti.kukumo.util.MatcherAssertion;
+
+import iti.kukumo.api.util.MatcherAssertion;
+import iti.kukumo.api.util.ThrowableFunction;
 import org.hamcrest.Matcher;
 
 import iti.commons.jext.Extension;
@@ -24,28 +26,28 @@ import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.core.datatypes.KukumoDataTypeBase;
 import iti.kukumo.core.datatypes.KukumoNumberDataType;
-import iti.kukumo.util.ThrowableFunction;
+
 
 
 @Extension(provider = &quot;iti.kukumo&quot;, name = &quot;assertion-types&quot;, version = &quot;1.1&quot;)
-<span class="fc" id="L31">public class KukumoAssertTypes implements DataTypeContributor {</span>
+<span class="fc" id="L33">public class KukumoAssertTypes implements DataTypeContributor {</span>
 
     @Override
     public List&lt;KukumoDataType&lt;?&gt;&gt; contributeTypes() {
-<span class="fc" id="L35">        List&lt;KukumoDataType&lt;?&gt;&gt; types = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L37">        List&lt;KukumoDataType&lt;?&gt;&gt; types = new ArrayList&lt;&gt;();</span>
         // functional datatypes
-<span class="fc" id="L37">        types.add(binaryNumberAssert(&quot;integer-assertion&quot;, false, Number::intValue));</span>
-<span class="pc" id="L38">        types.add(binaryBigDecimalAssert(&quot;decimal-assertion&quot;, true, x -&gt; x));</span>
-<span class="fc" id="L39">        types.add(binaryStringAssert(&quot;text-assertion&quot;));</span>
+<span class="fc" id="L39">        types.add(binaryNumberAssert(&quot;integer-assertion&quot;, false, Number::intValue));</span>
+<span class="pc" id="L40">        types.add(binaryBigDecimalAssert(&quot;decimal-assertion&quot;, true, x -&gt; x));</span>
+<span class="fc" id="L41">        types.add(binaryStringAssert(&quot;text-assertion&quot;));</span>
         // java datatypes
-<span class="fc" id="L41">        types.add(binaryNumberAssert(&quot;short-assertion&quot;, false, Number::shortValue));</span>
-<span class="fc" id="L42">        types.add(binaryNumberAssert(&quot;int-assertion&quot;, false, Number::intValue));</span>
-<span class="fc" id="L43">        types.add(binaryNumberAssert(&quot;long-assertion&quot;, false, Number::longValue));</span>
-<span class="fc" id="L44">        types.add(binaryBigDecimalAssert(&quot;biginteger-assertion&quot;, true, BigDecimal::toBigInteger));</span>
-<span class="fc" id="L45">        types.add(binaryBigDecimalAssert(&quot;float-assertion&quot;, true, BigDecimal::floatValue));</span>
-<span class="fc" id="L46">        types.add(binaryBigDecimalAssert(&quot;double-assertion&quot;, true, BigDecimal::doubleValue));</span>
-<span class="pc" id="L47">        types.add(binaryBigDecimalAssert(&quot;bigdecimal-assertion&quot;, true, x -&gt; x));</span>
-<span class="fc" id="L48">        return types;</span>
+<span class="fc" id="L43">        types.add(binaryNumberAssert(&quot;short-assertion&quot;, false, Number::shortValue));</span>
+<span class="fc" id="L44">        types.add(binaryNumberAssert(&quot;int-assertion&quot;, false, Number::intValue));</span>
+<span class="fc" id="L45">        types.add(binaryNumberAssert(&quot;long-assertion&quot;, false, Number::longValue));</span>
+<span class="fc" id="L46">        types.add(binaryBigDecimalAssert(&quot;biginteger-assertion&quot;, true, BigDecimal::toBigInteger));</span>
+<span class="fc" id="L47">        types.add(binaryBigDecimalAssert(&quot;float-assertion&quot;, true, BigDecimal::floatValue));</span>
+<span class="fc" id="L48">        types.add(binaryBigDecimalAssert(&quot;double-assertion&quot;, true, BigDecimal::doubleValue));</span>
+<span class="pc" id="L49">        types.add(binaryBigDecimalAssert(&quot;bigdecimal-assertion&quot;, true, x -&gt; x));</span>
+<span class="fc" id="L50">        return types;</span>
     }
 
 
@@ -54,11 +56,11 @@ import iti.kukumo.util.ThrowableFunction;
         boolean includeDecimals,
         ThrowableFunction&lt;Number, T&gt; mapper
     ) {
-<span class="fc" id="L57">        return new KukumoAssertDataType(</span>
+<span class="fc" id="L59">        return new KukumoAssertDataType(</span>
             name,
             &quot;matcher.number&quot;,
-<span class="fc" id="L60">            BinaryNumberAssertProvider.createFromNumber(</span>
-<span class="fc" id="L61">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
+<span class="fc" id="L62">            BinaryNumberAssertProvider.createFromNumber(</span>
+<span class="fc" id="L63">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
                 mapper
             ),
             new UnaryNumberAssertProvider()
@@ -71,11 +73,11 @@ import iti.kukumo.util.ThrowableFunction;
         boolean includeDecimals,
         ThrowableFunction&lt;BigDecimal, T&gt; mapper
     ) {
-<span class="fc" id="L74">        return new KukumoAssertDataType(</span>
+<span class="fc" id="L76">        return new KukumoAssertDataType(</span>
             name,
             &quot;matcher.number&quot;,
-<span class="fc" id="L77">            BinaryNumberAssertProvider.createFromBigDecimal(</span>
-<span class="fc" id="L78">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
+<span class="fc" id="L79">            BinaryNumberAssertProvider.createFromBigDecimal(</span>
+<span class="fc" id="L80">                locale -&gt; KukumoNumberDataType.numericRegexPattern(locale, includeDecimals),</span>
                 mapper
             ),
             new UnaryNumberAssertProvider()
@@ -84,7 +86,7 @@ import iti.kukumo.util.ThrowableFunction;
 
 
     public static KukumoAssertDataType binaryStringAssert(String name) {
-<span class="fc" id="L87">        return new KukumoAssertDataType(</span>
+<span class="fc" id="L89">        return new KukumoAssertDataType(</span>
             name,
             &quot;matcher.string&quot;,
             new BinaryStringAssertProvider(),
@@ -100,14 +102,14 @@ import iti.kukumo.util.ThrowableFunction;
             String prefix,
             AbstractAssertProvider... matcherProviders
         ) {
-<span class="fc" id="L103">            super(</span>
+<span class="fc" id="L105">            super(</span>
                 name,
                 Assertion.class,
-<span class="fc" id="L106">                locale -&gt; &quot;.*&quot;,</span>
-<span class="fc" id="L107">                locale -&gt; AbstractAssertProvider.getAllExpressions(locale,prefix),</span>
-<span class="fc" id="L108">                parseProvider(matcherProviders)</span>
+<span class="fc" id="L108">                locale -&gt; &quot;.*&quot;,</span>
+<span class="fc" id="L109">                locale -&gt; AbstractAssertProvider.getAllExpressions(locale,prefix),</span>
+<span class="fc" id="L110">                parseProvider(matcherProviders)</span>
             );
-<span class="fc" id="L110">        }</span>
+<span class="fc" id="L112">        }</span>
     }
 
 
@@ -115,22 +117,22 @@ import iti.kukumo.util.ThrowableFunction;
     protected static KukumoDataTypeBase.LocaleTypeParser&lt;Assertion&gt; parseProvider(
         AbstractAssertProvider[] assertProviders
     ) {
-<span class="fc" id="L118">        return locale -&gt; expression -&gt; {</span>
-<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            for (AbstractAssertProvider assertProvider : assertProviders) {</span>
-<span class="fc" id="L120">                Optional&lt;Matcher&lt;?&gt;&gt; matcher = assertProvider</span>
-<span class="fc" id="L121">                    .matcherFromExpression(locale, expression);</span>
-<span class="fc bfc" id="L122" title="All 2 branches covered.">                if (matcher.isPresent()) {</span>
-<span class="fc" id="L123">                    return adapt(matcher.get());</span>
+<span class="fc" id="L120">        return locale -&gt; expression -&gt; {</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">            for (AbstractAssertProvider assertProvider : assertProviders) {</span>
+<span class="fc" id="L122">                Optional&lt;Matcher&lt;?&gt;&gt; matcher = assertProvider</span>
+<span class="fc" id="L123">                    .matcherFromExpression(locale, expression);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                if (matcher.isPresent()) {</span>
+<span class="fc" id="L125">                    return adapt(matcher.get());</span>
                 }
             }
-<span class="nc" id="L126">            return null;</span>
+<span class="nc" id="L128">            return null;</span>
         };
     }
 
 
 
     private static &lt;T&gt; Assertion&lt;T&gt; adapt(Matcher&lt;T&gt; matcher) {
-<span class="fc" id="L133">        return new MatcherAssertion&lt;&gt;(matcher);</span>
+<span class="fc" id="L135">        return new MatcherAssertion&lt;&gt;(matcher);</span>
     }
 
 }

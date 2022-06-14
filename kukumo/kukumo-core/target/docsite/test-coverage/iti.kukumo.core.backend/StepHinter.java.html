@@ -17,10 +17,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import imconfig.Configuration;
-import iti.kukumo.api.*;
-import iti.kukumo.util.StringDistance;
-
-
+import iti.kukumo.api.Hinter;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.core.util.StringDistance;
 
 
 public class StepHinter implements Hinter {
@@ -39,50 +40,50 @@ public class StepHinter implements Hinter {
         Configuration configuration,
         RunnableStepResolver stepResolver,
         KukumoDataTypeRegistry typeRegistry
-<span class="nc" id="L42">    ) {</span>
-<span class="nc" id="L43">        this.runnableSteps = runnableSteps;</span>
-<span class="nc" id="L44">        this.properties = configuration.keyStream().collect(toList());</span>
-<span class="nc" id="L45">        this.stepResolver = stepResolver;</span>
-<span class="nc" id="L46">        this.typeRegistry = typeRegistry;</span>
-<span class="nc" id="L47">        this.defaultTextLocale =</span>
-<span class="nc" id="L48">            configuration.get(KukumoConfiguration.LANGUAGE,String.class)</span>
-<span class="nc" id="L49">            .map(Locale::forLanguageTag)</span>
-<span class="nc" id="L50">            .orElse(Locale.ENGLISH)</span>
+<span class="nc" id="L43">    ) {</span>
+<span class="nc" id="L44">        this.runnableSteps = runnableSteps;</span>
+<span class="nc" id="L45">        this.properties = configuration.keyStream().collect(toList());</span>
+<span class="nc" id="L46">        this.stepResolver = stepResolver;</span>
+<span class="nc" id="L47">        this.typeRegistry = typeRegistry;</span>
+<span class="nc" id="L48">        this.defaultTextLocale =</span>
+<span class="nc" id="L49">            configuration.get(KukumoConfiguration.LANGUAGE,String.class)</span>
+<span class="nc" id="L50">            .map(Locale::forLanguageTag)</span>
+<span class="nc" id="L51">            .orElse(Locale.ENGLISH)</span>
         ;
-<span class="nc" id="L52">        this.defaultDataLocale =</span>
-<span class="nc" id="L53">            configuration.get(KukumoConfiguration.DATA_FORMAT_LANGUAGE,String.class)</span>
-<span class="nc" id="L54">            .map(Locale::forLanguageTag)</span>
-<span class="nc" id="L55">            .orElse(this.defaultTextLocale)</span>
+<span class="nc" id="L53">        this.defaultDataLocale =</span>
+<span class="nc" id="L54">            configuration.get(KukumoConfiguration.DATA_FORMAT_LANGUAGE,String.class)</span>
+<span class="nc" id="L55">            .map(Locale::forLanguageTag)</span>
+<span class="nc" id="L56">            .orElse(this.defaultTextLocale)</span>
         ;
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L58">    }</span>
 
 
 
     @Override
     public List&lt;String&gt; getExpandedAvailableSteps() {
-<span class="nc" id="L63">        return getAvailableSteps(true);</span>
+<span class="nc" id="L64">        return getAvailableSteps(true);</span>
     }
 
 
     @Override
     public List&lt;String&gt; getCompactAvailableSteps() {
-<span class="nc" id="L69">        return getAvailableSteps(false);</span>
+<span class="nc" id="L70">        return getAvailableSteps(false);</span>
     }
 
     @Override
     public List&lt;String&gt; getAvailableProperties() {
-<span class="nc" id="L74">        return properties;</span>
+<span class="nc" id="L75">        return properties;</span>
     }
 
     @Override
     public boolean isValidStep(String step) {
-<span class="nc" id="L79">        return isValidStep(step, defaultTextLocale, defaultDataLocale);</span>
+<span class="nc" id="L80">        return isValidStep(step, defaultTextLocale, defaultDataLocale);</span>
     }
 
 
     @Override
     public String getStepProviderByDefinition(String step) {
-<span class="nc" id="L85">    	return getStepProviderByDefinition(step, defaultTextLocale);</span>
+<span class="nc" id="L86">    	return getStepProviderByDefinition(step, defaultTextLocale);</span>
     }
 
 
@@ -92,31 +93,31 @@ public class StepHinter implements Hinter {
         int numberOfHints,
         boolean includeVariations
     ) {
-<span class="nc" id="L95">        return getHintsForInvalidStep(</span>
+<span class="nc" id="L96">        return getHintsForInvalidStep(</span>
             invalidStep, defaultTextLocale, defaultDataLocale, numberOfHints, includeVariations
         );
     }
 
 
     public List&lt;String&gt; getAvailableSteps(boolean includeVariations) {
-<span class="nc" id="L102">        return getHintsForInvalidStep(&quot;&quot;,-1,includeVariations);</span>
+<span class="nc" id="L103">        return getHintsForInvalidStep(&quot;&quot;,-1,includeVariations);</span>
     }
 
 
     public boolean isValidStep(String stepLiteral, Locale textLocale, Locale dataLocale) {
         try {
-<span class="nc bnc" id="L108" title="All 2 branches missed.">            return stepResolver.locateRunnableStep(stepLiteral, textLocale, dataLocale, this) != null;</span>
-<span class="nc" id="L109">        } catch (UndefinedStepException e) {</span>
-<span class="nc" id="L110">            return false;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            return stepResolver.locateRunnableStep(stepLiteral, textLocale, dataLocale, this) != null;</span>
+<span class="nc" id="L110">        } catch (UndefinedStepException e) {</span>
+<span class="nc" id="L111">            return false;</span>
         }
     }
 
 
     public String getStepProviderByDefinition(String step, Locale textLocale) {
-<span class="nc" id="L116">        return stepResolver</span>
-<span class="nc" id="L117">        	.obtainRunnableStepByDefinition(step, textLocale)</span>
-<span class="nc" id="L118">        	.map(RunnableStep::getProvider)</span>
-<span class="nc" id="L119">        	.orElse(&quot;&quot;);</span>
+<span class="nc" id="L117">        return stepResolver</span>
+<span class="nc" id="L118">        	.obtainRunnableStepByDefinition(step, textLocale)</span>
+<span class="nc" id="L119">        	.map(RunnableStep::getProvider)</span>
+<span class="nc" id="L120">        	.orElse(&quot;&quot;);</span>
     }
 
 
@@ -128,22 +129,22 @@ public class StepHinter implements Hinter {
         int numberOfHints,
         boolean includeVariations
     ) {
-<span class="nc" id="L131">        Set&lt;String&gt; stepHints = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L132">        Map&lt;? extends KukumoDataType&lt;?&gt;, Pattern&gt; types = typeRegistry.getTypes()</span>
-<span class="nc" id="L133">            .stream()</span>
-<span class="nc" id="L134">            .collect(Collectors.toMap(</span>
-<span class="nc" id="L135">                x -&gt; x,</span>
-<span class="nc" id="L136">                type -&gt; Pattern.compile(&quot;\\{[^:]*:?&quot; + type.getName() + &quot;\\}&quot;)</span>
+<span class="nc" id="L132">        Set&lt;String&gt; stepHints = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L133">        Map&lt;? extends KukumoDataType&lt;?&gt;, Pattern&gt; types = typeRegistry.getTypes()</span>
+<span class="nc" id="L134">            .stream()</span>
+<span class="nc" id="L135">            .collect(Collectors.toMap(</span>
+<span class="nc" id="L136">                x -&gt; x,</span>
+<span class="nc" id="L137">                type -&gt; Pattern.compile(&quot;\\{[^:]*:?&quot; + type.getName() + &quot;\\}&quot;)</span>
             ));
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        for (RunnableStep runnableStep : runnableSteps) {</span>
-<span class="nc" id="L139">            String stepHint = runnableStep.getTranslatedDefinition(textLocale);</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">            if (includeVariations) {</span>
-<span class="nc" id="L141">                stepHints.addAll(populateStepHintWithTypeHints(stepHint, dataLocale, types));</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (RunnableStep runnableStep : runnableSteps) {</span>
+<span class="nc" id="L140">            String stepHint = runnableStep.getTranslatedDefinition(textLocale);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            if (includeVariations) {</span>
+<span class="nc" id="L142">                stepHints.addAll(populateStepHintWithTypeHints(stepHint, dataLocale, types));</span>
             } else {
-<span class="nc" id="L143">                stepHints.add(stepHint);</span>
+<span class="nc" id="L144">                stepHints.add(stepHint);</span>
             }
-<span class="nc" id="L145">        }</span>
-<span class="nc" id="L146">        return StringDistance.closerStrings(invalidStep, stepHints, numberOfHints);</span>
+<span class="nc" id="L146">        }</span>
+<span class="nc" id="L147">        return StringDistance.closerStrings(invalidStep, stepHints, numberOfHints);</span>
     }
 
 
@@ -151,22 +152,22 @@ public class StepHinter implements Hinter {
 
 
     public String getHintFor(String invalidStep, Locale textLocale, Locale dataLocale) {
-<span class="nc" id="L154">        int maxSuggestions = 5;</span>
-<span class="nc" id="L155">        StringBuilder hint = new StringBuilder(</span>
+<span class="nc" id="L155">        int maxSuggestions = 5;</span>
+<span class="nc" id="L156">        StringBuilder hint = new StringBuilder(</span>
             &quot;Perhaps you mean one of the following:\n\t----------\n\t&quot;
         );
-<span class="nc" id="L158">        var allSuggestions = getHintsForInvalidStep(</span>
+<span class="nc" id="L159">        var allSuggestions = getHintsForInvalidStep(</span>
             invalidStep, textLocale, dataLocale, -1, true
         );
-<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (allSuggestions.size() &gt; maxSuggestions) {</span>
-<span class="nc" id="L162">            allSuggestions = getHintsForInvalidStep(</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (allSuggestions.size() &gt; maxSuggestions) {</span>
+<span class="nc" id="L163">            allSuggestions = getHintsForInvalidStep(</span>
                 invalidStep, textLocale, dataLocale, maxSuggestions, false
             );
         }
-<span class="nc bnc" id="L166" title="All 2 branches missed.">        for (String stepHint : allSuggestions) {</span>
-<span class="nc" id="L167">            hint.append(stepHint).append(&quot;\n\t&quot;);</span>
-<span class="nc" id="L168">        }</span>
-<span class="nc" id="L169">        return hint.toString();</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        for (String stepHint : allSuggestions) {</span>
+<span class="nc" id="L168">            hint.append(stepHint).append(&quot;\n\t&quot;);</span>
+<span class="nc" id="L169">        }</span>
+<span class="nc" id="L170">        return hint.toString();</span>
     }
 
 
@@ -176,19 +177,19 @@ public class StepHinter implements Hinter {
         Locale dataLocale,
         Map&lt;? extends KukumoDataType&lt;?&gt;, Pattern&gt; types
     ) {
-<span class="nc" id="L179">        List&lt;String&gt; variants = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">        for (var type : types.entrySet()) {</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">            if (type.getValue().matcher(stepHint).find()) {</span>
-<span class="nc bnc" id="L182" title="All 2 branches missed.">                for (String typeHint : type.getKey().getHints(dataLocale)) {</span>
-<span class="nc" id="L183">                    String variant = stepHint.replaceFirst(type.getValue().pattern(), typeHint);</span>
-<span class="nc" id="L184">                    variants.addAll(populateStepHintWithTypeHints(variant, dataLocale, types));</span>
-<span class="nc" id="L185">                }</span>
+<span class="nc" id="L180">        List&lt;String&gt; variants = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        for (var type : types.entrySet()) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            if (type.getValue().matcher(stepHint).find()) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">                for (String typeHint : type.getKey().getHints(dataLocale)) {</span>
+<span class="nc" id="L184">                    String variant = stepHint.replaceFirst(type.getValue().pattern(), typeHint);</span>
+<span class="nc" id="L185">                    variants.addAll(populateStepHintWithTypeHints(variant, dataLocale, types));</span>
+<span class="nc" id="L186">                }</span>
             }
-<span class="nc" id="L187">        }</span>
-<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (variants.isEmpty()) {</span>
-<span class="nc" id="L189">            variants.add(stepHint);</span>
+<span class="nc" id="L188">        }</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (variants.isEmpty()) {</span>
+<span class="nc" id="L190">            variants.add(stepHint);</span>
         }
-<span class="nc" id="L191">        return variants;</span>
+<span class="nc" id="L192">        return variants;</span>
     }
 
 

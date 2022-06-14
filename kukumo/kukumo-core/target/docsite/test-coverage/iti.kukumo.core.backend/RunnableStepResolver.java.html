@@ -12,8 +12,12 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import iti.kukumo.api.*;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.*;
+import iti.kukumo.api.util.Either;
+import iti.kukumo.api.util.Pair;
+
 
 public class RunnableStepResolver {
 
@@ -24,19 +28,19 @@ public class RunnableStepResolver {
     RunnableStepResolver(
     	KukumoDataTypeRegistry typeRegistry,
         List&lt;RunnableStep&gt; runnableSteps
-<span class="nc" id="L27">    ) {</span>
-<span class="nc" id="L28">        this.typeRegistry = typeRegistry;</span>
-<span class="nc" id="L29">        this.runnableSteps = runnableSteps;</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L31">    ) {</span>
+<span class="nc" id="L32">        this.typeRegistry = typeRegistry;</span>
+<span class="nc" id="L33">        this.runnableSteps = runnableSteps;</span>
+<span class="nc" id="L34">    }</span>
 
 
 
-    Pair&lt;RunnableStep, Matcher&gt; locateRunnableStep(PlanNode step,  StepHinter hinter) {
-<span class="nc" id="L35">        Locale stepLocale = Locale.forLanguageTag(step.language());</span>
-<span class="nc" id="L36">        Locale dataLocale = Locale.forLanguageTag(</span>
-<span class="nc" id="L37">            step.properties().getOrDefault(KukumoConfiguration.DATA_FORMAT_LANGUAGE,step.language())</span>
+    Pair&lt;RunnableStep, Matcher&gt; locateRunnableStep(PlanNode step, StepHinter hinter) {
+<span class="nc" id="L39">        Locale stepLocale = Locale.forLanguageTag(step.language());</span>
+<span class="nc" id="L40">        Locale dataLocale = Locale.forLanguageTag(</span>
+<span class="nc" id="L41">            step.properties().getOrDefault(KukumoConfiguration.DATA_FORMAT_LANGUAGE,step.language())</span>
         );
-<span class="nc" id="L39">        return locateRunnableStep(Either.of(step), stepLocale, dataLocale, hinter);</span>
+<span class="nc" id="L43">        return locateRunnableStep(Either.of(step), stepLocale, dataLocale, hinter);</span>
     }
 
 
@@ -46,7 +50,7 @@ public class RunnableStepResolver {
         Locale dataLocale,
         StepHinter hinter
     ) {
-<span class="nc" id="L49">        return locateRunnableStep(Either.fallback(step), stepLocale, dataLocale, hinter);</span>
+<span class="nc" id="L53">        return locateRunnableStep(Either.fallback(step), stepLocale, dataLocale, hinter);</span>
     }
 
 
@@ -57,44 +61,44 @@ public class RunnableStepResolver {
         StepHinter hinter
     ) {
 
-<span class="nc" id="L60">        Function&lt;RunnableStep, Matcher&gt; matcher = runnableStep -&gt; runnableStep</span>
-<span class="nc" id="L61">            .matcher(step, stepLocale, dataLocale, typeRegistry);</span>
+<span class="nc" id="L64">        Function&lt;RunnableStep, Matcher&gt; matcher = runnableStep -&gt; runnableStep</span>
+<span class="nc" id="L65">            .matcher(step, stepLocale, dataLocale, typeRegistry);</span>
 
-<span class="nc" id="L63">        String stepName = step.mapValueOrFallback(PlanNode::name);</span>
+<span class="nc" id="L67">        String stepName = step.mapValueOrFallback(PlanNode::name);</span>
 
-<span class="nc" id="L65">        List&lt;Pair&lt;RunnableStep, Matcher&gt;&gt; locatedSteps = runnableSteps.stream()</span>
-<span class="nc" id="L66">            .map(Pair.compute(matcher))</span>
-<span class="nc" id="L67">            .filter(pair -&gt; pair.value().matches())</span>
-<span class="nc" id="L68">            .collect(Collectors.toList());</span>
+<span class="nc" id="L69">        List&lt;Pair&lt;RunnableStep, Matcher&gt;&gt; locatedSteps = runnableSteps.stream()</span>
+<span class="nc" id="L70">            .map(Pair.compute(matcher))</span>
+<span class="nc" id="L71">            .filter(pair -&gt; pair.value().matches())</span>
+<span class="nc" id="L72">            .collect(Collectors.toList());</span>
 
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (locatedSteps.isEmpty()) {</span>
-<span class="nc" id="L71">            throw new UndefinedStepException(</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (locatedSteps.isEmpty()) {</span>
+<span class="nc" id="L75">            throw new UndefinedStepException(</span>
                 step,
                 &quot;Cannot match step with any defined step&quot;,
-<span class="nc" id="L74">                hinter.getHintFor(stepName, stepLocale, dataLocale)</span>
+<span class="nc" id="L78">                hinter.getHintFor(stepName, stepLocale, dataLocale)</span>
             );
         }
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (locatedSteps.size() &gt; 1) {</span>
-<span class="nc" id="L78">            String locatedStepsInfo = locatedSteps.stream()</span>
-<span class="nc" id="L79">                .map(Pair::key)</span>
-<span class="nc" id="L80">                .map(locatedStep -&gt; locatedStep.getTranslatedDefinition(stepLocale))</span>
-<span class="nc" id="L81">                .collect(Collectors.joining(&quot;\n\t&quot;));</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (locatedSteps.size() &gt; 1) {</span>
+<span class="nc" id="L82">            String locatedStepsInfo = locatedSteps.stream()</span>
+<span class="nc" id="L83">                .map(Pair::key)</span>
+<span class="nc" id="L84">                .map(locatedStep -&gt; locatedStep.getTranslatedDefinition(stepLocale))</span>
+<span class="nc" id="L85">                .collect(Collectors.joining(&quot;\n\t&quot;));</span>
 
-<span class="nc" id="L83">            throw new UndefinedStepException(</span>
+<span class="nc" id="L87">            throw new UndefinedStepException(</span>
                 stepName,
                 &quot;Step matches more than one defined step&quot;,
                 locatedStepsInfo
             );
         }
-<span class="nc" id="L89">        return locatedSteps.get(0);</span>
+<span class="nc" id="L93">        return locatedSteps.get(0);</span>
     }
 
 
 
     Optional&lt;RunnableStep&gt; obtainRunnableStepByDefinition(String stepDefinition, Locale stepLocale) {
-<span class="nc" id="L95">    	return runnableSteps.stream()</span>
-<span class="nc" id="L96">	        .filter(runnableStep -&gt; stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))</span>
-<span class="nc" id="L97">	        .findAny();</span>
+<span class="nc" id="L99">    	return runnableSteps.stream()</span>
+<span class="nc" id="L100">	        .filter(runnableStep -&gt; stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))</span>
+<span class="nc" id="L101">	        .findAny();</span>
     }
 
 

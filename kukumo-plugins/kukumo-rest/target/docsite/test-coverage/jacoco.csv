@@ -12,7 +12,7 @@ Kukumo::REST Steps,iti.kukumo.rest,ContentTypeHelper,0,15,0,0,0,4,0,2,0,2
 Kukumo::REST Steps,iti.kukumo.rest,RestStepContributor,413,109,6,2,92,31,50,18,46,18
 Kukumo::REST Steps,iti.kukumo.rest,RestConfigContributor,0,121,0,0,0,20,0,6,0,6
 Kukumo::REST Steps,iti.kukumo.rest,AttachedFile,33,0,0,0,14,0,7,0,7,0
-Kukumo::REST Steps,iti.kukumo.rest,RestSupport,121,271,11,13,21,68,12,18,2,16
+Kukumo::REST Steps,iti.kukumo.rest,RestSupport,121,273,11,13,21,68,12,18,2,16
 Kukumo::REST Steps,iti.kukumo.rest,Oauth2ProviderConfiguration,24,3,0,0,9,1,6,1,6,1
 Kukumo::REST Steps,iti.kukumo.rest,RestConfiguration.DefaultValues,6,0,0,0,1,0,1,0,1,0
 Kukumo::REST Steps,iti.kukumo.rest.matcher,CharSequenceLengthMatcher,50,0,4,0,10,0,8,0,6,0

@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 import imconfig.Configuration;
 import iti.kukumo.api.Backend;
 import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.model.ExecutionState;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.Result;
-import iti.kukumo.core.model.ExecutionState;
+
 
 
 public class PlanNodeRunner {

@@ -16,13 +16,13 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoAPI;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
+import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.rest.log.RestAssuredLogger;
-import iti.kukumo.util.ResourceLoader;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -42,9 +42,9 @@ import java.util.stream.Stream;
 <span class="fc" id="L42">public class RestSupport {</span>
 
 <span class="fc" id="L44">    public static final Logger LOGGER = LoggerFactory.getLogger(&quot;iti.kukumo.rest&quot;);</span>
-<span class="fc" id="L45">    public static final ResourceLoader resourceLoader = Kukumo.resourceLoader();</span>
+<span class="fc" id="L45">    public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();</span>
 
-<span class="fc" id="L47">    protected final Map&lt;ContentType, ContentTypeHelper&gt; contentTypeValidators = Kukumo</span>
+<span class="fc" id="L47">    protected final Map&lt;ContentType, ContentTypeHelper&gt; contentTypeValidators = KukumoAPI.instance()</span>
 <span class="fc" id="L48">            .extensionManager()</span>
 <span class="fc" id="L49">            .getExtensions(ContentTypeHelper.class)</span>
 <span class="fc" id="L50">            .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));</span>

@@ -14,7 +14,7 @@ import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.KukumoLogger;
+import iti.kukumo.api.util.KukumoLogger;
 import org.awaitility.Duration;
 import org.awaitility.core.ConditionTimeoutException;
 import org.slf4j.Logger;

@@ -16,8 +16,8 @@ import io.restassured.RestAssured;
 import io.restassured.config.LogConfig;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
+import iti.kukumo.api.util.ThrowableFunction;
 import iti.kukumo.rest.log.RestAssuredLogger;
-import iti.kukumo.util.ThrowableFunction;
 import org.hamcrest.Matchers;
 
 import java.net.URL;

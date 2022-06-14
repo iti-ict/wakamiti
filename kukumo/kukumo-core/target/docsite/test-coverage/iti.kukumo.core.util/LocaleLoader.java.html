@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LocaleLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.util</a> &gt; <span class="el_source">LocaleLoader.java</span></div><h1>LocaleLoader.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.util;
+
+
+import java.util.Locale;
+
+
+public class LocaleLoader {
+
+    private LocaleLoader() {
+        // avoid instantiation
+    }
+
+
+    public static Locale forLanguage(String language) {
+<span class="fc" id="L24">        Locale locale = null;</span>
+<span class="pc bpc" id="L25" title="2 of 4 branches missed.">        if (language == null || language.isEmpty()) {</span>
+<span class="nc" id="L26">            return Locale.ENGLISH;</span>
+        }
+<span class="fc" id="L28">        String[] segments = language.split(&quot;[-_]&quot;);</span>
+<span class="pc bpc" id="L29" title="3 of 4 branches missed.">        switch (segments.length) {</span>
+        case 1:
+<span class="fc" id="L31">            locale = new Locale(segments[0]);</span>
+<span class="fc" id="L32">            break;</span>
+        case 2:
+<span class="nc" id="L34">            locale = new Locale(segments[0], segments[1]);</span>
+<span class="nc" id="L35">            break;</span>
+        case 3:
+<span class="nc" id="L37">            locale = new Locale(segments[0], segments[1], segments[2]);</span>
+<span class="nc" id="L38">            break;</span>
+        default:
+<span class="nc" id="L40">            throw new IllegalArgumentException(&quot;Malformed language name :&quot; + language);</span>
+        }
+<span class="fc" id="L42">        return locale;</span>
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

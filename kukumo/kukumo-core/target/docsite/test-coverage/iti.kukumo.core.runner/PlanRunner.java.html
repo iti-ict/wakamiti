@@ -20,7 +20,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import org.slf4j.Logger;
 
 import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
 

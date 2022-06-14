@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import iti.kukumo.api.util.KukumoLogger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,14 +25,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 
-import iti.kukumo.api.Kukumo;
+
 import iti.kukumo.api.KukumoException;
 
 
 
 public class OoxmlDataSet extends MultiDataSet {
 
-<span class="fc" id="L34">    private static final Logger logger = Kukumo.LOGGER;</span>
+<span class="fc" id="L35">    private static final Logger logger = KukumoLogger.forClass(OoxmlDataSet.class);</span>
 
     private final File file;
     private final String ignoreSheetRegex;
@@ -39,36 +40,36 @@ public class OoxmlDataSet extends MultiDataSet {
     private final String nullSymbol;
 
 
-<span class="fc" id="L42">    public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {</span>
-<span class="fc" id="L43">        this.workbook = WorkbookFactory.create(file, null, true);</span>
-<span class="fc" id="L44">        this.file = file;</span>
-<span class="fc" id="L45">        this.ignoreSheetRegex = ignoreSheetRegex;</span>
-<span class="fc" id="L46">        this.nullSymbol = nullSymbol;</span>
+<span class="fc" id="L43">    public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {</span>
+<span class="fc" id="L44">        this.workbook = WorkbookFactory.create(file, null, true);</span>
+<span class="fc" id="L45">        this.file = file;</span>
+<span class="fc" id="L46">        this.ignoreSheetRegex = ignoreSheetRegex;</span>
+<span class="fc" id="L47">        this.nullSymbol = nullSymbol;</span>
         try {
-<span class="fc" id="L48">            Pattern ignoreSheetPattern = Pattern.compile(ignoreSheetRegex);</span>
-<span class="fc" id="L49">            Iterator&lt;Sheet&gt; sheetIterator = this.workbook.sheetIterator();</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">            while (sheetIterator.hasNext()) {</span>
-<span class="fc" id="L51">                Sheet sheet = sheetIterator.next();</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">                if (ignoreSheetPattern.matcher(sheet.getSheetName()).matches()) {</span>
-<span class="fc" id="L53">                    continue;</span>
+<span class="fc" id="L49">            Pattern ignoreSheetPattern = Pattern.compile(ignoreSheetRegex);</span>
+<span class="fc" id="L50">            Iterator&lt;Sheet&gt; sheetIterator = this.workbook.sheetIterator();</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            while (sheetIterator.hasNext()) {</span>
+<span class="fc" id="L52">                Sheet sheet = sheetIterator.next();</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                if (ignoreSheetPattern.matcher(sheet.getSheetName()).matches()) {</span>
+<span class="fc" id="L54">                    continue;</span>
                 }
-<span class="fc" id="L55">                addDataSet(new OoxmlSheetDataSet(sheet, file, nullSymbol));</span>
-<span class="fc" id="L56">            }</span>
-<span class="nc" id="L57">        } catch (Exception e) {</span>
-<span class="nc" id="L58">            close();</span>
-<span class="nc" id="L59">            throw new KukumoException(e);</span>
-<span class="fc" id="L60">        }</span>
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L56">                addDataSet(new OoxmlSheetDataSet(sheet, file, nullSymbol));</span>
+<span class="fc" id="L57">            }</span>
+<span class="nc" id="L58">        } catch (Exception e) {</span>
+<span class="nc" id="L59">            close();</span>
+<span class="nc" id="L60">            throw new KukumoException(e);</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">    }</span>
 
 
     @Override
     public void close() {
         try {
-<span class="fc" id="L67">            this.workbook.close();</span>
-<span class="nc" id="L68">        } catch (Exception e) {</span>
-<span class="nc" id="L69">            logger.error(e.getMessage(), e);</span>
-<span class="fc" id="L70">        }</span>
-<span class="fc" id="L71">    }</span>
+<span class="fc" id="L68">            this.workbook.close();</span>
+<span class="nc" id="L69">        } catch (Exception e) {</span>
+<span class="nc" id="L70">            logger.error(e.getMessage(), e);</span>
+<span class="fc" id="L71">        }</span>
+<span class="fc" id="L72">    }</span>
 
 
     private class OoxmlSheetDataSet extends DataSet {
@@ -77,72 +78,72 @@ public class OoxmlDataSet extends MultiDataSet {
         private Row currentRow;
 
 
-<span class="fc" id="L80">        public OoxmlSheetDataSet(Sheet sheet, File file, String nullSymbol) {</span>
-<span class="fc" id="L81">            super(sheet.getSheetName(), &quot;file '&quot; + file + &quot;'&quot;, nullSymbol);</span>
-<span class="fc" id="L82">            this.rowIterator = sheet.rowIterator();</span>
-<span class="fc" id="L83">            this.columns = sheetHeaders(rowIterator.next());</span>
-<span class="fc" id="L84">        }</span>
+<span class="fc" id="L81">        public OoxmlSheetDataSet(Sheet sheet, File file, String nullSymbol) {</span>
+<span class="fc" id="L82">            super(sheet.getSheetName(), &quot;file '&quot; + file + &quot;'&quot;, nullSymbol);</span>
+<span class="fc" id="L83">            this.rowIterator = sheet.rowIterator();</span>
+<span class="fc" id="L84">            this.columns = sheetHeaders(rowIterator.next());</span>
+<span class="fc" id="L85">        }</span>
 
 
         private String[] sheetHeaders(Row row) {
-<span class="fc" id="L88">            List&lt;String&gt; rawHeaders = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L89">            row.cellIterator().forEachRemaining(cell -&gt; {</span>
-<span class="fc" id="L90">                String header = cell.getStringCellValue().trim();</span>
-<span class="pc bpc" id="L91" title="2 of 4 branches missed.">                if (header != null &amp;&amp; !header.isEmpty()) {</span>
-<span class="fc" id="L92">                    rawHeaders.add(header);</span>
+<span class="fc" id="L89">            List&lt;String&gt; rawHeaders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L90">            row.cellIterator().forEachRemaining(cell -&gt; {</span>
+<span class="fc" id="L91">                String header = cell.getStringCellValue().trim();</span>
+<span class="pc bpc" id="L92" title="2 of 4 branches missed.">                if (header != null &amp;&amp; !header.isEmpty()) {</span>
+<span class="fc" id="L93">                    rawHeaders.add(header);</span>
                 }
-<span class="fc" id="L94">            });</span>
-<span class="fc" id="L95">            return rawHeaders.toArray(new String[0]);</span>
+<span class="fc" id="L95">            });</span>
+<span class="fc" id="L96">            return rawHeaders.toArray(new String[0]);</span>
         }
 
 
         @Override
         public boolean nextRow() {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">            if (!rowIterator.hasNext()) {</span>
-<span class="fc" id="L102">                return false;</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (!rowIterator.hasNext()) {</span>
+<span class="fc" id="L103">                return false;</span>
             } else {
-<span class="fc" id="L104">                currentRow = rowIterator.next();</span>
-<span class="fc" id="L105">                return true;</span>
+<span class="fc" id="L105">                currentRow = rowIterator.next();</span>
+<span class="fc" id="L106">                return true;</span>
             }
         }
 
 
         @Override
         public Object rowValue(int columnIndex) {
-<span class="fc" id="L112">            Cell cell = currentRow.getCell(columnIndex);</span>
-<span class="fc" id="L113">            Object value = null;</span>
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">            if (cell != null) {</span>
-<span class="pc bpc" id="L115" title="1 of 4 branches missed.">                switch (cell.getCellType()) {</span>
+<span class="fc" id="L113">            Cell cell = currentRow.getCell(columnIndex);</span>
+<span class="fc" id="L114">            Object value = null;</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (cell != null) {</span>
+<span class="pc bpc" id="L116" title="1 of 4 branches missed.">                switch (cell.getCellType()) {</span>
                 case BOOLEAN:
-<span class="fc" id="L117">                    value = cell.getBooleanCellValue();</span>
-<span class="fc" id="L118">                    break;</span>
+<span class="fc" id="L118">                    value = cell.getBooleanCellValue();</span>
+<span class="fc" id="L119">                    break;</span>
                 case NUMERIC:
-<span class="fc" id="L120">                    value = cell.getNumericCellValue();</span>
-<span class="fc" id="L121">                    break;</span>
+<span class="fc" id="L121">                    value = cell.getNumericCellValue();</span>
+<span class="fc" id="L122">                    break;</span>
                 case STRING:
-<span class="fc" id="L123">                    value = cell.getStringCellValue().trim();</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">                    if (nullSymbol.equals(value)) {</span>
-<span class="fc" id="L125">                        value = null;</span>
+<span class="fc" id="L124">                    value = cell.getStringCellValue().trim();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">                    if (nullSymbol.equals(value)) {</span>
+<span class="fc" id="L126">                        value = null;</span>
                     }
                     break;
                 default:
-<span class="nc" id="L129">                    value = null;</span>
+<span class="nc" id="L130">                    value = null;</span>
                     break;
                 }
             }
-<span class="fc" id="L133">            return value;</span>
+<span class="fc" id="L134">            return value;</span>
         }
 
 
         @Override
         public void close() throws IOException {
             // nothing
-<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">        }</span>
 
 
         @Override
         public DataSet copy() throws IOException {
-<span class="nc" id="L145">            throw new UnsupportedOperationException(</span>
+<span class="nc" id="L146">            throw new UnsupportedOperationException(</span>
                 &quot;Cannot copy data set outside the container multi data set&quot;
             );
         }
@@ -151,7 +152,7 @@ public class OoxmlDataSet extends MultiDataSet {
 
     @Override
     public MultiDataSet copy() throws IOException {
-<span class="nc" id="L154">        return new OoxmlDataSet(file, ignoreSheetRegex, nullSymbol);</span>
+<span class="nc" id="L155">        return new OoxmlDataSet(file, ignoreSheetRegex, nullSymbol);</span>
     }
 
 }

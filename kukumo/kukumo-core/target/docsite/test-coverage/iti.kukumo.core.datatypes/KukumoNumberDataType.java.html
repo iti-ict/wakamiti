@@ -10,6 +10,8 @@
 package iti.kukumo.core.datatypes;
 
 
+import iti.kukumo.api.util.ThrowableFunction;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,7 +19,6 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
-import iti.kukumo.util.ThrowableFunction;
 
 
 public class KukumoNumberDataType&lt;T&gt; extends KukumoDataTypeBase&lt;T&gt; {
@@ -28,7 +29,7 @@ public class KukumoNumberDataType&lt;T&gt; extends KukumoDataTypeBase&lt;T&gt; {
         boolean includeDecimals,
         ThrowableFunction&lt;Number, T&gt; converter
     ) {
-<span class="fc" id="L31">        return new KukumoNumberDataType&lt;&gt;(name, javaType, includeDecimals, false, converter);</span>
+<span class="fc" id="L32">        return new KukumoNumberDataType&lt;&gt;(name, javaType, includeDecimals, false, converter);</span>
     }
 
 
@@ -38,8 +39,8 @@ public class KukumoNumberDataType&lt;T&gt; extends KukumoDataTypeBase&lt;T&gt; {
         boolean includeDecimals,
         ThrowableFunction&lt;BigDecimal, T&gt; converter
     ) {
-<span class="fc" id="L41">        return new KukumoNumberDataType&lt;&gt;(</span>
-<span class="fc" id="L42">            name, javaType, includeDecimals, true, castConverter(BigDecimal.class::cast, converter)</span>
+<span class="fc" id="L42">        return new KukumoNumberDataType&lt;&gt;(</span>
+<span class="fc" id="L43">            name, javaType, includeDecimals, true, castConverter(BigDecimal.class::cast, converter)</span>
         );
     }
 
@@ -48,20 +49,20 @@ public class KukumoNumberDataType&lt;T&gt; extends KukumoDataTypeBase&lt;T&gt; {
                     String name, Class&lt;T&gt; javaType, boolean includeDecimals, boolean useBigDecimal,
                     ThrowableFunction&lt;Number, T&gt; converter
     ) {
-<span class="fc" id="L51">        super(</span>
+<span class="fc" id="L52">        super(</span>
             name, javaType,
-<span class="fc" id="L53">            locale -&gt; numericRegexPattern(locale, includeDecimals),</span>
-<span class="fc" id="L54">            locale -&gt; Arrays.asList(decimalFormat(locale, useBigDecimal).toLocalizedPattern()),</span>
-<span class="fc" id="L55">            locale -&gt; parser(locale, includeDecimals, converter)</span>
+<span class="fc" id="L54">            locale -&gt; numericRegexPattern(locale, includeDecimals),</span>
+<span class="fc" id="L55">            locale -&gt; Arrays.asList(decimalFormat(locale, useBigDecimal).toLocalizedPattern()),</span>
+<span class="fc" id="L56">            locale -&gt; parser(locale, includeDecimals, converter)</span>
         );
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L58">    }</span>
 
 
     public static &lt;T&gt; ThrowableFunction&lt;Number, T&gt; castConverter(
         ThrowableFunction&lt;Number, BigDecimal&gt; caster,
         ThrowableFunction&lt;BigDecimal, T&gt; converter
     ) {
-<span class="fc" id="L64">        return number -&gt; converter.apply(caster.apply(number));</span>
+<span class="fc" id="L65">        return number -&gt; converter.apply(caster.apply(number));</span>
     }
 
 
@@ -70,38 +71,38 @@ public class KukumoNumberDataType&lt;T&gt; extends KukumoDataTypeBase&lt;T&gt; {
         boolean includeDecimals,
         ThrowableFunction&lt;Number, T&gt; converter
     ) {
-<span class="fc" id="L73">        final ThrowableFunction&lt;String, Number&gt; parser = source -&gt; decimalFormat(</span>
+<span class="fc" id="L74">        final ThrowableFunction&lt;String, Number&gt; parser = source -&gt; decimalFormat(</span>
             locale,
             includeDecimals
-<span class="fc" id="L76">        ).parse(source);</span>
-<span class="fc" id="L77">        return TypeParser.from(parser.andThen(converter));</span>
+<span class="fc" id="L77">        ).parse(source);</span>
+<span class="fc" id="L78">        return TypeParser.from(parser.andThen(converter));</span>
     }
 
 
     public static DecimalFormat decimalFormat(Locale locale, boolean useBigDecimal) {
         DecimalFormat format;
-<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (useBigDecimal) {</span>
-<span class="fc" id="L84">            format = (DecimalFormat) NumberFormat.getNumberInstance(locale);</span>
-<span class="fc" id="L85">            format.setParseBigDecimal(true);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (useBigDecimal) {</span>
+<span class="fc" id="L85">            format = (DecimalFormat) NumberFormat.getNumberInstance(locale);</span>
+<span class="fc" id="L86">            format.setParseBigDecimal(true);</span>
         } else {
-<span class="fc" id="L87">            format = (DecimalFormat) NumberFormat.getIntegerInstance(locale);</span>
+<span class="fc" id="L88">            format = (DecimalFormat) NumberFormat.getIntegerInstance(locale);</span>
         }
-<span class="fc" id="L89">        return format;</span>
+<span class="fc" id="L90">        return format;</span>
     }
 
 
     public static String numericRegexPattern(Locale locale, boolean includeDecimals) {
-<span class="fc" id="L94">        final DecimalFormat format = decimalFormat(locale, includeDecimals);</span>
-<span class="fc" id="L95">        final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();</span>
-<span class="fc" id="L96">        final StringBuilder pattern = new StringBuilder(&quot;-?&quot;);</span>
-<span class="fc" id="L97">        pattern</span>
-<span class="fc" id="L98">            .append(&quot;\\d{1,&quot; + format.getGroupingSize() + &quot;}&quot;)</span>
-<span class="fc" id="L99">            .append(&quot;(\\&quot; + symbols.getGroupingSeparator() + &quot;?&quot;)</span>
-<span class="fc" id="L100">            .append(&quot;\\d{1,&quot; + format.getGroupingSize() + &quot;})*&quot;);</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (includeDecimals) {</span>
-<span class="fc" id="L102">            pattern.append(&quot;\\&quot; + symbols.getDecimalSeparator()).append(&quot;\\d+?&quot;);</span>
+<span class="fc" id="L95">        final DecimalFormat format = decimalFormat(locale, includeDecimals);</span>
+<span class="fc" id="L96">        final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();</span>
+<span class="fc" id="L97">        final StringBuilder pattern = new StringBuilder(&quot;-?&quot;);</span>
+<span class="fc" id="L98">        pattern</span>
+<span class="fc" id="L99">            .append(&quot;\\d{1,&quot; + format.getGroupingSize() + &quot;}&quot;)</span>
+<span class="fc" id="L100">            .append(&quot;(\\&quot; + symbols.getGroupingSeparator() + &quot;?&quot;)</span>
+<span class="fc" id="L101">            .append(&quot;\\d{1,&quot; + format.getGroupingSize() + &quot;})*&quot;);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (includeDecimals) {</span>
+<span class="fc" id="L103">            pattern.append(&quot;\\&quot; + symbols.getDecimalSeparator()).append(&quot;\\d+?&quot;);</span>
         }
-<span class="fc" id="L104">        return pattern.toString();</span>
+<span class="fc" id="L105">        return pattern.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -11,7 +11,6 @@ package iti.kukumo.rest.helpers;
 
 
 import iti.kukumo.api.datatypes.Assertion;
-import org.hamcrest.Matcher;
 import org.junit.ComparisonFailure;
 
 import io.restassured.http.ContentType;
@@ -23,30 +22,30 @@ import iti.kukumo.rest.MatchMode;
 
 
 @Extension(provider = &quot;iti.kukumo&quot;, name = &quot;rest-text-helper&quot;, extensionPoint = &quot;iti.kukumo.rest.ContentTypeHelper&quot;)
-<span class="fc" id="L26">public class TextHelper implements ContentTypeHelper {</span>
+<span class="fc" id="L25">public class TextHelper implements ContentTypeHelper {</span>
 
 
     @Override
     public ContentType contentType() {
-<span class="fc" id="L31">        return ContentType.TEXT;</span>
+<span class="fc" id="L30">        return ContentType.TEXT;</span>
     }
 
 
     @Override
     public void assertContent(String expected, String actual, MatchMode matchMode) {
-<span class="nc bnc" id="L37" title="All 3 branches missed.">        switch (matchMode) {</span>
+<span class="nc bnc" id="L36" title="All 3 branches missed.">        switch (matchMode) {</span>
         case STRICT:
         case STRICT_ANY_ORDER:
-<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (!actual.trim().equals(expected.trim())) {</span>
-<span class="nc" id="L41">                throw new ComparisonFailure(&quot;Text differences&quot;, expected, actual);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (!actual.trim().equals(expected.trim())) {</span>
+<span class="nc" id="L40">                throw new ComparisonFailure(&quot;Text differences&quot;, expected, actual);</span>
             }
             break;
         case LOOSE:
-<span class="nc bnc" id="L45" title="All 2 branches missed.">            if (!actual.trim().contains(expected.trim())) {</span>
-<span class="nc" id="L46">                throw new ComparisonFailure(&quot;Text differences&quot;, expected, actual);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (!actual.trim().contains(expected.trim())) {</span>
+<span class="nc" id="L45">                throw new ComparisonFailure(&quot;Text differences&quot;, expected, actual);</span>
             }
         }
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L48">    }</span>
 
 
 
@@ -57,13 +56,13 @@ import iti.kukumo.rest.MatchMode;
         Class&lt;T&gt; dataType,
         Assertion&lt;T&gt; assertion
     ) {
-<span class="nc" id="L60">        throw new UnsupportedOperationException(&quot;Not implemented for content type &quot;+contentType());</span>
+<span class="nc" id="L59">        throw new UnsupportedOperationException(&quot;Not implemented for content type &quot;+contentType());</span>
     }
 
 
     @Override
     public void assertContentSchema(String expectedSchema, String content) {
-<span class="nc" id="L66">        throw new UnsupportedOperationException(&quot;Not implemented for content type &quot;+contentType());</span>
+<span class="nc" id="L65">        throw new UnsupportedOperationException(&quot;Not implemented for content type &quot;+contentType());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

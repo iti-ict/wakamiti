@@ -17,11 +17,12 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import iti.kukumo.api.util.ThrowableFunction;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 import iti.kukumo.core.datatypes.KukumoNumberDataType;
-import iti.kukumo.util.ThrowableFunction;
+
 
 
 public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; extends AbstractAssertProvider {
@@ -47,10 +48,10 @@ public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; ext
         ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
         ThrowableFunction&lt;Number, T&gt; converter
     ) {
-<span class="fc" id="L50">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
+<span class="fc" id="L51">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
             numberRegexProvider,
             converter,
-<span class="fc" id="L53">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, false)</span>
+<span class="fc" id="L54">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, false)</span>
         );
     }
 
@@ -59,10 +60,10 @@ public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; ext
         ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
         ThrowableFunction&lt;BigDecimal, T&gt; converter
     ) {
-<span class="fc" id="L62">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
+<span class="fc" id="L63">        return new BinaryNumberAssertProvider&lt;&gt;(</span>
             numberRegexProvider,
-<span class="fc" id="L64">            KukumoNumberDataType.castConverter(BigDecimal.class::cast, converter),</span>
-<span class="fc" id="L65">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, true)</span>
+<span class="fc" id="L65">            KukumoNumberDataType.castConverter(BigDecimal.class::cast, converter),</span>
+<span class="fc" id="L66">            locale -&gt; KukumoNumberDataType.decimalFormat(locale, true)</span>
         );
     }
 
@@ -71,17 +72,17 @@ public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; ext
         ThrowableFunction&lt;Locale, String&gt; numberRegexProvider,
         ThrowableFunction&lt;Number, T&gt; mapper,
         ThrowableFunction&lt;Locale, NumberFormat&gt; formatter
-<span class="fc" id="L74">    ) {</span>
-<span class="fc" id="L75">        this.numberRegexProvider = numberRegexProvider;</span>
-<span class="fc" id="L76">        this.mapper = mapper;</span>
-<span class="fc" id="L77">        this.formatter = formatter;</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L75">    ) {</span>
+<span class="fc" id="L76">        this.numberRegexProvider = numberRegexProvider;</span>
+<span class="fc" id="L77">        this.mapper = mapper;</span>
+<span class="fc" id="L78">        this.formatter = formatter;</span>
+<span class="fc" id="L79">    }</span>
 
 
     @Override
     protected LinkedHashMap&lt;String, Pattern&gt; translatedExpressions(Locale locale) {
         // binary numeric matchers
-<span class="fc" id="L84">        String[] expressions = {</span>
+<span class="fc" id="L85">        String[] expressions = {</span>
             EQUALS,
             GREATER,
             GREATER_EQUALS,
@@ -94,16 +95,16 @@ public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; ext
             NOT_LESS_EQUALS,
         };
 
-<span class="fc" id="L97">        LinkedHashMap&lt;String, Pattern&gt; translatedExpressions = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (String expression : expressions) {</span>
-<span class="fc" id="L99">            translatedExpressions.put(</span>
+<span class="fc" id="L98">        LinkedHashMap&lt;String, Pattern&gt; translatedExpressions = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (String expression : expressions) {</span>
+<span class="fc" id="L100">            translatedExpressions.put(</span>
                 expression,
-<span class="fc" id="L101">                Pattern.compile(</span>
-<span class="fc" id="L102">                    translateBundleExpression(locale, expression, numberRegexProvider.apply(locale))</span>
+<span class="fc" id="L102">                Pattern.compile(</span>
+<span class="fc" id="L103">                    translateBundleExpression(locale, expression, numberRegexProvider.apply(locale))</span>
                 )
             );
         }
-<span class="fc" id="L106">        return translatedExpressions;</span>
+<span class="fc" id="L107">        return translatedExpressions;</span>
     }
 
 
@@ -113,30 +114,30 @@ public class BinaryNumberAssertProvider&lt;T extends Comparable&lt;T&gt;&gt; ext
         String key,
         String value
     ) throws ParseException {
-<span class="fc" id="L116">        Matcher&lt;T&gt; matcher = null;</span>
-<span class="fc" id="L117">        T numericValue = mapper.apply(formatter.apply(locale).parse(value));</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (EQUALS.equals(key)) {</span>
-<span class="fc" id="L119">            matcher = Matchers.comparesEqualTo(numericValue);</span>
-<span class="fc bfc" id="L120" title="All 2 branches covered.">        } else if (GREATER.equals(key)) {</span>
-<span class="fc" id="L121">            matcher = Matchers.greaterThan(numericValue);</span>
-<span class="fc bfc" id="L122" title="All 2 branches covered.">        } else if (LESS.equals(key)) {</span>
-<span class="fc" id="L123">            matcher = Matchers.lessThan(numericValue);</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">        } else if (GREATER_EQUALS.equals(key)) {</span>
-<span class="fc" id="L125">            matcher = Matchers.greaterThanOrEqualTo(numericValue);</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">        } else if (LESS_EQUALS.equals(key)) {</span>
-<span class="fc" id="L127">            matcher = Matchers.lessThanOrEqualTo(numericValue);</span>
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        } else if (NOT_EQUALS.equals(key)) {</span>
-<span class="fc" id="L129">            matcher = Matchers.not(Matchers.comparesEqualTo(numericValue));</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">        } else if (NOT_GREATER.equals(key)) {</span>
-<span class="fc" id="L131">            matcher = Matchers.not(Matchers.greaterThan(numericValue));</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">        } else if (NOT_LESS.equals(key)) {</span>
-<span class="fc" id="L133">            matcher = Matchers.not(Matchers.lessThan(numericValue));</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">        } else if (NOT_GREATER_EQUALS.equals(key)) {</span>
-<span class="fc" id="L135">            matcher = Matchers.not(Matchers.greaterThanOrEqualTo(numericValue));</span>
-<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        } else if (NOT_LESS_EQUALS.equals(key)) {</span>
-<span class="fc" id="L137">            matcher = Matchers.not(Matchers.lessThanOrEqualTo(numericValue));</span>
+<span class="fc" id="L117">        Matcher&lt;T&gt; matcher = null;</span>
+<span class="fc" id="L118">        T numericValue = mapper.apply(formatter.apply(locale).parse(value));</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (EQUALS.equals(key)) {</span>
+<span class="fc" id="L120">            matcher = Matchers.comparesEqualTo(numericValue);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        } else if (GREATER.equals(key)) {</span>
+<span class="fc" id="L122">            matcher = Matchers.greaterThan(numericValue);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        } else if (LESS.equals(key)) {</span>
+<span class="fc" id="L124">            matcher = Matchers.lessThan(numericValue);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        } else if (GREATER_EQUALS.equals(key)) {</span>
+<span class="fc" id="L126">            matcher = Matchers.greaterThanOrEqualTo(numericValue);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        } else if (LESS_EQUALS.equals(key)) {</span>
+<span class="fc" id="L128">            matcher = Matchers.lessThanOrEqualTo(numericValue);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        } else if (NOT_EQUALS.equals(key)) {</span>
+<span class="fc" id="L130">            matcher = Matchers.not(Matchers.comparesEqualTo(numericValue));</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        } else if (NOT_GREATER.equals(key)) {</span>
+<span class="fc" id="L132">            matcher = Matchers.not(Matchers.greaterThan(numericValue));</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        } else if (NOT_LESS.equals(key)) {</span>
+<span class="fc" id="L134">            matcher = Matchers.not(Matchers.lessThan(numericValue));</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        } else if (NOT_GREATER_EQUALS.equals(key)) {</span>
+<span class="fc" id="L136">            matcher = Matchers.not(Matchers.greaterThanOrEqualTo(numericValue));</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        } else if (NOT_LESS_EQUALS.equals(key)) {</span>
+<span class="fc" id="L138">            matcher = Matchers.not(Matchers.lessThanOrEqualTo(numericValue));</span>
         }
-<span class="fc" id="L139">        return matcher;</span>
+<span class="fc" id="L140">        return matcher;</span>
     }
 
 }

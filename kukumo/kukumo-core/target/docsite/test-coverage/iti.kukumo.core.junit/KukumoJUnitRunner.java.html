@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KukumoJUnitRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.junit</a> &gt; <span class="el_source">KukumoJUnitRunner.java</span></div><h1>KukumoJUnitRunner.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.junit;
+
+
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
+import imconfig.ConfigurationFactory;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.core.runner.PlanNodeLogger;
+import org.junit.*;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+
+public class KukumoJUnitRunner extends Runner {
+
+    /**
+     * Configuration property to set if the steps are treated as tests. False by
+     * default
+     */
+    public static final String TREAT_STEPS_AS_TESTS = &quot;junit.treatStepsAsTests&quot;;
+
+<span class="fc" id="L46">    protected static final Logger LOGGER = Kukumo.LOGGER;</span>
+<span class="fc" id="L47">    protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();</span>
+
+    protected final Configuration configuration;
+    protected final Class&lt;?&gt; configurationClass;
+    protected final PlanNodeLogger planNodeLogger;
+    protected final boolean treatStepsAsTests;
+    protected final Kukumo kukumo;
+    private PlanNode plan;
+    private List&lt;JUnitPlanNodeRunner&gt; children;
+    private Description description;
+
+
+<span class="fc" id="L59">    public KukumoJUnitRunner(Class&lt;?&gt; configurationClass) throws InitializationError {</span>
+<span class="fc" id="L60">        this.kukumo = Kukumo.instance();</span>
+<span class="fc" id="L61">        this.configurationClass = configurationClass;</span>
+<span class="fc" id="L62">        this.configuration = retrieveConfiguration(configurationClass);</span>
+<span class="fc" id="L63">        this.planNodeLogger = new PlanNodeLogger(LOGGER, configuration, getPlan());</span>
+<span class="fc" id="L64">        this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class)</span>
+<span class="fc" id="L65">            .orElse(Boolean.FALSE);</span>
+<span class="fc" id="L66">        validateStaticZeroArgumentAnnotatedMethod(configurationClass, BeforeClass.class);</span>
+<span class="fc" id="L67">        validateStaticZeroArgumentAnnotatedMethod(configurationClass, AfterClass.class);</span>
+<span class="fc" id="L68">        validateNoAnnotatedMethod(configurationClass, Before.class);</span>
+<span class="fc" id="L69">        validateNoAnnotatedMethod(configurationClass, After.class);</span>
+<span class="fc" id="L70">        validateNoAnnotatedMethod(configurationClass, Test.class);</span>
+<span class="fc" id="L71">    }</span>
+
+
+    @Override
+    public void run(RunNotifier notifier) {
+<span class="fc" id="L76">        kukumo.configureLogger(configuration);</span>
+<span class="fc" id="L77">        kukumo.configureEventObservers(configuration);</span>
+<span class="fc" id="L78">        kukumo.publishEvent(Event.PLAN_RUN_STARTED, plan);</span>
+<span class="fc" id="L79">        planNodeLogger.logTestPlanHeader(plan);</span>
+<span class="fc" id="L80">        executeAnnotatedMethod(configurationClass, BeforeClass.class);</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for (JUnitPlanNodeRunner child : getChildren()) {</span>
+            try {
+<span class="fc" id="L84">                child.runNode(notifier);</span>
+<span class="nc" id="L85">            } catch (Exception e) {</span>
+<span class="nc" id="L86">                LOGGER.error(e.toString(), e);</span>
+<span class="fc" id="L87">            }</span>
+<span class="fc" id="L88">        }</span>
+
+        // refactor this line in the future when multithreading is supported
+<span class="fc" id="L91">        executeAnnotatedMethod(configurationClass, AfterClass.class);</span>
+
+<span class="fc" id="L93">        planNodeLogger.logTestPlanResult(plan);</span>
+<span class="fc" id="L94">        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, getPlan());</span>
+<span class="fc" id="L95">        kukumo.writeOutputFile(plan, configuration);</span>
+<span class="fc" id="L96">        kukumo.generateReports(configuration);</span>
+<span class="fc" id="L97">    }</span>
+
+
+    public List&lt;JUnitPlanNodeRunner&gt; getChildren() {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (children == null) {</span>
+<span class="fc" id="L102">            children = buildRunners();</span>
+        }
+<span class="fc" id="L104">        return children;</span>
+    }
+
+
+    @Override
+    public Description getDescription() {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (description == null) {</span>
+<span class="fc" id="L111">            description = Description</span>
+<span class="fc" id="L112">                .createSuiteDescription(&quot;Kukumo Test Plan&quot;, UUID.randomUUID().toString());</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (JUnitPlanNodeRunner child : getChildren()) {</span>
+<span class="fc" id="L114">                description.addChild(child.getDescription());</span>
+<span class="fc" id="L115">            }</span>
+        }
+<span class="fc" id="L117">        return description;</span>
+    }
+
+
+    protected PlanNode getPlan() {
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (plan == null) {</span>
+<span class="fc" id="L123">            plan = kukumo.createPlanFromConfiguration(configuration);</span>
+        }
+<span class="fc" id="L125">        return plan;</span>
+    }
+
+
+    protected List&lt;JUnitPlanNodeRunner&gt; buildRunners() {
+
+<span class="fc" id="L131">        BackendFactory backendFactory = kukumo.newBackendFactory();</span>
+<span class="fc" id="L132">        return getPlan().children().map(node -&gt; {</span>
+<span class="fc" id="L133">            Configuration featureConfiguration = configuration.append(</span>
+<span class="fc" id="L134">                confBuilder.fromMap(node.properties())</span>
+            );
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">            return treatStepsAsTests ? new JUnitPlanNodeStepRunner(</span>
+                node, featureConfiguration, backendFactory, planNodeLogger
+<span class="nc" id="L138">            ) : new JUnitPlanNodeRunner(node, featureConfiguration, backendFactory, planNodeLogger);</span>
+<span class="fc" id="L139">        }).collect(Collectors.toList());</span>
+
+    }
+
+
+    private static Configuration retrieveConfiguration(
+        Class&lt;?&gt; testedClass
+    ) throws InitializationError {
+        try {
+<span class="fc" id="L148">            return Kukumo.defaultConfiguration().appendFromAnnotation(testedClass);</span>
+<span class="nc" id="L149">        } catch (ConfigurationException e) {</span>
+<span class="nc" id="L150">            LOGGER.error(&quot;Error loading configuration from {}&quot;, testedClass);</span>
+<span class="nc" id="L151">            throw new InitializationError(e);</span>
+        }
+    }
+
+
+    private void validateNoAnnotatedMethod(
+        Class&lt;?&gt; configurationClass,
+        Class&lt;? extends Annotation&gt; annotation
+    ) throws InitializationError {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for (Method method : configurationClass.getMethods()) {</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">            if (method.isAnnotationPresent(annotation)) {</span>
+<span class="nc" id="L162">                throwInitializationError(method, annotation, &quot;is not allowed&quot;);</span>
+            }
+        }
+<span class="fc" id="L165">    }</span>
+
+
+    private void validateStaticZeroArgumentAnnotatedMethod(
+        Class&lt;?&gt; configurationClass,
+        Class&lt;? extends Annotation&gt; annotation
+    ) throws InitializationError {
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        for (Method method : configurationClass.getMethods()) {</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">            if (method.isAnnotationPresent(annotation)) {</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                if (!Modifier.isStatic(method.getModifiers())) {</span>
+<span class="nc" id="L175">                    throwInitializationError(method, annotation, &quot;should be static&quot;);</span>
+                }
+<span class="nc bnc" id="L177" title="All 2 branches missed.">                if (method.getParameterCount() &gt; 0) {</span>
+<span class="nc" id="L178">                    throwInitializationError(method, annotation, &quot;should have no parameter&quot;);</span>
+                }
+            }
+        }
+<span class="fc" id="L182">    }</span>
+
+
+    private void throwInitializationError(
+        Method method,
+        Class&lt;? extends Annotation&gt; annotation,
+        String message
+    ) throws InitializationError {
+<span class="nc" id="L190">        throw new InitializationError(</span>
+<span class="nc" id="L191">            &quot;Method &quot; + method.getName() + &quot; annotated with &quot; + annotation + &quot; &quot; + message</span>
+        );
+    }
+
+
+    private void executeAnnotatedMethod(
+        Class&lt;?&gt; configurationClass,
+        Class&lt;? extends Annotation&gt; annotation
+    ) {
+<span class="fc bfc" id="L200" title="All 2 branches covered.">        for (Method method : configurationClass.getMethods()) {</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">            if (method.isAnnotationPresent(annotation)) {</span>
+                try {
+<span class="nc" id="L203">                    method.invoke(null);</span>
+<span class="nc" id="L204">                } catch (IllegalAccessException</span>
+                                | IllegalArgumentException
+                                | InvocationTargetException e) {
+<span class="nc" id="L207">                    throw new KukumoException(e);</span>
+<span class="nc" id="L208">                }</span>
+            }
+        }
+<span class="fc" id="L211">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

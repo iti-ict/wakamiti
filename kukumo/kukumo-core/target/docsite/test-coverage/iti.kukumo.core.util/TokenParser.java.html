@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TokenParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kukumo::CORE</a> &gt; <a href="index.source.html" class="el_package">iti.kukumo.core.util</a> &gt; <span class="el_source">TokenParser.java</span></div><h1>TokenParser.java</h1><pre class="source lang-java linenums">/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+package iti.kukumo.core.util;
+
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+
+public class TokenParser {
+
+    private final List&lt;Pattern&gt; tokens;
+
+    private String remainString;
+    private String nextToken;
+
+
+<span class="fc" id="L27">    public TokenParser(String string, List&lt;String&gt; literals, List&lt;String&gt; regex) {</span>
+<span class="fc" id="L28">        this.remainString = string;</span>
+<span class="fc" id="L29">        this.tokens = regex.stream().map(TokenParser::regex).collect(Collectors.toList());</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (String literal : literals) {</span>
+<span class="fc" id="L31">            this.tokens.add(TokenParser.literal(literal));</span>
+<span class="fc" id="L32">        }</span>
+<span class="fc" id="L33">        computeNextToken();</span>
+<span class="fc" id="L34">    }</span>
+
+
+    public boolean hasMoreTokens() {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        return nextToken != null;</span>
+    }
+
+
+    public String nextToken() {
+<span class="fc" id="L43">        String token = this.nextToken;</span>
+<span class="fc" id="L44">        computeNextToken();</span>
+<span class="fc" id="L45">        return token;</span>
+    }
+
+
+    private void computeNextToken() {
+<span class="fc" id="L50">        nextToken = computeMaxToken(remainString);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (nextToken == null) {</span>
+<span class="fc" id="L52">            remainString = null;</span>
+        } else {
+<span class="fc" id="L54">            remainString = remainString.substring(nextToken.length());</span>
+        }
+<span class="fc" id="L56">    }</span>
+
+
+    private String computeMaxToken(String string) {
+<span class="fc" id="L60">        return tokens.stream()</span>
+<span class="fc" id="L61">            .map(token -&gt; token.matcher(string))</span>
+<span class="fc" id="L62">            .filter(Matcher::matches)</span>
+<span class="fc" id="L63">            .map(matcher -&gt; matcher.group(1))</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">            .reduce((match1, match2) -&gt; match1.length() &gt; match2.length() ? match1 : match2)</span>
+<span class="fc" id="L65">            .orElse(null);</span>
+    }
+
+
+    private static Pattern regex(String regex) {
+<span class="fc" id="L70">        return Pattern.compile(&quot;(&quot; + regex + &quot;).*&quot;);</span>
+    }
+
+
+    private static Pattern literal(String literal) {
+<span class="fc" id="L75">        return Pattern.compile(&quot;(&quot; + Pattern.quote(literal) + &quot;).*&quot;);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
