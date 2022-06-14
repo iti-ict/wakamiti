@@ -104,6 +104,14 @@
             <artifactId>maven-fetcher</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.harawata</groupId>
             <artifactId>appdirs</artifactId>
         </dependency>

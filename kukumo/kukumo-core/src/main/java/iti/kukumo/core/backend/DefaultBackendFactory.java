@@ -82,9 +82,13 @@ public class DefaultBackendFactory implements BackendFactory {
 
     private Backend doCreateBackend(PlanNode testCase, Configuration configuration) {
         boolean runnableBackend = (testCase != null);
+
         List<String> restrictedModules = new ArrayList<>(
             configuration.getList(KukumoConfiguration.MODULES, String.class)
-        );
+        ).stream().flatMap(it -> Stream.of(it.split(",")))
+        .map(String::strip)
+        .collect(Collectors.toList());
+
         List<StepContributor> stepContributors = createStepContributors(
             restrictedModules,
             configuration,
