@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import java.io.IOException;
 import java.io.StringReader;
 
 
@@ -78,17 +79,20 @@ public class XMLHelper extends JSONHelper implements ContentTypeHelper {
     public void assertContentSchema(String expectedSchema, String content) {
         try {
             Schema schema = schemaFactory.newSchema(new SAXSource(new InputSource(new StringReader(expectedSchema))));
-            Validator validator = schema.newValidator();
-            try {
-                validator.validate(new StreamSource(new StringReader(content)));
-            }
-            catch (SAXParseException e) {
-                throw new AssertionError(e.getMessage());
-            }
+            validate(content, schema.newValidator());
         } catch (Exception e) {
             throw new KukumoException(e);
         }
 
+    }
+
+    private void validate(String content, Validator validator) throws SAXException, IOException {
+        try {
+            validator.validate(new StreamSource(new StringReader(content)));
+        }
+        catch (SAXParseException e) {
+            throw new AssertionError(e.getMessage());
+        }
     }
 
 

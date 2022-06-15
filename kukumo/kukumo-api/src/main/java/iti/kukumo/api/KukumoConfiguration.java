@@ -100,6 +100,8 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     public static final String EXECUTION_ID = "executionID";
 
 
+    private static final String FAINT = "faint";
+
     public static final Configuration DEFAULTS = Configuration.factory()
         .fromEnvironment()
         .appendFromSystem()
@@ -119,12 +121,12 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
             LOGS_SHOW_ELAPSED_TIME, "true",
             TREAT_STEPS_AS_TESTS, "false",
             "logs.ansi.styles.keyword", "blue",
-            "logs.ansi.styles.source", "faint",
-            "logs.ansi.styles.time", "faint",
+            "logs.ansi.styles.source", FAINT,
+            "logs.ansi.styles.time", FAINT,
             "logs.ansi.styles.resourceType", "cyan",
             "logs.ansi.styles.contributor", "green",
             "logs.ansi.styles.stepResult.PASSED", "green,bold",
-            "logs.ansi.styles.stepResult.SKIPPED", "faint",
+            "logs.ansi.styles.stepResult.SKIPPED", FAINT,
             "logs.ansi.styles.stepResult.UNDEFINED", "yellow",
             "logs.ansi.styles.stepResult.FAILED", "red,bold",
             "logs.ansi.styles.stepResult.ERROR", "red,bold"

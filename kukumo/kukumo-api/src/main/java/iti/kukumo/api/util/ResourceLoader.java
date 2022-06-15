@@ -231,24 +231,23 @@ public class ResourceLoader {
                 String classPath = path.replace(CLASSPATH_PROTOCOL, "");
                 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
                 String absoluteClassPath = classLoaderFolder(classLoader) + classPath;
-                Enumeration<URL> urls = loadFromClasspath(path, classLoader);
-                while (urls.hasMoreElements()) {
-                    discoverResourcesInURL(
+                for (URI uri : loadFromClasspath(classPath, classLoader)) {
+                    discoverResourcesInURI(
                         absoluteClassPath,
-                        urls.nextElement(),
+                        uri,
                         filenameFilter,
                         parser,
                         discovered
                     );
                 }
             } else {
-                URL url;
+                URI uri;
                 if (Paths.get(path).isAbsolute()) {
-                    url = Paths.get(path).toUri().toURL();
+                    uri = Paths.get(path).toUri();
                 } else {
-                    url = new File(APPLICATION_FOLDER, path).toURI().toURL();
+                    uri = new File(APPLICATION_FOLDER, path).toURI();
                 }
-                discoverResourcesInURL(path, url, filenameFilter, parser, discovered);
+                discoverResourcesInURI(path, uri, filenameFilter, parser, discovered);
             }
         } catch (IOException e) {
             LOGGER.debug("Error discovering resource: {}", e.getMessage(), e);
@@ -257,30 +256,26 @@ public class ResourceLoader {
     }
 
 
-    protected <T> void discoverResourcesInURL(
+    protected <T> void discoverResourcesInURI(
         String startPath,
-        URL url,
+        URI uri,
         Predicate<String> filenameFilter,
         Parser<T> parser,
         List<Resource<?>> discovered
     ) {
-        if (FILE_PROTOCOL.equals(url.getProtocol())) {
-            try {
-                discoverResouresInFile(
-                    startPath,
-                    new File(url.toURI()),
-                    filenameFilter,
-                    parser,
-                    discovered
-                );
-            } catch (URISyntaxException e) {
-                LOGGER.debug("{!error} Error discovering resource: {}", e.getMessage(), e);
-            }
+        if (FILE_PROTOCOL.equals(uri.getScheme())) {
+            discoverResouresInFile(
+                startPath,
+                new File(uri),
+                filenameFilter,
+                parser,
+                discovered
+            );
         } else {
             try {
                 discovered.add(
                     new Resource<>(
-                        url.toString(), url.toString(), parser.parse(url.openStream(), charset)
+                        uri.toString(), uri.toString(), parser.parse(uri.toURL().openStream(), charset)
                     )
                 );
             } catch (IOException e) {
@@ -333,14 +328,19 @@ public class ResourceLoader {
     }
 
 
-    protected Enumeration<URL> loadFromClasspath(String classPath, ClassLoader classLoader) {
+    protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
         try {
-            return classLoader.getResources(classPath);
+            return Collections.list(classLoader.getResources(classPath)).stream()
+                .map(URL::toString)
+                .filter(it -> !it.endsWith("/"))
+                .map(URI::create)
+                .collect(Collectors.toSet());
         } catch (IOException e) {
             LOGGER.error("{error}", e.getMessage(), e);
-            return Collections.emptyEnumeration();
+            return Collections.emptySet();
         }
     }
+
 
 
     private String classLoaderFolder(ClassLoader classLoader) throws IOException {
