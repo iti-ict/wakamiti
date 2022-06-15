@@ -30,6 +30,15 @@ public class KukumoRunner {
         this.arguments = arguments;
     }
 
+    public String getContributions() {
+        StringBuilder string = new StringBuilder();
+        Kukumo.contributors().allContributors().forEach((type, contributions)-> {
+            string.append(type.getSimpleName()).append(" :\n");
+            contributions.forEach(it -> string.append("    ").append(it.info()).append("\n"));
+        });
+        return string.toString();
+    }
+
 
     public void run() {
         Configuration configuration;

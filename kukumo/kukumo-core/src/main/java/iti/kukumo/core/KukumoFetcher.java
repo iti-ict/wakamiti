@@ -73,17 +73,21 @@ public class KukumoFetcher {
             Files.createDirectories(mavenRepo);
             logger.debug("Using local Maven repository {}",mavenRepo);
 
-            logger.info("Fetching dependencies...");
-            MavenFetcher mavenFetcher = new MavenFetcher()
-                .logger(logger)
-                .config(conf.asProperties());
-
             if (logger.isDebugEnabled()) {
                 logger.debug(
                     "Modules requested to fetch are:{}",
                     modules.stream().collect(Collectors.joining("\n -", "\n -",""))
                 );
+                logger.debug("Maven fetcher properties:");
+                logger.debug("{}", conf);
             }
+
+            logger.info("Fetching dependencies...");
+            MavenFetcher mavenFetcher = new MavenFetcher().logger(logger);
+            if (!conf.isEmpty()) {
+                mavenFetcher.config(conf.asProperties());
+            }
+
             MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
                 .scopes("compile", "provided");
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);

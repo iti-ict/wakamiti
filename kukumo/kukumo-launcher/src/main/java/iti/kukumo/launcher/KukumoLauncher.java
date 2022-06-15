@@ -47,6 +47,14 @@ public class KukumoLauncher {
             logger.debug("{}",arguments);
         }
 
+        if (arguments.isSshowContributionsEnabled()) {
+            logger().info("The available contributions are the following:");
+            logger().info("------------------------------------");
+            logger().info(new KukumoRunner(arguments).getContributions());
+            logger().info("------------------------------------");
+        }
+
+
         try {
             new KukumoLauncherFetcher(arguments).fetchAndUpdateClasspath();
             new KukumoRunner(arguments).run();

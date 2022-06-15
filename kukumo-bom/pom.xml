@@ -24,6 +24,7 @@
         <kukumo-amqp.version>1.4.0</kukumo-amqp.version>
         <kukumo-io.version>1.4.0</kukumo-io.version>
         <kukumo-html-report.version>1.4.0</kukumo-html-report.version>
+        <kukumo-cucumber-exporter.version>1.0.0</kukumo-cucumber-exporter.version>
         <kukumo-spring.version>1.4.0</kukumo-spring.version>
         <jext.version>1.0.0</jext.version>
 
@@ -149,6 +150,11 @@
                 <groupId>es.iti.kukumo</groupId>
                 <artifactId>kukumo-html-report</artifactId>
                 <version>${kukumo-html-report.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-cucumber-exporter</artifactId>
+                <version>${kukumo-cucumber-exporter.version}</version>
             </dependency>
 
             <!-- external dependencies -->

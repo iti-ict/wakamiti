@@ -36,6 +36,7 @@ public class CliArguments {
     private static final String ARG_MODULES = "m";
     private static final String ARG_KUKUMO_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
+    public static final String  ARG_LIST = "l";
 
     private final Options cliOptions;
     private CommandLine cliCommand;
@@ -64,6 +65,7 @@ public class CliArguments {
             .desc("Set a MavenFetcher-specific property")
             .build()
         );
+        cliOptions.addOption(ARG_LIST,"list", false, "Show all available modules");
     }
 
 
@@ -102,6 +104,10 @@ public class CliArguments {
 
     public boolean isHelpActive() {
         return cliCommand.hasOption(ARG_HELP);
+    }
+
+    public boolean isSshowContributionsEnabled() {
+        return cliCommand.hasOption(ARG_LIST);
     }
 
     public List<String> modules() {
