@@ -6,9 +6,7 @@
 
 package iti.kukumo.amqp;
 
-import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 
 public class AmqpConnectionParams {
 
@@ -16,11 +14,11 @@ public class AmqpConnectionParams {
         String host,
         String username,
         String password
-<span class="fc" id="L19">    ) {</span>
-<span class="fc" id="L20">        this.host = host;</span>
-<span class="fc" id="L21">        this.username = username;</span>
-<span class="fc" id="L22">        this.password = password;</span>
-<span class="fc" id="L23">    }</span>
+<span class="fc" id="L17">    ) {</span>
+<span class="fc" id="L18">        this.host = host;</span>
+<span class="fc" id="L19">        this.username = username;</span>
+<span class="fc" id="L20">        this.password = password;</span>
+<span class="fc" id="L21">    }</span>
 
     private String host;
     private String username;
@@ -28,15 +26,15 @@ public class AmqpConnectionParams {
 
 
     public String host() {
-<span class="fc" id="L31">        return host;</span>
+<span class="fc" id="L29">        return host;</span>
     }
 
     public String username() {
-<span class="fc" id="L35">        return username;</span>
+<span class="fc" id="L33">        return username;</span>
     }
 
     public String password() {
-<span class="fc" id="L39">        return password;</span>
+<span class="fc" id="L37">        return password;</span>
     }
 
 

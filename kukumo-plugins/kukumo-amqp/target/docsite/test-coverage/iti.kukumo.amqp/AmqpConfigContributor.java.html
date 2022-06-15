@@ -34,9 +34,9 @@ import iti.kukumo.api.extensions.ConfigContributor;
     public static final String AMQP_QUEUE_AUTODELETE = &quot;amqp.queue.autodelete&quot;;
 
 <span class="fc" id="L36">    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(</span>
-            AMQP_QUEUE_DURABLE,  &quot;false&quot;,
-            AMQP_QUEUE_EXCLUSIVE,  &quot;false&quot;,
-            AMQP_QUEUE_AUTODELETE, &quot;false&quot;
+<span class="fc" id="L37">            AMQP_QUEUE_DURABLE,  Boolean.FALSE.toString(),</span>
+<span class="fc" id="L38">            AMQP_QUEUE_EXCLUSIVE,  Boolean.FALSE.toString(),</span>
+<span class="fc" id="L39">            AMQP_QUEUE_AUTODELETE, Boolean.FALSE.toString()</span>
     );
 
 
