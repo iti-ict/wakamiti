@@ -56,5 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
 
+
       - name: Publish Docker Alpha version
         run: ./mvnw deploy -pl kukumo-docker -P alpha -Ddocker.pwd=${DOCKERHUB_PWD}
+
