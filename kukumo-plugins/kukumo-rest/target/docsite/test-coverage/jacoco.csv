@@ -5,8 +5,8 @@ Kukumo::REST Steps,iti.kukumo.rest.helpers,JSONHelper,7,51,0,0,2,13,0,5,0,5
 Kukumo::REST Steps,iti.kukumo.rest.helpers,XMLHelper,19,79,0,0,6,20,0,6,0,6
 Kukumo::REST Steps,iti.kukumo.rest.helpers,JsonXmlDiff,31,470,10,54,7,100,8,39,0,14
 Kukumo::REST Steps,iti.kukumo.rest.helpers,TextHelper,46,5,7,0,8,2,7,2,3,2
-Kukumo::REST Steps,iti.kukumo.rest,RestConfiguration,3,0,0,0,1,0,1,0,1,0
 Kukumo::REST Steps,iti.kukumo.rest,MatchMode,0,34,0,0,0,1,0,1,0,1
+Kukumo::REST Steps,iti.kukumo.rest,RestConfiguration,3,0,0,0,1,0,1,0,1,0
 Kukumo::REST Steps,iti.kukumo.rest,AssertionMatcher,23,0,0,0,7,0,4,0,4,0
 Kukumo::REST Steps,iti.kukumo.rest,ContentTypeHelper,0,15,0,0,0,4,0,2,0,2
 Kukumo::REST Steps,iti.kukumo.rest,RestStepContributor,413,109,6,2,92,31,50,18,46,18

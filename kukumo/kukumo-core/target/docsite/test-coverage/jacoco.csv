@@ -7,7 +7,7 @@ Kukumo::CORE,iti.kukumo.core.datatypes,KukumoNumberDataType,0,137,0,4,0,27,0,14,
 Kukumo::CORE,iti.kukumo.core.junit,KukumoJUnitRunner,68,290,8,20,17,59,7,20,1,12
 Kukumo::CORE,iti.kukumo.core.junit,JUnitPlanNodeStepRunner,0,65,0,4,0,16,0,9,0,7
 Kukumo::CORE,iti.kukumo.core.junit,JUnitPlanNodeRunner,83,134,7,13,13,33,8,12,3,7
-Kukumo::CORE,iti.kukumo.core.util,Simil,0,166,1,17,0,35,1,11,0,3
+Kukumo::CORE,iti.kukumo.core.util,Simil,0,175,1,17,0,37,1,12,0,4
 Kukumo::CORE,iti.kukumo.core.util,TokenParser,1,111,1,7,0,25,1,13,0,10
 Kukumo::CORE,iti.kukumo.core.util,LocaleLoader,33,24,5,3,6,7,5,1,0,1
 Kukumo::CORE,iti.kukumo.core.util,StringDistance,0,39,0,2,0,10,0,4,0,3
