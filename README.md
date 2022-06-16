@@ -2,6 +2,12 @@
 > reading this document directly from the repository
 
 
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/kukumo/kukumo?sort=semver&style=for-the-badge) ![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge) ![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge) ![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge) ![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)
+
+
+
+
+
 Kukumo is a Cucumber-inspired tool written in Java focused on **blackbox testing**
 using **natural language**.
 
