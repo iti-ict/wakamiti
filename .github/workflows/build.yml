@@ -58,5 +58,5 @@ jobs:
 
 
       - name: Publish Docker Alpha version
-        run: ./mvnw deploy -pl kukumo-docker -P alpha -Ddocker.pwd=${DOCKERHUB_PWD}
+        run: ./mvnw -B deploy -pl kukumo-docker -P alpha -Ddocker.pwd=${DOCKERHUB_PWD}
 
