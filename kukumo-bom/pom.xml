@@ -81,7 +81,7 @@
         <maven-resolver.version>1.7.2</maven-resolver.version>
         <maven-resolver-provider.version>3.8.1</maven-resolver-provider.version>
         <httpcore.version>4.4.14</httpcore.version>
-        <httpclient.version>4.5.3</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.13</commons-codec.version>
     </properties>
