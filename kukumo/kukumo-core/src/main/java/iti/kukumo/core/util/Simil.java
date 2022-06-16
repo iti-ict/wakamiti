@@ -82,25 +82,7 @@ public class Simil {
                 // is this a common substring?
                 if (comp2.contains(comp1.substring(pos, pos + windowSize))) {
 
-                    // yes, so we take the parts that do not belong to our matching
-                    // string and push them onto the stack for later examination
-                    String[] comp2Rest = comp2.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
-                    String[] comp1Rest = comp1.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
-
-                    // both rest-arrays should have at least one entry to compare to next time
-                    int resultLen = Math.min(comp1Rest.length, comp2Rest.length);
-                    if (resultLen > 1) {
-                        // we do not push empty fragments onto the stack
-                        // but everything else
-                        for (int idx = 0; idx < resultLen; idx++) {
-                            if (!"".equals(comp1Rest[idx])) {
-                                baseInputStack.push(comp1Rest[idx]);
-                            }
-                            if (!"".equals(comp2Rest[idx])) {
-                                inputStack.push(comp2Rest[idx]);
-                            }
-                        }
-                    }
+                    compareLength(baseInputStack, inputStack, comp1, comp2, windowSize, pos);
                     // this is the size of the first largest substring we could find
                     return windowSize;
                 }
@@ -112,6 +94,28 @@ public class Simil {
         }
 
         return 0;
+    }
+
+    private void compareLength(Deque<String> baseInputStack, Deque<String> inputStack, String comp1, String comp2, int windowSize, int pos) {
+        // yes, so we take the parts that do not belong to our matching
+        // string and push them onto the stack for later examination
+        String[] comp2Rest = comp2.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
+        String[] comp1Rest = comp1.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
+
+        // both rest-arrays should have at least one entry to compare to next time
+        int resultLen = Math.min(comp1Rest.length, comp2Rest.length);
+        if (resultLen > 1) {
+            // we do not push empty fragments onto the stack
+            // but everything else
+            for (int idx = 0; idx < resultLen; idx++) {
+                if (!"".equals(comp1Rest[idx])) {
+                    baseInputStack.push(comp1Rest[idx]);
+                }
+                if (!"".equals(comp2Rest[idx])) {
+                    inputStack.push(comp2Rest[idx]);
+                }
+            }
+        }
     }
 
 

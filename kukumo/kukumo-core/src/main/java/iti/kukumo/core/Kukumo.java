@@ -52,6 +52,8 @@ public class Kukumo {
     private static final EventDispatcher eventDispatcher = new EventDispatcher();
     private static final KukumoFetcher artifactFetcher = new KukumoFetcher();
 
+    private static final String IMPORTANT = "{important}";
+
     private static Kukumo instance;
 
 
@@ -123,7 +125,7 @@ public class Kukumo {
      */
     public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
-        LOGGER.info("{important}", "Creating the Test Plan...");
+        LOGGER.info(IMPORTANT, "Creating the Test Plan...");
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -194,7 +196,7 @@ public class Kukumo {
      * @throws KukumoException if the plan was not created
      */
     public PlanNode createPlanFromContent(Configuration configuration, InputStream inputStream) {
-        LOGGER.info("{important}", "Creating the Test Plan...");
+        LOGGER.info(IMPORTANT, "Creating the Test Plan...");
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
             .orElseThrow(()->new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration));
         Optional<PlanNode> plan = createPlanForResourceType(
@@ -386,7 +388,7 @@ public class Kukumo {
         if (reporters.isEmpty()) {
             return;
         }
-        LOGGER.info("{important}", "Generating reports...");
+        LOGGER.info(IMPORTANT, "Generating reports...");
         String reportSource = configuration.get(REPORT_SOURCE, String.class)
             .orElse(configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null));
         Path sourceFolder = Paths.get(reportSource).toAbsolutePath();
