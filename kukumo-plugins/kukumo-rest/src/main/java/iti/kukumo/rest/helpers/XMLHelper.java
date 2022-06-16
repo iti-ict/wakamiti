@@ -12,28 +12,22 @@ package iti.kukumo.rest.helpers;
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
-import iti.kukumo.util.MatcherAssertion;
-import org.hamcrest.Matcher;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import iti.commons.jext.Extension;
+import iti.kukumo.api.util.MatcherAssertion;
 import iti.kukumo.rest.ContentTypeHelper;
 import iti.kukumo.rest.MatchMode;
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 
 
@@ -85,17 +79,20 @@ public class XMLHelper extends JSONHelper implements ContentTypeHelper {
     public void assertContentSchema(String expectedSchema, String content) {
         try {
             Schema schema = schemaFactory.newSchema(new SAXSource(new InputSource(new StringReader(expectedSchema))));
-            Validator validator = schema.newValidator();
-            try {
-                validator.validate(new StreamSource(new StringReader(content)));
-            }
-            catch (SAXParseException e) {
-                throw new AssertionError(e.getMessage());
-            }
+            validate(content, schema.newValidator());
         } catch (Exception e) {
             throw new KukumoException(e);
         }
 
+    }
+
+    private void validate(String content, Validator validator) throws SAXException, IOException {
+        try {
+            validator.validate(new StreamSource(new StringReader(content)));
+        }
+        catch (SAXParseException e) {
+            throw new AssertionError(e.getMessage());
+        }
     }
 
 

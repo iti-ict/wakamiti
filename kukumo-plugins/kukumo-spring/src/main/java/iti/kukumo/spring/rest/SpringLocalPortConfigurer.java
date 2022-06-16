@@ -18,6 +18,7 @@ import java.net.URL;
 import imconfig.Configuration;
 import imconfig.ConfigurationException;
 import imconfig.Configurer;
+import iti.kukumo.api.util.KukumoLogger;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 import iti.commons.jext.Extension;
 import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.rest.RestStepContributor;
-import iti.kukumo.util.KukumoLogger;
+
 
 
 @Extension(

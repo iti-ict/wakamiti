@@ -1,0 +1,5 @@
+.git
+pom.xml
+README.md
+target/*
+!target/assembly

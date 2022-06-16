@@ -13,8 +13,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.api.KukumoAPI;
 import iti.kukumo.api.plan.*;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 
 @JsonSerialize()
 public class KukumoExecution {
@@ -23,16 +25,16 @@ public class KukumoExecution {
 
     public static class SnapshotSerializer extends StdSerializer<PlanNodeSnapshot> {
 
-    	private static final long serialVersionUID = 1858936262551275169L;
+        private static final long serialVersionUID = 1858936262551275169L;
 
-		public SnapshotSerializer() {
+        public SnapshotSerializer() {
             super(PlanNodeSnapshot.class);
         }
 
         @Override
         public void serialize(PlanNodeSnapshot planNodeSnapshot, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             jsonGenerator.writeRaw(": ");
-            jsonGenerator.writeRaw(Kukumo.planSerializer().serialize(planNodeSnapshot));
+            jsonGenerator.writeRaw(KukumoAPI.instance().planSerializer().serialize(planNodeSnapshot));
         }
     }
 
@@ -87,16 +89,16 @@ public class KukumoExecution {
 
 
     public PlanNodeSnapshot getData() {
-		return data;
-	}
+        return data;
+    }
 
 
     public String getExecutionID() {
-    	return executionID;
+        return executionID;
     }
 
     public String getExecutionInstant() {
-    	return executionInstant;
+        return executionInstant;
     }
 
     public String getOwner() {

@@ -7,11 +7,11 @@
 package iti.kukumo.test.api;
 
 import imconfig.Configuration;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.KukumoFetcher;
+import iti.kukumo.core.KukumoFetcher;
 import iti.kukumo.api.extensions.StepContributor;
-import iti.kukumo.util.LocaleLoader;
+import iti.kukumo.core.util.LocaleLoader;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

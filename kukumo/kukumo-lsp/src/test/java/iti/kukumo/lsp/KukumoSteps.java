@@ -11,6 +11,8 @@ package iti.kukumo.lsp;
 
 
 import iti.kukumo.api.annotations.*;
+import iti.kukumo.api.annotations.I18nResource;
+import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
 

@@ -13,7 +13,7 @@ module kukumo.rest {
 
     exports iti.kukumo.rest;
 
-    requires transitive kukumo.core;
+    requires transitive kukumo.api;
     requires transitive rest.assured;
     requires transitive xml.path;
     requires org.json;

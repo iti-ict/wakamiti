@@ -25,7 +25,7 @@ import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.annotations.Step;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.Pair;
+import iti.kukumo.api.util.Pair;
 
 
 /** This class*/

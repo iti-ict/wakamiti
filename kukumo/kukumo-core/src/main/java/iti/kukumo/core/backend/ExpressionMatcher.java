@@ -18,14 +18,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import iti.kukumo.api.util.Either;
 import org.slf4j.Logger;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.Either;
+
 
 
 public class ExpressionMatcher {

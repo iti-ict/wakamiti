@@ -14,17 +14,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import iti.kukumo.api.KukumoAPI;
+import iti.kukumo.api.util.KukumoLogger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import iti.commons.jext.Extension;
-import iti.kukumo.api.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.annotations.I18nResource;
 import iti.kukumo.api.annotations.Step;
@@ -39,19 +39,8 @@ import iti.kukumo.database.dataset.DataTableDataSet;
 import iti.kukumo.database.dataset.InlineDataSet;
 import iti.kukumo.database.dataset.MultiDataSet;
 import iti.kukumo.database.dataset.OoxmlDataSet;
-import iti.kukumo.util.KukumoLogger;
 import net.sf.jsqlparser.JSQLParserException;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 
 
 @Extension(provider = "iti.kukumo", name = "database-steps", version = "1.1")
@@ -61,7 +50,7 @@ public class DatabaseStepContributor implements StepContributor {
     private static final Logger LOGGER = KukumoLogger
         .of(LoggerFactory.getLogger("iti.kukumo.database"));
 
-    private static ConnectionManager connectionManager = Kukumo.extensionManager()
+    private static ConnectionManager connectionManager = KukumoAPI.instance().extensionManager()
         .getExtension(ConnectionManager.class)
         .orElseThrow(() -> new KukumoException("Cannot find a connection manager"));
 

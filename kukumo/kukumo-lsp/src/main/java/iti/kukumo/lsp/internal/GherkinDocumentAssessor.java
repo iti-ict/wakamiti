@@ -14,12 +14,16 @@ import java.util.function.Function;
 import java.util.stream.*;
 
 import imconfig.Configuration;
+import iti.kukumo.api.Hinter;
+import iti.kukumo.api.util.Pair;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
 import org.eclipse.lsp4j.*;
 import org.slf4j.*;
 
 import iti.commons.gherkin.*;
 import iti.kukumo.api.*;
-import iti.kukumo.util.Pair;
+
 
 
 public class GherkinDocumentAssessor {

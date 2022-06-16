@@ -34,9 +34,9 @@ public class AmqpConfigContributor implements ConfigContributor<AmqpStepContribu
     public static final String AMQP_QUEUE_AUTODELETE = "amqp.queue.autodelete";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-            AMQP_QUEUE_DURABLE,  "false",
-            AMQP_QUEUE_EXCLUSIVE,  "false",
-            AMQP_QUEUE_AUTODELETE, "false"
+            AMQP_QUEUE_DURABLE,  Boolean.FALSE.toString(),
+            AMQP_QUEUE_EXCLUSIVE,  Boolean.FALSE.toString(),
+            AMQP_QUEUE_AUTODELETE, Boolean.FALSE.toString()
     );
 
 

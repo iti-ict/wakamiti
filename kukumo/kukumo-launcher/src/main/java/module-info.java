@@ -13,5 +13,6 @@ module kukumo.launcher {
     requires org.apache.logging.log4j.core;
     requires net.harawata.appdirs;
     requires commons.cli;
+    requires kukumo.api;
 
 }

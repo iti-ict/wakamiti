@@ -17,10 +17,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import imconfig.Configuration;
-import iti.kukumo.api.*;
-import iti.kukumo.util.StringDistance;
-
-
+import iti.kukumo.api.Hinter;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoDataType;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.core.util.StringDistance;
 
 
 public class StepHinter implements Hinter {

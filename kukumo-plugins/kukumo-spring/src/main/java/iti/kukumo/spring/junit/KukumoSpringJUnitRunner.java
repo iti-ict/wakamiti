@@ -17,8 +17,8 @@ import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 import org.springframework.test.context.TestContextManager;
 
-import iti.kukumo.api.Kukumo;
-import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.core.junit.KukumoJUnitRunner;
 
 
 public class KukumoSpringJUnitRunner extends Runner {

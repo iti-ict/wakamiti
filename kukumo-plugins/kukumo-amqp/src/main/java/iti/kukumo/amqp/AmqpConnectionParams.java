@@ -6,9 +6,7 @@
 
 package iti.kukumo.amqp;
 
-import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 
 public class AmqpConnectionParams {
 

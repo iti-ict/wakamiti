@@ -21,6 +21,11 @@ import javax.inject.Inject;
 import javax.validation.constraints.Null;
 
 import imconfig.Configuration;
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;

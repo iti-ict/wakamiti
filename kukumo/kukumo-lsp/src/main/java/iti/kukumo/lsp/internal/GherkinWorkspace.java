@@ -12,10 +12,11 @@ import java.util.*;
 import java.util.stream.*;
 
 import imconfig.Configuration;
+import iti.kukumo.api.util.Pair;
 import org.eclipse.lsp4j.*;
 import org.yaml.snakeyaml.Yaml;
 
-import iti.kukumo.util.Pair;
+
 
 public class GherkinWorkspace {
 

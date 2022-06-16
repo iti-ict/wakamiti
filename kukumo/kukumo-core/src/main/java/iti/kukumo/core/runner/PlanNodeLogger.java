@@ -16,13 +16,14 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import imconfig.Configuration;
+import iti.kukumo.api.model.ExecutionState;
 import org.slf4j.Logger;
 
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
-import iti.kukumo.core.model.ExecutionState;
+
 
 
 

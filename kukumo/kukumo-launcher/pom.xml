@@ -14,9 +14,9 @@
     <!-- inherited configuration -->
     <parent>
         <groupId>es.iti.kukumo</groupId>
-        <artifactId>kukumo</artifactId>
+        <artifactId>kukumo-project</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- coordinates -->
@@ -31,6 +31,19 @@
     <properties>
         <mavenVersion>3.3.9</mavenVersion>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 
     <dependencies>

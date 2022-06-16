@@ -20,16 +20,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import imconfig.Configuration;
+import iti.kukumo.core.util.LocaleLoader;
 import org.slf4j.Logger;
 
 import iti.kukumo.api.Backend;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.util.LocaleLoader;
-import iti.kukumo.util.StringDistance;
+import iti.kukumo.core.util.StringDistance;
 
 /*
  * Partial implementation of Backend, without running capabilities

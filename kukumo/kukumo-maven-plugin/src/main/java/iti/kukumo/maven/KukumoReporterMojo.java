@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 
 
 @Mojo(name = "report", defaultPhase = LifecyclePhase.VERIFY)

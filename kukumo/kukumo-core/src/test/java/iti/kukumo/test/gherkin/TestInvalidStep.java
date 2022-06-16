@@ -18,11 +18,11 @@ import java.util.Map;
 import imconfig.Configuration;
 import org.junit.Test;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.Result;
-import iti.kukumo.gherkin.GherkinResourceType;
+import iti.kukumo.core.gherkin.GherkinResourceType;
 
 
 public class TestInvalidStep {

@@ -16,6 +16,8 @@ import java.util.stream.*;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import iti.kukumo.core.Kukumo;
+import iti.kukumo.api.KukumoException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.*;

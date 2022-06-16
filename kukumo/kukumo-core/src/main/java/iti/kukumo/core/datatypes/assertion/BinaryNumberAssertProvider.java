@@ -17,11 +17,12 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import iti.kukumo.api.util.ThrowableFunction;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 import iti.kukumo.core.datatypes.KukumoNumberDataType;
-import iti.kukumo.util.ThrowableFunction;
+
 
 
 public class BinaryNumberAssertProvider<T extends Comparable<T>> extends AbstractAssertProvider {

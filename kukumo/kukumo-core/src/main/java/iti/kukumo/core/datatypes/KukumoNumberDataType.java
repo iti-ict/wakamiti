@@ -10,6 +10,8 @@
 package iti.kukumo.core.datatypes;
 
 
+import iti.kukumo.api.util.ThrowableFunction;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,7 +19,6 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
-import iti.kukumo.util.ThrowableFunction;
 
 
 public class KukumoNumberDataType<T> extends KukumoDataTypeBase<T> {

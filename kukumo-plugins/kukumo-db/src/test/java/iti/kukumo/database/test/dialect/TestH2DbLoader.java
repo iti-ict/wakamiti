@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.database.DatabaseConfigContributor;
-import iti.kukumo.junit.KukumoJUnitRunner;
+import iti.kukumo.core.junit.KukumoJUnitRunner;
 
 
 @RunWith(KukumoJUnitRunner.class)

@@ -14,7 +14,7 @@ import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.KukumoLogger;
+import iti.kukumo.api.util.KukumoLogger;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.slf4j.Logger;

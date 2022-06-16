@@ -17,15 +17,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import iti.kukumo.api.util.Either;
 import org.junit.Test;
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoDataType;
 import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.backend.ExpressionMatcher;
-import iti.kukumo.util.Either;
+
 
 
 

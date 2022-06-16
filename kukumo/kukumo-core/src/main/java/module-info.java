@@ -4,30 +4,23 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.extensions.ConfigContributor;
+import iti.kukumo.api.KukumoAPI;
+import iti.kukumo.api.extensions.*;
 import iti.kukumo.api.extensions.DataTypeContributor;
-import iti.kukumo.api.extensions.PlanBuilder;
-import iti.kukumo.api.extensions.PlanTransformer;
-import iti.kukumo.api.extensions.ResourceType;
+import iti.kukumo.core.DefaultKukumoAPI;
 import iti.kukumo.core.datatypes.KukumoCoreTypes;
 import iti.kukumo.core.datatypes.assertion.KukumoAssertTypes;
 import iti.kukumo.core.plan.CleanUpPlanTransformer;
-import iti.kukumo.gherkin.GherkinPlanBuilder;
-import iti.kukumo.gherkin.GherkinRedefinitionPlanTransformer;
-import iti.kukumo.gherkin.GherkinResourceType;
+import iti.kukumo.core.gherkin.GherkinPlanBuilder;
+import iti.kukumo.core.gherkin.GherkinRedefinitionPlanTransformer;
+import iti.kukumo.core.gherkin.GherkinResourceType;
 
 open module kukumo.core {
 
-    exports iti.kukumo.api;
-    exports iti.kukumo.api.annotations;
-    exports iti.kukumo.api.event;
-    exports iti.kukumo.api.extensions;
-    exports iti.kukumo.api.plan;
-    exports iti.kukumo.api.datatypes;
-    exports iti.kukumo.gherkin;
-    exports iti.kukumo.junit;
-    exports iti.kukumo.util;
+    exports iti.kukumo.core.gherkin;
+    exports iti.kukumo.core.util;
+    exports iti.kukumo.core.runner;
+    exports iti.kukumo.core;
 
     requires transitive imconfig;
     requires transitive iti.commons.jext;
@@ -45,21 +38,14 @@ open module kukumo.core {
     requires net.harawata.appdirs;
     requires org.codehaus.groovy;
     requires java.instrument;
+    requires kukumo.api;
 
-
-    uses iti.kukumo.api.extensions.ResourceType;
-    uses iti.kukumo.api.extensions.ConfigContributor;
-    uses iti.kukumo.api.extensions.DataTypeContributor;
-    uses iti.kukumo.api.extensions.EventObserver;
-    uses iti.kukumo.api.extensions.PlanBuilder;
-    uses iti.kukumo.api.extensions.PlanTransformer;
-    uses iti.kukumo.api.extensions.Reporter;
-    uses iti.kukumo.api.extensions.StepContributor;
+    provides KukumoAPI with DefaultKukumoAPI;
 
     provides ResourceType with GherkinResourceType;
     provides PlanBuilder with GherkinPlanBuilder;
     provides PlanTransformer with GherkinRedefinitionPlanTransformer, CleanUpPlanTransformer;
     provides DataTypeContributor with KukumoCoreTypes, KukumoAssertTypes;
-    provides ConfigContributor with KukumoConfiguration;
+
 
 }

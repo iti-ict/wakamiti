@@ -20,7 +20,7 @@ import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.util.MatcherAssertion;
+import iti.kukumo.api.util.MatcherAssertion;
 
 
 import java.io.File;

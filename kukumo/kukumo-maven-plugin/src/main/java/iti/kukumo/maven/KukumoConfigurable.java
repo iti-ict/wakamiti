@@ -19,7 +19,7 @@ import imconfig.ConfigurationException;
 import org.apache.maven.plugin.logging.Log;
 
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 
 
 public interface KukumoConfigurable {

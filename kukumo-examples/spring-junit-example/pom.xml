@@ -145,22 +145,6 @@
             <artifactId>kukumo-db</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Localization -->
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-rest-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-db-l10n</artifactId>
-            <scope>test</scope>
-        </dependency>
 
 
         <!-- Logj2 dependencies -->
@@ -186,6 +170,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

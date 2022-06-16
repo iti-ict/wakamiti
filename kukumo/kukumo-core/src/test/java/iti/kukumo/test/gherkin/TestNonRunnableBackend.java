@@ -15,7 +15,7 @@ import imconfig.Configuration;
 import org.junit.Test;
 
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 
 public class TestNonRunnableBackend {
 

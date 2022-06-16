@@ -16,7 +16,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import iti.kukumo.util.TokenParser;
+import iti.kukumo.core.util.TokenParser;
 
 
 public class TestTokenParser {

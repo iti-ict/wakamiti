@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 
 import imconfig.Configuration;
 import imconfig.ConfigurationException;
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
 
@@ -28,6 +28,15 @@ public class KukumoRunner {
 
     public KukumoRunner(CliArguments arguments) {
         this.arguments = arguments;
+    }
+
+    public String getContributions() {
+        StringBuilder string = new StringBuilder();
+        Kukumo.contributors().allContributors().forEach((type, contributions)-> {
+            string.append(type.getSimpleName()).append(" :\n");
+            contributions.forEach(it -> string.append("    ").append(it.info()).append("\n"));
+        });
+        return string.toString();
     }
 
 

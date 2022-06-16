@@ -28,11 +28,11 @@ import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 
 
-import iti.kukumo.api.Kukumo;
+import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.gherkin.GherkinResourceType;
+import iti.kukumo.core.gherkin.GherkinResourceType;
 
 
 public class TestPlanFactory {

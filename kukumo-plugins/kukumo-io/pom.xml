@@ -24,7 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-io</artifactId>
-    <version>1.3.2</version>
+    <version>1.4.0</version>
 
     <!-- additional information -->
     <name>Kukumo::Files Steps</name>
@@ -48,7 +48,7 @@
     <dependencies>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
-            <artifactId>kukumo-core</artifactId>
+            <artifactId>kukumo-api</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
