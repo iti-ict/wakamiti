@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.1] 2022-09-12
+### Fixed
+- https://github.com/iti-ict/kukumo/issues/48
+
+
 ## [1.3.2] 2022-05-03
 ### Modified
 - Bumped vulnerable dependency `commons-io:commons-io` version `2.6` to `2.11.0`
 - Bumped vulnerable dependency `junit:junit` version `4.13-rc-2` to `4.13.2`
 - Bumped vulnerable dependency `com.fasterxml.jackson.core:jackson-databind` version `2.10.1` to `2.13.2.2
 - Bumped vulnerable dependency `org.apache.logging.log4j:log4j-core` version `2.13.0` to `2.17.2`
-- 
+
 ## [1.3.0] 2022-01-26
 ### Added
 - Steps can use property substitution using the syntax `${property.name}`

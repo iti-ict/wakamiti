@@ -21,6 +21,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-lsp</artifactId>
+    <version>1.4.0</version>
 
     <!-- additional information -->
     <name>Kukumo::Language Server Protocol</name>

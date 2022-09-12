@@ -20,6 +20,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-core</artifactId>
+    <version>1.4.1</version>
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>

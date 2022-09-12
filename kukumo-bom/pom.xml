@@ -18,7 +18,8 @@
         <!-- internal dependencies -->
         <gherkin-parser.version>1.0.2</gherkin-parser.version>
         <kukumo-api.version>1.4.0</kukumo-api.version>
-        <kukumo-core.version>1.4.0</kukumo-core.version>
+        <kukumo-core.version>1.4.1</kukumo-core.version>
+        <kukumo-lsp.version>1.4.0</kukumo-lsp.version>
         <kukumo-rest.version>1.4.0</kukumo-rest.version>
         <kukumo-db.version>1.4.0</kukumo-db.version>
         <kukumo-amqp.version>1.4.0</kukumo-amqp.version>
@@ -40,7 +41,7 @@
         <assertj-core.version>3.14.0</assertj-core.version>
         <jackson.version>2.13.2</jackson.version>
         <jackson-databind.version>2.13.2.2</jackson-databind.version>
-        <snakeyaml.version>1.30</snakeyaml.version>
+        <snakeyaml.version>1.31</snakeyaml.version>
         <hamcrest.version>2.2</hamcrest.version>
         <plexus-utils.version>3.2.0</plexus-utils.version>
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
@@ -55,7 +56,6 @@
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <maven-artifact.version>3.8.1</maven-artifact.version>
         <maven-model.version>3.8.1</maven-model.version>
-        <maven-fetcher.version>1.3.0</maven-fetcher.version>
         <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
         <aether.version>1.0.2.v20150114</aether.version>
         <guice.version>4.2.2</guice.version>
@@ -119,7 +119,7 @@
             <dependency>
                 <groupId>es.iti.kukumo</groupId>
                 <artifactId>kukumo-lsp</artifactId>
-                <version>${kukumo-core.version}</version>
+                <version>${kukumo-lsp.version}</version>
             </dependency>
             <dependency>
                 <groupId>es.iti.kukumo</groupId>
