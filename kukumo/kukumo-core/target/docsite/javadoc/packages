@@ -1,4 +1,4 @@
-iti.kukumo.core
 iti.kukumo.core.runner
-iti.kukumo.core.util
 iti.kukumo.core.gherkin
+iti.kukumo.core
+iti.kukumo.core.util
