@@ -34,7 +34,7 @@
         <lombok.version>1.18.10</lombok.version>
         <slf4j-api.version>1.7.29</slf4j-api.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
-        <maven-fetcher.version>1.3.0</maven-fetcher.version>
+        <maven-fetcher.version>1.5.0</maven-fetcher.version>
         <log4j.version>2.17.2</log4j.version>
         <junit.version>4.13.2</junit.version>
         <assertj-core.version>3.14.0</assertj-core.version>
