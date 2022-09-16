@@ -317,7 +317,7 @@
             <plugin>
                 <groupId>io.github.luiinge</groupId>
                 <artifactId>docsite-maven-plugin</artifactId>
-                <version>1.3.0</version>
+                <version>1.5.2</version>
                 <configuration>
                     <forceDelete>true</forceDelete>
                 </configuration>
@@ -330,8 +330,8 @@
                         <phase>site</phase>
                         <configuration>
                             <languages>
-                                <language>en:gb</language>
-                                <language>es:es</language>.
+                                <language>en:English</language>
+                                <language>es:Español</language>.
                             </languages>
                             <localizations>
                                 <localization>
@@ -358,8 +358,8 @@
                         <configuration>
                             <docsiteFile>docsite.json</docsiteFile>
                             <languages>
-                                <language>en:gb</language>
-                                <language>es:es</language>
+                                <language>en:English</language>
+                                <language>es:Español</language>.
                             </languages>
                             <localizationFile>docsite-l10n.json</localizationFile>
                             <themeColors>

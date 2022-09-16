@@ -228,22 +228,31 @@ Assert that the number of rows in the given table matching the specified values 
 > Given that the number of users having STATE = '1' and BLOCKING_DATE = '<null>' in the database table USER is not 7
 >```
 
-##### *[Given that/Then]* * satisfying the SQL clause {sql:text} exist(s) in the database table {table:word}
+##### *[Given that/Then]* * satisfying the following SQL clause exist(s) in the database table {table:word}:
 Assert that at least one row in the given table satisfies the specified SQL clause exist
 >```gherkin
-> Then a user satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' exists in the database table USER
+> Then a user satisfying the following SQL clause exists in the database table USER:
+> """sql
+> STATE IN (2,3) OR BLOCKING_DATE IS NULL
+> """
 >```
 
-##### *[Given that/Then]* * satisfying the SQL clause {sql:text} do(es) not exist in the database table {table:word}
+##### *[Given that/Then]* * satisfying the following SQL clause do(es) not exist in the database table {table:word}
 Assert that no row in the given table satisfies the specified SQL clause exist
 >```gherkin
-> Given that a user satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' does not exist in the database table USER
+> Given that a user satisfying the following SQL clause does not exist in the database table USER:
+> """sql
+> STATE IN (2,3) OR BLOCKING_DATE IS NULL
+> """
 >```
 
-##### *[Given that/Then]* the number of * satisfying the SQL clause {sql:text} in the database table {table:word} {matcher:long-assertion}
+##### *[Given that/Then]* the number of * satisfying the following SQL clause in the database table {table:word} {matcher:long-assertion}
 Assert that the number of rows in the given table matching the SQL clause satisfies a numeric assertion
 >```gherkin
-> Then the number of users satisfying the SQL clause 'STATE IN (2,3) OR BLOCKING_DATE IS NULL' in the database table USER is less than 10
+> Then the number of users satisfying the following SQL clause in the database table USER is less than 10:
+> """
+> STATE IN (2,3) OR BLOCKING_DATE IS NULL
+> """
 >```
 
 ##### *[Given that/Then]* the following * exist(s) in the database table {word}:

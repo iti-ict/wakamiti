@@ -9,7 +9,7 @@ Configuration
 
 ###  `rest.baseURL`
 Set the base URL for subsequents API calls.
-This is equivalent to the step [xx] in you prefer the descriptive configuration
+This is equivalent to the step `the base URL {url}` in you prefer the descriptive configuration
 Example:
 
 ```yaml
@@ -120,8 +120,6 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 Given the REST content type XML
 ```
 
-##### Localizations:
-- :es: `{type} como el tipo de contenido REST`
 
 ---
 
@@ -137,8 +135,8 @@ Declarative-way for setting the configuration property [`rest.baseURL`](#restbas
 ```gherkin
 Given the base URL http://example.org/api
 ```
-##### Localizations:
-- :es: `la URL base {url}`
+
+
 
 
 ---
@@ -154,8 +152,8 @@ Set the service path that would be tested. It would be appended to the `baseURL`
 ```gherkin
 Given the REST service '/users`
 ```
-##### Localizations:
-- :es: `el servicio REST {text}`
+
+
 
 ---
 #### `* identified by {text}`
@@ -172,12 +170,13 @@ the `baseURL` and the service.
 Given a user identified by 'john'
 Given the borrowed book identified by '978-3-16-148410-0'
 ```
-##### Localizations:
-- :es: `* identificad(o|a|os|as) por {text}`
+
+
 
 ---
 #### `the following request parameters:`
 Set the request parameters using a data table. 
+The parametes will be send as form data for POST requests.
 ##### Parameters:
 | name | Kukumo type  | description                             |
 |------|--------------|-----------------------------------------|
@@ -189,12 +188,13 @@ Given the following request parameters:
 | age  | 13       |
 | city | Valencia |
 ```
-##### Localizations:
-- :es: `los siguiente parámetros de solicitud:`
+
+
 
 ---
 #### `the following query parameters:`
-Set the request parameters for a query
+Set the request parameters for a query.
+The parameters will be pass after the service URL
 ##### Parameters:
 | name | Kukumo type  | description                             |
 |------|--------------|-----------------------------------------|
@@ -206,12 +206,13 @@ Given the following query parameters:
 | age  | 13       |
 | city | Valencia |
 ```
-##### Localizations:
-- :es: `los siguiente parámetros de búsqueda:`
+
+
 
 
 #### `the following path parameters:`
-Set parameterized path segments for a query
+Set parameterized path segments for a query.
+The parameters will be part of the request URL replacing the segments marked with `{` `}`.
 ##### Parameters:
 | name | Kukumo type  | description                             |
 |------|--------------|-----------------------------------------|
@@ -224,8 +225,8 @@ And the following path parameters:
 | user  | 25       |
 | item  | 7        |
 ```
-##### Localizations:
-- :es: `los siguientes parámetros de ruta:`
+
+
 
 
 
@@ -242,8 +243,8 @@ Given the following headers:
 | Age        | 3600  |
 | Keep-Alive | 1200  |
 ```
-##### Localizations:
-- :es: `las siguientes cabeceras:`
+
+
 
 
 
@@ -258,8 +259,8 @@ Set a response timeout for the subsequent HTTP requests
 ```gherkin
 Given a timeout of 12000 milliseconds
 ```
-##### Localizations:
-- :es: `un timeout de {int} milisegundos`
+
+
 
 
 
@@ -275,8 +276,8 @@ Set a response timeout for the subsequent HTTP requests
 ```gherkin
 Given a timeout of 2 seconds
 ```
-##### Localizations:
-- :es: `un timeout de {int} segundos`
+
+
 
 
 
@@ -293,8 +294,8 @@ but using any integer assertion
 ```gherkin
 * any request will fail when response HTTP code is greater than 500
 ```
-##### Localizations:
-- :es: `(que) toda petición se considera fallida si su código HTTP {integer-assertion}`
+
+
 
 
 
@@ -311,8 +312,8 @@ Set the authentication credentials to be sent in the `Authorization` header for 
 ```gherkin
 Given the service use the basic authentication credentials 'us1532':'xxxxx'
 ```
-##### Localizations:
-- :es: `(que) el servicio usa autenticación básica con las credenciales {username:text}:{password:text}`
+
+
 
 
 
@@ -329,8 +330,8 @@ subsequent requests
 ```gherkin
 Given the service use the authentication token 'hudytw9834y9cqy32t94'
 ```
-##### Localizations:
-- :es: `(que) el servicio usa el token de autenticación {text}`
+
+
 
 
 
@@ -347,8 +348,8 @@ subsequent requests
 ```gherkin
 Given the service use the authentication token of file 'token.txt'
 ```
-##### Localizations:
-- :es: `(que) el servicio usa el token de autenticación del fichero {file}`
+
+
 
 
 
@@ -366,8 +367,8 @@ Given the service use the authentication provider with the following data:
 grant_type=password&username=OficinaTest4&password=xxxxx
 """
 ```
-##### Localizations:
-- :es: `(que) el servicio usa el proveedor de autenticación con los siguientes datos:`
+
+
 
 
 
@@ -383,8 +384,8 @@ Set a multipart form-data including an attachment from the given file
 ```gherkin
 Given the attached file 'data.txt' is included
 ```
-##### Localizations:
-- :es: `(que) se incluye el fichero adjunto {file}`
+
+
 
 
 
@@ -403,8 +404,8 @@ Given the attached file is included with the following data:
 File contents
 """
 ```
-##### Localizations:
-- :es: `(que) se incluye el fichero adjunto con los siguientes datos:`
+
+
 
 
 
@@ -427,8 +428,8 @@ Given the following query parameters:
 | city | Valencia |
 When the users are queried
 ```
-##### Localizations:
-- :es: `se realiza la búsqueda *`
+
+
 
 
 
@@ -444,8 +445,8 @@ And the REST service 'users'
 And a user identified by '123'
 When the user is requested
 ```
-##### Localizations:
-- :es: `se consulta(n) *`
+
+
 
 
 
@@ -461,8 +462,8 @@ And the REST service 'users'
 And a user identified by '123'
 When the user is deleted
 ```
-##### Localizations:
-- :es: `se elimina(n) *`
+
+
 
 
 
@@ -490,8 +491,8 @@ When the user is modified with the following data:
 }
 """
 ```
-##### Localizations:
-- :es: `se reemplaza(n) * con los siguientes datos:`
+
+
 
 
 
@@ -511,8 +512,8 @@ And the REST service 'users'
 And a user identified by '123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
-##### Localizations:
-- :es: `se reemplaza(n) * con los datos del fichero {file}`
+
+
 
 
 
@@ -537,8 +538,8 @@ When the user is patched with the following data:
 }
 """
 ```
-##### Localizations:
-- :es: `se modifica(n) * con los siguientes datos:`
+
+
 
 
 
@@ -558,8 +559,8 @@ And the REST service 'users'
 And a user identified by '123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
-##### Localizations:
-- :es: `se modifica(n) * con los datos del fichero {file}`
+
+
 
 
 
@@ -586,8 +587,8 @@ When a user is created with the following data:
 }
 """
 ```
-##### Localizations:
-- :es: `se crea(n) * con los siguientes datos:`
+
+
 
 
 
@@ -606,8 +607,8 @@ Given the base URL 'http://host.com/api/v2'
 And the REST service 'users'
 When a user is created with the data from the file 'data/user123.json'
 ```
-##### Localizations:
-- :es: `se crea(n) * con los datos del fichero {file}`
+
+
 
 
 
@@ -621,8 +622,8 @@ and the REST service. The payload is empty.
 Given the REST service 'bookings'
 When a new booking is created
 ```
-##### Localizations:
-- :es: `se crea(n) (!con los)`
+
+
 
 
 
@@ -640,8 +641,8 @@ and the REST service.  The payload is provided in-document.
 Given the REST service 'bookings'
 When the following data is sent to the service
 ```
-##### Localizations:
-- :es: `se envía al servicio los siguientes datos:`
+
+
 
 
 
@@ -659,8 +660,8 @@ and the REST service. The payload is provided by the given file.
 Given the REST service 'bookings'
 When the data from the file 'booking.json' is sent to the service
 ```
-##### Localizations:
-- :es: `se envía al servicio los datos del fichero {file}`
+
+
 
 
 
@@ -678,8 +679,8 @@ Validate that the HTTP code of the last response satisfies the given assertion
 ```gherkin
 Then the response HTTP code is equals to 201
 ```
-##### Localizations:
-- :es: `el código de respuesta HTTP {integer-assertion}`
+
+
 
 
 
@@ -703,8 +704,8 @@ Then the response is (in any order):
 }
 """
 ```
-##### Localizations:
-- :es: `la respuesta es exactamente:`
+
+
 
 
 
@@ -721,14 +722,14 @@ According to the content type response, the specific comparing operation might v
 ```gherkin
 Then the response is equal to the file 'data/response1.json'
 ```
-##### Localizations:
-- :es: `la respuesta es exactamente el contenido del fichero {file}`
 
 
 
 
 
-#### `the response is \\(in any order\\):`
+
+
+#### `the response is \(in any order\):`
 Validates that the last response body has all the elements specified by the in-document
 content, but in any order.
 According to the content type response, the specific comparing operation might vary
@@ -746,14 +747,14 @@ Then the response is (in any order):
 }
 """
 ```
-##### Localizations:
-- :es: `la respuesta es exactamente \\(en cualquier orden\\):`
 
 
 
 
 
-#### `the response is equal to the file {file} \\(in any order\\)`
+
+
+#### `the response is equal to the file {file} \(in any order\)`
 Validates that the last response body has all the elements provided by the given file, 
 but in any order.
 According to the content type response, the specific comparing operation might vary.
@@ -765,8 +766,8 @@ According to the content type response, the specific comparing operation might v
 ```gherkin
 Then the response is equal to the file 'data/response1.json' (in any order)
 ```
-##### Localizations:
-- :es: `la respuesta es exactamente el contenido del fichero {file} \\(en cualquier orden\\)`
+
+
 
 
 
@@ -788,8 +789,8 @@ Then the response contains:
 }
 """
 ```
-##### Localizations:
-- :es: `la respuesta es parcialmente:`
+
+
 
 
 
@@ -806,8 +807,8 @@ According to the content type response, the specific comparing operation might v
 ```gherkin
 Then the response contains the file 'data/response1.json'
 ```
-##### Localizations:
-- :es: `la respuesta es parcialmente el contenido del fichero {file}`
+
+
 
 
 
@@ -825,8 +826,8 @@ the corresponding MIME type.
 ```gherkin
 Then the response content type is JSON
 ```
-##### Localizations:
-- :es: `el tipo de contenido de la respuesta es {word}`
+
+
 
 
 
@@ -842,8 +843,8 @@ Validate that the length in bytes of the last response satisfies the given asser
 ```gherkin
 Then the response length is less than 500
 ```
-##### Localizations:
-- :es: `el tamaño de la respuesta {matcher:integer-assertion}`
+
+
 
 
 
@@ -860,8 +861,8 @@ Validate that a header value from the last REST response satisfies the given ass
 ```gherkin
 Then the text response header Content-Encoding contains 'gzip'
 ```
-##### Localizations:
-- :es: `el texto de la cabecera de la respuesta {name:word} {matcher:text-assertion}`
+
+
 
 
 
@@ -878,8 +879,8 @@ Validate that a header value from the last REST response satisfies the given ass
 ```gherkin
 Then the integer response header Age is greater than 10
 ```
-##### Localizations:
-- :es: `el entero de la cabecera de la respuesta {name:word} {matcher:integer-assertion}`
+
+
 
 
 
@@ -896,8 +897,8 @@ Validate that a header value from the last REST response satisfies the given ass
 ```gherkin
 Then the decimal response header Custom-Header is greater than 123.54
 ```
-##### Localizations:
-- :es: `el decimal la cabecera de la respuesta {name:word} {matcher:decimal-assertion}`
+
+
 
 
 
@@ -915,8 +916,8 @@ a text assertion
 ```gherkin
 Then the text from response fragment 'users[0].lastName' starts with 'J'
 ```
-##### Localizations:
-- :es: `el texto del fragmento de la respuesta {fragment:text} {matcher:text-assertion}`
+
+
 
 
 
@@ -934,8 +935,8 @@ an integer assertion
 ```gherkin
 Then the integer from response fragment 'users[0].birthDate.year` is less than 1980
 ```
-##### Localizations:
-- :es: `el entero del fragmento de la respuesta {fragment:text} {matcher:integer-assertion}`
+
+
 
 
 
@@ -953,8 +954,8 @@ a decimal assertion
 ```gherkin
 Then the decimal from response fragment 'users[1].account.availableMoney` is greater than 23.57
 ```
-##### Localizations:
-- :es: `el decimal del fragmento de la respuesta {fragment:text} {matcher:decimal-assertion}`
+
+
 
 
 
@@ -994,7 +995,7 @@ Then the response satisfies the following schema:
      "contact": {
        "type": "object",
        "properties": {
-         "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\\.]+$" }
+         "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+$" }
        }
      }
    }
@@ -1002,8 +1003,8 @@ Then the response satisfies the following schema:
 """
 ```
 
-##### Localizations:
-- :es: `la respuesta cumple el siguiente esquema:`
+
+
 
 
 
@@ -1022,8 +1023,8 @@ and [XML Schema][xmlschema] for XML responses (according the
 ```gherkin
 Then the response satisfies the schema from the file 'data/user-schema.json'
 ```
-##### Localizations:
-- :es: `la respuesta cumple el esquema del fichero {file}`
+
+
 
 
 

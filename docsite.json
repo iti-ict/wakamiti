@@ -80,6 +80,7 @@
     {
       "type": "link",
       "icon": "fab:github",
+      "name": "Github",
       "source": "https://github.com/iti-ict/kukumo"
     }
 
