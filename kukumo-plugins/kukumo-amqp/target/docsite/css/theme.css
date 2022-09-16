@@ -1,0 +1,409 @@
+*:focus-visible {
+    border: 0.1rem solid var(--gui-element-color) !important;
+    border-radius: 0.2rem;
+    outline-offset: 0;
+    outline-width: 0;
+}
+
+html {
+    font-family: sans-serif;
+    font-size: inherit;
+}
+
+table {
+    margin: 1rem;
+    border-spacing: 0;
+    border: 0.05em solid var(--menu-regular-background-color);
+}
+
+td, th {
+    border: 0.05em solid var(--menu-regular-background-color);
+    padding: 0.2rem;
+}
+
+#jump-to-content {
+    background: var(--menu-bold-background-color);
+    color: var(--gui-element-color);
+    padding: 1rem;
+    transition: transform 0.1s;
+}
+
+
+/* Header */
+
+header {
+    background: var(--menu-regular-background-color);
+    color: var(--menu-foreground-color);
+    border-bottom: 3px solid var(--menu-decoration-color);
+}
+
+header .title-and-subtitle {
+    margin-left: 1em
+}
+
+header .title-and-subtitle i {
+    font-size: 3em;
+    padding: 0.2em;
+}
+
+
+header .title-and-subtitle .title {
+    margin: 0;
+    padding: 0;
+    font-size: 2em;
+
+}
+/*
+header .title-and-subtitle .title.no-subtitle {
+    padding-top: 1em;
+}
+*/
+header .title-and-subtitle .subtitle {
+    font-size: 0.8em;
+}
+
+
+header .company {
+    display: flex;
+}
+header .company img {
+    max-height: 3em;
+}
+header .company i {
+    font-size: 2em;
+}
+header .company .label {
+    background: var(--menu-regular-background-color);
+}
+
+
+
+/* Info bar -------------------------------------- */
+
+.info {
+    background-color: var(--menu-bold-background-color);
+    color: var(--menu-decoration-color);
+    font-size: 0.8rem;
+}
+
+.breadcrumbs a {
+   background: var(--menu-bold-background-color);
+   color: var(--menu-foreground-color);
+   text-decoration: none;
+}
+.breadcrumbs a:hover {
+   color: var(--menu-decoration-color);
+}
+.breadcrumbs ol {
+    list-style-type: none;
+}
+.breadcrumbs li {
+    margin: .1em .1em .1em .5em
+}
+.breadcrumbs li:before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f054';
+    font-weight: bold;
+    padding-right: 0.3em;
+}
+.breadcrumbs li:first-child:before {
+    content: '\f015';
+}
+
+.language-selection {
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+}
+.language-selection:before {
+   font-family: 'Font Awesome 5 Free';
+   content: '\f1ab';
+   font-weight: bold;
+   padding-right: 0.3em;
+   font-size: 1.1rem;
+}
+.language-selection select {
+   background: var(--menu-bold-background-color);
+   color: var(--menu-foreground-color);
+}
+
+
+/* Menu ----------------------------- */
+.menu-button::before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f0c9';
+    font-weight: bold;
+    font-size: 2em;
+    cursor: hand;
+}
+
+.menu-button {
+    border: 2px solid var(--menu-regular-background-color);
+    border-radius: 0.5em;
+    padding: 0.2em 0.5em 0.2em 0.5em;
+    color: var(--menu--foreground-color);
+    text-decoration: none;
+    margin-right: 0.5em;
+}
+
+.menu-button:hover {
+    border-color: var(--menu-bold-background-color);
+}
+
+.menu-button.selected {
+    border-color: var(--menu-bold-background-color);
+    background: var(--menu-bold-background-color);
+}
+
+
+
+.menu {
+    background-color: var(--menu-regular-background-color);
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    border: 2px solid var(--menu-bold-background-color);
+}
+
+
+.menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.menu li:hover,  .menu .label:hover {
+    background: var(--menu-bold-background-color);
+}
+
+.menu li.expanded > a::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f078';
+    font-weight: bold;
+    margin-left: 1em;
+    color: var(--menu-decoration-color);
+    width: 1em;
+}
+
+.menu li.collapsed > a::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f054';
+    font-weight: bold;
+    margin-left: 1em;
+    color: var(--menu-decoration-color);
+    width: 1em;
+}
+
+.menu li > a.external::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f35d';
+    font-weight: bold;
+    margin-left: 1em;
+    font-size: 0.7em;
+    color: var(--menu-decoration-color);
+}
+
+
+.menu li a {
+    text-decoration: none;
+    color: var(--menu-foreground-color);
+    border-bottom: 2px solid var(--menu-bold-background-color);
+}
+
+.menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu > ul > li a  {
+    padding-left: 1rem;
+}
+
+.menu > ul > li > ul > li a {
+    padding-left: 2rem;
+    filter: brightness(0.8);
+}
+
+.menu > ul > li > ul > li > ul > li a {
+    padding-left: 3rem;
+    filter: brightness(0.6);
+}
+
+
+
+.expanded-menu {
+    border: 2px solid var(--menu-regular-background-color);
+    padding-top: 0.6rem;
+}
+
+.expanded-menu > ul > li > a {
+    border-bottom: 2px solid var(--menu-regular-background-color);
+}
+
+
+/* Table Of Contents -----------------------------  */
+
+aside {
+    background-color: var(--menu-regular-background-color);
+}
+
+.toc {
+    font-size: 0.7rem;
+    margin: 0;
+    background-color: var(--menu-regular-background-color);
+    padding: 0.2rem;
+}
+
+
+.toc li {
+    border-left: 0.1rem solid var(--menu-decoration-color);
+    padding: 0.2rem;
+    margin-top: 0.4rem;
+}
+
+.toc li:hover {
+    background: var(--menu-bold-background-color);
+}
+
+.toc li a {
+    text-decoration: none;
+    color: var(--menu-foreground-color);
+}
+
+.toc ol {
+    list-style-type: none;
+}
+
+.toc > ol > li {
+    margin-left: 0.5rem;
+}
+
+.toc > ol > ol > li {
+    margin-left: 1rem;
+    filter: brightness(0.8);
+}
+
+.toc > ol > ol > ol > li {
+    margin-left: 1.5rem;
+}
+
+
+/* Content */
+
+section {
+    padding: 1em;
+    font-size: 0.9em;
+}
+
+section table {
+    font-size: 0.9em;
+}
+
+section > p {
+    margin: 1rem 0 1rem 0;
+}
+
+section.embedded {
+    padding: 0;
+    margin: 0;
+}
+
+section ol {
+    padding-inline-start: 1em;
+}
+
+section h1 {
+    border-bottom: 0.2em solid black;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+section h2 {
+    border-bottom: 0.1em solid black;
+    margin-top: 2em;
+}
+
+section h3 {
+    text-decoration: underline;
+}
+
+
+/* Menu Items */
+
+.label {
+    color: var(--menu-foreground-color);
+    background: var(--menu-regular-background-color);
+    text-decoration: none;
+    padding: 0.8em;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+.selected .label {
+    background: var(--menu-bold-background-color);
+}
+a.label:hover {
+    color: var(--menu-decoration-color);
+    background: var(--menu-bold-background-color);
+}
+.label i {
+    font-size: 1.5em;
+    padding-right: 0.3em;
+}
+
+pre {
+    font-size: 0.9em !important;
+}
+
+
+/* Other */
+
+div.footer {
+    font-size: 0.7rem;
+    text-align: right;
+    border-top: 0.1em solid var(--menu-regular-background-color);
+    padding-top: 1em;
+    margin-top: 1em;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: none;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--gui-element-color);
+  border-radius: 10px;
+}
+
+div.mermaid {
+    text-align: center;
+}
+
+
+@media (max-width: 600px) {
+
+header .title-and-subtitle .title {
+    font-size: 1.5em;
+}
+.toc-button {
+    background: var(--menu-regular-background-color);
+}
+.toc-button a::before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f03c';
+    font-weight: bold;
+    font-size: 1em;
+    color: var(--menu-foreground-color);
+    padding: 0.5em;
+}
+.toc-button.selected a::before {
+    color: var(--menu-decoration-color);
+}
+aside .toc {
+    font-size: 1em;
+}
+
+}

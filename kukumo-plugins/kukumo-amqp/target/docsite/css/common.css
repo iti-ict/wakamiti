@@ -8,7 +8,11 @@ body, div, a, p, header, nav, aside, main, section, ol, iframe {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
 }
 
 
@@ -44,4 +48,9 @@ section :not(pre) > code {
     background-color: #f0ecec;
     padding: 0.1rem;
     border-radius: 0.2rem;
+}
+
+
+.filler {
+    flex-grow: 1;
 }
