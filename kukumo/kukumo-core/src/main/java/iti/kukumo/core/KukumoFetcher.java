@@ -28,6 +28,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import maven.fetcher.*;
 import org.slf4j.Logger;
+import org.slf4j.helpers.NOPLogger;
 
 
 import net.harawata.appdirs.AppDirs;
@@ -83,10 +84,11 @@ public class KukumoFetcher {
             }
 
             logger.info("Fetching dependencies...");
-            MavenFetcher mavenFetcher = new MavenFetcher().logger(logger);
+            MavenFetcher mavenFetcher = new MavenFetcher().logger(NOPLogger.NOP_LOGGER);
             if (!conf.isEmpty()) {
                 mavenFetcher.config(conf.asProperties());
             }
+            mavenFetcher.logger(logger);
 
             MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
                 .scopes("compile", "provided");

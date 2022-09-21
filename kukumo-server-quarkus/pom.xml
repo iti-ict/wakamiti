@@ -134,6 +134,18 @@
             <artifactId>quarkus-test-security</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-html-report</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

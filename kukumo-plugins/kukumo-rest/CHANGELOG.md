@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.1] 2022-09-21
+
+## Fixed
+- Bump version of `restassured` to avoid module incompatibility with `groovy-xml`
+
+
+
 ## [1.3.3] 2022-05-05
 
 ## Fixed

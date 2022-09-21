@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.2] 2022-09-21
+### Fixed
+- Configure logger for Maven Fetcher after setting the configuration to avoid warning messages
+
+
 ## [1.4.1] 2022-09-12
 ### Fixed
 - https://github.com/iti-ict/kukumo/issues/48

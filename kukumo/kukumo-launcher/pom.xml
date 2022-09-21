@@ -21,6 +21,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-launcher</artifactId>
+    <version>1.4.1</version>
 
     <!-- additional information -->
     <name>Kukumo::Launcher</name>

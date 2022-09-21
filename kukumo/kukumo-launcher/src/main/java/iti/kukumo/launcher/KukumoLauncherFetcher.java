@@ -45,7 +45,8 @@ public class KukumoLauncherFetcher extends KukumoFetcher {
         return Kukumo.defaultConfiguration().append(
                 arguments.mavenFetcherConfiguration()
                         .appendProperty("localRepository", mavenRepo.toString())
-        ).append(arguments.kukumoConfiguration());
+        ).append(arguments.kukumoConfiguration())
+        ;
     }
 
 

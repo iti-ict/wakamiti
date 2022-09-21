@@ -29,6 +29,8 @@ public class KukumoLauncher {
 
     public static void main(final String[] args) {
 
+        System.setProperty("log4j.configurationFile","log4j2.xml");
+
         CliArguments arguments = new CliArguments();
         try {
             arguments.parse(args);
@@ -71,6 +73,8 @@ public class KukumoLauncher {
     private static Logger createLogger(boolean debug) {
         if (debug) {
             Configurator.setLevel("iti.kukumo", Level.DEBUG);
+        } else {
+            Configurator.setLevel("iti.kukumo", Level.INFO);
         }
         return LoggerFactory.getLogger("iti.kukumo");
     }
