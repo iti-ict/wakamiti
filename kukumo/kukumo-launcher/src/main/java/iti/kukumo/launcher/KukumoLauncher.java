@@ -71,12 +71,13 @@ public class KukumoLauncher {
 
 
     private static Logger createLogger(boolean debug) {
+        String loggerName = "iti.kukumo";
         if (debug) {
-            Configurator.setLevel("iti.kukumo", Level.DEBUG);
+            Configurator.setLevel(loggerName, Level.DEBUG);
         } else {
-            Configurator.setLevel("iti.kukumo", Level.INFO);
+            Configurator.setLevel(loggerName, Level.INFO);
         }
-        return LoggerFactory.getLogger("iti.kukumo");
+        return LoggerFactory.getLogger(loggerName);
     }
 
 
