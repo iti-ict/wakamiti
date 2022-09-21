@@ -28,6 +28,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import maven.fetcher.*;
 import org.slf4j.Logger;
+import org.slf4j.helpers.NOPLogger;
 
 
 import net.harawata.appdirs.AppDirs;
@@ -43,156 +44,157 @@ public class KukumoFetcher {
 
 
     public KukumoFetcher() {
-<span class="fc" id="L46">        this(Kukumo.LOGGER, Kukumo.defaultConfiguration());</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L47">        this(Kukumo.LOGGER, Kukumo.defaultConfiguration());</span>
+<span class="fc" id="L48">    }</span>
 
-<span class="fc" id="L49">    protected KukumoFetcher(Logger logger, Configuration mavenFetcherConfiguration) {</span>
-<span class="fc" id="L50">        this.logger = logger;</span>
-<span class="fc" id="L51">        this.conf = mavenFetcherConfiguration;</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L50">    protected KukumoFetcher(Logger logger, Configuration mavenFetcherConfiguration) {</span>
+<span class="fc" id="L51">        this.logger = logger;</span>
+<span class="fc" id="L52">        this.conf = mavenFetcherConfiguration;</span>
+<span class="fc" id="L53">    }</span>
 
 
     public KukumoFetcher withConfiguration(Configuration mavenFetcherConfiguration) {
-<span class="nc" id="L56">        return new KukumoFetcher(logger,mavenFetcherConfiguration);</span>
+<span class="nc" id="L57">        return new KukumoFetcher(logger,mavenFetcherConfiguration);</span>
     }
 
 
     public List&lt;Path&gt; fetch(List&lt;String&gt; modules, boolean mustClean) {
         try {
 
-<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (modules.isEmpty()) {</span>
-<span class="nc" id="L64">                logger.info(&quot;Nothing to fetch&quot;);</span>
-<span class="nc" id="L65">                return Collections.emptyList();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            if (modules.isEmpty()) {</span>
+<span class="nc" id="L65">                logger.info(&quot;Nothing to fetch&quot;);</span>
+<span class="nc" id="L66">                return Collections.emptyList();</span>
             }
 
-<span class="nc" id="L68">            AppDirs appDirs = AppDirsFactory.getInstance();</span>
-<span class="nc" id="L69">            Path mavenRepo = Paths.get(appDirs.getUserDataDir(&quot;kukumo&quot;, &quot;repository&quot;, &quot;iti&quot;));</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (mustClean) {</span>
-<span class="nc" id="L71">                cleanCache(mavenRepo);</span>
+<span class="nc" id="L69">            AppDirs appDirs = AppDirsFactory.getInstance();</span>
+<span class="nc" id="L70">            Path mavenRepo = Paths.get(appDirs.getUserDataDir(&quot;kukumo&quot;, &quot;repository&quot;, &quot;iti&quot;));</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">            if (mustClean) {</span>
+<span class="nc" id="L72">                cleanCache(mavenRepo);</span>
             }
-<span class="nc" id="L73">            Files.createDirectories(mavenRepo);</span>
-<span class="nc" id="L74">            logger.debug(&quot;Using local Maven repository {}&quot;,mavenRepo);</span>
+<span class="nc" id="L74">            Files.createDirectories(mavenRepo);</span>
+<span class="nc" id="L75">            logger.debug(&quot;Using local Maven repository {}&quot;,mavenRepo);</span>
 
-<span class="nc bnc" id="L76" title="All 2 branches missed.">            if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L77">                logger.debug(</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L78">                logger.debug(</span>
                     &quot;Modules requested to fetch are:{}&quot;,
-<span class="nc" id="L79">                    modules.stream().collect(Collectors.joining(&quot;\n -&quot;, &quot;\n -&quot;,&quot;&quot;))</span>
+<span class="nc" id="L80">                    modules.stream().collect(Collectors.joining(&quot;\n -&quot;, &quot;\n -&quot;,&quot;&quot;))</span>
                 );
-<span class="nc" id="L81">                logger.debug(&quot;Maven fetcher properties:&quot;);</span>
-<span class="nc" id="L82">                logger.debug(&quot;{}&quot;, conf);</span>
+<span class="nc" id="L82">                logger.debug(&quot;Maven fetcher properties:&quot;);</span>
+<span class="nc" id="L83">                logger.debug(&quot;{}&quot;, conf);</span>
             }
 
-<span class="nc" id="L85">            logger.info(&quot;Fetching dependencies...&quot;);</span>
-<span class="nc" id="L86">            MavenFetcher mavenFetcher = new MavenFetcher().logger(logger);</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (!conf.isEmpty()) {</span>
-<span class="nc" id="L88">                mavenFetcher.config(conf.asProperties());</span>
+<span class="nc" id="L86">            logger.info(&quot;Fetching dependencies...&quot;);</span>
+<span class="nc" id="L87">            MavenFetcher mavenFetcher = new MavenFetcher().logger(NOPLogger.NOP_LOGGER);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if (!conf.isEmpty()) {</span>
+<span class="nc" id="L89">                mavenFetcher.config(conf.asProperties());</span>
             }
+<span class="nc" id="L91">            mavenFetcher.logger(logger);</span>
 
-<span class="nc" id="L91">            MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)</span>
-<span class="nc" id="L92">                .scopes(&quot;compile&quot;, &quot;provided&quot;);</span>
-<span class="nc" id="L93">            MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);</span>
+<span class="nc" id="L93">            MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)</span>
+<span class="nc" id="L94">                .scopes(&quot;compile&quot;, &quot;provided&quot;);</span>
+<span class="nc" id="L95">            MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);</span>
 
-<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L96">                logger.debug(&quot;{}&quot;, fetchedArtifacts);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L98">                logger.debug(&quot;{}&quot;, fetchedArtifacts);</span>
             }
-<span class="nc" id="L98">            List&lt;Path&gt; paths = fetchedArtifacts</span>
-<span class="nc" id="L99">                .allArtifacts()</span>
-<span class="nc" id="L100">                .map(FetchedArtifact::path)</span>
-<span class="nc" id="L101">                .collect(Collectors.toList());</span>
+<span class="nc" id="L100">            List&lt;Path&gt; paths = fetchedArtifacts</span>
+<span class="nc" id="L101">                .allArtifacts()</span>
+<span class="nc" id="L102">                .map(FetchedArtifact::path)</span>
+<span class="nc" id="L103">                .collect(Collectors.toList());</span>
 
-<span class="nc" id="L103">            updateClasspath(paths);</span>
-<span class="nc" id="L104">            return paths;</span>
+<span class="nc" id="L105">            updateClasspath(paths);</span>
+<span class="nc" id="L106">            return paths;</span>
 
-<span class="nc" id="L106">        } catch (RuntimeException | IOException e) {</span>
-<span class="nc" id="L107">            logger.error(&quot;Error fetching dependencies&quot;);</span>
-<span class="nc" id="L108">            throw new KukumoException(e);</span>
+<span class="nc" id="L108">        } catch (RuntimeException | IOException e) {</span>
+<span class="nc" id="L109">            logger.error(&quot;Error fetching dependencies&quot;);</span>
+<span class="nc" id="L110">            throw new KukumoException(e);</span>
         }
     }
 
     private void cleanCache(Path mavenRepo) throws IOException {
-<span class="nc" id="L113">        try (Stream&lt;Path&gt; walker = Files.walk(mavenRepo)) {</span>
-<span class="nc" id="L114">            walker</span>
-<span class="nc" id="L115">                .sorted(Comparator.reverseOrder())</span>
-<span class="nc" id="L116">                .map(Path::toFile)</span>
-<span class="nc" id="L117">                .forEach(File::delete);</span>
+<span class="nc" id="L115">        try (Stream&lt;Path&gt; walker = Files.walk(mavenRepo)) {</span>
+<span class="nc" id="L116">            walker</span>
+<span class="nc" id="L117">                .sorted(Comparator.reverseOrder())</span>
+<span class="nc" id="L118">                .map(Path::toFile)</span>
+<span class="nc" id="L119">                .forEach(File::delete);</span>
         }
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L121">    }</span>
 
     public List&lt;Path&gt; loadGroovyClasses() {
-<span class="fc" id="L122">        logger.info(&quot;Fetching groovy files...&quot;);</span>
-<span class="fc" id="L123">        List&lt;Path&gt; groovyPaths = listGroovyPaths();</span>
+<span class="fc" id="L124">        logger.info(&quot;Fetching groovy files...&quot;);</span>
+<span class="fc" id="L125">        List&lt;Path&gt; groovyPaths = listGroovyPaths();</span>
 
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (groovyPaths.isEmpty()) {</span>
-<span class="nc" id="L126">            logger.debug(&quot;No groovy classes to load&quot;);</span>
-<span class="nc" id="L127">            return Collections.emptyList();</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (groovyPaths.isEmpty()) {</span>
+<span class="nc" id="L128">            logger.debug(&quot;No groovy classes to load&quot;);</span>
+<span class="nc" id="L129">            return Collections.emptyList();</span>
         } else {
-<span class="fc" id="L129">            groovyPaths.forEach(path -&gt; logger.debug(&quot;Groovy file [{}] found&quot;, path.getFileName()));</span>
+<span class="fc" id="L131">            groovyPaths.forEach(path -&gt; logger.debug(&quot;Groovy file [{}] found&quot;, path.getFileName()));</span>
         }
 
-<span class="fc" id="L132">        GroovyClassLoader groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());</span>
-<span class="fc" id="L133">        groovyPaths.stream().map(Path::getParent).map(Objects::toString).distinct()</span>
-<span class="fc" id="L134">                .forEach(groovyClassLoader::addClasspath);</span>
-<span class="fc" id="L135">        Thread.currentThread().setContextClassLoader(groovyClassLoader);</span>
+<span class="fc" id="L134">        GroovyClassLoader groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());</span>
+<span class="fc" id="L135">        groovyPaths.stream().map(Path::getParent).map(Objects::toString).distinct()</span>
+<span class="fc" id="L136">                .forEach(groovyClassLoader::addClasspath);</span>
+<span class="fc" id="L137">        Thread.currentThread().setContextClassLoader(groovyClassLoader);</span>
 
-<span class="fc" id="L137">        groovyPaths.forEach(path -&gt; {</span>
+<span class="fc" id="L139">        groovyPaths.forEach(path -&gt; {</span>
             try {
-<span class="fc" id="L139">                Class&lt;?&gt; cls = groovyClassLoader.parseClass(path.toFile());</span>
-<span class="fc" id="L140">                logger.debug(&quot;Parsed class [{}]&quot;, cls.getName());</span>
-<span class="nc" id="L141">            } catch (IOException e) {</span>
-<span class="nc" id="L142">                logger.error(&quot;Cannot parse file [{}]&quot;, path, e);</span>
-<span class="fc" id="L143">            }</span>
-<span class="fc" id="L144">        });</span>
+<span class="fc" id="L141">                Class&lt;?&gt; cls = groovyClassLoader.parseClass(path.toFile());</span>
+<span class="fc" id="L142">                logger.debug(&quot;Parsed class [{}]&quot;, cls.getName());</span>
+<span class="nc" id="L143">            } catch (IOException e) {</span>
+<span class="nc" id="L144">                logger.error(&quot;Cannot parse file [{}]&quot;, path, e);</span>
+<span class="fc" id="L145">            }</span>
+<span class="fc" id="L146">        });</span>
 
-<span class="fc" id="L146">        return groovyPaths;</span>
+<span class="fc" id="L148">        return groovyPaths;</span>
     }
 
     private List&lt;Path&gt; listGroovyPaths() {
-<span class="fc" id="L150">        return conf.getList(KukumoConfiguration.RESOURCE_PATH, String.class).stream()</span>
-<span class="fc" id="L151">                .map(Paths::get)</span>
-<span class="fc" id="L152">                .flatMap(this::listFiles)</span>
-<span class="fc" id="L153">                .filter(file -&gt; file.toFile().getName().endsWith(&quot;.groovy&quot;))</span>
-<span class="fc" id="L154">                .collect(Collectors.toList());</span>
+<span class="fc" id="L152">        return conf.getList(KukumoConfiguration.RESOURCE_PATH, String.class).stream()</span>
+<span class="fc" id="L153">                .map(Paths::get)</span>
+<span class="fc" id="L154">                .flatMap(this::listFiles)</span>
+<span class="fc" id="L155">                .filter(file -&gt; file.toFile().getName().endsWith(&quot;.groovy&quot;))</span>
+<span class="fc" id="L156">                .collect(Collectors.toList());</span>
     }
 
     private Stream&lt;Path&gt; listFiles(Path dir) {
         try {
-<span class="fc" id="L159">            return Stream.concat(</span>
-<span class="fc" id="L160">                list(dir).filter(Files::isDirectory).flatMap(this::listFiles),</span>
-<span class="fc" id="L161">                list(dir).filter(Files::isRegularFile)</span>
+<span class="fc" id="L161">            return Stream.concat(</span>
+<span class="fc" id="L162">                list(dir).filter(Files::isDirectory).flatMap(this::listFiles),</span>
+<span class="fc" id="L163">                list(dir).filter(Files::isRegularFile)</span>
             );
-<span class="nc" id="L163">        } catch (IOException e) {</span>
-<span class="nc" id="L164">            return null;</span>
+<span class="nc" id="L165">        } catch (IOException e) {</span>
+<span class="nc" id="L166">            return null;</span>
         }
     }
 
 
     private Stream&lt;Path&gt; list (Path dir) throws IOException {
-<span class="fc" id="L170">        try(var stream = Files.list(dir)) {</span>
-<span class="fc" id="L171">            return stream.collect(Collectors.toList()).stream();</span>
+<span class="fc" id="L172">        try(var stream = Files.list(dir)) {</span>
+<span class="fc" id="L173">            return stream.collect(Collectors.toList()).stream();</span>
         }
     }
 
 
     private void updateClasspath(List&lt;Path&gt; artifacts) {
-<span class="nc bnc" id="L177" title="All 2 branches missed.">        for (Path artifact : artifacts) {</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">            if (artifact.toString().endsWith(&quot;.jar&quot;)) {</span>
-<span class="nc bnc" id="L179" title="All 2 branches missed.">                if (!artifact.toFile().exists()) {</span>
-<span class="nc" id="L180">                    logger.warn(</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        for (Path artifact : artifacts) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            if (artifact.toString().endsWith(&quot;.jar&quot;)) {</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">                if (!artifact.toFile().exists()) {</span>
+<span class="nc" id="L182">                    logger.warn(</span>
                         &quot;Cannot include JAR in the classpath (the file no exists): {}&quot;,
                         artifact
                     );
-<span class="nc" id="L184">                    continue;</span>
+<span class="nc" id="L186">                    continue;</span>
                 }
                 try {
-<span class="nc" id="L187">                    JarFile jarFile = new JarFile(artifact.toFile());</span>
-<span class="nc" id="L188">                    ClasspathAgent.appendJarFile(jarFile);</span>
-<span class="nc" id="L189">                    logger.debug(&quot;Added JAR {} to the classpath&quot;, artifact);</span>
-<span class="nc" id="L190">                } catch (IOException e) {</span>
-<span class="nc" id="L191">                    logger.error(&quot;Cannot include JAR in the classpath: {}&quot;, artifact);</span>
-<span class="nc" id="L192">                    logger.debug(e.getMessage(), e);</span>
-<span class="nc" id="L193">                }</span>
+<span class="nc" id="L189">                    JarFile jarFile = new JarFile(artifact.toFile());</span>
+<span class="nc" id="L190">                    ClasspathAgent.appendJarFile(jarFile);</span>
+<span class="nc" id="L191">                    logger.debug(&quot;Added JAR {} to the classpath&quot;, artifact);</span>
+<span class="nc" id="L192">                } catch (IOException e) {</span>
+<span class="nc" id="L193">                    logger.error(&quot;Cannot include JAR in the classpath: {}&quot;, artifact);</span>
+<span class="nc" id="L194">                    logger.debug(e.getMessage(), e);</span>
+<span class="nc" id="L195">                }</span>
             }
-<span class="nc" id="L195">        }</span>
-<span class="nc" id="L196">    }</span>
+<span class="nc" id="L197">        }</span>
+<span class="nc" id="L198">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

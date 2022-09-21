@@ -22,10 +22,10 @@ kukumo.core='/home/runner/work/kukumo/kukumo/kukumo/kukumo-core/src/main/java'
 -docencoding
 'UTF-8'
 -doctitle
-'Kukumo::CORE 1.4.1 API'
+'Kukumo::CORE 1.4.2 API'
 -linkoffline
 'https://docs.oracle.com/en/java/javase/11/docs/api' '/home/runner/work/kukumo/kukumo/kukumo/kukumo-core/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'Kukumo::CORE 1.4.1 API'
+'Kukumo::CORE 1.4.2 API'

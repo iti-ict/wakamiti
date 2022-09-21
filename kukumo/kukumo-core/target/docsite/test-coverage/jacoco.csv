@@ -46,6 +46,6 @@ Kukumo::CORE,iti.kukumo.core.datatypes.assertion,BinaryStringAssertProvider,232,
 Kukumo::CORE,iti.kukumo.core.datatypes.assertion,UnaryStringAssertProvider,196,3,14,0,36,1,11,1,4,1
 Kukumo::CORE,iti.kukumo.core.datatypes.assertion,UnaryNumberAssertProvider,0,63,1,5,0,13,1,5,0,3
 Kukumo::CORE,iti.kukumo.core,DefaultKukumoAPI,9,0,0,0,4,0,4,0,4,0
-Kukumo::CORE,iti.kukumo.core,KukumoFetcher,222,141,17,1,59,30,13,12,4,12
+Kukumo::CORE,iti.kukumo.core,KukumoFetcher,226,141,17,1,60,30,13,12,4,12
 Kukumo::CORE,iti.kukumo.core,JsonPlanSerializer,12,27,0,0,2,9,2,4,2,4
 Kukumo::CORE,iti.kukumo.core,Kukumo,376,342,29,21,78,88,34,24,12,21
