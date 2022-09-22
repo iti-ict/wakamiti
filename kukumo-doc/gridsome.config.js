@@ -16,6 +16,7 @@ function addStyleResource (rule) {
 }
 
 const absolutePath = process.env.CI_PAGES_URL
+console.log('CI_PAGES_URL: ', absolutePath)
 const pathPrefix = new URL(absolutePath).pathname
 const siteUrl = absolutePath.replace(pathPrefix, '')
 
