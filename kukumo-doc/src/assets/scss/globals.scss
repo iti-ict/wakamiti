@@ -1,0 +1,87 @@
+@import 'prism';
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+  transition: background .15s ease-in-out, color .15s ease-in-out;
+
+  &::before {
+    display: none;
+    visibility: hidden;
+    content: 'small';
+
+    @include respond-above(sm) {
+      content: 'large'
+    }
+  }
+
+  &.bright {
+    background: $backgroundBright;
+    color: $textBright;
+  }
+
+  &.dark {
+    background: $backgroundDark;
+    color: $textDark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  margin-top: 0;
+
+  @include respond-above(md) {
+    font-size: 4rem;
+  }
+}
+
+a {
+  color: $brandPrimary;
+}
+
+a:has(code) {
+
+  text-decoration: none;
+
+  &.bright {
+    color: $textBright;
+  }
+
+  &.dark {
+    color: $textDark;
+  }
+}
+
+blockquote {
+  border-left: 3px solid $brandPrimary;
+  padding: 0 1rem;
+}
+
+td, th {
+  padding: 0 10px 10px 10px;
+}
+
+table {
+  margin-bottom: 10px;
+}
+
+pre {
+  font-size: .8em;
+}

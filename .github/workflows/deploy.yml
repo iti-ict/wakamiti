@@ -41,17 +41,25 @@ jobs:
            ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
            ./mvnw -B install -DskipTests
 
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+          cache: 'npm'
+
       - name: Generate site
         run: |
-           ./mvnw -B site -Dmaven.site.skip -DskipTests
-           ./mvnw -B site-deploy -Dmaven.site.skip -Dmaven.site.deploy.skip -DskipTests
+          cd kukumo-doc
+          npm i
+          npm run build
 
       - name: Deploy site
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: docs
-          FOLDER: target/docsite
+          FOLDER: kukumo-doc/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
 
