@@ -49,7 +49,7 @@ jobs:
 
       - name: Generate site
         run: |
-          CI_PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*\/}/"
+          echo CI_PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*\/}/" >> $GITHUB_ENV
           cd kukumo-doc
           npm i
           npm run build
