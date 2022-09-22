@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"kukumo.core","l":"iti.kukumo.core"},{"m":"kukumo.core","l":"iti.kukumo.core.gherkin"},{"m":"kukumo.core","l":"iti.kukumo.core.runner"},{"m":"kukumo.core","l":"iti.kukumo.core.util"}]

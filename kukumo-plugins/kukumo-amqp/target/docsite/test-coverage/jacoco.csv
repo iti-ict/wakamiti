@@ -1,5 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Kukumo::AMQP Steps,iti.kukumo.amqp,AmqpConfigContributor,0,101,0,0,0,16,0,6,0,6
-Kukumo::AMQP Steps,iti.kukumo.amqp,AmqpStepContributor.new DefaultConsumer() {...},0,37,0,0,0,6,0,3,0,3
-Kukumo::AMQP Steps,iti.kukumo.amqp,AmqpStepContributor,95,221,2,4,20,63,8,20,6,19
-Kukumo::AMQP Steps,iti.kukumo.amqp,AmqpConnectionParams,0,21,0,0,0,8,0,4,0,4

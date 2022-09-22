@@ -1,8 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Kukumo::Files Steps,iti.kukumo.files,FilesStepConfiguration,7,0,0,0,3,0,1,0,1,0
-Kukumo::Files Steps,iti.kukumo.files,FilesStepConfiguration.Defaults,6,0,0,0,2,0,1,0,1,0
-Kukumo::Files Steps,iti.kukumo.files,FilesStepContributor,91,288,7,13,27,70,9,21,5,15
-Kukumo::Files Steps,iti.kukumo.files,FilesStepConfigurator,114,0,0,0,20,0,12,0,12,0
-Kukumo::Files Steps,iti.kukumo.files,DataTableHelper,58,176,0,8,9,29,6,11,6,7
-Kukumo::Files Steps,iti.kukumo.files,FilesHelper,63,468,4,28,21,128,4,41,0,29
-Kukumo::Files Steps,iti.kukumo.files,FilesHelperException,0,4,0,0,0,2,0,1,0,1
