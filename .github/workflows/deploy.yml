@@ -47,9 +47,12 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: Generate site
+      - name: Set environment variables
         run: |
           echo CI_PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*\/}/" >> $GITHUB_ENV
+
+      - name: Generate site
+        run: |
           cd kukumo-doc
           npm i
           npm run build
