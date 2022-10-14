@@ -3,7 +3,7 @@
       <div class="scroll">
         <nav>
           <ul>
-            <li class="section" v-for="{ node } in $static.menu.edges" :key="node.id">
+            <li class="section" v-for="{ node } in filterEdges($static.menu.edges)" :key="node.id">
               <h3 class="section-title">{{node.section}}</h3>
               <ul>
                 <li v-for="item in node.topics" :key="item.title">
@@ -28,6 +28,7 @@ query Menu {
   menu: allMenu(order:ASC) {
     edges {
       node {
+        locale
         section
         topics {
           title
@@ -75,8 +76,11 @@ export default {
         return h.depth < 3
       })
     },
+    filterEdges(edges) {
+      return edges.filter( e => e.node.locale == this.$context.locale)
+    },
     checkAnchors(node, item) {
-      if (node.slug == item.slug) {
+      if (node.slug.replaceAll(/^\//g, '') == item.slug.replaceAll(/^\//g, '')) {
         if (item.headings.length > 0) {
           node.headings = item.headings
         }

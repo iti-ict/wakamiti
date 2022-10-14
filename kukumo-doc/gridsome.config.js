@@ -16,28 +16,61 @@ function addStyleResource (rule) {
 }
 
 const absolutePath = process.env.CI_PAGES_URL
-console.log('CI_PAGES_URL: ', absolutePath)
 const pathPrefix = new URL(absolutePath).pathname
 const siteUrl = absolutePath.replace(pathPrefix, '')
 
+const defaultLocale = 'es';
 
 module.exports = {
   siteName: 'Kukumo',
   siteUrl,
   pathPrefix,
   icon: './src/assets/img/logo.svg',
+  templates: {
+    Doc: node => node.slug
+  },
   plugins: [
     {
-      use: '@gridsome/vue-remark',
+      use: '@gridsome/source-filesystem',
       options: {
-        typeName: 'Doc',
+        path: '**/*.md',
         baseDir: 'docs',
-        // route: '/:slug',
-        template: './src/templates/Doc.vue',
-        plugins: [
-          '@gridsome/remark-prismjs',
-          ["@mgalbis/remark-prefix-links", { pathPrefix }]
-        ]
+        typeName: 'Doc',
+        remark: {
+          plugins: [
+            '@gridsome/remark-prismjs',
+            ["@mgalbis/remark-prefix-links", { pathPrefix }]
+          ]
+        }
+      }
+    },
+    {
+      use: "gridsome-plugin-i18n",
+      options: {
+        locales: [ 'es', 'en' ],
+        fallbackLocale: 'es', // fallback language
+        defaultLocale, // default language
+        enablePathRewrite: false, // rewrite path with locale prefix, default: true
+        rewriteDefaultLanguage: false, // rewrite default locale, default: true
+        enablePathGeneration: false,
+        routes: {
+          es: [
+            {
+              path: '/',
+              component: './src/pages/Index.vue'
+            }
+          ],
+          en: [
+            {
+              path: '/en/',
+              component: './src/pages/Index.vue'
+            }
+          ]
+        },
+        messages: {
+          'es': require('./src/assets/locales/es.json'),
+          'en': require('./src/assets/locales/en.json'),
+        }
       }
     },
     {
