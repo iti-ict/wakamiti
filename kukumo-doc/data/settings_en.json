@@ -1,51 +1,51 @@
 {
   "sidebar": [
     {
-      "section": "Introducción",
+      "section": "Introduction",
       "topics": [
         {
-          "title": "¿Qué es Kukumo?",
-          "slug": "introduction/what-is-kukumo"
+          "title": "What is Kukumo?",
+          "slug": "en/introduction/what-is-kukumo"
         },
         {
-          "title": "Primeros pasos",
-          "slug": "introduction/getting-started"
+          "title": "Getting started",
+          "slug": "en/introduction/getting-started"
         }
       ]
     },
     {
-      "section": "Kukumo a fondo",
+      "section": "Kukumo in-depth",
       "topics": [
         {
-          "title": "Arquitectura",
-          "slug": "kukumo/architecture"
+          "title": "Architecture",
+          "slug": "en/kukumo/architecture"
         },
         {
           "title": "Plugins",
-          "slug": "plugins",
+          "slug": "en/plugins",
           "headings": [
             {
-              "value": "Pasos REST",
+              "value": "REST steps",
               "anchor": "/rest",
               "depth": 2
             },
             {
-              "value": "Pasos DB",
+              "value": "DB steps",
               "anchor": "/database",
               "depth": 2
             },
             {
-              "value": "Pasos AMQP",
+              "value": "AMQP steps",
               "anchor": "/amqp",
               "depth": 2
             },
             {
-              "value": "Informe HTML",
+              "value": "HTML reporter",
               "anchor": "/html-reporter",
               "depth": 2
             },
             {
-              "value": "Informe Cucumber",
+              "value": "Cucumber reporter",
               "anchor": "/cucumber-exporter",
               "depth": 2
             }

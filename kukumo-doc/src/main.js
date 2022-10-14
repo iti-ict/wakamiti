@@ -15,10 +15,10 @@ export default function (Vue, { router, head, isClient, appOptions }) {
   // Add attributes to HTML tag
   head.htmlAttrs = { lang: 'es' }
 
-  head.link.push({
-    rel: 'manifest',
-    href: 'manifest.json'
-  })
+  // head.link.push({
+  //   rel: 'manifest',
+  //   href: url('/manifest.json')
+  // })
 
   head.meta.push({
     name: 'theme-color',

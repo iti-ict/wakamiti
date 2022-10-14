@@ -3,8 +3,7 @@
     <h1>
       {{ $page.doc.title }}
     </h1>
-     <!--div class="markdown" v-html="$page.doc.content" /-->
-     <VueRemarkContent class="markdown" />
+     <div class="markdown" v-html="$page.doc.content" />
   </Layout>
 </template>
 

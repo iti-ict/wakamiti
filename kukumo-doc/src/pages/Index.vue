@@ -1,12 +1,12 @@
 <template>
   <Layout :sidebar="false">
     <div class="content">
-      <h1>{{ this.description }}</h1>
+      <h1>{{ $t('description') }}</h1>
       <nav>
         <!-- To use other icons here, you need to import them in the Shortcut component -->
-        <Shortcut link="introduction/getting-started" text="Introducción" icon="play-icon" />
-        <Shortcut link="plugins" text="Catálogo" icon="file-text-icon" />
-        <Shortcut link="kukumo/architecture#configuración-global" text="Configuration" icon="sliders-icon" />
+        <Shortcut v-bind:link="$tp('introduction/getting-started')" v-bind:text="$t('index1')" icon="play-icon" />
+        <Shortcut v-bind:link="$tp('plugins')" v-bind:text="$t('index2')" icon="file-text-icon" />
+        <Shortcut v-bind:link="$tp('kukumo/architecture#configuración-global')" v-bind:text="$t('index3')" icon="sliders-icon" />
       </nav>
       <GitLink class="git" size="large" />
     </div>
@@ -30,16 +30,11 @@ export default {
     GitLink,
     Shortcut
   },
-  data() {
-    return {
-      description: 'BDD testing para humanos'
-    }
-  },
   metaInfo() {
     return {
-      title: this.description,
+      title: "Kukumo",
       meta: [
-        { key: 'description', name: 'description', content: 'BDD testing para humanos.' }
+        { key: 'description', name: 'description', content: this.$t('description') }
       ]
     }
   }

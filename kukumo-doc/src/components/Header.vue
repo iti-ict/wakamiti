@@ -2,6 +2,7 @@
   <header class="header" :class="{'header--scrolled' : pageScrolled}">
     <Logo :color="logoColor" />
     <nav class="nav">
+      <Language />
       <ThemeSwitch v-on:theme-change="updateLogo" />
       <MenuToggle v-if="menuToggle" />
     </nav>
@@ -12,11 +13,12 @@
 import ThemeSwitch from '~/components/ThemeSwitch.vue'
 import MenuToggle from '~/components/MenuToggle.vue'
 import Logo from '~/components/Logo.vue'
-import throttle from 'lodash/throttle'
+import Language from '~/components/Language.vue'
 
 export default {
   components: {
     ThemeSwitch,
+    Language,
     MenuToggle,
     Logo
   },
