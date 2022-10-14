@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="es" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22es%22%7D%7D">
+  <head>
+    <title>REST steps - Kukumo</title><meta name="gridsome:hash" content="0e5cb2b2972cddc9b96c326e9429f0a7c5b05d06"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.23"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><meta data-vue-tag="ssr" name="theme-color" content="#10c186"><meta data-vue-tag="ssr" name="google-site-verification" content="undefined"><meta data-vue-tag="ssr" name="apple-mobile-web-app-status-bar-style" content="default"><meta data-vue-tag="ssr" data-key="description" name="description" content="undefined"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/svg+xml" sizes="16x16" href="/kukumo/assets/static/logo.ce0531f.71078378ce0458c587aa756676812e99.svg"><link data-vue-tag="ssr" rel="icon" type="image/svg+xml" sizes="32x32" href="/kukumo/assets/static/logo.ac8d93a.71078378ce0458c587aa756676812e99.svg"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/svg+xml" sizes="76x76" href="/kukumo/assets/static/logo.f22e9f3.71078378ce0458c587aa756676812e99.svg"><link rel="preload" href="/kukumo/assets/css/0.styles.060d99fd.css" as="style"><link rel="preload" href="/kukumo/assets/js/app.a1f55545.js" as="script"><link rel="preload" href="/kukumo/assets/js/page--src--templates--doc-vue.cc94d01e.js" as="script"><link rel="prefetch" href="/kukumo/assets/js/page--node-modules--gridsome--app--pages--404-vue.92739a86.js"><link rel="prefetch" href="/kukumo/assets/js/page--src--pages--index-vue.6dbb4fae.js"><link rel="stylesheet" href="/kukumo/assets/css/0.styles.060d99fd.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="site" data-v-c66945fa data-v-2eb43bf3><header class="header" data-v-258c6538 data-v-c66945fa><a href="/kukumo/en/" title="Back to home" class="logo active" data-v-75aea175 data-v-258c6538><!----><div data-v-75aea175 data-v-75aea175><img alt="logo" src="data:image/svg+xml,%3csvg fill='none' viewBox='0 0 354 91' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3cdefs%3e%3cfilter id='__svg-blur-bc0cbf164e553ffa90073802cf4d37aa'%3e%3cfeGaussianBlur in='SourceGraphic' stdDeviation='40'/%3e%3c/filter%3e%3c/defs%3e%3cimage x='0' y='0' filter='url(%23__svg-blur-bc0cbf164e553ffa90073802cf4d37aa)' width='354' height='91' xlink:href='data:image/svg%2bxml%3bbase64%2ciVBORw0KGgoAAAANSUhEUgAAAEAAAAAQCAYAAACm53kpAAAACXBIWXMAAAsTAAALEwEAmpwYAAAHAklEQVRYw9VXa2xUVRDuPjCAP4zERE1QUQIoKI/tbilSENrdu%2b3u3ru79263L0DCQ0BIoHa3tbYNDcTKU6MhIkYNGoM/QIJgyksptJQ3iEFKrFGJYhRNBCxQStu9fnPu3GVbaQjxF5tM5pw5c%2becb87MnNm0tNv8PLJqY74U9KukaK3g9R4lbCd5xtbFNlPXcSC2NP1guT6hdbmO8RqW2dPu5Z8kq3bmHwbyS/Q8tUD3KOp5r1uxD9PXWmntuX3lBHRTxqlqPb0pTuDbQMPYAZZ7CnB6UwUd2rzRtCmLSvqxA94l8IgAHeOWrLpZA4T%2bV2UPQq8545saPb0x3u46WUUOmCvWDsRsKZGUhm8FF2PBNcElc03ppcNjWhc2aF029DymrJddU5YqT5Wljg17CsvCyTAWfNz%2bWBoA3UqFoLbBBwd4gxHdE9J%2bELrN5cMB8rwBOn6NnIDvP6G1Sctn9fNoETu%2bs/LhLTiQjVLKBE5jScEcaxhbJDFnnYAAa8UayazGJWgWMZc1IhMMZDQnu6qFL8vC86QsBXzPfWTVKgXUnlFA4M2fa9viwcS9UugtX36R7g3n696c4GnnrtI8R2P8H9exSgJ93XXsNeJnHA2v9PtvGmn/Ow1MID1l2m1kqrWvb2%2b3xpdjNR0kIsDRGLPyeKHzYIU%2b9tSrW7LnFNX7fBHd6w0nJtfMbHM0x7uchyp0REBHenO5cEL6/thw%2bm78pkV2eHkevLwWhmfw5hMxXwVei4M/gPWHxFhRV2M8GnwQ5nXQWWboqIPguAXgb0JWyDayMV4NXkXrLBsN2RvgK0DPsyyT5yQfwzI78/6guaD3QGQrq4c3yAEIfRuPN48/XaM7j1bqrn1xHfWgO6tudsJxtILyncB3gXS%2bfRGTY1qrbL5n/AhprTVcPFMHb%2baNa4KFM4wiKmtDAHqUTy3USYa1RaDP5Og0XSmYTvO1HDm/kQ0A3M2hvSpU9KIuURrK6gi2W6cU4Dt8i/EXLNsiZAVCtjIlEp4EnfNphbpfK9KJ54aipLO6txPYAfFC14kqAnoDN97toApPt90YT0BG1MVFb4VIlx2lhpcljXL6KG0CsPW8eZkBXr0B2WMAMwLjboDrAj8L6uJ1AUIKaPfBAWfIBnQ2s41an6FzCWtDWbYtNxxFYdYSiKJfMH8E9BMVawOctp30cgJBCvMTfoD2Gg68CGqnsT9C51RfEuBHNpUlC%2bHYhjIbxi0UAeZtM3Ad4d7tPI7I2L7knOm4iSvnGLnmFkXtRCC/mA6wmw9aTh4noJA9Dgc8LV4UIhyCD/WjO2CENhwwAKDOBiLFpLOVbSwznKq2Ye0JlrXmhvLpae7GuJPDuoPmXpLL6s%2bs5yVHeYNCtskTCN9P4Q/6gx1/WoBwcgFMT0ZBLEpRgFvvNMDHCXzCcbi801lf2u0pgPelkPCelBc2nkyPZsUBTQfsNCOgTwfIWkdeWISizEXJzhFgOmALp0CtiAhZvYq1R/m2O5J2QBRhvebd0Ed90eZTyrFsREqfs44j4MKtFGikOhCjFLDwfE/GSZEKhhOQ/xmHKvWp84oT3lxVvAwwNFUYVDT7pMkeAnzcHyEHqE1mJ8kOuAnq6QARruJmDiQ7z4AoVt/x4XaxjTUcAVc9ApSanRem3kTYvNwLOOZqB4GGQydTBIhn3NhnOdlzy%2brDGLdwBHzfoxAycPEa4MZHOQ7G20Xha4glxh2r6Jqwfv6nXk/oJnqCBIfvZdCQlIKzkwG3gfYD8O%2b8%2bSXcRn/Mn%2bUaQGH7F2QJcVhZ3ZBio5Fz/gqogfKWHXWRI6WU9gBQ2oNenJsYdxpRJuZX%2bAxxtneRI43SpRl0npwVMC7q9Z4dITvBtWOJKGyZHy/c6Pq2WnecqtQzP3rZyKuQtkLciKJdZ8NncHMDebNcOqyouLhFAmekhFrHoTeevpGN6l0NOkTrcrSE5kvZhka3Q9/2slFtOjlYKF4NAj0O9Cfb%2b5vn7fzK7GV9iZyUPBNzyPa4%2bZns/RymuYuiNs7vdVNWzdOz1swlwC2hQS%2bY7%2boRDqE25p%2bnNCpuquqgw6CvQQtSbneoWFPURskI0ZGkg/GX4NtBg1nPD9oBPbKxFzQ7xcbb0Ke0%2bSA9U7S9tZgfMUMc/H1efyfbFzL/1D1N%2bjibeabF2d5AH/8L4ATJFzaBbgyGivWAn54c9ULOtGh/lj8FuuYXb2q%2b%2bY6vv0NXd%2bc/YejO%2buogveHoXXeXHuM/hPVuOk3zP4DxtCma06NGpoOKIPNJ2bIl2efLqgO5NAM8Cl6AzUqgP1CSQ1QUbVwczf7cACh6/Qj6%2bIhVUiJGT4/eH2PwiNgzRwnz/wX%2bL6CI/sJ2q6%2bP4P9FxEotMZ414RRz7g6ERassGfYtqa1yzzNpSXv/AuFYMmBvW0EIAAAAAElFTkSuQmCC' /%3e%3c/svg%3e" width="354" data-src="/kukumo/assets/static/logo-dark.c19c5a3.a1e0286d47596d553fc08d6b03d63c80.svg" data-srcset="/kukumo/assets/static/logo-dark.c19c5a3.a1e0286d47596d553fc08d6b03d63c80.svg 354w" data-sizes="(max-width: 354px) 100vw, 354px" class="g-image g-image--lazy g-image--loading" data-v-75aea175><noscript data-v-75aea175><img src="/kukumo/assets/static/logo-dark.c19c5a3.a1e0286d47596d553fc08d6b03d63c80.svg" class="g-image g-image--loaded" width="354" alt="logo"></noscript></div></a><nav class="nav" data-v-258c6538><button id="languageSwitch" aria-label="Switch language between spanish and english" data-v-3bd90801 data-v-258c6538><!----><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="globe feather feather-globe" data-v-3bd90801 data-v-3bd90801><circle cx="12" cy="12" r="10" data-v-3bd90801></circle><line x1="2" y1="12" x2="22" y2="12" data-v-3bd90801></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" data-v-3bd90801></path></svg>
+  ES
+</button><button id="themeSwitch" aria-label="Switch theme between light and dark" data-v-2a25ef95 data-v-258c6538><!----><!----></button><button aria-label="Toggle the sidebar" class="toggle" data-v-def1a688 data-v-258c6538><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="open feather feather-menu" data-v-def1a688 data-v-def1a688><line x1="3" y1="12" x2="21" y2="12" data-v-def1a688></line><line x1="3" y1="6" x2="21" y2="6" data-v-def1a688></line><line x1="3" y1="18" x2="21" y2="18" data-v-def1a688></line></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close feather feather-x" style="display:none;" data-v-def1a688 data-v-def1a688><line x1="18" y1="6" x2="6" y2="18" data-v-def1a688></line><line x1="6" y1="6" x2="18" y2="18" data-v-def1a688></line></svg></button></nav></header><aside class="sidebar" data-v-14629373 data-v-c66945fa><div class="scroll" data-v-14629373><nav data-v-14629373><ul data-v-14629373><li class="section" data-v-14629373><h3 class="section-title" data-v-14629373>Introduction</h3><ul data-v-14629373><li data-v-14629373><a href="/kukumo/en/introduction/what-is-kukumo" class="topic" data-v-14629373>What is Kukumo?</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373></ul><!----><!----></li><li data-v-14629373><a href="/kukumo/en/introduction/getting-started" class="topic" data-v-14629373>Getting started</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373></ul></li></ul></li><li class="section" data-v-14629373><h3 class="section-title" data-v-14629373>Kukumo in-depth</h3><ul data-v-14629373><li data-v-14629373><a href="/kukumo/en/kukumo/architecture" class="topic" data-v-14629373>Architecture</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373><li data-v-14629373><a href="/kukumo/en/kukumo/architecture#global-configuration" class="sub-topic" data-v-14629373>Global configuration</a></li><li data-v-14629373><a href="/kukumo/en/kukumo/architecture#data-types" class="sub-topic" data-v-14629373>Data types</a></li><li data-v-14629373><a href="/kukumo/en/kukumo/architecture#comparators" class="sub-topic" data-v-14629373>Comparators</a></li></ul><!----><!----><!----><!----></li><li data-v-14629373><a href="/kukumo/en/plugins" class="topic active" data-v-14629373>Plugins</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373><li data-v-14629373><a href="/kukumo/en/plugins/rest" aria-current="page" class="sub-topic active--exact active" data-v-14629373>REST steps</a></li><li data-v-14629373><a href="/kukumo/en/plugins/database" class="sub-topic" data-v-14629373>DB steps</a></li><li data-v-14629373><a href="/kukumo/en/plugins/amqp" class="sub-topic" data-v-14629373>AMQP steps</a></li><li data-v-14629373><a href="/kukumo/en/plugins/html-reporter" class="sub-topic" data-v-14629373>HTML reporter</a></li><li data-v-14629373><a href="/kukumo/en/plugins/cucumber-exporter" class="sub-topic" data-v-14629373>Cucumber reporter</a></li></ul><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></li></ul></li></ul><a href="https://github.com/iti-ict/kukumo" title="Git-repository" aria-label="Kukumo on Github" class="git small" data-v-2ce15178 data-v-14629373><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon feather feather-github" data-v-2ce15178 data-v-2ce15178><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" data-v-2ce15178 data-v-2ce15178></path></svg>
+  Fork me on Github
+</a></nav></div></aside><main class="main" data-v-c66945fa><h1 data-v-c66945fa data-v-2eb43bf3>
+    REST steps
+  </h1><div class="markdown" data-v-c66945fa data-v-2eb43bf3><p>This plugin provides a set of steps to interact with a RESTful API.</p>
+<p><strong>Configuration</strong>:</p>
+<ul>
+<li><a href="#restbaseurl"><code class="language-text">rest.baseURL</code></a></li>
+<li><a href="#restcontenttype"><code class="language-text">rest.contentType</code></a></li>
+<li><a href="#resthttpcodethreshold"><code class="language-text">rest.httpCodeThreshold</code></a></li>
+<li><a href="#restoauth2url"><code class="language-text">rest.oauth2.url</code></a></li>
+<li><a href="#restoauth2clientid"><code class="language-text">rest.oauth2.clientId</code></a></li>
+<li><a href="#restoauth2clientsecret"><code class="language-text">rest.oauth2.clientSecret</code></a></li>
+</ul>
+<p><strong>Steps</strong>:</p>
+<ul>
+<li><a href="#define-content-type">Define content type</a></li>
+<li><a href="#define-base-url">Define base URL</a></li>
+<li><a href="#define-service">Define service</a></li>
+<li><a href="#define-id">Define id</a></li>
+<li><a href="#define-request-parameters">Define request parameters</a></li>
+<li><a href="#define-query-parameters">Define query parameters</a></li>
+<li><a href="#define-path-parameters">Define path parameters</a></li>
+<li><a href="#define-headers">Define headers</a></li>
+<li><a href="#define-timeout">Define timeout</a></li>
+<li><a href="#define-http-code-threshold">Define HTTP code threshold</a></li>
+<li><a href="#define-basic-authentication">Define basic authentication</a></li>
+<li><a href="#define-authentication-token">Define authentication token</a></li>
+<li><a href="#define-authentication-token-file">Define authentication token (file)</a></li>
+<li><a href="#define-oauth2-authentication">Define oauth2 authentication</a></li>
+<li><a href="#define-attached-file">Define attached file</a></li>
+<li><a href="#define-attached-file-file">Define attached file (file)</a></li>
+<li><a href="#make-get-request">Make GET request</a></li>
+<li><a href="#make-delete-request">Make DELETE request</a></li>
+<li><a href="#make-put-request-with-body">Make PUT request with body</a></li>
+<li><a href="#make-put-request-with-body-file">Make PUT request with body (file)</a></li>
+<li><a href="#make-patch-request">Make PATCH request</a></li>
+<li><a href="#make-patch-request-with-body">Make PATCH request with body</a></li>
+<li><a href="#make-patch-request-with-body-file">Make PATCH request with body (file)</a></li>
+<li><a href="#make-post-request">Make POST request</a></li>
+<li><a href="#make-post-request-with-body">Make POST request with body</a></li>
+<li><a href="#make-post-request-with-body-file">Make POST request with body (file)</a></li>
+<li><a href="#check-response-http-code">Check response HTTP code</a></li>
+<li><a href="#check-response-body">Check response body</a></li>
+<li><a href="#check-response-body-file">Check response body (file)</a></li>
+<li><a href="#check-response-body-fragment">Check response body fragment</a></li>
+<li><a href="#check-response-content-type">Check response content type</a></li>
+<li><a href="#check-response-size">Check response size</a></li>
+<li><a href="#check-response-header">Check response header</a></li>
+</ul>
+<h2 id="configuration"><a href="#configuration" aria-hidden="true"><span class="icon icon-link"></span></a>Configuration</h2>
+<hr>
+<h3 id="restbaseurl"><a href="#restbaseurl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.baseURL</code></h3>
+<p>Set the base URL for subsequents API calls. This is equivalent to the step "<a href="#define-base-url">Define base URL</a>" in you
+prefer the descriptive configuration.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">baseURL</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//example.org/api/v2</pre>
+<hr>
+<h3 id="restcontenttype"><a href="#restcontenttype" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.contentType</code></h3>
+<p>Set the content type that would be sent in the request header of subsequent API calls.
+Accepted values are:</p>
+<table>
+<thead>
+<tr>
+<th>literal</th>
+<th><code class="language-text">content-type</code> header value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">ANY</code></td>
+<td><code class="language-text">*/*</code></td>
+</tr>
+<tr>
+<td><code class="language-text">TEXT</code></td>
+<td><code class="language-text">text/plain</code></td>
+</tr>
+<tr>
+<td><code class="language-text">JSON</code></td>
+<td><code class="language-text">application/json, application/javascript, text/javascript, text/json</code></td>
+</tr>
+<tr>
+<td><code class="language-text">XML</code></td>
+<td><code class="language-text">application/xml, text/xml, application/xhtml+xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">HTML</code></td>
+<td><code class="language-text">text/html</code></td>
+</tr>
+<tr>
+<td><code class="language-text">URLENC</code></td>
+<td><code class="language-text">application/x-www-form-urlencoded</code></td>
+</tr>
+<tr>
+<td><code class="language-text">BINARY</code></td>
+<td><code class="language-text">application/octet-stream</code></td>
+</tr>
+</tbody>
+</table>
+<p>Default value is <code class="language-text">JSON</code>.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">contentType</span><span class="token punctuation">:</span> XML</pre>
+<hr>
+<h3 id="resthttpcodethreshold"><a href="#resthttpcodethreshold" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.httpCodeThreshold</code></h3>
+<p>Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step
+would automatically fail regardless any other condition.</p>
+<p>Default value is <code class="language-text">500</code>.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">httpCodeThreshold</span><span class="token punctuation">:</span> <span class="token number">999</span></pre>
+<hr>
+<h3 id="restoauth2url"><a href="#restoauth2url" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.oauth2.url</code></h3>
+<p>Set an <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service that would be used to generate a token in the request header
+<code class="language-text">Authorization</code> of the API calls.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">url</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//accounts.google.com/o/oauth2/auth</pre>
+<hr>
+<h3 id="restoauth2clientid"><a href="#restoauth2clientid" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.oauth2.clientId</code></h3>
+<p>Sets the parameter <code class="language-text">clientId</code> of the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service defined by the <code class="language-text">rest.oauth2.url</code> value.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">clientId</span><span class="token punctuation">:</span> WEB_APP</pre>
+<hr>
+<h3 id="restoauth2clientsecret"><a href="#restoauth2clientsecret" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">rest.oauth2.clientSecret</code></h3>
+<p>Sets the parameter <code class="language-text">clientSecret</code> of the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service defined by the <code class="language-text">rest.oauth2.url</code>
+value.</p>
+<p>Example:</p>
+<pre class="language-yaml"><span class="token key atrule">rest</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">clientSecret</span><span class="token punctuation">:</span> ABRACADABRAus1ZMGHvq9R</pre>
+<h2 id="steps"><a href="#steps" aria-hidden="true"><span class="icon icon-link"></span></a>Steps</h2>
+<hr>
+<h3 id="define-content-type"><a href="#define-content-type" aria-hidden="true"><span class="icon icon-link"></span></a>Define content type</h3>
+<pre class="language-text">the REST content type {word}</pre>
+<p>Declarative-way for setting the configuration property <a href="#restcontenttype"><code class="language-text">rest.contentType</code></a>.</p>
+<h4 id="parameters"><a href="#parameters" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">type</code></td>
+<td><code class="language-text">word</code></td>
+<td>Connection URL</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples"><a href="#examples" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST content type XML</pre>
+<hr>
+<h3 id="define-base-url"><a href="#define-base-url" aria-hidden="true"><span class="icon icon-link"></span></a>Define base URL</h3>
+<pre class="language-text">the base URL {url}</pre>
+<p>Declarative-way for setting the configuration property <a href="#restbaseurl"><code class="language-text">rest.baseURL</code></a>. </p>
+<h4 id="parameters-1"><a href="#parameters-1" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">url</code></td>
+<td><code class="language-text">url</code></td>
+<td>Base URL</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-1"><a href="#examples-1" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the base URL https://example.org/api</pre>
+<hr>
+<h3 id="define-service"><a href="#define-service" aria-hidden="true"><span class="icon icon-link"></span></a>Define service</h3>
+<pre class="language-text">the REST service {text}</pre>
+<p>Sets the service path that would be tested. It would be appended to the <code class="language-text">baseURL</code>.</p>
+<h4 id="parameters-2"><a href="#parameters-2" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">service</code></td>
+<td><code class="language-text">text</code></td>
+<td>URL segment path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-2"><a href="#examples-2" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service '/users`</pre>
+<hr>
+<h3 id="define-id"><a href="#define-id" aria-hidden="true"><span class="icon icon-link"></span></a>Define id</h3>
+<pre class="language-text">* identified by {text}</pre>
+<p>Sets an entity identifier to be used by the REST service. It would be appended to the <code class="language-text">baseURL</code> and the service.</p>
+<h4 id="parameters-3"><a href="#parameters-3" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">text</code></td>
+<td><code class="language-text">text</code></td>
+<td>An entity identifier</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-3"><a href="#examples-3" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> <span class="token atrule">a</span> user identified by <span class="token string">'john'</span></pre>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the borrowed book identified by <span class="token string">'978-3-16-148410-0'</span></pre>
+<hr>
+<h3 id="define-request-parameters"><a href="#define-request-parameters" aria-hidden="true"><span class="icon icon-link"></span></a>Define request parameters</h3>
+<pre class="language-text">the following request parameters:</pre>
+<p>Sets the request parameters using a data table. The parameters will be sent as form data for POST requests.</p>
+<h5 id="parameters-4"><a href="#parameters-4" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-4"><a href="#examples-4" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the following request parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> age  </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span></pre>
+<hr>
+<h3 id="define-query-parameters"><a href="#define-query-parameters" aria-hidden="true"><span class="icon icon-link"></span></a>Define query parameters</h3>
+<pre class="language-text">the following query parameters:</pre>
+<p>Set the request parameters for a query. The parameters will be pass after the service URL, like
+<code class="language-text">/user?param1=abc&amp;param2=123</code>.</p>
+<h5 id="parameters-5"><a href="#parameters-5" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-5"><a href="#examples-5" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the following query parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> age  </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span></pre>
+<hr>
+<h3 id="define-path-parameters"><a href="#define-path-parameters" aria-hidden="true"><span class="icon icon-link"></span></a>Define path parameters</h3>
+<pre class="language-text">the following path parameters:</pre>
+<p>Sets parameterized path segments for a query. The parameters will be part of the request URL replacing the segments
+marked with <code class="language-text">{}</code>.</p>
+<h5 id="parameters-6"><a href="#parameters-6" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-6"><a href="#examples-6" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service <span class="token string">'user/{user}/items/{item}'</span>
+  <span class="token atrule">And</span> the following path parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> user </span><span class="token punctuation">|</span><span class="token td string"> 25    </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> item </span><span class="token punctuation">|</span><span class="token td string"> 7     </span><span class="token punctuation">|</span></span></pre>
+<hr>
+<h3 id="define-headers"><a href="#define-headers" aria-hidden="true"><span class="icon icon-link"></span></a>Define headers</h3>
+<pre class="language-text">the following headers:</pre>
+<p>Define the HTTP headers that would be sent by the subsequent requests.</p>
+<h5 id="parameters-7"><a href="#parameters-7" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-7"><a href="#examples-7" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the following headers:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name       </span><span class="token punctuation">|</span><span class="token th variable"> Value </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> Age        </span><span class="token punctuation">|</span><span class="token td string"> 3600  </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> Keep-Alive </span><span class="token punctuation">|</span><span class="token td string"> 1200  </span><span class="token punctuation">|</span></span></pre>
+<hr>
+<h3 id="define-timeout"><a href="#define-timeout" aria-hidden="true"><span class="icon icon-link"></span></a>Define timeout</h3>
+<pre class="language-text">a timeout of {int} (milli)seconds</pre>
+<p>Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.</p>
+<h5 id="parameters-8"><a href="#parameters-8" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">int</code></td>
+<td><code class="language-text">int</code></td>
+<td>The timeout in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-8"><a href="#examples-8" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> <span class="token atrule">a</span> timeout of 12000 milliseconds</pre>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> <span class="token atrule">a</span> timeout of 2 seconds</pre>
+<hr>
+<h3 id="define-http-code-threshold"><a href="#define-http-code-threshold" aria-hidden="true"><span class="icon icon-link"></span></a>Define HTTP code threshold</h3>
+<pre class="language-text">any request will fail when response HTTP code {matcher}</pre>
+<p>Similar to setting the configuration property <a href="#resthttpcodethreshold"><code class="language-text">rest.httpCodeTreshold</code></a> but using any integer
+assertion.</p>
+<h5 id="parameters-9"><a href="#parameters-9" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">integer-assertion</code></td>
+<td>Numeric <a href="/kukumo//kukumo/architecture#comparators">comparator</a></td>
+</tr>
+</tbody>
+</table>
+<h5 id="example"><a href="#example" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h5>
+<pre class="language-gherkin">  * any request will fail when response HTTP code is greater than 500</pre>
+<hr>
+<h3 id="define-basic-authentication"><a href="#define-basic-authentication" aria-hidden="true"><span class="icon icon-link"></span></a>Define basic authentication</h3>
+<pre class="language-text">the service use the basic authentication credentials {username}:{password}</pre>
+<p>Sets the basic authentication credentials to be sent in the <code class="language-text">Authorization</code> header for the subsequent requests.</p>
+<h5 id="parameters-10"><a href="#parameters-10" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">username</code></td>
+<td><code class="language-text">text</code></td>
+<td>The username</td>
+</tr>
+<tr>
+<td><code class="language-text">password</code></td>
+<td><code class="language-text">text</code></td>
+<td>The password</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-9"><a href="#examples-9" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service use the basic authentication credentials <span class="token string">'us1532'</span>:<span class="token string">'xxxxx'</span></pre>
+<hr>
+<h3 id="define-authentication-token"><a href="#define-authentication-token" aria-hidden="true"><span class="icon icon-link"></span></a>Define authentication token</h3>
+<pre class="language-text">the service use the authentication token {text}</pre>
+<p>Sets the authentication token to be sent in the <code class="language-text">Authorization</code> header for the subsequent requests.</p>
+<h5 id="parameters-11"><a href="#parameters-11" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">text</code></td>
+<td><code class="language-text">text</code></td>
+<td>An authorization token</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-10"><a href="#examples-10" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service use the authentication token <span class="token string">'hudytw9834y9cqy32t94'</span></pre>
+<hr>
+<h3 id="define-authentication-token-file"><a href="#define-authentication-token-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define authentication token (file)</h3>
+<pre class="language-text">(que) el servicio usa el token de autenticación del fichero {file}</pre>
+<p>Sets the authentication token to be sent in the <code class="language-text">Authorization</code> header for the subsequent requests.</p>
+<h5 id="parameters-12"><a href="#parameters-12" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>File with the authentication token</td>
+</tr>
+</tbody>
+</table>
+<h5 id="example-1"><a href="#example-1" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service use the authentication token of file <span class="token string">'data/token.txt'</span></pre>
+<hr>
+<h3 id="define-oauth2-authentication"><a href="#define-oauth2-authentication" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication</h3>
+<pre class="language-text">the service use the authentication provider with the following data:</pre>
+<p>Sets the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication parameters.</p>
+<h5 id="parameters-13"><a href="#parameters-13" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>A string with the authentication parameters</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-11"><a href="#examples-11" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service use the authentication provider with the following data:
+    <span class="token pystring string">"""
+    grant_type=password&amp;username=OficinaTest4&amp;password=xxxxx
+    """</span></pre>
+<hr>
+<h3 id="define-attached-file"><a href="#define-attached-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define attached file</h3>
+<pre class="language-text">the attached file is included with the following data:</pre>
+<p>Sets a multipart form-data including an attachment from the given in-document content.</p>
+<h5 id="parameters-14"><a href="#parameters-14" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>Content to be attach</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-12"><a href="#examples-12" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the attached file is included with the following data:
+    <span class="token pystring string">"""
+    File content
+    """</span></pre>
+<hr>
+<h3 id="define-attached-file-file"><a href="#define-attached-file-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define attached file (file)</h3>
+<pre class="language-text">the attached file {file} is included</pre>
+<p>Sets a multipart form-data including an attachment from the given in-document content.</p>
+<h5 id="parameters-15"><a href="#parameters-15" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>File to be attach</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-13"><a href="#examples-13" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the attached file <span class="token string">'data/data.txt'</span> is included</pre>
+<hr>
+<h3 id="make-get-request"><a href="#make-get-request" aria-hidden="true"><span class="icon icon-link"></span></a>Make GET request</h3>
+<pre class="language-text">* (is|are) (queried|requested)</pre>
+<p>Sends a <code class="language-text">GET</code> request to the previously defined parameters.</p>
+<h5 id="examples-14"><a href="#examples-14" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> the following query parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> user </span><span class="token punctuation">|</span><span class="token td string"> 25    </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> item </span><span class="token punctuation">|</span><span class="token td string"> 7     </span><span class="token punctuation">|</span></span>
+  <span class="token atrule">When</span> the users are queried</pre>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is requested</pre>
+<hr>
+<h3 id="make-delete-request"><a href="#make-delete-request" aria-hidden="true"><span class="icon icon-link"></span></a>Make DELETE request</h3>
+<pre class="language-text">* (is|are) deleted</pre>
+<p>Sends a <code class="language-text">DELETE</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.</p>
+<h5 id="examples-15"><a href="#examples-15" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is deleted</pre>
+<hr>
+<h3 id="make-put-request-with-body"><a href="#make-put-request-with-body" aria-hidden="true"><span class="icon icon-link"></span></a>Make PUT request with body</h3>
+<pre class="language-text">* (is|are) modified with following data:</pre>
+<p>Sends a <code class="language-text">PUT</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+The payload is provided in-document.</p>
+<h5 id="parameters-16"><a href="#parameters-16" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>The request payload body</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-16"><a href="#examples-16" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is modified with the following data:
+    <span class="token pystring string">"""json
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "birthDate": "1980-02-20",
+        "address": "221B, Baker Street"
+    }
+    """</span></pre>
+<hr>
+<h3 id="make-put-request-with-body-file"><a href="#make-put-request-with-body-file" aria-hidden="true"><span class="icon icon-link"></span></a>Make PUT request with body (file)</h3>
+<pre class="language-text">* (is|are) modified with the data from the file {file}</pre>
+<p>Sends a <code class="language-text">PUT</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+The payload is provided by the given file.</p>
+<h5 id="parameters-17"><a href="#parameters-17" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>A file containing the request payload body</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-17"><a href="#examples-17" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is modified with the data from the file <span class="token string">'data/user123.json'</span></pre>
+<hr>
+<h3 id="make-patch-request"><a href="#make-patch-request" aria-hidden="true"><span class="icon icon-link"></span></a>Make PATCH request</h3>
+<pre class="language-text">* (is|are) patched</pre>
+<p>Sends a <code class="language-text">PATCH</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.</p>
+<h5 id="examples-18"><a href="#examples-18" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">And</span> the following query parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> age  </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span>
+  <span class="token atrule">When</span> the user is patched</pre>
+<hr>
+<h3 id="make-patch-request-with-body"><a href="#make-patch-request-with-body" aria-hidden="true"><span class="icon icon-link"></span></a>Make PATCH request with body</h3>
+<pre class="language-text">* (is|are) patched with the following data:</pre>
+<p>Sends a <code class="language-text">PATCH</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+The payload is provided in-document.</p>
+<h5 id="parameters-18"><a href="#parameters-18" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>The request payload body</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-19"><a href="#examples-19" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is patched with the following data:
+    <span class="token pystring string">"""json
+    {
+        "firstName": "Jim"
+    }
+    """</span></pre>
+<hr>
+<h3 id="make-patch-request-with-body-file"><a href="#make-patch-request-with-body-file" aria-hidden="true"><span class="icon icon-link"></span></a>Make PATCH request with body (file)</h3>
+<pre class="language-text">* (is|are) patched with the data from the file {file}</pre>
+<p>Sends a <code class="language-text">PATCH</code> request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+The payload is provided by the given file.</p>
+<h5 id="parameters-19"><a href="#parameters-19" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>A file containing the request payload body</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-20"><a href="#examples-20" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> <span class="token atrule">a</span> user identified by <span class="token string">'123'</span>
+  <span class="token atrule">When</span> the user is patched with the data from the file <span class="token string">'data/user123.json'</span></pre>
+<hr>
+<h3 id="make-post-request"><a href="#make-post-request" aria-hidden="true"><span class="icon icon-link"></span></a>Make POST request</h3>
+<pre class="language-text">* (is|are) created</pre>
+<pre class="language-text">the data info is sent to the service</pre>
+<p>Sends a <code class="language-text">POST</code> request to the previously defined endpoint formed with the base URL and the REST service. The payload is
+empty.</p>
+<h5 id="example-2"><a href="#example-2" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Given</span> the REST service <span class="token string">'users'</span>
+  <span class="token atrule">And</span> the following request parameters:<span class="token table-head">
+    <span class="token punctuation">|</span><span class="token th variable"> nombre </span><span class="token punctuation">|</span><span class="token th variable"> valor    </span><span class="token punctuation">|</span></span><span class="token table-body">
+    <span class="token punctuation">|</span><span class="token td string"> age    </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+    <span class="token punctuation">|</span><span class="token td string"> city   </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span>
+  <span class="token atrule">When</span> the data info is sent to the service</pre>
+<hr>
+<h3 id="make-post-request-with-body"><a href="#make-post-request-with-body" aria-hidden="true"><span class="icon icon-link"></span></a>Make POST request with body</h3>
+<pre class="language-text">* (is|are) created with the following data:</pre>
+<pre class="language-text">the following data is sent to the service:</pre>
+<p>Send a <code class="language-text">POST</code> request to the previously defined endpoint formed with the base URL and the REST service. The payload is
+provided in-document.</p>
+<h5 id="parameters-20"><a href="#parameters-20" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>Request payload</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-21"><a href="#examples-21" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">When</span> the user is created with the following data:
+    <span class="token pystring string">"""json
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "birthDate": "1980-02-20",
+        "address": "221B, Baker Street"
+    }
+    """</span></pre>
+<pre class="language-gherkin">  <span class="token atrule">When</span> the following data is sent to the service:
+    <span class="token pystring string">"""json
+    {
+        "date": "2021-10-30"
+    }
+    """</span></pre>
+<hr>
+<h3 id="make-post-request-with-body-file"><a href="#make-post-request-with-body-file" aria-hidden="true"><span class="icon icon-link"></span></a>Make POST request with body (file)</h3>
+<pre class="language-text">* (is|are) created with the data from the file {file}</pre>
+<pre class="language-text">the data from the file {file} is sent to the service</pre>
+<p>Sends a <code class="language-text">POST</code> request to the previously defined endpoint formed with the base URL and the REST service. The payload is
+provided by the given file.</p>
+<h5 id="parameters-21"><a href="#parameters-21" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>A file containing the request payload body</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-22"><a href="#examples-22" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">When</span> the user is created with the data from the file <span class="token string">'data/user123.json'</span></pre>
+<pre class="language-gherkin">  <span class="token atrule">When</span> the data from the file <span class="token string">'data/booking.json'</span> is sent to the service</pre>
+<hr>
+<h3 id="check-response-http-code"><a href="#check-response-http-code" aria-hidden="true"><span class="icon icon-link"></span></a>Check response HTTP code</h3>
+<pre class="language-text">the response HTTP code {matcher}</pre>
+<p>Validate that the HTTP code of the last response satisfies the given assertion.</p>
+<h5 id="parameters-22"><a href="#parameters-22" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">integer-assertion</code></td>
+<td>Number <a href="/kukumo//kukumo/architecture#comparators">comparator</a></td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-23"><a href="#examples-23" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the response HTTP code is equals to 201</pre>
+<hr>
+<h3 id="check-response-body"><a href="#check-response-body" aria-hidden="true"><span class="icon icon-link"></span></a>Check response body</h3>
+<pre class="language-text">the response is:</pre>
+<p>Validates that the last response body is exactly the content of the in-document content.</p>
+<pre class="language-text">the response is \(in any order\):</pre>
+<p>Validates that the last response body has all the elements specified by the in-document content, but in any order.</p>
+<pre class="language-text">the response contains:</pre>
+<p>Validates that the last response body contains the given in-document content.</p>
+<h5 id="parameters-23"><a href="#parameters-23" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code class="language-text">document</code></td>
+<td>The expected partial content</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-24"><a href="#examples-24" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the response is:
+    <span class="token pystring string">"""json
+    {
+        "age": 23,
+        "name": "John"
+    }
+    """</span></pre>
+<hr>
+<h3 id="check-response-body-file"><a href="#check-response-body-file" aria-hidden="true"><span class="icon icon-link"></span></a>Check response body (file)</h3>
+<pre class="language-text">the response is equal to the file {file}</pre>
+<p>Validates that the last response body is exactly the content of the given file.</p>
+<pre class="language-text">the response is equal to the file {file} \(in any order\)</pre>
+<p>Validates that the last response body has all the elements provided by the given file, but in any order.</p>
+<pre class="language-text">the response contains the file {file}</pre>
+<p>Validates that the last response body contains the content of the given file.</p>
+<h5 id="parameters-24"><a href="#parameters-24" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code></td>
+<td>An existing file</td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-25"><a href="#examples-25" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the response contains the file <span class="token string">'data/response1.json'</span></pre>
+<hr>
+<h3 id="check-response-body-fragment"><a href="#check-response-body-fragment" aria-hidden="true"><span class="icon icon-link"></span></a>Check response body fragment</h3>
+<pre class="language-text">the (text|integer|decimal) from response fragment {fragment} {matcher}</pre>
+<p>Validates the value from a <a href="https://goessner.net/articles/JsonPath/" target="_blank" rel="nofollow noopener noreferrer">JSONPath</a> or <a href="https://en.wikipedia.org/wiki/XPath" title="XPath" target="_blank" rel="nofollow noopener noreferrer">XPath</a> response fragment according a
+<em>text</em>, <em>integer</em> or <em>decimal</em> assertion.</p>
+<h5 id="parameters-25"><a href="#parameters-25" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">fragment</code></td>
+<td><code class="language-text">text</code></td>
+<td>A JSONPath or XPath query</td>
+</tr>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">*-assertion</code></td>
+<td><a href="/kukumo//kukumo/architecture#comparators">Comparator</a></td>
+</tr>
+</tbody>
+</table>
+<p><code class="language-text">*</code>: <code class="language-text">text</code>, <code class="language-text">integer</code> o <code class="language-text">decimal</code>.</p>
+<h5 id="examples-26"><a href="#examples-26" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the decimal from response fragment <span class="token string">'users[1].account.availableMoney'</span> is greater than 23.57</pre>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the decimal from response fragment <span class="token string">'users[0].lastName'</span> starts with <span class="token string">'J'</span></pre>
+<hr>
+<h3 id="check-response-content-type"><a href="#check-response-content-type" aria-hidden="true"><span class="icon icon-link"></span></a>Check response content type</h3>
+<pre class="language-text">the response content type is {word}</pre>
+<p>Validate that the content type of the last response is the expected. This step would be equivalent to validate the
+<code class="language-text">Content-Type</code> response header against the corresponding MIME type.</p>
+<h5 id="parameters-26"><a href="#parameters-26" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">word</code></td>
+<td><code class="language-text">word</code></td>
+<td><code class="language-text">ANY</code>,<code class="language-text">TEXT</code>,<code class="language-text">JSON</code>,<code class="language-text">XML</code>,<code class="language-text">HTML</code>,<code class="language-text">URLENC</code>,<code class="language-text">BINARY</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-27"><a href="#examples-27" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the response content type is JSON</pre>
+<hr>
+<h3 id="check-response-size"><a href="#check-response-size" aria-hidden="true"><span class="icon icon-link"></span></a>Check response size</h3>
+<pre class="language-text">the response length {matcher}</pre>
+<p>Validate that the length in bytes of the last response satisfies the given assertion.</p>
+<h5 id="parameters-27"><a href="#parameters-27" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">integer-assertion</code></td>
+<td>Number <a href="/kukumo//kukumo/architecture#comparators">comparator</a></td>
+</tr>
+</tbody>
+</table>
+<h5 id="examples-28"><a href="#examples-28" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the response length is less than 500</pre>
+<hr>
+<h3 id="check-response-header"><a href="#check-response-header" aria-hidden="true"><span class="icon icon-link"></span></a>Check response header</h3>
+<pre class="language-text">the (texto|entero|decimal) response header {name} {matcher}</pre>
+<p>Validate that a header value from the last REST response satisfies the <em>text</em>, <em>integer</em> or <em>decimal</em> assertion.</p>
+<h5 id="parameters-28"><a href="#parameters-28" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kukumo type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">name</code></td>
+<td><code class="language-text">text</code></td>
+<td>The HTTP header name</td>
+</tr>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">*-assertion</code></td>
+<td><a href="/kukumo//kukumo/architecture#comparators">Comparator</a></td>
+</tr>
+</tbody>
+</table>
+<p><code class="language-text">*</code>: <code class="language-text">text</code>, <code class="language-text">integer</code> o <code class="language-text">decimal</code>.</p>
+<h5 id="examples-29"><a href="#examples-29" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the text response header Content-Encoding contains <span class="token string">'gzip'</span></pre>
+<pre class="language-gherkin">  <span class="token atrule">Then</span> the integer response header Age is greater than 10</pre>
+</div></main></div>
+    <script src="/kukumo/assets/js/app.a1f55545.js" defer></script><script src="/kukumo/assets/js/page--src--templates--doc-vue.cc94d01e.js" defer></script>
+  </body>
+</html>
