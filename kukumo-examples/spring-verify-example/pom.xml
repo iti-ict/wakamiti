@@ -146,7 +146,7 @@
                             <!-- Kukumo configuration -->
                             <properties>
                                 <resourceTypes>gherkin</resourceTypes>
-                                <resourcePath>${project.basedir}/src/test/resources</resourcePath>
+                                <resourcePath>src/test/resources</resourcePath>
                                 <outputFilePath>target/kukumo/kukumo.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
                                 <rest.baseURL>http://localhost:9191</rest.baseURL>
@@ -162,7 +162,7 @@
                             <dependency>
                                 <groupId>es.iti.kukumo</groupId>
                                 <artifactId>kukumo-rest</artifactId>
-                                <version>1.4.0</version>
+                                <version>1.4.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.h2database</groupId>
