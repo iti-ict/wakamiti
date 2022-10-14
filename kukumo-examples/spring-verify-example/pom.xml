@@ -146,7 +146,7 @@
                             <!-- Kukumo configuration -->
                             <properties>
                                 <resourceTypes>gherkin</resourceTypes>
-                                <resourcePath>src/test/resources</resourcePath>
+                                <resourcePath>${project.basedir}/src/test/resources</resourcePath>
                                 <outputFilePath>target/kukumo/kukumo.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
                                 <rest.baseURL>http://localhost:9191</rest.baseURL>
