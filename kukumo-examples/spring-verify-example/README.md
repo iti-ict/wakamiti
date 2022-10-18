@@ -2,7 +2,7 @@
 
 ### pom.xml
 
-Since we want to attach Kukumo to the verify goal, we need to declare the `build` section 
+Since we want to attach Wakamiti to the verify goal, we need to declare the `build` section 
 including the `kukumo-maven-plugin` plugin. Also, we use `spring-boot-maven-plugin` that allows 
 to start the application prior to running the tests, and stop it afterwards.
 
@@ -31,7 +31,7 @@ to start the application prior to running the tests, and stop it afterwards.
         </plugin>
 
 
-        <!-- Attach Kukumo to the verify phase of the project -->
+        <!-- Attach Wakamiti to the verify phase of the project -->
         <plugin>
             <groupId>iti.kukumo</groupId>
             <artifactId>kukumo-maven-plugin</artifactId>
@@ -47,7 +47,7 @@ to start the application prior to running the tests, and stop it afterwards.
             <configuration>
                 <!-- Enable/disable tests execution (enabled by default) -->
                 <skipTests>${skipExampleTests}</skipTests>
-                <!-- Kukumo configuration -->
+                <!-- Wakamiti configuration -->
                 <properties>
                     <resourceTypes>gherkin</resourceTypes>
                     <resourcePath>src/test/resources</resourcePath>
@@ -57,7 +57,7 @@ to start the application prior to running the tests, and stop it afterwards.
                 </properties>
             </configuration>
             <dependencies>
-                <!-- Kukumo plugins -->
+                <!-- Wakamiti plugins -->
                 <dependency>
                     <groupId>iti.kukumo</groupId>
                     <artifactId>kukumo-rest</artifactId>
@@ -77,11 +77,11 @@ to start the application prior to running the tests, and stop it afterwards.
 
 Also notice:
 
-- Kukumo is configured in the `properties` tag inside the general `configuration` tag 
-allowed for any Maven plugin. Properties used by other Kukumo plugins are declared here 
+- Wakamiti is configured in the `properties` tag inside the general `configuration` tag 
+allowed for any Maven plugin. Properties used by other Wakamiti plugins are declared here 
 as well. 
 
-- The required Kukumo plugins are included as dependencies of `kukumo-maven-plugin`, 
+- The required Wakamiti plugins are included as dependencies of `kukumo-maven-plugin`, 
 not as dependencies of the project.
 
 ### .mvn/jvm.config
@@ -91,7 +91,7 @@ workaround to get this done is create a file named `jvm.config` inside a folder 
 root folder of the project. In this file, you can add custom MAVEN_OPTS parameters in order to 
 configure the logger (that is by default SLF4J Simple Logger).
 
-This way, to enable debug logs for Kukumo as a Maven plugin, this file should contain:
+This way, to enable debug logs for Wakamiti as a Maven plugin, this file should contain:
 ```
 -Dorg.slf4j.simpleLogger.log.iti.kukumo=debug
 ```  

@@ -2,7 +2,7 @@ Spring Sample App
 =================
 
 This project is used as a REST application meant to be run locally as 
-a testing infrastructure for all the Kukumo examples provided. It
+a testing infrastructure for all the Wakamiti examples provided. It
 is built using SpringBoot and an in-memory H2 database.
 
 [Features](#sample-application-features) |

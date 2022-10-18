@@ -1,4 +1,4 @@
-Kukumo :: REST plugin
+Wakamiti :: REST plugin
 ====================================================================================================
 
 This plugin provides a set of steps to interact with a RESTful API
@@ -110,7 +110,7 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 
 ##### Parameters:
 
-| name | Kukumo type | description  |
+| name | Wakamiti type | description  |
 |------|-------------|--------------|
 |      | `word`      | Content type |
 
@@ -127,7 +127,7 @@ Given the REST content type XML
 Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl)
 
 ##### Parameters:
-| name | Kukumo type | description |
+| name | Wakamiti type | description |
 |------|-------------|-------------|
 |      | `url`       | Base URL    |
 ##### Example:
@@ -144,7 +144,7 @@ Given the base URL http://example.org/api
 Set the service path that would be tested. It would be appended to the `baseURL`.
 
 ##### Parameters:
-| name | Kukumo type | description      |
+| name | Wakamiti type | description      |
 |------|-------------|------------------|
 |      | `text`      | URL segment path |
 ##### Example:
@@ -161,7 +161,7 @@ Set an entity identifier to be used by the REST service. It would be appended to
 the `baseURL` and the service.
 
 ##### Parameters:
-| name | Kukumo type | description          |
+| name | Wakamiti type | description          |
 |------|-------------|----------------------|
 |      | `text`      | An entity identifier |
 ##### Examples:
@@ -178,7 +178,7 @@ Given the borrowed book identified by '978-3-16-148410-0'
 Set the request parameters using a data table. 
 The parametes will be send as form data for POST requests.
 ##### Parameters:
-| name | Kukumo type  | description                             |
+| name | Wakamiti type  | description                             |
 |------|--------------|-----------------------------------------|
 |      | `data-table` | A table with `name` and `value` columns |
 ##### Examples:
@@ -196,7 +196,7 @@ Given the following request parameters:
 Set the request parameters for a query.
 The parameters will be pass after the service URL
 ##### Parameters:
-| name | Kukumo type  | description                             |
+| name | Wakamiti type  | description                             |
 |------|--------------|-----------------------------------------|
 |      | `data-table` | A table with `name` and `value` columns |
 ##### Examples:
@@ -214,7 +214,7 @@ Given the following query parameters:
 Set parameterized path segments for a query.
 The parameters will be part of the request URL replacing the segments marked with `{` `}`.
 ##### Parameters:
-| name | Kukumo type  | description                             |
+| name | Wakamiti type  | description                             |
 |------|--------------|-----------------------------------------|
 |      | `data-table` | A table with `name` and `value` columns |
 ##### Examples:
@@ -233,7 +233,7 @@ And the following path parameters:
 #### `the following headers:`
 Define the HTTP headers that would be sent by the subsequent requests
 ##### Parameters:
-| name | Kukumo type  | description                              |
+| name | Wakamiti type  | description                              |
 |------|--------------|------------------------------------------|
 |      | `data-table` | A table with `name` and `value` columns  |
 ##### Examples:
@@ -252,7 +252,7 @@ Given the following headers:
 #### `a timeout of {int} milliseconds`
 Set a response timeout for the subsequent HTTP requests
 ##### Parameters:
-| name | Kukumo type | description                 |
+| name | Wakamiti type | description                 |
 |------|-------------|-----------------------------|
 |      | `int`       | The timeout in milliseconds |
 ##### Examples:
@@ -269,7 +269,7 @@ Given a timeout of 12000 milliseconds
 #### `a timeout of {int} seconds`
 Set a response timeout for the subsequent HTTP requests
 ##### Parameters:
-| name | Kukumo type | description            |
+| name | Wakamiti type | description            |
 |------|-------------|------------------------|
 |      | `int`       | The timeout in seconds |
 ##### Examples:
@@ -287,7 +287,7 @@ Given a timeout of 2 seconds
 Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold)
 but using any integer assertion
 ##### Parameters:
-| name | Kukumo type         | description          |
+| name | Wakamiti type         | description          |
 |------|---------------------|----------------------|
 |      | `integer-assertion` | An integer assertion |
 ##### Examples:
@@ -304,7 +304,7 @@ but using any integer assertion
 #### `the service use the basic authentication credentials {username:text}:{password:text}`
 Set the authentication credentials to be sent in the `Authorization` header for the
 ##### Parameters:
-| name       | Kukumo type | description |
+| name       | Wakamiti type | description |
 |------------|-------------|-------------|
 | `username` | `text`      | Username    |
 | `password` | `text`      | Password    |
@@ -323,7 +323,7 @@ Given the service use the basic authentication credentials 'us1532':'xxxxx'
 Set the authentication token to be sent in the `Authorization` header for the 
 subsequent requests
 ##### Parameters:
-| name | Kukumo type | description            |
+| name | Wakamiti type | description            |
 |------|-------------|------------------------|
 |      | `text`      | An authorization token |
 ##### Examples:
@@ -341,7 +341,7 @@ Given the service use the authentication token 'hudytw9834y9cqy32t94'
 Set the authentication token to be sent in the `Authorization` header for the
 subsequent requests
 ##### Parameters:
-| name | Kukumo type | description                        |
+| name | Wakamiti type | description                        |
 |------|-------------|------------------------------------|
 |      | `file`      | File with the authentication token |
 ##### Examples:
@@ -357,7 +357,7 @@ Given the service use the authentication token of file 'token.txt'
 #### `the service use the authentication provider with the following data:`
 Set the [OAuth 2.0][oauth2] authentication parameters
 ##### Parameters:
-| name | Kukumo type | description                                 |
+| name | Wakamiti type | description                                 |
 |------|-------------|---------------------------------------------|
 |      | `document`  | A string with the authentication parameters |
 ##### Examples:
@@ -377,7 +377,7 @@ grant_type=password&username=OficinaTest4&password=xxxxx
 #### `the attached file {file} is included`
 Set a multipart form-data including an attachment from the given file
 ##### Parameters:
-| name | Kukumo type | description       |
+| name | Wakamiti type | description       |
 |------|-------------|-------------------|
 |      | `file`      | File to be attach |
 ##### Examples:
@@ -394,7 +394,7 @@ Given the attached file 'data.txt' is included
 #### `the attached file is included with the following data:`
 Set a multipart form-data including an attachment from the given in-document content
 ##### Parameters:
-| name | Kukumo type | description          |
+| name | Wakamiti type | description          |
 |------|-------------|----------------------|
 |      | `document`  | Content to be attach |
 ##### Examples:
@@ -473,7 +473,7 @@ When the user is deleted
 Send a `PUT` request to the previously defined endpoint formed with the base URL,
 the REST service and the entity id. The payload is provided in-document.
 ##### Parameters:
-| name | Kukumo type | description              |
+| name | Wakamiti type | description              |
 |------|-------------|--------------------------|
 |      | `document`  | The request payload body |
 ##### Examples:
@@ -502,7 +502,7 @@ When the user is modified with the following data:
 Send a `PUT` request to the previously defined endpoint formed with the base URL,
 the REST service and the entity id. The payload is provided by the given file.
 ##### Parameters:
-| name | Kukumo type | description                                |
+| name | Wakamiti type | description                                |
 |------|-------------|--------------------------------------------|
 |      | `file`      | A file containing the request payload body |
 ##### Examples:
@@ -523,7 +523,7 @@ When the user is modified with the data from the file 'data/user123.json'
 Send a `PATCH` request to the previously defined endpoint formed with the base URL,
 the REST service and the entity id. The payload is provided in-document.
 ##### Parameters:
-| name | Kukumo type | description              |
+| name | Wakamiti type | description              |
 |------|-------------|--------------------------|
 |      | `document`  | The request payload body |
 ##### Examples:
@@ -549,7 +549,7 @@ When the user is patched with the following data:
 Send a `PATCH` request to the previously defined endpoint formed with the base URL,
 the REST service and the entity id. The payload is provided by the given file.
 ##### Parameters:
-| name | Kukumo type | description                                |
+| name | Wakamiti type | description                                |
 |------|-------------|--------------------------------------------|
 |      | `file`      | A file containing the request payload body |
 ##### Examples:
@@ -570,7 +570,7 @@ When the user is patched with the data from the file 'data/user123.json'
 Send a `POST` request to the previously defined endpoint formed with the base URL and 
 the REST service. The payload is provided in-document.
 ##### Parameters:
-| name | Kukumo type | description              |
+| name | Wakamiti type | description              |
 |------|-------------|--------------------------|
 |      | `document`  | The request payload body |
 ##### Examples:
@@ -598,7 +598,7 @@ When a user is created with the following data:
 Send a `POST` request to the previously defined endpoint formed with the base URL
 and the REST service. The payload is provided by the given file.
 ##### Parameters:
-| name | Kukumo type | description                                |
+| name | Wakamiti type | description                                |
 |------|-------------|--------------------------------------------|
 |      | `file`      | A file containing the request payload body |
 ##### Examples:
@@ -633,7 +633,7 @@ When a new booking is created
 Send a `POST` request to the previously defined endpoint formed with the base URL
 and the REST service.  The payload is provided in-document.
 ##### Parameters:
-| name | Kukumo type | description     |
+| name | Wakamiti type | description     |
 |------|-------------|-----------------|
 |      | `document`  | Request payload |
 ##### Examples:
@@ -652,7 +652,7 @@ When the following data is sent to the service
 Send a `POST` request to the previously defined endpoint formed with the base URL
 and the REST service. The payload is provided by the given file.
 ##### Parameters:
-| name | Kukumo type | description                                |
+| name | Wakamiti type | description                                |
 |------|-------------|--------------------------------------------|
 |      | `file`      | A file containing the request payload body |
 ##### Examples:
@@ -672,7 +672,7 @@ When the data from the file 'booking.json' is sent to the service
 #### `the response HTTP code {integer-assertion}`
 Validate that the HTTP code of the last response satisfies the given assertion
 ##### Parameters:
-| name | Kukumo type         | description                       |
+| name | Wakamiti type         | description                       |
 |------|---------------------|-----------------------------------|
 |      | `integer-assertion` | The integer assertion to validate |
 ##### Examples:
@@ -691,7 +691,7 @@ Validates that the last response body is exactly the content of the in-document
 content.
 According to the content type response, the specific comparing operation might vary.
 ##### Parameters:
-| name | Kukumo type | description            |
+| name | Wakamiti type | description            |
 |------|-------------|------------------------|
 |      | `document`  | The expected content   |
 ##### Examples:
@@ -715,7 +715,7 @@ Then the response is (in any order):
 Validates that the last response body is exactly the content of the given file.
 According to the content type response, the specific comparing operation might vary.
 ##### Parameters:
-| name | Kukumo type | description      |
+| name | Wakamiti type | description      |
 |------|-------------|------------------|
 |      | `file`      | An existing file |
 ##### Examples:
@@ -734,7 +734,7 @@ Validates that the last response body has all the elements specified by the in-d
 content, but in any order.
 According to the content type response, the specific comparing operation might vary
 ##### Parameters:
-| name | Kukumo type | description            |
+| name | Wakamiti type | description            |
 |------|-------------|------------------------|
 |      | `document`  | The expected content   |
 ##### Examples:
@@ -759,7 +759,7 @@ Validates that the last response body has all the elements provided by the given
 but in any order.
 According to the content type response, the specific comparing operation might vary.
 ##### Parameters:
-| name | Kukumo type | description      |
+| name | Wakamiti type | description      |
 |------|-------------|------------------|
 |      | `file`      | An existing file |
 ##### Examples:
@@ -777,7 +777,7 @@ Then the response is equal to the file 'data/response1.json' (in any order)
 Validates that the last response body contains the given in-document content.
 According to the content type response, the specific comparing operation might vary.
 ##### Parameters:
-| name | Kukumo type | description                  |
+| name | Wakamiti type | description                  |
 |------|-------------|------------------------------|
 |      | `document`  | The expected partial content |
 ##### Examples:
@@ -800,7 +800,7 @@ Then the response contains:
 Validates that the last response body contains the content of the given file. 
 According to the content type response, the specific comparing operation might vary.
 ##### Parameters:
-| name | Kukumo type | description      |
+| name | Wakamiti type | description      |
 |------|-------------|------------------|
 |      | `file`      | An existing file |
 ##### Examples:
@@ -819,7 +819,7 @@ Validate that the content type of the last response is the expected.
 This step would be equivalent to validate the `Content-Type` response header against 
 the corresponding MIME type.
 ##### Parameters:
-| name | Kukumo type | description                                         |
+| name | Wakamiti type | description                                         |
 |------|-------------|-----------------------------------------------------|
 |      | `word`      | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY`  |
 ##### Examples:
@@ -836,7 +836,7 @@ Then the response content type is JSON
 #### `the response length {matcher:integer-assertion}`
 Validate that the length in bytes of the last response satisfies the given assertion
 ##### Parameters:
-| name | Kukumo type         | description                       |
+| name | Wakamiti type         | description                       |
 |------|---------------------|-----------------------------------|
 |      | `integer-assertion` | The integer assertion to validate |
 ##### Examples:
@@ -853,7 +853,7 @@ Then the response length is less than 500
 #### `the text response header {name:word} {matcher:text-assertion}`
 Validate that a header value from the last REST response satisfies the given assertion
 ##### Parameters:
-| name      | Kukumo type      | description         |
+| name      | Wakamiti type      | description         |
 |-----------|------------------|---------------------|
 | `name`    | `word`           | The HTTP header key |
 | `matcher` | `text-assertion` | A text assertion    |
@@ -871,7 +871,7 @@ Then the text response header Content-Encoding contains 'gzip'
 #### `the integer response header {name:word} {matcher:integer-assertion}`
 Validate that a header value from the last REST response satisfies the given assertion
 ##### Parameters:
-| name      | Kukumo type         | description          |
+| name      | Wakamiti type         | description          |
 |-----------|---------------------|----------------------|
 | `name`    | `word`              | The HTTP header key  |
 | `matcher` | `integer-assertion` | An integer assertion |
@@ -889,7 +889,7 @@ Then the integer response header Age is greater than 10
 #### `the decimal response header {name:word} {matcher:decimal-assertion}`
 Validate that a header value from the last REST response satisfies the given assertion
 ##### Parameters:
-| name      | Kukumo type         | description         |
+| name      | Wakamiti type         | description         |
 |-----------|---------------------|---------------------|
 | `name`    | `word`              | The HTTP header key |
 | `matcher` | `decimal-assertion` | A decimal assertion |
@@ -908,7 +908,7 @@ Then the decimal response header Custom-Header is greater than 123.54
 Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according
 a text assertion
 ##### Parameters:
-| name        | Kukumo type      | description               |
+| name        | Wakamiti type      | description               |
 |-------------|------------------|---------------------------|
 | `fragment`  | `text`           | A JSONPath or XPath query |
 | `matcher`   | `text-assertion` | A text assertion          |
@@ -927,7 +927,7 @@ Then the text from response fragment 'users[0].lastName' starts with 'J'
 Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according
 an integer assertion
 ##### Parameters:
-| name        | Kukumo type         | description               |
+| name        | Wakamiti type         | description               |
 |-------------|---------------------|---------------------------|
 | `fragment`  | `text`              | A JSONPath or XPath query |
 | `matcher`   | `decimal-assertion` | An integer assertion      |
@@ -946,7 +946,7 @@ Then the integer from response fragment 'users[0].birthDate.year` is less than 1
 Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according 
 a decimal assertion
 ##### Parameters:
-| name        | Kukumo type         | description               |
+| name        | Wakamiti type         | description               |
 |-------------|---------------------|---------------------------|
 | `fragment`  | `text`              | A JSONPath or XPath query |
 | `matcher`   | `decimal-assertion` | A decimal assertion       |
@@ -967,7 +967,7 @@ schema formats are [JSON Schema](https://json-schema.org/) for JSON responses
 and [XML Schema](https://www.w3.org/2001/XMLSchema) for XML responses (according the 
 `Content-Type` response header).
 ##### Parameters:
-| name | Kukumo type | description               |
+| name | Wakamiti type | description               |
 |------|-------------|---------------------------|
 |      | `document`  | JSON Schema or XML Schema |
 ##### Examples:
@@ -1016,7 +1016,7 @@ schema formats are [JSON Schema][jsonschema] for JSON responses
 and [XML Schema][xmlschema] for XML responses (according the
 `Content-Type` response header).
 ##### Parameters:
-| name | Kukumo type | description                    |
+| name | Wakamiti type | description                    |
 |------|-------------|--------------------------------|
 |      | `file`      | JSON Schema or XML Schema file |
 ##### Examples:

@@ -123,7 +123,7 @@ properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.userna
 
 
 #### Parameters
-| Name       | Kukumo type | Description              |
+| Name       | Wakamiti type | Description              |
 |------------|-------------|--------------------------|
 | `url`      | `text`      | The broker URL           |
 | `username` | `text`      | The credentials username |
@@ -144,7 +144,7 @@ the destination queue {word}
 Sets the name of the queue to watch.
 
 #### Parameters
-| Name   | Kukumo type | Description  |
+| Name   | Wakamiti type | Description  |
 |--------|-------------|--------------|
 | `word` | `word`      | A queue name |
 
@@ -162,7 +162,7 @@ the following JSON message is sent to the queue {word}:
 Sends a JSON message to the given queue.
 
 #### Parameters
-| Name   | Kukumo type  | Description          |
+| Name   | Wakamiti type  | Description          |
 |--------|--------------|----------------------|
 | `word` | `word`       | A queue name         |
 |        | `document`   | A JSON message body  |
@@ -188,7 +188,7 @@ the message from the JSON file {file} is sent to the queue {queue}
 Sends a JSON message extracted from a local file to the given queue.
 
 #### Parameters
-| Name    | Kukumo type | Description                         |
+| Name    | Wakamiti type | Description                         |
 |---------|-------------|-------------------------------------|
 | `file`  | `file`      | A local file with the JSON message  |
 | `queue` | `word`      | A queue name                        |
@@ -207,7 +207,7 @@ wait for {integer} second(s)
 Waits a fixed number of seconds (usually to ensure a message has been processed).
 
 #### Parameters
-| Name      | Kukumo type | Description                 |
+| Name      | Wakamiti type | Description                 |
 |-----------|-------------|-----------------------------|
 | `integer` | `integer`   | Amount of time (in seconds) |
 
@@ -226,7 +226,7 @@ the following JSON message is received within {integer} seconds:
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.
 
 #### Parameters
-| Name      | Kukumo type | Description                 |
+| Name      | Wakamiti type | Description                 |
 |-----------|-------------|-----------------------------|
 | `integer` | `integer`   | Amount of time (in seconds) |
 |           | `document`  | A JSON message body         |
@@ -251,7 +251,7 @@ the message from the JSON file {file} is received within {seconds} seconds
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.
 
 #### Parameters
-| Name   | Kukumo type  | Description                        |
+| Name   | Wakamiti type  | Description                        |
 |--------|--------------|------------------------------------|
 | `file` | `file`       | A local file with the JSON message |
 |        | `integer`    | Amount of time (in seconds)        |

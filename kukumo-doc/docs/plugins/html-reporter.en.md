@@ -30,7 +30,7 @@ Example:
 
 ```yaml
 htmlReport:
-  title: "kukumo v11"
+  title: "Wakamiti v11"
 ```
 
 ---
@@ -41,5 +41,5 @@ Example:
 
 ```yaml
 htmlReport:
-  css: kukumo.css
+  css: Wakamiti.css
 ```

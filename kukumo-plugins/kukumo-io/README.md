@@ -1,4 +1,4 @@
-Kukumo :: I/O plugin
+Wakamiti :: I/O plugin
 ====================================================================================================
 
 This plugin provides a set of steps to interact with I/O operations
@@ -51,7 +51,7 @@ to set the `files.timeout` configuration property.
 #### `a file timeout of {value:long} seconds`
 Set the 
 ##### Parameters:
-| name | Kukumo type | description        |
+| name | Wakamiti type | description        |
 |------|-------------|--------------------|
 |      | `long`      | Timeout in seconds |
 ##### Examples:
@@ -69,7 +69,7 @@ Given a file timeout of 10 seconds
 #### `the (file|directory) {src:file} is moved to directory {dest:file}`
 Move a file or directory to the target directory.
 ##### Parameters:
-| name    | Kukumo type | description                  |
+| name    | Wakamiti type | description                  |
 |---------|-------------|------------------------------|
 | `src`   | `file`      | The source file or directory |
 | `dest`  | `file`      | The target directory         |
@@ -88,7 +88,7 @@ And the directory 'tmp/dir' is moved to the directory '/tmp/dir2'
 #### `the (file|directory) {src:file} is moved to file {dest:file}`
 Rename a file or directory (or move it to a new path)
 ##### Parameters:
-| name    | Kukumo type | description                  |
+| name    | Wakamiti type | description                  |
 |---------|-------------|------------------------------|
 | `src`   | `file`      | The source file or directory |
 | `dest`  | `file`      | The new path                 |
@@ -104,7 +104,7 @@ Rename a file or directory (or move it to a new path)
 #### `the (file|directory) {src:file} is copied to directory {dest:file}`
 Copy a file or directory to the target directory.
 ##### Parameters:
-| name    | Kukumo type | description                  |
+| name    | Wakamiti type | description                  |
 |---------|-------------|------------------------------|
 | `src`   | `file`      | The source file or directory |
 | `dest`  | `file`      | The target directory         |
@@ -123,7 +123,7 @@ And the directory 'tmp/dir' is copied to the directory '/tmp/dir2'
 #### `the file {src:file} is copied to file {dest:file}`
 Copy a file
 ##### Parameters:
-| name    | Kukumo type | description     |
+| name    | Wakamiti type | description     |
 |---------|-------------|-----------------|
 | `src`   | `file`      | The source file |
 | `dest`  | `file`      | The target file |
@@ -142,7 +142,7 @@ When the file 'tmp/file.txt' is copied to the file '/tmp/file2.txt'
 #### `the (file|directory) {dest:file} is deleted`
 Delete the given file or directory
 ##### Parameters:
-| name | Kukumo type | description                     |
+| name | Wakamiti type | description                     |
 |------|-------------|---------------------------------|
 |      | `file`      | The file or directory to delete |
 ##### Examples:
@@ -160,7 +160,7 @@ Then the file '/tmp/file.txt' is deleted
 #### `the (file|directory) {file} deletion is awaited`
 Await until the given file or directory is deleted
 ##### Parameters:
-| name | Kukumo type | description                    |
+| name | Wakamiti type | description                    |
 |------|-------------|--------------------------------|
 |      | `file`      | The file or directory to watch |
 ##### Examples:
@@ -178,7 +178,7 @@ Then the file '/tmp/file.txt' deletion is awaited
 #### `the (file|directory) {file} modification is awaited`
 Await until the given file or directory is modified
 ##### Parameters:
-| name | Kukumo type | description                    |
+| name | Wakamiti type | description                    |
 |------|-------------|--------------------------------|
 |      | `file`      | The file or directory to watch |
 ##### Examples:
@@ -196,7 +196,7 @@ And the file '/tmp/file.txt' is modification is awaited
 #### `the (file|directory) {file} creation is awaited`
 Await until the given file or directory is created
 ##### Parameters:
-| name | Kukumo type | description                    |
+| name | Wakamiti type | description                    |
 |------|-------------|--------------------------------|
 |      | `file`      | The file or directory to watch |
 ##### Examples:
@@ -217,7 +217,7 @@ Then the file '/tmp/file.txt' creation is awaited
 #### `the file {file} exists`
 Validate that the given file exists
 ##### Parameters:
-| name | Kukumo type | description       |
+| name | Wakamiti type | description       |
 |------|-------------|-------------------|
 |      | `file`      | The file to check |
 ##### Examples:
@@ -234,7 +234,7 @@ Then the file '/tmp/file.txt' exists
 #### `the file {file} not exists`
 Validate that the given file does not exist
 ##### Parameters:
-| name | Kukumo type | description       |
+| name | Wakamiti type | description       |
 |------|-------------|-------------------|
 |      | `file`      | The file to check |
 ##### Examples:
@@ -250,7 +250,7 @@ Then the file '/tmp/file.txt' not exists
 #### `the file {file} contains the following text:`
 Validate that a file contains the given text
 ##### Parameters:
-| name | Kukumo type  | description                         |
+| name | Wakamiti type  | description                         |
 |------|--------------|-------------------------------------|
 |      | `file`       | The file to check                   |
 |      | `document`   | The expected text to be in the file |
@@ -271,7 +271,7 @@ file contents
 #### `the file {file:file} has length of {chars:int}`
 Validate the file has a certain length (in bytes) 
 ##### Parameters:
-| name    | Kukumo type | description                  |
+| name    | Wakamiti type | description                  |
 |---------|-------------|------------------------------|
 | `file`  | `file`      | The file to check            |
 | `chars` | `int`       | The expected length in bytes |

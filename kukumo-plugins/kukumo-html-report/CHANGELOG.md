@@ -1,4 +1,4 @@
-# Kukumo::HTML Report - Changelog
+# Wakamiti::HTML Report - Changelog
 
 
 All notable changes to this project will be documented in this file.

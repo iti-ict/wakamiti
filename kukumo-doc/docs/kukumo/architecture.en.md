@@ -7,7 +7,7 @@ slug: /en/kukumo/architecture
 
 ## Global configuration
 
-Kukumo's configuration is defined via `yaml` file located in the test directory. By default, Kukumo will look for the 
+Wakamiti's configuration is defined via `yaml` file located in the test directory. By default, Wakamiti will look for the 
 file named `kukumo.yaml`.
 
 - [`kukumo.resourceTypes`](#kukumoresourcetypes)

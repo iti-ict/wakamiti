@@ -1,4 +1,4 @@
-Kukumo :: REST plugin
+Wakamiti :: REST plugin
 ====================================================================================================
 
 Este plugin provee una serie de pasos para interactuar con una API RESTful
