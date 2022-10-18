@@ -1,4 +1,4 @@
-Kukumo :: AMQP
+Wakamiti :: AMQP
 ====================================================================================================
 A set of steps to interact with an application via the 
 [Advanced Message Queuing Protocol](https://amqp.org). The underlying implementation 
@@ -91,7 +91,7 @@ setting the configuration properties `amqp.connection.url`, `amqp.connection.use
 `amqp.connection.password`.
 
 ##### Parameters:
-| name       | Kukumo type | description              |
+| name       | Wakamiti type | description              |
 |------------|-------------|--------------------------|
 | `url`      | `text`      | The broker URL           |
 | `username` | `text`      | The credentials username |
@@ -112,7 +112,7 @@ Given the AMQP connection URL 'amqp://127.0.0.1:5671' using the user 'guest' and
 The name of the queue to watch.
 
 ##### Parameters:
-| name | Kukumo type | description  |
+| name | Wakamiti type | description  |
 |------|-------------|--------------|
 |      | `word`      | A queue name |
 ##### Examples:
@@ -132,7 +132,7 @@ And the destination queue TEST
 Send a JSON message to the given queue
 
 ##### Parameters:
-| name | Kukumo type  | description         |
+| name | Wakamiti type  | description         |
 |------|--------------|---------------------|
 |      | `word`       | A queue name        |
 |      | `document`   | A JSON message body |
@@ -157,7 +157,7 @@ When the following JSON message is sent to the queue TEST:
 Send a JSON message extracted from a local file to the given queue
 
 ##### Parameters:
-| name | Kukumo type | description                        |
+| name | Wakamiti type | description                        |
 |------|-------------|------------------------------------|
 |      | `file`      | A local file with the JSON message |
 |      | `word`      | A queue name                       |
@@ -176,7 +176,7 @@ When the message from the JSON file 'data/message.json' is sent to the queue TES
 Wait a fixed number of seconds (usually to ensure a message has been processed).
 
 ##### Parameters:
-| name | Kukumo type | description                 |
+| name | Wakamiti type | description                 |
 |------|-------------|-----------------------------|
 |      | `integer`   | Amount of time (in seconds) |
 ##### Examples:
@@ -195,7 +195,7 @@ Validate that a specific JSON message is received in the destination queue,
 failing after a certain timeout.
 
 ##### Parameters:
-| name | Kukumo type | description                 |
+| name | Wakamiti type | description                 |
 |------|-------------|-----------------------------|
 |      | `integer`   | Amount of time (in seconds) |
 |      | `document`  | A JSON message body         |
@@ -221,7 +221,7 @@ Validate that a specific JSON message is received in the destination queue,
 failing after a certain timeout.
 
 ##### Parameters:
-| name | Kukumo type  | description                         |
+| name | Wakamiti type  | description                         |
 |------|--------------|-------------------------------------|
 |      | `file`       | A local file with the JSON message  |
 |      | `integer`    | Amount of time (in seconds)         |

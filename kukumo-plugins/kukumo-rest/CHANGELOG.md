@@ -1,4 +1,4 @@
-# Kukumo::REST - Changelog
+# Wakamiti::REST - Changelog
 
 
 All notable changes to this project will be documented in this file.

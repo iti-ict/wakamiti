@@ -6,9 +6,9 @@ slug: /en/introduction/getting-started
 
 
 
-### 1. Install Kukumo
+### 1. Install Wakamiti
 
-Pull Kukumo docker image with:
+Pull Wakamiti docker image with:
 ```shell
 docker pull kukumo/kukumo
 ```
@@ -17,7 +17,7 @@ docker pull kukumo/kukumo
 
 ### 2. Launch tests
 
-Go to directory containing the Kukumo tests and run it:
+Go to directory containing the Wakamiti tests and run it:
 ```shell
 cd ~/test
 docker run --rm -it -v "$(pwd):/kukumo" kukumo/kukumo

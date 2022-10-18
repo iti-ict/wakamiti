@@ -21,7 +21,7 @@
                 </properties>
             </configuration>
             <dependencies>
-                <!-- Kukumo Plugins -->
+                <!-- Wakamiti Plugins -->
                 <dependency>
                     <groupId>iti.kukumo</groupId>
                     <artifactId>kukumo-gherkin</artifactId>

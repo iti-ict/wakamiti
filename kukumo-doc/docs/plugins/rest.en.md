@@ -156,7 +156,7 @@ the REST content type {word}
 Declarative-way for setting the configuration property [`rest.contentType`](#restcontenttype).
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `type` | `word`      | Connection URL |
 
@@ -173,7 +173,7 @@ the base URL {url}
 Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl). 
 
 #### Parameters:
-| Name  | Kukumo type | Description |
+| Name  | Wakamiti type | Description |
 |-------|-------------|-------------|
 | `url` | `url`       | Base URL    |
 
@@ -190,7 +190,7 @@ the REST service {text}
 Sets the service path that would be tested. It would be appended to the `baseURL`.
 
 #### Parameters:
-| Name      | Kukumo type | Description      |
+| Name      | Wakamiti type | Description      |
 |-----------|-------------|------------------|
 | `service` | `text`      | URL segment path |
 
@@ -207,7 +207,7 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
 
 #### Parameters:
-| Name   | Kukumo type | Description          |
+| Name   | Wakamiti type | Description          |
 |--------|-------------|----------------------|
 | `text` | `text`      | An entity identifier |
 
@@ -227,7 +227,7 @@ the following request parameters:
 Sets the request parameters using a data table. The parameters will be sent as form data for POST requests.
 
 ##### Parameters:
-| Name | Kukumo type | Description                             |
+| Name | Wakamiti type | Description                             |
 |------|-------------|-----------------------------------------|
 |      | `table`     | A table with `name` and `value` columns |
 
@@ -248,7 +248,7 @@ Set the request parameters for a query. The parameters will be pass after the se
 `/user?param1=abc&param2=123`.
 
 ##### Parameters:
-| Name | Kukumo type | Description                             |
+| Name | Wakamiti type | Description                             |
 |------|-------------|-----------------------------------------|
 |      | `table`     | A table with `name` and `value` columns |
 
@@ -269,7 +269,7 @@ Sets parameterized path segments for a query. The parameters will be part of the
 marked with `{}`.
 
 ##### Parameters:
-| Name | Kukumo type | Description                             |
+| Name | Wakamiti type | Description                             |
 |------|-------------|-----------------------------------------|
 |      | `table`     | A table with `name` and `value` columns |
 
@@ -290,7 +290,7 @@ the following headers:
 Define the HTTP headers that would be sent by the subsequent requests.
 
 ##### Parameters:
-| Name | Kukumo type | Description                             |
+| Name | Wakamiti type | Description                             |
 |------|-------------|-----------------------------------------|
 |      | `table`     | A table with `name` and `value` columns |
 
@@ -310,7 +310,7 @@ a timeout of {int} (milli)seconds
 Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.
 
 ##### Parameters:
-| Name   | Kukumo type | Description                 |
+| Name   | Wakamiti type | Description                 |
 |--------|-------------|-----------------------------|
 | `int`  | `int`       | The timeout in milliseconds |
 
@@ -331,7 +331,7 @@ Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthtt
 assertion.
 
 ##### Parameters:
-| Name      | Kukumo type         | Description             |
+| Name      | Wakamiti type         | Description             |
 |-----------|---------------------|-------------------------|
 | `matcher` | `integer-assertion` | Numeric [comparator][1] |
 
@@ -348,7 +348,7 @@ the service use the basic authentication credentials {username}:{password}
 Sets the basic authentication credentials to be sent in the `Authorization` header for the subsequent requests.
 
 ##### Parameters:
-| Name       | Kukumo type | Description  |
+| Name       | Wakamiti type | Description  |
 |------------|-------------|--------------|
 | `username` | `text`      | The username |
 | `password` | `text`      | The password |
@@ -366,7 +366,7 @@ the service use the authentication token {text}
 Sets the authentication token to be sent in the `Authorization` header for the subsequent requests.
 
 ##### Parameters:
-| Name   | Kukumo type | Description            |
+| Name   | Wakamiti type | Description            |
 |--------|-------------|------------------------|
 | `text` | `text`      | An authorization token |
 
@@ -383,7 +383,7 @@ Sets the authentication token to be sent in the `Authorization` header for the s
 Sets the authentication token to be sent in the `Authorization` header for the subsequent requests.
 
 ##### Parameters:
-| Name   | Kukumo type  | Description                        |
+| Name   | Wakamiti type  | Description                        |
 |--------|--------------|------------------------------------|
 | `file` | `file`       | File with the authentication token |
 
@@ -400,7 +400,7 @@ the service use the authentication provider with the following data:
 Sets the [OAuth 2.0][oauth2] authentication parameters.
 
 ##### Parameters:
-| Name | Kukumo type | Description                                 |
+| Name | Wakamiti type | Description                                 |
 |------|-------------|---------------------------------------------|
 |      | `document`  | A string with the authentication parameters |
 
@@ -420,7 +420,7 @@ the attached file is included with the following data:
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name | Kukumo type | Description          |
+| Name | Wakamiti type | Description          |
 |------|-------------|----------------------|
 |      | `document`  | Content to be attach |
 
@@ -440,7 +440,7 @@ the attached file {file} is included
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name   | Kukumo type | Description       |
+| Name   | Wakamiti type | Description       |
 |--------|-------------|-------------------|
 | `file` | `file`      | File to be attach |
 
@@ -494,7 +494,7 @@ Sends a `PUT` request to the previously defined endpoint formed with the base UR
 The payload is provided in-document.
 
 ##### Parameters:
-| Name | Kukumo type | Description              |
+| Name | Wakamiti type | Description              |
 |------|-------------|--------------------------|
 |      | `document`  | The request payload body |
 
@@ -522,7 +522,7 @@ Sends a `PUT` request to the previously defined endpoint formed with the base UR
 The payload is provided by the given file.
 
 ##### Parameters:
-| Name   | Kukumo type | Description                                |
+| Name   | Wakamiti type | Description                                |
 |--------|-------------|--------------------------------------------|
 | `file` | `file`      | A file containing the request payload body |
 
@@ -560,7 +560,7 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 The payload is provided in-document.
 
 ##### Parameters:
-| Name | Kukumo type | Description              |
+| Name | Wakamiti type | Description              |
 |------|-------------|--------------------------|
 |      | `document`  | The request payload body |
 
@@ -585,7 +585,7 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 The payload is provided by the given file.
 
 ##### Parameters:
-| Name   | Kukumo type | Description                                |
+| Name   | Wakamiti type | Description                                |
 |--------|-------------|--------------------------------------------|
 | `file` | `file`      | A file containing the request payload body |
 
@@ -629,7 +629,7 @@ Send a `POST` request to the previously defined endpoint formed with the base UR
 provided in-document.
 
 ##### Parameters:
-| Name | Kukumo type | Description     |
+| Name | Wakamiti type | Description     |
 |------|-------------|-----------------|
 |      | `document`  | Request payload |
 
@@ -666,7 +666,7 @@ Sends a `POST` request to the previously defined endpoint formed with the base U
 provided by the given file.
 
 ##### Parameters:
-| Name   | Kukumo type | Description                                |
+| Name   | Wakamiti type | Description                                |
 |--------|-------------|--------------------------------------------|
 | `file` | `file`      | A file containing the request payload body |
 
@@ -686,7 +686,7 @@ the response HTTP code {matcher}
 Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Kukumo type         | Description            |
+| Name      | Wakamiti type         | Description            |
 |-----------|---------------------|------------------------|
 | `matcher` | `integer-assertion` | Number [comparator][1] |
 
@@ -712,7 +712,7 @@ the response contains:
 Validates that the last response body contains the given in-document content.
 
 ##### Parameters:
-| Name | Kukumo type | Description                  |
+| Name | Wakamiti type | Description                  |
 |------|-------------|------------------------------|
 |      | `document`  | The expected partial content |
 
@@ -743,7 +743,7 @@ the response contains the file {file}
 Validates that the last response body contains the content of the given file.
 
 ##### Parameters:
-| Name   | Kukumo type | Description      |
+| Name   | Wakamiti type | Description      |
 |--------|-------------|------------------|
 | `file` | `file`      | An existing file |
 
@@ -761,7 +761,7 @@ Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragm
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name       | Kukumo type   | Description               |
+| Name       | Wakamiti type   | Description               |
 |------------|---------------|---------------------------|
 | `fragment` | `text`        | A JSONPath or XPath query |
 | `matcher`  | `*-assertion` | [Comparator][1]           |
@@ -785,7 +785,7 @@ Validate that the content type of the last response is the expected. This step w
 `Content-Type` response header against the corresponding MIME type.
 
 ##### Parameters:
-| Name   | Kukumo type | Description                                        |
+| Name   | Wakamiti type | Description                                        |
 |--------|-------------|----------------------------------------------------|
 | `word` | `word`      | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
@@ -802,7 +802,7 @@ the response length {matcher}
 Validate that the length in bytes of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Kukumo type         | Description            |
+| Name      | Wakamiti type         | Description            |
 |-----------|---------------------|------------------------|
 | `matcher` | `integer-assertion` | Number [comparator][1] |
 
@@ -819,7 +819,7 @@ the (texto|entero|decimal) response header {name} {matcher}
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name      | Kukumo type   | Description          |
+| Name      | Wakamiti type   | Description          |
 |-----------|---------------|----------------------|
 | `name`    | `text`        | The HTTP header name |
 | `matcher` | `*-assertion` | [Comparator][1]      |

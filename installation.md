@@ -3,7 +3,7 @@
 ## Linux
 
 Since the current packages are not yet deployed to a public Maven repository,
-the best option is to build and install the Kukumo packages locally:
+the best option is to build and install the Wakamiti packages locally:
 
 1. Clone the whole repository:
 ```
@@ -18,7 +18,7 @@ git clone git@github.com:iti-ict/kukumo.git
 sudo ./update-local-launcher.sh
 ```
 
-Being the Kukumo packages installed locally, you must configure your 
+Being the Wakamiti packages installed locally, you must configure your 
 test execution setting the local repository in the `kukumo.yaml` file:
 
 ```yaml
@@ -30,6 +30,6 @@ mavenFetcher:
 ```
 
 
-### Cleaning Kukumo cache
+### Cleaning Wakamiti cache
 Some artifacts are cached in the directory `${home}/.local/share/kukumo`.
 Deleting it will force to download the new/updated artifacts.

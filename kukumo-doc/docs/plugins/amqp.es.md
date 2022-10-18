@@ -125,7 +125,7 @@ propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.usern
 
 
 #### Parámetros:
-| Nombre     | Kukumo type | Descripción           |
+| Nombre     | Wakamiti type | Descripción           |
 |------------|-------------|-----------------------|
 | `url`      | `text`      | La URL del agente     |
 | `username` | `text`      | Nombre de usuario     |
@@ -146,7 +146,7 @@ la cola de destino {word}
 Establece el nombre de la cola que se observará.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción       |
+| Nombre | Wakamiti type | Descripción       |
 |--------|-------------|-------------------|
 | `word` | `word`      | Nombre de la cola |
 
@@ -165,7 +165,7 @@ se envía a la cola {word} el siguiente mensaje JSON:
 Envía un mensaje JSON a la cola indicada.
 
 #### Parámetros:
-| Nombre | Kukumo type  | Descripción       |
+| Nombre | Wakamiti type  | Descripción       |
 |--------|--------------|-------------------|
 | `word` | `word`       | Nombre de la cola |
 |        | `document`   | Mensaje JSON      |
@@ -191,7 +191,7 @@ se envía a la cola {queue} el mensaje del fichero JSON {file}
 Envía el contenido de un fichero JSON a la cola indicada.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción       |
+| Nombre  | Wakamiti type | Descripción       |
 |---------|-------------|-------------------|
 | `file`  | `file`      | Fichero JSON      |
 | `queue` | `word`      | Nombre de la cola |
@@ -211,7 +211,7 @@ se espera durante {integer} segundo(s)
 Se produce una espera de un número fijo de segundos (generalmente para asegurarse de que se haya procesado el mensaje).
 
 #### Parámetros:
-| Nombre    | Kukumo type | Descripción                      |
+| Nombre    | Wakamiti type | Descripción                      |
 |-----------|-------------|----------------------------------|
 | `integer` | `integer`   | Cantidad de tiempo (en segundos) |
 
@@ -231,7 +231,7 @@ Valida que se reciba un mensaje JSON específico en la [cola observada](#definir
 después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre    | Kukumo type | Descripción                      |
+| Nombre    | Wakamiti type | Descripción                      |
 |-----------|-------------|----------------------------------|
 | `integer` | `integer`   | Cantidad de tiempo (en segundos) |
 |           | `document`  | Mensaje JSON                     |
@@ -258,7 +258,7 @@ Valida que se reciba el contenido de un fichero JSON específico en la [cola obs
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre | Kukumo type  | Descripción                      |
+| Nombre | Wakamiti type  | Descripción                      |
 |--------|--------------|----------------------------------|
 | `file` | `file`       | Fichero JSON                     |
 |        | `integer`    | Cantidad de tiempo (en segundos) |

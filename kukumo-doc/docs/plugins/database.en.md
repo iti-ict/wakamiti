@@ -212,7 +212,7 @@ equivalent to set the configuration properties [`database.connection.url`](#data
 [`database.connection.password`](#databaseconnectionpassword).
 
 #### Parameters:
-| Name       | Kukumo type | Description        |
+| Name       | Wakamiti type | Description        |
 |------------|-------------|--------------------|
 | `url`      | `text`      | The URL connection |
 | `username` | `text`      | User name          |
@@ -231,7 +231,7 @@ At finish, the following SQL script is executed:
 Sets the SQL statements that will be executed one the scenario is finished, regardless execution status.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 |        | `document`  | Script content |
 
@@ -252,7 +252,7 @@ At finish, the SQL script file {file} is executed
 Sets the SQL statements from file that will be executed one the scenario is finished, regardless execution status.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | SQL file    |
 
@@ -269,7 +269,7 @@ the following SQL script is executed:
 Execute a in-line SQL script.
 
 #### Parameters:
-| Name | Kukumo type | Description    |
+| Name | Wakamiti type | Description    |
 |------|-------------|----------------|
 |      | `document`  | Script content |
 
@@ -290,7 +290,7 @@ the SQL script file {file} is executed
 Execute a SQL script file.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | SQL file    |
 
@@ -307,7 +307,7 @@ the database table {word} is cleared
 Clear the given table, first attempting to execute `TRUNCATE`, and then using `DELETE FROM` as fallback.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `word` | `word`      | The table name |
 
@@ -324,7 +324,7 @@ Clear the given table, first attempting to execute `TRUNCATE`, and then using `D
 Delete the rows in the given table that match the specified value.
 
 #### Parameters:
-| Name     | Kukumo type | Description    |
+| Name     | Wakamiti type | Description    |
 |----------|-------------|----------------|
 | `column` | `word`      | Column name    |
 | `value`  | `text`      | Column value   |
@@ -346,7 +346,7 @@ the following * (is|are) deleted from the database table {word}:
 Delete the following in-line rows from the given table.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `word` | `word`      | The table name |
 |        | `table`     | Data table     |
@@ -372,7 +372,7 @@ the content of the XLS file {file} is deleted from the database
 Delete the rows contained in the specified XLS file, one sheet per table.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | XLS file    |
 
@@ -389,7 +389,7 @@ the content of the CSV file {csv} is deleted from the database table {table}
 Delete the rows contained in the specified CSV file from the given table.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `csv`   | `file`      | CSV file       |
 | `table` | `word`      | The table name |
@@ -408,7 +408,7 @@ Insert the following in-line rows into the given table. Non-specified but requir
 values.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `word` | `word`      | The table name |
 |        | `table`     | Data table     |
@@ -435,7 +435,7 @@ Insert the rows contained in the specified XLS file, one sheet per table. Non-sp
 populated with random values.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | XLS file    |
 
@@ -453,7 +453,7 @@ Insert the rows contained in the specified CSV file into the given table. Non-sp
 populated with random values.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `csv`   | `file`      | CSV file       |
 | `table` | `word`      | The table name |
@@ -471,7 +471,7 @@ populated with random values.
 Assert that at least one row in the given table matches the specified value for a column.
 
 #### Parameters:
-| Name     | Kukumo type | Description    |
+| Name     | Wakamiti type | Description    |
 |----------|-------------|----------------|
 | `column` | `word`      | Column name    |
 | `value`  | `text`      | Column value   |
@@ -490,7 +490,7 @@ Assert that at least one row in the given table matches the specified value for 
 Assert that no row in the given table matches the specified value for a column.
 
 #### Parameters:
-| Name     | Kukumo type | Description    |
+| Name     | Wakamiti type | Description    |
 |----------|-------------|----------------|
 | `column` | `word`      | Column name    |
 | `value`  | `text`      | Column value   |
@@ -510,7 +510,7 @@ Assert that a row in the given table has a primary key matching the specified va
 primary key accessible from the database metadata.
 
 #### Parameters:
-| Name    | Kukumo type | Description       |
+| Name    | Wakamiti type | Description       |
 |---------|-------------|-------------------|
 | `id`    | `text`      | Primary key value |
 | `table` | `word`      | The table name    |
@@ -529,7 +529,7 @@ Assert that no row in the given table has a primary key matching the specified v
 primary key accessible from the database metadata.
 
 #### Parameters:
-| Name    | Kukumo type | Description       |
+| Name    | Wakamiti type | Description       |
 |---------|-------------|-------------------|
 | `id`    | `text`      | Primary key value |
 | `table` | `word`      | The table name    |
@@ -547,7 +547,7 @@ the following record(s) exist(s) in the database table {table}:
 Assert that all the subsequent data rows exist in the given table.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `table` | `word`      | The table name |
 |         | `table`     | Data table     |
@@ -568,7 +568,7 @@ the following record(s) do(es) not exist in the database table {table}:
 Assert that none of the subsequent data rows exist in the given table.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `table` | `word`      | The table name |
 |         | `table`     | Data table     |
@@ -589,7 +589,7 @@ the content of the XLS file {file} exists in the database
 Assert that all the data rows included in the specified XLS file exist in the database, using one sheet per table.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | XLS file    |
 
@@ -606,7 +606,7 @@ the content of the XLS file {file} does not exist in the database
 Assert that none of the data rows included in the specified XLS file exist in the database, using one sheet per table.
 
 #### Parameters:
-| Name   | Kukumo type | Description |
+| Name   | Wakamiti type | Description |
 |--------|-------------|-------------|
 | `file` | `file`      | XLS file    |
 
@@ -623,7 +623,7 @@ the content of the CSV file {csv} exists in the database table {table}
 Assert that all the data rows included in the specified CSV file exists in the given table.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `csv`   | `file`      | CSV file       |
 | `table` | `word`      | The table name |
@@ -641,7 +641,7 @@ the content of the CSV file {csv} does not exist in the database table {table}
 Assert that all the data rows included in the specified CSV file does not exist in the given table.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `csv`   | `file`      | CSV file       |
 | `table` | `word`      | The table name |
@@ -659,7 +659,7 @@ Assert that all the data rows included in the specified CSV file does not exist 
 Assert that at least one row in the given table satisfies the specified SQL clause exist.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `table` | `word`      | The table name |
 |         | `document`  | Where clause   |
@@ -680,7 +680,7 @@ Assert that at least one row in the given table satisfies the specified SQL clau
 Assert that no row in the given table satisfies the specified SQL clause exist.
 
 #### Parameters:
-| Name    | Kukumo type | Description    |
+| Name    | Wakamiti type | Description    |
 |---------|-------------|----------------|
 | `table` | `word`      | The table name |
 |         | `document`  | Where clause   |
@@ -702,7 +702,7 @@ Assert that the number of rows in the given table matching the specified values 
 assertion.
 
 #### Parameters:
-| Name      | Kukumo type      | Description             |
+| Name      | Wakamiti type      | Description             |
 |-----------|------------------|-------------------------|
 | `column`  | `word`           | Column name             |
 | `value`   | `text`           | Column value            |
@@ -723,7 +723,7 @@ Assert that the number of rows in the given table matching the specified values 
 expression. Only the first row of the given data is considered.
 
 #### Parameters:
-| Name      | Kukumo type      | Description             |
+| Name      | Wakamiti type      | Description             |
 |-----------|------------------|-------------------------|
 | `table`   | `word`           | The table name          |
 | `matcher` | `long-assertion` | Numeric [comparator][2] |
@@ -744,7 +744,7 @@ the number of * satisfying the following SQL clause in the database table {table
 Assert that the number of rows in the given table matching the SQL clause satisfies a numeric assertion.
 
 #### Parameters:
-| Name      | Kukumo type      | Description             |
+| Name      | Wakamiti type      | Description             |
 |-----------|------------------|-------------------------|
 | `table`   | `word`           | The table name          |
 | `matcher` | `long-assertion` | Numeric [comparator][2] |
@@ -766,7 +766,7 @@ the database table {word} is empty
 Assert that the given table has no data.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `word` | `word`      | The table name |
 
@@ -783,7 +783,7 @@ the database table {word} is not empty
 Assert that the given tabla has some data.
 
 #### Parameters:
-| Name   | Kukumo type | Description    |
+| Name   | Wakamiti type | Description    |
 |--------|-------------|----------------|
 | `word` | `word`      | The table name |
 

@@ -1,6 +1,6 @@
-# Kukumo::Launcher
+# Wakamiti::Launcher
 
-This project is a stand-alone, command-line tool to execute Kukumo test plans. It does not require Maven present to be 
+This project is a stand-alone, command-line tool to execute Wakamiti test plans. It does not require Maven present to be 
 launched, although a Maven repository is still required in order to obtain libraries dependencies. 
 
 
@@ -54,7 +54,7 @@ setx PATH "%PATH%;%KUKUMO_HOME\kukumo.bat%"
 > any possible repository configuration please check the _Maven Fetcher_ project.
 
 > **TIP**  
-> At this current stage of the project, it is possible that the own Kukumo libraries are not published yet.  
+> At this current stage of the project, it is possible that the own Wakamiti libraries are not published yet.  
 > However, you can clone or download the entire project and install it in your local repository by typing 
 > `mvn install` (Maven must be installed to do that). The compiled libraries will be located at `{HOME}/.m2/repository`,
 > so simple add that folder as a repository using the `file:///` protocol instead of `https://`.
@@ -68,23 +68,23 @@ kukumo
 ```
 
 The launcher will search for any suitable test according the attached plugins and will proceed to execute the resulting 
-test iti.kukumo.test.gherkin.plan. However, bear in mind that Kukumo do nothing by itself, so we need to, at least, provide a test discovery 
+test iti.kukumo.test.gherkin.plan. However, bear in mind that Wakamiti do nothing by itself, so we need to, at least, provide a test discovery 
 plugin and a step library plugin in order to get a successful execution.
 
 A proper example would be the following:
 ```
 kukumo -modules iti.kukumo:kukumo-gherkin:1.0.0 iti.kukumo:kukumo-rest:1.0.0
 ```
-This way, Kukumo will search for any Gherkin (`.feature`) file in the current folder and sub-folders, and it will try to
+This way, Wakamiti will search for any Gherkin (`.feature`) file in the current folder and sub-folders, and it will try to
 build and execute a test iti.kukumo.test.gherkin.plan with REST-related steps.
 
 > **INFO**  
-> The Kukumo Launcher will create a folder named `.kukumo` in the current folder in order to store libraries and pass 
+> The Wakamiti Launcher will create a folder named `.kukumo` in the current folder in order to store libraries and pass 
 > them to the Java classpath. You can delete this folder safely, but it will be recreated every time the launcher is 
 > executed.
 
 There is an alternative to typing the required modules every time: use a local configuration file. If you create a file 
-in the current folder using the default name `kukumo.yaml`, you can configure every Kukumo property inside instead of 
+in the current folder using the default name `kukumo.yaml`, you can configure every Wakamiti property inside instead of 
 passing them as command-line arguments:
 
 ###### kukumo.yaml
@@ -97,7 +97,7 @@ kukumo:
 ```  
 
 > **IMPORTANT**  
-> The `modules` property accepts not only the plugins used directly by Kukumo but any other Maven artifact.  
+> The `modules` property accepts not only the plugins used directly by Wakamiti but any other Maven artifact.  
 > For example, if you use the database steps plugin, you will require as well a library with the proper JDBC driver. 
 > Just declare the corresponding Maven artifact as a regular module and it will be obtained and attached to the 
 > execution.
@@ -110,7 +110,7 @@ The following is a list of accepted arguments:
 |`-modules <module1> [module2 ...]` | `kukumo.modules` | Set a list of required artifacts |
 |`-conf <filename>` | *not applicable* | Set a custom file to be used as configuration file |
 |`-M<argument>` | `mavenFetcher.<property>` | Set a custom *Maven Fetcher* property |
-|`-K<argument>` | `kukumo.<property>` | Set a custom *Kukumo* property |
+|`-K<argument>` | `kukumo.<property>` | Set a custom *Wakamiti* property |
 
 
 

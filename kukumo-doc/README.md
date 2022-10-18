@@ -1,2 +1,2 @@
 # kukumo-doc
-Kukumo Documentation
+Wakamiti Documentation

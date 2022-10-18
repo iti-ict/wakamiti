@@ -161,7 +161,7 @@ Establece el tipo de contenido de la API en la cabecera `content-type`. Este pas
 propiedad [`rest.contentType`](#restcontenttype). 
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción        |
+| Nombre | Wakamiti type | Descripción        |
 |--------|-------------|--------------------|
 | `type` | `word`      | La URL de conexión |
 
@@ -178,7 +178,7 @@ la URL base {url}
 Establece la ruta base de la API. Este paso es equivalente a configurar la propiedad [`rest.baseURL`](#restbaseurl). 
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción |
+| Nombre | Wakamiti type | Descripción |
 |--------|-------------|-------------|
 | `url`  | `url`       | URL base    |
 
@@ -195,7 +195,7 @@ el servicio REST {service}
 Establece la ruta del servicio a probar. Se concatenará al valor de la [url base](#definir-url-base).
 
 #### Parámetros:
-| Nombre    | Kukumo type | Descripción  |
+| Nombre    | Wakamiti type | Descripción  |
 |-----------|-------------|--------------|
 | `service` | `text`      | Segmento URL |
 
@@ -213,7 +213,7 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
 [url base](#definir-url-base) y del [servicio](#definir-servicio) en concreto.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción                 |
+| Nombre | Wakamiti type | Descripción                 |
 |--------|-------------|-----------------------------|
 | `text` | `text`      | Un identificador de recurso |
 
@@ -233,7 +233,7 @@ los siguiente parámetros de solicitud:
 Establece los parámetros de la petición REST. Estos parámetros se enviaran como datos de formulario.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                                   |
+| Nombre | Wakamiti type | Descripción                                   |
 |--------|-------------|-----------------------------------------------|
 |        | `table`     | Una tabla con las columnas `nombre` y `valor` |
 
@@ -254,7 +254,7 @@ Establece los parámetros de la petición REST. Estos parámetros se concatenar�
 por ejemplo `/user?param1=abc&param2=123`.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                                   |
+| Nombre | Wakamiti type | Descripción                                   |
 |--------|-------------|-----------------------------------------------|
 |        | `table`     | Una tabla con las columnas `nombre` y `valor` |
 
@@ -275,7 +275,7 @@ Establece los parámetros de la petición REST. Estos parámetros formarán part
 fragmentos indicados con `{}`.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                                   |
+| Nombre | Wakamiti type | Descripción                                   |
 |--------|-------------|-----------------------------------------------|
 |        | `table`     | Una tabla con las columnas `nombre` y `valor` |
 
@@ -296,7 +296,7 @@ las siguientes cabeceras:
 Establece las cabeceras de la petición REST.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                                   |
+| Nombre | Wakamiti type | Descripción                                   |
 |--------|-------------|-----------------------------------------------|
 |        | `table`     | Una tabla con las columnas `nombre` y `valor` |
 
@@ -316,7 +316,7 @@ un timeout de {int} (mili)segundos
 Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción      |
+| Nombre | Wakamiti type | Descripción      |
 |--------|-------------|------------------|
 | `int`  | `int`       | El tiempo máximo |
 
@@ -337,7 +337,7 @@ Establece una validación general para el código HTTP de todas las respuestas s
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
 ##### Parámetros:
-| Nombre    | Kukumo type         | Descripción              |
+| Nombre    | Wakamiti type         | Descripción              |
 |-----------|---------------------|--------------------------|
 | `matcher` | `integer-assertion` | [Comparador][1] numérico |
 
@@ -354,7 +354,7 @@ configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una va
 Establece las credenciales de autenticación básica que se enviarán en la cabecera HTTP `Authorization`.
 
 ##### Parámetros:
-| Nombre     | Kukumo type | Descripción       |
+| Nombre     | Wakamiti type | Descripción       |
 |------------|-------------|-------------------|
 | `username` | `text`      | Nombre de usuario |
 | `password` | `text`      | Contraseña        |
@@ -372,7 +372,7 @@ Establece las credenciales de autenticación básica que se enviarán en la cabe
 Establece el token de autenticación que se enviará en la cabecera `Authorization` para las siguientes peticiones. 
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción            |
+| Nombre | Wakamiti type | Descripción            |
 |--------|-------------|------------------------|
 | `text` | `text`      | Token de autenticación |
 
@@ -390,7 +390,7 @@ Establece el token de autenticación que se enviará en la cabecera `Authorizati
 desde un fichero.
 
 ##### Parámetros:
-| Nombre | Kukumo type  | Descripción                           |
+| Nombre | Wakamiti type  | Descripción                           |
 |--------|--------------|---------------------------------------|
 | `file` | `file`       | Fichero con el token de autenticación |
 
@@ -407,7 +407,7 @@ desde un fichero.
 Establece el cuerpo que se enviará al servicio de autenticación.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                                |
+| Nombre | Wakamiti type | Descripción                                |
 |--------|-------------|--------------------------------------------|
 |        | `document`  | Cadena con los parámetros de autenticación |
 
@@ -427,7 +427,7 @@ Establece el cuerpo que se enviará al servicio de autenticación.
 Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción          |
+| Nombre | Wakamiti type | Descripción          |
 |--------|-------------|----------------------|
 |        | `document`  | Contenido a adjuntar |
 
@@ -447,7 +447,7 @@ Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de formulario.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                         |
+| Nombre | Wakamiti type | Descripción                         |
 |--------|-------------|-------------------------------------|
 | `file` | `file`      | Fichero con el contenido a adjuntar |
 
@@ -504,7 +504,7 @@ Envía una petición `PUT` al servicio y recurso REST definido previamente. El c
 indicado a continuación.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción              |
+| Nombre | Wakamiti type | Descripción              |
 |--------|-------------|--------------------------|
 |        | `document`  | El cuerpo de la petición |
 
@@ -532,7 +532,7 @@ Envía una petición `PUT` al servicio y recurso REST definido previamente. El c
 fichero indicado.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                          |
+| Nombre | Wakamiti type | Descripción                          |
 |--------|-------------|--------------------------------------|
 | `file` | `file`      | Fichero con el cuerpo de la petición |
 
@@ -570,7 +570,7 @@ Envía una petición `PATCH` al servicio y recurso REST definido previamente. El
 indicado a continuación.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción              |
+| Nombre | Wakamiti type | Descripción              |
 |--------|-------------|--------------------------|
 |        | `document`  | El cuerpo de la petición |
 
@@ -595,7 +595,7 @@ Envía una petición `PATCH` al servicio y recurso REST definido previamente. El
 del fichero indicado.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                          |
+| Nombre | Wakamiti type | Descripción                          |
 |--------|-------------|--------------------------------------|
 | `file` | `file`      | Fichero con el cuerpo de la petición |
 
@@ -638,7 +638,7 @@ Envía una petición `POST` al servicio definido previamente. El cuerpo de la pe
 indicado a continuación.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción              |
+| Nombre | Wakamiti type | Descripción              |
 |--------|-------------|--------------------------|
 |        | `document`  | El cuerpo de la petición |
 
@@ -675,7 +675,7 @@ Envía una petición `POST` al servicio definido previamente. El cuerpo de la pe
 fichero indicado.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción                          |
+| Nombre | Wakamiti type | Descripción                          |
 |--------|-------------|--------------------------------------|
 | `file` | `file`      | Fichero con el cuerpo de la petición |
 
@@ -695,7 +695,7 @@ el código de respuesta HTTP {matcher}
 Comprueba que el código HTTP de la última respuesta satisface una validación de enteros.
 
 ##### Parámetros:
-| Nombre    | Kukumo type         | Descripción               |
+| Nombre    | Wakamiti type         | Descripción               |
 |-----------|---------------------|---------------------------|
 | `matcher` | `integer-assertion` | Una validación de enteros |
 
@@ -721,7 +721,7 @@ la respuesta es parcialmente:
 Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción           |
+| Nombre | Wakamiti type | Descripción           |
 |--------|-------------|-----------------------|
 |        | `document`  | El contenido esperado |
 
@@ -752,7 +752,7 @@ la respuesta es parcialmente el contenido del fichero {file}
 Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados en el fichero.
 
 ##### Parámetros:
-| Nombre | Kukumo type | Descripción          |
+| Nombre | Wakamiti type | Descripción          |
 |--------|-------------|----------------------|
 | `file` | `file`      | Un fichero existente |
 
@@ -770,7 +770,7 @@ Valida el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de re
 (usando [JSONPath][jsonpath] o [XPath][xpath] dependiendo del tipo de contenido).
 
 ##### Parámetros:
-| Nombre     | Kukumo type   | Descripción                 |
+| Nombre     | Wakamiti type   | Descripción                 |
 |------------|---------------|-----------------------------|
 | `fragment` | `text`        | Una ruta JSONPath or XPath  |
 | `matcher`  | `*-assertion` | El comparador del fragmento |
@@ -794,7 +794,7 @@ Valida que el tipo de contenido de la última respuesta es el esperado.
 Este paso equivale a validar que el valor de la cabecera `Content-Type` de la respuesta es el tipo MIME correspondiente.
 
 ##### Parámetros:
-| Nombre  | Kukumo type | Descripción                                        |
+| Nombre  | Wakamiti type | Descripción                                        |
 |---------|-------------|----------------------------------------------------|
 | `word`  | `word`      | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
@@ -811,7 +811,7 @@ el tamaño de la respuesta {matcher}
 Comprueba que la longitud en bytes de la última respuesta satisface una validación.
 
 ##### Parámetros:
-| Nombre    | Kukumo type         | Descripción               |
+| Nombre    | Wakamiti type         | Descripción               |
 |-----------|---------------------|---------------------------|
 | `matcher` | `integer-assertion` | Una validación de enteros |
 
@@ -829,7 +829,7 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 *decimal*.
 
 ##### Parámetros:
-| Nombre    | Kukumo type   | Descripción                         |
+| Nombre    | Wakamiti type   | Descripción                         |
 |-----------|---------------|-------------------------------------|
 | `name`    | `text`        | Nombre de la cabecera               |
 | `matcher` | `*-assertion` | [Comparador][1] de texto o numérico |

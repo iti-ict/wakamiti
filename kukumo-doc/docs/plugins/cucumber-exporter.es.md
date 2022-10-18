@@ -8,8 +8,8 @@ Un generador de informes que emite un fichero JSON con el formato utilizado por 
 algunas herramientas diseñadas para funcionar con Cucumber, por ejemplo este
 [Complemento de informes de Jenkins Cucumber](https://github.com/jenkinsci/cucumber-reports-plugin).
 
-Hay que tener en cuenta que, aunque Cucumber y Kukumo comparten similitudes estructurales en su formato de resultado, 
-hay partes específicas de información que no son intercambiables. Por ejemplo, Kukumo trabaja con planes de prueba de 
+Hay que tener en cuenta que, aunque Cucumber y Wakamiti comparten similitudes estructurales en su formato de resultado, 
+hay partes específicas de información que no son intercambiables. Por ejemplo, Wakamiti trabaja con planes de prueba de 
 profundidad ilimitada, mientras que Cucumber espera una estructura fija de tres niveles. Por lo tanto, el fichero JSON 
 de Cucumber exportado podría no ser una representación fiel del plan de prueba ejecutado.
 
@@ -30,7 +30,7 @@ cucumberExporter:
 
 ---
 #### `cucumberExporter.multiLevelStrategy`
-Establece la estrategia de mapeo utilizada cuando el plan de Kukumo tiene más niveles del esperado por Cucumber. Los 
+Establece la estrategia de mapeo utilizada cuando el plan de Wakamiti tiene más niveles del esperado por Cucumber. Los 
 valores aceptados son:
 - `innerSteps`: Sólo se incluirán los pasos de implementación, descartando los de definición.
 - `outerSteps`: Sólo se incluirán los pasos de definición, descartando los de implementación.

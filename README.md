@@ -8,20 +8,20 @@
 
 
 
-Kukumo is a Cucumber-inspired tool written in Java focused on **blackbox testing**
+Wakamiti is a Cucumber-inspired tool written in Java focused on **blackbox testing**
 using **natural language**.
 
 <br/>
 
 Just like Cucumber, you can define your tests using natural, human-readable language by adopting 
-(for example) the Gherkin _grammar_. However, with Kukumo you  _do not_ bind each step to your 
+(for example) the Gherkin _grammar_. However, with Wakamiti you  _do not_ bind each step to your 
 test code; instead, steps are bound to reusable, common-purpose code provided by external plugins. 
 
 <br/>
 
-Thus, Kukumo turns out to be a convenient tool if your aim is test your system via standardized 
+Thus, Wakamiti turns out to be a convenient tool if your aim is test your system via standardized 
 protocols such as REST web services or JDBC connection, which tend to be a great deal of percentage
-of the tests written for most applications. This *blackbox-testing* approach allows using Kukumo
+of the tests written for most applications. This *blackbox-testing* approach allows using Wakamiti
 regardless the specific technology used by the target application.
 
 <br/>
@@ -31,27 +31,27 @@ their own tests.
 
 <br/>
 
-Other features provided by Kukumo are:
+Other features provided by Wakamiti are:
 
 - **Two-layered Gherkin**: you can make use of the Gherkin grammar at two levels of abstraction, 
 one aimed to customer communication, and other aimed to system details
-- **Fully localizable**: you can use your own language as long as you provided Kukumo with a 
+- **Fully localizable**: you can use your own language as long as you provided Wakamiti with a 
 translation file  
 - **Easily extensible**: write your own plugins for any extension point (steps, reporters, 
 language parsers, etc.) and share them with the community
-- **Alternative launchers**: execute Kukumo as a JUnit test suite, as a Maven verify goal, 
+- **Alternative launchers**: execute Wakamiti as a JUnit test suite, as a Maven verify goal, 
 or directly as a console command.
 
 
 > **REMEMBER**  
-> Kukumo is a _tool_, not a _testing framework_. Use it when fits the circumstances. Neither is it 
+> Wakamiti is a _tool_, not a _testing framework_. Use it when fits the circumstances. Neither is it 
 a replacement for Cucumber: according your necessities, you might use _both_!    
 
 
 Usage
 ----------------------------------------------------------------------------------------------------
  
-Running tests with Kukumo is very easy. Just write your test specification, 
+Running tests with Wakamiti is very easy. Just write your test specification, 
 define a basic configuration with the step providers (and any other plugin) that you require,
 and choose the launcher that fits better your project.
 
@@ -86,7 +86,7 @@ Feature: Testing the user data retrieval service
         """
 ```
 
-Now we define the execution configuration, that is simply a set of properties that Kukumo would take 
+Now we define the execution configuration, that is simply a set of properties that Wakamiti would take 
 into account for several aspects. There are several ways to define them; in this example we will just 
 write them in the default configuration file `kukumo.yaml`:
 
@@ -137,7 +137,7 @@ Currently, there are three methods available to launch a test plan, regarding th
 the test approach:
 
 - **Using JUnit**: For Java projects, you can create an empty testing class to be run as a normal JUnit test suite, 
-setting the custom JUnit runner ```KukumoJUnitRunner```. This way, the plan is treated 
+setting the custom JUnit runner ```WakamitiJUnitRunner```. This way, the plan is treated 
 as a normal JUnit test and will be executed along any other JUnit test existing.
 
     _Suitable scenarios_   
@@ -145,15 +145,15 @@ as a normal JUnit test and will be executed along any other JUnit test existing.
    to launch tests 
    
     
-- **Using Maven**: If your project uses Maven, and you prefer to execute the Kukumo test plan in a separate stage,
-you can execute Kukumo attaching the ```kukumo-maven-plugin``` plugin to the 
-Maven lifecycle.  Simply configure the Maven plugin and the desired additional Kukumo plugins 
+- **Using Maven**: If your project uses Maven, and you prefer to execute the Wakamiti test plan in a separate stage,
+you can execute Wakamiti attaching the ```kukumo-maven-plugin``` plugin to the 
+Maven lifecycle.  Simply configure the Maven plugin and the desired additional Wakamiti plugins 
 in your POM `build` section.
 
    _Suitable scenarios_   
-   Maven-built applications, if you want to include Kukumo as a part of the verify phase
+   Maven-built applications, if you want to include Wakamiti as a part of the verify phase
 
-- **Stand-alone launcher**: If your project does not use neither JUnit nor Maven, Kukumo provides a 
+- **Stand-alone launcher**: If your project does not use neither JUnit nor Maven, Wakamiti provides a 
 stand-alone command-line based launcher, that will manage the plugin dependencies internally.
 
    _Suitable scenarios_   
@@ -165,7 +165,7 @@ stand-alone command-line based launcher, that will manage the plugin dependencie
 Plugins
 ----------------------------------------------------------------------------------------------------
 
-The following Kukumo plugins are provided as a part of the project:
+The following Wakamiti plugins are provided as a part of the project:
 
 - [REST Steps](kukumo-plugins/kukumo-rest/target/docsite/index.html): 
 a set of steps aimed to test RESTful operations. It includes 
@@ -189,10 +189,10 @@ execution.
 > covering different needs. 
 
 
-Kukumo Editor
+Wakamiti Editor
 ----------------------------------------------------------------------------------------------------
 
-Kukumo implements the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)
+Wakamiti implements the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)
 in order to allow editors to provide auto-completion and validation features. As an example, a 
 [Visual Studio Code](https://code.visualstudio.com/) extension is provided 
 [here](https://github.com/iti-ict/kukumo/raw/main/kukumo-vscode-extension/kukumo-vscode-extension-latest.vsix).

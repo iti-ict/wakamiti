@@ -57,7 +57,7 @@ docker run --rm -p 8080:8080 -p 8090:8090 -p 5005:5005 -e JAVA_ENABLE_DEBUG="tru
 
 Images are stored at nexus-kukumo.iti.upv.es
 
-## Pushing images to Kukumo Nexus
+## Pushing images to Wakamiti Nexus
 ```shell script
 docker login nexus-kukumo.iti.upv.es
 ```
@@ -68,7 +68,7 @@ docker login nexus-kukumo.iti.upv.es
 ## Running the demo Docker image
 
 For demonstration purposes, it is possible to create a custom image that includes several
-Kukumo plugins (present in the `demo/lib-ext` folder). For running the image, execute the following:
+Wakamiti plugins (present in the `demo/lib-ext` folder). For running the image, execute the following:
 
 In order to create the Docker image, execute the following:
 ```shell script

@@ -32,14 +32,14 @@ si queremos usar un servidor remoto.
 ### Ajustar el modo de lenguaje al abrir archivos
 
 Es posible que en el momento de instalar la extensión, ya tengamos
-alguna otra extensión para la edición de archivos Gherkin. De ser así, cuando abramos un archivo (```.feature```) no usará la extensión de Kukumo inicialmente. Podemos detectarlo en la parte derecha de la barra inferior:
+alguna otra extensión para la edición de archivos Gherkin. De ser así, cuando abramos un archivo (```.feature```) no usará la extensión de Wakamiti inicialmente. Podemos detectarlo en la parte derecha de la barra inferior:
 
 ![image](gherkin_lang_mode.png)
 
 En esta circunstancia, deberemos pulsar sobre el texto ```Gherkin```
 en la barra, seleccionar la opción *Configure file association...*
 y buscar el modo de lenguaje ```Kukumo Gherkin```. Tras
-eso, el resto de archivos ```.feature``` ya se cargarán usando Kukumo.
+eso, el resto de archivos ```.feature``` ya se cargarán usando Wakamiti.
 
 ![image](select_lang_mode.gif)
 
@@ -61,7 +61,7 @@ Para ello:
    ```
    docker run -d --rm -p 8880:8080 -p 8890:8090 --name kukumo-server-demo nexus-kukumo.iti.upv.es/kukumo-server-demo:latest
    ```
-   > Podemos enrutar los puertos a otros diferentes en caso de estar ocupados, pero actualizando la configuración de Kukumo en VS Code
+   > Podemos enrutar los puertos a otros diferentes en caso de estar ocupados, pero actualizando la configuración de Wakamiti en VS Code
 
 
 ![image](install_docker.gif)

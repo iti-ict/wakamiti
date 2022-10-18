@@ -7,8 +7,8 @@ slug: /kukumo/architecture
 
 ## Configuración global
 
-La configuración de Kukumo se establece mediante un fichero `yaml` ubicado en el directorio de pruebas. Por defecto, 
-Kukumo buscará el fichero con el nombre `kukumo.yaml`.
+La configuración de Wakamiti se establece mediante un fichero `yaml` ubicado en el directorio de pruebas. Por defecto, 
+Wakamiti buscará el fichero con el nombre `kukumo.yaml`.
 
 - [`kukumo.resourceTypes`](#kukumoresourcetypes)
 - [`kukumo.resourcePath`](#kukumoresourcepath)

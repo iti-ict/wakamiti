@@ -10,7 +10,7 @@ validación de datos.
 > **RECUERDA** <br />
 > Debido a los muchos motores existentes de bases de datos, este plugin no incluye ningún driver específico. Esto
 > significa que, para funcionar correctamente, es necesario inluir el módulo con el controlador JDBC adecuado en la
-> configuración de kukumo.
+> configuración de Wakamiti.
 
 
 
@@ -218,7 +218,7 @@ configurar las propiedades [`database.connection.url`](#databaseconnectionurl),
 [`database.connection.password`](#databaseconnectionpassword).
 
 #### Parámetros:
-| Nombre     | Kukumo type | Descripción           |
+| Nombre     | Wakamiti type | Descripción           |
 |------------|-------------|-----------------------|
 | `url`      | `text`      | La URL de conexión    |
 | `username` | `text`      | Nombre de usuario     |
@@ -238,7 +238,7 @@ Establece las sentencias SQL que se ejecutarán una vez finalizado el escenario,
 ejecución.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción          |
+| Nombre | Wakamiti type | Descripción          |
 |--------|-------------|----------------------|
 |        | `document`  | Contenido del script |
 
@@ -260,7 +260,7 @@ Establece las sentencias SQL del fichero indicado que se ejecutarán una vez fin
 del estado de la ejecución.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción |
+| Nombre | Wakamiti type | Descripción |
 |--------|-------------|-------------|
 | `file` | `file`      | Fichero SQL |
 
@@ -277,7 +277,7 @@ se ejecuta el siguiente script SQL:
 Ejecuta el script SQL escrito a continuación.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción          |
+| Nombre | Wakamiti type | Descripción          |
 |--------|-------------|----------------------|
 |        | `document`  | Contenido del script |
 
@@ -298,7 +298,7 @@ se ejecuta el script SQL del fichero {file}
 Ejecuta el script SQL existente en el fichero indicado.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción |
+| Nombre | Wakamiti type | Descripción |
 |--------|-------------|-------------|
 | `file` | `file`      | Fichero SQL |
 
@@ -316,7 +316,7 @@ Limpia la tabla indicada, intentando primero con la sentencia `TRUNCATE` , y con
 fallar la primera.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción        |
+| Nombre | Wakamiti type | Descripción        |
 |--------|-------------|--------------------|
 | `word` | `word`      | Nombre de la tabla |
 
@@ -333,7 +333,7 @@ se (ha) elimina(n|do) * con {column} = {value} de la tabla de BBDD {table}
 Elimina de una tabla dada las filas que satisfagan la comparación indicada.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción          |
+| Nombre   | Wakamiti type | Descripción          |
 |----------|-------------|----------------------|
 | `column` | `word`      | Nombre de la columna |
 | `value`  | `text`      | Valor de la columna  |
@@ -355,7 +355,7 @@ se (ha) elimina(n|do) (lo|el|la|los|las) siguiente(s) * de la tabla de BBDD {wor
 Elimina de una tabla dada las filas indicadas.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción         |
+| Nombre | Wakamiti type | Descripción         |
 |--------|-------------|---------------------|
 | `word` | `word`      | Nombre de la tabla  |
 |        | `table`     | Tabla con los datos |
@@ -381,7 +381,7 @@ se (ha) elimina(do) el contenido del fichero XLS {file} de la BBDD
 Elimina las filas que concuerdan con los datos del fichero XLS indicado.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción |
+| Nombre | Wakamiti type | Descripción |
 |--------|-------------|-------------|
 | `file` | `file`      | Fichero XLS |
 
@@ -401,7 +401,7 @@ se (ha) elimina(do) el contenido del fichero CSV {csv} de la tabla de BBDD {tabl
 Elimina las filas de una tabla dada que concuerdan con los datos del fichero CSV proporcionado.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción        |
+| Nombre  | Wakamiti type | Descripción        |
 |---------|-------------|--------------------|
 | `csv`   | `file`      | Fichero CSV        |
 | `table` | `word`      | Nombre de la tabla |
@@ -423,7 +423,7 @@ Inserta las filas indicadas a continuación una tabla dada. Las columnas no-nula
 datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción         |
+| Nombre | Wakamiti type | Descripción         |
 |--------|-------------|---------------------|
 | `word` | `word`      | Nombre de la tabla  |
 |        | `table`     | Tabla con los datos |
@@ -451,7 +451,7 @@ Inserta las filas contenidas en el fichero XLS indicado, una hoja por tabla. Las
 proporcionen datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción |
+| Nombre | Wakamiti type | Descripción |
 |--------|-------------|-------------|
 | `file` | `file`      | Fichero XLS |
 
@@ -472,7 +472,7 @@ Inserta en una tabla dada las files contenidas en el fichero CSV proporcionado. 
 se proporcionen datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción         |
+| Nombre   | Wakamiti type | Descripción         |
 |----------|-------------|---------------------|
 | `csv`    | `file`      | Fichero CSV         |
 | `table`  | `word`      | Nombre de la tabla  |
@@ -493,7 +493,7 @@ se proporcionen datos se rellenarán con datos aleatorios.
 Comprueba que existe al menos una fila en la tabla indicada para la cual se cumple una comparación dada.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción          |
+| Nombre   | Wakamiti type | Descripción          |
 |----------|-------------|----------------------|
 | `column` | `word`      | Nombre de la columna |
 | `value`  | `text`      | Valor de la columna  |
@@ -512,7 +512,7 @@ Comprueba que existe al menos una fila en la tabla indicada para la cual se cump
 Comprueba que no existe ninguna fila en la tabla indicada para la cual se cumpla una comparación.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción          |
+| Nombre   | Wakamiti type | Descripción          |
 |----------|-------------|----------------------|
 | `column` | `word`      | Nombre de la columna |
 | `value`  | `text`      | Valor de la columna  |
@@ -532,7 +532,7 @@ Comprueba que existe una fila en la tabla dada cuya clave primaria coincide con 
 clave primaria formada por una sola columna.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción                |
+| Nombre  | Wakamiti type | Descripción                |
 |---------|-------------|----------------------------|
 | `id`    | `text`      | Valor de la clave primaria |
 | `table` | `word`      | Nombre de la tabla         |
@@ -554,7 +554,7 @@ Comprueba que no existe una fila en la tabla dada cuya clave primaria coincide c
 clave primaria formada por una sola columna.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción                |
+| Nombre  | Wakamiti type | Descripción                |
 |---------|-------------|----------------------------|
 | `id`    | `text`      | Valor de la clave primaria |
 | `table` | `word`      | Nombre de la tabla         |
@@ -575,7 +575,7 @@ clave primaria formada por una sola columna.
 Comprueba que todas las filas siguientes existen en una tabla dada.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción         |
+| Nombre  | Wakamiti type | Descripción         |
 |---------|-------------|---------------------|
 | `table` | `word`      | Nombre de la tabla  |
 |         | `table`     | Tabla con los datos |
@@ -596,7 +596,7 @@ Comprueba que todas las filas siguientes existen en una tabla dada.
 Comprueba que ninguna de las filas siguientes existen en una tabla dada.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción         |
+| Nombre  | Wakamiti type | Descripción         |
 |---------|-------------|---------------------|
 | `table` | `word`      | Nombre de la tabla  |
 |         | `table`     | Tabla con los datos |
@@ -618,7 +618,7 @@ Comprueba que todas las filas del fichero XLS proporcionado existen en la base d
 tabla.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción |
+| Nombre  | Wakamiti type | Descripción |
 |---------|-------------|-------------|
 | `file`  | `file`      | Fichero XLS |
 
@@ -636,7 +636,7 @@ Comprueba que ninguna de las filas del fichero XLS proporcionado existen en la b
 a una tabla.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción |
+| Nombre  | Wakamiti type | Descripción |
 |---------|-------------|-------------|
 | `file`  | `file`      | Fichero XLS |
 
@@ -653,7 +653,7 @@ el contenido del fichero CSV {csv} existe en la tabla de BBDD {table}
 Comprueba que todas las filas incluidas en el fichero CSV proporcionado existen en una tabla dada.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción         |
+| Nombre   | Wakamiti type | Descripción         |
 |----------|-------------|---------------------|
 | `csv`    | `file`      | Fichero CSV         |
 | `table`  | `word`      | Nombre de la tabla  |
@@ -671,7 +671,7 @@ el contenido del fichero CSV {csv} no existe en la tabla de BBDD {table}
 Comprueba que todas las filas incluidas en el fichero CSV proporcionado no existen en una tabla dada.
 
 #### Parámetros:
-| Nombre   | Kukumo type | Descripción         |
+| Nombre   | Wakamiti type | Descripción         |
 |----------|-------------|---------------------|
 | `csv`    | `file`      | Fichero CSV         |
 | `table`  | `word`      | Nombre de la tabla  |
@@ -689,7 +689,7 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado no exist
 Comprueba que al menos una fila de la tabla dada satisface la claúsula SQL indicada.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción        |
+| Nombre  | Wakamiti type | Descripción        |
 |---------|-------------|--------------------|
 | `table` | `word`      | Nombre de la tabla |
 |         | `document`  | Cláusula where     |
@@ -710,7 +710,7 @@ Comprueba que al menos una fila de la tabla dada satisface la claúsula SQL indi
 Comprueba que ninguna fila de la tabla dada satisface la claúsula SQL indicada.
 
 #### Parámetros:
-| Nombre  | Kukumo type | Descripción        |
+| Nombre  | Wakamiti type | Descripción        |
 |---------|-------------|--------------------|
 | `table` | `word`      | Nombre de la tabla |
 |         | `document`  | Cláusula where     |
@@ -732,7 +732,7 @@ Comprueba que el número de filas que satisfacen la condición indicada en la ta
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Kukumo type      | Descripción              |
+| Nombre    | Wakamiti type      | Descripción              |
 |-----------|------------------|--------------------------|
 | `column`  | `word`           | Nombre de la columna     |
 | `value`   | `text`           | Valor de la columna      |
@@ -753,7 +753,7 @@ Comprueba que el número de filas que satisfacen los valores indicados en la tab
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Kukumo type      | Descripción              |
+| Nombre    | Wakamiti type      | Descripción              |
 |-----------|------------------|--------------------------|
 | `table`   | `word`           | Nombre de la tabla       |
 | `matcher` | `long-assertion` | [Comparador][2] numérico |
@@ -775,7 +775,7 @@ Comprueba que el número de filas que satisfacen la condición indicada en la ta
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Kukumo type      | Descripción              |
+| Nombre    | Wakamiti type      | Descripción              |
 |-----------|------------------|--------------------------|
 | `table`   | `word`           | Nombre de la tabla       |
 | `matcher` | `long-assertion` | [Comparador][2] numérico |
@@ -797,7 +797,7 @@ la tabla de BBDD {word} está vacía
 Comprueba que no existe ninguna fila en la tabla indicada.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción        |
+| Nombre | Wakamiti type | Descripción        |
 |--------|-------------|--------------------|
 | `word` | `word`      | Nombre de la tabla |
 
@@ -814,7 +814,7 @@ la tabla de BBDD {word} no está vacía
 Comprueba que existe al menos una fila en la tabla indicada.
 
 #### Parámetros:
-| Nombre | Kukumo type | Descripción        |
+| Nombre | Wakamiti type | Descripción        |
 |--------|-------------|--------------------|
 | `word` | `word`      | Nombre de la tabla |
 
