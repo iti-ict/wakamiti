@@ -10,21 +10,33 @@
 package iti.kukumo.examples.spring.app;
 
 
-import java.sql.SQLException;
-
+import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextClosedEvent;
+
+import javax.annotation.PreDestroy;
+import java.sql.SQLException;
 
 
 @SpringBootApplication
 public class App {
 
+    private static Server server;
+
     public static void main(String[] args) throws SQLException {
-        Server server = Server.createTcpServer("-tcpPort", "9092").start();
-        ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
+        server = Server.createTcpServer("-tcpPort", "9092").start();
+        SpringApplication.run(App.class, args);
     }
 
+    @PreDestroy
+    public void shutdown() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) { }
+            server.stop();
+            DeleteDbFiles.execute("~", "test", false);
+        }).start();
+    }
 }

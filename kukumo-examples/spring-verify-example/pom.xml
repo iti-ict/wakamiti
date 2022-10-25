@@ -5,7 +5,7 @@
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,10 +26,13 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <kukumoLog>info</kukumoLog>
+        <kukumoLog>debug</kukumoLog>
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
         <spring-boot.version>2.0.5.RELEASE</spring-boot.version>
+
+        <jacoco.kukumo.execution.data.file>${project.build.directory}/coverage-reports/jacoco-kukumo.exec
+        </jacoco.kukumo.execution.data.file>
     </properties>
 
 
@@ -87,6 +90,13 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <version>${jacoco.version}</version>
+            <classifier>runtime</classifier>
+        </dependency>
     </dependencies>
 
 
@@ -94,18 +104,24 @@
         <profile>
             <id>verify-profile</id>
             <activation>
-                <property><name>!skipExampleTests</name></property>
+                <property>
+                    <name>!skipExampleTests</name>
+                </property>
             </activation>
             <build>
                 <plugins>
+
 
                     <!-- Start Spring Boot application prior to integration tests and stop it afterwards -->
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <wait>500</wait>
-                            <maxAttempts>30</maxAttempts>
+                            <jvmArguments>
+                                -Djacoco-agent.destfile=${jacoco.kukumo.execution.data.file}
+                                -Dspring.application.admin.enabled=true
+                                -Dspring.devtools.add-properties=false
+                            </jvmArguments>
                         </configuration>
                         <executions>
                             <execution>
@@ -139,22 +155,17 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <configurationFiles>src/test/resources/kukumo.yaml</configurationFiles>
                             <!-- Enable/disable tests execution (enabled by default) -->
                             <skipTests>${skipExampleTests}</skipTests>
                             <!-- Set log level for the plugin (info by default) -->
                             <logLevel>${kukumoLog}</logLevel>
                             <!-- Kukumo configuration -->
                             <properties>
-                                <resourceTypes>gherkin</resourceTypes>
                                 <resourcePath>${project.basedir}/src/test/resources</resourcePath>
                                 <outputFilePath>target/kukumo/kukumo.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
-                                <rest.baseURL>http://localhost:9191</rest.baseURL>
                                 <htmlReport.output>target/kukumo/kukumo.html</htmlReport.output>
-                                <database.connection.driver>org.h2.Driver</database.connection.driver>
-                                <database.connection.url>jdbc:h2:tcp://localhost:9092/~/test</database.connection.url>
-                                <database.connection.username>sa</database.connection.username>
-                                <database.connection.password></database.connection.password>
                             </properties>
                         </configuration>
                         <dependencies>
@@ -248,6 +259,49 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <skipTests>${skipExampleTests}</skipTests>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/App*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>instrument</goal>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${jacoco.kukumo.execution.data.file}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>restore-instrumented-classes</goal>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.kukumo.execution.data.file}</dataFile>
+                            <outputDirectory>${project.build.directory}/jacoco-kukumo</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- maven site -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -280,8 +334,5 @@
             <url>${project.baseUri}</url>
         </site>
     </distributionManagement>
-
-
-
 
 </project>

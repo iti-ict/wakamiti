@@ -17,14 +17,15 @@ Feature: User service operations
       """
 
    # Un-comment this scenario to test failing cases
-   #Scenario: An existing user is requested (will fail)
-   #   Given a user identified by '4'
-   #   And the following data inserted in the database table USER:
-   #     | ID | FIRST_NAME | LAST_NAME      |
-   #     | 4  | Arnorld    | Chuarcheneguer |
-   #   When the user is requested
-   #   Then the response HTTP code is 200
-   #   And the response contains:
-   #   """
-   #   { "lastName": "Schwarzenegger" }
-   #   """
+  @Ignore
+   Scenario: An existing user is requested (will fail)
+      Given a user identified by '4'
+      And the following data inserted into the database table USER:
+        | ID | FIRST_NAME | LAST_NAME      |
+        | 4  | Arnorld    | Chuarcheneguer |
+      When the user is requested
+      Then the response HTTP code is 200
+      And the response contains:
+      """
+      { "lastName": "Schwarzenegger" }
+      """
