@@ -155,7 +155,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <configurationFiles>src/test/resources/kukumo.yaml</configurationFiles>
+                            <configurationFiles>${project.basedir}/src/test/resources/kukumo.yaml</configurationFiles>
                             <!-- Enable/disable tests execution (enabled by default) -->
                             <skipTests>${skipExampleTests}</skipTests>
                             <!-- Set log level for the plugin (info by default) -->
