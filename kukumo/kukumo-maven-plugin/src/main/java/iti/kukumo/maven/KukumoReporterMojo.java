@@ -10,40 +10,49 @@
 package iti.kukumo.maven;
 
 
-import java.util.List;
-import java.util.Map;
-
 import imconfig.Configuration;
-import imconfig.ConfigurationException;
+import iti.kukumo.core.Kukumo;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-
-import iti.kukumo.core.Kukumo;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 @Mojo(name = "report", defaultPhase = LifecyclePhase.VERIFY)
 public class KukumoReporterMojo extends AbstractMojo implements KukumoConfigurable {
 
     @Parameter
-    public Map<String, String> properties;
+    public Map<String, String> properties = new LinkedHashMap<>();
 
     @Parameter
-    public List<String> configurationfiles;
+    public List<String> configurationFiles = new LinkedList<>();
+
+    @Parameter
+    public boolean testFailureIgnore;
+
+    /**
+     * The current build session instance.
+     */
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    private MavenSession session;
 
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
         try {
-            Configuration configuration = readConfiguration(configurationfiles, properties);
+            Configuration configuration = readConfiguration(configurationFiles, properties);
             info("invoking reports...");
             Kukumo.instance().generateReports(configuration);
-        } catch (ConfigurationException e) {
-            throw new MojoExecutionException("Kukumo configuration error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            if (!testFailureIgnore)
+                session.getResult().addException(new MojoExecutionException("Kukumo configuration error: " + e.getMessage(), e));
         }
     }
 

@@ -7,9 +7,10 @@ spring:
     username: sa
     password:
     data: classpath:initial-data.sql
-    hibernate:
-        ddl-auto: create
-        
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+
 server:
   port: 9191
 

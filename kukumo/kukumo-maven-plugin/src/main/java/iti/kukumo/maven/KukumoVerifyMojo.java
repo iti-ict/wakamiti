@@ -10,12 +10,12 @@
 package iti.kukumo.maven;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import imconfig.Configuration;
-import imconfig.ConfigurationException;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.Kukumo;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -23,10 +23,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import iti.kukumo.core.Kukumo;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.Result;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 @Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
@@ -36,17 +36,26 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
     public boolean skipTests;
 
     @Parameter
-    public Map<String, String> properties;
+    public Map<String, String> properties = new LinkedHashMap<>();
 
     @Parameter
-    public List<String> configurationFiles;
+    public List<String> configurationFiles = new LinkedList<>();
 
     @Parameter(defaultValue = "info")
     public String logLevel;
 
+    @Parameter(property = "maven.test.failure.ignore", defaultValue = "false")
+    public boolean testFailureIgnore;
+
+    /**
+     * The current build session instance.
+     */
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    private MavenSession session;
+
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
 
         System.setProperty("org.slf4j.simpleLogger.log.iti.kukumo", logLevel);
 
@@ -68,18 +77,18 @@ public class KukumoVerifyMojo extends AbstractMojo implements KukumoConfigurable
             if (!plan.hasChildren()) {
                 warn("Test Plan is empty!");
             } else {
-                Optional<Result> result = kukumo.executePlan(plan, configuration).result();
-                if (result.isPresent()) {
-                    if (result.get() == Result.PASSED) {
-                    } else {
-                        throw new MojoFailureException("Kukumo Test Plan not passed");
-                    }
-                }
+                kukumo.executePlan(plan, configuration).result()
+                        .filter(result -> !testFailureIgnore)
+                        .filter(result -> result != Result.PASSED)
+                        .ifPresent(result ->
+                                session.getResult().addException(new MojoFailureException("Kukumo Test Plan not passed")));
             }
         } catch (KukumoException e) {
-            throw new MojoFailureException(e.getMessage());
-        } catch (ConfigurationException e) {
-            throw new MojoExecutionException("Kukumo configuration error: " + e.getMessage(), e);
+            if (!testFailureIgnore)
+                session.getResult().addException(new MojoFailureException("Kukumo error: " + e.getMessage(), e));
+        } catch (Exception e) {
+            if (!testFailureIgnore)
+                session.getResult().addException(new MojoExecutionException("Kukumo configuration error: " + e.getMessage(), e));
         }
 
     }

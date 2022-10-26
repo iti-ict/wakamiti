@@ -1,0 +1,17 @@
+kukumo:
+  resourceTypes:
+    - gherkin
+  launcher:
+    modules:
+      - net.sf.jt400:jt400-jdk8:10.4
+  tagFilter: not Ignore
+
+  rest:
+    httpCodeThreshold: 999
+    baseURL: http://localhost:9191
+
+  database:
+    connection:
+      url: jdbc:h2:tcp://localhost:9092/~/test
+      username: sa
+      driver: org.h2.Driver
