@@ -6,7 +6,7 @@
 
     <groupId>es.iti.kukumo</groupId>
     <artifactId>kukumo-bom</artifactId>
-    <version>1.4.0</version>  <!-- must be the same as revision -->
+    <version>1.4.1</version>  <!-- must be the same as revision -->
     <packaging>pom</packaging>
 
 
@@ -35,7 +35,7 @@
         <lombok.version>1.18.10</lombok.version>
         <slf4j-api.version>1.7.29</slf4j-api.version>
         <slf4j-ansi.version>1.0.0</slf4j-ansi.version>
-        <maven-fetcher.version>1.5.0</maven-fetcher.version>
+        <maven-fetcher.version>1.5.1</maven-fetcher.version>
         <log4j.version>2.19.0</log4j.version>
         <junit.version>4.13.2</junit.version>
         <assertj-core.version>3.16.1</assertj-core.version>
