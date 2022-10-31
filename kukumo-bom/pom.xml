@@ -94,6 +94,7 @@
         <mockito.version>3.7.0</mockito.version>
         <xerces.version>2.12.2</xerces.version>
         <saxon.varsion>11.4</saxon.varsion>
+        <appium-java-client.version>8.2.0</appium-java-client.version>
     </properties>
 
 
@@ -605,6 +606,11 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>${commons-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium-java-client.version}</version>
             </dependency>
 
             <dependency>
