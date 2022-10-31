@@ -640,6 +640,11 @@
                 <artifactId>Saxon-HE</artifactId>
                 <version>${saxon.varsion}</version>
             </dependency>
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium-java-client.version}</version>
+            </dependency>
         </dependencies>
 
 
