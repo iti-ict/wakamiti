@@ -80,6 +80,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.13</commons-codec.version>
+        <appium-java-client.version>8.2.0</appium-java-client.version>
     </properties>
 
 
@@ -578,6 +579,11 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>${commons-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium-java-client.version}</version>
             </dependency>
 
 
