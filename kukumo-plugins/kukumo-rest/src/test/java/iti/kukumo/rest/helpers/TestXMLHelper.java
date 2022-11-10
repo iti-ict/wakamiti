@@ -7,7 +7,7 @@
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-package iti.kukumo.rest.test.helpers;
+package iti.kukumo.rest.helpers;
 
 
 import org.junit.ComparisonFailure;

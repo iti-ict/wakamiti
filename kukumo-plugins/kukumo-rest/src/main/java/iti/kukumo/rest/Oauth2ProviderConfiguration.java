@@ -14,6 +14,8 @@ public class Oauth2ProviderConfiguration {
     private String clientId;
     private String clientSecret;
 
+    private URL redirectUri;
+
     public URL url() {
         return url;
     }
@@ -38,6 +40,15 @@ public class Oauth2ProviderConfiguration {
 
     public Oauth2ProviderConfiguration clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
+        return this;
+    }
+
+    public URL redirectUri() {
+        return redirectUri;
+    }
+
+    public Oauth2ProviderConfiguration redirectUri(URL redirectUri) {
+        this.redirectUri = redirectUri;
         return this;
     }
 

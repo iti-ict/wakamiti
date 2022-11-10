@@ -19,7 +19,6 @@ import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.Document;
 
 
-
 @ExtensionPoint
 public interface ContentTypeHelper {
 
@@ -29,31 +28,35 @@ public interface ContentTypeHelper {
 
 
     default void assertContent(
-        Document expected,
-        ExtractableResponse<Response> response,
-        MatchMode matchMode
+            Document expected,
+            ExtractableResponse<Response> response,
+            MatchMode matchMode
     ) {
         assertContent(expected.getContent(), response.asString(), matchMode);
     }
 
 
     default void assertContent(
-        String expected,
-        ExtractableResponse<Response> response,
-        MatchMode matchMode
+            String expected,
+            ExtractableResponse<Response> response,
+            MatchMode matchMode
     ) {
         assertContent(expected, response.asString(), matchMode);
     }
 
 
-    <T> void assertFragment(
-        String fragment,
-        ValidatableResponse response,
-        Class<T> dataType,
-        Assertion<T> matcher
-    );
+    default <T> void assertFragment(
+            String fragment,
+            ValidatableResponse response,
+            Class<T> dataType,
+            Assertion<T> matcher
+    ) {
+        throw new UnsupportedOperationException("Not implemented for content type " + contentType());
+    }
 
 
-    void assertContentSchema(String expectedSchema, String content);
+    default void assertContentSchema(String expectedSchema, String content) {
+        throw new UnsupportedOperationException("Not implemented for content type " + contentType());
+    }
 
 }

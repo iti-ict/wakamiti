@@ -40,7 +40,7 @@ public class RestAssuredLogger implements Filter {
 
                 @Override
                 public void println(String x) {
-                    logger.debug(x);
+                    logger.info(x);
                 }
             };
         }
@@ -77,7 +77,7 @@ public class RestAssuredLogger implements Filter {
                     .append(")");
         }
 
-        logger.debug(builder.toString());
+        getPrintStream().println(builder);
 
         return response;
     }

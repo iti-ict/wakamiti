@@ -11,6 +11,7 @@ package iti.kukumo.rest;
 
 
 import io.restassured.RestAssured;
+import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import iti.commons.jext.Extension;
@@ -21,136 +22,223 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.util.MatcherAssertion;
-
+import iti.kukumo.api.util.ThrowableFunction;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.nio.file.Path;
+import java.util.Optional;
 
 import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
 
 
 @I18nResource("iti_kukumo_kukumo-rest")
-@Extension(provider = "iti.kukumo", name = "rest-steps", version = "1.1")
+@Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
-        this.requestContentType = parseContentType(contentType);
+        specifications.add(request -> request.accept(parseContentType(contentType)));
     }
+
 
     @Step(value = "rest.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         this.baseURL = url;
     }
 
-    @Step(value = "rest.define.service")
+
+    @Step("rest.define.service")
     public void setService(String service) {
         this.path = (service.startsWith("/") ? service.substring(1) : service);
     }
+
 
     @Step("rest.define.subject")
     public void setSubject(String subject) {
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
+
     @Step("rest.define.request.parameters")
     public void setRequestParameters(DataTable dataTable) {
-        requestParams.putAll(tableToMap(dataTable));
+        specifications.add(request -> request.params(tableToMap(dataTable)));
+    }
+
+
+    @Step(value = "rest.define.request.parameter", args = {"name:text", "value:text"})
+    public void setRequestParameter(String name, String value) {
+        specifications.add(request -> request.param(name, value));
     }
 
     @Step("rest.define.query.parameters")
     public void setQueryParameters(DataTable dataTable) {
-        queryParams.putAll(tableToMap(dataTable));
+        specifications.add(request -> request.queryParams(tableToMap(dataTable)));
+    }
+
+
+    @Step(value = "rest.define.query.parameter", args = {"name:text", "value:text"})
+    public void setQueryParameter(String name, String value) {
+        specifications.add(request -> request.queryParam(name, value));
     }
 
 
     @Step("rest.define.path.parameters")
     public void setPathParameters(DataTable dataTable) {
-        pathParams.putAll(tableToMap(dataTable));
+        specifications.add(request -> request.pathParams(tableToMap(dataTable)));
     }
+
+
+    @Step(value = "rest.define.path.parameter", args = {"name:text", "value:text"})
+    public void setPathParameter(String name, String value) {
+        specifications.add(request -> request.pathParam(name, value));
+    }
+
 
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
-        headers.putAll(tableToMap(dataTable));
+        specifications.add(request -> request.headers(tableToMap(dataTable)));
     }
+
+
+    @Step(value = "rest.define.header", args = {"name:text", "value:text"})
+    public void setHeader(String name, String value) {
+        specifications.add(request -> request.header(name, value));
+    }
+
 
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
-        this.timeoutMillis = Long.valueOf(millis);
+        RestAssured.config = RestAssured.config()
+                .httpClient(HttpClientConfig.httpClientConfig()
+                        .setParam("http.socket.timeout", millis)
+                        .setParam("http.connection.timeout", millis));
     }
+
 
     @Step("rest.define.timeout.secs")
     public void setTimeoutInSecs(Integer secs) {
-        this.timeoutMillis = secs * 1000L;
+        setTimeoutInMillis(secs * 1000);
     }
+
 
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
     public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
         this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
 
+
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
-        this.authenticator = requestSpecification -> requestSpecification.auth()
-                .basic(username, password);
+        LOGGER.trace("Setting header [Authorization: {}:{}]", username, "*".repeat(password.length()));
+        specifications.add(request -> request.auth().preemptive().basic(username, password));
     }
 
-    @Step(value = "rest.define.auth.bearer")
+
+    @Step("rest.define.auth.bearer.token")
     public void setBearerAuth(String token) {
-        LOGGER.debug("Setting header [Authorization: Bearer {}]", token);
-        this.authenticator = requestSpecification -> requestSpecification.auth().oauth2(token);
+        LOGGER.trace("Setting header [Authorization: Bearer {}]", token);
+        specifications.add(request -> request.auth().preemptive().oauth2(token));
     }
 
-    @Step("rest.define.auth.bearer.file")
+
+    @Step("rest.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
-        String token = resourceLoader.readFileAsString(file).trim();
-        setBearerAuth(token);
-    }
-
-    @Step("rest.define.auth.provider")
-    public void setAuthentication(Document document) {
-        if (oauth2ProviderConfiguration.url() == null) {
-            throw new NoSuchElementException("Provider url is required");
-        }
-        RequestSpecification specification = RestAssured.given();
-
-        if (Stream.of(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret())
-                .allMatch(Objects::nonNull)) {
-            specification = specification.auth().preemptive()
-                    .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
-        }
-
-        String token = specification
-                .contentType("application/x-www-form-urlencoded; charset=UTF-8")
-                .body(document.getContent())
-                .log().all()
-                .with().post(oauth2ProviderConfiguration.url())
-                .then()
-                .log().all()
-                .statusCode(200)
-                .extract().body().jsonPath().getString("access_token");
-
-        setBearerAuth(token);
-    }
-
-    @Step("rest.define.attached.file")
-    public void setAttachedFile(File file) throws IOException {
         assertFileExists(file);
-        this.attached = new AttachedFile(file.getName(), Files.probeContentType(file.toPath()),
-                Files.readAllBytes(file.toPath()));
+        setBearerAuth(resourceLoader.readFileAsString(file).trim());
     }
 
-    @Step("rest.define.attached.data")
-    public void setAttachedFile(Document document) {
-        this.attached = new AttachedFile("kukumo_test.txt", ContentType.TEXT.getAcceptHeader(),
-                document.getContent().getBytes());
+
+    @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
+    public void setBearerAuthPassword(String username, String password) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam("grant_type", "password")
+                        .formParam("username", username)
+                        .formParam("password", password),
+                username, password
+        );
+        setBearerAuth(token);
+    }
+
+
+    @Step("rest.define.auth.bearer.client")
+    public void setBearerAuthClient() {
+        String token = retrieveOauthToken(request -> request
+                .formParam("grant_type", "client_credentials")
+        );
+        setBearerAuth(token);
+    }
+
+
+    @Step("rest.define.auth.bearer.code")
+    public void setBearerAuthCode(String code) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam("grant_type", "authorization_code")
+                        .formParam("code", code),
+                code
+        );
+        setBearerAuth(token);
+    }
+
+
+    @Step("rest.define.auth.bearer.code.file")
+    public void setBearerAuthCodeFile(File file) {
+        assertFileExists(file);
+        setBearerAuthCode(resourceLoader.readFileAsString(file).trim());
+    }
+
+
+    @Step("rest.define.auth.none")
+    public void setNoneAuth() {
+        specifications.add(request -> request.auth().none());
+    }
+
+
+    @Step("rest.define.multipart.subtype")
+    public void setMultipartSubtype(String subtype) {
+        assertSubtype(subtype);
+        RestAssured.config = RestAssured.config().multiPartConfig(
+                RestAssured.config().getMultiPartConfig().defaultSubtype(subtype)
+        );
+    }
+
+
+    @Step(value = "rest.define.attached.data", args = "name:text")
+    public void setAttachedFile(String name, Document document) {
+        ContentType mimeType = Optional.ofNullable(document.getContentType())
+                .map(ext -> Path.of("file." + ext))
+                .map(ThrowableFunction.unchecked(Files::probeContentType))
+                .map(ContentType::fromContentType)
+                .orElse(ContentType.TEXT);
+
+        specifications.add(request ->
+                request.multiPart(
+                        name,
+                        document.getContent(),
+                        mimeType.getContentTypeStrings()[0])
+        );
+    }
+
+
+    @Step(value = "rest.define.attached.file", args = { "name:text", "file" })
+    public void setAttachedFile(String name, File file) {
+        assertFileExists(file);
+        ContentType mimeType = Optional.of(file.toPath())
+                .map(ThrowableFunction.unchecked(Files::probeContentType))
+                .map(ContentType::fromContentType)
+                .orElse(ContentType.TEXT);
+
+        specifications.add(request ->
+                request.multiPart(
+                        name,
+                        file.getName(),
+                        resourceLoader.readFileAsString(file),
+                        mimeType.getContentTypeStrings()[0])
+        );
     }
 
 
@@ -178,6 +266,11 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void executePutSubjectUsingFile(File file) {
         assertFileExists(file);
         executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));
+    }
+
+    @Step("rest.execute.PUT.subject.empty")
+    public void executePutSubject() {
+        executeRequest(RequestSpecification::put);
     }
 
     @Step("rest.execute.PATCH.subject.from.document")
@@ -228,27 +321,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
-    @Step("rest.assert.response.body.strict.from.file")
-    public void assertStrictFileContent(File file) {
-        assertContentIs(file, MatchMode.STRICT);
-    }
-
-    @Step("rest.assert.response.body.strict.from.file.anyorder")
-    public void assertStrictFileContentAnyOrder(File file) {
-        assertContentIs(file, MatchMode.STRICT_ANY_ORDER);
-    }
-
-    @Step("rest.assert.response.body.loose.from.file")
-    public void assertLooseFileContent(File file) {
-        assertContentIs(file, MatchMode.LOOSE);
-    }
-
     @Step("rest.assert.response.body.strict.from.document")
     public void assertBodyStrictComparison(Document document) {
         assertContentIs(document, MatchMode.STRICT);
     }
 
-    @Step("rest.assert.response.body.strict.from.document.anyorder")
+    @Step("rest.assert.response.body.strict.from.document.any-order")
     public void assertBodyStrictComparisonAnyOrder(Document document) {
         assertContentIs(document, MatchMode.STRICT_ANY_ORDER);
     }
@@ -256,6 +334,21 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.assert.response.body.loose.from.document")
     public void assertBodyLooseComparison(Document document) {
         assertContentIs(document, MatchMode.LOOSE);
+    }
+
+    @Step("rest.assert.response.body.strict.from.file")
+    public void assertStrictFileContent(File file) {
+        assertContentIs(file, MatchMode.STRICT);
+    }
+
+    @Step("rest.assert.response.body.strict.from.file.any-order")
+    public void assertStrictFileContentAnyOrder(File file) {
+        assertContentIs(file, MatchMode.STRICT_ANY_ORDER);
+    }
+
+    @Step("rest.assert.response.body.loose.from.file")
+    public void assertLooseFileContent(File file) {
+        assertContentIs(file, MatchMode.LOOSE);
     }
 
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
@@ -288,26 +381,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
-    @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text",
-            "matcher:text-assertion"})
+    @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text", "matcher:text-assertion"})
     public void assertBodyFragmentAsText(String fragment, Assertion<String> assertion) {
         assertBodyFragment(fragment, assertion, String.class);
     }
 
-    @Step(value = "rest.assert.response.body.fragment.integer", args = {"fragment:text",
-            "matcher:integer-assertion"})
+    @Step(value = "rest.assert.response.body.fragment.integer", args = {"fragment:text", "matcher:integer-assertion"})
     public void assertBodyFragmentAsInteger(String fragment, Assertion<Integer> assertion) {
         assertBodyFragment(fragment, assertion, Integer.class);
     }
 
-    @Step(value = "rest.assert.response.body.fragment.decimal", args = {"fragment:text",
-            "matcher:decimal-assertion"})
+    @Step(value = "rest.assert.response.body.fragment.decimal", args = {"fragment:text", "matcher:decimal-assertion"})
     public void assertBodyFragmentAsDecimal(String fragment, Assertion<BigDecimal> assertion) {
         assertBodyFragment(fragment, assertion, BigDecimal.class);
     }
 
 
-    @Step(value = "rest.assert.response.body.schema.from.document")
+    @Step("rest.assert.response.body.schema.from.document")
     public void assertBodyContentSchema(Document document) {
         assertContentSchema(document.getContent());
     }

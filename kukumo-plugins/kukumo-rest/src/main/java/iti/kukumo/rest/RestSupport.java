@@ -11,7 +11,6 @@ package iti.kukumo.rest;
 
 
 import io.restassured.RestAssured;
-import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -30,9 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,66 +40,40 @@ public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
     public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
-
+    protected static Map<List<Object>, String> cachedToken = new HashMap<>();
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
-
-    private RestAssuredLogger assuredLogger = new RestAssuredLogger();
-    protected final Map<String, String> requestParams = new LinkedHashMap<>();
-    protected final Map<String, String> queryParams = new LinkedHashMap<>();
-    protected final Map<String, String> pathParams = new LinkedHashMap<>();
-    protected final Map<String, String> headers = new LinkedHashMap<>();
+    protected boolean cacheAuth = false;
     protected URL baseURL;
-    protected ContentType requestContentType;
     protected String path;
     protected String subject;
-    protected Long timeoutMillis;
-    protected Consumer<RequestSpecification> authenticator;
-    protected AttachedFile attached;
+
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
     protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
-
-    public void setFailureHttpCodeAssertion(Matcher<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = httpCodeAssertion;
-    }
-
+    protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given().with()
-                .headers(headers)
-                .params(requestParams)
-                .queryParams(queryParams)
-                .pathParams(pathParams);
-        if (attached != null) {
-            request.multiPart(new MultiPartSpecBuilder(attached.getContent())
-                    .fileName(attached.getName())
-                    .mimeType(attached.getMimeType())
-                    .controlName("file")
-                    .build()
-            );
-        } else {
-            request.contentType(requestContentType);
-        }
-        if (authenticator != null) {
-            authenticator.accept(request);
-        }
+        RequestSpecification request = RestAssured.given();
+        specifications.forEach(specification -> specification.accept(request));
         return attachLogger(request);
     }
 
 
     private RequestSpecification attachLogger(RequestSpecification request) {
-        if (LOGGER.isDebugEnabled()) {
-            request.log().all().filter(assuredLogger);
-        } else {
-            request.log().ifValidationFails();
-            request.expect().log().ifValidationFails();
-        }
+        RestAssuredLogger logFilter = new RestAssuredLogger();
+//        if (LOGGER.isDebugEnabled()) {
+            request.log().all().filter(logFilter);
+            request.expect().log().all();
+//        } else {
+//            request.log().ifValidationFails().filter(logFilter);
+//            request.expect().log().ifValidationFails();
+//        }
         return request;
     }
 
@@ -125,8 +96,42 @@ public class RestSupport {
 
     protected ValidatableResponse commonResponseAssertions(Response response) {
         return response.then()
-                .time(timeoutMillis != null ? Matchers.lessThan(timeoutMillis) : Matchers.any(Long.class), TimeUnit.MILLISECONDS)
                 .statusCode(failureHttpCodeAssertion);
+    }
+
+
+    protected String retrieveOauthToken(Consumer<RequestSpecification> specification, String... key) {
+        if (cacheAuth && cachedToken.containsKey(List.of(key))) {
+            return cachedToken.get(List.of(key));
+        }
+
+        if (Objects.isNull(oauth2ProviderConfiguration.clientId())) {
+            throw new KukumoException("Missing oauth2 'clientId' data.");
+        }
+
+        if (Objects.isNull(oauth2ProviderConfiguration.clientSecret())) {
+            throw new KukumoException("Missing oauth2 'clientSecret' data.");
+        }
+
+        if (Objects.isNull(oauth2ProviderConfiguration.url())) {
+            throw new KukumoException("Missing oauth2 'url' data.");
+        }
+
+        RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC).auth().preemptive()
+                .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
+
+        Optional.ofNullable(oauth2ProviderConfiguration.redirectUri())
+                .ifPresent(uri -> request.formParam("redirect_uri", uri));
+
+        specification.accept(request);
+        String token = attachLogger(request)
+                .with().post(oauth2ProviderConfiguration.url())
+                .then().statusCode(200)
+                .body("access_token", Matchers.notNullValue())
+                .extract().body().jsonPath().getString("access_token");
+
+        cachedToken.put(List.of(key), token);
+        return token;
     }
 
 
@@ -144,23 +149,25 @@ public class RestSupport {
         this.validatableResponse = commonResponseAssertions(response);
     }
 
+
     protected void assertFileExists(File file) {
         if (!file.exists()) {
-            throw new KukumoException("File {} not found", file.getAbsolutePath());
+            throw new KukumoException("File '{}' not found", file.getAbsolutePath());
         }
     }
 
 
     protected Map<String, String> tableToMap(DataTable dataTable) {
         if (dataTable.columns() != 2) {
-            throw new KukumoException("Table must have 2 columns [key, value]");
+            throw new KukumoException("Table must have 2 columns [name, value]");
         }
-        Map<String,String> map = new LinkedHashMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
         for (int i = 1; i < dataTable.rows(); i++) {
             map.put(dataTable.value(i, 0), dataTable.value(i, 1));
         }
         return map;
     }
+
 
     protected ContentTypeHelper contentTypeHelperForResponse() {
         ContentType responseContentType = ContentType.fromContentType(response.contentType());
@@ -169,7 +176,7 @@ public class RestSupport {
         }
         ContentTypeHelper helper = contentTypeValidators.get(responseContentType);
         if (helper == null) {
-            throw new KukumoException("There is no content type helper for " + responseContentType);
+            throw new KukumoException("There is no content type helper for '{}'", responseContentType);
         }
         return helper;
     }
@@ -208,14 +215,22 @@ public class RestSupport {
 
     protected void assertContentSchema(String expectedSchema) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
-        helper.assertContentSchema(expectedSchema,validatableResponse.extract().asString());
+        helper.assertContentSchema(expectedSchema, validatableResponse.extract().asString());
+    }
+
+
+    protected String assertSubtype(String subtype) {
+        List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
+                .map(contentType -> contentType.split("/")[1]).collect(Collectors.toList());
+        if (!subtypes.contains(subtype)) {
+            throw new KukumoException("'{}' is not a valid subtype. Possible values: {}", subtype, subtypes);
+        }
+        return subtype;
     }
 
 
     private String readFile(File file) {
         return resourceLoader.readFileAsString(file);
     }
-
-
 
 }
