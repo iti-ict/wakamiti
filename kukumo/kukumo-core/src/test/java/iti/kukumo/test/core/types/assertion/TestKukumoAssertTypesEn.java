@@ -141,4 +141,43 @@ public class TestKukumoAssertTypesEn {
         }
     }
 
+    @Test
+    public void testText() {
+        KukumoDataType<Assertion> textMatcher = KukumoAssertTypes
+                .binaryStringAssert("text-assert");
+        Map<String, String> exp = new LinkedHashMap<>();
+        exp.put("is 'something'", "something");
+        exp.put("is equals to 'something'", "something");
+        exp.put("is 'something' (ignoring case)", "somEthing");
+        exp.put("is equals to 'something' (ignoring case)", "somEthing");
+        exp.put("is 'some thing' (ignoring whitespace)", " some  thing ");
+        exp.put("is equals to 'some thing' (ignoring whitespace)", " some  thing ");
+        exp.put("starts with 'some'", "something");
+        exp.put("starts with 'some' (ignoring case)", "somEthing");
+        exp.put("ends with 'thing'", "something");
+        exp.put("ends with 'thing' (ignoring case)", "sometHing");
+        exp.put("contains 'omet'", "something");
+        exp.put("contains 'omet' (ignoring case)", "somEthing");
+
+        exp.put("is not 'something'", "somEthing");
+        exp.put("is not equals to 'something'", "someThing");
+        exp.put("is not 'something' (ignoring case)", "somEthings");
+        exp.put("is not equals to 'something' (ignoring case)", "someThings");
+        exp.put("is not 'something' (ignoring whitespace)", "some things");
+        exp.put("is not equals to 'something' (ignoring whitespace)", "some things");
+        exp.put("does not start with 'omet'", "something");
+        exp.put("does not start with 'omet' (ignoring case)", "somEthing");
+        exp.put("does not end with 'thin'", "something");
+        exp.put("does not end with 'thin' (ignoring case)", "sometHing");
+        exp.put("does not contain 'things'", "something");
+        exp.put("does not contain 'things' (ignoring case)", "somEthing");
+
+        for (Entry<String, String> e : exp.entrySet()) {
+            Assertion<?> matcher = textMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+    }
+
 }

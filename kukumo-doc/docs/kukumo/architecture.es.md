@@ -338,7 +338,7 @@ es 'algo'
 es igual a 'aLgo' (sin distinguir mayúsculas)
 ```
 ```
-es igual a 'al go' (ignorando espacios)
+es igual a ' algo ' (ignorando espacios)
 ```
 ```
 no es igual a 14
