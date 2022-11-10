@@ -79,54 +79,6 @@ public class RestStepContributorTest {
         client.reset();
     }
 
-//    @Test
-//    public void testWithContentTypeWithSuccess() throws MalformedURLException {
-//        // prepare
-//        mockServer(
-//                request()
-//                        .withPath("/users")
-//                ,
-//                response()
-//                        .withStatusCode(200)
-//                        .withContentType(MediaType.APPLICATION_XML)
-//        );
-//
-//        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-//        contributor.setBaseURL(new URL(BASE_URL));
-//        contributor.setService("/users");
-//        contributor.setContentType("XML");
-//
-//        // act
-//        contributor.executeGetSubject();
-//
-//        // check
-//        // no error should be thrown
-//    }
-
-//    @Test
-//    public void testWithSubjectWithSuccess() throws MalformedURLException {
-//        // prepare
-//        mockServer(
-//                request()
-//                        .withPath("/users/10")
-//                ,
-//                response()
-//                        .withStatusCode(200)
-//                        .withContentType(MediaType.APPLICATION_JSON)
-//        );
-//
-//        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-//        contributor.setBaseURL(new URL(BASE_URL));
-//        contributor.setService("/users");
-//        contributor.setSubject("10");
-//
-//        // act
-//        contributor.executeGetSubject();
-//
-//        // check
-//        // no error should be thrown
-//    }
-
     @Test
     public void testWithRequestParametersWithSuccess() throws MalformedURLException {
         // prepare

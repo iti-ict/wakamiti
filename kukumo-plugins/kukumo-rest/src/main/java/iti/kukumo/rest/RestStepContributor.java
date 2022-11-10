@@ -373,12 +373,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.assert.response.body.header.integer", args = {"name:word", "matcher:integer-assertion"})
     public void assertResponseHeaderAsInteger(String name, Assertion<Integer> assertion) {
-        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
+        validatableResponse.header(name, Integer::parseInt, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.header.decimal", args = {"name:word", "matcher:decimal-assertion"})
     public void assertResponseHeaderAsDecimal(String name, Assertion<BigDecimal> assertion) {
-        validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
+        validatableResponse.header(name, BigDecimal::new, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text", "matcher:text-assertion"})

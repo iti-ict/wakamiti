@@ -2,7 +2,7 @@ Feature: REST Test Feature
 
 
   Background:
-    Given the base URL http://localhost:8888
+    Given the base URL http://localhost:8888/
     And the REST service '/users'
     And the REST content type JSON
 
@@ -18,8 +18,8 @@ Feature: REST Test Feature
       """
 { "name": "User One" }
       """
-    And the text from response fragment 'contact.email' is 'user1@mail'
-    And the text from response fragment 'contact.email' is not 'user2@mail'
+    And the integer from response fragment 'age' is 11
+    And the integer from response fragment 'age' is not 12
     And the response satisfies the following schema:
       """json
 {
@@ -111,6 +111,7 @@ Feature: REST Test Feature
         }
       ]
       """
+    And the response is equal to the file 'src/test/resources/data/users.json' (in any order)
 
 
   Scenario: URL with parameters
@@ -127,3 +128,17 @@ Feature: REST Test Feature
         { "id": 2, "description": "Gherkin" }
       ]
       """
+    And the response is equal to the file 'src/test/resources/data/vegetables_user1.json'
+
+
+    Scenario: Request with headers and parameters
+      Given the REST service '/vegetables'
+      And the following headers:
+        | name      | value   |
+        | operation | one     |
+        | subject   | example |
+      When the subject is queried
+      Then the response length is 100
+      And the response contains the file 'src/test/resources/data/vegetables_user1.json'
+      And the text response header connection is 'keep-alive'
+      And the integer response header content-length is less than 150
