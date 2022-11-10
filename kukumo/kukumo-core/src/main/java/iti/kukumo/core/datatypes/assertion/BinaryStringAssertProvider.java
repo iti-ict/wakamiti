@@ -46,12 +46,24 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         // binary numeric matchers
         String[] expressions = {
-                        EQUALS,
-                        EQUALS_IGNORE_CASE,
-                        EQUALS_IGNORE_WHITESPACE,
-                        STARTS_WITH,
-                        ENDS_WITH,
-                        CONTAINS
+                EQUALS,
+                EQUALS_IGNORE_CASE,
+                EQUALS_IGNORE_WHITESPACE,
+                STARTS_WITH,
+                STARTS_WITH_IGNORE_CASE,
+                ENDS_WITH,
+                ENDS_WITH_IGNORE_CASE,
+                CONTAINS,
+                CONTAINS_IGNORE_CASE,
+                NOT_EQUALS,
+                NOT_EQUALS_IGNORE_CASE,
+                NOT_EQUALS_IGNORE_WHITESPACE,
+                NOT_STARTS_WITH,
+                NOT_STARTS_WITH_IGNORE_CASE,
+                NOT_ENDS_WITH,
+                NOT_ENDS_WITH_IGNORE_CASE,
+                NOT_CONTAINS,
+                NOT_CONTAINS_IGNORE_CASE
         };
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions) {

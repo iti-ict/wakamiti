@@ -143,4 +143,42 @@ public class TestkukumoAssertTypesEs {
         }
     }
 
+    @Test
+    public void testText() {
+        KukumoDataType<Assertion> textMatcher = KukumoAssertTypes
+                .binaryStringAssert("text-assert");
+        Map<String, String> exp = new LinkedHashMap<>();
+        exp.put("es 'something'", "something");
+        exp.put("es igual a 'something'", "something");
+        exp.put("es 'something' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("es igual a 'something' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("es 'some thing' (ignorando espacios)", " some  thing ");
+        exp.put("es igual a 'some thing' (ignorando espacios)", " some  thing ");
+        exp.put("empieza por 'some'", "something");
+        exp.put("empieza por 'some' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("acaba en 'thing'", "something");
+        exp.put("acaba en 'thing' (sin distinguir mayúsculas)", "sometHing");
+        exp.put("contiene 'omet'", "something");
+        exp.put("contiene 'omet' (sin distinguir mayúsculas)", "somEthing");
+
+        exp.put("no es 'something'", "somEthing");
+        exp.put("no es igual a 'something'", "someThing");
+        exp.put("no es 'something' (sin distinguir mayúsculas)", "somEthings");
+        exp.put("no es igual a 'something' (sin distinguir mayúsculas)", "someThings");
+        exp.put("no es 'something' (ignorando espacios)", "some things");
+        exp.put("no es igual a 'something' (ignorando espacios)", "some things");
+        exp.put("no empieza por 'omet'", "something");
+        exp.put("no empieza por 'omet' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("no acaba en 'thin'", "something");
+        exp.put("no acaba en 'thin' (sin distinguir mayúsculas)", "sometHing");
+        exp.put("no contiene 'things'", "something");
+        exp.put("no contiene 'things' (sin distinguir mayúsculas)", "somEthing");
+
+        for (Entry<String, String> e : exp.entrySet()) {
+            Assertion<?> matcher = textMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+    }
 }
