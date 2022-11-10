@@ -334,7 +334,7 @@ is 'something'
 is equals to 'somEthing' (ignoring case)
 ```
 ```
-is equals to 'some thing' (ignoring whitespace)
+is equals to ' something ' (ignoring whitespace)
 ```
 ```
 is not equals to 14

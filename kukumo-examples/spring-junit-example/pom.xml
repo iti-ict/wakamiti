@@ -198,11 +198,8 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>report</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
+                        <id>generate-test-report</id>
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
