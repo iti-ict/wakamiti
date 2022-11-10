@@ -25,7 +25,6 @@ import iti.kukumo.api.util.MatcherAssertion;
 import iti.kukumo.api.util.ThrowableFunction;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Files;

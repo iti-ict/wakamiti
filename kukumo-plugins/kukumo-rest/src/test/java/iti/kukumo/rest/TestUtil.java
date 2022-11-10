@@ -1,7 +1,5 @@
 package iti.kukumo.rest;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -30,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -81,8 +78,6 @@ public class TestUtil {
 
     public static String xml(List<?> list) {
         try {
-            xmlMapper.configOverride(List.class)
-                    .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
             return xmlMapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

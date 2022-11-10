@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import static iti.kukumo.rest.TestUtil.*;

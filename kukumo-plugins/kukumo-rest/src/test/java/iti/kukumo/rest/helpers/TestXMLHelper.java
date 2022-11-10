@@ -14,7 +14,6 @@ import org.junit.ComparisonFailure;
 import org.junit.Test;
 
 import iti.kukumo.rest.MatchMode;
-import iti.kukumo.rest.helpers.XMLHelper;
 
 
 

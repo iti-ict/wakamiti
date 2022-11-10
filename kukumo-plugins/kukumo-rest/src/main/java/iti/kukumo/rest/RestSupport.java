@@ -67,13 +67,13 @@ public class RestSupport {
 
     private RequestSpecification attachLogger(RequestSpecification request) {
         RestAssuredLogger logFilter = new RestAssuredLogger();
-//        if (LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             request.log().all().filter(logFilter);
             request.expect().log().all();
-//        } else {
-//            request.log().ifValidationFails().filter(logFilter);
-//            request.expect().log().ifValidationFails();
-//        }
+        } else {
+            request.log().ifValidationFails().filter(logFilter);
+            request.expect().log().ifValidationFails();
+        }
         return request;
     }
 
