@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.3] 2022-11-10
+
+## Fixed
+- Text assertion
+
+
 ## [1.4.2] 2022-09-21
+
 ### Fixed
 - Configure logger for Maven Fetcher after setting the configuration to avoid warning messages
 
