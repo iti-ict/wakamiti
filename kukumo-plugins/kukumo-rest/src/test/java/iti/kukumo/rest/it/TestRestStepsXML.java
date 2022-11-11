@@ -36,7 +36,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @RunWith(KukumoJUnitRunner.class)
 public class TestRestStepsXML {
 
-    private static final ClientAndServer client = startClientAndServer(8888);
+    private static final ClientAndServer client = startClientAndServer(8887);
 
 
     @BeforeClass

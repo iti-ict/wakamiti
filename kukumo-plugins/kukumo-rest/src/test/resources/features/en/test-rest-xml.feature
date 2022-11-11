@@ -2,7 +2,7 @@
 Feature: REST Test Feature
 
   Background:
-    Given the base URL http://localhost:8888
+    Given the base URL http://localhost:8887
     And the REST service '/users'
     And the REST content type XML
 
