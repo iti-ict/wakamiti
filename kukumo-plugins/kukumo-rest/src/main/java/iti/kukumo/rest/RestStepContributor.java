@@ -110,10 +110,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
-        RestAssured.config = RestAssured.config()
-                .httpClient(HttpClientConfig.httpClientConfig()
-                        .setParam("http.socket.timeout", millis)
-                        .setParam("http.connection.timeout", millis));
+        config(
+                RestAssured.config()
+                        .httpClient(HttpClientConfig.httpClientConfig()
+                                .setParam("http.socket.timeout", millis)
+                                .setParam("http.connection.timeout", millis))
+        );
     }
 
 
@@ -153,7 +155,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
         String token = retrieveOauthToken(request -> request
-                        .formParam("grant_type", "password")
+                        .formParam(GRANT_TYPE_PARAM, "password")
                         .formParam("username", username)
                         .formParam("password", password),
                 username, password
@@ -165,7 +167,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
         String token = retrieveOauthToken(request -> request
-                .formParam("grant_type", "client_credentials")
+                .formParam(GRANT_TYPE_PARAM, "client_credentials")
         );
         setBearerAuth(token);
     }
@@ -174,7 +176,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.define.auth.bearer.code")
     public void setBearerAuthCode(String code) {
         String token = retrieveOauthToken(request -> request
-                        .formParam("grant_type", "authorization_code")
+                        .formParam(GRANT_TYPE_PARAM, "authorization_code")
                         .formParam("code", code),
                 code
         );
@@ -198,8 +200,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.define.multipart.subtype")
     public void setMultipartSubtype(String subtype) {
         assertSubtype(subtype);
-        RestAssured.config = RestAssured.config().multiPartConfig(
-                RestAssured.config().getMultiPartConfig().defaultSubtype(subtype)
+        config(
+                RestAssured.config().multiPartConfig(
+                        RestAssured.config().getMultiPartConfig().defaultSubtype(subtype)
+                )
         );
     }
 

@@ -183,7 +183,6 @@ public class TestUtil {
                                 .map(ContentType::toString)
                                 .map(MediaType::parse)
                                 .get();
-                        System.out.println(mimeType);
 
                         if (!map.containsKey(mimeType)) {
                             map.put(mimeType, new LinkedList<>());

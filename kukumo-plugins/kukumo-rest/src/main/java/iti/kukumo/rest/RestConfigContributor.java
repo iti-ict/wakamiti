@@ -93,7 +93,6 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(OAUTH2_REDIRECT_URI, URL.class).ifPresent(oauth2ProviderConfiguration::redirectUri);
         configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(value -> contributor.cacheAuth = value);
 
-//        configuration.get(MULTIPART_CONTROL_NAME, String.class).ifPresent(contributor::setMultipartControlName);
         configuration.get(MULTIPART_SUBTYPE, String.class).ifPresent(contributor::setMultipartSubtype);
         configuration.get(REDIRECT_FOLLOW, Boolean.class)
                 .map(RestAssured.config().getRedirectConfig()::followRedirects)
@@ -109,7 +108,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
                 .ifPresent(this::config);
     }
 
-    private void config(RestAssuredConfig config) {
+    private static void config(RestAssuredConfig config) {
         RestAssured.config = config;
     }
 

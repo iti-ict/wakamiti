@@ -11,6 +11,7 @@ package iti.kukumo.rest;
 
 
 import io.restassured.RestAssured;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -39,6 +40,7 @@ import java.util.stream.Stream;
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
+    protected static final String GRANT_TYPE_PARAM = "grant_type";
     public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
     protected static Map<List<Object>, String> cachedToken = new HashMap<>();
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
@@ -56,6 +58,10 @@ public class RestSupport {
     protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
+    protected static void config(RestAssuredConfig config) {
+        RestAssured.config = config;
+    }
+
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
@@ -63,7 +69,6 @@ public class RestSupport {
         specifications.forEach(specification -> specification.accept(request));
         return attachLogger(request);
     }
-
 
     private RequestSpecification attachLogger(RequestSpecification request) {
         RestAssuredLogger logFilter = new RestAssuredLogger();
@@ -76,7 +81,6 @@ public class RestSupport {
         }
         return request;
     }
-
 
     protected String uri() {
         String base = baseURL.toString();
@@ -93,12 +97,10 @@ public class RestSupport {
         return url.toString();
     }
 
-
     protected ValidatableResponse commonResponseAssertions(Response response) {
         return response.then()
                 .statusCode(failureHttpCodeAssertion);
     }
-
 
     protected String retrieveOauthToken(Consumer<RequestSpecification> specification, String... key) {
         if (cacheAuth && cachedToken.containsKey(List.of(key))) {
@@ -134,12 +136,10 @@ public class RestSupport {
         return token;
     }
 
-
     protected void executeRequest(BiFunction<RequestSpecification, String, Response> function) {
         this.response = function.apply(newRequest(), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
-
 
     protected void executeRequest(
             BiFunction<RequestSpecification, String, Response> function,
@@ -149,13 +149,11 @@ public class RestSupport {
         this.validatableResponse = commonResponseAssertions(response);
     }
 
-
     protected void assertFileExists(File file) {
         if (!file.exists()) {
             throw new KukumoException("File '{}' not found", file.getAbsolutePath());
         }
     }
-
 
     protected Map<String, String> tableToMap(DataTable dataTable) {
         if (dataTable.columns() != 2) {
@@ -167,7 +165,6 @@ public class RestSupport {
         }
         return map;
     }
-
 
     protected ContentTypeHelper contentTypeHelperForResponse() {
         ContentType responseContentType = ContentType.fromContentType(response.contentType());
@@ -181,24 +178,20 @@ public class RestSupport {
         return helper;
     }
 
-
     protected void assertContentIs(Document expected, MatchMode matchMode) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(expected, validatableResponse.extract(), matchMode);
     }
-
 
     protected void assertContentIs(File expected, MatchMode matchMode) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(readFile(expected), validatableResponse.extract(), matchMode);
     }
 
-
     protected <T> void assertBodyFragment(String fragment, Assertion<T> assertion, Class<T> dataType) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertFragment(fragment, validatableResponse, dataType, assertion);
     }
-
 
     protected ContentType parseContentType(String contentType) {
         try {
@@ -212,12 +205,10 @@ public class RestSupport {
         }
     }
 
-
     protected void assertContentSchema(String expectedSchema) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContentSchema(expectedSchema, validatableResponse.extract().asString());
     }
-
 
     protected String assertSubtype(String subtype) {
         List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
@@ -227,7 +218,6 @@ public class RestSupport {
         }
         return subtype;
     }
-
 
     private String readFile(File file) {
         return resourceLoader.readFileAsString(file);
