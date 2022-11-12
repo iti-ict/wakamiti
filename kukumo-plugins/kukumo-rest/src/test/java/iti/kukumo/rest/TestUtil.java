@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import io.restassured.RestAssured;
-import iti.kukumo.api.util.ThrowableFunction;
+import io.restassured.http.ContentType;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.mockserver.client.MockServerClient;
@@ -156,12 +156,12 @@ public class TestUtil {
     public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
         Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
-                MediaType.TEXT_XML, TestUtil::xml
+                MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> string_to_map = Map.of(
                 MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
                 }),
-                MediaType.TEXT_XML, str -> TestUtil.xml(str, new TypeReference<>() {
+                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
                 })
         );
 
@@ -177,10 +177,13 @@ public class TestUtil {
                     fs = fs == null ? new File[0] : fs;
                     Arrays.sort(fs);
                     for (File file : fs) {
-                        MediaType mimeType = Optional.of(file.toPath())
-                                .map(ThrowableFunction.unchecked(Files::probeContentType))
+                        MediaType mimeType = Optional.of(file.getName())
+                                .map(FileUtils::getExtension)
+                                .map(ContentTypeHelper.contentTypeFromExtension::get)
+                                .map(ContentType::toString)
                                 .map(MediaType::parse)
                                 .get();
+                        System.out.println(mimeType);
 
                         if (!map.containsKey(mimeType)) {
                             map.put(mimeType, new LinkedList<>());
@@ -207,8 +210,10 @@ public class TestUtil {
                 .map(root.toPath()::relativize)
                 .forEachOrdered(p -> {
                     File file = new File(root, p.toString());
-                    MediaType mimeType = Optional.of(p)
-                            .map(ThrowableFunction.unchecked(Files::probeContentType))
+                    MediaType mimeType = Optional.of(file.getName())
+                            .map(FileUtils::getExtension)
+                            .map(ContentTypeHelper.contentTypeFromExtension::get)
+                            .map(ContentType::toString)
                             .map(MediaType::parse)
                             .get();
 

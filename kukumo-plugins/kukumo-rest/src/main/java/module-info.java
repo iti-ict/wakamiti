@@ -27,6 +27,7 @@ module kukumo.rest {
     requires org.hamcrest;
     requires org.everit.json.schema;
     requires java.xml;
+    requires plexus.utils;
 
     uses ConfigContributor;
     uses StepContributor;

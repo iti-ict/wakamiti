@@ -42,7 +42,6 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String OAUTH2_CACHED = "rest.oauth2.cached";
 
     // RestAssured config
-//    public static final String MULTIPART_CONTROL_NAME = "rest.config.multipart.controlName";
     public static final String MULTIPART_SUBTYPE = "rest.config.multipart.subtype";
     public static final String REDIRECT_FOLLOW = "rest.config.redirect.follow";
     public static final String REDIRECT_ALLOW_CIRCULAR = "rest.config.redirect.allowCircular";

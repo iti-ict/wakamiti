@@ -22,13 +22,11 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.util.MatcherAssertion;
-import iti.kukumo.api.util.ThrowableFunction;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
 import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
@@ -209,9 +207,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.attached.data", args = "name:text")
     public void setAttachedFile(String name, Document document) {
         ContentType mimeType = Optional.ofNullable(document.getContentType())
-                .map(ext -> Path.of("file." + ext))
-                .map(ThrowableFunction.unchecked(Files::probeContentType))
-                .map(ContentType::fromContentType)
+                .map(ContentTypeHelper.contentTypeFromExtension::get)
                 .orElse(ContentType.TEXT);
 
         specifications.add(request ->
@@ -223,12 +219,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
-    @Step(value = "rest.define.attached.file", args = { "name:text", "file" })
+    @Step(value = "rest.define.attached.file", args = {"name:text", "file"})
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
-        ContentType mimeType = Optional.of(file.toPath())
-                .map(ThrowableFunction.unchecked(Files::probeContentType))
-                .map(ContentType::fromContentType)
+        ContentType mimeType = Optional.of(file.getName())
+                .map(FileUtils::getExtension)
+                .map(ContentTypeHelper.contentTypeFromExtension::get)
                 .orElse(ContentType.TEXT);
 
         specifications.add(request ->
