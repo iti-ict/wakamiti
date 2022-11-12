@@ -13,22 +13,32 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [`rest.oauth2.url`](#restoauth2url)
 - [`rest.oauth2.clientId`](#restoauth2clientid)
 - [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
+- [`rest.oauth2.cached`](#restoauth2cached)
+- [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
+- [`rest.config.redirect.follow`](#restconfigredirectfollow)
+- [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
+- [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
+- [`rest.config.redirect.max`](#restconfigredirectmax)
+
 
 **Pasos**:
 - [Definir tipo de contenido](#definir-tipo-de-contenido)
 - [Definir URL base](#definir-url-base)
 - [Definir servicio](#definir-servicio)
 - [Definir identificador](#definir-identificador)
-- [Definir parámetros de solicitud (request)](#definir-par%C3%A1metros-de-solicitud-request)
-- [Definir parámetros de búsqueda (query)](#definir-par%C3%A1metros-de-solicitud-query)
-- [Definir parámetros de ruta (path)](#definir-par%C3%A1metros-de-solicitud-path)
-- [Definir cabeceras](#definir-cabeceras)
+- [Definir parámetros o cabeceras](#definir-par%C3%A1metros-o-cabeceras)
+- [Definir parámetros o cabeceras (tabla)](#definir-par%C3%A1metros-o-cabeceras-tabla)
 - [Definir timeout](#definir-timeout)
-- [Definir umbral de códigos HTTP](#definir-umbral-de-cdigos-http)
+- [Definir umbral de códigos HTTP](#definir-umbral-de-c%C3%B3digos-http)
 - [Definir autenticación básica](#definir-autenticaci%C3%B3n-b%C3%A1sica)
-- [Definir token de autenticación](#definir-token-de-autenticaci%C3%B3n)
-- [Definir token de autenticación (fichero)](#definir-token-de-autenticaci%C3%B3n-fichero)
 - [Definir autenticación oauth2](#definir-autenticaci%C3%B3n-oauth2)
+- [Definir autenticación oauth2 (fichero)](#definir-autenticaci%C3%B3n-oauth2-fichero)
+- [Definir autenticación oauth2 por credenciales](#definir-autenticaci%C3%B3n-oauth2-por-credenciales)
+- [Definir autenticación oauth2 por cliente](#definir-autenticaci%C3%B3n-oauth2-por-cliente)
+- [Definir autenticación oauth2 por código](#definir-autenticaci%C3%B3n-oauth2-por-c%C3%B3digo)
+- [Definir autenticación oauth2 por código (fichero)](#definir-autenticaci%C3%B3n-oauth2-por-c%C3%B3digo-fichero)
+- [Borrar autenticación](#borrar-autenticaci%C3%B3n)
+- [Definir subtipo multiparte](#definir-subtipo-multiparte)
 - [Definir archivo adjunto](#definir-archivo-adjunto)
 - [Definir archivo adjunto (fichero)](#definir-archivo-adjunto-fichero)
 - [Realizar llamada GET](#realizar-llamada-get)
@@ -48,6 +58,8 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [Comprobar tipo de contenido de la respuesta](#comprobar-tipo-de-contenido-de-la-respuesta)
 - [Comprobar tamaño de la respuesta](#comprobar-tama%C3%B1o-de-la-respuesta)
 - [Comprobar cabecera](#comprobar-cabecera)
+- [Comprobar esquema de la respuesta](#comprobar-esquema-de-la-respuesta)
+- [Comprobar esquema de la respuesta (fichero)](#comprobar-esquema-de-la-respuesta-fichero)
 
 
 
@@ -60,7 +72,6 @@ Establece la URL base para las llamadas REST.
 Esto es equivalente al paso `{word} como el tipo de contenido REST` si se prefiere una declaración más descriptiva.
 
 Ejemplo:
-
 ```yaml
 rest:
   baseURL: https://example.org/api/v2
@@ -85,7 +96,6 @@ Los valores aceptados son:
 El valor por defecto es `JSON`.
 
 Ejemplo:
-
 ```yaml
 rest:
   contentType: XML
@@ -101,7 +111,6 @@ comprobar ninguna otra condición.
 El valor por defecto es `500`.
 
 Ejemplo:
-
 ```yaml
 rest:
   httpCodeThreshold: 999
@@ -114,13 +123,11 @@ Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para g
 en la cabecera HTTP `Authorization` de las llamadas REST.
 
 Ejemplo:
-
 ```yaml
 rest:
   oauth2: 
     url: https://accounts.google.com/o/oauth2/auth
 ```
-
 
 ---
 ### `rest.oauth2.clientId`
@@ -128,7 +135,6 @@ Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0
 por el valor de la propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
-
 ```yaml
 rest:
   oauth2: 
@@ -141,11 +147,107 @@ Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth
 por el valor de la propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
-
 ```yaml
 rest:
   oauth2: 
     clientSecret: ABRACADABRAus1ZMGHvq9R
+```
+
+---
+### `rest.oauth2.cached`
+Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos 
+son los mismos.
+
+El valor por defecto es `false`.
+
+Ejemplo:
+```yaml
+rest:
+  oauth2:
+    cached: true
+```
+
+---
+### `rest.config.multipart.subtype`
+Establece el subtipo de las llamadas multiparte. Los valores disponibles son:
+
+| literal       |
+|---------------|
+| `form-data`   |
+| `alternative` | 
+| `byteranges`  | 
+| `digest`      |
+| `mixed`       | 
+| `parallel`    | 
+| `related`     |
+| `report`      |
+| `signed`      |
+| `encrypted`   |
+
+El valor por defecto es `form-data`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    multipart:
+      subtype: mixed
+```
+
+---
+### `rest.config.redirect.follow`
+Establece si se permite seguir las redirecciones en las llamadas HTTP. 
+
+El valor por defecto es `true`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    redirect:
+      follow: false
+```
+
+---
+### `rest.config.redirect.allowCircular`
+Establece si se permite las redirecciones circulares en las llamadas HTTP.
+
+El valor por defecto es `false`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    redirect:
+      allowCircular: true
+```
+
+---
+### `rest.config.redirect.rejectRelative`
+Establece si se rechazan las redirecciones relativas en las llamadas HTTP.
+
+El valor por defecto es `false`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    redirect:
+      rejectRelative: true
+```
+
+---
+### `rest.config.redirect.max`
+Establece el número de redirecciones máximo en las llamadas HTTP.
+
+El valor por defecto es `100`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    redirect:
+      max: 150
 ```
 
 
@@ -162,8 +264,8 @@ propiedad [`rest.contentType`](#restcontenttype).
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |
-|--------|-------------|--------------------|
-| `type` | `word`      | La URL de conexión |
+|--------|---------------|--------------------|
+| `type` | `word`        | La URL de conexión |
 
 #### Ejemplos:
 ```gherkin
@@ -179,8 +281,8 @@ Establece la ruta base de la API. Este paso es equivalente a configurar la propi
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
-|--------|-------------|-------------|
-| `url`  | `url`       | URL base    |
+|--------|---------------|-------------|
+| `url`  | `url`         | URL base    |
 
 #### Ejemplos:
 ```gherkin
@@ -196,8 +298,8 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción  |
-|-----------|-------------|--------------|
-| `service` | `text`      | Segmento URL |
+|-----------|---------------|--------------|
+| `service` | `text`        | Segmento URL |
 
 #### Ejemplos:
 ```gherkin
@@ -214,8 +316,8 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción                 |
-|--------|-------------|-----------------------------|
-| `text` | `text`      | Un identificador de recurso |
+|--------|---------------|-----------------------------|
+| `text` | `text`        | Un identificador de recurso |
 
 #### Ejemplos:
 ```gherkin
@@ -226,16 +328,58 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
 ```
 
 ---
-### Definir parámetros de solicitud (request)
+### Definir parámetros o cabeceras 
 ```
-los siguiente parámetros de solicitud:
+el parámetro de (solicitud|búsqueda|ruta) {name} con el valor {value}
 ```
-Establece los parámetros de la petición REST. Estos parámetros se enviaran como datos de formulario.
+```
+las cabecera {name} con el valor {value}
+```
+Establece una cabecera o parámetro de petición, búsqueda o ruta REST. Los parámetros de petición se enviarán como 
+datos de formulario wn las llamadas POST, los parámetros de búsqueda se concatenarán a la URL de la petición tras la 
+ruta (p.e. `/user?param1=abc&param2=123`), y los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio indicados 
+con llaves `{}`.
+
+##### Parámetros:
+| Nombre  | Wakamiti type | Descripción                     |
+|---------|---------------|---------------------------------|
+| `name`  | `text`        | Nombre del parámetro o cabecera |
+| `value` | `text`        | Valor del parámetro o cabecera  |
+
+##### Ejemplos:
+```gherkin
+  Dado el parámetro de solicitud 'age' con el valor '13'
+  Cuando se envía al servicio la información
+```
+```gherkin
+  Dado el parámetro de búsqueda 'city' con el valor 'Valencia'
+  Cuando se realiza la búsqueda del usuario
+```
+```gherkin
+  Dado el servicio 'user/{usuario}/items'
+  Y el parámetro de ruta 'usuario' con el valor '25'
+```
+```gherkin
+  Dada la cabeceras 'Keep-alive' con el valor '1200'
+```
+
+---
+### Definir parámetros o cabeceras (tabla)
+```
+los siguientes parámetros de (solicitud|búsqueda|ruta):
+```
+```
+las siguientes cabeceras:
+```
+Establece varias cabeceras o parámetros de petición, búsqueda o ruta REST. Los parámetros de petición se enviarán como
+datos de formulario, los parámetros de búsqueda se concatenarán a la URL de la petición tras la ruta (p.e.
+`/user?param1=abc&param2=123`), y los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio indicados
+con llaves `{}`.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                                   |
-|--------|-------------|-----------------------------------------------|
-|        | `table`     | Una tabla con las columnas `nombre` y `valor` |
+|--------|---------------|-----------------------------------------------|
+|        | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 ##### Ejemplos:
 ```gherkin
@@ -243,43 +387,15 @@ Establece los parámetros de la petición REST. Estos parámetros se enviaran co
     | nombre | valor    |
     | age    | 13       |
     | city   | Valencia |
+  Cuando se envía al servicio la información
 ```
-
----
-### Definir parámetros de solicitud (query)
-```
-los siguiente parámetros de búsqueda:
-```
-Establece los parámetros de la petición REST. Estos parámetros se concatenarán a la URL de la petición tras la ruta, 
-por ejemplo `/user?param1=abc&param2=123`.
-
-##### Parámetros:
-| Nombre | Wakamiti type | Descripción                                   |
-|--------|-------------|-----------------------------------------------|
-|        | `table`     | Una tabla con las columnas `nombre` y `valor` |
-
-##### Ejemplos:
 ```gherkin
-  Dados los siguiente parámetros de solicitud:
+  Dados los siguiente parámetros de búsqueda:
     | nombre | valor    |
     | age    | 13       |
     | city   | Valencia |
+  Cuando se realiza la búsqueda del usuario
 ```
-
----
-### Definir parámetros de solicitud (path)
-```
-los siguiente parámetros de ruta:
-```
-Establece los parámetros de la petición REST. Estos parámetros formarán parte de la ruta de la URL, sustituyendo a los 
-fragmentos indicados con `{}`.
-
-##### Parámetros:
-| Nombre | Wakamiti type | Descripción                                   |
-|--------|-------------|-----------------------------------------------|
-|        | `table`     | Una tabla con las columnas `nombre` y `valor` |
-
-##### Ejemplos:
 ```gherkin
   Dado el servicio 'user/{usuario}/items/{item}'
   Y los siguientes parámetros de ruta:
@@ -287,20 +403,6 @@ fragmentos indicados con `{}`.
     | usuario | 25       |
     | item    | 7        |
 ```
-
----
-### Definir cabeceras
-```
-las siguientes cabeceras:
-```
-Establece las cabeceras de la petición REST.
-
-##### Parámetros:
-| Nombre | Wakamiti type | Descripción                                   |
-|--------|-------------|-----------------------------------------------|
-|        | `table`     | Una tabla con las columnas `nombre` y `valor` |
-
-##### Ejemplos:
 ```gherkin
   Dadas las siguientes cabeceras:
     | nombre       | valor |
@@ -313,12 +415,13 @@ Establece las cabeceras de la petición REST.
 ```
 un timeout de {int} (mili)segundos
 ```
-Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP.
+Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de 
+exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 
 ##### Parámetros:
-| Nombre | Wakamiti type | Descripción      |
-|--------|-------------|------------------|
-| `int`  | `int`       | El tiempo máximo |
+| Nombre | Wakamiti type | Descripción       |
+|--------|---------------|-------------------|
+| `int`  | `int`         | El tiempo máximo  |
 
 ##### Ejemplos:
 ```gherkin
@@ -337,9 +440,9 @@ Establece una validación general para el código HTTP de todas las respuestas s
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
 ##### Parámetros:
-| Nombre    | Wakamiti type         | Descripción              |
-|-----------|---------------------|--------------------------|
-| `matcher` | `integer-assertion` | [Comparador][1] numérico |
+| Nombre    | Wakamiti type        | Descripción              |
+|-----------|----------------------|--------------------------|
+| `matcher` | `integer-assertion`  | [Comparador][1] numérico |
 
 ##### Ejemplo:
 ```gherkin
@@ -355,9 +458,9 @@ Establece las credenciales de autenticación básica que se enviarán en la cabe
 
 ##### Parámetros:
 | Nombre     | Wakamiti type | Descripción       |
-|------------|-------------|-------------------|
-| `username` | `text`      | Nombre de usuario |
-| `password` | `text`      | Contraseña        |
+|------------|---------------|-------------------|
+| `username` | `text`        | Nombre de usuario |
+| `password` | `text`        | Contraseña        |
 
 ##### Ejemplos:
 ```gherkin
@@ -365,75 +468,159 @@ Establece las credenciales de autenticación básica que se enviarán en la cabe
 ```
 
 ---
-### Definir token de autenticación
+### Definir autenticación oauth2
 ```
-(que) el servicio usa el token de autenticación {text}
+(que) el servicio usa autenticación oauth con el token {token}
 ```
-Establece el token de autenticación que se enviará en la cabecera `Authorization` para las siguientes peticiones. 
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes
+peticiones.
 
 ##### Parámetros:
-| Nombre | Wakamiti type | Descripción            |
-|--------|-------------|------------------------|
-| `text` | `text`      | Token de autenticación |
+| Nombre  | Wakamiti type | Descripción            |
+|---------|---------------|------------------------|
+| `token` | `text`        | token de autenticación |
 
 ##### Ejemplos:
 ```gherkin
-  Dado que el servicio usa el token de autenticación 'hudytw9834y9cqy32t94'
+  Dado que el servicio usa autenticación oauth con el token 'hudytw9834y9cqy32t94'
 ```
 
 ---
-### Definir token de autenticación (fichero)
+### Definir autenticación oauth2 (fichero)
 ```
-(que) el servicio usa el token de autenticación del fichero {file}
+(que) el servicio usa autenticación oauth con el token del fichero {file}
 ```
-Establece el token de autenticación que se enviará en la cabecera `Authorization` para las siguientes llamadas, obtenido 
+Establece el token de autenticación que se enviará en la cabecera `Authorization` para las siguientes llamadas, obtenido
 desde un fichero.
 
 ##### Parámetros:
-| Nombre | Wakamiti type  | Descripción                           |
-|--------|--------------|---------------------------------------|
-| `file` | `file`       | Fichero con el token de autenticación |
+| Nombre | Wakamiti type | Descripción                           |
+|--------|---------------|---------------------------------------|
+| `file` | `file`        | Fichero con el token de autenticación |
 
 ##### Ejemplo:
 ```gherkin
-  Dado que el servicio usa el token de autenticación del fichero 'token.txt'
+  Dado que el servicio usa autenticación oauth con el token del fichero 'token.txt'
 ```
 
 ---
-### Definir autenticación oauth2
+### Definir autenticación oauth2 por credenciales
 ```
-(que) el servicio usa el proveedor de autenticación con los siguientes datos:
+(que) el servicio usa autenticación oauth con las credenciales {username}:{password}
 ```
-Establece el cuerpo que se enviará al servicio de autenticación.
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente 
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid), 
+[clientSecret](#restoauth2clientsecret)), usando las credenciales indicadas, para las siguientes peticiones. 
 
 ##### Parámetros:
-| Nombre | Wakamiti type | Descripción                                |
-|--------|-------------|--------------------------------------------|
-|        | `document`  | Cadena con los parámetros de autenticación |
+| Nombre     | Wakamiti type | Descripción       |
+|------------|---------------|-------------------|
+| `username` | `text`        | Nombre de usuario |
+| `password` | `text`        | Contraseña        |
 
 ##### Ejemplos:
 ```gherkin
-  Dado que el servicio usa el proveedor de autenticación con los siguientes datos:
-    """
-    grant_type=password&username=OficinaTest4&password=xxxxx
-    """
+  Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx'
+```
+
+---
+### Definir autenticación oauth2 por cliente
+```
+(que) el servicio usa autenticación oauth
+```
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
+[clientSecret](#restoauth2clientsecret)), usando los datos del cliente, para las siguientes peticiones.
+
+
+##### Ejemplos:
+```gherkin
+  Dado que el servicio usa autenticación oauth
+```
+
+---
+### Definir autenticación oauth2 por código
+```
+(que) el servicio usa autenticación oauth con el código de autorización {code}
+```
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
+[clientSecret](#restoauth2clientsecret)), usando el código indicado, para las siguientes peticiones.
+
+##### Parámetros:
+| Nombre     | Wakamiti type | Descripción             |
+|------------|---------------|-------------------------|
+| `code`     | `text`        | Código de autenticación |
+
+##### Ejemplos:
+```gherkin
+  Dado que el servicio usa autenticación oauth con el código de autorización 'euyh29830'
+```
+
+---
+### Definir autenticación oauth2 por código (fichero)
+```
+(que) el servicio usa autenticación oauth con el código de autorización del fichero {file}
+```
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
+[clientSecret](#restoauth2clientsecret)), usando el código indicado en el fichero, para las siguientes peticiones.
+
+##### Parámetros:
+| Nombre     | Wakamiti type | Descripción                            |
+|------------|---------------|----------------------------------------|
+| `file`     | `file`        | Fichero con el código de autenticación |
+
+##### Ejemplos:
+```gherkin
+  Dado que el servicio usa autenticación oauth con el código de autorización del fichero 'code.txt'
+```
+
+---
+### Borrar autenticación
+```
+(que) el servicio no usa autenticación
+```
+Elimina la cabecera con la autenticación.
+
+##### Ejemplos:
+```gherkin
+  Dado que el servicio no usa autenticación
+```
+
+### Definir subtipo multiparte
+```
+{type} como subtipo multiparte
+```
+Establece el subtipo por defecto de las llamadas multiparte. Este paso es equivalente a configurar la propiedad 
+[`rest.config.multipart.subtype`](#restconfigmultipartsubtype).
+
+##### Parámetros:
+| Nombre     | Wakamiti type | Descripción        |
+|------------|---------------|--------------------|
+| `type`     | `text`        | Subtipo multiparte |
+
+##### Ejemplos:
+```gherkin
+  Dado 'mixed' como subtipo multiparte
 ```
 
 ---
 ### Definir archivo adjunto
 ```
-(que) se incluye el fichero adjunto con los siguientes datos:
+(que) se incluye el fichero adjunto {name} con los siguientes datos:
 ```
 Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
-|--------|-------------|----------------------|
-|        | `document`  | Contenido a adjuntar |
+|--------|---------------|----------------------|
+| {name} | `text`        | Nombre de control    |
+|        | `document`    | Contenido a adjuntar |
 
 ##### Ejemplos:
 ```gherkin
-  Dado que se incluye el fichero adjunto con los siguientes datos:
+  Dado que se incluye el fichero adjunto 'fichero' con los siguientes datos:
     """
     Contenido del fichero
     """
@@ -442,19 +629,20 @@ Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 ---
 ### Definir archivo adjunto (fichero)
 ```
-(que) se incluye el fichero adjunto {file}
+(que) se incluye el fichero adjunto {name} con el contenido del fichero {file}
 ```
 Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de formulario.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                         |
-|--------|-------------|-------------------------------------|
-| `file` | `file`      | Fichero con el contenido a adjuntar |
+|--------|---------------|-------------------------------------|
+| `file` | `file`        | Fichero con el contenido a adjuntar |
 
 ##### Ejemplos:
 ```gherkin
-  Dado que se incluye el fichero adjunto 'data.txt'
+  Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'data.txt'
 ```
+
 
 ---
 ### Realizar llamada GET
@@ -505,8 +693,8 @@ indicado a continuación.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
-|--------|-------------|--------------------------|
-|        | `document`  | El cuerpo de la petición |
+|--------|---------------|--------------------------|
+|        | `document`    | El cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -533,8 +721,8 @@ fichero indicado.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
-|--------|-------------|--------------------------------------|
-| `file` | `file`      | Fichero con el cuerpo de la petición |
+|--------|---------------|--------------------------------------|
+| `file` | `file`        | Fichero con el cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -571,8 +759,8 @@ indicado a continuación.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
-|--------|-------------|--------------------------|
-|        | `document`  | El cuerpo de la petición |
+|--------|---------------|--------------------------|
+|        | `document`    | El cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -596,8 +784,8 @@ del fichero indicado.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
-|--------|-------------|--------------------------------------|
-| `file` | `file`      | Fichero con el cuerpo de la petición |
+|--------|---------------|--------------------------------------|
+| `file` | `file`        | Fichero con el cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -639,8 +827,8 @@ indicado a continuación.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
-|--------|-------------|--------------------------|
-|        | `document`  | El cuerpo de la petición |
+|--------|---------------|--------------------------|
+|        | `document`    | El cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -676,8 +864,8 @@ fichero indicado.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
-|--------|-------------|--------------------------------------|
-| `file` | `file`      | Fichero con el cuerpo de la petición |
+|--------|---------------|--------------------------------------|
+| `file` | `file`        | Fichero con el cuerpo de la petición |
 
 ##### Ejemplos:
 ```gherkin
@@ -695,9 +883,9 @@ el código de respuesta HTTP {matcher}
 Comprueba que el código HTTP de la última respuesta satisface una validación de enteros.
 
 ##### Parámetros:
-| Nombre    | Wakamiti type         | Descripción               |
-|-----------|---------------------|---------------------------|
-| `matcher` | `integer-assertion` | Una validación de enteros |
+| Nombre    | Wakamiti type        | Descripción               |
+|-----------|----------------------|---------------------------|
+| `matcher` | `integer-assertion`  | Una validación de enteros |
 
 ##### Ejemplos:
 ```gherkin
@@ -722,8 +910,8 @@ Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción           |
-|--------|-------------|-----------------------|
-|        | `document`  | El contenido esperado |
+|--------|---------------|-----------------------|
+|        | `document`    | El contenido esperado |
 
 ##### Ejemplos:
 ```gherkin
@@ -753,8 +941,8 @@ Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados en 
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
-|--------|-------------|----------------------|
-| `file` | `file`      | Un fichero existente |
+|--------|---------------|----------------------|
+| `file` | `file`        | Un fichero existente |
 
 ##### Ejemplos:
 ```gherkin
@@ -770,10 +958,10 @@ Valida el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de re
 (usando [JSONPath][jsonpath] o [XPath][xpath] dependiendo del tipo de contenido).
 
 ##### Parámetros:
-| Nombre     | Wakamiti type   | Descripción                 |
-|------------|---------------|-----------------------------|
-| `fragment` | `text`        | Una ruta JSONPath or XPath  |
-| `matcher`  | `*-assertion` | El comparador del fragmento |
+| Nombre     | Wakamiti type  | Descripción                 |
+|------------|----------------|-----------------------------|
+| `fragment` | `text`         | Una ruta JSONPath or XPath  |
+| `matcher`  | `*-assertion`  | El comparador del fragmento |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
 ##### Ejemplos:
@@ -795,8 +983,8 @@ Este paso equivale a validar que el valor de la cabecera `Content-Type` de la re
 
 ##### Parámetros:
 | Nombre  | Wakamiti type | Descripción                                        |
-|---------|-------------|----------------------------------------------------|
-| `word`  | `word`      | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
+|---------|---------------|----------------------------------------------------|
+| `word`  | `word`        | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
 ##### Ejemplos:
 ```gherkin
@@ -811,9 +999,9 @@ el tamaño de la respuesta {matcher}
 Comprueba que la longitud en bytes de la última respuesta satisface una validación.
 
 ##### Parámetros:
-| Nombre    | Wakamiti type         | Descripción               |
-|-----------|---------------------|---------------------------|
-| `matcher` | `integer-assertion` | Una validación de enteros |
+| Nombre    | Wakamiti type        | Descripción               |
+|-----------|----------------------|---------------------------|
+| `matcher` | `integer-assertion`  | Una validación de enteros |
 
 ##### Ejemplos:
 ```gherkin
@@ -829,10 +1017,10 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 *decimal*.
 
 ##### Parámetros:
-| Nombre    | Wakamiti type   | Descripción                         |
-|-----------|---------------|-------------------------------------|
-| `name`    | `text`        | Nombre de la cabecera               |
-| `matcher` | `*-assertion` | [Comparador][1] de texto o numérico |
+| Nombre    | Wakamiti type  | Descripción                         |
+|-----------|----------------|-------------------------------------|
+| `name`    | `text`         | Nombre de la cabecera               |
+| `matcher` | `*-assertion`  | [Comparador][1] de texto o numérico |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
 ##### Ejemplos:
@@ -841,6 +1029,72 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 ```
 ```gherkin
   Entonces el entero de la cabecera de la respuesta Age es mayor que 10
+```
+
+---
+### Comprobar esquema de la respuesta
+```
+la respuesta cumple el siguiente esquema:
+```
+Valida que la estructura del cuerpo de la respuesta REST satisface el esquema proporcionado a continuación. Los formatos 
+de esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas 
+XML (en función de la cabecera de respuesta HTTP `Content-Type`).
+
+##### Parámetros:
+| nombre | Wakamiti type | descripción              |
+|--------|---------------|--------------------------|
+|        | `document`    | JSON Schema o XML Schema |
+
+##### Ejemplo:
+```gherkin
+  Entonces la respuesta cumple el siguiente esquema:
+    """json
+     {
+       "$schema": "http://json-schema.org/draft-04/schema#",
+       "type": "object",
+       "properties": {
+         "id":         { "type": "string", "pattern": "[a-zA-Z0-9]+" },
+         "name":       { "type": "string" },
+         "age":        { "type": "integer", "minimum": 5 },
+         "vegetables": {
+           "type": "array",
+           "items": [ {
+               "type": "object",
+               "properties": {
+                 "id":          { "type": "integer" },
+                 "description": { "type": "string"  }
+               },
+               "required": [ "id", "description" ]
+           } ]
+         },
+         "contact": {
+           "type": "object",
+           "properties": {
+             "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+$" }
+           }
+         }
+       }
+     }
+    """
+```
+
+---
+### Comprobar esquema de la respuesta (fichero)
+```
+la respuesta cumple el esquema del fichero {file}
+```
+Valida que la estructura del cuerpo de la respuesta REST satisface un esquema proporcionado por fichero. Los formatos de 
+esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas XML 
+(en función de la cabecera de respuesta HTTP `Content-Type`).
+
+##### Parámetros:
+| nombre | Wakamiti type | descripción                                 |
+|--------|---------------|---------------------------------------------|
+|        | `file`        | Fichero con un JSON Schema o un XML Schema  |
+
+##### Ejemplo:
+```gherkin
+  Entonces la respuesta cumple el esquema del fichero 'data/user-schema.json'
 ```
 
 
