@@ -116,6 +116,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     private void config(Config config) {
         try {
             Field field = RestAssuredConfig.class.getDeclaredField("configs");
+            field.setAccessible(true);
             ((Map<Class<? extends Config>, Config>) field.get(RestAssured.config)).put(config.getClass(), config);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new KukumoException("Error configuring RestAssured", e);
