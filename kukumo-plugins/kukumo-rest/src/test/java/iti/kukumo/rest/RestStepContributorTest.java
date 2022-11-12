@@ -106,7 +106,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -137,7 +137,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -167,7 +167,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -198,7 +198,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -224,7 +224,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -251,7 +251,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -281,7 +281,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -312,7 +312,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test(expected = SocketTimeoutException.class)
@@ -336,7 +336,7 @@ public class RestStepContributorTest {
 
         // check
         // an error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -364,7 +364,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -595,7 +595,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test(expected = KukumoException.class)
@@ -708,7 +708,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -752,7 +752,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -789,7 +789,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -820,7 +820,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -857,7 +857,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -883,7 +883,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -910,7 +910,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -937,7 +937,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -968,7 +968,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -997,7 +997,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1024,7 +1024,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1051,7 +1051,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1082,7 +1082,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1111,7 +1111,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1138,7 +1138,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1165,7 +1165,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1195,7 +1195,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1224,7 +1224,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1251,7 +1251,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1278,7 +1278,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1308,7 +1308,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     @Test
@@ -1337,7 +1337,7 @@ public class RestStepContributorTest {
 
         // check
         // no error should be thrown
-        assertThat(true).isTrue();
+        assertThat(Boolean.TRUE).isTrue();
     }
 
 

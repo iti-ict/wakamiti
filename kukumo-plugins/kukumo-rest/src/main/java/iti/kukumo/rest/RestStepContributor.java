@@ -133,7 +133,8 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
-        LOGGER.trace("Setting header [Authorization: {}:{}]", username, "*".repeat(password.length()));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Setting header [Authorization: {}:{}]", username, "*".repeat(password.length()));
         specifications.add(request -> request.auth().preemptive().basic(username, password));
     }
 
