@@ -13,34 +13,44 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [`rest.oauth2.url`](#restoauth2url)
 - [`rest.oauth2.clientId`](#restoauth2clientid)
 - [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
+- [`rest.oauth2.cached`](#restoauth2cached)
+- [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
+- [`rest.config.redirect.follow`](#restconfigredirectfollow)
+- [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
+- [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
+- [`rest.config.redirect.max`](#restconfigredirectmax)
+
 
 **Steps**:
 - [Define content type](#define-content-type)
 - [Define base URL](#define-base-url)
 - [Define service](#define-service)
 - [Define id](#define-id)
-- [Define request parameters](#define-request-parameters)
-- [Define query parameters](#define-query-parameters)
-- [Define path parameters](#define-path-parameters)
-- [Define headers](#define-headers)
+- [Define parameters or headers](#define-parameters-or-headers)
+- [Define parameters or headers (table)](#define-parameters-or-headers-table)
 - [Define timeout](#define-timeout)
 - [Define HTTP code threshold](#define-http-code-threshold)
 - [Define basic authentication](#define-basic-authentication)
-- [Define authentication token](#define-authentication-token)
-- [Define authentication token (file)](#define-authentication-token-file)
 - [Define oauth2 authentication](#define-oauth2-authentication)
+- [Define oauth2 authentication (file)](#define-oauth2-authentication-file)
+- [Define oauth2 authentication by credentials](#define-oauth2-authentication-by-credentials)
+- [Define oauth2 authentication by client](#define-oauth2-authentication-by-client)
+- [Define oauth2 authentication by code](#define-oauth2-authentication-by-code)
+- [Define oauth2 authentication by code (file)](#define-oauth2-authentication-by-code-file)
+- [Clear authentication](#clear-authentication)
+- [Define multipart subtype](#define-multipart-subtype)
 - [Define attached file](#define-attached-file)
 - [Define attached file (file)](#define-attached-file-file)
-- [Make GET request](#make-get-request)
-- [Make DELETE request](#make-delete-request)
-- [Make PUT request with body](#make-put-request-with-body)
-- [Make PUT request with body (file)](#make-put-request-with-body-file)
-- [Make PATCH request](#make-patch-request)
-- [Make PATCH request with body](#make-patch-request-with-body)
-- [Make PATCH request with body (file)](#make-patch-request-with-body-file)
-- [Make POST request](#make-post-request)
-- [Make POST request with body](#make-post-request-with-body)
-- [Make POST request with body (file)](#make-post-request-with-body-file)
+- [Execute GET request](#execute-get-request)
+- [Execute DELETE request](#execute-delete-request)
+- [Execute PUT request with body](#execute-put-request-with-body)
+- [Execute PUT request with body (file)](#execute-put-request-with-body-file)
+- [Execute PATCH request](#execute-patch-request)
+- [Execute PATCH request with body](#execute-patch-request-with-body)
+- [Execute PATCH request with body (file)](#execute-patch-request-with-body-file)
+- [Execute POST request](#execute-post-request)
+- [Execute POST request with body](#execute-post-request-with-body)
+- [Execute POST request with body (file)](#execute-post-request-with-body-file)
 - [Check response HTTP code](#check-response-http-code)
 - [Check response body](#check-response-body)
 - [Check response body (file)](#check-response-body-file)
@@ -48,6 +58,8 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [Check response content type](#check-response-content-type)
 - [Check response size](#check-response-size)
 - [Check response header](#check-response-header)
+- [Check response schema](#check-response-schema)
+- [Check response schema (file)](#check-response-schema-file)
 
 
 
@@ -85,7 +97,6 @@ Accepted values are:
 Default value is `JSON`.
 
 Example:
-
 ```yaml
 rest:
   contentType: XML
@@ -99,7 +110,6 @@ would automatically fail regardless any other condition.
 Default value is `500`.
 
 Example:
-
 ```yaml
 rest:
   httpCodeThreshold: 999
@@ -111,7 +121,6 @@ Set an [OAuth 2.0][oauth2] authentication service that would be used to generate
 `Authorization` of the API calls.
 
 Example:
-
 ```yaml
 rest:
   oauth2: 
@@ -124,7 +133,6 @@ rest:
 Sets the parameter `clientId` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url` value.
 
 Example:
-
 ```yaml
 rest:
   oauth2: 
@@ -137,13 +145,107 @@ Sets the parameter `clientSecret` of the [OAuth 2.0][oauth2] authentication serv
 value.
 
 Example:
-
 ```yaml
 rest:
   oauth2: 
     clientSecret: ABRACADABRAus1ZMGHvq9R
 ```
 
+---
+### `rest.oauth2.cached`
+Sets whether the retrieved token is cached to avoid recurring calls to the oauth service if the data is the same.
+
+Default value is `false`.
+
+Example:
+```yaml
+rest:
+  oauth2:
+    cached: true
+```
+
+---
+### `rest.config.multipart.subtype`
+Sets the subtype of multipart HTTP requests. The available values are:
+
+| literal       |
+|---------------|
+| `form-data`   |
+| `alternative` | 
+| `byteranges`  | 
+| `digest`      |
+| `mixed`       | 
+| `parallel`    | 
+| `related`     |
+| `report`      |
+| `signed`      |
+| `encrypted`   |
+
+Default value is `form-data`.
+
+Example:
+```yaml
+rest:
+  config:
+    multipart:
+      subtype: mixed
+```
+
+---
+### `rest.config.redirect.follow`
+Sets whether to allow following redirects in HTTP requests.
+
+Default value is `true`.
+
+Example:
+```yaml
+rest:
+  config:
+    redirect:
+      follow: false
+```
+
+---
+### `rest.config.redirect.allowCircular`
+Sets whether circular redirects are allowed in HTTP requests.
+
+Default value is `false`.
+
+Example:
+```yaml
+rest:
+  config:
+    redirect:
+      allowCircular: true
+```
+
+---
+### `rest.config.redirect.rejectRelative`
+Sets whether to reject relative redirects in HTTP requests.
+
+Default value is `false`.
+
+Example:
+```yaml
+rest:
+  config:
+    redirect:
+      rejectRelative: true
+```
+
+---
+### `rest.config.redirect.max`
+Sets the maximum number of redirects in HTTP requests.
+
+Default value is `100`.
+
+Example:
+```yaml
+rest:
+  config:
+    redirect:
+      max: 150
+```
 
 
 ## Steps
@@ -157,8 +259,8 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `type` | `word`      | Connection URL |
+|--------|---------------|----------------|
+| `type` | `word`        | Connection URL |
 
 #### Examples:
 ```gherkin
@@ -174,8 +276,8 @@ Declarative-way for setting the configuration property [`rest.baseURL`](#restbas
 
 #### Parameters:
 | Name  | Wakamiti type | Description |
-|-------|-------------|-------------|
-| `url` | `url`       | Base URL    |
+|-------|---------------|-------------|
+| `url` | `url`         | Base URL    |
 
 #### Examples:
 ```gherkin
@@ -191,8 +293,8 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 
 #### Parameters:
 | Name      | Wakamiti type | Description      |
-|-----------|-------------|------------------|
-| `service` | `text`      | URL segment path |
+|-----------|---------------|------------------|
+| `service` | `text`        | URL segment path |
 
 #### Examples:
 ```gherkin
@@ -208,8 +310,8 @@ Sets an entity identifier to be used by the REST service. It would be appended t
 
 #### Parameters:
 | Name   | Wakamiti type | Description          |
-|--------|-------------|----------------------|
-| `text` | `text`      | An entity identifier |
+|--------|---------------|----------------------|
+| `text` | `text`        | An entity identifier |
 
 #### Examples:
 ```gherkin
@@ -220,16 +322,56 @@ Sets an entity identifier to be used by the REST service. It would be appended t
 ```
 
 ---
-### Define request parameters
+### Define parameters or headers
 ```
-the following request parameters:
+the (request|query|path) parameter {name} with value {value}
 ```
-Sets the request parameters using a data table. The parameters will be sent as form data for POST requests.
+```
+the header {name} with value {value}
+```
+Sets a header or request, query or path parameter. The request parameters will be sent as form data for POST 
+requests, the query parameters will be pass after the service URL (like `/user?param1=abc&param2=123`), and path 
+parameters will be part of the request URL replacing the segments marked with `{}`.
+
+##### Parámetros:
+| Nombre  | Wakamiti type | Descripción               |
+|---------|---------------|---------------------------|
+| `name`  | `text`        | Header or parameter name  |
+| `value` | `text`        | Header or parameter value |
+
+##### Ejemplos:
+```gherkin
+  Given the request parameter 'age' with value '13'
+  When the data info is sent to the service
+```
+```gherkin
+  Given the query parameter 'city' with value 'Valencia'
+  When the user is queried
+```
+```gherkin
+  Given the REST service 'user/{usuario}/items'
+  And the path parameter 'usuario' with value '25'
+```
+```gherkin
+  Given the header 'Keep-alive' with value '1200'
+```
+
+---
+### Define parameters or headers (table)
+```
+the following (request|query|path) parameters:
+```
+```
+the following headers:
+```
+Sets headers or request, query or path parameters. The request parameters will be sent as form data for POST
+requests, the query parameters will be pass after the service URL (like `/user?param1=abc&param2=123`), and path
+parameters will be part of the request URL replacing the segments marked with `{}`.
 
 ##### Parameters:
 | Name | Wakamiti type | Description                             |
-|------|-------------|-----------------------------------------|
-|      | `table`     | A table with `name` and `value` columns |
+|------|---------------|-----------------------------------------|
+|      | `table`       | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
@@ -237,43 +379,15 @@ Sets the request parameters using a data table. The parameters will be sent as f
     | Name | Value    |
     | age  | 13       |
     | city | Valencia |
+  When the data info is sent to the service
 ```
-
----
-### Define query parameters
-```
-the following query parameters:
-```
-Set the request parameters for a query. The parameters will be pass after the service URL, like 
-`/user?param1=abc&param2=123`.
-
-##### Parameters:
-| Name | Wakamiti type | Description                             |
-|------|-------------|-----------------------------------------|
-|      | `table`     | A table with `name` and `value` columns |
-
-##### Examples:
 ```gherkin
   Given the following query parameters:
     | Name | Value    |
     | age  | 13       |
     | city | Valencia |
+  When the user is queried
 ```
-
----
-### Define path parameters
-```
-the following path parameters:
-```
-Sets parameterized path segments for a query. The parameters will be part of the request URL replacing the segments 
-marked with `{}`.
-
-##### Parameters:
-| Name | Wakamiti type | Description                             |
-|------|-------------|-----------------------------------------|
-|      | `table`     | A table with `name` and `value` columns |
-
-##### Examples:
 ```gherkin
   Given the service 'user/{user}/items/{item}'
   And the following path parameters:
@@ -281,20 +395,6 @@ marked with `{}`.
     | user | 25    |
     | item | 7     |
 ```
-
----
-### Define headers
-```
-the following headers:
-```
-Define the HTTP headers that would be sent by the subsequent requests.
-
-##### Parameters:
-| Name | Wakamiti type | Description                             |
-|------|-------------|-----------------------------------------|
-|      | `table`     | A table with `name` and `value` columns |
-
-##### Examples:
 ```gherkin
   Given the following headers:
     | Name       | Value |
@@ -311,8 +411,8 @@ Sets a response timeout (in second or milliseconds) for the subsequent HTTP requ
 
 ##### Parameters:
 | Name   | Wakamiti type | Description                 |
-|--------|-------------|-----------------------------|
-| `int`  | `int`       | The timeout in milliseconds |
+|--------|---------------|-----------------------------|
+| `int`  | `int`         | The timeout in milliseconds |
 
 ##### Examples:
 ```gherkin
@@ -331,7 +431,7 @@ Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthtt
 assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type         | Description             |
+| Name      | Wakamiti type       | Description             |
 |-----------|---------------------|-------------------------|
 | `matcher` | `integer-assertion` | Numeric [comparator][1] |
 
@@ -349,9 +449,9 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 
 ##### Parameters:
 | Name       | Wakamiti type | Description  |
-|------------|-------------|--------------|
-| `username` | `text`      | The username |
-| `password` | `text`      | The password |
+|------------|---------------|--------------|
+| `username` | `text`        | The username |
+| `password` | `text`        | The password |
 
 ##### Examples:
 ```gherkin
@@ -359,57 +459,139 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 ```
 
 ---
-### Define authentication token
-```
-the service use the authentication token {text}
-```
-Sets the authentication token to be sent in the `Authorization` header for the subsequent requests.
-
-##### Parameters:
-| Name   | Wakamiti type | Description            |
-|--------|-------------|------------------------|
-| `text` | `text`      | An authorization token |
-
-##### Examples:
-```gherkin
-  Given the service use the authentication token 'hudytw9834y9cqy32t94'
-```
-
----
-### Define authentication token (file)
-```
-(que) el servicio usa el token de autenticación del fichero {file}
-```
-Sets the authentication token to be sent in the `Authorization` header for the subsequent requests.
-
-##### Parameters:
-| Name   | Wakamiti type  | Description                        |
-|--------|--------------|------------------------------------|
-| `file` | `file`       | File with the authentication token |
-
-##### Example:
-```gherkin
-  Given the service use the authentication token of file 'data/token.txt'
-```
-
----
 ### Define oauth2 authentication
 ```
-the service use the authentication provider with the following data:
+the service use the oauth authentication token {token}
 ```
-Sets the [OAuth 2.0][oauth2] authentication parameters.
+Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
 
 ##### Parameters:
-| Name | Wakamiti type | Description                                 |
-|------|-------------|---------------------------------------------|
-|      | `document`  | A string with the authentication parameters |
+| Name    | Wakamiti type | Description          |
+|---------|---------------|----------------------|
+| `token` | `text`        | Authentication token |
+
+##### Ejemplos:
+```gherkin
+  Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
+```
+
+---
+### Define oauth2 authentication (file)
+```
+the service use the oauth authentication token from the file {file}
+```
+Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests, from file.
+
+##### Parameters:
+| Name   | Wakamiti type | Description                        |
+|--------|---------------|------------------------------------|
+| `file` | `file`        | File with the authentication token |
+
+##### Ejemplos:
+```gherkin
+  Given the service use the oauth authentication token from the file 'token.txt'
+```
+
+---
+### Define oauth2 authentication by credentials
+```
+the service use the oauth authentication credentials {username}:{password}
+```
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the 
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)), 
+using the indicated credentials, for the following requests.
+
+##### Parameters:
+| Name       | Wakamiti type | Description  |
+|------------|---------------|--------------|
+| `username` | `text`        | The username |
+| `password` | `text`        | The password |
 
 ##### Examples:
 ```gherkin
-  Given the service use the authentication provider with the following data:
-    """
-    grant_type=password&username=OficinaTest4&password=xxxxx
-    """
+  Given the service use the oauth authentication credentials 'us1532':'xxxxx'
+```
+
+---
+### Define oauth2 authentication by client
+```
+the service use the oauth authentication
+```
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
+using client data, for the following requests.
+
+##### Examples:
+```gherkin
+  Given the service use the oauth authentication
+```
+
+---
+### Define oauth2 authentication by code
+```
+the service use the oauth authentication authorization code {code}
+```
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
+using the indicated code, for the following requests.
+
+##### Parameters:
+| Name   | Wakamiti type | Description         |
+|--------|---------------|---------------------|
+| `code` | `text`        | Authentication code |
+
+##### Examples:
+```gherkin
+  Given the service use the oauth authentication authorization code 'euyh29830'
+```
+
+---
+### Define oauth2 authentication by code (file)
+```
+the service use the oauth authentication authorization code from the file {file}
+```
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
+using the code from file, for the following requests.
+
+##### Parameters:
+| Name   | Wakamiti type | Description                   |
+|--------|---------------|-------------------------------|
+| `file` | `file`        | File with authentication code |
+
+##### Examples:
+```gherkin
+  Given the service use the oauth authentication authorization code from the file 'code.txt'
+```
+
+---
+### Clear authentication
+```
+the service does not use authentication
+```
+Deletes the authentication header.
+
+##### Examples:
+```gherkin
+  Given the service does not use authentication
+```
+
+---
+### Define multipart subtype
+```
+{type} as subtype multipart
+```
+Sets the default subtype for multipart requests. This step is equivalent to setting the 
+[`rest.config.multipart.subtype`](#restconfigmultipartsubtype) property.
+
+##### Parameters:
+| Name   | Wakamiti type | Description       |
+|--------|---------------|-------------------|
+| `type` | `text`        | Multipart subtype |
+
+##### Examples:
+```gherkin
+  Given 'mixed' as subtype multipart
 ```
 
 ---
@@ -421,8 +603,8 @@ Sets a multipart form-data including an attachment from the given in-document co
 
 ##### Parameters:
 | Name | Wakamiti type | Description          |
-|------|-------------|----------------------|
-|      | `document`  | Content to be attach |
+|------|---------------|----------------------|
+|      | `document`    | Content to be attach |
 
 ##### Examples:
 ```gherkin
@@ -441,8 +623,8 @@ Sets a multipart form-data including an attachment from the given in-document co
 
 ##### Parameters:
 | Name   | Wakamiti type | Description       |
-|--------|-------------|-------------------|
-| `file` | `file`      | File to be attach |
+|--------|---------------|-------------------|
+| `file` | `file`        | File to be attach |
 
 ##### Examples:
 ```gherkin
@@ -450,7 +632,7 @@ Sets a multipart form-data including an attachment from the given in-document co
 ```
 
 ---
-### Make GET request
+### Execute GET request
 ```
 * (is|are) (queried|requested)
 ```
@@ -472,7 +654,7 @@ Sends a `GET` request to the previously defined parameters.
 ```
 
 ---
-### Make DELETE request
+### Execute DELETE request
 ```
 * (is|are) deleted
 ```
@@ -486,7 +668,7 @@ Sends a `DELETE` request to the previously defined endpoint formed with the base
 ```
 
 ---
-### Make PUT request with body
+### Execute PUT request with body
 ```
 * (is|are) modified with following data:
 ```
@@ -495,8 +677,8 @@ The payload is provided in-document.
 
 ##### Parameters:
 | Name | Wakamiti type | Description              |
-|------|-------------|--------------------------|
-|      | `document`  | The request payload body |
+|------|---------------|--------------------------|
+|      | `document`    | The request payload body |
 
 ##### Examples:
 ```gherkin
@@ -514,7 +696,7 @@ The payload is provided in-document.
 ```
 
 ---
-### Make PUT request with body (file)
+### Execute PUT request with body (file)
 ```
 * (is|are) modified with the data from the file {file}
 ```
@@ -523,8 +705,8 @@ The payload is provided by the given file.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description                                |
-|--------|-------------|--------------------------------------------|
-| `file` | `file`      | A file containing the request payload body |
+|--------|---------------|--------------------------------------------|
+| `file` | `file`        | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -534,7 +716,7 @@ The payload is provided by the given file.
 ```
 
 ---
-### Make PATCH request
+### Execute PATCH request
 ```
 * (is|are) patched
 ```
@@ -552,7 +734,7 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 ```
 
 ---
-### Make PATCH request with body
+### Execute PATCH request with body
 ```
 * (is|are) patched with the following data:
 ```
@@ -561,8 +743,8 @@ The payload is provided in-document.
 
 ##### Parameters:
 | Name | Wakamiti type | Description              |
-|------|-------------|--------------------------|
-|      | `document`  | The request payload body |
+|------|---------------|--------------------------|
+|      | `document`    | The request payload body |
 
 ##### Examples:
 ```gherkin
@@ -577,7 +759,7 @@ The payload is provided in-document.
 ```
 
 ---
-### Make PATCH request with body (file)
+### Execute PATCH request with body (file)
 ```
 * (is|are) patched with the data from the file {file}
 ```
@@ -586,8 +768,8 @@ The payload is provided by the given file.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description                                |
-|--------|-------------|--------------------------------------------|
-| `file` | `file`      | A file containing the request payload body |
+|--------|---------------|--------------------------------------------|
+| `file` | `file`        | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -597,7 +779,7 @@ The payload is provided by the given file.
 ```
 
 ---
-### Make POST request
+### Execute POST request
 ```
 * (is|are) created
 ```
@@ -618,7 +800,7 @@ empty.
 ```
 
 ---
-### Make POST request with body
+### Execute POST request with body
 ```
 * (is|are) created with the following data:
 ```
@@ -630,8 +812,8 @@ provided in-document.
 
 ##### Parameters:
 | Name | Wakamiti type | Description     |
-|------|-------------|-----------------|
-|      | `document`  | Request payload |
+|------|---------------|-----------------|
+|      | `document`    | Request payload |
 
 ##### Examples:
 ```gherkin
@@ -655,7 +837,7 @@ provided in-document.
 ```
 
 ---
-### Make POST request with body (file)
+### Execute POST request with body (file)
 ```
 * (is|are) created with the data from the file {file}
 ```
@@ -667,8 +849,8 @@ provided by the given file.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description                                |
-|--------|-------------|--------------------------------------------|
-| `file` | `file`      | A file containing the request payload body |
+|--------|---------------|--------------------------------------------|
+| `file` | `file`        | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -686,9 +868,9 @@ the response HTTP code {matcher}
 Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type         | Description            |
-|-----------|---------------------|------------------------|
-| `matcher` | `integer-assertion` | Number [comparator][1] |
+| Name      | Wakamiti type        | Description            |
+|-----------|----------------------|------------------------|
+| `matcher` | `integer-assertion`  | Number [comparator][1] |
 
 ##### Examples:
 ```gherkin
@@ -713,8 +895,8 @@ Validates that the last response body contains the given in-document content.
 
 ##### Parameters:
 | Name | Wakamiti type | Description                  |
-|------|-------------|------------------------------|
-|      | `document`  | The expected partial content |
+|------|---------------|------------------------------|
+|      | `document`    | The expected partial content |
 
 ##### Examples:
 ```gherkin
@@ -744,8 +926,8 @@ Validates that the last response body contains the content of the given file.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description      |
-|--------|-------------|------------------|
-| `file` | `file`      | An existing file |
+|--------|---------------|------------------|
+| `file` | `file`        | An existing file |
 
 ##### Examples:
 ```gherkin
@@ -761,10 +943,10 @@ Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragm
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name       | Wakamiti type   | Description               |
-|------------|---------------|---------------------------|
-| `fragment` | `text`        | A JSONPath or XPath query |
-| `matcher`  | `*-assertion` | [Comparator][1]           |
+| Name       | Wakamiti type  | Description               |
+|------------|----------------|---------------------------|
+| `fragment` | `text`         | A JSONPath or XPath query |
+| `matcher`  | `*-assertion`  | [Comparator][1]           |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -786,8 +968,8 @@ Validate that the content type of the last response is the expected. This step w
 
 ##### Parameters:
 | Name   | Wakamiti type | Description                                        |
-|--------|-------------|----------------------------------------------------|
-| `word` | `word`      | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
+|--------|---------------|----------------------------------------------------|
+| `word` | `word`        | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
 ##### Examples:
 ```gherkin
@@ -802,7 +984,7 @@ the response length {matcher}
 Validate that the length in bytes of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type         | Description            |
+| Name      | Wakamiti type       | Description            |
 |-----------|---------------------|------------------------|
 | `matcher` | `integer-assertion` | Number [comparator][1] |
 
@@ -819,7 +1001,7 @@ the (texto|entero|decimal) response header {name} {matcher}
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type   | Description          |
+| Name      | Wakamiti type | Description          |
 |-----------|---------------|----------------------|
 | `name`    | `text`        | The HTTP header name |
 | `matcher` | `*-assertion` | [Comparator][1]      |
@@ -832,6 +1014,73 @@ Validate that a header value from the last REST response satisfies the *text*, *
 ```gherkin
   Then the integer response header Age is greater than 10
 ```
+
+---
+### Check response schema
+```
+the response satisfies the following schema:
+```
+Asserts that the response body structure satisfies a given schema. The accepted schema formats are 
+[JSON Schema](https://json-schema.org/) for JSON responses and [XML Schema](https://www.w3.org/2001/XMLSchema) for XML 
+responses (according the`Content-Type` response header).
+
+#### Parameters:
+| name | Wakamiti type | description               |
+|------|---------------|---------------------------|
+|      | `document`    | JSON Schema or XML Schema |
+
+#### Examples:
+```gherkin
+  Then the response satisfies the following schema:
+    """json
+     {
+       "$schema": "http://json-schema.org/draft-04/schema#",
+       "type": "object",
+       "properties": {
+         "id":         { "type": "string", "pattern": "[a-zA-Z0-9]+" },
+         "name":       { "type": "string" },
+         "age":        { "type": "integer", "minimum": 5 },
+         "vegetables": {
+           "type": "array",
+           "items": [ {
+               "type": "object",
+               "properties": {
+                 "id":          { "type": "integer" },
+                 "description": { "type": "string"  }
+               },
+               "required": [ "id", "description" ]
+           } ]
+         },
+         "contact": {
+           "type": "object",
+           "properties": {
+             "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+$" }
+           }
+         }
+       }
+     }
+    """
+```
+
+---
+### Check response schema (file)
+```
+the response satisfies the schema from the file {file}
+```
+Asserts that the response body structure satisfies a schema from a given file. The accepted schema formats are 
+[JSON Schema][jsonschema] for JSON responses and [XML Schema][xmlschema] for XML responses (according the `Content-Type` 
+response header).
+
+##### Parameters:
+| name | Wakamiti type | description                    |
+|------|---------------|--------------------------------|
+|      | `file`        | JSON Schema or XML Schema file |
+
+##### Examples:
+```gherkin
+  Then the response satisfies the schema from the file 'data/user-schema.json'
+```
+
 
 
 

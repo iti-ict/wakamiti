@@ -1,0 +1,19 @@
+kukumo:
+  rest:
+    baseURL: http://localhost:8080/api
+    contentType: XML
+    httpCodeThreshold: 999
+    oauth2:
+      url: http://localhost:8080/token
+      clientId: WEB
+      clientSecret: dhg3h89ec8h
+      redirectUri: http://localhost:8080
+    config:
+      multipart:
+        controlName: other
+        subtype: digest
+      redirect:
+        follow: false
+        allowCircular: true
+        rejectRelative: true
+        max: 5

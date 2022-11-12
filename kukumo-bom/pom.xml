@@ -20,7 +20,7 @@
         <kukumo-api.version>1.4.0</kukumo-api.version>
         <kukumo-core.version>1.4.3</kukumo-core.version>
         <kukumo-lsp.version>1.4.0</kukumo-lsp.version>
-        <kukumo-rest.version>1.4.1</kukumo-rest.version>
+        <kukumo-rest.version>1.5.0</kukumo-rest.version>
         <kukumo-db.version>1.4.0</kukumo-db.version>
         <kukumo-amqp.version>1.4.0</kukumo-amqp.version>
         <kukumo-io.version>1.4.0</kukumo-io.version>
@@ -80,6 +80,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.13</commons-codec.version>
+        <mockito.version>3.7.0</mockito.version>
     </properties>
 
 
@@ -580,7 +581,16 @@
                 <version>${commons-logging.version}</version>
             </dependency>
 
-
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-inline</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
         </dependencies>
 
 

@@ -6,16 +6,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.5.0] 2022-11-11
+
+### Added
+- Authentication token cache
+- Oauth2 authentication steps
+- Single header and parameter steps
+- Specific control name in attached file step
+
+### Fixed
+- Helper compare in any order including lists
+- Timeout interrupts http call when time exceeded
+
+
 ## [1.4.1] 2022-09-21
 
-## Fixed
+### Fixed
 - Bump version of `restassured` to avoid module incompatibility with `groovy-xml`
 
 
 
 ## [1.3.3] 2022-05-05
 
-## Fixed
+### Fixed
 - #6 : Comparador JSON no ignora el orden
 - #20 : Error cuando la ruta del servicio está parametrizada
 
@@ -23,7 +36,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [1.3.0] 2022-01-27
 
-## Added
+### Added
 - Steps to validate responses against an schema (either JSON Schema or XML Schema)
 
 
