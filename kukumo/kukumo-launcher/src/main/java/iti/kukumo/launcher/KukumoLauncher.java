@@ -59,7 +59,9 @@ public class KukumoLauncher {
 
         try {
             new KukumoLauncherFetcher(arguments).fetchAndUpdateClasspath();
-            new KukumoRunner(arguments).run();
+            boolean passed = new KukumoRunner(arguments).run();
+            if (!passed)
+                System.exit(1);
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
             if (logger.isDebugEnabled()) {

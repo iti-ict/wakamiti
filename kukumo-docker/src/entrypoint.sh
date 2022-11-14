@@ -40,28 +40,8 @@ done
 
 echo Executing at $(date): kukumo ${args[@]}
 kukumo "$@"
+status=$?
 
 revert_replace_properties $KUKUMO_HOME
 
-#if ${COVERAGE:-false} ; then
-#  echo "Generating coverage..."
-#  if [ -z "$KUKUMO_BASE_URL" ]; then
-#    echo "KUKUMO_BASE_URL variable is needed"
-#    exit 1
-#  fi
-#  host=$(echo $KUKUMO_BASE_URL | sed -e "s/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/")
-#  if [ -z "$COVERAGE_PORT" ]; then
-#    echo "COVERAGE_PORT variable is needed"
-#    exit 1
-#  fi
-#  if [ -z "$COVERAGE_CLASSES" ]; then
-#    echo "COVERAGE_CLASSES variable is needed"
-#    exit 1
-#  fi
-#  if [ -z "$COVERAGE_SOURCES" ]; then
-#    echo "COVERAGE_SOURCES variable is needed"
-#    exit 1
-#  fi
-#  java -jar $JACOCO_HOME/lib/jacococli.jar dump --address $host --port $COVERAGE_PORT --destfile jacoco.exec
-#  java -jar $JACOCO_HOME/lib/jacococli.jar report jacoco.exec --classfiles $COVERAGE_CLASSES --sourcefiles $COVERAGE_SOURCES --html report --xml coverage.xml
-#fi
+exit $status
