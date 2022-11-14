@@ -1,0 +1,13 @@
+kukumo:
+  resourceTypes:
+    - gherkin
+  launcher:
+    modules:
+      - com.h2database:h2:1.4.199
+  nonRegisteredStepProviders:
+    - iti.kukumo.custom.CustomSteps
+
+  outputFilePath: /target/kukumo.json
+  htmlReport:
+    title: Pruebas kukumo
+    output: /target/kukumo.html
