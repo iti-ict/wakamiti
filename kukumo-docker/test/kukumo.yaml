@@ -7,6 +7,10 @@ kukumo:
   nonRegisteredStepProviders:
     - iti.kukumo.custom.CustomSteps
 
+  log:
+    path: /target
+    level: trace
+
   outputFilePath: /target/kukumo.json
   htmlReport:
     title: Pruebas kukumo

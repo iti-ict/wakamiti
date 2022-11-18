@@ -172,8 +172,6 @@
                             <executable>docker</executable>
                             <arguments>
                                 <argument>run</argument>
-                                <argument>-e KUKUMO_LOG_LEVEL=info</argument>
-                                <argument>-e KUKUMO_LOG_PATH=/target</argument>
                                 <argument>-v</argument>
                                 <argument>${project.basedir}/target:/target</argument>
                                 <argument>-v</argument>
