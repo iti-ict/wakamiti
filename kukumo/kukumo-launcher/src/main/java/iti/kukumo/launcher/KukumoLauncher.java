@@ -92,12 +92,14 @@ public class KukumoLauncher {
         }
         if (level.isEmpty()) {
             if (debug) {
-                level = Optional.of(Level.DEBUG);
+                Configurator.setLevel(loggerName, Level.DEBUG);
             } else {
-                level = Optional.of(Level.INFO);
+                Configurator.setLevel(loggerName, Level.INFO);
             }
+        } else {
+            Configurator.setLevel(loggerName, level.get());
         }
-        level.ifPresent(l -> Configurator.setLevel(loggerName, l));
+
         return LoggerFactory.getLogger(loggerName);
     }
 
