@@ -19,13 +19,10 @@ file named `kukumo.yaml`.
 - [`kukumo.report.generation`](#kukumoreportgeneration)
 - [`kukumo.redefinition.definitionTag`](#kukumoredefinitiondefinitiontag)
 - [`kukumo.redefinition.implementationTag`](#kukumoredefinitionimplementationtag)
+- [`kukumo.log.path`](#kukumologpath)
+- [`kukumo.log.level`](#kukumologlevel)
 - [`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories)
 - [`mavenFetcher.localRepository`](#mavenfetcherlocalrepository)
-
-### Environment variables
-
-- [`KUKUMO_LOG_PATH`](#kukumo_log_path)
-- [`KUKUMO_LOG_LEVEL`](#kukumo_log_level)
 
 ---
 ### `kukumo.resourceTypes`
@@ -157,6 +154,37 @@ kukumo:
 ```
 
 ---
+### `kukumo.log.path`
+
+Sets the directory where a log file named `kukumo-${yyyyMMddhhmmss}.log` will be created, where
+`${yyyyMMddhhmmss}` is the system date pattern. By default the log will not be created.
+
+Example:
+
+```yaml
+kukumo:
+  log:
+    path: results
+```
+
+---
+### `kukumo.log.level`
+
+Sets the log level. Depending on the level indicated, more or less information will be displayed or omitted.
+Possible values are: `info`, `error`, `fatal`, `warning`, `debug`, `trace`.
+[See more](https://unpocodejava.com/2011/01/17/niveles-log4j/)
+
+Default value is `info`.
+
+Example:
+
+```yaml
+kukumo:
+  log:
+    level: debug
+```
+
+---
 ### `mavenFetcher.remoteRepositories`
 
 Sets remote reporitories.
@@ -167,6 +195,7 @@ Example:
 mavenFetcher:
   remoteRepositories: https://repo.maven.apache.org/maven2;file:///home/user/.m2/repository
 ```
+
 
 ---
 ### `mavenFetcher.localRepository`
@@ -179,31 +208,6 @@ Example:
 mavenFetcher:
   localRepository: /usr/mvn-repo
 ```
-
----
-### `KUKUMO_LOG_PATH`
-
-Sets the execution log path.
-
-Default value is `/var/log`.
-
-```
-KUKUMO_LOG_PATH=/kukumo/result
-```
-
----
-### `KUKUMO_LOG_LEVEL`
-
-Sets the log level. Depending on the level indicated, more or less information will be displayed or omitted.
-Possible values are: `info`, `error`, `fatal`, `warning`, `debug`, `trace`.
-[See more](https://unpocodejava.com/2011/01/17/niveles-log4j/)
-
-Default value is `info`.
-
-```
-KUKUMO_LOG_LEVEL=trace
-```
-
 
 
 ---

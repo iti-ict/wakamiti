@@ -19,13 +19,10 @@ Wakamiti buscará el fichero con el nombre `kukumo.yaml`.
 - [`kukumo.report.generation`](#kukumoreportgeneration)
 - [`kukumo.redefinition.definitionTag`](#kukumoredefinitiondefinitiontag)
 - [`kukumo.redefinition.implementationTag`](#kukumoredefinitionimplementationtag)
+- [`kukumo.log.path`](#kukumologpath)
+- [`kukumo.log.level`](#kukumologlevel)
 - [`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories)
 - [`mavenFetcher.localRepository`](#mavenfetcherlocalrepository)
-
-### Variables de entorno 
-
-- [`KUKUMO_LOG_PATH`](#kukumo_log_path)
-- [`KUKUMO_LOG_LEVEL`](#kukumo_log_level)
 
 ---
 ### `kukumo.resourceTypes`
@@ -158,6 +155,37 @@ kukumo:
 ```
 
 ---
+### `kukumo.log.path`
+
+Establece el directorio donde se creará un fichero de log con nombre `kukumo-${yyyyMMddhhmmss}.log`, donde 
+`${yyyyMMddhhmmss}` es el patrón de la fecha del sistema. Por defecto no se creará el log.
+
+Ejemplo:
+
+```yaml
+kukumo:
+  log:
+    path: results
+```
+
+---
+### `kukumo.log.level`
+
+Establece el nivel de los logs de kukumo. Dependiendo del nivel indicado se mostrará u omitirá más o menos información.
+Los posibles valores son: `info`, `error`, `fatal`, `warning`, `debug`, `trace`.
+[Leer más](https://unpocodejava.com/2011/01/17/niveles-log4j/)
+
+El valor por defecto es `info`.
+
+Ejemplo:
+
+```yaml
+kukumo:
+  log:
+    level: debug
+```
+
+---
 ### `mavenFetcher.remoteRepositories`
 
 Establece repositorios remotos.
@@ -180,31 +208,6 @@ Ejemplo:
 mavenFetcher:
   localRepository: /usr/mvn-repo
 ```
-
----
-### `KUKUMO_LOG_PATH`
-
-Establece la ruta donde se generará el log de ejecución.
-
-El valor por defecto es `/var/log`.
-
-```
-KUKUMO_LOG_PATH=/kukumo/result
-```
-
----
-### `KUKUMO_LOG_LEVEL`
-
-Establece el nivel de los logs de kukumo. Dependiendo del nivel indicado se mostrará u omitirá más o menos información.
-Los posibles valores son: `info`, `error`, `fatal`, `warning`, `debug`, `trace`.
-[Leer más](https://unpocodejava.com/2011/01/17/niveles-log4j/)
-
-El valor por defecto es `info`.
-
-```
-KUKUMO_LOG_LEVEL=trace
-```
-
 
 
 ---
