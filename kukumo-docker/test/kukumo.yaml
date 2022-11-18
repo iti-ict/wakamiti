@@ -9,7 +9,6 @@ kukumo:
 
   log:
     path: /target
-    level: trace
 
   outputFilePath: /target/kukumo.json
   htmlReport:
