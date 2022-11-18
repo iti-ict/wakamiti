@@ -80,6 +80,12 @@ public class HtmlReportGenerator implements Reporter {
             parameters.put("localStyles", readStyles());
             parameters.put("plan", rootNode);
             parameters.put("title",title);
+
+            File parent = output.getCanonicalFile().getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+
             try (var writer = new FileWriter(output)) {
                 template("report.html.ftl").process(parameters, writer);
             }

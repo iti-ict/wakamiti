@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 import imconfig.Configuration;
 import imconfig.ConfigurationException;
+import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
@@ -40,7 +41,7 @@ public class KukumoRunner {
     }
 
 
-    public void run() {
+    public boolean run() {
         Configuration configuration;
         Kukumo kukumo = Kukumo.instance();
         try {
@@ -51,12 +52,14 @@ public class KukumoRunner {
             } else {
                 kukumo.executePlan(plan, configuration);
             }
+            return plan.result().map(Result::isPassed).orElse(true);
         } catch (ConfigurationException e) {
             KukumoLauncher.logger()
                 .error("Error reading configuration: {}", e.getLocalizedMessage(), e);
         } catch (Exception e) {
             throw new KukumoException(e);
         }
+        return false;
     }
 
 

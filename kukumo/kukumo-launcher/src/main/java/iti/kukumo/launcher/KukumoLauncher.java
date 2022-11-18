@@ -10,12 +10,17 @@
 package iti.kukumo.launcher;
 
 
+import imconfig.Configuration;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 
 public class KukumoLauncher {
@@ -28,8 +33,6 @@ public class KukumoLauncher {
     }
 
     public static void main(final String[] args) {
-
-        System.setProperty("log4j.configurationFile","log4j2.xml");
 
         CliArguments arguments = new CliArguments();
         try {
@@ -44,9 +47,14 @@ public class KukumoLauncher {
         }
 
         boolean debugMode = arguments.isDebugActive();
-        logger = createLogger(debugMode);
+        try {
+            logger = createLogger(arguments.kukumoConfiguration().inner("log"), debugMode);
+        } catch (URISyntaxException e) {
+            System.err.println(e.getMessage());
+            System.exit(2);
+        }
         if (logger.isDebugEnabled()) {
-            logger.debug("{}",arguments);
+            logger.debug("{}", arguments);
         }
 
         if (arguments.isSshowContributionsEnabled()) {
@@ -59,31 +67,40 @@ public class KukumoLauncher {
 
         try {
             new KukumoLauncherFetcher(arguments).fetchAndUpdateClasspath();
-            new KukumoRunner(arguments).run();
+            boolean passed = new KukumoRunner(arguments).run();
+            if (!passed)
+                System.exit(1);
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
             if (logger.isDebugEnabled()) {
-                logger.error("<exception stack trace>",e);
+                logger.error("<exception stack trace>", e);
             }
             System.exit(2);
         }
     }
 
-
-    private static Logger createLogger(boolean debug) {
+    private static Logger createLogger(Configuration conf, boolean debug) {
         String loggerName = "iti.kukumo";
-        if (debug) {
-            Configurator.setLevel(loggerName, Level.DEBUG);
-        } else {
-            Configurator.setLevel(loggerName, Level.INFO);
+        Optional<Level> level = conf.get("level", String.class).map(Level::toLevel);
+        Optional<String> path = conf.get("path", String.class);
+
+        if (path.isPresent()) {
+            String filename = path.get() + "/kukumo-"
+                    + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss")) + ".log";
+            System.setProperty("path", filename);
+            System.setProperty("log4j.configurationFile", "log4j2_file.xml");
         }
+        if (level.isEmpty()) {
+            if (debug) {
+                level = Optional.of(Level.DEBUG);
+            } else {
+                level = Optional.of(Level.INFO);
+            }
+        }
+        level.ifPresent(l -> Configurator.setLevel(loggerName, l)); //NOSONAR
+
         return LoggerFactory.getLogger(loggerName);
     }
-
-
-
-
-
 
 
 }

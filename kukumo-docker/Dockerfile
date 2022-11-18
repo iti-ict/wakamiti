@@ -2,13 +2,11 @@ FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 
 WORKDIR /kukumo
 
-ENV KUKUMO_REMOTE_REPOSITORIES maven-central=https://repo.maven.apache.org/maven2/
 ENV KUKUMO_HOME /opt/kukumo
 ENV KUKUMO_REPOSITORY /root/.local/share/kukumo/repository
 
 RUN apk add --no-cache bash
 
-COPY src/log4j2.xml $KUKUMO_HOME/
 COPY src/entrypoint.sh /
 
 # launcher executables are including in the staging directory (from kukumo-launcher)
