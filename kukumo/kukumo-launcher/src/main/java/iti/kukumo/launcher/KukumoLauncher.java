@@ -50,7 +50,7 @@ public class KukumoLauncher {
         try {
             logger = createLogger(arguments.kukumoConfiguration().inner("log"), debugMode);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             System.exit(2);
         }
         if (logger.isDebugEnabled()) {
@@ -81,7 +81,7 @@ public class KukumoLauncher {
 
     private static Logger createLogger(Configuration conf, boolean debug) {
         String loggerName = "iti.kukumo";
-        Optional<String> level = conf.get("level", String.class);
+        Optional<Level> level = conf.get("level", String.class).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);
 
         if (path.isPresent()) {
@@ -92,12 +92,12 @@ public class KukumoLauncher {
         }
         if (level.isEmpty()) {
             if (debug) {
-                level = Optional.of("DEBUG");
+                level = Optional.of(Level.DEBUG);
             } else {
-                level = Optional.of("INFO");
+                level = Optional.of(Level.INFO);
             }
         }
-        level.map(Level::toLevel).ifPresent(l -> Configurator.setLevel(loggerName, l));
+        level.ifPresent(l -> Configurator.setLevel(loggerName, l));
         return LoggerFactory.getLogger(loggerName);
     }
 
