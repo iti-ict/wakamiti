@@ -20,7 +20,10 @@ import org.slf4j.LoggerFactory;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+
+import static org.apache.logging.log4j.Level.*;
 
 
 public class KukumoLauncher {
@@ -81,7 +84,9 @@ public class KukumoLauncher {
 
     private static Logger createLogger(Configuration conf, boolean debug) {
         String loggerName = "iti.kukumo";
-        Optional<Level> level = conf.get("level", String.class).map(Level::toLevel);
+        Optional<Level> level = conf.get("level", String.class)
+                .map(Level::toLevel)
+                .filter(List.of(INFO, ERROR, FATAL, WARN, DEBUG, TRACE)::contains);
         Optional<String> path = conf.get("path", String.class);
 
         if (path.isPresent()) {
@@ -92,9 +97,9 @@ public class KukumoLauncher {
         }
         if (level.isEmpty()) {
             if (debug) {
-                Configurator.setLevel(loggerName, Level.DEBUG);
+                Configurator.setLevel(loggerName, DEBUG);
             } else {
-                Configurator.setLevel(loggerName, Level.INFO);
+                Configurator.setLevel(loggerName, INFO);
             }
         } else {
             Configurator.setLevel(loggerName, level.get());
