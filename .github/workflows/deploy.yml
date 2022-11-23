@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'kukumo-doc/**'
 
 jobs:
   build:
