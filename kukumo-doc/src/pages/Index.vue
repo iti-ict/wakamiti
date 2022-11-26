@@ -32,7 +32,7 @@ export default {
   },
   metaInfo() {
     return {
-      title: "Kukumo",
+      title: "Wakamiti",
       meta: [
         { key: 'description', name: 'description', content: this.$t('description') }
       ]
