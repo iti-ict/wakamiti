@@ -1,9 +1,9 @@
 {
 	"name": "kukumo-vscode-extension",
-	"displayName": "Kukumo VSCode Extension",
-	"description": "Editor and execution capabilities of Kukumo projects",
-	"icon": "resources/kukumo-icon.png",
-	"version": "0.1.1",
+	"displayName": "Wakamiti VSCode Extension",
+	"description": "Editor and execution capabilities of Wakamiti projects",
+	"icon": "resources/wakamiti-icon.png",
+	"version": "0.2.0",
 	"repository": {},
 	"engines": {
 		"vscode": "^1.53.0"
@@ -32,7 +32,7 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
-			"title": "Kukumo",
+			"title": "Wakamiti",
 			"properties": {
 				"kukumo.languageServer.connectionMode": {
 					"description": "How the LSP client should establish connection with the language server",
@@ -54,12 +54,12 @@
 					"scope": "window"
 				},
 				"kukumo.languageServer.javaProcessPluginPath": {
-					"markdownDescription": "Local path of Kukumo plugins directory to be used by the embedded Java process (only when `#kukumo.languageServer.connectionMode#` is `Java Process`).\n Example: `/var/lib/kukumo/plugins`",
+					"markdownDescription": "Local path of Wakamiti plugins directory to be used by the embedded Java process (only when `#kukumo.languageServer.connectionMode#` is `Java Process`).\n Example: `/var/lib/kukumo/plugins`",
 					"type": "string",
 					"scope": "window"
 				},
 				"kukumo.executionServer.URL": {
-					"markdownDescription": "URL of the Kukumo execution server",
+					"markdownDescription": "URL of the Wakamiti execution server",
 					"type": "string",
 					"format": "uri",
 					"scope": "window",
@@ -77,7 +77,7 @@
 			{
 				"id": "kukumo-gherkin",
 				"aliases": [
-					"Kukumo Gherkin"
+					"Wakamiti Gherkin"
 				],
 				"extensions": [
 					".feature"
@@ -99,7 +99,7 @@
 		"commands": [
 			{
 				"command": "kukumo.commands.reconnectLanguageServer",
-				"title": "(Re)Connect to Kukumo Language Server",
+				"title": "(Re)Connect to Wakamiti Language Server",
 				"icon": "$(sync)"
 			},
 			{
@@ -143,7 +143,7 @@
 				{
 					"id": "kukumo",
 					"title": "Test Plan",
-					"icon": "resources/kukumo.svg"
+					"icon": "resources/wakamiti.svg"
 				}
 			]
 		},
@@ -152,22 +152,22 @@
 				{
 					"id": "kukumo.views.planOverview",
 					"name": "Overview",
-					"icon": "resources/kukumo.svg",
-					"contextualTitle": "Kukumo - Test Plan Overview",
+					"icon": "resources/wakamiti.svg",
+					"contextualTitle": "Wakamiti - Test Plan Overview",
 					"visibility": "visible"
 				},
 				{
 					"id": "kukumo.views.executions.current",
 					"name": "Current Execution",
-					"icon": "resources/kukumo.svg",
-					"contextualTitle": "Kukumo - Current Test Plan Execution",
+					"icon": "resources/wakamiti.svg",
+					"contextualTitle": "Wakamiti - Current Test Plan Execution",
 					"visibility": "hidden"
 				},
 				{
 					"id": "kukumo.views.executions.history",
 					"name": "Execution History",
-					"icon": "resources/kukumo.svg",
-					"contextualTitle": "Kukumo - Test Plan Execution History",
+					"icon": "resources/wakamiti.svg",
+					"contextualTitle": "Wakamiti - Test Plan Execution History",
 					"visibility": "visible"
 				}
 			]

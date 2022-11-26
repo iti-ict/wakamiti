@@ -10,7 +10,7 @@ slug: /introduction/getting-started
 
 Descarga la imagen docker de Wakamiti:
 ```shell
-docker pull kukumo/kukumo
+docker pull wakamiti/wakamiti
 ```
 
 [//]: # (Consulta otras [opciones de instalación]&#40;setup/installation&#41;)
@@ -20,7 +20,7 @@ docker pull kukumo/kukumo
 Ubícate en el directorio que contiene los tests de Wakamiti y lánzalo:
 ```shell
 cd ~/test
-docker run --rm -it -v "$(pwd):/kukumo" kukumo/kukumo
+docker run --rm -it -v "$(pwd):/kukumo" wakamiti/wakamiti
 ```
 
 [//]: # (Consulta las [instrucciones de uso]&#40;setup/usage&#41; para conocer todos los comandos y opciones.)
