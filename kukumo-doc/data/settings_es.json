@@ -4,7 +4,7 @@
       "section": "Introducción",
       "topics": [
         {
-          "title": "¿Qué es Kukumo?",
+          "title": "¿Qué es Wakamiti?",
           "slug": "introduction/what-is-kukumo"
         },
         {
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "section": "Kukumo a fondo",
+      "section": "Wakamiti a fondo",
       "topics": [
         {
           "title": "Arquitectura",
