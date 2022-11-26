@@ -22,7 +22,7 @@ const siteUrl = absolutePath.replace(pathPrefix, '')
 const defaultLocale = 'es';
 
 module.exports = {
-  siteName: 'Kukumo',
+  siteName: 'Wakamiti',
   siteUrl,
   pathPrefix,
   icon: './src/assets/img/logo.svg',
