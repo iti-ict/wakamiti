@@ -40,9 +40,9 @@
     <header class="row">
         <hr/>
         <div class="col row">
-            <div class="logo-left col-1"></div>
-            <h1 class="col-10 text-center report-title">${title!plan.name!plan.displayName}</h1>
-            <div class="logo-right col-1"></div>
+            <div class="logo-left col-2"></div>
+            <h1 class="col-8 text-center report-title">${title!plan.name!plan.displayName}</h1>
+            <div class="logo-right col-2"></div>
         </div>
         <hr/>
         <div class="row" style="gap: 10px">
