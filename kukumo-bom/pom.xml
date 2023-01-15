@@ -21,6 +21,7 @@
         <kukumo-core.version>1.4.3</kukumo-core.version>
         <kukumo-lsp.version>1.4.0</kukumo-lsp.version>
         <kukumo-rest.version>1.5.0</kukumo-rest.version>
+        <kukumo-groovy.version>1.0.0</kukumo-groovy.version>
         <kukumo-db.version>1.4.0</kukumo-db.version>
         <kukumo-amqp.version>1.4.0</kukumo-amqp.version>
         <kukumo-io.version>1.4.0</kukumo-io.version>
@@ -123,6 +124,11 @@
                 <groupId>es.iti.kukumo</groupId>
                 <artifactId>kukumo-rest</artifactId>
                 <version>${kukumo-rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-groovy</artifactId>
+                <version>${kukumo-groovy.version}</version>
             </dependency>
             <dependency>
                 <groupId>es.iti.kukumo</groupId>
@@ -463,14 +469,6 @@
                     <exclusion>
                         <groupId>javax.xml.bind</groupId>
                         <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-xml</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

@@ -112,6 +112,9 @@ public class KukumoContributors {
         return extensionManager.getExtensions(DataTypeContributor.class);
     }
 
+    public Stream<LoaderContributor> allLoaderContributors() {
+        return extensionManager.getExtensions(LoaderContributor.class);
+    }
 
     public List<StepContributor> createStepContributors(
         List<String> modules,

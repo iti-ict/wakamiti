@@ -30,6 +30,7 @@ module kukumo.api {
     uses PlanTransformer;
     uses Reporter;
     uses StepContributor;
+    uses LoaderContributor;
 
     provides ConfigContributor with KukumoConfiguration;
 
