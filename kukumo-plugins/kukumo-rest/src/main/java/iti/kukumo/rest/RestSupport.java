@@ -65,7 +65,8 @@ public class RestSupport {
     protected RequestSpecification newRequest() {
         response = null;
         validatableResponse = null;
-        RequestSpecification request = RestAssured.given();
+        RequestSpecification request = RestAssured.given()
+                .accept(ContentType.ANY);
         specifications.forEach(specification -> specification.accept(request));
         return attachLogger(request);
     }

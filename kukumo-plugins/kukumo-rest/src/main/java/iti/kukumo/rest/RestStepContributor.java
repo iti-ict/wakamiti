@@ -40,9 +40,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
         specifications.add(request ->
-                request.contentType(parseContentType(contentType))
-                        .accept(parseContentType(contentType))
-        );
+                request.contentType(parseContentType(contentType)));
     }
 
 
