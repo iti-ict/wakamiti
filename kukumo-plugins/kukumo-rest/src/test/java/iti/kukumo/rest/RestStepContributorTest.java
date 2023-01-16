@@ -1,9 +1,11 @@
 package iti.kukumo.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.restassured.RestAssured;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
+import iti.kukumo.api.util.JsonUtils;
 import iti.kukumo.api.util.MatcherAssertion;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,10 +24,10 @@ import org.mockserver.socket.tls.KeyStoreFactory;
 import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Base64;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static iti.kukumo.rest.TestUtil.*;
@@ -67,7 +69,7 @@ public class RestStepContributorTest {
     }
 
     @Before
-    public void before() {
+    public void beforeEach() {
         RestAssured.reset();
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.config = RestAssured.config().multiPartConfig(
@@ -102,11 +104,20 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param2", "value2");
 
         // act
-        contributor.executeGetSubject();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(JsonUtils.json(Map.of(
+                "statusCode", 200,
+                "headers", Map.of(
+                        "content-length", "0",
+                        "content-type", MediaType.APPLICATION_JSON.toString(),
+                        "connection", "keep-alive"
+                ),
+                "body", "",
+                "statusLine", "HTTP/1.1 200 OK"
+        )));
     }
 
     @Test
@@ -133,11 +144,10 @@ public class RestStepContributorTest {
         ));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -163,11 +173,10 @@ public class RestStepContributorTest {
         contributor.setQueryParameter("param2", "value2");
 
         // act
-        contributor.executeGetQuery();
+        Object result = contributor.executeGetQuery();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -194,11 +203,10 @@ public class RestStepContributorTest {
         ));
 
         // act
-        contributor.executeGetQuery();
+        Object result = contributor.executeGetQuery();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -220,11 +228,10 @@ public class RestStepContributorTest {
         contributor.setPathParameter("list", "4");
 
         // act
-        contributor.executeGetQuery();
+        Object result = contributor.executeGetQuery();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -247,11 +254,10 @@ public class RestStepContributorTest {
         ));
 
         // act
-        contributor.executeGetQuery();
+        Object result = contributor.executeGetQuery();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -277,11 +283,10 @@ public class RestStepContributorTest {
         contributor.setHeader("param2", "value2");
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -308,11 +313,10 @@ public class RestStepContributorTest {
         ));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test(expected = SocketTimeoutException.class)
@@ -332,11 +336,10 @@ public class RestStepContributorTest {
         contributor.setTimeoutInSecs(1);
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // an error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -360,11 +363,10 @@ public class RestStepContributorTest {
         contributor.setBasicAuth("username", "password");
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -432,7 +434,7 @@ public class RestStepContributorTest {
     }
 
     @Test
-    public void testSetBearerAuthCodeWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testSetBearerAuthCodeWithSuccess() throws MalformedURLException {
         // prepare
         String token = "1234567890";
 
@@ -463,7 +465,7 @@ public class RestStepContributorTest {
     }
 
     @Test
-    public void testSetBearerAuthCodeWhenCachedWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testSetBearerAuthCodeWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
         String token = "1234567890";
 
@@ -591,11 +593,10 @@ public class RestStepContributorTest {
         contributor.setNoneAuth(); // auth must be  overridden
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test(expected = KukumoException.class)
@@ -683,7 +684,7 @@ public class RestStepContributorTest {
     }
 
     @Test
-    public void testWhenAuthHeaderWithSuccess() throws URISyntaxException, MalformedURLException {
+    public void testWhenAuthHeaderWithSuccess() throws MalformedURLException {
         // prepare
         String token = "1234567890";
 
@@ -704,11 +705,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -718,7 +718,8 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/users")
                         .withHeader("Content-Type",
-                                MediaType.MULTIPART_FORM_DATA + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                MediaType.MULTIPART_FORM_DATA + "; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 attached(
                                         file(
@@ -748,11 +749,10 @@ public class RestStepContributorTest {
         contributor.setAttachedFile("file", new Document("Test content 2"));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -762,7 +762,8 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/users")
                         .withHeader("Content-Type",
-                                MediaType.MULTIPART_FORM_DATA + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                MediaType.MULTIPART_FORM_DATA + "; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 attached(
                                         file(
@@ -782,14 +783,14 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
-        contributor.setAttachedFile("fichero", new Document(json(map("user", "Pepe")), "json"));
+        contributor.setAttachedFile("fichero",
+                new Document(json(map("user", "Pepe")), "json"));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -799,7 +800,8 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/users")
                         .withHeader("Content-Type",
-                                "multipart/mixed; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                "multipart/mixed; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 regex(".+")
                         )
@@ -816,21 +818,21 @@ public class RestStepContributorTest {
         contributor.setAttachedFile("file", new Document("Test content"));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void testSetAttachedFileWhenFileWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testSetAttachedFileWhenFileWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
                 request()
                         .withPath("/users")
                         .withHeader("Content-Type",
-                                MediaType.MULTIPART_FORM_DATA + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                MediaType.MULTIPART_FORM_DATA
+                                        + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 attached(
                                         file(
@@ -853,11 +855,10 @@ public class RestStepContributorTest {
         contributor.setAttachedFile("file", file(TOKEN_PATH));
 
         // act
-        contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -879,11 +880,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executeDeleteSubject();
+        Object result = contributor.executeDeleteSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -906,15 +906,14 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePutSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+        Object result = contributor.executePutSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void testWhenPutSubjectFileWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testWhenPutSubjectFileWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
                 request()
@@ -933,11 +932,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePutSubjectUsingFile(file(TOKEN_PATH));
+        Object result = contributor.executePutSubjectUsingFile(file(TOKEN_PATH));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -964,11 +962,10 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param1", "value1");
 
         // act
-        contributor.executePutSubject();
+        Object result = contributor.executePutSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -993,11 +990,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePutSubject();
+        Object result = contributor.executePutSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1020,15 +1016,15 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePatchSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+        Object result = contributor
+                .executePatchSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void testWhenPatchSubjectFileWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testWhenPatchSubjectFileWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
                 request()
@@ -1047,11 +1043,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePatchSubjectUsingFile(file(TOKEN_PATH));
+        Object result = contributor.executePatchSubjectUsingFile(file(TOKEN_PATH));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1078,11 +1073,10 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param1", "value1");
 
         // act
-        contributor.executePatchSubject();
+        Object result = contributor.executePatchSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1107,11 +1101,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePatchSubject();
+        Object result = contributor.executePatchSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1134,15 +1127,15 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+        Object result = contributor
+                .executePostSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void testWhenPostSubjectFileWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testWhenPostSubjectFileWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
                 request()
@@ -1161,11 +1154,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostSubjectUsingFile(file(TOKEN_PATH));
+        Object result = contributor.executePostSubjectUsingFile(file(TOKEN_PATH));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1191,11 +1183,10 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param1", "value1");
 
         // act
-        contributor.executePostSubject();
+        Object result = contributor.executePostSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1220,11 +1211,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostSubject();
+        Object result = contributor.executePostSubject();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1247,15 +1237,14 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostDataUsingDocument(new Document(json(map("user", "Pepe"))));
+        Object result = contributor.executePostDataUsingDocument(new Document(json(map("user", "Pepe"))));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void testWhenPostDataFileWithSuccess() throws MalformedURLException, URISyntaxException {
+    public void testWhenPostDataFileWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
                 request()
@@ -1274,11 +1263,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostDataUsingFile(file(TOKEN_PATH));
+        Object result = contributor.executePostDataUsingFile(file(TOKEN_PATH));
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1304,11 +1292,10 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param1", "value1");
 
         // act
-        contributor.executePostData();
+        Object result = contributor.executePostData();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -1333,11 +1320,10 @@ public class RestStepContributorTest {
         contributor.setSubject("10");
 
         // act
-        contributor.executePostData();
+        Object result = contributor.executePostData();
 
         // check
-        // no error should be thrown
-        assertThat(Boolean.TRUE).isTrue();
+        assertThat(result).isNotNull();
     }
 
 

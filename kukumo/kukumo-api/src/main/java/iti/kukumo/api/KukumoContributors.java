@@ -165,6 +165,10 @@ public class KukumoContributors {
         return extensionManager.getExtensions(PlanTransformer.class);
     }
 
+    public void propertyResolvers(Configuration configuration) {
+        extensionManager.getExtensions(PropertyEvaluator.class)
+                .forEach(c -> configure(c, configuration));
+    }
 
     public Stream<Reporter> reporters() {
         return extensionManager.getExtensions(Reporter.class);

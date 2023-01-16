@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.core.util.TokenParser;
 
+import static iti.kukumo.core.datatypes.KukumoCoreTypes.PROPERTY_REGEX;
+
 
 public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTypeBase<T> {
 
@@ -40,19 +42,23 @@ public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTy
     );
 
     private static final String[] ISO_8601_DATE_FORMATS = {
-        "yyyy-MM-dd"
+        "yyyy-MM-dd",
+        PROPERTY_REGEX
     };
 
     private static final String[] ISO_8601_TIME_FORMATS = {
 	    "hh:mm",
 	    "hh:mm:ss",
-	    "hh:mm:ss.SSS"
+	    "hh:mm:ss.SSS",
+        PROPERTY_REGEX
     };
 
     private static final String[] ISO_8601_DATETIME_FORMATS = {
 	    "yyyy-MM-dd'T'hh:mm",
 	    "yyyy-MM-dd'T'hh:mm:ss",
-	    "yyyy-MM-dd'T'hh:mm:ss.SSS"
+	    "yyyy-MM-dd'T'hh:mm:ss.SSS",
+        PROPERTY_REGEX + "'T'" + PROPERTY_REGEX,
+        PROPERTY_REGEX
     };
 
     private static final String REGEX_ALPHAS = "[^\\s]+";
@@ -167,7 +173,7 @@ public class KukumoDateDataType<T extends TemporalAccessor> extends KukumoDataTy
             	regex.append(regexSymbols.get(nextToken));
             }
         }
-        return regex.toString();
+        return regex + "|" + PROPERTY_REGEX;
     }
 
 

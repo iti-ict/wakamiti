@@ -19,7 +19,6 @@ module kukumo.rest {
     requires org.json;
     requires json.path;
     requires com.fasterxml.jackson.databind;
-    requires org.xmlunit;
     requires iti.commons.jext;
     requires junit;
     requires com.fasterxml.jackson.dataformat.xml;

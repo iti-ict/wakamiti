@@ -13,6 +13,7 @@ package iti.kukumo.rest;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -21,7 +22,9 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
+import iti.kukumo.api.util.JsonUtils;
 import iti.kukumo.api.util.ResourceLoader;
+import iti.kukumo.api.util.XmlUtils;
 import iti.kukumo.rest.log.RestAssuredLogger;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -40,8 +43,8 @@ import java.util.stream.Stream;
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
-    protected static final String GRANT_TYPE_PARAM = "grant_type";
     public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
+    protected static final String GRANT_TYPE_PARAM = "grant_type";
     protected static Map<List<Object>, String> cachedToken = new HashMap<>();
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
             .extensionManager()
@@ -165,6 +168,18 @@ public class RestSupport {
             map.put(dataTable.value(i, 0), dataTable.value(i, 1));
         }
         return map;
+    }
+
+    protected Object response() {
+        Map<String, Object> result = Map.of(
+                "headers", response.headers().asList().stream().collect(Collectors.toMap(Header::getName, Header::getValue)),
+                "body", response.body().asString(),
+                "statusCode", response.statusCode(),
+                "statusLine", response.statusLine()
+        );
+
+        return ContentType.XML.matches(response.contentType()) ? XmlUtils.xml("response", result)
+                : JsonUtils.json(result);
     }
 
     protected ContentTypeHelper contentTypeHelperForResponse() {

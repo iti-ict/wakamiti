@@ -27,33 +27,33 @@
       },
       "children" : [ {
         "nodeType" : "STEP",
-        "name" : "a number with value 8.02 and another number with 9",
+        "name" : "a number with value ${number.a} and another number with ${number.b}",
         "keyword" : "Given",
         "language" : "en",
         "source" : "src/test/resources/features/test6_propertySubstitution.feature[8,3]",
-        "displayName" : "Given a number with value 8.02 and another number with 9",
+        "displayName" : "Given a number with value ${number.a} and another number with ${number.b}",
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "step"
         }
       }, {
         "nodeType" : "STEP",
-        "name" : "both numbers are multiplied",
+        "name" : "both numbers are ${operation}",
         "keyword" : "When",
         "language" : "en",
         "source" : "src/test/resources/features/test6_propertySubstitution.feature[9,3]",
-        "displayName" : "When both numbers are multiplied",
+        "displayName" : "When both numbers are ${operation}",
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "step"
         }
       }, {
         "nodeType" : "STEP",
-        "name" : "the result is equals to 72.18",
+        "name" : "the result is equals to ${number.c}",
         "keyword" : "Then",
         "language" : "en",
         "source" : "src/test/resources/features/test6_propertySubstitution.feature[10,3]",
-        "displayName" : "Then the result is equals to 72.18",
+        "displayName" : "Then the result is equals to ${number.c}",
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "step"

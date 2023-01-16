@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import iti.kukumo.api.datatypes.Argument;
 import iti.kukumo.api.plan.PlanNode;
 
 
@@ -24,7 +25,7 @@ public class StepBackendData {
     private final Locale dataLocale;
     private final RunnableStep runnableStep;
     private final Matcher stepMatcher;
-    private final Map<String, Object> invokingArguments;
+    private final Map<String, Argument> invokingArguments;
     private final Exception exception;
 
 
@@ -34,7 +35,7 @@ public class StepBackendData {
         Locale dataLocale,
         RunnableStep runnableStep,
         Matcher stepMatcher,
-        Map<String, Object> invokingArguments
+        Map<String, Argument> invokingArguments
     ) {
         this.step = step;
         this.stepLocale = stepLocale;
@@ -82,7 +83,7 @@ public class StepBackendData {
     }
 
 
-    public Map<String, Object> invokingArguments() {
+    public Map<String, Argument> invokingArguments() {
         return invokingArguments;
     }
 

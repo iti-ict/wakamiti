@@ -222,6 +222,7 @@ public class ResourceLoader {
         Predicate<String> filenameFilter,
         Parser<T> parser
     ) {
+        path = Path.of(path).normalize().toString();
         if (path.endsWith("/") || path.endsWith("\\")) {
             path = path.substring(0, path.length() - 1);
         }
@@ -230,7 +231,7 @@ public class ResourceLoader {
             if (path.startsWith(CLASSPATH_PROTOCOL)) {
                 String classPath = path.replace(CLASSPATH_PROTOCOL, "");
                 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                String absoluteClassPath = classLoaderFolder(classLoader) + classPath;
+                String absoluteClassPath = new File(classLoaderFolder(classLoader) + classPath).getPath();
                 for (URI uri : loadFromClasspath(classPath, classLoader)) {
                     discoverResourcesInURI(
                         absoluteClassPath,

@@ -35,6 +35,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String BASE_URL = "rest.baseURL";
     public static final String CONTENT_TYPE = "rest.contentType";
     public static final String FAILURE_HTTP_CODE_THRESHOLD = "rest.httpCodeThreshold";
+    public static final String TIMEOUT = "rest.timeout";
     public static final String OAUTH2_URL = "rest.oauth2.url";
     public static final String OAUTH2_CLIENT_ID = "rest.oauth2.clientId";
     public static final String OAUTH2_CLIENT_SECRET = "rest.oauth2.clientSecret";
@@ -52,7 +53,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
             BASE_URL, "http://localhost:8080",
             CONTENT_TYPE, "JSON",
             FAILURE_HTTP_CODE_THRESHOLD, "500",
-            OAUTH2_CACHED, "false"
+            OAUTH2_CACHED, "false",
+            TIMEOUT, "60000"
     );
 
 
@@ -85,6 +87,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
                 .map(Matchers::lessThan)
                 .map(MatcherAssertion<Integer>::new)
                 .ifPresent(contributor::setFailureHttpCodeAssertion);
+        configuration.get(TIMEOUT, Integer.class)
+                .ifPresent(contributor::setTimeoutInMillis);
 
         Oauth2ProviderConfiguration oauth2ProviderConfiguration = contributor.oauth2ProviderConfiguration;
         configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2ProviderConfiguration::url);

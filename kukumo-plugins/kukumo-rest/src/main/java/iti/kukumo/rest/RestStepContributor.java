@@ -244,81 +244,96 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
 
     @Step("rest.execute.GET.query")
-    public void executeGetQuery() {
+    public Object executeGetQuery() {
         executeRequest(RequestSpecification::get);
+        return response();
     }
 
     @Step("rest.execute.GET.subject")
-    public void executeGetSubject() {
+    public Object executeGetSubject() {
         executeRequest(RequestSpecification::get);
+        return response();
     }
 
     @Step("rest.execute.DELETE.subject")
-    public void executeDeleteSubject() {
+    public Object executeDeleteSubject() {
         executeRequest(RequestSpecification::delete);
+        return response();
     }
 
     @Step("rest.execute.PUT.subject.from.document")
-    public void executePutSubjectUsingDocument(Document document) {
+    public Object executePutSubjectUsingDocument(Document document) {
         executeRequest(RequestSpecification::put, document.getContent());
+        return response();
     }
 
     @Step("rest.execute.PUT.subject.from.file")
-    public void executePutSubjectUsingFile(File file) {
+    public Object executePutSubjectUsingFile(File file) {
         assertFileExists(file);
         executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));
+        return response();
     }
 
     @Step("rest.execute.PUT.subject.empty")
-    public void executePutSubject() {
+    public Object executePutSubject() {
         executeRequest(RequestSpecification::put);
+        return response();
     }
 
     @Step("rest.execute.PATCH.subject.from.document")
-    public void executePatchSubjectUsingDocument(Document document) {
+    public Object executePatchSubjectUsingDocument(Document document) {
         executeRequest(RequestSpecification::patch, document.getContent());
+        return response();
     }
 
     @Step("rest.execute.PATCH.subject.from.file")
-    public void executePatchSubjectUsingFile(File file) {
+    public Object executePatchSubjectUsingFile(File file) {
         assertFileExists(file);
         executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
+        return response();
     }
 
     @Step("rest.execute.PATCH.subject.empty")
-    public void executePatchSubject() {
+    public Object executePatchSubject() {
         executeRequest(RequestSpecification::patch);
+        return response();
     }
 
     @Step("rest.execute.POST.subject.from.file")
-    public void executePostSubjectUsingFile(File file) {
+    public Object executePostSubjectUsingFile(File file) {
         assertFileExists(file);
         executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
+        return response();
     }
 
     @Step("rest.execute.POST.subject.from.document")
-    public void executePostSubjectUsingDocument(Document document) {
+    public Object executePostSubjectUsingDocument(Document document) {
         executeRequest(RequestSpecification::post, document.getContent());
+        return response();
     }
 
     @Step("rest.execute.POST.subject.empty")
-    public void executePostSubject() {
+    public Object executePostSubject() {
         executeRequest(RequestSpecification::post);
+        return response();
     }
 
     @Step("rest.execute.POST.data.from.document")
-    public void executePostDataUsingDocument(Document document) {
+    public Object executePostDataUsingDocument(Document document) {
         executeRequest(RequestSpecification::post, document.getContent());
+        return response();
     }
 
     @Step("rest.execute.POST.data.from.file")
-    public void executePostDataUsingFile(File file) {
+    public Object executePostDataUsingFile(File file) {
         executePostSubjectUsingFile(file);
+        return response();
     }
 
     @Step("rest.execute.POST.data.empty")
-    public void executePostData() {
+    public Object executePostData() {
         executeRequest(RequestSpecification::post);
+        return response();
     }
 
 

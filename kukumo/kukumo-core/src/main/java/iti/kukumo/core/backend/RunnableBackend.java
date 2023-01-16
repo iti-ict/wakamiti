@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 
 import imconfig.Configuration;
 import iti.kukumo.api.*;
+import iti.kukumo.api.datatypes.Argument;
 import iti.kukumo.api.model.ExecutionState;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeData;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.api.util.Either;
 import iti.kukumo.api.util.Pair;
@@ -47,6 +49,7 @@ public class RunnableBackend extends AbstractBackend {
     private final List<ThrowableRunnable> setUpOperations;
     private final List<ThrowableRunnable> tearDownOperations;
     private final Map<PlanNode, StepBackendData> stepBackendData;
+    private final List<Object> stepBackendResults;
     private final List<PlanNode> stepsWithErrors;
 
 
@@ -65,6 +68,7 @@ public class RunnableBackend extends AbstractBackend {
         this.tearDownOperations = tearDownOperations;
         this.clock = clock;
         this.stepBackendData = new HashMap<>();
+        this.stepBackendResults = new LinkedList<>();
         this.stepsWithErrors = new ArrayList<>();
     }
 
@@ -179,7 +183,7 @@ public class RunnableBackend extends AbstractBackend {
         );
         RunnableStep runnableStep = runnableStepData.key();
         Matcher stepMatcher = runnableStepData.value();
-        Map<String, Object> invokingArguments = buildInvokingArguments(
+        Map<String, Argument> invokingArguments = buildInvokingArguments(
             step,
             runnableStep,
             stepMatcher,
@@ -211,7 +215,10 @@ public class RunnableBackend extends AbstractBackend {
             if (stepBackend.exception() != null) {
                 throw stepBackend.exception();
             }
-            stepBackend.runnableStep().run(stepBackend.invokingArguments());
+            Map<String, Argument> arguments = stepBackend.invokingArguments();
+            step.arguments().addAll(arguments.values());
+            Object result = stepBackend.runnableStep().run(arguments);
+            stepBackendResults.add(result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e);
@@ -277,36 +284,43 @@ public class RunnableBackend extends AbstractBackend {
     }
 
 
-    protected Map<String, Object> buildInvokingArguments(
+    protected Map<String, Argument> buildInvokingArguments(
         PlanNode modelStep,
         RunnableStep runnableStep,
         Matcher stepMatcher,
         Locale locale
     ) {
-        Map<String, Object> invokingArguments = new HashMap<>();
+        Map<String, Argument> invokingArguments = new HashMap<>();
         for (Pair<String, String> definedArgument : runnableStep.getArguments()) {
             String argName = definedArgument.key();
             String argType = definedArgument.value();
-            String argValue = null;
             if (DATA_ARG_ALTERNATIVES.contains(argType)) {
+                PlanNodeData data = modelStep.data().orElseThrow(
+                        () -> new KukumoException("[{}] Incomplete step '{} {}': a {} was expected",
+                                modelStep.source(), modelStep.keyword(), modelStep.name(), argType
+                        ));
                 invokingArguments.put(
-                    argType,
-                    modelStep.data().orElseThrow(
-                        () -> new KukumoException(
-                            "[{}] Incomplete step '{} {}': a {} was expected",
-                            modelStep.source(), modelStep.keyword(), modelStep.name(), argType
-                        )
-                    )
+                        argType, new Argument() {
+                            @Override
+                            public Object doResolve() {
+                                return data.copyReplacingVariables(this::resolveForEach);
+                            }
+                        }
                 );
             } else {
-                argValue = stepMatcher.group(argName);
-                Object parsedValue = typeRegistry.getType(argType).parse(locale, argValue);
+                String argValue = stepMatcher.group(argName);
+                Argument parsedValue = Argument.of(argValue, value -> typeRegistry.getType(argType).parse(locale, value));
                 invokingArguments.put(argName, parsedValue);
             }
         }
         return invokingArguments;
     }
 
-
+    @Override
+    public List<Object> getResults() {
+        List<Object> results = super.getResults();
+        results.addAll(stepBackendResults);
+        return results;
+    }
 
 }

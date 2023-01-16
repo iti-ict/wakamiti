@@ -13,7 +13,7 @@ public interface KukumoAPI {
         return ServiceLoader.load(KukumoAPI.class).findFirst().orElseThrow();
     }
 
-
+    KukumoContributors contributors();
     ExtensionManager extensionManager();
     PlanSerializer planSerializer();
     ResourceLoader resourceLoader();

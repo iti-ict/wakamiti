@@ -19,6 +19,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static iti.kukumo.core.datatypes.KukumoCoreTypes.PROPERTY_REGEX;
 
 
 public class KukumoNumberDataType<T> extends KukumoDataTypeBase<T> {
@@ -102,6 +103,6 @@ public class KukumoNumberDataType<T> extends KukumoDataTypeBase<T> {
         if (includeDecimals) {
             pattern.append("\\" + symbols.getDecimalSeparator()).append("\\d+?");
         }
-        return pattern.toString();
+        return pattern + "|" + PROPERTY_REGEX;
     }
 }

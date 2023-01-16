@@ -38,7 +38,7 @@ public class KukumoVerifyMojoTest extends KukumoAbstractMojoTest {
 
         when(kukumo.createPlanFromConfiguration(any(Configuration.class)))
                 .then((a) -> {
-                    currentConfiguration = a.getArgument(0, Configuration.class);
+                    currentConfiguration = a.getArgument(0);
                     return plan;
                 });
         when(kukumo.executePlan(any(), any())).thenReturn(plan);

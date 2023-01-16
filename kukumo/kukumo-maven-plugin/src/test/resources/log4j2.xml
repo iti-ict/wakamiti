@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<Configuration status="WARN">
+    <Properties>
+        <Property name="log4j.skipJansi">false</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="[%t] [%level] %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="iti.kukumo.logs" level="info"/>
+        <Logger name="iti.kukumo.test" level="trace"/>
+        <Logger name="iti.kukumo.core.backend.ExpressionMatcher" level="info"/>
+        <Logger name="iti.kukumo.core.backend.DefaultBackendFactory" level="info"/>
+    </Loggers>
+</Configuration>

@@ -10,10 +10,11 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 import iti.kukumo.core.DefaultKukumoAPI;
 import iti.kukumo.core.datatypes.KukumoCoreTypes;
 import iti.kukumo.core.datatypes.assertion.KukumoAssertTypes;
-import iti.kukumo.core.plan.CleanUpPlanTransformer;
 import iti.kukumo.core.gherkin.GherkinPlanBuilder;
 import iti.kukumo.core.gherkin.GherkinRedefinitionPlanTransformer;
 import iti.kukumo.core.gherkin.GherkinResourceType;
+import iti.kukumo.core.properties.GlobalPropertyEvaluator;
+import iti.kukumo.core.properties.StepPropertyEvaluator;
 
 open module kukumo.core {
 
@@ -36,16 +37,17 @@ open module kukumo.core {
     requires com.fasterxml.jackson.annotation;
     requires transitive gherkin.parser;
     requires net.harawata.appdirs;
-    requires org.codehaus.groovy;
     requires java.instrument;
     requires kukumo.api;
+    requires xmlbeans;
 
     provides KukumoAPI with DefaultKukumoAPI;
 
     provides ResourceType with GherkinResourceType;
     provides PlanBuilder with GherkinPlanBuilder;
-    provides PlanTransformer with GherkinRedefinitionPlanTransformer, CleanUpPlanTransformer;
+    provides PlanTransformer with GherkinRedefinitionPlanTransformer;
     provides DataTypeContributor with KukumoCoreTypes, KukumoAssertTypes;
+    provides PropertyEvaluator with GlobalPropertyEvaluator, StepPropertyEvaluator;
 
 
 }

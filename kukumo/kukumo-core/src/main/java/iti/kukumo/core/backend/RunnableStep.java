@@ -11,13 +11,10 @@ package iti.kukumo.core.backend;
 
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Matcher;
 
-import iti.kukumo.api.KukumoAPI;
+import iti.kukumo.api.datatypes.Argument;
 import iti.kukumo.api.util.Either;
 import iti.kukumo.api.util.Pair;
 import iti.kukumo.api.util.ResourceLoader;
@@ -26,11 +23,12 @@ import iti.kukumo.core.Kukumo;
 import iti.kukumo.api.KukumoDataTypeRegistry;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.plan.PlanNode;
-
+import org.slf4j.Logger;
 
 
 public class RunnableStep {
 
+    private static final Logger LOGGER = Kukumo.LOGGER;
     private final String definitionFile;
     private final String definitionKey;
     private final Map<Locale, String> translatedDefinitions = new HashMap<>();
@@ -93,7 +91,7 @@ public class RunnableStep {
     }
 
 
-    public void run(Map<String, Object> invokeArguments) {
+    public Object run(Map<String, Argument> invokeArguments) {
 
         boolean error = false;
         // re-arrange argument order
@@ -103,7 +101,7 @@ public class RunnableStep {
         Object[] argumentArray = new Object[this.arguments.size()];
         for (int i = 0; i < argumentArray.length; i++) {
             Pair<String, String> argument = this.arguments.get(i);
-            Object invokeArgument = invokeArguments.get(argument.key());
+            Object invokeArgument = invokeArguments.get(argument.key()).resolve();
             if (invokeArgument == null) {
                 error = true;
                 break;
@@ -119,7 +117,10 @@ public class RunnableStep {
             );
         } else {
             try {
-                executor.run(argumentArray);
+                LOGGER.trace("Calling step [{}] with {}", this.definitionKey, Arrays.deepToString(argumentArray));
+                Object result = executor.run(argumentArray);
+                LOGGER.trace("Returning [{}]", result);
+                return result;
             } catch (InvocationTargetException e) {
                 var originalException = e.getTargetException();
                 if (originalException instanceof AssertionError) {

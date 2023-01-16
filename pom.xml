@@ -68,7 +68,7 @@
 
     <properties>
         <!-- kukumo version -->
-        <revision>1.4.1</revision>
+        <revision>1.5.0</revision>
 
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -99,8 +99,6 @@
         <!-- sonar cloud -->
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-
     </properties>
 
 

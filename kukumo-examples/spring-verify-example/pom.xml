@@ -144,7 +144,7 @@
                     <plugin>
                         <groupId>es.iti.kukumo</groupId>
                         <artifactId>kukumo-maven-plugin</artifactId>
-                        <version>${revision}</version>
+<!--                        <version>${revision}</version>-->
                         <executions>
                             <!-- Executed at integration-test phase -->
                             <execution>
@@ -173,7 +173,7 @@
                             <dependency>
                                 <groupId>es.iti.kukumo</groupId>
                                 <artifactId>kukumo-rest</artifactId>
-                                <version>1.5.0</version>
+                                <version>1.5.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.h2database</groupId>

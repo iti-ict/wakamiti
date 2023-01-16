@@ -4,29 +4,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [1.4.3] 2022-11-10
 
-## Fixed
+## [1.5.0] 2023-01-16
+### Modified
+- Externalize groovy classloader to a new plugin
+### Added
+- Property evaluators to read global properties and the results of previous steps [issue: #66]
+
+
+## [1.4.3] 2022-11-10
+### Fixed
 - Text assertion
 
 
 ## [1.4.2] 2022-09-21
-
 ### Fixed
 - Configure logger for Maven Fetcher after setting the configuration to avoid warning messages
 
 
 ## [1.4.1] 2022-09-12
 ### Fixed
-- https://github.com/iti-ict/kukumo/issues/48
+- Update dependency `io.github.luiinge:maven-fetcher` version `1.5.0` to `1.5.1` [issue: #48]
 
 
 ## [1.3.2] 2022-05-03
 ### Modified
 - Bumped vulnerable dependency `commons-io:commons-io` version `2.6` to `2.11.0`
 - Bumped vulnerable dependency `junit:junit` version `4.13-rc-2` to `4.13.2`
-- Bumped vulnerable dependency `com.fasterxml.jackson.core:jackson-databind` version `2.10.1` to `2.13.2.2
+- Bumped vulnerable dependency `com.fasterxml.jackson.core:jackson-databind` version `2.10.1` to `2.13.2.2`
 - Bumped vulnerable dependency `org.apache.logging.log4j:log4j-core` version `2.13.0` to `2.17.2`
+
 
 ## [1.3.0] 2022-01-26
 ### Added
@@ -40,10 +47,12 @@ and this project adheres to [Semantic Versioning][2].
 - Now `RunnableBackend.runStep` catch `Throwable` errors instead of `Exception`.
 - Now cli command configuration overwrite file configuration.
 
+
 ## [1.2.0] 2021-09-28
 ### Added
 - New property `childrenResults` in `PlanNodeSnapshot` that collects
 the result count of direct children.
+
 
 ## [1.1.0] 2021-09-17
 ### Added
@@ -62,8 +71,8 @@ using `Matcher` from the *Hamcrest* library. The `MatcherAssertion` class allows
 ### Fixed
 - The contributor `ConfigContributor` now extends from `Contributor` (as it should do originally)
   
-## [1.0.0] 2019-04-03
 
+## [1.0.0] 2019-04-03
 Initial release.  
 
 

@@ -11,6 +11,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- inherited configuration -->
+    <parent>
+        <groupId>es.iti.kukumo</groupId>
+        <artifactId>kukumo-project</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <!-- coordinates -->
     <groupId>es.iti.commons</groupId>
@@ -21,14 +28,9 @@
     <name>gherkin-parser</name>
 
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <java.version>11</java.version>
-        <maven.compiler.version>3.8.0</maven.compiler.version>
-        <maven.compiler.release>11</maven.compiler.release>
-    </properties>
+<!--    <properties>-->
+<!--        <jackson-databind.version>2.14.0</jackson-databind.version>-->
+<!--    </properties>-->
 
 
     <dependencyManagement>
@@ -36,12 +38,13 @@
             <dependency>
                 <groupId>es.iti.kukumo</groupId>
                 <artifactId>kukumo-bom</artifactId>
-                <version>1.4.1</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <dependencies>
         <!--json -->
@@ -50,15 +53,7 @@
             <artifactId>jackson-databind</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
+
         <!-- junit -->
         <dependency>
             <groupId>junit</groupId>

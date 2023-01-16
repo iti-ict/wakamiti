@@ -6,44 +6,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [1.5.0] 2022-11-11
+## [1.5.1] 2023-01-16
+### Fixed
+- Step to set the contentType 
 
+
+## [1.5.0] 2022-11-11
 ### Added
 - Authentication token cache
 - Oauth2 authentication steps
 - Single header and parameter steps
 - Specific control name in attached file step
-
 ### Fixed
-- Helper compare in any order including lists
+- Helpers compare in any order, including lists [issue: #6]
 - Timeout interrupts http call when time exceeded
 
 
 ## [1.4.1] 2022-09-21
-
 ### Fixed
 - Bump version of `restassured` to avoid module incompatibility with `groovy-xml`
 
 
-
 ## [1.3.3] 2022-05-05
-
 ### Fixed
-- #6 : Comparador JSON no ignora el orden
-- #20 : Error cuando la ruta del servicio está parametrizada
-
+- Helpers compare in any order [issue: #6]
+- Parameterized service path [issue: #20]
 
 
 ## [1.3.0] 2022-01-27
-
 ### Added
 - Steps to validate responses against an schema (either JSON Schema or XML Schema)
 
 
-
-
 ## [1.2.0] 2021-10-21
-
 ### Modified
 - Version aligned with `kukumo-core:1.2.0`
 - New step to set headers in requests.
@@ -51,8 +46,8 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - Fixed JSON comparator when lists are present in STRICT_ANY_ORDER mode.
 
-## [1.1.0] 2021-09-17
 
+## [1.1.0] 2021-09-17
 ### Modified
 - Version aligned with `kukumo-core:1.1.0`
 ### Fixed
@@ -61,7 +56,6 @@ and this project adheres to [Semantic Versioning][2].
 
   
 ## [1.0.0] 2019-04-03
-
 Initial release.  
 
 

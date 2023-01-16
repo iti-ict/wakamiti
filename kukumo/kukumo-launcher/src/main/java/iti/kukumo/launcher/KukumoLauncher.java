@@ -57,19 +57,20 @@ public class KukumoLauncher {
             logger.debug("{}", arguments);
         }
 
-        if (arguments.isSshowContributionsEnabled()) {
-            logger().info("The available contributions are the following:");
-            logger().info("------------------------------------");
-            logger().info(new KukumoRunner(arguments).getContributions());
-            logger().info("------------------------------------");
-        }
-
-
         try {
             new KukumoLauncherFetcher(arguments).fetchAndUpdateClasspath();
-            boolean passed = new KukumoRunner(arguments).run();
+            KukumoRunner runner = new KukumoRunner(arguments);
+
+            if (arguments.isSshowContributionsEnabled()) {
+                logger().info("The available contributions are the following:");
+                logger().info("------------------------------------");
+                logger().info(runner.getContributions());
+                logger().info("------------------------------------");
+            }
+
+            boolean passed = runner.run();
             if (!passed)
-                System.exit(1);
+                System.exit(3);
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
             if (logger.isDebugEnabled()) {

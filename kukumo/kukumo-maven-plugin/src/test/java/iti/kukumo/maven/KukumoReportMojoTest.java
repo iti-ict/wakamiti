@@ -2,7 +2,6 @@ package iti.kukumo.maven;
 
 import imconfig.Configuration;
 import iti.kukumo.api.KukumoConfiguration;
-import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.Kukumo;
 import iti.kukumo.maven.utils.KukumoAbstractMojoTest;
 import iti.kukumo.maven.utils.ProjectStub;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -29,7 +27,7 @@ public class KukumoReportMojoTest extends KukumoAbstractMojoTest {
         super.setUp();
 
         kukumo = getKukumoMock();
-        doAnswer((a) -> currentConfiguration = a.getArgument(0, Configuration.class))
+        doAnswer((a) -> currentConfiguration = a.getArgument(0))
                 .when(kukumo).generateReports(any());
     }
 
