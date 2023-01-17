@@ -170,7 +170,7 @@ public class RestSupport {
         return map;
     }
 
-    protected Object response() {
+    protected Object parsedResponse() {
         Map<String, Object> result = Map.of(
                 "headers", response.headers().asList().stream().collect(Collectors.toMap(Header::getName, Header::getValue)),
                 "body", response.body().asString(),
