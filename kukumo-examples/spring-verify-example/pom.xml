@@ -144,7 +144,7 @@
                     <plugin>
                         <groupId>es.iti.kukumo</groupId>
                         <artifactId>kukumo-maven-plugin</artifactId>
-<!--                        <version>${revision}</version>-->
+                        <version>${revision}</version>
                         <executions>
                             <!-- Executed at integration-test phase -->
                             <execution>
