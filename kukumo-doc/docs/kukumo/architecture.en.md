@@ -467,3 +467,64 @@ is null or empty
 is not null or empty
 ```
 
+
+-------
+## Dynamic properties
+
+Wakamiti allows using dynamic properties to make easier the passing of information to the execution 
+though `${[property description]}` syntax.
+
+The `property description` will depend on the type of property you want to apply. By default, there are following:
+- Get the value of a global property, using the syntax `${[name]}`. For example: `${credential.password}`.
+- Get the result of a previous step, using the syntax `${[step number]#[xpath/jsonpath expression]`.
+  For example: `${2#$.body.items[0].id}`, this example will retrieve the result of step 2 (which is expected to be
+  a json) and the value of the given jsonpath expression will be retrieved. **Note**: The xpath/jsonpath expression is 
+  optional.
+
+Let's see a practical example:
+- We have the following yaml configuration:
+```yml
+wakamiti:
+   credentials:
+     username: pepe
+     password: 1234asdf
+```
+- We have the following scenario:
+```cucumber
+Scenario: Test scenario
+   Given the service use the oauth authentication credentials '${credentials.username}':'${credentials.password}'
+   When users are queried
+   Then a user identified by '${2#$.body.items[0].id}' exist in the database table USERS
+```
+
+On launch, the scenario would resolve as follows:
+```cucumber
+Scenario: Test scenario
+   Given the service use the oauth authentication credentials 'pepe':'1234asdf'
+   When users are queried
+   Then a user identified by '4' exist in the database table USERS
+```
+
+**Note**: We'll assume that the step `When users are queried` returns the following result:
+```json
+{
+   "headers": {
+     "content-type": "json/application",
+     "Connection": "Keep-alive"
+   },
+   "body": {
+     "items": [
+       {
+         "id": 4,
+         "name": "Pepe"
+       },
+       {
+         "id": 7,
+         "name": "Anna"
+       }
+     ]
+   },
+   "statusCode": 200,
+   "statusLine": "HTTP/1.1 200 OK"
+}
+```

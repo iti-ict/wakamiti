@@ -19,6 +19,7 @@ Wakamiti buscará el fichero con el nombre `kukumo.yaml`.
 - [`kukumo.report.generation`](#kukumoreportgeneration)
 - [`kukumo.redefinition.definitionTag`](#kukumoredefinitiondefinitiontag)
 - [`kukumo.redefinition.implementationTag`](#kukumoredefinitionimplementationtag)
+- [`kukumo.properties.hidden`]()
 - [`kukumo.log.path`](#kukumologpath)
 - [`kukumo.log.level`](#kukumologlevel)
 - [`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories)
@@ -152,6 +153,21 @@ Ejemplo:
 kukumo:
   redefinition:
     implementationTag: impl
+```
+
+---
+### `kukumo.properties.hidden`
+
+Establece las [propiedades](#propiedades-din%C3%A1micas) que permanecerán ocultas en el informe de pruebas.
+
+Ejemplo:
+
+```yaml
+kukumo:
+  properties:
+    hidden: 
+      - token
+      - credentials.password
 ```
 
 ---
@@ -470,3 +486,63 @@ es nulo o está vacío
 no es nulo o está vacío
 ```
 
+-------
+## Propiedades dinámicas
+
+Wakamiti permite el uso de propiedades dinámicas con las que facilitar el paso de información a la ejecución de los 
+escenarios mediante la sintaxis `${[descripción de la propiedad]}`.
+
+La `descripción de la propiedad` dependerá del tipo de propiedad que se desea aplicar. Por defecto, exsisten las 
+siguientes:
+- Obtener el valor de una propiedad global, mediante la sintaxis `${[name]}`. Por ejemplo: `${credential.password}`.
+- Obtener el resultado de un paso anterior, mediante la sintaxis `${[número del paso]#[expresión xpath/jsonpath]`. 
+Por ejemplo: `${2#$.body.items[0].id}`, en este ejemplo se recuperará el resultado del paso 2 (el cual se espera que sea 
+un json) y se recuperará el valor de la expresión jsonpath indicada. **Nota**: la expresión xpath/jsonpath es opcional.
+
+Veamos un ejemplo práctico:
+- Tenemos la siguiente configuración yaml:
+```yml
+wakamiti:
+  credentials:
+    username: pepe
+    password: 1234asdf
+```
+- Tenemos el siguiente escenario:
+```cucumber
+Escenario: Escenario de prueba
+  Dado que el servicio usa autenticación oauth con las credenciales '${credentials.username}':'${credentials.password}'
+  Cuando se realiza la búsqueda de los usuarios
+  Entonces un usuario identificado por '${2#$.body.items[0].id}' existe en la tabla de BBDD USERS
+```
+
+Al lanzar, el escenario se resolvería de la siguiente manera:
+```cucumber
+Escenario: Escenario de prueba
+  Dado que el servicio usa autenticación oauth con las credenciales 'pepe':'1234asdf'
+  Cuando se realiza la búsqueda de los usuarios
+  Entonces un usuario identificado por '4' existe en la tabla de BBDD USERS
+```
+
+**Nota**: Supondremos que el paso `Cuando se realiza la búsqueda de los usuarios` nos devuelve el siguiente resultado:
+```json
+{
+  "headers": {
+    "Content-type": "json/application",
+    "Connection": "Keep-alive"
+  },
+  "body": {
+    "items": [
+      {
+        "id": 4,
+        "name": "Pepe"
+      },
+      {
+        "id": 7,
+        "name": "Ana"
+      }
+    ]
+  },
+  "statusCode": 200,
+  "statusLine": "HTTP/1.1 200 OK"
+}
+```
