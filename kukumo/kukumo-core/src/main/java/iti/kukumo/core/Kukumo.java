@@ -359,6 +359,10 @@ public class Kukumo {
 
 
     public void writeOutputFile(PlanNode plan, Configuration configuration) {
+        List<String> toHide = configuration.getList(KukumoConfiguration.PROPERTIES_HIDDEN, String.class)
+                .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
+                .collect(Collectors.toList());
+        plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
 
     	if (!configuration
 			.get(KukumoConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
