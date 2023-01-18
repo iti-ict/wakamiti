@@ -23,7 +23,7 @@ public class GroovyHelper {
             binding.setVariable("ctx", KukumoStepRunContext.current());
             GroovyShell shell = new GroovyShell(binding);
             return shell.evaluate(script);
-        } catch (Throwable e) {
+        } catch (Throwable e) { //NOSONAR
             throw new KukumoException("Error executing groovy script", e);
         }
     }

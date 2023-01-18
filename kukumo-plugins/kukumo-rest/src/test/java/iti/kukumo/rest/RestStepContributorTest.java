@@ -107,8 +107,9 @@ public class RestStepContributorTest {
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(JsonUtils.json(Map.of(
+        assertThat(result)
+                .isNotNull()
+                .isEqualTo(JsonUtils.json(Map.of(
                 "statusCode", 200,
                 "headers", Map.of(
                         "content-length", "0",

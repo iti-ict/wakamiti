@@ -43,7 +43,7 @@ public class GlobalPropertyEvaluator extends PropertyEvaluator implements Config
 
     @Override
     public Pattern pattern() {
-        return Pattern.compile("\\$\\{(?<name>[\\w\\d-]+(\\.[\\w\\d-]+)*)\\}");
+        return Pattern.compile("\\$\\{(?<name>[\\w\\d-]+(\\.[\\w\\d-]+)*)\\}"); //NOSONAR
     }
 
     @Override

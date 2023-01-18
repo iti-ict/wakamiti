@@ -33,7 +33,8 @@ public class Argument {
     }
 
     public final Object resolve() {
-        return (evaluated = doResolve());
+        evaluated = doResolve();
+        return evaluated;
     }
 
     protected Object doResolve() {
