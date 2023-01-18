@@ -13,6 +13,6 @@ package iti.kukumo.api.util;
 @FunctionalInterface
 public interface ThrowableRunnable {
 
-    void run(Object... arguments) throws Exception;
+    Object run(Object... arguments) throws Exception;
 
 }

@@ -29,11 +29,14 @@ import iti.kukumo.api.extensions.DataTypeContributor;
 @Extension(provider = "iti.kukumo", name = "core-types", version = "1.1")
 public class KukumoCoreTypes implements DataTypeContributor {
 
+    public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
-    public static final String WORD_REGEX = "[\\w-]+";
-    public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+";
+    public static final String WORD_REGEX = "[\\w-]+|[\\w-]*" + PROPERTY_REGEX + "[\\w-]*";
+    public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+|[\\w|\\d_]*" + PROPERTY_REGEX + "[\\w|\\d_]*";
     public static final String FILE_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
-    public static final String URL_REGEX = "(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]*)?";
+    public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")" +
+            "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
+            + PROPERTY_REGEX;
 
     private static final KukumoDataTypeBase.LocaleHintProvider PATH_HINT = locale -> Arrays
         .asList("<path/file>");
@@ -99,11 +102,11 @@ public class KukumoCoreTypes implements DataTypeContributor {
             KukumoNumberDataType.createFromNumber("long", Long.class, false, Number::longValue)
         );
         types.add(
-            KukumoNumberDataType.createFromBigDecimal(
+            KukumoNumberDataType.createFromNumber(
                 "biginteger",
                 BigInteger.class,
-                true,
-                BigDecimal::toBigInteger
+                false,
+                x -> BigInteger.valueOf(x.longValue())
             )
         );
         types.add(

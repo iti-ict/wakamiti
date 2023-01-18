@@ -15,6 +15,8 @@ import iti.kukumo.api.annotations.TearDown;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +60,19 @@ public interface Backend {
      */
     KukumoDataTypeRegistry getTypeRegistry();
 
+
+    default List<Object> getResults() {
+        return new LinkedList<>() {
+            @Override
+            public Object get(int index) {
+                try {
+                    return super.get(index);
+                } catch (IndexOutOfBoundsException e) {
+                    return null;
+                }
+            }
+        };
+    }
 
 
     /**

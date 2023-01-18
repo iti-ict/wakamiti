@@ -132,6 +132,9 @@ public class Kukumo {
             discoveryPaths = Arrays.asList(".");
         }
 
+        loadClasses(discoveryPaths)
+                .forEach(c -> LOGGER.info("Class [{}] loaded", c));
+
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
         if (resourceTypeNames.isEmpty()) {
             throw new KukumoException("No resource types configured\nConfiguration was:\n{}",configuration);
@@ -212,8 +215,12 @@ public class Kukumo {
         }
     }
 
-
-
+    private Stream<? extends Class<?>> loadClasses(
+            List<String> discoveryPaths
+    ) {
+        return contributors.allLoaderContributors()
+                .flatMap(c -> c.load(discoveryPaths));
+    }
 
     private Optional<PlanNode> createPlanForResourceType(
         String resourceTypeName,
@@ -352,6 +359,10 @@ public class Kukumo {
 
 
     public void writeOutputFile(PlanNode plan, Configuration configuration) {
+        List<String> toHide = configuration.getList(KukumoConfiguration.PROPERTIES_HIDDEN, String.class)
+                .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
+                .collect(Collectors.toList());
+        plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
 
     	if (!configuration
 			.get(KukumoConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)

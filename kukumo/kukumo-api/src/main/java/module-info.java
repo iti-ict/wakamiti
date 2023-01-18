@@ -20,7 +20,13 @@ module kukumo.api {
     requires org.hamcrest;
     requires slf4jansi;
     requires java.instrument;
+    requires java.xml;
+    requires xmlbeans;
+    requires com.fasterxml.jackson.databind;
+    requires json.path;
+    requires commons.beanutils;
 
+    uses PropertyEvaluator;
     uses KukumoAPI;
     uses ResourceType;
     uses ConfigContributor;
@@ -30,6 +36,7 @@ module kukumo.api {
     uses PlanTransformer;
     uses Reporter;
     uses StepContributor;
+    uses LoaderContributor;
 
     provides ConfigContributor with KukumoConfiguration;
 

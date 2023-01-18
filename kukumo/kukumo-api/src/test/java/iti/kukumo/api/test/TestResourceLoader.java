@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -58,9 +59,9 @@ public class TestResourceLoader {
     }
 
 
-    private void assertFile(Resource resource, String relativePath) {
-        assertEquals(resource.relativePath(),relativePath);
-        assertTrue(resource.absolutePath().endsWith("discovery/"+relativePath));
+    private void assertFile(Resource<?> resource, String relativePath) {
+        assertEquals(resource.relativePath(), new File(relativePath).getPath());
+        assertTrue(resource.absolutePath().endsWith(new File("discovery/" + relativePath).getPath()));
 
     }
 

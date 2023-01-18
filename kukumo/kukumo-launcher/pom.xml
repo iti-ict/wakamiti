@@ -21,7 +21,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-launcher</artifactId>
-    <version>1.4.1</version>
+<!--    <version>${revision}</version>-->
 
     <!-- additional information -->
     <name>Kukumo::Launcher</name>
@@ -89,6 +89,11 @@
             <artifactId>commons-cli</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

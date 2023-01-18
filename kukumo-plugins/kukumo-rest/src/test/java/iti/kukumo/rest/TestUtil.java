@@ -194,7 +194,7 @@ public class TestUtil {
                         client.when(request()
                                         .withPath("/" + p)
                                         .withHeaders(
-                                                header("Accept", ".*" + mimeType + ".*")
+                                                header("Content-type", ".*" + mimeType + ".*")
                                         )
                                 )
                                 .respond(response()
@@ -224,7 +224,7 @@ public class TestUtil {
                     client.when(request()
                                     .withPath(path)
                                     .withHeaders(
-                                            header("Accept", ".*" + mimeType + ".*")
+                                            header("Content-type", ".*" + mimeType + ".*")
                                     )
                             )
                             .respond(response()
@@ -241,7 +241,7 @@ public class TestUtil {
                             client.when(request()
                                             .withPath(path + "/" + key)
                                             .withHeaders(
-                                                    header("Accept", ".*" + mimeType + ".*")
+                                                    header("Content-type", ".*" + mimeType + ".*")
                                             )
                                     )
                                     .respond(response()

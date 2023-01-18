@@ -44,8 +44,8 @@ public class XMLHelper extends JSONHelper implements ContentTypeHelper {
             // to be compliant, completely disable DOCTYPE declaration:
             schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             // or prohibit the use of all protocols by external entities:
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+//            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         } catch (Exception e) {
             throw new KukumoException(e);
         }

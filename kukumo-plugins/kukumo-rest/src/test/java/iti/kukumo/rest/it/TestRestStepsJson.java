@@ -15,6 +15,7 @@ import imconfig.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.core.gherkin.GherkinResourceType;
 import iti.kukumo.core.junit.KukumoJUnitRunner;
+import iti.kukumo.rest.RestConfigContributor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -31,7 +32,8 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @AnnotatedConfiguration({
         @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
         @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features/en/test-rest-json.feature"),
-        @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json")
+        @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json"),
+        @Property(key = RestConfigContributor.TIMEOUT, value = "5000")
 })
 @RunWith(KukumoJUnitRunner.class)
 public class TestRestStepsJson {

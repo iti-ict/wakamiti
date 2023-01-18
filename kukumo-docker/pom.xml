@@ -75,6 +75,10 @@
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-cucumber-exporter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-groovy</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

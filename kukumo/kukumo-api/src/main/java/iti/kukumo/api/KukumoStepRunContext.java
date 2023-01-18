@@ -74,4 +74,8 @@ public class KukumoStepRunContext {
         return backend.getTypeRegistry();
     }
 
+    public Backend backend() {
+        return this.backend;
+    }
+
 }

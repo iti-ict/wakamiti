@@ -11,10 +11,11 @@ package iti.kukumo.api.plan;
 
 
 
-
+import iti.kukumo.api.datatypes.Argument;
 import iti.kukumo.api.model.ExecutableTreeNode;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 
 public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
@@ -30,6 +31,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     String name;
     String displayName;
     Optional<PlanNodeData> data;
+    List<Argument> arguments;
 
 
     public PlanNode(NodeType nodeType, List<PlanNode> children) {
@@ -45,6 +47,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         name = null;
         displayName = null;
         data = Optional.empty();
+        arguments = new LinkedList<>();
     }
 
 
@@ -97,6 +100,9 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         return data;
     }
 
+    public List<Argument> arguments() {
+        return arguments;
+    }
 
     public String displayName() {
         return displayName;
@@ -116,4 +122,19 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         );
     }
 
+    public void resolveProperties(Predicate<Map.Entry<String, String>> filter) {
+        children().forEach(c -> c.resolveProperties(filter));
+
+        arguments.stream().map(Argument::evaluations)
+                .reduce((firstMap, secondMap) -> {
+                    secondMap.forEach(firstMap::putIfAbsent);
+                    return firstMap;
+                }).orElse(new HashMap<>())
+                .entrySet().stream()
+                .filter(filter)
+                .forEach(e -> {
+                    data = data.map(d -> d.copyReplacingVariables(v -> v.replace(e.getKey(), e.getValue())));
+                    name = name.replace(e.getKey(), e.getValue());
+                });
+    }
 }

@@ -42,6 +42,9 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
      */
     public static final String NON_REGISTERED_STEP_PROVIDERS = "nonRegisteredStepProviders";
 
+    /** List of hidden properties values in output file */
+    public static final String PROPERTIES_HIDDEN = "properties.hidden";
+
     /** Check if generate output file */
     public static final String GENERATE_OUTPUT_FILE = "generateOutputFile";
 

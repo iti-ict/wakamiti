@@ -163,8 +163,8 @@ public class DefaultBackendFactory implements BackendFactory {
             throw new KukumoException("Cannot build backend without step contributors");
         }
 
-        stepContributors
-            .forEach(stepContributor -> contributors.configure(stepContributor, configuration));
+        Kukumo.contributors().propertyResolvers(configuration);
+
         Kukumo.contributors().addStepContributors(stepContributors);
         return stepContributors;
     }

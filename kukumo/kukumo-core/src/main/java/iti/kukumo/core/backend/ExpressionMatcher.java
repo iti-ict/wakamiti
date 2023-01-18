@@ -143,7 +143,7 @@ public class ExpressionMatcher {
     protected static String regexFinalAdjustments(String computingRegex) {
         String regex = computingRegex;
         regex = regex.replace(" $", "$");
-        regex = regex.replace("$", "\\s*$");
+        regex = regex.replace("((?!\\).)$", "\1\\s*$");
         return regex;
     }
 

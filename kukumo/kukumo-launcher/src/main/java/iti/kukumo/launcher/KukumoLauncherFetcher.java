@@ -10,17 +10,16 @@
 package iti.kukumo.launcher;
 
 
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
 import imconfig.Configuration;
 import iti.kukumo.core.Kukumo;
 import iti.kukumo.core.KukumoFetcher;
 import net.harawata.appdirs.AppDirsFactory;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class KukumoLauncherFetcher extends KukumoFetcher {
@@ -52,9 +51,7 @@ public class KukumoLauncherFetcher extends KukumoFetcher {
 
 
     public List<Path> fetchAndUpdateClasspath() throws URISyntaxException {
-        List<Path> modules = super.fetch(modulesToFetch(), arguments.mustClean());
-        super.loadGroovyClasses();
-        return modules;
+        return super.fetch(modulesToFetch(), arguments.mustClean());
     }
 
 
