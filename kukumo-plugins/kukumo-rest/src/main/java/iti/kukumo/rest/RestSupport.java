@@ -44,7 +44,6 @@ public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
     public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
-    protected static final String GRANT_TYPE_PARAM = "grant_type";
     protected static Map<List<Object>, String> cachedToken = new HashMap<>();
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
             .extensionManager()

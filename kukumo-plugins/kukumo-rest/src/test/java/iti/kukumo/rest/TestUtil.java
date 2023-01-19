@@ -252,6 +252,9 @@ public class TestUtil {
                         }
                     }
                 });
+
+        client.when(request().withPath("/bad"))
+                .respond(response().withStatusCode(HttpStatusCode.BAD_REQUEST_400.code()));
     }
 
     private static List<File> listFiles(final File folder) throws IOException {

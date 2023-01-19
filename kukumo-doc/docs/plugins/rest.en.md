@@ -497,19 +497,31 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 ```
 the service use the oauth authentication credentials {username}:{password}
 ```
+```
+the service use the oauth authentication credentials {username}:{password} with the following parameters:
+```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the 
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)), 
 using the indicated credentials, for the following requests.
 
+Additional parameters supported by `Oauth` can also be added using a table.
+
 ##### Parameters:
-| Name       | Wakamiti type | Description  |
-|------------|---------------|--------------|
-| `username` | `text`        | The username |
-| `password` | `text`        | The password |
+| Name       | Wakamiti type | Description                             |
+|------------|---------------|-----------------------------------------|
+| `username` | `text`        | The username                            |
+| `password` | `text`        | The password                            |
+|            | `table`       | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
   Given the service use the oauth authentication credentials 'us1532':'xxxxx'
+```
+
+```gherkin
+  Given the service use the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---
@@ -517,13 +529,29 @@ using the indicated credentials, for the following requests.
 ```
 the service use the oauth authentication
 ```
+```
+the service use the oauth authentication with the following parameters:
+```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
 using client data, for the following requests.
 
+Additional parameters supported by `Oauth` can also be added using a table.
+
+##### Parameters:
+| Name       | Wakamiti type | Description                             |
+|------------|---------------|-----------------------------------------|
+|            | `table`       | A table with `name` and `value` columns |
+
 ##### Examples:
 ```gherkin
   Given the service use the oauth authentication
+```
+
+```gherkin
+  Given the service use the oauth authentication with the following parameters:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---
@@ -531,18 +559,29 @@ using client data, for the following requests.
 ```
 the service use the oauth authentication authorization code {code}
 ```
+```
+the service use the oauth authentication authorization code {code} with the following parameters:
+```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
 using the indicated code, for the following requests.
 
+Additional parameters supported by `Oauth` can also be added using a table.
+
 ##### Parameters:
-| Name   | Wakamiti type | Description         |
-|--------|---------------|---------------------|
-| `code` | `text`        | Authentication code |
+| Name   | Wakamiti type | Description                             |
+|--------|---------------|-----------------------------------------|
+| `code` | `text`        | Authentication code                     |
+|        | `table`       | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
   Given the service use the oauth authentication authorization code 'euyh29830'
+```
+```gherkin
+  Given the service use the oauth authentication authorization code 'euyh29830' with the following parameters:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---
@@ -550,18 +589,30 @@ using the indicated code, for the following requests.
 ```
 the service use the oauth authentication authorization code from the file {file}
 ```
+```
+the service use the oauth authentication authorization code from the file {file} with the following parameters:
+```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
 using the code from file, for the following requests.
 
+Additional parameters supported by `Oauth` can also be added using a table.
+
 ##### Parameters:
-| Name   | Wakamiti type | Description                   |
-|--------|---------------|-------------------------------|
-| `file` | `file`        | File with authentication code |
+| Name   | Wakamiti type | Description                             |
+|--------|---------------|-----------------------------------------|
+| `file` | `file`        | File with authentication code           |
+|        | `table`       | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
   Given the service use the oauth authentication authorization code from the file 'code.txt'
+```
+
+```gherkin
+  Given the service use the oauth authentication authorization code from the file 'code.txt' with the following parameters:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---

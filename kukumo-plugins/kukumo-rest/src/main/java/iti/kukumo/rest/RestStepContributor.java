@@ -36,6 +36,10 @@ import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
+    private static final String GRANT_TYPE_PARAM = "grant_type";
+    private static final String USERNAME_PARAM = "username";
+    private static final String PASSWORD_PARAM = "password";
+    
 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
@@ -157,14 +161,25 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
         String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, "password")
-                        .formParam("username", username)
-                        .formParam("password", password),
+                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
+                        .formParam(USERNAME_PARAM, username)
+                        .formParam(PASSWORD_PARAM, password),
                 username, password
         );
         setBearerAuth(token);
     }
 
+    @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
+    public void setBearerAuthPassword(String username, String password, DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
+                        .formParam(USERNAME_PARAM, username)
+                        .formParam(PASSWORD_PARAM, password)
+                        .formParams(tableToMap(params)),
+                username, password
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
@@ -174,6 +189,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(token);
     }
 
+    @Step("rest.define.auth.bearer.client.parameters")
+    public void setBearerAuthClient(DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                .formParam(GRANT_TYPE_PARAM, "client_credentials")
+                .formParams(tableToMap(params))
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.code")
     public void setBearerAuthCode(String code) {
@@ -185,11 +208,27 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(token);
     }
 
+    @Step("rest.define.auth.bearer.code.parameters")
+    public void setBearerAuthCode(String code, DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam(GRANT_TYPE_PARAM, "authorization_code")
+                        .formParam("code", code)
+                        .formParams(tableToMap(params)),
+                code
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.code.file")
     public void setBearerAuthCodeFile(File file) {
         assertFileExists(file);
         setBearerAuthCode(resourceLoader.readFileAsString(file).trim());
+    }
+
+    @Step("rest.define.auth.bearer.code.file.parameters")
+    public void setBearerAuthCodeFile(File file, DataTable params) {
+        assertFileExists(file);
+        setBearerAuthCode(resourceLoader.readFileAsString(file).trim(), params);
     }
 
 
