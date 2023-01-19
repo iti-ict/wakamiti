@@ -27,7 +27,6 @@ import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Map;
 import java.util.Optional;
 
 import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
@@ -37,6 +36,10 @@ import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
+    private static final String GRANT_TYPE_PARAM = "grant_type";
+    private static final String USERNAME_PARAM = "username";
+    private static final String PASSWORD_PARAM = "password";
+    
 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
@@ -158,9 +161,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
         String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, "password")
-                        .formParam("username", username)
-                        .formParam("password", password),
+                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
+                        .formParam(USERNAME_PARAM, username)
+                        .formParam(PASSWORD_PARAM, password),
                 username, password
         );
         setBearerAuth(token);
@@ -169,9 +172,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
         String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, "password")
-                        .formParam("username", username)
-                        .formParam("password", password)
+                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
+                        .formParam(USERNAME_PARAM, username)
+                        .formParam(PASSWORD_PARAM, password)
                         .formParams(tableToMap(params)),
                 username, password
         );
