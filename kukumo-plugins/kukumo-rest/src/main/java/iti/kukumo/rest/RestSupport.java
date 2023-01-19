@@ -172,7 +172,8 @@ public class RestSupport {
 
     protected Object parsedResponse() {
         Map<String, Object> result = Map.of(
-                "headers", response.headers().asList().stream().collect(Collectors.toMap(Header::getName, Header::getValue)),
+                "headers", response.headers().asList().stream()
+                        .collect(Collectors.toMap(Header::getName, Header::getValue, this::collectIfDuplicated)),
                 "body", response.body().asString(),
                 "statusCode", response.statusCode(),
                 "statusLine", response.statusLine()
@@ -180,6 +181,16 @@ public class RestSupport {
 
         return ContentType.XML.matches(response.contentType()) ? XmlUtils.xml("response", result)
                 : JsonUtils.json(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object collectIfDuplicated(Object oldObj, Object newObj) {
+        if (oldObj instanceof List) {
+            ((List<Object>) oldObj).add(newObj);
+        } else {
+            oldObj = new LinkedList<>(List.of(oldObj, newObj));
+        }
+        return oldObj;
     }
 
     protected ContentTypeHelper contentTypeHelperForResponse() {

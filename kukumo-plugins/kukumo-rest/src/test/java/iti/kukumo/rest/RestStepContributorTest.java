@@ -27,6 +27,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -95,6 +96,11 @@ public class RestStepContributorTest {
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
+                        .withHeaders(
+                                header("vary", "Origin"),
+                                header("vary", "Access-Control-Request-Method"),
+                                header("vary", "Access-Control-Request-Headers")
+                        )
         );
 
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
@@ -110,15 +116,19 @@ public class RestStepContributorTest {
         assertThat(result)
                 .isNotNull()
                 .isEqualTo(JsonUtils.json(Map.of(
-                "statusCode", 200,
-                "headers", Map.of(
-                        "content-length", "0",
-                        "content-type", MediaType.APPLICATION_JSON.toString(),
-                        "connection", "keep-alive"
-                ),
-                "body", "",
-                "statusLine", "HTTP/1.1 200 OK"
-        )));
+                        "statusCode", 200,
+                        "headers", Map.of(
+                                "content-length", "0",
+                                "connection", "keep-alive",
+                                "vary", List.of(
+                                        "Origin",
+                                        "Access-Control-Request-Method",
+                                        "Access-Control-Request-Headers"
+                                )
+                        ),
+                        "body", "",
+                        "statusLine", "HTTP/1.1 200 OK"
+                )));
     }
 
     @Test
