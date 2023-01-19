@@ -142,3 +142,15 @@ Feature: REST Test Feature
       And the response contains the file 'src/test/resources/data/vegetables_user1.json'
       And the text response header connection is 'keep-alive'
       And the integer response header content-length is less than 150
+
+
+  Scenario: Not Found
+    Given the REST service '/other'
+    When the subject is queried
+    Then the response HTTP code is 404
+
+
+  Scenario: Bad request
+    Given the REST service '/bad'
+    When the subject is queried
+    Then the response HTTP code is 400

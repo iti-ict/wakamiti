@@ -508,19 +508,31 @@ desde un fichero.
 ```
 (que) el servicio usa autenticación oauth con las credenciales {username}:{password}
 ```
+```
+(que) el servicio usa autenticación oauth con las credenciales {username}:{password} y los siguientes parámetros:
+```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente 
 del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid), 
 [clientSecret](#restoauth2clientsecret)), usando las credenciales indicadas, para las siguientes peticiones. 
 
+También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
+
 ##### Parámetros:
-| Nombre     | Wakamiti type | Descripción       |
-|------------|---------------|-------------------|
-| `username` | `text`        | Nombre de usuario |
-| `password` | `text`        | Contraseña        |
+| Nombre     | Wakamiti type | Descripción                                   |
+|------------|---------------|-----------------------------------------------|
+| `username` | `text`        | Nombre de usuario                             |
+| `password` | `text`        | Contraseña                                    |
+|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 ##### Ejemplos:
 ```gherkin
   Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx'
+```
+
+```gherkin
+  Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx' y los siguientes parámetros:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---
@@ -528,9 +540,19 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 ```
 (que) el servicio usa autenticación oauth
 ```
+```
+(que) el servicio usa autenticación oauth con los siguientes parámetros:
+```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
 del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret)), usando los datos del cliente, para las siguientes peticiones.
+
+También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
+
+##### Parámetros:
+| Nombre     | Wakamiti type | Descripción                                   |
+|------------|---------------|-----------------------------------------------|
+|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 
 ##### Ejemplos:
@@ -538,23 +560,41 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
   Dado que el servicio usa autenticación oauth
 ```
 
+```gherkin
+  Dado que el servicio usa autenticación oauth con los siguientes parámetros:
+    | name  | value     |
+    | scope | something |
+```
+
 ---
 ### Definir autenticación oauth2 por código
 ```
 (que) el servicio usa autenticación oauth con el código de autorización {code}
 ```
+```
+(que) el servicio usa autenticación oauth con el código de autorización {code} y los siguientes parámetros:
+```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
 del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret)), usando el código indicado, para las siguientes peticiones.
 
+También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
+
 ##### Parámetros:
-| Nombre     | Wakamiti type | Descripción             |
-|------------|---------------|-------------------------|
-| `code`     | `text`        | Código de autenticación |
+| Nombre     | Wakamiti type | Descripción                                   |
+|------------|---------------|-----------------------------------------------|
+| `code`     | `text`        | Código de autenticación                       |
+|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 ##### Ejemplos:
 ```gherkin
   Dado que el servicio usa autenticación oauth con el código de autorización 'euyh29830'
+```
+
+```gherkin
+  Dado que el servicio usa autenticación oauth con el código de autorización 'euyh29830' y los siguientes parámetros:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---
@@ -562,18 +602,30 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 ```
 (que) el servicio usa autenticación oauth con el código de autorización del fichero {file}
 ```
+```
+(que) el servicio usa autenticación oauth con el código de autorización del fichero {file} y los siguientes parámetros:
+```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
 del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret)), usando el código indicado en el fichero, para las siguientes peticiones.
 
+También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
+
 ##### Parámetros:
-| Nombre     | Wakamiti type | Descripción                            |
-|------------|---------------|----------------------------------------|
-| `file`     | `file`        | Fichero con el código de autenticación |
+| Nombre     | Wakamiti type | Descripción                                   |
+|------------|---------------|-----------------------------------------------|
+| `file`     | `file`        | Fichero con el código de autenticación        |
+|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 ##### Ejemplos:
 ```gherkin
   Dado que el servicio usa autenticación oauth con el código de autorización del fichero 'code.txt'
+```
+
+```gherkin
+  Dado que el servicio usa autenticación oauth con el código de autorización del fichero 'code.txt' y los siguientes parámetros:
+    | name  | value     |
+    | scope | something |
 ```
 
 ---

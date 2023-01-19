@@ -411,6 +411,39 @@ public class RestStepContributorTest {
     }
 
     @Test
+    public void testSetBearerAuthClientWhenScopeWithSuccess() throws MalformedURLException {
+        // prepare
+        String token = "1234567890";
+
+        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
+        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+
+        mockServer(
+                request()
+                        .withPath("/token")
+                        .withBody(
+                                params(
+                                        param("grant_type", "client_credentials"),
+                                        param("scope", "something")
+                                )
+                        )
+                ,
+                response(json(map("access_token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setBearerAuthClient(new DataTable(new String[][]{
+                {"name", "value"}, { "scope", "something" }
+        }));
+
+        // check
+        verify(contributor).setBearerAuth(token);
+    }
+
+    @Test
     public void testSetBearerAuthClientWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
         String token = "1234567890";
@@ -470,6 +503,40 @@ public class RestStepContributorTest {
 
         // act
         contributor.setBearerAuthCodeFile(file(TOKEN_PATH));
+
+        // check
+        verify(contributor).setBearerAuth(token);
+    }
+
+    @Test
+    public void testSetBearerAuthCodeWhenScopeWithSuccess() throws MalformedURLException {
+        // prepare
+        String token = "1234567890";
+
+        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
+        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+
+        mockServer(
+                request()
+                        .withPath("/token")
+                        .withBody(
+                                params(
+                                        param("grant_type", "authorization_code"),
+                                        param("code", token),
+                                        param("scope", "something")
+                                )
+                        )
+                ,
+                response(json(map("access_token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setBearerAuthCodeFile(file(TOKEN_PATH), new DataTable(new String[][]{
+                {"name", "value"}, { "scope", "something" }
+        }));
 
         // check
         verify(contributor).setBearerAuth(token);
@@ -536,6 +603,41 @@ public class RestStepContributorTest {
 
         // act
         contributor.setBearerAuthPassword("username", "password");
+
+        // check
+        verify(contributor).setBearerAuth(token);
+    }
+
+    @Test
+    public void testSetBearerAuthPasswordWhenScopeWithSuccess() throws MalformedURLException {
+        // prepare
+        String token = "1234567890";
+
+        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
+        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+
+        mockServer(
+                request()
+                        .withPath("/token")
+                        .withBody(
+                                params(
+                                        param("grant_type", "password"),
+                                        param("username", "username"),
+                                        param("password", "password"),
+                                        param("scope", "something")
+                                )
+                        )
+                ,
+                response(json(map("access_token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setBearerAuthPassword("username", "password", new DataTable(new String[][]{
+                {"name", "value"}, { "scope", "something" }
+        }));
 
         // check
         verify(contributor).setBearerAuth(token);

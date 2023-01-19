@@ -27,6 +27,7 @@ import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Map;
 import java.util.Optional;
 
 import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
@@ -165,6 +166,17 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(token);
     }
 
+    @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
+    public void setBearerAuthPassword(String username, String password, DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam(GRANT_TYPE_PARAM, "password")
+                        .formParam("username", username)
+                        .formParam("password", password)
+                        .formParams(tableToMap(params)),
+                username, password
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
@@ -174,6 +186,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(token);
     }
 
+    @Step("rest.define.auth.bearer.client.parameters")
+    public void setBearerAuthClient(DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                .formParam(GRANT_TYPE_PARAM, "client_credentials")
+                .formParams(tableToMap(params))
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.code")
     public void setBearerAuthCode(String code) {
@@ -185,11 +205,27 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(token);
     }
 
+    @Step("rest.define.auth.bearer.code.parameters")
+    public void setBearerAuthCode(String code, DataTable params) {
+        String token = retrieveOauthToken(request -> request
+                        .formParam(GRANT_TYPE_PARAM, "authorization_code")
+                        .formParam("code", code)
+                        .formParams(tableToMap(params)),
+                code
+        );
+        setBearerAuth(token);
+    }
 
     @Step("rest.define.auth.bearer.code.file")
     public void setBearerAuthCodeFile(File file) {
         assertFileExists(file);
         setBearerAuthCode(resourceLoader.readFileAsString(file).trim());
+    }
+
+    @Step("rest.define.auth.bearer.code.file.parameters")
+    public void setBearerAuthCodeFile(File file, DataTable params) {
+        assertFileExists(file);
+        setBearerAuthCode(resourceLoader.readFileAsString(file).trim(), params);
     }
 
 
