@@ -22,6 +22,7 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.util.MatcherAssertion;
+import iti.kukumo.rest.oauth.GrantType;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     private static final String GRANT_TYPE_PARAM = "grant_type";
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
-    
+
 
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
@@ -138,18 +139,18 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
-        if (LOGGER.isTraceEnabled())
+        if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Setting header [Authorization: {}:{}]", username, "*".repeat(password.length()));
-        specifications.add(request -> request.auth().preemptive().basic(username, password));
+        }
+        authSpecification = Optional.of(request -> request.auth().preemptive().basic(username, password));
     }
 
 
     @Step("rest.define.auth.bearer.token")
     public void setBearerAuth(String token) {
         LOGGER.trace("Setting header [Authorization: Bearer {}]", token);
-        specifications.add(request -> request.auth().preemptive().oauth2(token));
+        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(token));
     }
-
 
     @Step("rest.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
@@ -157,84 +158,44 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerAuth(resourceLoader.readFileAsString(file).trim());
     }
 
+    @Step("rest.define.auth.none")
+    public void setNoneAuth() {
+        authSpecification = Optional.of(request -> request.auth().none());
+    }
+
+    @Step("rest.define.auth.bearer.default")
+    public void setBearerDefault() {
+        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(retrieveOauthToken()));
+    }
 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
-        String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
-                        .formParam(USERNAME_PARAM, username)
-                        .formParam(PASSWORD_PARAM, password),
-                username, password
-        );
-        setBearerAuth(token);
+        oauth2ProviderConfig.type(GrantType.PASSWORD)
+                .addParameter(USERNAME_PARAM, username)
+                .addParameter(PASSWORD_PARAM, password);
+        setBearerDefault();
     }
 
     @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
-        String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, PASSWORD_PARAM)
-                        .formParam(USERNAME_PARAM, username)
-                        .formParam(PASSWORD_PARAM, password)
-                        .formParams(tableToMap(params)),
-                username, password
-        );
-        setBearerAuth(token);
+        oauth2ProviderConfig.type(GrantType.PASSWORD)
+                .addParameter(USERNAME_PARAM, username)
+                .addParameter(PASSWORD_PARAM, password);
+        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
-        String token = retrieveOauthToken(request -> request
-                .formParam(GRANT_TYPE_PARAM, "client_credentials")
-        );
-        setBearerAuth(token);
+        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
+        setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
-        String token = retrieveOauthToken(request -> request
-                .formParam(GRANT_TYPE_PARAM, "client_credentials")
-                .formParams(tableToMap(params))
-        );
-        setBearerAuth(token);
-    }
-
-    @Step("rest.define.auth.bearer.code")
-    public void setBearerAuthCode(String code) {
-        String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, "authorization_code")
-                        .formParam("code", code),
-                code
-        );
-        setBearerAuth(token);
-    }
-
-    @Step("rest.define.auth.bearer.code.parameters")
-    public void setBearerAuthCode(String code, DataTable params) {
-        String token = retrieveOauthToken(request -> request
-                        .formParam(GRANT_TYPE_PARAM, "authorization_code")
-                        .formParam("code", code)
-                        .formParams(tableToMap(params)),
-                code
-        );
-        setBearerAuth(token);
-    }
-
-    @Step("rest.define.auth.bearer.code.file")
-    public void setBearerAuthCodeFile(File file) {
-        assertFileExists(file);
-        setBearerAuthCode(resourceLoader.readFileAsString(file).trim());
-    }
-
-    @Step("rest.define.auth.bearer.code.file.parameters")
-    public void setBearerAuthCodeFile(File file, DataTable params) {
-        assertFileExists(file);
-        setBearerAuthCode(resourceLoader.readFileAsString(file).trim(), params);
-    }
-
-
-    @Step("rest.define.auth.none")
-    public void setNoneAuth() {
-        specifications.add(request -> request.auth().none());
+        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
+        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        setBearerDefault();
     }
 
 
@@ -378,88 +339,105 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.assert.response.body.strict.from.document")
     public void assertBodyStrictComparison(Document document) {
+        assertResponseNotNull();
         assertContentIs(document, MatchMode.STRICT);
     }
 
     @Step("rest.assert.response.body.strict.from.document.any-order")
     public void assertBodyStrictComparisonAnyOrder(Document document) {
+        assertResponseNotNull();
         assertContentIs(document, MatchMode.STRICT_ANY_ORDER);
     }
 
     @Step("rest.assert.response.body.loose.from.document")
     public void assertBodyLooseComparison(Document document) {
+        assertResponseNotNull();
         assertContentIs(document, MatchMode.LOOSE);
     }
 
     @Step("rest.assert.response.body.strict.from.file")
     public void assertStrictFileContent(File file) {
+        assertResponseNotNull();
         assertContentIs(file, MatchMode.STRICT);
     }
 
     @Step("rest.assert.response.body.strict.from.file.any-order")
     public void assertStrictFileContentAnyOrder(File file) {
+        assertResponseNotNull();
         assertContentIs(file, MatchMode.STRICT_ANY_ORDER);
     }
 
     @Step("rest.assert.response.body.loose.from.file")
     public void assertLooseFileContent(File file) {
+        assertResponseNotNull();
         assertContentIs(file, MatchMode.LOOSE);
     }
 
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
     public void assertHttpCode(Assertion<Integer> assertion) {
+        assertResponseNotNull();
         validatableResponse.statusCode(MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.contentType", args = "word")
     public void assertResponseContentType(String contentType) {
+        assertResponseNotNull();
         validatableResponse.contentType(parseContentType(contentType));
     }
 
     @Step(value = "rest.assert.response.body.length", args = {"matcher:integer-assertion"})
     public void assertResponseLength(Assertion<Integer> assertion) {
+        assertResponseNotNull();
         validatableResponse.body(length(MatcherAssertion.asMatcher(assertion)));
     }
 
     @Step(value = "rest.assert.response.body.header.text", args = {"name:word", "matcher:text-assertion"})
     public void assertResponseHeaderAsText(String name, Assertion<String> assertion) {
+        assertResponseNotNull();
         validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.header.integer", args = {"name:word", "matcher:integer-assertion"})
     public void assertResponseHeaderAsInteger(String name, Assertion<Integer> assertion) {
+        assertResponseNotNull();
         validatableResponse.header(name, Integer::parseInt, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.header.decimal", args = {"name:word", "matcher:decimal-assertion"})
     public void assertResponseHeaderAsDecimal(String name, Assertion<BigDecimal> assertion) {
+        assertResponseNotNull();
         validatableResponse.header(name, BigDecimal::new, MatcherAssertion.asMatcher(assertion));
     }
 
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text", "matcher:text-assertion"})
     public void assertBodyFragmentAsText(String fragment, Assertion<String> assertion) {
+        assertResponseNotNull();
         assertBodyFragment(fragment, assertion, String.class);
     }
 
     @Step(value = "rest.assert.response.body.fragment.integer", args = {"fragment:text", "matcher:integer-assertion"})
     public void assertBodyFragmentAsInteger(String fragment, Assertion<Integer> assertion) {
+        assertResponseNotNull();
         assertBodyFragment(fragment, assertion, Integer.class);
     }
 
     @Step(value = "rest.assert.response.body.fragment.decimal", args = {"fragment:text", "matcher:decimal-assertion"})
     public void assertBodyFragmentAsDecimal(String fragment, Assertion<BigDecimal> assertion) {
+        assertResponseNotNull();
         assertBodyFragment(fragment, assertion, BigDecimal.class);
     }
 
 
     @Step("rest.assert.response.body.schema.from.document")
     public void assertBodyContentSchema(Document document) {
+        assertResponseNotNull();
         assertContentSchema(document.getContent());
     }
 
 
     @Step(value = "rest.assert.response.body.schema.from.file")
     public void assertBodyContentSchema(File file) {
+        assertResponseNotNull();
         assertFileExists(file);
         assertContentSchema(resourceLoader.readFileAsString(file));
     }

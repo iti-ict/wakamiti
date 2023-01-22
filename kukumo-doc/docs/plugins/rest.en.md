@@ -10,10 +10,12 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [`rest.baseURL`](#restbaseurl)
 - [`rest.contentType`](#restcontenttype)
 - [`rest.httpCodeThreshold`](#resthttpcodethreshold)
+- [`rest.timeout`](#resttimeout)
 - [`rest.oauth2.url`](#restoauth2url)
 - [`rest.oauth2.clientId`](#restoauth2clientid)
 - [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
 - [`rest.oauth2.cached`](#restoauth2cached)
+- [`rest.oauth2.parameters`](#restoauth2parameters)
 - [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
 - [`rest.config.redirect.follow`](#restconfigredirectfollow)
 - [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
@@ -32,11 +34,10 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [Define HTTP code threshold](#define-http-code-threshold)
 - [Define basic authentication](#define-basic-authentication)
 - [Define oauth2 authentication](#define-oauth2-authentication)
-- [Define oauth2 authentication (file)](#define-oauth2-authentication-file)
+- [Define oauth2 authentication by token](#define-oauth2-authentication)
+- [Define oauth2 authentication by token (file)](#define-oauth2-authentication-file)
 - [Define oauth2 authentication by credentials](#define-oauth2-authentication-by-credentials)
 - [Define oauth2 authentication by client](#define-oauth2-authentication-by-client)
-- [Define oauth2 authentication by code](#define-oauth2-authentication-by-code)
-- [Define oauth2 authentication by code (file)](#define-oauth2-authentication-by-code-file)
 - [Clear authentication](#clear-authentication)
 - [Define multipart subtype](#define-multipart-subtype)
 - [Define attached file](#define-attached-file)
@@ -116,6 +117,20 @@ rest:
 ```
 
 ---
+### `rest.timeout`
+
+Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the 
+request will be stopped and an error will occur.
+
+Default value is `60000`.
+
+Example:
+```yaml
+rest:
+  timeout: 10000
+```
+
+---
 ### `rest.oauth2.url`
 Set an [OAuth 2.0][oauth2] authentication service that would be used to generate a token in the request header 
 `Authorization` of the API calls.
@@ -162,6 +177,21 @@ Example:
 rest:
   oauth2:
     cached: true
+```
+
+---
+### `rest.oauth2.parameters`
+Sets the default parameters for OAuth authentication.
+
+Example:
+```yaml
+rest:
+  oauth2:
+    parameters:
+      grant_type: password
+      username: pepe
+      password: 1234asdf
+      scope: something
 ```
 
 ---
@@ -461,6 +491,21 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 ---
 ### Define oauth2 authentication
 ```
+the service use the oauth authentication
+```
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), 
+[clientSecret](#restoauth2clientsecret), [parameters](#restoauth2parameters)), for the following requests.
+
+
+##### Ejemplos:
+```gherkin
+  Given the service use the oauth authentication
+```
+
+---
+### Define oauth2 authentication by token
+```
 the service use the oauth authentication token {token}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
@@ -476,7 +521,7 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 ```
 
 ---
-### Define oauth2 authentication (file)
+### Define oauth2 authentication by token (file)
 ```
 the service use the oauth authentication token from the file {file}
 ```
@@ -550,67 +595,6 @@ Additional parameters supported by `Oauth` can also be added using a table.
 
 ```gherkin
   Given the service use the oauth authentication with the following parameters:
-    | name  | value     |
-    | scope | something |
-```
-
----
-### Define oauth2 authentication by code
-```
-the service use the oauth authentication authorization code {code}
-```
-```
-the service use the oauth authentication authorization code {code} with the following parameters:
-```
-Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
-configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
-using the indicated code, for the following requests.
-
-Additional parameters supported by `Oauth` can also be added using a table.
-
-##### Parameters:
-| Name   | Wakamiti type | Description                             |
-|--------|---------------|-----------------------------------------|
-| `code` | `text`        | Authentication code                     |
-|        | `table`       | A table with `name` and `value` columns |
-
-##### Examples:
-```gherkin
-  Given the service use the oauth authentication authorization code 'euyh29830'
-```
-```gherkin
-  Given the service use the oauth authentication authorization code 'euyh29830' with the following parameters:
-    | name  | value     |
-    | scope | something |
-```
-
----
-### Define oauth2 authentication by code (file)
-```
-the service use the oauth authentication authorization code from the file {file}
-```
-```
-the service use the oauth authentication authorization code from the file {file} with the following parameters:
-```
-Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
-configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
-using the code from file, for the following requests.
-
-Additional parameters supported by `Oauth` can also be added using a table.
-
-##### Parameters:
-| Name   | Wakamiti type | Description                             |
-|--------|---------------|-----------------------------------------|
-| `file` | `file`        | File with authentication code           |
-|        | `table`       | A table with `name` and `value` columns |
-
-##### Examples:
-```gherkin
-  Given the service use the oauth authentication authorization code from the file 'code.txt'
-```
-
-```gherkin
-  Given the service use the oauth authentication authorization code from the file 'code.txt' with the following parameters:
     | name  | value     |
     | scope | something |
 ```
