@@ -26,6 +26,7 @@ import iti.kukumo.api.util.JsonUtils;
 import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.api.util.XmlUtils;
 import iti.kukumo.rest.log.RestAssuredLogger;
+import iti.kukumo.rest.oauth.Oauth2ProviderConfig;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -44,12 +45,12 @@ public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
     public static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
-    protected static Map<List<Object>, String> cachedToken = new HashMap<>();
+
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = KukumoAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
-    protected boolean cacheAuth = false;
+
     protected URL baseURL;
     protected String path;
     protected String subject;
@@ -57,7 +58,8 @@ public class RestSupport {
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
-    protected Oauth2ProviderConfiguration oauth2ProviderConfiguration = new Oauth2ProviderConfiguration();
+    protected Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
+    protected Optional<Consumer<RequestSpecification>> authSpecification = Optional.empty();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
     protected static void config(RestAssuredConfig config) {
@@ -69,6 +71,7 @@ public class RestSupport {
         validatableResponse = null;
         RequestSpecification request = RestAssured.given()
                 .accept(ContentType.ANY);
+        authSpecification.ifPresent(specification -> specification.accept(request));
         specifications.forEach(specification -> specification.accept(request));
         return attachLogger(request);
     }
@@ -86,6 +89,7 @@ public class RestSupport {
     }
 
     protected String uri() {
+        if (baseURL == null) throw new KukumoException("Missing required base URL.");
         String base = baseURL.toString();
         if (base.endsWith("/")) {
             base = base.substring(0, base.length() - 1);
@@ -105,38 +109,22 @@ public class RestSupport {
                 .statusCode(failureHttpCodeAssertion);
     }
 
-    protected String retrieveOauthToken(Consumer<RequestSpecification> specification, String... key) {
-        if (cacheAuth && cachedToken.containsKey(List.of(key))) {
-            return cachedToken.get(List.of(key));
-        }
-
-        if (Objects.isNull(oauth2ProviderConfiguration.clientId())) {
-            throw new KukumoException("Missing oauth2 'clientId' data.");
-        }
-
-        if (Objects.isNull(oauth2ProviderConfiguration.clientSecret())) {
-            throw new KukumoException("Missing oauth2 'clientSecret' data.");
-        }
-
-        if (Objects.isNull(oauth2ProviderConfiguration.url())) {
-            throw new KukumoException("Missing oauth2 'url' data.");
-        }
-
-        RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC).auth().preemptive()
-                .basic(oauth2ProviderConfiguration.clientId(), oauth2ProviderConfiguration.clientSecret());
-
-        Optional.ofNullable(oauth2ProviderConfiguration.redirectUri())
-                .ifPresent(uri -> request.formParam("redirect_uri", uri));
-
-        specification.accept(request);
-        String token = attachLogger(request)
-                .with().post(oauth2ProviderConfiguration.url())
-                .then().statusCode(200)
-                .body("access_token", Matchers.notNullValue())
-                .extract().body().jsonPath().getString("access_token");
-
-        cachedToken.put(List.of(key), token);
-        return token;
+    protected String retrieveOauthToken() {
+        final String ACCESS_TOKEN = "access_token";
+        return oauth2ProviderConfig.findCachedToken()
+                .orElseGet(() -> {
+                    oauth2ProviderConfig.checkParameters();
+                    RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC)
+                            .auth().preemptive()
+                            .basic(oauth2ProviderConfig.clientId(), oauth2ProviderConfig.clientSecret())
+                            .formParams(oauth2ProviderConfig.parameters());
+                    String token = attachLogger(request)
+                            .with().post(oauth2ProviderConfig.url())
+                            .then().statusCode(200)
+                            .body(ACCESS_TOKEN, Matchers.notNullValue())
+                            .extract().body().jsonPath().getString(ACCESS_TOKEN);
+                    return oauth2ProviderConfig.storeTokenAndGet(token);
+                });
     }
 
     protected void executeRequest(BiFunction<RequestSpecification, String, Response> function) {
@@ -155,6 +143,12 @@ public class RestSupport {
     protected void assertFileExists(File file) {
         if (!file.exists()) {
             throw new KukumoException("File '{}' not found", file.getAbsolutePath());
+        }
+    }
+
+    protected void assertResponseNotNull() {
+        if (response == null) {
+            throw new KukumoException("The request has not been executed");
         }
     }
 
@@ -178,7 +172,8 @@ public class RestSupport {
                 "statusLine", response.statusLine()
         );
 
-        return ContentType.XML.matches(response.contentType()) ? XmlUtils.xml("response", result)
+        return ContentType.XML.matches(response.contentType())
+                ? XmlUtils.xml("response", result)
                 : JsonUtils.json(result);
     }
 

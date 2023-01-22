@@ -12,6 +12,7 @@ import iti.kukumo.rest.RestStepContributor;
 module kukumo.rest {
 
     exports iti.kukumo.rest;
+    exports iti.kukumo.rest.oauth;
 
     requires transitive kukumo.api;
     requires transitive rest.assured;

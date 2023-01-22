@@ -20,6 +20,7 @@ Feature: REST Test Feature
       """
     And the integer from response fragment 'age' is 11
     And the integer from response fragment 'age' is not 12
+    And the decimal from response fragment 'age' is not 12.4
     And the response satisfies the following schema:
       """json
 {
@@ -142,6 +143,7 @@ Feature: REST Test Feature
       And the response contains the file 'src/test/resources/data/vegetables_user1.json'
       And the text response header connection is 'keep-alive'
       And the integer response header content-length is less than 150
+      And the decimal response header content-length is less than 150.1
 
 
   Scenario: Not Found

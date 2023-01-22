@@ -15,6 +15,7 @@ import imconfig.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.core.gherkin.GherkinResourceType;
 import iti.kukumo.core.junit.KukumoJUnitRunner;
+import iti.kukumo.rest.RestConfigContributor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

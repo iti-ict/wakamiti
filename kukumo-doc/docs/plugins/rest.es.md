@@ -10,10 +10,12 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [`rest.baseURL`](#restbaseurl)
 - [`rest.contentType`](#restcontenttype)
 - [`rest.httpCodeThreshold`](#resthttpcodethreshold)
+- [`rest.timeout`](#resttimeout)
 - [`rest.oauth2.url`](#restoauth2url)
 - [`rest.oauth2.clientId`](#restoauth2clientid)
 - [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
 - [`rest.oauth2.cached`](#restoauth2cached)
+- [`rest.oauth2.parameters`](#restoauth2parameters)
 - [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
 - [`rest.config.redirect.follow`](#restconfigredirectfollow)
 - [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
@@ -32,11 +34,10 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [Definir umbral de códigos HTTP](#definir-umbral-de-c%C3%B3digos-http)
 - [Definir autenticación básica](#definir-autenticaci%C3%B3n-b%C3%A1sica)
 - [Definir autenticación oauth2](#definir-autenticaci%C3%B3n-oauth2)
-- [Definir autenticación oauth2 (fichero)](#definir-autenticaci%C3%B3n-oauth2-fichero)
+- [Definir autenticación oauth2 por token](#definir-autenticaci%C3%B3n-oauth2-por-token)
+- [Definir autenticación oauth2 por token (fichero)](#definir-autenticaci%C3%B3n-oauth2-por-token-fichero)
 - [Definir autenticación oauth2 por credenciales](#definir-autenticaci%C3%B3n-oauth2-por-credenciales)
 - [Definir autenticación oauth2 por cliente](#definir-autenticaci%C3%B3n-oauth2-por-cliente)
-- [Definir autenticación oauth2 por código](#definir-autenticaci%C3%B3n-oauth2-por-c%C3%B3digo)
-- [Definir autenticación oauth2 por código (fichero)](#definir-autenticaci%C3%B3n-oauth2-por-c%C3%B3digo-fichero)
 - [Borrar autenticación](#borrar-autenticaci%C3%B3n)
 - [Definir subtipo multiparte](#definir-subtipo-multiparte)
 - [Definir archivo adjunto](#definir-archivo-adjunto)
@@ -68,8 +69,8 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 
 ---
 ###  `rest.baseURL`
-Establece la URL base para las llamadas REST.
-Esto es equivalente al paso `{word} como el tipo de contenido REST` si se prefiere una declaración más descriptiva.
+Establece la URL base para las llamadas REST. Esto es equivalente al paso `{word} como el tipo de contenido REST` si se 
+prefiere una declaración más descriptiva.
 
 Ejemplo:
 ```yaml
@@ -104,9 +105,8 @@ rest:
 ---
 ### `rest.httpCodeThreshold`
 
-Establece un límite a los códigos de respuesta HTTP. Cada vez que una llamada REST retorne un
-código HTTP igual o superior a este valor, el paso se marcará como fallido automáticamente, sin
-comprobar ninguna otra condición.
+Establece un límite a los códigos de respuesta HTTP. Cada vez que una llamada REST retorne un código HTTP igual o 
+superior a este valor, el paso se marcará como fallido automáticamente, sin comprobar ninguna otra condición.
 
 El valor por defecto es `500`.
 
@@ -117,10 +117,24 @@ rest:
 ```
 
 ---
+### `rest.timeout`
+
+Establece un tiempo máximo de respuesta (en milisegundos) para las siguientes peticiones HTTP. En el caso de exceder el 
+tiempo indicado se detendrá la llamada y se producirá un error.
+
+El valor por defecto es `60000`.
+
+Ejemplo:
+```yaml
+rest:
+  timeout: 10000
+```
+
+---
 ### `rest.oauth2.url`
 
-Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para generar el token que se enviará
-en la cabecera HTTP `Authorization` de las llamadas REST.
+Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para generar el token que se enviará en la 
+cabecera HTTP `Authorization` de las llamadas REST.
 
 Ejemplo:
 ```yaml
@@ -131,8 +145,8 @@ rest:
 
 ---
 ### `rest.oauth2.clientId`
-Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0][oauth2] definido
-por el valor de la propiedad de configuración `rest.oauth2.url`.
+Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la 
+propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
 ```yaml
@@ -143,8 +157,8 @@ rest:
 
 ---
 ### `rest.oauth2.clientSecret`
-Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth 2.0][oauth2] definido
-por el valor de la propiedad de configuración `rest.oauth2.url`.
+Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la 
+propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
 ```yaml
@@ -155,8 +169,8 @@ rest:
 
 ---
 ### `rest.oauth2.cached`
-Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos 
-son los mismos.
+Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos son 
+los mismos.
 
 El valor por defecto es `false`.
 
@@ -165,6 +179,21 @@ Ejemplo:
 rest:
   oauth2:
     cached: true
+```
+
+---
+### `rest.oauth2.parameters`
+Establece los parámetros por defecto de la autenticación oauth.
+
+Ejemplo:
+```yaml
+rest:
+  oauth2:
+    parameters:
+      grant_type: password
+      username: pepe
+      password: 1234asdf
+      scope: something
 ```
 
 ---
@@ -470,9 +499,23 @@ Establece las credenciales de autenticación básica que se enviarán en la cabe
 ---
 ### Definir autenticación oauth2
 ```
+(que) el servicio usa autenticación oauth
+```
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
+[clientSecret](#restoauth2clientsecret), [parámetros](#restoauth2parameters)), para las siguientes peticiones.
+
+##### Ejemplos:
+```gherkin
+  Dado que el servicio usa autenticación oauth
+```
+
+---
+### Definir autenticación oauth2 por token
+```
 (que) el servicio usa autenticación oauth con el token {token}
 ```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes 
 peticiones.
 
 ##### Parámetros:
@@ -486,12 +529,12 @@ peticiones.
 ```
 
 ---
-### Definir autenticación oauth2 (fichero)
+### Definir autenticación oauth2 por token (fichero)
 ```
 (que) el servicio usa autenticación oauth con el token del fichero {file}
 ```
-Establece el token de autenticación que se enviará en la cabecera `Authorization` para las siguientes llamadas, obtenido
-desde un fichero.
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes llamadas, 
+obtenido desde un fichero.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                           |
@@ -562,68 +605,6 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
 
 ```gherkin
   Dado que el servicio usa autenticación oauth con los siguientes parámetros:
-    | name  | value     |
-    | scope | something |
-```
-
----
-### Definir autenticación oauth2 por código
-```
-(que) el servicio usa autenticación oauth con el código de autorización {code}
-```
-```
-(que) el servicio usa autenticación oauth con el código de autorización {code} y los siguientes parámetros:
-```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
-del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
-[clientSecret](#restoauth2clientsecret)), usando el código indicado, para las siguientes peticiones.
-
-También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
-
-##### Parámetros:
-| Nombre     | Wakamiti type | Descripción                                   |
-|------------|---------------|-----------------------------------------------|
-| `code`     | `text`        | Código de autenticación                       |
-|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
-
-##### Ejemplos:
-```gherkin
-  Dado que el servicio usa autenticación oauth con el código de autorización 'euyh29830'
-```
-
-```gherkin
-  Dado que el servicio usa autenticación oauth con el código de autorización 'euyh29830' y los siguientes parámetros:
-    | name  | value     |
-    | scope | something |
-```
-
----
-### Definir autenticación oauth2 por código (fichero)
-```
-(que) el servicio usa autenticación oauth con el código de autorización del fichero {file}
-```
-```
-(que) el servicio usa autenticación oauth con el código de autorización del fichero {file} y los siguientes parámetros:
-```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
-del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
-[clientSecret](#restoauth2clientsecret)), usando el código indicado en el fichero, para las siguientes peticiones.
-
-También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
-
-##### Parámetros:
-| Nombre     | Wakamiti type | Descripción                                   |
-|------------|---------------|-----------------------------------------------|
-| `file`     | `file`        | Fichero con el código de autenticación        |
-|            | `table`       | Una tabla con las columnas `nombre` y `valor` |
-
-##### Ejemplos:
-```gherkin
-  Dado que el servicio usa autenticación oauth con el código de autorización del fichero 'code.txt'
-```
-
-```gherkin
-  Dado que el servicio usa autenticación oauth con el código de autorización del fichero 'code.txt' y los siguientes parámetros:
     | name  | value     |
     | scope | something |
 ```

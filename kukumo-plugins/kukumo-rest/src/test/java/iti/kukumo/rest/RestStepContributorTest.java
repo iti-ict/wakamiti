@@ -1,5 +1,6 @@
 package iti.kukumo.rest;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import io.restassured.RestAssured;
 import iti.kukumo.api.KukumoException;
@@ -7,6 +8,8 @@ import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.util.JsonUtils;
 import iti.kukumo.api.util.MatcherAssertion;
+import iti.kukumo.rest.oauth.GrantType;
+import iti.kukumo.rest.oauth.Oauth2ProviderConfig;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,13 +25,12 @@ import org.mockserver.model.*;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static iti.kukumo.rest.TestUtil.*;
@@ -44,6 +46,7 @@ import static org.mockserver.model.NottableString.not;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.ParameterBody.params;
 import static org.mockserver.model.RegexBody.regex;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestStepContributorTest {
@@ -70,15 +73,13 @@ public class RestStepContributorTest {
     }
 
     @Before
-    public void beforeEach() {
+    public void beforeEach() throws NoSuchFieldException, IllegalAccessException {
         RestAssured.reset();
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.config = RestAssured.config().multiPartConfig(
                 RestAssured.config().getMultiPartConfig().defaultBoundary("asdf1234")
         );
-
-        RestSupport.cachedToken.clear();
-
+        keys().clear();
         client.reset();
     }
 
@@ -150,9 +151,7 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
-        contributor.setRequestParameters(new DataTable(
-                new String[][]{{"name", "value"}, {"param1", "value1"}, {"param2", "value2"}}
-        ));
+        contributor.setRequestParameters(dataTable("param1", "value1", "param2", "value2"));
 
         // act
         Object result = contributor.executeGetSubject();
@@ -209,9 +208,7 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
-        contributor.setQueryParameters(new DataTable(
-                new String[][]{{"name", "value"}, {"param1", "value1"}, {"param2", "value2"}}
-        ));
+        contributor.setQueryParameters(dataTable("param1", "value1", "param2", "value2"));
 
         // act
         Object result = contributor.executeGetQuery();
@@ -260,9 +257,7 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users/{user}/list/{list}");
-        contributor.setPathParameters(new DataTable(
-                new String[][]{{"name", "value"}, {"user", "10"}, {"list", "4"}}
-        ));
+        contributor.setPathParameters(dataTable("user", "10", "list", "4"));
 
         // act
         Object result = contributor.executeGetQuery();
@@ -319,9 +314,7 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
-        contributor.setHeaders(new DataTable(
-                new String[][]{{"name", "value"}, {"param1", "value1"}, {"param2", "value2"}}
-        ));
+        contributor.setHeaders(dataTable("param1", "value1", "param2", "value2"));
 
         // act
         Object result = contributor.executeGetSubject();
@@ -381,13 +374,13 @@ public class RestStepContributorTest {
     }
 
     @Test
-    public void testSetBearerAuthClientWithSuccess() throws MalformedURLException {
+    public void testSetBearerAuthClientWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -403,21 +396,26 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        // act
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
         contributor.setBearerAuthClient();
 
+        // act
+        contributor.executeGetSubject();
+
         // check
-        verify(contributor).setBearerAuth(token);
+        assertThat(keys().values()).contains(token);
     }
 
     @Test
-    public void testSetBearerAuthClientWhenScopeWithSuccess() throws MalformedURLException {
+    public void testSetBearerAuthClientWhenScopeWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -434,13 +432,16 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+        contributor.setBearerAuthClient(dataTable("scope", "something"));
+
         // act
-        contributor.setBearerAuthClient(new DataTable(new String[][]{
-                {"name", "value"}, { "scope", "something" }
-        }));
+        contributor.executeGetSubject();
 
         // check
-        verify(contributor).setBearerAuth(token);
+        assertThat(keys().values()).contains(token);
     }
 
     @Test
@@ -448,10 +449,10 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
-        contributor.cacheAuth = true;
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.cacheAuth(true);
 
         mockServer(
                 request()
@@ -468,122 +469,28 @@ public class RestStepContributorTest {
 
         );
 
-        // act
-        // If it calls the service more than once, it will throw an error
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
         contributor.setBearerAuthClient();
-        contributor.setBearerAuthClient();
-
-        // check
-        verify(contributor, times(2)).setBearerAuth(token);
-    }
-
-    @Test
-    public void testSetBearerAuthCodeWithSuccess() throws MalformedURLException {
-        // prepare
-        String token = "1234567890";
-
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
-
-        mockServer(
-                request()
-                        .withPath("/token")
-                        .withBody(
-                                params(
-                                        param("grant_type", "authorization_code"),
-                                        param("code", token)
-                                )
-                        )
-                ,
-                response(json(map("access_token", token)))
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        // act
-        contributor.setBearerAuthCodeFile(file(TOKEN_PATH));
-
-        // check
-        verify(contributor).setBearerAuth(token);
-    }
-
-    @Test
-    public void testSetBearerAuthCodeWhenScopeWithSuccess() throws MalformedURLException {
-        // prepare
-        String token = "1234567890";
-
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
-
-        mockServer(
-                request()
-                        .withPath("/token")
-                        .withBody(
-                                params(
-                                        param("grant_type", "authorization_code"),
-                                        param("code", token),
-                                        param("scope", "something")
-                                )
-                        )
-                ,
-                response(json(map("access_token", token)))
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        // act
-        contributor.setBearerAuthCodeFile(file(TOKEN_PATH), new DataTable(new String[][]{
-                {"name", "value"}, { "scope", "something" }
-        }));
-
-        // check
-        verify(contributor).setBearerAuth(token);
-    }
-
-    @Test
-    public void testSetBearerAuthCodeWhenCachedWithSuccess() throws MalformedURLException {
-        // prepare
-        String token = "1234567890";
-
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
-        contributor.cacheAuth = true;
-
-        mockServer(
-                request()
-                        .withPath("/token")
-                        .withBody(
-                                params(
-                                        param("grant_type", "authorization_code"),
-                                        param("code", token)
-                                )
-                        )
-                ,
-                response(json(map("access_token", token)))
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
 
         // act
         // If it calls the service more than once, it will throw an error
-        contributor.setBearerAuthCodeFile(file(TOKEN_PATH));
-        contributor.setBearerAuthCodeFile(file(TOKEN_PATH));
+        contributor.executeGetSubject();
+        contributor.executeGetSubject();
 
         // check
-        verify(contributor, times(2)).setBearerAuth(token);
+        verify(contributor, times(2)).retrieveOauthToken();
     }
 
     @Test
-    public void testSetBearerAuthPasswordWithSuccess() throws MalformedURLException {
+    public void testSetBearerAuthPasswordWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -601,21 +508,26 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        // act
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
         contributor.setBearerAuthPassword("username", "password");
 
+        // act
+        contributor.executeGetSubject();
+
         // check
-        verify(contributor).setBearerAuth(token);
+        assertThat(keys().values()).contains(token);
     }
 
     @Test
-    public void testSetBearerAuthPasswordWhenScopeWithSuccess() throws MalformedURLException {
+    public void testSetBearerAuthPasswordWhenScopeWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -634,13 +546,16 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+        contributor.setBearerAuthPassword("username", "password", dataTable("scope", "something"));
+
         // act
-        contributor.setBearerAuthPassword("username", "password", new DataTable(new String[][]{
-                {"name", "value"}, { "scope", "something" }
-        }));
+        contributor.executeGetSubject();
 
         // check
-        verify(contributor).setBearerAuth(token);
+        assertThat(keys().values()).contains(token);
     }
 
     @Test
@@ -648,10 +563,10 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
-        contributor.cacheAuth = true;
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.cacheAuth(true);
 
         mockServer(
                 request()
@@ -669,12 +584,18 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        // act
-        contributor.setBearerAuthPassword("username", "password");
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
         contributor.setBearerAuthPassword("username", "password");
 
+        // act
+        // If it calls the service more than once, it will throw an error
+        contributor.executeGetSubject();
+        contributor.executeGetSubject();
+
         // check
-        verify(contributor, times(2)).setBearerAuth(token);
+        verify(contributor, times(2)).retrieveOauthToken();
     }
 
     @Test
@@ -682,9 +603,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -703,7 +624,7 @@ public class RestStepContributorTest {
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
-        contributor.setNoneAuth(); // auth must be  overridden
+        contributor.setNoneAuth(); // auth must be overridden
 
         // act
         Object result = contributor.executeGetSubject();
@@ -713,13 +634,32 @@ public class RestStepContributorTest {
     }
 
     @Test(expected = KukumoException.class)
-    public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() {
+    public void testSetBearerAuthPasswordWhenNoGrantTypeConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setBearerDefault();
 
         // act
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    @Test(expected = KukumoException.class)
+    public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() throws MalformedURLException {
+        // prepare
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
         contributor.setBearerAuthPassword("username", "password");
+        contributor.setBaseURL(new URL(BASE_URL));
+
+        // act
+        contributor.executeGetSubject();
 
         // check
         // An error should be thrown
@@ -728,11 +668,13 @@ public class RestStepContributorTest {
     @Test(expected = KukumoException.class)
     public void testSetBearerAuthPasswordWhenNoClientIdConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.setBearerAuthPassword("username", "password");
+        contributor.setBaseURL(new URL(BASE_URL));
 
         // act
-        contributor.setBearerAuthPassword("username", "password");
+        contributor.executeGetSubject();
 
         // check
         // An error should be thrown
@@ -741,11 +683,30 @@ public class RestStepContributorTest {
     @Test(expected = KukumoException.class)
     public void testSetBearerAuthPasswordWhenNoClientSecretConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.setBearerAuthPassword("username", "password");
+        contributor.setBaseURL(new URL(BASE_URL));
 
         // act
-        contributor.setBearerAuthPassword("username", "password");
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    @Test(expected = KukumoException.class)
+    public void testSetBearerAuthPasswordWhenNoRequiredParamConfigWithError() throws MalformedURLException {
+        // prepare
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.type(GrantType.PASSWORD);
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setBearerDefault();
+
+        // act
+        contributor.executeGetSubject();
 
         // check
         // An error should be thrown
@@ -754,9 +715,9 @@ public class RestStepContributorTest {
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenCodeErrorWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -767,8 +728,11 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        // act
+        contributor.setBaseURL(new URL(BASE_URL));
         contributor.setBearerAuthPassword("username", "password");
+
+        // act
+        contributor.executeGetSubject();
 
         // check
         // An error should be thrown
@@ -777,9 +741,9 @@ public class RestStepContributorTest {
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenTokenMissingWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfiguration.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfiguration.clientId("WEB_APP");
-        contributor.oauth2ProviderConfiguration.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -789,8 +753,11 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        // act
+        contributor.setBaseURL(new URL(BASE_URL));
         contributor.setBearerAuthPassword("username", "password");
+
+        // act
+        contributor.executeGetSubject();
 
         // check
         // An error should be thrown
@@ -1439,8 +1406,30 @@ public class RestStepContributorTest {
         assertThat(result).isNotNull();
     }
 
+    @Test(expected = KukumoException.class)
+    public void testWhenResponseIsNullWithError() {
+        contributor.assertHttpCode(new MatcherAssertion<>(equalTo(200)));
+    }
+
 
     private void mockServer(HttpRequest expected, HttpResponse response) {
         client.when(expected, Times.once()).respond(response);
     }
+
+    private DataTable dataTable(String... data) {
+        List<String[]> result = new LinkedList<>();
+        result.add(new String[]{"name", "value"});
+        for (int i = 0; i < data.length; i = i + 2) {
+            result.add(new String[]{data[i], data[i + 1]});
+        }
+        return new DataTable(result.toArray(new String[0][0]));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<List<String>, String> keys() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Oauth2ProviderConfig.class.getDeclaredField("cachedToken");
+        field.setAccessible(true);
+        return ((Map<List<String>, String>) field.get(null));
+    }
+
 }

@@ -22,6 +22,7 @@ import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.api.util.MatcherAssertion;
 import iti.kukumo.api.util.ThrowableFunction;
 import iti.kukumo.rest.log.RestAssuredLogger;
+import iti.kukumo.rest.oauth.Oauth2ProviderConfig;
 import org.hamcrest.Matchers;
 
 import java.lang.reflect.Field;
@@ -39,7 +40,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String OAUTH2_URL = "rest.oauth2.url";
     public static final String OAUTH2_CLIENT_ID = "rest.oauth2.clientId";
     public static final String OAUTH2_CLIENT_SECRET = "rest.oauth2.clientSecret";
-    public static final String OAUTH2_REDIRECT_URI = "rest.oauth2.redirectUri";
+    public static final String OAUTH2_DEFAULT_PARAMETERS = "rest.oauth2.parameters";
     public static final String OAUTH2_CACHED = "rest.oauth2.cached";
 
     // RestAssured config
@@ -90,12 +91,12 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(TIMEOUT, Integer.class)
                 .ifPresent(contributor::setTimeoutInMillis);
 
-        Oauth2ProviderConfiguration oauth2ProviderConfiguration = contributor.oauth2ProviderConfiguration;
-        configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2ProviderConfiguration::url);
-        configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2ProviderConfiguration::clientId);
-        configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2ProviderConfiguration::clientSecret);
-        configuration.get(OAUTH2_REDIRECT_URI, URL.class).ifPresent(oauth2ProviderConfiguration::redirectUri);
-        configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(value -> contributor.cacheAuth = value);
+        Oauth2ProviderConfig oauth2Provider = contributor.oauth2ProviderConfig;
+        configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2Provider::url);
+        configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2Provider::clientId);
+        configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);
+        configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(oauth2Provider::cacheAuth);
+        configuration.inner(OAUTH2_DEFAULT_PARAMETERS).asMap().forEach(oauth2Provider::addParameter);
 
         configuration.get(MULTIPART_SUBTYPE, String.class).ifPresent(contributor::setMultipartSubtype);
         configuration.get(REDIRECT_FOLLOW, Boolean.class)
