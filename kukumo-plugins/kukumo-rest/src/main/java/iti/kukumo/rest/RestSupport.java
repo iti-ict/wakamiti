@@ -231,13 +231,12 @@ public class RestSupport {
         helper.assertContentSchema(expectedSchema, validatableResponse.extract().asString());
     }
 
-    protected String assertSubtype(String subtype) {
+    protected void assertSubtype(String subtype) {
         List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
                 .map(contentType -> contentType.split("/")[1]).collect(Collectors.toList());
         if (!subtypes.contains(subtype)) {
             throw new KukumoException("'{}' is not a valid subtype. Possible values: {}", subtype, subtypes);
         }
-        return subtype;
     }
 
     private String readFile(File file) {

@@ -405,7 +405,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -441,7 +441,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -517,7 +517,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -555,7 +555,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
