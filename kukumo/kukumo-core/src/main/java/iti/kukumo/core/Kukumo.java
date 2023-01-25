@@ -498,6 +498,9 @@ public class Kukumo {
 
 
     private void validateUniqueTestCaseID(PlanNode plan) {
+        if (plan == null) {
+            return;
+        }
         Map<String, AtomicInteger> ids = new HashMap<>();
         plan
             .descendants()
