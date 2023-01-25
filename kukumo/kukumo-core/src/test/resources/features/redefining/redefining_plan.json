@@ -23,6 +23,7 @@
       "tags" : [ "definition", "ID-1" ],
       "properties" : {
         "gherkinType" : "scenario",
+        "featureName" : "Test feature [Spanish]",
         "redefinition.stepMap" : "2-1-2"
       },
       "children" : [ {
@@ -159,6 +160,7 @@
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
+          "featureName" : "Test Redefined feature - Definition",
           "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {
@@ -287,6 +289,7 @@
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
+          "featureName" : "Test Redefined feature - Definition",
           "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {
@@ -415,6 +418,7 @@
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
+          "featureName" : "Test Redefined feature - Definition",
           "redefinition.stepMap" : "0-1-1-2"
         },
         "children" : [ {

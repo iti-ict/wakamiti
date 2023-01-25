@@ -43,6 +43,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     public static final String GHERKIN_TYPE_SCENARIO_OUTLINE = "scenarioOutline";
     public static final String GHERKIN_TYPE_BACKGROUND = "background";
     public static final String GHERKIN_TYPE_STEP = "step";
+    public static final String GHERKIN_FEATURE_NAME = "featureName";
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern = null;
@@ -120,6 +121,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                     scenarioFilter
                 );
             }
+        }
+        if (node.name() != null) {
+            node.descendants()
+                .filter(child -> child.nodeType() == NodeType.TEST_CASE)
+                .forEach(child -> child.addProperty(GHERKIN_FEATURE_NAME, node.name()));
         }
         return node;
     }
