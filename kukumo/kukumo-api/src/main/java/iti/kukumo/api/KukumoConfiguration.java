@@ -51,6 +51,12 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     /** Output file path */
     public static final String OUTPUT_FILE_PATH = "outputFilePath";
 
+    /** Whether the output would be a single file or a collection of files per test case */
+    public static final String OUTPUT_FILE_PER_TEST_CASE = "outputFilePerTestCase";
+
+    /** Ensure that every test case wihtin a plan has a unique ID */
+    public static final String STRICT_TEST_CASE_ID = "strictTestCaseID";
+
     /** Report sources */
     public static final String REPORT_SOURCE = "report.source";
 
@@ -114,6 +120,7 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
         	RESOURCE_PATH, ".",
             GENERATE_OUTPUT_FILE, "true",
             OUTPUT_FILE_PATH, "kukumo.json",
+            OUTPUT_FILE_PER_TEST_CASE, "false",
             REPORT_GENERATION, "true",
             ID_TAG_PATTERN, "ID-(\\w*)",
             REDEFINITION_ENABLED, "true",

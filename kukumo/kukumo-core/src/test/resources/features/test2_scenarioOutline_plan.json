@@ -36,7 +36,8 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenario"
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -82,7 +83,8 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenario"
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
         },
         "children" : [ {
           "nodeType" : "STEP",
@@ -128,7 +130,8 @@
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
-          "gherkinType" : "scenario"
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
         },
         "children" : [ {
           "nodeType" : "STEP",

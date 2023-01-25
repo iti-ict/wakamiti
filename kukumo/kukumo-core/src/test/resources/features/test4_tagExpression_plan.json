@@ -23,7 +23,8 @@
       "tags" : [ "B", "C", "Test4" ],
       "properties" : {
         "encoding" : "UTF-8",
-        "gherkinType" : "scenario"
+        "gherkinType" : "scenario",
+        "featureName" : "Test 4 - Tag Expressions"
       },
       "children" : [ {
         "nodeType" : "STEP",

@@ -14,8 +14,10 @@ import static iti.kukumo.api.KukumoConfiguration.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.*;
 
@@ -31,6 +33,7 @@ import iti.kukumo.api.plan.*;
 import iti.kukumo.api.util.KukumoLogger;
 import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.api.util.ThrowableFunction;
+import iti.kukumo.core.util.PathUtil;
 import iti.kukumo.core.util.TagFilter;
 import org.slf4j.Logger;
 
@@ -153,9 +156,16 @@ public class Kukumo {
             throw new KukumoException("No test plans created");
         }
         PlanNode plan = mergePlans(plans);
+
+
+        if (configuration.get(STRICT_TEST_CASE_ID,Boolean.class).orElse(Boolean.FALSE)) {
+            validateUniqueTestCaseID(plan);
+        }
         publishEvent(Event.PLAN_CREATED, plan);
         return plan;
     }
+
+
 
 
     /**
@@ -370,27 +380,45 @@ public class Kukumo {
     		return;
     	}
 
-        Optional<String> outputPath = configuration
-            .get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class);
-        if (outputPath.isPresent()) {
-            try {
-                Path path = Paths.get(outputPath.get()).toAbsolutePath();
-                if (path.getParent() != null) {
-                    Files.createDirectories(path.getParent());
+        String outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
+        Boolean filePerTestCase = configuration.get(KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElseThrow();
+
+        try {
+            Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
+            Path parentPath = path.getParent();
+            if (parentPath != null) {
+                Files.createDirectories(parentPath);
+            }
+            if (filePerTestCase) {
+                Files.createDirectories(path);
+                List<PlanNode> testCases = plan
+                    .descendants()
+                    .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+                    .collect(Collectors.toList());
+                for (PlanNode testCase : testCases) {
+                    String testCaseId = Objects.requireNonNull(testCase.id(),"test case have no id");
+                    Path testCasePath = path.resolve(testCaseId+".json");
+                    try (Writer writer = new FileWriter(testCasePath.toFile())) {
+                        planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
+                        LOGGER.info("Generated result output file {uri}", testCasePath);
+                    }
                 }
-                try (Writer writer = new FileWriter(outputPath.get())) {
+            } else {
+                try (Writer writer = new FileWriter(path.toFile())) {
                     planSerializer().write(writer, plan);
                     LOGGER.info("Generated result output file {uri}", path);
                 }
-            } catch (IOException e) {
-                LOGGER.error(
-                    "Error writing output file {} : {}",
-                    outputPath.get(),
-                    e.getMessage(),
-                    e
-                );
             }
+
+        } catch (IOException e) {
+            LOGGER.error(
+                "Error writing output file {} : {}",
+                outputPath,
+                e.getMessage(),
+                e
+            );
         }
+
     }
 
 
@@ -454,5 +482,20 @@ public class Kukumo {
     }
 
 
+    private void validateUniqueTestCaseID(PlanNode plan) {
+        Map<String, AtomicInteger> ids = new HashMap<>();
+        plan
+            .descendants()
+            .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+            .forEach(node -> ids.computeIfAbsent(node.id(), x->new AtomicInteger()).incrementAndGet());
+        if (ids.get(null) != null) {
+            throw new KukumoException("There is one or more test cases withouth a valid ID");
+        }
+        ids.forEach((id, count)->{
+            if (count.get() > 1) {
+                throw new KukumoException("The ID {} is used in {} test cases",id,count);
+            }
+        });
+    }
 
 }
