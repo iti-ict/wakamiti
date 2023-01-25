@@ -24,7 +24,8 @@
       "tags" : [ "ID-Test3_Scenario1", "Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
-        "gherkinType" : "scenario"
+        "gherkinType" : "scenario",
+        "featureName" : "Test 3 - Backgrounds"
       },
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",
@@ -92,7 +93,8 @@
       "tags" : [ "ID-Test3_Scenario2", "Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
-        "gherkinType" : "scenario"
+        "gherkinType" : "scenario",
+        "featureName" : "Test 3 - Backgrounds"
       },
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",
@@ -160,7 +162,8 @@
       "tags" : [ "ID-Test3_Scenario3", "Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
-        "gherkinType" : "scenario"
+        "gherkinType" : "scenario",
+        "featureName" : "Test 3 - Backgrounds"
       },
       "children" : [ {
         "nodeType" : "STEP_AGGREGATOR",

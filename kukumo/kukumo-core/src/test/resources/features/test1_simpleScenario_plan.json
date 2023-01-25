@@ -26,7 +26,8 @@
       "properties" : {
         "featureProperty" : "A",
         "gherkinType" : "scenario",
-        "scenarioProperty" : "B"
+        "scenarioProperty" : "B",
+        "featureName" : "Test 1 - Simple Scenario"
       },
       "children" : [ {
         "nodeType" : "STEP",
