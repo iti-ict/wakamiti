@@ -54,6 +54,9 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     /** Whether the output would be a single file or a collection of files per test case */
     public static final String OUTPUT_FILE_PER_TEST_CASE = "outputFilePerTestCase";
 
+    /** The path to be used when outputFilePerTestCase is enabled */
+    public static final String OUTPUT_FILE_PER_TEST_CASE_PATH = "outputFilePerTestCasePath";
+
     /** Ensure that every test case wihtin a plan has a unique ID */
     public static final String STRICT_TEST_CASE_ID = "strictTestCaseID";
 

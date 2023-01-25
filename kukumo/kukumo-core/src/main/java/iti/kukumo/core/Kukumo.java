@@ -380,46 +380,61 @@ public class Kukumo {
     		return;
     	}
 
-        String outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
-        Boolean filePerTestCase = configuration.get(KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElseThrow();
-
         try {
-            Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
-            Path parentPath = path.getParent();
-            if (parentPath != null) {
-                Files.createDirectories(parentPath);
-            }
-            if (filePerTestCase) {
-                Files.createDirectories(path);
-                List<PlanNode> testCases = plan
-                    .descendants()
-                    .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-                    .collect(Collectors.toList());
-                for (PlanNode testCase : testCases) {
-                    String testCaseId = Objects.requireNonNull(testCase.id(),"test case have no id");
-                    Path testCasePath = path.resolve(testCaseId+".json");
-                    try (Writer writer = new FileWriter(testCasePath.toFile())) {
-                        planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
-                        LOGGER.info("Generated result output file {uri}", testCasePath);
-                    }
-                }
-            } else {
-                try (Writer writer = new FileWriter(path.toFile())) {
-                    planSerializer().write(writer, plan);
-                    LOGGER.info("Generated result output file {uri}", path);
-                }
+
+            writeStandardOutputFile(plan, configuration);
+
+            if (configuration.get(KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElse(Boolean.FALSE)){
+                writeOutputFilesPerTestCase(plan, configuration);
             }
 
         } catch (IOException e) {
             LOGGER.error(
-                "Error writing output file {} : {}",
-                outputPath,
+                "Error writing output file : {}",
                 e.getMessage(),
                 e
             );
         }
 
     }
+
+
+
+    private String writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
+        String outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
+        Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
+        Path parentPath = path.getParent();
+        if (parentPath != null) {
+            Files.createDirectories(parentPath);
+        }
+        try (Writer writer = new FileWriter(path.toFile())) {
+            planSerializer().write(writer, plan);
+            LOGGER.info("Generated result output file {uri}", path);
+        }
+        return outputPath;
+    }
+
+
+    private void writeOutputFilesPerTestCase(PlanNode plan, Configuration configuration) throws IOException {
+        String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
+        Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
+        Files.createDirectories(path);
+
+        List<PlanNode> testCases = plan
+            .descendants()
+            .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+            .collect(Collectors.toList());
+
+        for (PlanNode testCase : testCases) {
+            String testCaseId = Objects.requireNonNull(testCase.id(),"test case have no id");
+            Path testCasePath = path.resolve(testCaseId+".json");
+            try (Writer writer = new FileWriter(testCasePath.toFile())) {
+                planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
+                LOGGER.info("Generated result output file {uri}", testCasePath);
+            }
+        }
+    }
+
 
 
     public void generateReports(Configuration configuration) {

@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 @AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features/redefining"),
-    @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/multipleJsons/%DATE%%TIME%"),
     @Property(key = KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE, value = "true"),
+    @Property(key = KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH, value = "target/multipleJsons/%DATE%%TIME%"),
     @Property(key = KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "iti.kukumo.test.gherkin.KukumoSteps"),
     @Property(key = KukumoJUnitRunner.TREAT_STEPS_AS_TESTS, value = "true")
 })
