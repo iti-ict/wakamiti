@@ -95,6 +95,12 @@ public class StepPropertyEvaluatorTest {
                 "${4#$.id}", "3"
         ));
 
+        result = resolver.eval("{${4#$.id}}");
+        assertThat(result.value()).isEqualTo("{3}");
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${4#$.id}", "3"
+        ));
+
         result = resolver.eval("${4#$.id}${4#$.id}");
         assertThat(result.value()).isEqualTo("33");
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
