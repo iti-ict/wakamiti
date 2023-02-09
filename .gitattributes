@@ -1,0 +1,8 @@
+
+*       text=auto
+
+*.sh    eol=lf
+kukumo  eol=lf
+
+*.bat   eol=crlf
+*.cmd   eol=crlf
