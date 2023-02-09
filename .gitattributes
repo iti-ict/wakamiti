@@ -3,6 +3,7 @@
 
 *.sh    eol=lf
 kukumo  eol=lf
+mvnw    eol=lf
 
 *.bat   eol=crlf
 *.cmd   eol=crlf
