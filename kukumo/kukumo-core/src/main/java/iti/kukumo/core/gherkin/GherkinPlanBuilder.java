@@ -44,6 +44,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     public static final String GHERKIN_TYPE_BACKGROUND = "background";
     public static final String GHERKIN_TYPE_STEP = "step";
     public static final String GHERKIN_FEATURE_NAME = "featureName";
+    private static final Random RANDOM = new Random();
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern = null;
@@ -480,7 +481,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             }
         }
         if (idTag == null) {
-            idTag = "#"+(char)(new Random().nextInt(26) + 'a')+UUID.randomUUID().toString().substring(0,5);
+            idTag = "#"+(char)(RANDOM.nextInt(26) + 'a')+UUID.randomUUID().toString().substring(0,5);
         }
         return idTag + suffix;
     }
