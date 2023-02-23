@@ -59,6 +59,11 @@ public class TestTextHelper {
 
     @Test
     public void testLoosePartial() {
+        helper.assertContent(partial, normal, MatchMode.LOOSE);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testLoosePartialReverse() {
         helper.assertContent(normal, partial, MatchMode.LOOSE);
     }
 

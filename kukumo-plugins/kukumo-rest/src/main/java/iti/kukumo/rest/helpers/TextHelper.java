@@ -32,12 +32,12 @@ public class TextHelper implements ContentTypeHelper {
         switch (matchMode) {
             case STRICT:
             case STRICT_ANY_ORDER:
-                if (!expected.trim().equals(actual.trim())) {
+                if (!actual.trim().equals(expected.trim())) {
                     throw new ComparisonFailure("Text differences", expected, actual);
                 }
                 break;
             case LOOSE:
-                if (!expected.trim().contains(actual.trim())) {
+                if (!actual.trim().contains(expected.trim())) {
                     throw new ComparisonFailure("Text differences", expected, actual);
                 }
         }
