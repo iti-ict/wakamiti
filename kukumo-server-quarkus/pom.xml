@@ -146,6 +146,10 @@
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-html-report</artifactId>
         </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

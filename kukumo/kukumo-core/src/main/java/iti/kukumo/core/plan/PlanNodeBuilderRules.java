@@ -198,6 +198,13 @@ public class PlanNodeBuilderRules {
         return node -> stream.apply(node).anyMatch(predicate);
     }
 
+    public static Predicate<PlanNodeBuilder> withNone(
+            Function<PlanNodeBuilder, Stream<PlanNodeBuilder>> stream,
+            Predicate<PlanNodeBuilder> predicate
+    ) {
+        return node -> stream.apply(node).noneMatch(predicate);
+    }
+
 
     public static Predicate<PlanNodeBuilder> withAll(
         Function<PlanNodeBuilder, Stream<PlanNodeBuilder>> stream,
@@ -255,6 +262,10 @@ public class PlanNodeBuilderRules {
         return withAny(PlanNodeBuilder::children, predicate);
     }
 
+    public static Predicate<PlanNodeBuilder> withNoneChild(Predicate<PlanNodeBuilder> predicate) {
+        return withNone(PlanNodeBuilder::children, predicate);
+    }
+
 
     public static Predicate<PlanNodeBuilder> withEveryChild(Predicate<PlanNodeBuilder> predicate) {
         return withAll(PlanNodeBuilder::children, predicate);
@@ -273,6 +284,12 @@ public class PlanNodeBuilderRules {
         Predicate<PlanNodeBuilder> predicate
     ) {
         return withAny(PlanNodeBuilder::descendants, predicate);
+    }
+
+    public static Predicate<PlanNodeBuilder> withNoneDescendant(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
+        return withNone(PlanNodeBuilder::descendants, predicate);
     }
 
 
@@ -295,6 +312,9 @@ public class PlanNodeBuilderRules {
         return withAny(PlanNodeBuilder::ancestors, predicate);
     }
 
+    public static Predicate<PlanNodeBuilder> withNoneAncestor(Predicate<PlanNodeBuilder> predicate) {
+        return withNone(PlanNodeBuilder::ancestors, predicate);
+    }
 
     public static Predicate<PlanNodeBuilder> withEveryAncestor(
         Predicate<PlanNodeBuilder> predicate
@@ -313,6 +333,10 @@ public class PlanNodeBuilderRules {
 
     public static Predicate<PlanNodeBuilder> withAnySibling(Predicate<PlanNodeBuilder> predicate) {
         return withAny(PlanNodeBuilder::siblings, predicate);
+    }
+
+    public static Predicate<PlanNodeBuilder> withNoneSibling(Predicate<PlanNodeBuilder> predicate) {
+        return withNone(PlanNodeBuilder::siblings, predicate);
     }
 
 
@@ -335,6 +359,9 @@ public class PlanNodeBuilderRules {
         return predicate;
     }
 
+    public static Predicate<PlanNodeBuilder> noneNode(Predicate<PlanNodeBuilder> predicate) {
+        return predicate.negate();
+    }
 
     public static Predicate<PlanNodeBuilder> childOf(Predicate<PlanNodeBuilder> predicate) {
         return node -> node.parent().map(predicate::test).orElse(false);

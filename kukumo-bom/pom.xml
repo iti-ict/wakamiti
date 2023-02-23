@@ -14,7 +14,7 @@
 
 <!--    <groupId>es.iti.kukumo</groupId>-->
     <artifactId>kukumo-bom</artifactId>
-<!--    <version>1.5.0</version>  &lt;!&ndash; must be the same as revision &ndash;&gt;-->
+<!--    <version>1.6.0</version>  &lt;!&ndash; must be the same as revision &ndash;&gt;-->
     <packaging>pom</packaging>
 
 

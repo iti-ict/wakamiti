@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.6.0] 2023-02-23
+### Added
+- New result status NOT_IMPLEMENTED
 
 ## [1.5.0] 2023-01-16
 ### Modified
