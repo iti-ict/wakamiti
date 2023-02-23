@@ -3,29 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.core.gherkin;
 
-
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyNode;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.anyOtherNode;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.childOf;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.copyProperties;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.forEachNode;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.removeNode;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.sharing;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.withProperty;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.withTag;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.withType;
-import static iti.kukumo.core.plan.PlanNodeBuilderRules.withoutChildren;
 import static iti.kukumo.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
 import static iti.kukumo.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
 import static iti.kukumo.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
 import static iti.kukumo.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
 import static iti.kukumo.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+import static iti.kukumo.core.plan.PlanNodeBuilderRules.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +31,11 @@ import iti.kukumo.api.plan.PlanNodeBuilder;
 import iti.kukumo.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 import iti.kukumo.core.plan.RuleBasedPlanTransformer;
 
-
-
+/**
+ *
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 @Extension(provider = "iti.kukumo", name = "gherkin-redefinition-transformer", version = "1.1")
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
                 implements PlanTransformer {
@@ -84,6 +72,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
 
             forEachNode(rules.stepAggregatorWithoutChildren())
                 .perform(node -> node.setNodeType(NodeType.VIRTUAL_STEP)),
+
+            forEachNode(rules.backgroundStepsOfScenarioWithoutChildren())
+                    .perform(node -> node.setNodeType(NodeType.VIRTUAL_STEP)),
 
             forEachNode(rules.definitionScenario())
                 .given(rules.implementationScenarioSharingId())
@@ -160,6 +151,18 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
             return withType(NodeType.STEP_AGGREGATOR).and(withoutChildren());
         }
 
+        public Predicate<PlanNodeBuilder> backgroundStepsOfScenarioWithoutChildren() {
+            return withType(NodeType.STEP).and(withAnyAncestor(withGherkinType(GHERKIN_TYPE_BACKGROUND)))
+                    .and(withAnyAncestor(
+                            withType(NodeType.TEST_CASE).and(
+                                    withNoneDescendant(
+                                            withType(NodeType.STEP)
+                                                    .and(withNoneAncestor(withGherkinType(GHERKIN_TYPE_BACKGROUND)))
+                                    )
+                            )
+                    ));
+        }
+
 
         private Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> parentFeature() {
             return node -> node.ancestors().filter(ofTypeFeature()).findFirst();
@@ -232,12 +235,7 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
             PlanNodeBuilder impBackground,
             PlanNodeBuilder defScenario
         ) {
-            defScenario.addFirstChild(
-                impBackground
-                    .setName("<preparation>")
-                    .setKeyword(null)
-                    .setDisplayNamePattern("{name}")
-            );
+            defScenario.addFirstChild(impBackground);
         }
 
 

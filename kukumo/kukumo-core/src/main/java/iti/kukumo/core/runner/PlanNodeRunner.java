@@ -3,53 +3,41 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.core.runner;
 
+import imconfig.Configuration;
+import iti.kukumo.api.Backend;
+import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.event.Event;
+import iti.kukumo.api.model.ExecutionState;
+import iti.kukumo.api.plan.NodeType;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.Result;
+import iti.kukumo.core.Kukumo;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import imconfig.Configuration;
-import iti.kukumo.api.Backend;
-import iti.kukumo.api.BackendFactory;
-import iti.kukumo.api.model.ExecutionState;
-import iti.kukumo.core.Kukumo;
-import iti.kukumo.api.event.Event;
-import iti.kukumo.api.plan.NodeType;
-import iti.kukumo.api.plan.PlanNode;
-import iti.kukumo.api.plan.Result;
-
-
-
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class PlanNodeRunner {
-
-    protected enum State {
-        PREPARED, RUNNING, FINISHED
-    }
-
 
     private final PlanNode node;
     private final String uniqueId;
     private final Configuration configuration;
     private final PlanNodeLogger logger;
     private final BackendFactory backendFactory;
-
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
     private State state;
-
-
     public PlanNodeRunner(
-        PlanNode node,
-        Configuration configuration,
-        BackendFactory backendFactory,
-        Optional<Backend> backend,
-        PlanNodeLogger logger
+            PlanNode node,
+            Configuration configuration,
+            BackendFactory backendFactory,
+            Optional<Backend> backend,
+            PlanNodeLogger logger
     ) {
         this.node = node;
         this.configuration = configuration;
@@ -62,14 +50,13 @@ public class PlanNodeRunner {
 
 
     public PlanNodeRunner(
-        PlanNode node,
-        Configuration configuration,
-        BackendFactory backendFactory,
-        PlanNodeLogger logger
+            PlanNode node,
+            Configuration configuration,
+            BackendFactory backendFactory,
+            PlanNodeLogger logger
     ) {
         this(node, configuration, backendFactory, Optional.empty(), logger);
     }
-
 
     public List<PlanNodeRunner> getChildren() {
         if (children == null) {
@@ -78,34 +65,28 @@ public class PlanNodeRunner {
         return children;
     }
 
-
     public String getUniqueId() {
         return uniqueId;
     }
 
-
     protected Optional<Backend> getBackend() {
-        if (!backend.isPresent() && node.nodeType() == NodeType.TEST_CASE) {
+        if (backend.isEmpty() && node.nodeType() == NodeType.TEST_CASE) {
             backend = Optional.of(backendFactory.createBackend(node, configuration));
         }
         return backend;
     }
 
-
     protected Configuration configuration() {
         return configuration;
     }
-
 
     protected BackendFactory backendFactory() {
         return backendFactory;
     }
 
-
     protected PlanNodeLogger getLogger() {
         return logger;
     }
-
 
     protected Result runNode() {
         if (state != State.PREPARED) {
@@ -114,7 +95,11 @@ public class PlanNodeRunner {
         Result result = null;
         state = State.RUNNING;
         Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, node);
-        if (!getChildren().isEmpty()) {
+
+        if (node.nodeType() == NodeType.TEST_CASE
+                && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+            doNotImplemented(node, Result.NOT_IMPLEMENTED);
+        } else if (!getChildren().isEmpty()) {
             if (node.nodeType() == NodeType.TEST_CASE) {
                 testCasePreExecution(node);
             }
@@ -130,14 +115,13 @@ public class PlanNodeRunner {
         return result;
     }
 
-
     protected void runChildren() {
-        children.stream().map(PlanNodeRunner::runNode)
+        children.stream()
+                .map(PlanNodeRunner::runNode)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
                 .ifPresent(r -> node.prepareExecution().markFinished(Instant.now(), r));
     }
-
 
     protected Result runStep() {
         stepPreExecution(node);
@@ -146,41 +130,48 @@ public class PlanNodeRunner {
         return node.executionState().flatMap(ExecutionState::result).orElse(null);
     }
 
+    private void doNotImplemented(PlanNode node, Result result) {
+        node.children().forEach(c -> {
+            boolean isBackground = c.properties().get("gherkinType").equals("background");
+            doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
+        });
+        node.prepareExecution().markFinished(Instant.now(), result);
+    }
 
     protected List<PlanNodeRunner> createChildren() {
         return node.children()
-            .map(
-                child -> new PlanNodeRunner(
-                    child, configuration, backendFactory, getBackend(), logger
+                .map(
+                        child -> new PlanNodeRunner(
+                                child, configuration, backendFactory, getBackend(), logger
+                        )
                 )
-            )
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
-
 
     public PlanNode getNode() {
         return node;
     }
-
 
     protected void testCasePreExecution(PlanNode node) {
         logger.logTestCaseHeader(node);
         getBackend().ifPresent(Backend::setUp);
     }
 
-
     protected void testCasePostExecution(PlanNode node) {
         getBackend().ifPresent(Backend::tearDown);
     }
-
 
     protected void stepPreExecution(PlanNode step) {
         /* nothing by default */
     }
 
-
     protected void stepPostExecution(PlanNode step) {
         logger.logStepResult(step);
+    }
+
+
+    protected enum State {
+        PREPARED, RUNNING, FINISHED
     }
 
 }

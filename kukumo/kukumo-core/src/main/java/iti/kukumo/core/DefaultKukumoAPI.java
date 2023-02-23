@@ -28,4 +28,9 @@ public class DefaultKukumoAPI implements KukumoAPI {
         return Kukumo.resourceLoader();
     }
 
+    @Override
+    public String version() {
+        return getClass().getPackage().getImplementationVersion();
+    }
+
 }

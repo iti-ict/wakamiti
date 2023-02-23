@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning][2].
 ## [1.6.0] 2023-01-19
 ## Added
 - Oauth2 authentication steps with extra parameters [issue: #77]
+## Fixed
+- Text comparator
 
 ## [1.5.1] 2023-01-16
 ### Fixed

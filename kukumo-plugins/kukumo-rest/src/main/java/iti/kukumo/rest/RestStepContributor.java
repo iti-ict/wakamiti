@@ -37,7 +37,6 @@ import static iti.kukumo.rest.matcher.CharSequenceLengthMatcher.length;
 @Extension(provider = "iti.kukumo", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
-    private static final String GRANT_TYPE_PARAM = "grant_type";
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
 

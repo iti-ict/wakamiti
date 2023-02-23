@@ -3,21 +3,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.api.plan;
 
-
-
-import iti.kukumo.api.datatypes.Argument;
 import iti.kukumo.api.model.ExecutableTreeNode;
+import iti.kukumo.api.util.Argument;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-
+/**
+ *
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
     List<String> description;
@@ -116,9 +114,9 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
     public int numDescendants(NodeType nodeType, Result result) {
         return numDescendants(
-            descendant -> descendant.nodeType() == nodeType &&
-                            descendant.executionState().isPresent() &&
-                            descendant.executionState().get().hasResult(result)
+                descendant -> descendant.nodeType() == nodeType &&
+                        descendant.executionState().isPresent() &&
+                        descendant.executionState().get().hasResult(result)
         );
     }
 

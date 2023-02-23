@@ -14,6 +14,7 @@ Feature: Groovy Test Feature
       assert ctx.backend().getResults()[0] == 2
       """
 
+
   Scenario: Execute script test 2
     When the following groovy code is executed:
       """groovy

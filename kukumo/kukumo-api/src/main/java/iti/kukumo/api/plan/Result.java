@@ -14,10 +14,19 @@ public enum Result implements Comparable<Result> {
 
     // in inverted order of severity
 
-    /** The node or all of its children has been executed succesfully */
+    /**
+     * The node and all of its children has been executed successfully
+     */
     PASSED,
 
-    /** The node was not executed due to previous step did not passed the test */
+    /**
+     * The node was not executed due to has no children
+     */
+    NOT_IMPLEMENTED,
+
+    /**
+     * The node was not executed due to previous step did not pass the test
+     */
     SKIPPED,
 
     /**
@@ -26,10 +35,14 @@ public enum Result implements Comparable<Result> {
      */
     UNDEFINED,
 
-    /** The node or any of its children has not passed the validation */
+    /**
+     * The node or any of its children has not passed the validation
+     */
     FAILED,
 
-    /** The node or any of its children has experienced a fatal error */
+    /**
+     * The node or any of its children has experienced a fatal error
+     */
     ERROR;
 
     public boolean isPassed() {

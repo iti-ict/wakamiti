@@ -17,4 +17,5 @@ public interface KukumoAPI {
     ExtensionManager extensionManager();
     PlanSerializer planSerializer();
     ResourceLoader resourceLoader();
+    String version();
 }

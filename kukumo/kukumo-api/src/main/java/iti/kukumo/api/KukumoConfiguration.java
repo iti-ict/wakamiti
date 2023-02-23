@@ -3,9 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package iti.kukumo.api;
-
 
 import imconfig.Configuration;
 import imconfig.Configurer;
@@ -115,35 +113,36 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     private static final String FAINT = "faint";
 
     public static final Configuration DEFAULTS = Configuration.factory()
-        .fromEnvironment()
-        .appendFromSystem()
-        .filtered(PREFIX)
-        .appendFromPairs(
-            LANGUAGE, "en",
-        	RESOURCE_PATH, ".",
-            GENERATE_OUTPUT_FILE, "true",
-            OUTPUT_FILE_PATH, "kukumo.json",
-            OUTPUT_FILE_PER_TEST_CASE, "false",
-            REPORT_GENERATION, "true",
-            ID_TAG_PATTERN, "ID-(\\w*)",
-            REDEFINITION_ENABLED, "true",
-            REDEFINITION_DEFINITION_TAG, "definition",
-            REDEFINITION_IMPLEMENTATION_TAG, "implementation",
-            LOGS_SHOW_LOGO, "true",
-            LOGS_SHOW_STEP_SOURCE, "false",
-            LOGS_SHOW_ELAPSED_TIME, "true",
-            TREAT_STEPS_AS_TESTS, "false",
-            "logs.ansi.styles.keyword", "blue",
-            "logs.ansi.styles.source", FAINT,
-            "logs.ansi.styles.time", FAINT,
-            "logs.ansi.styles.resourceType", "cyan",
-            "logs.ansi.styles.contributor", "green",
-            "logs.ansi.styles.stepResult.PASSED", "green,bold",
-            "logs.ansi.styles.stepResult.SKIPPED", FAINT,
-            "logs.ansi.styles.stepResult.UNDEFINED", "yellow",
-            "logs.ansi.styles.stepResult.FAILED", "red,bold",
-            "logs.ansi.styles.stepResult.ERROR", "red,bold"
-        );
+            .fromEnvironment()
+            .appendFromSystem()
+            .filtered(PREFIX)
+            .appendFromPairs(
+                    LANGUAGE, "en",
+                    RESOURCE_PATH, ".",
+                    GENERATE_OUTPUT_FILE, Boolean.TRUE.toString(),
+                    OUTPUT_FILE_PATH, "kukumo.json",
+                    OUTPUT_FILE_PER_TEST_CASE, Boolean.FALSE.toString(),
+                    REPORT_GENERATION, Boolean.TRUE.toString(),
+                    ID_TAG_PATTERN, "ID-(\\w*)",
+                    REDEFINITION_ENABLED, Boolean.TRUE.toString(),
+                    REDEFINITION_DEFINITION_TAG, "definition",
+                    REDEFINITION_IMPLEMENTATION_TAG, "implementation",
+                    LOGS_SHOW_LOGO, Boolean.TRUE.toString(),
+                    LOGS_SHOW_STEP_SOURCE, Boolean.FALSE.toString(),
+                    LOGS_SHOW_ELAPSED_TIME, Boolean.TRUE.toString(),
+                    TREAT_STEPS_AS_TESTS, Boolean.FALSE.toString(),
+                    "logs.ansi.styles.keyword", "blue",
+                    "logs.ansi.styles.source", FAINT,
+                    "logs.ansi.styles.time", FAINT,
+                    "logs.ansi.styles.resourceType", "cyan",
+                    "logs.ansi.styles.contributor", "green",
+                    "logs.ansi.styles.stepResult.PASSED", "green,bold",
+                    "logs.ansi.styles.stepResult.SKIPPED", FAINT,
+                    "logs.ansi.styles.stepResult.NOT_IMPLEMENTED", "cyan,bold",
+                    "logs.ansi.styles.stepResult.UNDEFINED", "yellow",
+                    "logs.ansi.styles.stepResult.FAILED", "red,bold",
+                    "logs.ansi.styles.stepResult.ERROR", "red,bold"
+            );
 
 
     @Override
@@ -160,6 +159,6 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
 
     @Override
     public Configurer<Void> configurer() {
-        return (x,y)->{};
+        return (x, y) -> {};
     }
 }

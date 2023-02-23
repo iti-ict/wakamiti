@@ -20,7 +20,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-core</artifactId>
-<!--    <version>1.5.0</version>-->
+<!--    <version>1.6.0</version>-->
 
     <!-- additional information -->
     <name>Kukumo::CORE</name>
@@ -147,6 +147,18 @@
                             <version>${jext.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

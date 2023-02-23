@@ -134,14 +134,15 @@ extends TreeNode<S> {
      * @return The nullable optional result
      */
     public Optional<R> result() {
-        if (hasChildren()) {
+        Optional<R> result = executionState().flatMap(ExecutionState::result);
+        if (result.isEmpty() && hasChildren()) {
             return children()
                 .map(S::result)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .max(Comparator.naturalOrder());
         }
-        return executionState().flatMap(ExecutionState::result);
+        return result;
     }
 
 

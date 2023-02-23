@@ -37,7 +37,7 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
 
     @Override
     public Pattern pattern() {
-        return Pattern.compile("\\$\\{(?<name>((\\d+)#((?!\\$\\{).)*))\\}");
+        return Pattern.compile("\\$\\{(?<name>((\\d+)#((?!\\$\\{|\\}).)*))\\}");
     }
 
     @Override

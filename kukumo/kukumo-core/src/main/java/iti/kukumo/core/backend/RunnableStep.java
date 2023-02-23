@@ -3,29 +3,24 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.core.backend;
 
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.util.*;
+import iti.kukumo.core.Kukumo;
+import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 
-import iti.kukumo.api.datatypes.Argument;
-import iti.kukumo.api.util.Either;
-import iti.kukumo.api.util.Pair;
-import iti.kukumo.api.util.ResourceLoader;
-import iti.kukumo.api.util.ThrowableRunnable;
-import iti.kukumo.core.Kukumo;
-import iti.kukumo.api.KukumoDataTypeRegistry;
-import iti.kukumo.api.KukumoException;
-import iti.kukumo.api.plan.PlanNode;
-import org.slf4j.Logger;
-
-
+/**
+ *
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class RunnableStep {
 
     private static final Logger LOGGER = Kukumo.LOGGER;
@@ -39,11 +34,11 @@ public class RunnableStep {
 
 
     public RunnableStep(
-        String definitionFile,
-        String definitionKey,
-        BackendArguments arguments,
-        ThrowableRunnable stepExecutor,
-        String stepProvider
+            String definitionFile,
+            String definitionKey,
+            BackendArguments arguments,
+            ThrowableRunnable stepExecutor,
+            String stepProvider
     ) {
         this.definitionFile = definitionFile;
         this.definitionKey = definitionKey;
@@ -59,18 +54,20 @@ public class RunnableStep {
             ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile, locale);
             if (resourceBundle == null) {
                 throw new KukumoException(
-                    "Cannot find step definition file {} for locale {}",
-                    definitionFile,
-                    locale
+                        "Cannot find step definition file {} for locale {}",
+                        definitionFile,
+                        locale
                 );
             }
-            translatedDefinition = resourceBundle.getString(definitionKey).trim();
-            if (translatedDefinition == null) {
+            try {
+                translatedDefinition = resourceBundle.getString(definitionKey).trim();
+            } catch (MissingResourceException e) {
                 throw new KukumoException(
-                    "Cannot find step definition entry '{}' in file '{}' for locale {}",
-                    definitionKey,
-                    definitionFile,
-                    locale
+                        "Cannot find step definition entry '{}' in file '{}' for locale {}",
+                        definitionKey,
+                        definitionFile,
+                        locale,
+                        e
                 );
             }
             translatedDefinitions.put(locale, translatedDefinition);
@@ -80,24 +77,21 @@ public class RunnableStep {
 
 
     public Matcher matcher(
-        Either<PlanNode,String> modelStep,
-        Locale stepLocale,
-        Locale dataLocale,
-        KukumoDataTypeRegistry typeRegistry
+            Either<PlanNode, String> modelStep,
+            Locale stepLocale,
+            Locale dataLocale,
+            KukumoDataTypeRegistry typeRegistry
     ) {
         String translatedDefinition = getTranslatedDefinition(stepLocale);
         return ExpressionMatcher
-            .matcherFor(translatedDefinition, typeRegistry, dataLocale, modelStep);
+                .matcherFor(translatedDefinition, typeRegistry, dataLocale, modelStep);
     }
 
 
     public Object run(Map<String, Argument> invokeArguments) {
 
-        boolean error = false;
+        boolean error = invokeArguments.size() != this.arguments.size();
         // re-arrange argument order
-        if (invokeArguments.size() != this.arguments.size()) {
-            error = true;
-        }
         Object[] argumentArray = new Object[this.arguments.size()];
         for (int i = 0; i < argumentArray.length; i++) {
             Pair<String, String> argument = this.arguments.get(i);
@@ -111,9 +105,9 @@ public class RunnableStep {
         }
         if (error) {
             throw new KukumoException(
-                "Cannot run step: wrong arguments (expected {} but received {})",
-                arguments,
-                invokeArguments
+                    "Cannot run step: wrong arguments (expected {} but received {})",
+                    arguments,
+                    invokeArguments
             );
         } else {
             try {
@@ -124,7 +118,7 @@ public class RunnableStep {
             } catch (InvocationTargetException e) {
                 var originalException = e.getTargetException();
                 if (originalException instanceof AssertionError) {
-                    throw (AssertionError)originalException;
+                    throw (AssertionError) originalException;
                 } else {
                     throw new KukumoException(originalException);
                 }
@@ -145,7 +139,7 @@ public class RunnableStep {
     }
 
 
-	public String getProvider() {
-		return stepProvider;
-	}
+    public String getProvider() {
+        return stepProvider;
+    }
 }

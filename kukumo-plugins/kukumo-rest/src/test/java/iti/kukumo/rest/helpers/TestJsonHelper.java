@@ -263,6 +263,19 @@ public class TestJsonHelper {
         List<String> segments = new LinkedList<>();
 
         try {
+            helper.assertContent(jsonMissing, jsonNormal, MatchMode.LOOSE);
+        } catch (ComparisonFailure e) {
+            segments.addAll(extractSegments(e));
+        }
+
+        assertThat(segments).isEmpty();
+    }
+
+    @Test
+    public void testLooseMissingReverse() {
+        List<String> segments = new LinkedList<>();
+
+        try {
             helper.assertContent(jsonNormal, jsonMissing, MatchMode.LOOSE);
         } catch (ComparisonFailure e) {
             segments.addAll(extractSegments(e));

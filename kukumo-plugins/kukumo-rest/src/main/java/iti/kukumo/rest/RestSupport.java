@@ -3,12 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.rest;
-
 
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
@@ -41,6 +36,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.rest");
@@ -71,8 +69,8 @@ public class RestSupport {
         validatableResponse = null;
         RequestSpecification request = RestAssured.given()
                 .accept(ContentType.ANY);
-        authSpecification.ifPresent(specification -> specification.accept(request));
         specifications.forEach(specification -> specification.accept(request));
+        authSpecification.ifPresent(specification -> specification.accept(request));
         return attachLogger(request);
     }
 
@@ -231,13 +229,12 @@ public class RestSupport {
         helper.assertContentSchema(expectedSchema, validatableResponse.extract().asString());
     }
 
-    protected String assertSubtype(String subtype) {
+    protected void assertSubtype(String subtype) {
         List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
                 .map(contentType -> contentType.split("/")[1]).collect(Collectors.toList());
         if (!subtypes.contains(subtype)) {
             throw new KukumoException("'{}' is not a valid subtype. Possible values: {}", subtype, subtypes);
         }
-        return subtype;
     }
 
     private String readFile(File file) {

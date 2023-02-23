@@ -405,7 +405,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -441,7 +441,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -517,7 +517,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -555,7 +555,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        assertThat(keys().values()).contains(token);
+        assertThat(keys()).containsValue(token);
     }
 
     @Test
@@ -615,13 +615,14 @@ public class RestStepContributorTest {
                         )
                 ,
                 response()
-                        .withStatusCode(200)
+                        .withStatusCode(401)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setBearerAuth(token);
+        //contributor.setBearerAuth(token);
+        contributor.setHeader("Authorization", "loquesea");
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(401)));
         contributor.setBaseURL(new URL(BASE_URL));
         contributor.setService("/users");
         contributor.setNoneAuth(); // auth must be overridden

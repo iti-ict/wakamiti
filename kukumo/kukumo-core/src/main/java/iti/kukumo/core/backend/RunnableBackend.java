@@ -3,27 +3,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.core.backend;
 
-
-import java.time.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
 import imconfig.Configuration;
-import iti.kukumo.api.*;
-import iti.kukumo.api.datatypes.Argument;
+import iti.kukumo.api.KukumoDataTypeRegistry;
+import iti.kukumo.api.KukumoException;
+import iti.kukumo.api.KukumoSkippedException;
+import iti.kukumo.api.KukumoStepRunContext;
 import iti.kukumo.api.model.ExecutionState;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
 import iti.kukumo.api.plan.PlanNodeData;
 import iti.kukumo.api.plan.Result;
+import iti.kukumo.api.util.Argument;
 import iti.kukumo.api.util.Either;
 import iti.kukumo.api.util.Pair;
 import iti.kukumo.api.util.ThrowableRunnable;
@@ -31,7 +23,18 @@ import iti.kukumo.core.Kukumo;
 import iti.kukumo.core.util.LocaleLoader;
 import org.slf4j.Logger;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
+/**
+ *
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class RunnableBackend extends AbstractBackend {
 
     public static final Logger LOGGER = Kukumo.LOGGER;
@@ -40,8 +43,8 @@ public class RunnableBackend extends AbstractBackend {
     public static final String DATATABLE_ARG = "datatable";
 
     private static final List<String> DATA_ARG_ALTERNATIVES = Arrays.asList(
-        DOCUMENT_ARG,
-        DATATABLE_ARG
+            DOCUMENT_ARG,
+            DATATABLE_ARG
     );
 
     private final PlanNode testCase;
@@ -54,15 +57,15 @@ public class RunnableBackend extends AbstractBackend {
 
 
     public RunnableBackend(
-        PlanNode testCase,
-        Configuration configuration,
-        KukumoDataTypeRegistry typeRegistry,
-        List<RunnableStep> steps,
-        List<ThrowableRunnable> setUpOperations,
-        List<ThrowableRunnable> tearDownOperations,
-        Clock clock
+            PlanNode testCase,
+            Configuration configuration,
+            KukumoDataTypeRegistry typeRegistry,
+            List<RunnableStep> steps,
+            List<ThrowableRunnable> setUpOperations,
+            List<ThrowableRunnable> tearDownOperations,
+            Clock clock
     ) {
-        super(configuration,typeRegistry,steps);
+        super(configuration, typeRegistry, steps);
         this.testCase = testCase;
         this.setUpOperations = setUpOperations;
         this.tearDownOperations = tearDownOperations;
@@ -71,7 +74,6 @@ public class RunnableBackend extends AbstractBackend {
         this.stepBackendResults = new LinkedList<>();
         this.stepsWithErrors = new ArrayList<>();
     }
-
 
 
     @Override
@@ -97,15 +99,15 @@ public class RunnableBackend extends AbstractBackend {
     private void validateStepFromTestCase(PlanNode step) {
         if (step.nodeType().isNoneOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             throw new KukumoException(
-                "Plan node of type {} cannot be executed",
-                step.nodeType()
+                    "Plan node of type {} cannot be executed",
+                    step.nodeType()
             );
         }
         if (!testCase.hasDescendant(step)) {
             throw new KukumoException(
-                "Step {} is not descendant of {}",
-                step.displayName(),
-                testCase.displayName()
+                    "Step {} is not descendant of {}",
+                    step.displayName(),
+                    testCase.displayName()
             );
         }
     }
@@ -161,14 +163,14 @@ public class RunnableBackend extends AbstractBackend {
     private void fetchStepBackendData() {
         if (stepBackendData.isEmpty()) {
             testCase.descendants().filter(node -> node.nodeType() == NodeType.STEP)
-                .forEach(step -> {
-                    try {
-                        stepBackendData.put(step, fetchStepBackendData(step));
-                    } catch (Exception e) {
-                        stepBackendData.put(step, new StepBackendData(step, e));
-                        stepsWithErrors.add(step);
-                    }
-                });
+                    .forEach(step -> {
+                        try {
+                            stepBackendData.put(step, fetchStepBackendData(step));
+                        } catch (Exception e) {
+                            stepBackendData.put(step, new StepBackendData(step, e));
+                            stepsWithErrors.add(step);
+                        }
+                    });
         }
     }
 
@@ -177,25 +179,25 @@ public class RunnableBackend extends AbstractBackend {
         Locale stepLocale = LocaleLoader.forLanguage(step.language());
         Locale dataLocale = dataLocale(step, stepLocale);
         Pair<RunnableStep, Matcher> runnableStepData = locateRunnableStep(
-            step,
-            stepLocale,
-            dataLocale
+                step,
+                stepLocale,
+                dataLocale
         );
         RunnableStep runnableStep = runnableStepData.key();
         Matcher stepMatcher = runnableStepData.value();
         Map<String, Argument> invokingArguments = buildInvokingArguments(
-            step,
-            runnableStep,
-            stepMatcher,
-            dataLocale
+                step,
+                runnableStep,
+                stepMatcher,
+                dataLocale
         );
         return new StepBackendData(
-            step,
-            stepLocale,
-            dataLocale,
-            runnableStep,
-            stepMatcher,
-            invokingArguments
+                step,
+                stepLocale,
+                dataLocale,
+                runnableStep,
+                stepMatcher,
+                invokingArguments
         );
     }
 
@@ -205,12 +207,12 @@ public class RunnableBackend extends AbstractBackend {
             step.prepareExecution().markStarted(instant);
             StepBackendData stepBackend = stepBackendData.get(step);
             KukumoStepRunContext.set(
-                new KukumoStepRunContext(
-                    configuration,
-                    this,
-                    stepBackend.stepLocale(),
-                    stepBackend.dataLocale()
-                )
+                    new KukumoStepRunContext(
+                            configuration,
+                            this,
+                            stepBackend.stepLocale(),
+                            stepBackend.dataLocale()
+                    )
             );
             if (stepBackend.exception() != null) {
                 throw stepBackend.exception();
@@ -250,34 +252,34 @@ public class RunnableBackend extends AbstractBackend {
 
 
     protected Pair<RunnableStep, Matcher> locateRunnableStep(
-        PlanNode modelStep,
-        Locale stepLocale,
-        Locale dataLocale
+            PlanNode modelStep,
+            Locale stepLocale,
+            Locale dataLocale
     ) {
         Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
-            .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
+                .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
 
         List<Pair<RunnableStep, Matcher>> locatedSteps = runnableSteps.stream()
-            .map(Pair.computeValue(matcher))
-            .filter(pair -> pair.value().matches())
-            .collect(Collectors.toList());
+                .map(Pair.computeValue(matcher))
+                .filter(pair -> pair.value().matches())
+                .collect(Collectors.toList());
 
         if (locatedSteps.isEmpty()) {
             throw new UndefinedStepException(
-                modelStep,
-                "Cannot match step with any defined step",
-                getHintFor(modelStep.name(), dataLocale)
+                    modelStep,
+                    "Cannot match step with any defined step",
+                    getHintFor(modelStep.name(), dataLocale)
             );
         }
         if (locatedSteps.size() > 1) {
             String locatedStepsInfo = locatedSteps.stream()
-                .map(Pair::key)
-                .map(step -> step.getTranslatedDefinition(stepLocale))
-                .collect(Collectors.joining("\n\t"));
+                    .map(Pair::key)
+                    .map(step -> step.getTranslatedDefinition(stepLocale))
+                    .collect(Collectors.joining("\n\t"));
             throw new UndefinedStepException(
-                modelStep,
-                "Step matches more than one defined step",
-                locatedStepsInfo
+                    modelStep,
+                    "Step matches more than one defined step",
+                    locatedStepsInfo
             );
         }
         return locatedSteps.get(0);
@@ -285,10 +287,10 @@ public class RunnableBackend extends AbstractBackend {
 
 
     protected Map<String, Argument> buildInvokingArguments(
-        PlanNode modelStep,
-        RunnableStep runnableStep,
-        Matcher stepMatcher,
-        Locale locale
+            PlanNode modelStep,
+            RunnableStep runnableStep,
+            Matcher stepMatcher,
+            Locale locale
     ) {
         Map<String, Argument> invokingArguments = new HashMap<>();
         for (Pair<String, String> definedArgument : runnableStep.getArguments()) {

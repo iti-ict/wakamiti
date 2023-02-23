@@ -5,15 +5,16 @@ import iti.kukumo.core.JsonPlanSerializer;
 import iti.kukumo.plugins.cucumber.CucumberExporter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestCucumberExport {
 
@@ -53,18 +54,14 @@ public class TestCucumberExport {
         );
         cucumberReportBuilder.generateReports();
 
-
-        assertTrue(fileEquals("target/cucumber-ok-inner.json","src/test/resources/cucumber-ok-inner.json"));
-        assertTrue(fileEquals("target/cucumber-ok-outer.json","src/test/resources/cucumber-ok-outer.json"));
-        assertTrue(fileEquals("target/cucumber-failed-inner.json","src/test/resources/cucumber-failed-inner.json"));
-        assertTrue(fileEquals("target/cucumber-failed-outer.json","src/test/resources/cucumber-failed-outer.json"));
-
+        Stream.of("cucumber-ok-inner.json",
+                "cucumber-ok-outer.json",
+                "cucumber-failed-inner.json",
+                "cucumber-failed-outer.json"
+        ).forEach(file -> {
+            assertThat(new File(String.format("target/%s", file)))
+                    .hasSameTextualContentAs(new File(String.format("src/test/resources/%s", file)));
+        });
     }
-
-
-    private boolean fileEquals(String file1, String file2) throws IOException {
-        return FileUtils.contentEquals(new File(file1), new File(file2));
-    }
-
 
 }
