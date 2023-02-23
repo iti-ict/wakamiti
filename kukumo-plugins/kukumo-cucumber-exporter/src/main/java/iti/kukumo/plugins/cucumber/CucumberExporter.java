@@ -124,39 +124,48 @@ public class CucumberExporter implements Reporter {
     }
 
 
-
-    private Map<String,Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
-        Map<String,Object> map = new LinkedHashMap<>();
-        map.put(KEYWORD,keyword(definitionStep));
+    private Map<String, Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(KEYWORD, keyword(definitionStep));
         map.put(NAME, definitionStep.getName());
-        Map<String,Object> result = new LinkedHashMap<>();
-        String status = "pending";
+        Map<String, Object> result = new LinkedHashMap<>();
+        String status;
         switch (definitionStep.getResult()) {
-            case PASSED: status = "passed"; break;
+            case PASSED:
+                status = "passed";
+                break;
             case FAILED:
-            case ERROR: status = "failed"; break;
-            case SKIPPED: status = "skipped"; break;
-            case UNDEFINED: status = "ambiguous"; break;
+            case ERROR:
+                status = "failed";
+                break;
+            case SKIPPED:
+                status = "skipped";
+                break;
+            case UNDEFINED:
+                status = "ambiguous";
+                break;
+            default:
+                status = "pending";
         }
         result.put(STATUS, status);
-        result.put(DURATION,definitionStep.getDuration() );
+        result.put(DURATION, definitionStep.getDuration());
         if (resultStep != null) {
             result.put(ERROR_MESSAGE, resultStep.getErrorMessage());
             result.put(OUTPUT, resultStep.getErrorTrace());
         }
-        map.put(RESULT,result);
+        map.put(RESULT, result);
         if (definitionStep.getDocument() != null) {
-            Map<String,Object> docstring = new LinkedHashMap<>();
-            docstring.put(CONTENT_TYPE,definitionStep.getDocumentType());
+            Map<String, Object> docstring = new LinkedHashMap<>();
+            docstring.put(CONTENT_TYPE, definitionStep.getDocumentType());
             docstring.put(VALUE, definitionStep.getDocument());
-            map.put(DOC_STRING,docstring);
+            map.put(DOC_STRING, docstring);
         }
         if (definitionStep.getDataTable() != null) {
-            List<Map<String,Object>> rows = new LinkedList<>();
+            List<Map<String, Object>> rows = new LinkedList<>();
             for (String[] row : definitionStep.getDataTable()) {
-                rows.add(Map.of(CELLS,Arrays.asList(row)));
+                rows.add(Map.of(CELLS, Arrays.asList(row)));
             }
-            map.put(ROWS,rows);
+            map.put(ROWS, rows);
         }
         return map;
     }

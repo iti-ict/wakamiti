@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +96,7 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate
      * @return The result with the evaluations and the given string evaluated
      */
-    public final Result evalOr(String value, Function<String, String> propertyAlternative) {
+    public final Result evalOr(String value, UnaryOperator<String> propertyAlternative) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         Matcher matcher = pattern().matcher(value);
         while (matcher.find()) {
@@ -117,7 +117,7 @@ public abstract class PropertyEvaluator implements Contributor {
      * Eval a single property of the global string.
      *
      * @param property The unevaluated property
-     * @param matcher The {@link Matcher} of the global string
+     * @param matcher  The {@link Matcher} of the global string
      * @return The evaluated property result
      */
     protected abstract String evalProperty(String property, Matcher matcher);

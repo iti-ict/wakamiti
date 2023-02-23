@@ -22,10 +22,10 @@ import java.util.concurrent.TimeoutException;
 
 public class FilesHelperTest {
 
-    private static Logger log = LoggerFactory.getLogger("iti.kukumo.test");
-    private static long TIMEOUT = 3;
+    private static final Logger log = LoggerFactory.getLogger("iti.kukumo.test");
+    private static final long TIMEOUT = 3;
 
-    private FilesHelper helper = new FilesHelper();
+    private final FilesHelper helper = new FilesHelper();
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -38,7 +38,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.createNewFile();
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
@@ -64,7 +64,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.mkdir();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -91,7 +91,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.delete();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -118,7 +118,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.delete();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -145,7 +145,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.setLastModified(System.currentTimeMillis());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -172,7 +172,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis);
+                Thread.sleep(expectedMillis+10);
                 file.setLastModified(System.currentTimeMillis());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

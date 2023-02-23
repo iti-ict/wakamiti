@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static iti.kukumo.report.html.HtmlReportGeneratorConfig.*;
 
@@ -113,7 +113,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     private String readStyles() {
-        Function<String, String> readStyle = (resource) -> {
+        UnaryOperator<String> readStyle = (resource) -> {
             try (InputStream is = resource(resource)) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

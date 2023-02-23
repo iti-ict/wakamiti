@@ -39,7 +39,7 @@
                         </button>
                     </header>
                     <div class="test--body details--body">
-                        <canvas class="chart" data-result='{<#list plan.childrenResults as k, v>"${k}":${v}<#sep>,</#list>}'>
+                        <canvas class="chart" data-result='{<#if plan.childrenResults??><#list plan.childrenResults as k, v>"${k}":${v}<#sep>, </#list></#if>}'>
                         </canvas>
                     </div>
                 </section>
@@ -76,7 +76,7 @@
                             </#if>
                             <li>
                                 <label>Wakamiti version</label>
-                                <span>${version}</span>
+                                <span>${version!"?.?.?"}</span>
                             </li>
                             <li>
                                 <label>Execution start</label>
@@ -88,7 +88,6 @@
                             </li>
                             <li>
                                 <label>Total duration</label>
-<#--                                <span>${plan.duration?number_to_time?string["h'h' m'm' s's' S'ms'"]}</span>-->
                                 <span>${plan.duration?string.@duration}</span>
                             </li>
                         </ul>
