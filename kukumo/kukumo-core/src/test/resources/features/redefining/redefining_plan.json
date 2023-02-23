@@ -166,8 +166,9 @@
         },
         "children" : [ {
           "nodeType" : "STEP_AGGREGATOR",
-          "name" : "<preparation>",
-          "displayName" : "<preparation>",
+          "name" : "Estos son los antecedentes",
+          "keyword" : "Antecedentes",
+          "displayName" : "Antecedentes: Estos son los antecedentes",
           "tags" : [ "ID-2", "implementation" ],
           "properties" : {
             "dataFormatLanguage" : "en",
