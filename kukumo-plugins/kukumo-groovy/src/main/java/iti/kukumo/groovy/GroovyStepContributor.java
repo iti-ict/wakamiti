@@ -13,31 +13,34 @@ import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.api.plan.Document;
 
 /**
+ * The groovy steps' definition.
  *
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @I18nResource("iti_kukumo_kukumo-groovy")
 @Extension(provider = "iti.kukumo", name = "groovy-steps")
 public class GroovyStepContributor implements StepContributor {
 
     /**
-     * Run the given groovy script with the available variables:
+     * Runs the given groovy script with the available variables:
      * <ul>
-     *  <li>{@code log} - The {@link org.slf4j.Logger} groovy</li>
-     *  <li>{@code ctx} - The {@link KukumoStepRunContext} with the current scenario running information</li>
+     * <li>{@code log} - The {@link org.slf4j.Logger} groovy</li>
+     * <li>{@code ctx} - The {@link KukumoStepRunContext} with the current
+     * scenario running information</li>
      * </ul>
      *
      * <p> Examples:
-     * <blockquote><pre>
+     * <blockquote><pre>{@code
      * When the following groovy code is executed:
      *   """groovy
      *   1+1
      *   """
-     * Then the following groovy code is executed:
+     * And the following groovy code is executed:
      *   """groovy
      *   log.debug("Results: {}", ctx.backend().getResults())
      *   assert ctx.backend().getResults()[0] == 2
      *   """
-     * </pre></blockquote>
+     * }</pre></blockquote>
      *
      * @param document The script content
      * @return The script return object
@@ -46,4 +49,5 @@ public class GroovyStepContributor implements StepContributor {
     public Object execute(Document document) {
         return GroovyHelper.executeScript(document.getContent());
     }
+
 }

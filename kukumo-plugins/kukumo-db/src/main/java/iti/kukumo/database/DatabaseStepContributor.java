@@ -139,6 +139,7 @@ public class DatabaseStepContributor implements StepContributor {
     }
 
 
+    // TODO: mostrar la ruta absoluta del fichero en el mensaje de error cuando no lo encuentra
     @Step("db.define.cleanup.file")
     public void setManualCleanup(File file) throws IOException {
         try (Reader reader = new FileReader(file)) {

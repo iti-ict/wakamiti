@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
  * <p> Pattern: {@code ${=[groovy script]}}
  *
  * <p> Examples:
- * <blockquote><pre>
+ * <blockquote><pre>{@code
  *     ${=1+1}
  *     ${=new Date().format('yyyy-MM-dd')}
- * </pre></blockquote>
+ * }</pre></blockquote>
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
  */
@@ -37,4 +37,5 @@ public class GroovyPropertyEvaluator extends PropertyEvaluator {
     public String evalProperty(String property, Matcher matcher) {
         return GroovyHelper.executeScript(matcher.group("name")).toString();
     }
+
 }
