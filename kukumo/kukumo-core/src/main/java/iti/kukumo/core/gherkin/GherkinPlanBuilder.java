@@ -480,7 +480,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             }
         }
         if (idTag == null) {
-            idTag = "#"+UUID.randomUUID().toString().substring(0,5);
+            idTag = "#"+(char)(new Random().nextInt(26) + 'a')+UUID.randomUUID().toString().substring(0,5);
         }
         return idTag + suffix;
     }

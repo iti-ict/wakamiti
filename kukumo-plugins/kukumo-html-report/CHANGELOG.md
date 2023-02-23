@@ -6,13 +6,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [1.3.3] 20220506
-#### Fixed
+## [1.5.0] 2023-02-23
+### Modified
+- New template
+
+## [1.4.0] 2022-05-09
+### Modified
+- API separation
+
+## [1.3.3] 2022-05-06
+### Fixed
 - Fix #26 : HTML escaping in descriptions and error messages
 - Fix : Report title was not properly passed to the template engine
 
 ## [1.2.1] 2021-10-22
-#### Fixed
+### Fixed
 - The base packaging path of `TemplateClassLoader` now is `/`
 
 ## [1.2.0] 2021-09-29

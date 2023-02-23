@@ -24,13 +24,16 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-html-report</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 
     <!-- additional information -->
     <name>Kukumo::HTML Report</name>
     <description>HTML Report generator for Kukumo results</description>
     <inceptionYear>2019</inceptionYear>
 
+    <properties>
+        <xmlunit.version>2.9.0</xmlunit.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -56,22 +59,57 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.simschla</groupId>
+            <artifactId>fast-and-simple-minify</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.bit3</groupId>
+            <artifactId>jsass</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-        </dependency>
-        <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
+            <version>${xmlunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-assertj</artifactId>
+            <version>${xmlunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-matchers</artifactId>
+            <version>${xmlunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-legacy</artifactId>
+            <version>${xmlunit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
