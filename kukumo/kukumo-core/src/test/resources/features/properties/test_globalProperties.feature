@@ -70,6 +70,10 @@ Característica: Pruebas de propiedades dinámicas
     * un fichero 'src/test/resources/features/properties/ABC'
     * un fichero 'src/test/resources/features/properties/${text}'
     * un fichero '${1#}'
+    Y un fichero 'src/test/resources/features/properties/ABC' con el siguiente contenido:
+      """
+      The number is 6.
+      """
 
   @ID-5
   Escenario: Escenario tipo URL

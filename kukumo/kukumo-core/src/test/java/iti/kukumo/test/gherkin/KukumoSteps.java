@@ -3,12 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.test.gherkin;
-
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +13,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,7 +22,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import iti.kukumo.api.KukumoAPI;
 import iti.kukumo.api.util.JsonUtils;
+import iti.kukumo.api.util.ResourceLoader;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
 
@@ -43,11 +39,11 @@ import iti.kukumo.api.plan.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @I18nResource("steps/test-kukumo-steps")
 public class KukumoSteps implements StepContributor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("iti.kukumo.test");
+    private static final ResourceLoader resourceLoader = KukumoAPI.instance().resourceLoader();
 
     private int value1;
     private float value2;
@@ -293,6 +289,15 @@ public class KukumoSteps implements StepContributor {
         assert file != null : "File is null";
         assert Objects.equals(file.getPath(), "src/test/resources/features/properties/ABC") : "File is " + file;
         return file.getPath();
+    }
+
+    @Step(value = "file.content", args = { "file" })
+    public Object getFile(File file, Document document) {
+        LOGGER.info("This file is: {}", file);
+        assert file != null : "File is null";
+        String content = resourceLoader.readFileAsString(file);
+        assert Objects.equals(content, document.getContent()) : "File is " + content;
+        return content;
     }
 
     @Step(value = "given.url" , args = { "url" })

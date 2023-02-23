@@ -3,15 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package iti.kukumo.api.util;
-
 
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.Resource;
+import iti.kukumo.api.extensions.PropertyEvaluator;
 import iti.kukumo.api.extensions.ResourceType;
 import org.slf4j.Logger;
 
@@ -31,8 +27,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-
-
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class ResourceLoader {
 
     private static final String CLASSPATH_PROTOCOL = "classpath:";
@@ -94,23 +91,33 @@ public class ResourceLoader {
 
 
 
-
+    /**
+     * Read the content of the given {@link File}, in the {@code UTF_8}
+     * {@link Charset}, and evaluate the global properties it contains.
+     *
+     * @param file The file to read
+     * @return The file content
+     */
     public String readFileAsString(File file) {
         return readFileAsString(file, StandardCharsets.UTF_8);
     }
 
 
+    /**
+     * Read the content of the given {@link File}, in the given {@link Charset},
+     * and evaluate the global properties it contains.
+     *
+     * @param file The {@link File} to read
+     * @param charset The file {@link Charset}
+     * @return The file content
+     */
     public String readFileAsString(File file, Charset charset) {
-        try {
-            try (FileInputStream inputStream = new FileInputStream(file)) {
-                return toString(inputStream, charset);
-            }
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            return PropertyEvaluator.makeEvalIfCan(toString(inputStream, charset)).value();
         } catch (IOException e) {
             throw new KukumoException("Error reading text file {} : {}", file, e.getMessage(), e);
         }
     }
-
-
 
 
     /**
