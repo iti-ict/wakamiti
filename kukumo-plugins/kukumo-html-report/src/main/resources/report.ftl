@@ -163,7 +163,7 @@
                                             <div class="step--body-wrap collapsable">
                                                 <#if node.document??>
                                                     <div class="step--body">
-                                                        <pre class="step--code-snippet ${node.documentType} hljs"><code>${node.document}</code></pre>
+                                                        <pre class="step--code-snippet ${node.documentType!""} hljs"><code>${node.document}</code></pre>
                                                     </div>
                                                 </#if>
                                                 <#if node.dataTable??>
