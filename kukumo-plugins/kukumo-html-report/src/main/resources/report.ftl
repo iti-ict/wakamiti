@@ -128,7 +128,7 @@
                                     <ul class="test-summary--results">
                                     <#list feature.childrenResults as resultType, count>
                                         <li class="test-summary--item" title="${resultType?capitalize}">
-                                            <i class="material-icons md-18 icon--${resultType?lower_case}"></i>
+                                            <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
                                             <span>${count}</span>
                                         </li>
                                     </#list>
@@ -146,7 +146,7 @@
                                     <li class="step--component">
                                         <header class="step--header">
                                             <button class="step--header-btn toggle <#if node.result != "PASSED">on</#if>" type="button">
-                                                <i class="material-icons md-18 icon--${node.result?lower_case}"></i>
+                                                <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}"></i>
                                                 <h5 class="step--title">
                                                     <span><strong class="keyword">${node.keyword}</strong> ${node.name!""}</span>
                                                 </h5>
@@ -187,7 +187,7 @@
                                                 </#if>
                                                 <#if node.errorTrace??>
                                                     <div class="step--body">
-                                                        <pre class="step--code-snippet text hljs"><code class="step--${node.result?lower_case}-message"><#outputformat "HTML">${node.errorTrace}</#outputformat></code></pre>
+                                                        <pre class="step--code-snippet text hljs"><code class="step--${node.result?lower_case?replace("_", "-")}-message"><#outputformat "HTML">${node.errorTrace}</#outputformat></code></pre>
                                                     </div>
                                                 </#if>
                                             </div>
@@ -231,7 +231,7 @@
                                                                 <ul class="test-summary--results">
                                                                     <#list scenario.childrenResults as resultType, count>
                                                                         <li class="test-summary--item" title="${resultType?capitalize}">
-                                                                            <i class="material-icons md-18 icon--${resultType?lower_case}"></i>
+                                                                            <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
                                                                             <span>${count}</span>
                                                                         </li>
                                                                     </#list>
@@ -358,15 +358,15 @@
                 <#list plan.children as feature>
                     <li>
                         <a href="#${feature.id?replace("#", "")}">
-                            <span class="list-style icon--${feature.result?lower_case}"></span>
+                            <span class="list-style icon--${feature.result?lower_case?replace("_", "-")}"></span>
                             <span>${feature.name!feature.displayName!""}</span>
                         </a>
                         <div>
                             <ul class="nav-menu--sub">
                                 <#macro scenarioMenu scenario>
-                                    <li data-target="${scenario.result?lower_case}-toggle">
+                                    <li data-target="${scenario.result?lower_case?replace("_", "-")-toggle">
                                         <a href="#${scenario.id?replace("#", "")}">
-                                            <span class="list-style icon--${scenario.result?lower_case}"></span>
+                                            <span class="list-style icon--${scenario.result?lower_case?replace("_", "-")}"></span>
                                             <span>${scenario.name!scenario.displayName!""}</span>
                                         </a>
                                     </li>
