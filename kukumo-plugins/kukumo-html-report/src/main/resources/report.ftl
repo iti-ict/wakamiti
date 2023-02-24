@@ -88,7 +88,7 @@
                             </li>
                             <li>
                                 <label>Total duration</label>
-                                <span>${plan.duration?string.@duration}</span>
+                                <span>${(plan.duration!0)?string.@duration}</span>
                             </li>
                         </ul>
                     </div>
@@ -117,7 +117,7 @@
                             <ul class="test-summary--component">
                                 <li class="test-summary--item" title="Duration">
                                     <i class="material-icons md-18">access_time</i>
-                                    <span>${feature.duration?string.@duration}</span>
+                                    <span>${(feature.duration!0)?string.@duration}</span>
                                 </li>
                                 <li class="test-summary--item" title="Tests">
                                     <i class="material-icons md-18">article</i>
@@ -154,7 +154,7 @@
                                                     <#if node.errorMessage??>
                                                         <i class="material-icons-outlined md-18" title="<#outputformat "HTML">${node.errorMessage}</#outputformat>">feedback</i>
                                                     </#if>
-                                                    <span>${node.duration?string.@duration}</span>
+                                                    <span>${(node.duration!0)?string.@duration}</span>
                                                     <i class="material-icons md-18 step--duration-icon">access_time</i>
                                                 </div>
                                             </button>
@@ -220,7 +220,7 @@
                                                     <ul class="test-summary--component">
                                                         <li class="test-summary--item" title="Duration">
                                                             <i class="material-icons md-18">access_time</i>
-                                                            <span>${scenario.duration?string.@duration}</span>
+                                                            <span>${(scenario.duration!0)?string.@duration}</span>
                                                         </li>
                                                         <li class="test-summary--item" title="Tests">
                                                             <i class="material-icons md-18">article</i>
