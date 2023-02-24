@@ -605,7 +605,8 @@ ul {
     position: relative;
     font-size: 11px;
     margin: 0;
-    border-radius: 0
+    border-radius: 0;
+    max-height: 500px;
 }
 
 .step--code-snippet + .step--code-snippet {
