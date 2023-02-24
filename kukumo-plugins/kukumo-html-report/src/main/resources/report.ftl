@@ -364,7 +364,7 @@
                         <div>
                             <ul class="nav-menu--sub">
                                 <#macro scenarioMenu scenario>
-                                    <li data-target="${scenario.result?lower_case?replace("_", "-")-toggle">
+                                    <li data-target="${scenario.result?lower_case?replace("_", "-")}-toggle">
                                         <a href="#${scenario.id?replace("#", "")}">
                                             <span class="list-style icon--${scenario.result?lower_case?replace("_", "-")}"></span>
                                             <span>${scenario.name!scenario.displayName!""}</span>
