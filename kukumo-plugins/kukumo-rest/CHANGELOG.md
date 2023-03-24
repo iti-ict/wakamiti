@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.6.1] 2023-03-24
+## Fixed
+- The response body was always parsed as string
+
 ## [1.6.0] 2023-01-19
 ## Added
 - Oauth2 authentication steps with extra parameters [issue: #77]

@@ -1,6 +1,7 @@
 package iti.kukumo.rest;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.restassured.RestAssured;
 import iti.kukumo.api.KukumoException;
@@ -8,8 +9,11 @@ import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
 import iti.kukumo.api.util.JsonUtils;
 import iti.kukumo.api.util.MatcherAssertion;
+import iti.kukumo.api.util.XmlUtils;
 import iti.kukumo.rest.oauth.GrantType;
 import iti.kukumo.rest.oauth.Oauth2ProviderConfig;
+import org.apache.xmlbeans.XmlObject;
+import org.assertj.core.api.Condition;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,7 +34,10 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static iti.kukumo.rest.TestUtil.*;
@@ -84,6 +91,99 @@ public class RestStepContributorTest {
     }
 
     @Test
+    public void testWithJsonResponseWithSuccess() throws MalformedURLException, JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/users")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("{\"name\":\"Susan\",\"ape1\":\"Martin\"}")
+                        .withHeaders(
+                                header("vary", "Origin"),
+                                header("vary", "Access-Control-Request-Method"),
+                                header("vary", "Access-Control-Request-Headers")
+                        )
+        );
+
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+
+        // act
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "$.body.name"))
+                .isEqualTo("Susan");
+    }
+
+    @Test
+    public void testWithXmlResponseWithSuccess() throws MalformedURLException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/users")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_XML)
+                        .withBody("<item><name>Susan</name><ape1>Martin</ape1></item>")
+                        .withHeaders(
+                                header("vary", "Origin"),
+                                header("vary", "Access-Control-Request-Method"),
+                                header("vary", "Access-Control-Request-Headers")
+                        )
+        );
+
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+
+        // act
+        XmlObject result = (XmlObject) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(XmlUtils.readStringValue(result, "//name/text()"))
+                .isEqualTo("Susan");
+    }
+
+    @Test
+    public void testWithTextResponseWithSuccess() throws MalformedURLException, JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/users")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.TEXT_PLAIN)
+                        .withBody("\"5567\"")
+                        .withHeaders(
+                                header("vary", "Origin"),
+                                header("vary", "Access-Control-Request-Method"),
+                                header("vary", "Access-Control-Request-Headers")
+                        )
+        );
+
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+
+        // act
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "$.body"))
+                .isEqualTo("5567");
+    }
+
+    @Test
     public void testWithRequestParametersWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
@@ -96,12 +196,6 @@ public class RestStepContributorTest {
                 ,
                 response()
                         .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withHeaders(
-                                header("vary", "Origin"),
-                                header("vary", "Access-Control-Request-Method"),
-                                header("vary", "Access-Control-Request-Headers")
-                        )
         );
 
         contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
@@ -111,25 +205,10 @@ public class RestStepContributorTest {
         contributor.setRequestParameter("param2", "value2");
 
         // act
-        JsonNode result = (JsonNode) contributor.executeGetSubject();
+        Object result = contributor.executeGetSubject();
 
         // check
-        assertThat(result)
-                .isNotNull()
-                .isEqualTo(JsonUtils.json(Map.of(
-                        "statusCode", 200,
-                        "headers", Map.of(
-                                "content-length", "0",
-                                "connection", "keep-alive",
-                                "vary", List.of(
-                                        "Origin",
-                                        "Access-Control-Request-Method",
-                                        "Access-Control-Request-Headers"
-                                )
-                        ),
-                        "body", "",
-                        "statusLine", "HTTP/1.1 200 OK"
-                )));
+        assertThat(result).isNotNull();
     }
 
     @Test

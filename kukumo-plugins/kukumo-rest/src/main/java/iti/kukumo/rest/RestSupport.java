@@ -17,11 +17,11 @@ import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.datatypes.Assertion;
 import iti.kukumo.api.plan.DataTable;
 import iti.kukumo.api.plan.Document;
-import iti.kukumo.api.util.JsonUtils;
-import iti.kukumo.api.util.ResourceLoader;
-import iti.kukumo.api.util.XmlUtils;
+import iti.kukumo.api.util.*;
 import iti.kukumo.rest.log.RestAssuredLogger;
 import iti.kukumo.rest.oauth.Oauth2ProviderConfig;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlRuntimeException;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -162,15 +162,21 @@ public class RestSupport {
     }
 
     protected Object parsedResponse() {
+        Object body = doTry(
+                () -> XmlUtils.xml(response.body().asString()),
+                () -> JsonUtils.json(response.body().asString()),
+                () -> response.body().asString()
+        );
+
         Map<String, Object> result = Map.of(
                 "headers", response.headers().asList().stream()
                         .collect(Collectors.toMap(Header::getName, Header::getValue, this::collectIfDuplicated)),
-                "body", response.body().asString(),
+                "body", body,
                 "statusCode", response.statusCode(),
                 "statusLine", response.statusLine()
         );
 
-        return ContentType.XML.matches(response.contentType())
+        return body instanceof XmlObject
                 ? XmlUtils.xml("response", result)
                 : JsonUtils.json(result);
     }
@@ -183,6 +189,15 @@ public class RestSupport {
             oldObj = new LinkedList<>(List.of(oldObj, newObj));
         }
         return oldObj;
+    }
+
+    private Object doTry(ThrowableSupplier<?>... suppliers) {
+        for (ThrowableSupplier<?> supplier : suppliers) {
+            try {
+                return supplier.get();
+            } catch (Exception ignored) { }
+        }
+        return null;
     }
 
     protected ContentTypeHelper contentTypeHelperForResponse() {

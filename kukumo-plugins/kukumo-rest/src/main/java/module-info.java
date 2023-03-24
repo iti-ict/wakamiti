@@ -28,6 +28,7 @@ module kukumo.rest {
     requires org.everit.json.schema;
     requires java.xml;
     requires plexus.utils;
+    requires xmlbeans;
 
     uses ConfigContributor;
     uses StepContributor;
