@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.5.1] 2023-03-01
+### Fixed
+- Step counters
+- Style issues
+
 ## [1.5.0] 2023-02-23
 ### Modified
 - New template

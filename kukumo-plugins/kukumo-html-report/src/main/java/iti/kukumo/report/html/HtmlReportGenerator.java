@@ -14,7 +14,9 @@ import iti.kukumo.api.extensions.Reporter;
 import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.api.util.KukumoLogger;
+import iti.kukumo.report.html.factory.CountStepsMethod;
 import iti.kukumo.report.html.factory.DurationTemplateNumberFormatFactory;
+import iti.kukumo.report.html.factory.SumAllMethod;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -92,9 +94,9 @@ public class HtmlReportGenerator implements Reporter {
             parameters.put("plan", rootNode);
             parameters.put("title", title);
             parameters.put("version", KukumoAPI.instance().version());
-            parameters.put("sum", (TemplateMethodModelEx) args ->
-                    ((Map<Result, Long>) ((DefaultMapAdapter) args.get(0)).getWrappedObject()).values().stream()
-                            .mapToLong(Number::longValue).sum());
+            parameters.put("plugin_version", version());
+            parameters.put("sum", new SumAllMethod());
+            parameters.put("countSteps", new CountStepsMethod());
 
             File parent = output.getCanonicalFile().getParentFile();
             if (!parent.exists()) {
@@ -157,5 +159,9 @@ public class HtmlReportGenerator implements Reporter {
 
     private InputStream resource(String resource) {
         return classLoader().getResourceAsStream(resource);
+    }
+
+    private String version() {
+        return getClass().getPackage().getImplementationVersion();
     }
 }

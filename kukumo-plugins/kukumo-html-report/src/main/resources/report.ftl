@@ -31,7 +31,7 @@
 
         <ul class="test--list details--list">
             <li class="details--item">
-                <section class="test--component test--no-tests">
+                <section class="test--component summary--component">
                     <header class="test--header">
                         <button class="test--header-btn" type="button">
                             <h3 class="test--title">Feature Results</h3>
@@ -45,7 +45,7 @@
                 </section>
             </li>
             <li class="details--item">
-                <section class="test--component test--no-tests">
+                <section class="test--component summary--component">
                     <header class="test--header">
                         <button class="test--header-btn" type="button">
                             <h3 class="test--title">Scenario Results</h3>
@@ -59,7 +59,7 @@
                 </section>
             </li>
             <li class="details--item">
-                <section class="test--component test--no-tests">
+                <section class="test--component summary--component">
                     <header class="test--header">
                         <button class="test--header-btn" type="button">
                             <h3 class="test--title">Run info</h3>
@@ -119,15 +119,15 @@
                                     <i class="material-icons md-18">access_time</i>
                                     <span>${(feature.duration!0)?string.@duration}</span>
                                 </li>
-                                <li class="test-summary--item" title="Tests">
-                                    <i class="material-icons md-18">article</i>
-                                    <span><#if feature.childrenResults??>${sum(feature.childrenResults)}<#else>0</#if></span>
+                                <li class="test-summary--item" title="Scenarios">
+                                    <i class="material-icons md-18" style="color:var(--${feature.result?lower_case?replace("_", "-")}-color)">article</i>
+                                    <span>${sum(feature.childrenResults?values)}</span>
                                 </li>
                                 <#if feature.childrenResults??>
                                 <li class="test-summary--item">
                                     <ul class="test-summary--results">
                                     <#list feature.childrenResults as resultType, count>
-                                        <li class="test-summary--item" title="${resultType?capitalize}">
+                                        <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
                                             <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
                                             <span>${count}</span>
                                         </li>
@@ -147,7 +147,7 @@
                                         <header class="step--header">
                                             <button class="step--header-btn toggle <#if node.result != "PASSED">on</#if>" type="button">
                                                 <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}"></i>
-                                                <h5 class="step--title">
+                                                <h5 class="step--title" title="${node.name!""}">
                                                     <span><strong class="keyword">${node.keyword}</strong> ${node.name!""}</span>
                                                 </h5>
                                                 <div class="step--info">
@@ -222,17 +222,17 @@
                                                             <i class="material-icons md-18">access_time</i>
                                                             <span>${(scenario.duration!0)?string.@duration}</span>
                                                         </li>
-                                                        <li class="test-summary--item" title="Tests">
-                                                            <i class="material-icons md-18">article</i>
-                                                            <span><#if scenario.childrenResults??>${sum(scenario.childrenResults)}<#else>0</#if></span>
+                                                        <li class="test-summary--item" title="Steps">
+                                                            <i class="material-icons md-18" style="color:var(--${scenario.result?lower_case?replace("_", "-")}-color)">fact_check</i>
+                                                            <span>${countSteps(scenario)}</span>
                                                         </li>
                                                         <#if scenario.childrenResults??>
                                                             <li class="test-summary--item">
                                                                 <ul class="test-summary--results">
-                                                                    <#list scenario.childrenResults as resultType, count>
+                                                                    <#list scenario.childrenResults?keys as resultType>
                                                                         <li class="test-summary--item" title="${resultType?capitalize}">
                                                                             <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
-                                                                            <span>${count}</span>
+                                                                            <span>${countSteps(scenario, resultType)}</span>
                                                                         </li>
                                                                     </#list>
                                                                 </ul>
@@ -301,7 +301,7 @@
             <p>©2023 Made with <span class="heart">♥</span> by <a href="https://www.iti.es/" rel="noopener noreferrer"
                                                                   target="_blank">ITI</a>
                 • <a href="https://github.com/iti-ict/wakamiti/tree/main/kukumo-plugins/kukumo-html-report"
-                     rel="noopener noreferrer" target="_blank">wakamiti-html-report</a> v1.6.0</p>
+                     rel="noopener noreferrer" target="_blank">wakamiti-html-report</a> v${plugin_version!"?.?.?"}</p>
         </div>
     </footer>
 

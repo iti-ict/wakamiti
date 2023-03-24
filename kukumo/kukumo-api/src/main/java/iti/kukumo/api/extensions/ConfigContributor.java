@@ -39,9 +39,7 @@ public interface ConfigContributor<T> extends Contributor {
             if (thisInterface instanceof ParameterizedType
                     && ((ParameterizedType) thisInterface).getRawType() == ConfigContributor.class) {
                 Type thisT = ((ParameterizedType) thisInterface).getActualTypeArguments()[0];
-                if (thisT instanceof Class && (
-                        ((Class<?>) thisT).isAssignableFrom(Void.class)
-                                || ((Class<?>) thisT).isAssignableFrom(contributor.getClass()))) {
+                if (thisT instanceof Class && (((Class<?>) thisT).isAssignableFrom(contributor.getClass()))) {
                     return true;
                 }
             }
