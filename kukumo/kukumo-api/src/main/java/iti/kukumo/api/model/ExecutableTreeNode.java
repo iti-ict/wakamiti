@@ -118,13 +118,14 @@ extends TreeNode<S> {
     public Optional<Duration> duration() {
         if (hasChildren()) {
             return children()
-                .map(S::duration)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .max(Comparator.naturalOrder());
+                    .map(S::duration)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .reduce(Duration::plus);
         }
         return executionState().flatMap(ExecutionState::duration);
     }
+
 
 
     /**
