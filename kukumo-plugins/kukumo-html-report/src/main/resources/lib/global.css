@@ -1076,7 +1076,8 @@ footer a:hover {
     overflow: hidden;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
-    white-space: nowrap
+    white-space: nowrap;
+    padding: 5px
 }
 .nav-menu--link-icon---1Q2NP {
     margin-right: 2px
