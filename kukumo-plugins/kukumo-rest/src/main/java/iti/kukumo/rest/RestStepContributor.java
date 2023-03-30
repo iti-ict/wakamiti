@@ -334,7 +334,18 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post);
         return parsedResponse();
     }
+    @Step("rest.execute.DELETE.data.from.document")
+    public Object executeDeleteDataUsingDocument(Document document) {
+        executeRequest(RequestSpecification::delete, document.getContent());
+        return parsedResponse();
+    }
 
+    @Step("rest.execute.DELETE.data.from.file")
+    public Object executeDeleteDataUsingFile(File file) {
+        assertFileExists(file);
+        executeRequest(RequestSpecification::delete, resourceLoader.readFileAsString(file));
+        return parsedResponse();
+    }
 
     @Step("rest.assert.response.body.strict.from.document")
     public void assertBodyStrictComparison(Document document) {

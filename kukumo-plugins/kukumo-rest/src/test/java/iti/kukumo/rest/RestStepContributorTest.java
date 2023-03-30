@@ -1430,6 +1430,31 @@ public class RestStepContributorTest {
     }
 
     @Test
+    public void testWhenDeleteDataFileWithSuccess() throws MalformedURLException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("DELETE")
+                        .withPath("/users/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
+        contributor.setBaseURL(new URL(BASE_URL));
+        contributor.setService("/users");
+        contributor.setSubject("10");
+
+        // act
+        Object result = contributor.executeDeleteDataUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+    }
+    @Test
     public void testWhenPostDataAndParamWithSuccess() throws MalformedURLException {
         // prepare
         mockServer(
