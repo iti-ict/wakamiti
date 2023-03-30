@@ -6,7 +6,6 @@
     "name" : "Test 2 - Scenario Outline",
     "keyword" : "Feature",
     "language" : "en",
-    "source" : "src/test/resources/features/test2_scenarioOutline.feature[2,1]",
     "displayName" : "Feature: Test 2 - Scenario Outline",
     "tags" : [ "Test2" ],
     "properties" : {
@@ -18,7 +17,6 @@
       "name" : "Test Scenario Outline",
       "keyword" : "Scenario Outline",
       "language" : "en",
-      "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
       "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
       "tags" : [ "ID-ScenarioOutline1", "Test2" ],
       "properties" : {
@@ -31,7 +29,6 @@
         "id" : "ID-ScenarioOutline1_1",
         "name" : "Test Scenario Outline [1]",
         "language" : "en",
-        "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_1]  Test Scenario Outline [1]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
@@ -44,7 +41,6 @@
           "name" : "a number with value 1.0 and another number with value 2",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 1.0 and another number with value 2",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -55,7 +51,6 @@
           "name" : "both numbers are multiplied",
           "keyword" : "When",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -66,7 +61,6 @@
           "name" : "the result is equals to 2.0",
           "keyword" : "Then",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 2.0",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -78,7 +72,6 @@
         "id" : "ID-ScenarioOutline1_2",
         "name" : "Test Scenario Outline [2]",
         "language" : "en",
-        "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_2]  Test Scenario Outline [2]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
@@ -91,7 +84,6 @@
           "name" : "a number with value 2.0 and another number with value 3",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 2.0 and another number with value 3",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -102,7 +94,6 @@
           "name" : "both numbers are multiplied",
           "keyword" : "When",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -113,7 +104,6 @@
           "name" : "the result is equals to 6.0",
           "keyword" : "Then",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 6.0",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -125,7 +115,6 @@
         "id" : "ID-ScenarioOutline1_3",
         "name" : "Test Scenario Outline [3]",
         "language" : "en",
-        "source" : "src/test/resources/features/test2_scenarioOutline.feature[7,1]",
         "displayName" : "[ID-ScenarioOutline1_3]  Test Scenario Outline [3]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
@@ -138,7 +127,6 @@
           "name" : "a number with value 5.0 and another number with value 4",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[8,2]",
           "displayName" : "Given a number with value 5.0 and another number with value 4",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -149,7 +137,6 @@
           "name" : "both numbers are multiplied",
           "keyword" : "When",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[9,2]",
           "displayName" : "When both numbers are multiplied",
           "properties" : {
             "propertyScenarioOutline" : "A",
@@ -160,7 +147,6 @@
           "name" : "the result is equals to 20.0",
           "keyword" : "Then",
           "language" : "en",
-          "source" : "src/test/resources/features/test2_scenarioOutline.feature[10,2]",
           "displayName" : "Then the result is equals to 20.0",
           "properties" : {
             "propertyScenarioOutline" : "A",

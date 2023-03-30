@@ -287,8 +287,9 @@ public class KukumoSteps implements StepContributor {
     public Object setFile(File file) {
         LOGGER.info("This file is: {}", file);
         assert file != null : "File is null";
-        assert Objects.equals(file.getPath(), "src/test/resources/features/properties/ABC") : "File is " + file;
-        return file.getPath();
+        assert Objects.equals(file.getPath().replace("\\", "/"), "src/test/resources/features/properties/ABC")
+                : "File is " + file.getPath().replace("\\", "/");
+        return file.getPath().replace("\\", "/");
     }
 
     @Step(value = "file.content", args = { "file" })
