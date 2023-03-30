@@ -346,7 +346,7 @@
             </div>
             <div class="nav-menu--control<#if results?seq_contains("ERROR")><#else> toggle-switch--disabled</#if>">
                 <i class="material-icons icon--error"></i>
-                <label for="error-toggle">Show Failed
+                <label for="error-toggle">Show Error
                     <input id="error-toggle" type="checkbox" <#if results?seq_contains("ERROR")>checked<#else>disabled</#if>>
                     <span class="toggle-switch--toggle"></span>
                 </label>
