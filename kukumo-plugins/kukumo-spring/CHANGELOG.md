@@ -1,17 +1,17 @@
 # CHANGELOG
 
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [1.1.0] 2021-09-17
+## [1.1.0] - 2021-09-17
 
 ### Modified
+
 - Version aligned with `kukumo-core:1.1.0`
 
-## [1.0.0] 2021-09-16
+## [1.0.0] - 2021-09-16
 
 Initial release.
 
