@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unrealised]
+
+### Added
+
+- StartInstant in NOT_IMPLEMENTED results
+
 ## [1.6.0] - 2023-02-23
 
 ### Added
