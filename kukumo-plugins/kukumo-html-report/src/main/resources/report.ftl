@@ -115,6 +115,23 @@
                                 </#list>
                             </#if>
                             <ul class="test-summary--component">
+                                <#assign hasErrors = false>
+                                <#list feature.childrenResults as resultType, count>
+                                    <#if resultType == 'FAILED' && count gt 0>
+                                        <#assign hasErrors = true>
+                                    </#if>
+                                </#list>
+
+                                <#if hasErrors>
+                                    <li class="test-summary--item" title="failed">
+                                        <i class="material-icons md-18 icon--failed"></i>
+                                    </li>
+                                <#else>
+                                    <li class="test-summary--item" title="passed">
+                                        <i class="material-icons md-18 icon--passed"></i>
+                                    </li>
+                                </#if>
+
                                 <li class="test-summary--item" title="Duration">
                                     <i class="material-icons md-18">access_time</i>
                                     <span>${(feature.duration!0)?string.@duration}</span>
@@ -126,11 +143,12 @@
                                 <#if feature.childrenResults??>
                                 <li class="test-summary--item">
                                     <ul class="test-summary--results">
+
                                     <#list feature.childrenResults as resultType, count>
-                                        <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
-                                            <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
-                                            <span>${count}</span>
-                                        </li>
+                                            <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
+                                                <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
+                                                <span>${count}</span>
+                                            </li>
                                     </#list>
                                     </ul>
                                 </li>
@@ -217,7 +235,24 @@
                                                             <h6 class="test--comment">${line}</h6>
                                                         </#list>
                                                     </#if>
+
                                                     <ul class="test-summary--component">
+                                                        <#assign hasErrors = false>
+                                                        <#list scenario.childrenResults as resultType, count>
+                                                            <#if resultType == 'FAILED' && count gt 0>
+                                                                <#assign hasErrors = true>
+                                                            </#if>
+                                                        </#list>
+
+                                                        <#if hasErrors>
+                                                            <li class="test-summary--item" title="failed">
+                                                                <i class="material-icons md-18 icon--failed"></i>
+                                                            </li>
+                                                        <#else>
+                                                            <li class="test-summary--item" title="passed">
+                                                                <i class="material-icons md-18 icon--passed"></i>
+                                                            </li>
+                                                        </#if>
                                                         <li class="test-summary--item" title="Duration">
                                                             <i class="material-icons md-18">access_time</i>
                                                             <span>${(scenario.duration!0)?string.@duration}</span>
