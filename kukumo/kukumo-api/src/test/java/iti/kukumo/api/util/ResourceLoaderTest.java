@@ -3,18 +3,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
-package iti.kukumo.api.test;
+package iti.kukumo.api.util;
 
 
 import iti.kukumo.api.Resource;
-import iti.kukumo.api.util.ResourceLoader;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,10 +17,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-
-public class TestResourceLoader {
+public class ResourceLoaderTest {
 
     @Test
     public void testDiscoverFromClasspath() throws IOException {
@@ -34,20 +28,20 @@ public class TestResourceLoader {
         Predicate<String> txtFilter = filename -> filename.endsWith(".txt");
 
         List<Resource> discoveredResources = new ResourceLoader()
-            .discoverResources("classpath:discovery", txtFilter, IOUtils::toString)
-            .stream().sorted(Comparator.comparing(Resource::absolutePath))
-            .collect(Collectors.toList());
+                .discoverResources("classpath:discovery", txtFilter, IOUtils::toString)
+                .stream().sorted(Comparator.comparing(Resource::absolutePath))
+                .collect(Collectors.toList());
 
-        assertEquals(3,discoveredResources.size());
+        assertEquals(3, discoveredResources.size());
 
-        assertFile(discoveredResources.get(0),"file1.txt");
-        assertFile(discoveredResources.get(1),"file2.txt");
-        assertFile(discoveredResources.get(2),"subfolder/file4.txt");
+        assertFile(discoveredResources.get(0), "file1.txt");
+        assertFile(discoveredResources.get(1), "file2.txt");
+        assertFile(discoveredResources.get(2), "subfolder/file4.txt");
 
 
         for (Resource discoveredResource : discoveredResources) {
             System.out.println(
-                discoveredResource.relativePath() + " || " + discoveredResource.absolutePath()
+                    discoveredResource.relativePath() + " || " + discoveredResource.absolutePath()
             );
             System.out.println("------------------");
             String content = (String) discoveredResource.content();
@@ -57,7 +51,6 @@ public class TestResourceLoader {
         }
 
     }
-
 
     private void assertFile(Resource<?> resource, String relativePath) {
         assertEquals(resource.relativePath(), new File(relativePath).getPath());
