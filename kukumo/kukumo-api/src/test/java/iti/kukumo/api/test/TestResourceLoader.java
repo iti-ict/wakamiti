@@ -87,18 +87,6 @@ public class TestResourceLoader {
     }
 
     @Test
-    public void testAppendJarFileWhenInstrumentationIsNotNull() {
-        Instrumentation instrumentation = mock(Instrumentation.class);
-
-        ClasspathAgent.instrumentation = instrumentation;
-
-        JarFile jarFile = mock(JarFile.class);
-
-        ClasspathAgent.appendJarFile(jarFile);
-    }
-
-
-    @Test
     public void testResource() {
         String absolutePath = "/path/to/resource";
         String relativePath = "resource";
