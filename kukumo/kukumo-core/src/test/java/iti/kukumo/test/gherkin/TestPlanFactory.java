@@ -183,6 +183,7 @@ public class TestPlanFactory {
         assertThat(plan.result().isPresent()).isTrue();
         assertThat(plan.result().get()).isEqualTo(Result.NOT_IMPLEMENTED);
         assertThat(plan.displayName()).isEqualTo("Test Plan");
+        assertThat(plan.startInstant().isPresent()).isTrue();
         assertThat(plan.finishInstant().isPresent()).isTrue();
     }
 

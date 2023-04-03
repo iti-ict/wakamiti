@@ -131,10 +131,17 @@ public class PlanNodeRunner {
     }
 
     private void doNotImplemented(PlanNode node, Result result) {
+        Instant startInstant = Instant.now();
+
         node.children().forEach(c -> {
             boolean isBackground = c.properties().get("gherkinType").equals("background");
             doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
         });
+
+        if (result == Result.NOT_IMPLEMENTED) {
+            node.prepareExecution().markStarted(startInstant);
+        }
+
         node.prepareExecution().markFinished(Instant.now(), result);
     }
 
