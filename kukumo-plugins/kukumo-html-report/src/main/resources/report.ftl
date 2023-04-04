@@ -115,7 +115,7 @@
                                 </#list>
                             </#if>
                             <ul class="test-summary--component">
-                                <li class="test-summary--item" title="${feature.result?lower_case?replace("_", "-")}">
+                                <li class="test-summary--item" title="${feature.result?capitalize?replace("_", "-")}">
                                     <i class="material-icons md-18 icon--${feature.result?lower_case?replace("_", "-")}"></i>
                                 </li>
                                 <li class="test-summary--item" title="Duration">
@@ -223,7 +223,7 @@
                                                     </#if>
 
                                                     <ul class="test-summary--component">
-                                                        <li class="test-summary--item" title="${scenario.result?lower_case?replace("_", "-")}">
+                                                        <li class="test-summary--item" title="${scenario.result?capitalize?replace("_", "-")}">
                                                             <i class="material-icons md-18 icon--${scenario.result?lower_case?replace("_", "-")}"></i>
                                                         </li>
                                                         <li class="test-summary--item" title="Duration">
