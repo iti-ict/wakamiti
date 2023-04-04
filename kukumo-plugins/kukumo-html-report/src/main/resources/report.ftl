@@ -123,7 +123,7 @@
                                     <span>${(feature.duration!0)?string.@duration}</span>
                                 </li>
                                 <li class="test-summary--item" title="Scenarios">
-                                    <i class="material-icons md-18" style="color:var(--${feature.result?lower_case?replace("_", "-")}-color)">article</i>
+                                    <i class="material-icons md-18">article</i>
                                     <span>${sum(feature.childrenResults?values)}</span>
                                 </li>
                                 <#if feature.childrenResults??>
@@ -231,7 +231,7 @@
                                                             <span>${(scenario.duration!0)?string.@duration}</span>
                                                         </li>
                                                         <li class="test-summary--item" title="Steps">
-                                                            <i class="material-icons md-18" style="color:var(--${scenario.result?lower_case?replace("_", "-")}-color)">fact_check</i>
+                                                            <i class="material-icons md-18">fact_check</i>
                                                             <span>${countSteps(scenario)}</span>
                                                         </li>
                                                         <#if scenario.childrenResults??>
