@@ -159,7 +159,7 @@
                                                         <i class="material-icons-outlined md-18" title="<#outputformat "HTML">${node.errorMessage}</#outputformat>">feedback</i>
                                                     </#if>
                                                     <span title="Duration">${(node.duration!0)?string.@duration}</span>
-                                                    <i class="material-icons md-18 step--duration-icon" title="Duration>access_time</i>
+                                                    <i class="material-icons md-18 step--duration-icon" title="Duration">access_time</i>
                                                 </div>
                                             </button>
                                         </header>
