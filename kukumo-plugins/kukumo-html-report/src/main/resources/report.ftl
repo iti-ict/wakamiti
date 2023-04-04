@@ -115,7 +115,7 @@
                                 </#list>
                             </#if>
                             <ul class="test-summary--component">
-                                <li class="test-summary--item" title="${feature.result?capitalize?replace("_", "-")}">
+                                <li class="test-summary--item" title="Result: ${feature.result?capitalize?replace("_", "-")}">
                                     <i class="material-icons md-18 icon--${feature.result?lower_case?replace("_", "-")}"></i>
                                 </li>
                                 <li class="test-summary--item" title="Duration">
@@ -150,7 +150,7 @@
                                     <li class="step--component">
                                         <header class="step--header">
                                             <button class="step--header-btn toggle <#if node.result != "PASSED">on</#if>" type="button">
-                                                <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}"></i>
+                                                <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}" title="Result: ${node.result?capitalize?replace("_", " ")}"></i>
                                                 <h5 class="step--title" title="${node.name!""}">
                                                     <span><strong class="keyword">${node.keyword}</strong> ${node.name!""}</span>
                                                 </h5>
@@ -158,8 +158,8 @@
                                                     <#if node.errorMessage??>
                                                         <i class="material-icons-outlined md-18" title="<#outputformat "HTML">${node.errorMessage}</#outputformat>">feedback</i>
                                                     </#if>
-                                                    <span>${(node.duration!0)?string.@duration}</span>
-                                                    <i class="material-icons md-18 step--duration-icon">access_time</i>
+                                                    <span title="Duration">${(node.duration!0)?string.@duration}</span>
+                                                    <i class="material-icons md-18 step--duration-icon" title="Duration>access_time</i>
                                                 </div>
                                             </button>
                                         </header>
@@ -223,7 +223,7 @@
                                                     </#if>
 
                                                     <ul class="test-summary--component">
-                                                        <li class="test-summary--item" title="${scenario.result?capitalize?replace("_", "-")}">
+                                                        <li class="test-summary--item" title="Result: ${scenario.result?capitalize?replace("_", "-")}">
                                                             <i class="material-icons md-18 icon--${scenario.result?lower_case?replace("_", "-")}"></i>
                                                         </li>
                                                         <li class="test-summary--item" title="Duration">
@@ -375,7 +375,7 @@
                                     <li data-target="${scenario.result?lower_case?replace("_", "-")}-toggle">
                                         <a href="#${scenario.id?replace("#", "")}">
                                             <span class="list-style icon--${scenario.result?lower_case?replace("_", "-")}"></span>
-                                            <span>${scenario.name!scenario.displayName!""}</span>
+                                            <span title="${scenario.name!scenario.displayName!""}">${scenario.name!scenario.displayName!""}</span>
                                         </a>
                                     </li>
                                 </#macro>
