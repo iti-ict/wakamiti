@@ -367,7 +367,7 @@
                     <li>
                         <a href="#${feature.id?replace("#", "")}">
                             <span class="list-style icon--${feature.result?lower_case?replace("_", "-")}"></span>
-                            <span>${feature.name!feature.displayName!""}</span>
+                            <span title="${feature.name!feature.displayName!""}">${feature.name!feature.displayName!""}</span>
                         </a>
                         <div>
                             <ul class="nav-menu--sub">
