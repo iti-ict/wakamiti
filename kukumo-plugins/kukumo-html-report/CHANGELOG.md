@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+
+- Result for each feature and scenario
+
 ### Fixed
 
 - Step counters

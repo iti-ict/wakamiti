@@ -115,22 +115,26 @@
                                 </#list>
                             </#if>
                             <ul class="test-summary--component">
+                                <li class="test-summary--item" title="${feature.result?lower_case?replace("_", "-")}">
+                                    <i class="material-icons md-18 icon--${feature.result?lower_case?replace("_", "-")}"></i>
+                                </li>
                                 <li class="test-summary--item" title="Duration">
                                     <i class="material-icons md-18">access_time</i>
                                     <span>${(feature.duration!0)?string.@duration}</span>
                                 </li>
                                 <li class="test-summary--item" title="Scenarios">
-                                    <i class="material-icons md-18" style="color:var(--${feature.result?lower_case?replace("_", "-")}-color)">article</i>
+                                    <i class="material-icons md-18">article</i>
                                     <span>${sum(feature.childrenResults?values)}</span>
                                 </li>
                                 <#if feature.childrenResults??>
                                 <li class="test-summary--item">
                                     <ul class="test-summary--results">
+
                                     <#list feature.childrenResults as resultType, count>
-                                        <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
-                                            <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
-                                            <span>${count}</span>
-                                        </li>
+                                            <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
+                                                <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
+                                                <span>${count}</span>
+                                            </li>
                                     </#list>
                                     </ul>
                                 </li>
@@ -217,13 +221,17 @@
                                                             <h6 class="test--comment">${line}</h6>
                                                         </#list>
                                                     </#if>
+
                                                     <ul class="test-summary--component">
+                                                        <li class="test-summary--item" title="${scenario.result?lower_case?replace("_", "-")}">
+                                                            <i class="material-icons md-18 icon--${scenario.result?lower_case?replace("_", "-")}"></i>
+                                                        </li>
                                                         <li class="test-summary--item" title="Duration">
                                                             <i class="material-icons md-18">access_time</i>
                                                             <span>${(scenario.duration!0)?string.@duration}</span>
                                                         </li>
                                                         <li class="test-summary--item" title="Steps">
-                                                            <i class="material-icons md-18" style="color:var(--${scenario.result?lower_case?replace("_", "-")}-color)">fact_check</i>
+                                                            <i class="material-icons md-18">fact_check</i>
                                                             <span>${countSteps(scenario)}</span>
                                                         </li>
                                                         <#if scenario.childrenResults??>
