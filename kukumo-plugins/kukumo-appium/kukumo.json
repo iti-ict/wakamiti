@@ -1,0 +1,189 @@
+{
+  "snapshotInstant" : "2023-03-30T13:02:44.363922",
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "startInstant" : "2023-03-30T11:02:31.282239",
+  "finishInstant" : "2023-03-30T11:02:43.285234",
+  "duration" : 1062,
+  "errorMessage" : "Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'",
+  "errorTrace" : "java.lang.AssertionError: Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'\n\tat iti.kukumo.appium.AppiumStepContributor.assertElementValue(AppiumStepContributor.java:151)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat iti.kukumo.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:392)\n\tat iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:121)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:220)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:91)\n\tat iti.kukumo.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.KukumoJUnitRunner.run(KukumoJUnitRunner.java:84)\n\tat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\n\tat com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)\n\tat com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)\n\tat com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:235)\n\tat com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:54)\n",
+  "result" : "FAILED",
+  "testCaseResults" : {
+    "FAILED" : 1,
+    "PASSED" : 1
+  },
+  "childrenResults" : {
+    "FAILED" : 1
+  },
+  "children" : [ {
+    "snapshotInstant" : "2023-03-30T13:02:44.363922",
+    "nodeType" : "AGGREGATOR",
+    "id" : "#e9c72",
+    "name" : "Testing Appium steps",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "appium.feature[1,1]",
+    "displayName" : "Feature: Testing Appium steps",
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "startInstant" : "2023-03-30T11:02:31.282239",
+    "finishInstant" : "2023-03-30T11:02:43.285234",
+    "duration" : 1062,
+    "errorMessage" : "Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'",
+    "errorTrace" : "java.lang.AssertionError: Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'\n\tat iti.kukumo.appium.AppiumStepContributor.assertElementValue(AppiumStepContributor.java:151)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat iti.kukumo.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:392)\n\tat iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:121)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:220)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:91)\n\tat iti.kukumo.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.KukumoJUnitRunner.run(KukumoJUnitRunner.java:84)\n\tat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\n\tat com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)\n\tat com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)\n\tat com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:235)\n\tat com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:54)\n",
+    "result" : "FAILED",
+    "testCaseResults" : {
+      "FAILED" : 1,
+      "PASSED" : 1
+    },
+    "childrenResults" : {
+      "FAILED" : 1,
+      "PASSED" : 1
+    },
+    "children" : [ {
+      "snapshotInstant" : "2023-03-30T13:02:44.363922",
+      "nodeType" : "TEST_CASE",
+      "id" : "#a4634",
+      "name" : "Test 1",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "appium.feature[3,3]",
+      "displayName" : "[#a4634] Scenario: Test 1",
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Testing Appium steps"
+      },
+      "startInstant" : "2023-03-30T11:02:31.282239",
+      "finishInstant" : "2023-03-30T11:02:32.579168",
+      "duration" : 1062,
+      "errorMessage" : "Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'",
+      "errorTrace" : "java.lang.AssertionError: Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'\n\tat iti.kukumo.appium.AppiumStepContributor.assertElementValue(AppiumStepContributor.java:151)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat iti.kukumo.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:392)\n\tat iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:121)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:220)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:91)\n\tat iti.kukumo.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.KukumoJUnitRunner.run(KukumoJUnitRunner.java:84)\n\tat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\n\tat com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)\n\tat com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)\n\tat com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:235)\n\tat com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:54)\n",
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "FAILED" : 1
+      },
+      "childrenResults" : {
+        "FAILED" : 1,
+        "PASSED" : 2
+      },
+      "children" : [ {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "the UI element with type 'android.widget.EditText'",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "appium.feature[4,5]",
+        "displayName" : "Given the UI element with type 'android.widget.EditText'",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:31.282239",
+        "finishInstant" : "2023-03-30T11:02:31.512270",
+        "duration" : 230,
+        "result" : "PASSED"
+      }, {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "the text 'Hello World!!!' is typed on that element",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "appium.feature[5,5]",
+        "displayName" : "When the text 'Hello World!!!' is typed on that element",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:31.516198",
+        "finishInstant" : "2023-03-30T11:02:32.578269",
+        "duration" : 1062,
+        "result" : "PASSED"
+      }, {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "that element contains the value 'Hello World!'",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "appium.feature[6,5]",
+        "displayName" : "Then that element contains the value 'Hello World!'",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:32.579168",
+        "finishInstant" : "2023-03-30T11:02:32.579168",
+        "duration" : 0,
+        "errorMessage" : "Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'",
+        "errorTrace" : "java.lang.AssertionError: Element By.className: android.widget.EditText expected to have value 'Hello World!' but it was 'Hello World!!!'\n\tat iti.kukumo.appium.AppiumStepContributor.assertElementValue(AppiumStepContributor.java:151)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat iti.kukumo.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:392)\n\tat iti.kukumo.core.backend.RunnableStep.run(RunnableStep.java:121)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:220)\n\tat iti.kukumo.core.backend.RunnableBackend.runStep(RunnableBackend.java:91)\n\tat iti.kukumo.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat iti.kukumo.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat iti.kukumo.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat iti.kukumo.core.junit.KukumoJUnitRunner.run(KukumoJUnitRunner.java:84)\n\tat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\n\tat com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)\n\tat com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)\n\tat com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)\n\tat com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:235)\n\tat com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:54)\n",
+        "result" : "FAILED"
+      } ]
+    }, {
+      "snapshotInstant" : "2023-03-30T13:02:44.363922",
+      "nodeType" : "TEST_CASE",
+      "id" : "#16fd1",
+      "name" : "Call",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "appium.feature[9,3]",
+      "displayName" : "[#16fd1] Scenario: Call",
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Testing Appium steps"
+      },
+      "startInstant" : "2023-03-30T11:02:43.016816",
+      "finishInstant" : "2023-03-30T11:02:43.285234",
+      "duration" : 159,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "childrenResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "an incoming call with number '636828752' is received",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "appium.feature[10,5]",
+        "displayName" : "Given an incoming call with number '636828752' is received",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:43.016816",
+        "finishInstant" : "2023-03-30T11:02:43.176382",
+        "duration" : 159,
+        "result" : "PASSED"
+      }, {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "the incoming call is accepted",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "appium.feature[11,5]",
+        "displayName" : "When the incoming call is accepted",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:43.177246",
+        "finishInstant" : "2023-03-30T11:02:43.245411",
+        "duration" : 68,
+        "result" : "PASSED"
+      }, {
+        "snapshotInstant" : "2023-03-30T13:02:44.363922",
+        "nodeType" : "STEP",
+        "name" : "the call is ended",
+        "keyword" : "And",
+        "language" : "en",
+        "source" : "appium.feature[12,5]",
+        "displayName" : "And the call is ended",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2023-03-30T11:02:43.248012",
+        "finishInstant" : "2023-03-30T11:02:43.285234",
+        "duration" : 37,
+        "result" : "PASSED"
+      } ]
+    } ]
+  } ]
+}

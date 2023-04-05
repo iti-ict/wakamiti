@@ -25,7 +25,7 @@
 
     <!-- additional information -->
     <name>Appium Steps</name>
-    <description>Appium steps for Kukumo</description>
+    <description>Appium steps for Wakamiti</description>
     <inceptionYear>2022</inceptionYear>
 
 
@@ -42,6 +42,7 @@
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-api</artifactId>
@@ -49,8 +50,29 @@
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+            <version>4.1.90.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
