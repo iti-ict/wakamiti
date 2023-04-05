@@ -176,12 +176,25 @@ window.onload = function () {
 
                 const scenarios = feature.querySelectorAll('ul.nav-menu--sub > li');
                 const disabled = feature.querySelectorAll('ul.nav-menu--sub > li.' + disabledClass);
-                if (scenarios.length === disabled.length) {
-                    feature.className += ' ' + disabledClass;
-                    id.className += ' hidden';
+                if (scenarios.length > 0) {
+                    if (scenarios.length === disabled.length) {
+                        feature.className += ' ' + disabledClass;
+                        id.className += ' hidden';
+                    } else {
+                        toggleOff(feature, disabledClass);
+                        toggleOff(id, 'hidden');
+                    }
                 } else {
-                    toggleOff(feature, disabledClass);
-                    toggleOff(id, 'hidden');
+                    const href = feature.querySelector('a').getAttribute('href');
+                    const id = document.querySelector(href);
+
+                    if (elem.checked) {
+                        toggleOff(feature, disabledClass);
+                        toggleOff(id, 'hidden');
+                    } else {
+                        feature.className += ' ' + disabledClass;
+                        id.className += ' hidden';
+                    }
                 }
             }
 

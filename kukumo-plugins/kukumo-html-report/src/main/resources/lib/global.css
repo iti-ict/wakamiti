@@ -747,6 +747,9 @@ ul {
     -ms-flex: auto;
     flex: auto;
 }
+.test--header-btn.disabled {
+    cursor: auto;
+}
 .suite--title,
 .test--title {
     display: -webkit-box;

@@ -104,12 +104,14 @@
             <li id="${feature.id?replace("#", "")}">
                 <section class="suite--component">
                     <header class="suite--header">
-                        <button class="test--header-btn toggle toggle-group <#if feature.result != "PASSED">on</#if>" type="button">
+                        <button class="test--header-btn toggle toggle-group <#if feature.result != "PASSED">on</#if> <#if !feature.children?has_content>disabled</#if>" type="button">
                             <h2 class="suite--title">
                                 <span><strong class="keyword">${feature.keyword}:</strong> ${feature.name!""}</span>
+                                <#if feature.children?has_content>
                                 <i class="material-icons md-18">expand_more</i>
+                                </#if>
                             </h2>
-                            <#if feature.description??>
+                            <#if feature.description?has_content>
                                 <#list feature.description as line>
                                     <h6 class="test--comment">${line}</h6>
                                 </#list>
@@ -126,7 +128,7 @@
                                     <i class="material-icons md-18">article</i>
                                     <span>${sum(feature.childrenResults?values)}</span>
                                 </li>
-                                <#if feature.childrenResults??>
+                                <#if feature.childrenResults?has_content>
                                 <li class="test-summary--item">
                                     <ul class="test-summary--results">
 
@@ -142,7 +144,7 @@
                             </ul>
                         </button>
                     </header>
-                    <#if feature.children??>
+                    <#if feature.children?has_content>
                         <div class="suite--body collapsable">
                             <ul class="test--list">
 
@@ -155,7 +157,7 @@
                                                     <span><strong class="keyword">${node.keyword}</strong> ${node.name!""}</span>
                                                 </h5>
                                                 <div class="step--info">
-                                                    <#if node.errorMessage??>
+                                                    <#if node.errorMessage?has_content>
                                                         <i class="material-icons-outlined md-18" title="<#outputformat "HTML">${node.errorMessage}</#outputformat>">feedback</i>
                                                     </#if>
                                                     <span title="Duration">${(node.duration!0)?string.@duration}</span>
@@ -203,20 +205,22 @@
                                     <li id="${scenario.id?replace("#", "")}">
                                         <section class="test--component">
                                             <header class="test--header">
-                                                <button class="test--header-btn toggle toggle-group <#if scenario.result != "PASSED">on</#if>" type="button">
-                                                    <#if scenario.tags??>
+                                                <button class="test--header-btn toggle toggle-group <#if scenario.result != "PASSED">on</#if> <#if !scenario.children?has_content>disabled</#if>" type="button">
+                                                    <#if scenario.tags?has_content>
                                                         <h5 class="test--title">
                                                             <span class="test--tags"><#list scenario.tags as tag>@${tag} </#list></span>
+                                                            <#if scenario.children?has_content>
                                                             <i class="material-icons md-18">expand_more</i>
+                                                            </#if>
                                                         </h5>
                                                     </#if>
                                                     <h3 class="test--title">
                                                         <span><strong class="keyword">${scenario.keyword}:</strong> ${scenario.name!""}</span>
-                                                        <#if scenario.tags??><#else>
+                                                        <#if scenario.tags?has_content><#else>
                                                             <i class="material-icons md-18">expand_more</i>
                                                         </#if>
                                                     </h3>
-                                                    <#if scenario.description??>
+                                                    <#if scenario.description?has_content>
                                                         <#list scenario.description as line>
                                                             <h6 class="test--comment">${line}</h6>
                                                         </#list>
@@ -234,7 +238,7 @@
                                                             <i class="material-icons md-18">fact_check</i>
                                                             <span>${countSteps(scenario)}</span>
                                                         </li>
-                                                        <#if scenario.childrenResults??>
+                                                        <#if scenario.childrenResults?has_content>
                                                             <li class="test-summary--item">
                                                                 <ul class="test-summary--results">
                                                                     <#list scenario.childrenResults?keys as resultType>
@@ -249,11 +253,11 @@
                                                     </ul>
                                                 </button>
                                             </header>
-                                            <#if scenario.children??>
+                                            <#if scenario.children?has_content>
                                                 <div class="test--body collapsable">
                                                     <ul class="step--list">
                                                         <#list scenario.children as child>
-                                                            <#if child.children??>
+                                                            <#if child.children?has_content>
                                                                 <li>
                                                                     <section class="test--component">
                                                                         <header class="test--header">
@@ -286,7 +290,7 @@
                                 </#macro>
 
                                 <#list feature.children as scenario>
-                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children??>
+                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children?has_content>
                                         <#list scenario.children as child>
                                             <@scenarioPanel child />
                                         </#list>
@@ -380,7 +384,7 @@
                                     </li>
                                 </#macro>
                                 <#list feature.children as scenario>
-                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children??>
+                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children?has_content>
                                         <#list scenario.children as child>
                                             <@scenarioMenu child />
                                         </#list>
