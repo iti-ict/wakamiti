@@ -63,9 +63,16 @@ function newChart(elem, labels, data) {
             responsive: false,
             maintainAspectRatio: true,
             layout: {
-                padding: 5
+                padding: 10
             },
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.data[context.dataIndex];
+                        }
+                    }
+                },
                 htmlLegend: {
                     container: elem.parentElement,
                 },
