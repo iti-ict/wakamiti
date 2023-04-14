@@ -194,6 +194,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                             scenarioOutline.getName(),
                             ("_" + (row + 1))
                     ))
+                    .setKeyword(trim(scenarioOutline.getKeyword()))
                     .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
                     .setLanguage(language)
                     .setSource(source(location, scenarioOutline.getLocation()))

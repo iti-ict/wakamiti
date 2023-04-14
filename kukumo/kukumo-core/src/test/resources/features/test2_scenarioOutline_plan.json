@@ -28,8 +28,9 @@
         "nodeType" : "TEST_CASE",
         "id" : "ID-ScenarioOutline1_1",
         "name" : "Test Scenario Outline [1]",
+        "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[ID-ScenarioOutline1_1]  Test Scenario Outline [1]",
+        "displayName" : "[ID-ScenarioOutline1_1] Scenario Outline Test Scenario Outline [1]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
@@ -71,8 +72,9 @@
         "nodeType" : "TEST_CASE",
         "id" : "ID-ScenarioOutline1_2",
         "name" : "Test Scenario Outline [2]",
+        "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[ID-ScenarioOutline1_2]  Test Scenario Outline [2]",
+        "displayName" : "[ID-ScenarioOutline1_2] Scenario Outline Test Scenario Outline [2]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
@@ -114,8 +116,9 @@
         "nodeType" : "TEST_CASE",
         "id" : "ID-ScenarioOutline1_3",
         "name" : "Test Scenario Outline [3]",
+        "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[ID-ScenarioOutline1_3]  Test Scenario Outline [3]",
+        "displayName" : "[ID-ScenarioOutline1_3] Scenario Outline Test Scenario Outline [3]",
         "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
