@@ -187,7 +187,6 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         }
 
         for (int row = 0; row < values.size(); row++) {
-
             PlanNodeBuilder exampleScenario = new PlanNodeBuilder(NodeType.TEST_CASE)
                     .setId(id(
                             scenarioOutline.getTags(),
@@ -195,9 +194,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                             ("_" + (row + 1))
                     ))
                     .setKeyword(trim(scenarioOutline.getKeyword()))
-                    .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
+                    .setName(replaceOutlineVariables(scenarioOutline.getName(), variables, values.get(row))
+                            + " [" + (row + 1) + "]")
                     .setLanguage(language)
                     .setSource(source(location, scenarioOutline.getLocation()))
+                    .addDescription(splitAndTrim(replaceOutlineVariables(
+                            scenarioOutline.getDescription(), variables, values.get(row))))
                     .addTags(
                             tags(
                                     scenarioOutlineNode.tags(),
@@ -375,17 +377,24 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         ArrayList<PlanNodeBuilder> exampleSteps = new ArrayList<>();
         for (PlanNodeBuilder outlineStep : outlineSteps) {
             PlanNodeBuilder exampleStep = outlineStep.copy();
-            for (int i = 0; i < variables.size(); i++) {
-                String variableValue = values.get(i);
-                String variable = "<" + variables.get(i) + ">";
-                UnaryOperator<String> replacer = s -> s.replace(variable, variableValue);
-                exampleStep
-                        .setName(Optional.ofNullable(trim(exampleStep.name())).map(replacer).orElse(null))
-                        .setData(exampleStep.data().map(data -> data.copyReplacingVariables(replacer)).orElse(null));
-            }
+            exampleStep
+                    .setName(replaceOutlineVariables(exampleStep.name(), variables, values))
+                    .setData(exampleStep.data()
+                            .map(data -> data.copyReplacingVariables(s -> replaceOutlineVariables(s, variables, values)))
+                            .orElse(null));
             exampleSteps.add(exampleStep);
         }
         return exampleSteps;
+    }
+
+    private String replaceOutlineVariables(String string, List<String> variables, List<String> values) {
+        String result = string;
+        for (int i = 0; i < variables.size(); i++) {
+            String variableValue = values.get(i);
+            String variable = "<" + variables.get(i) + ">";
+            result = Optional.ofNullable(trim(result)).map(s -> s.replace(variable, variableValue)).orElse(null);
+        }
+        return result;
     }
 
 

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 
 - StartInstant in NOT_IMPLEMENTED results
-- Add the keyword in the Scenario Outlines nodes to prevent errors in the html report
+- Add the `keyword` and `description` in the Scenario Outlines nodes to prevent errors in the html report
 
 ## [1.6.0] - 2023-02-23
 
