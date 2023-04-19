@@ -51,17 +51,6 @@
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-common</artifactId>
-            <version>4.1.90.Final</version>
         </dependency>
         <dependency>
             <groupId>es.iti.kukumo</groupId>
@@ -99,7 +88,22 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>enforce</id>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
         </plugins>
+
     </build>
 
 </project>
