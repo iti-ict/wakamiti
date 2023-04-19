@@ -36,6 +36,7 @@
         <kukumo-html-report.version>1.5.1</kukumo-html-report.version>
         <kukumo-cucumber-exporter.version>1.0.0</kukumo-cucumber-exporter.version>
         <kukumo-spring.version>1.4.0</kukumo-spring.version>
+        <kukumo-appium.version>1.0.0</kukumo-appium.version>
         <jext.version>1.0.0</jext.version>
 
         <!-- external dependencies -->
@@ -94,6 +95,7 @@
         <mockito.version>3.7.0</mockito.version>
         <xerces.version>2.12.2</xerces.version>
         <saxon.varsion>11.4</saxon.varsion>
+        <appium-java-client.version>8.3.0</appium-java-client.version>
     </properties>
 
 
@@ -170,6 +172,11 @@
                 <groupId>es.iti.kukumo</groupId>
                 <artifactId>kukumo-cucumber-exporter</artifactId>
                 <version>${kukumo-cucumber-exporter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>es.iti.kukumo</groupId>
+                <artifactId>kukumo-appium</artifactId>
+                <version>${kukumo-appium.version}</version>
             </dependency>
 
             <!-- external dependencies -->
@@ -606,6 +613,11 @@
                 <artifactId>commons-logging</artifactId>
                 <version>${commons-logging.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium-java-client.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -627,6 +639,11 @@
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
                 <version>${saxon.varsion}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium-java-client.version}</version>
             </dependency>
         </dependencies>
 
