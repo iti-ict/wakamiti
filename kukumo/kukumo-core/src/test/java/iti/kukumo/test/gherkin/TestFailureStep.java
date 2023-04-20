@@ -49,8 +49,12 @@ public class TestFailureStep {
         PlanNode executed = Kukumo.instance().executePlan(plan, configuration);
 
         PlanNodeSnapshot snapshot = new PlanNodeSnapshot(executed);
+
+        assertThat(snapshot.getErrorClassifiers()).containsEntry("test",2L);
         PlanSerializer serializer = new JsonPlanSerializer();
         String serial = serializer.serialize(snapshot);
+        System.out.println(serial);
+        assertThat(serial).contains("\"errorClassifier\" : \"test\"");
 
     }
 
