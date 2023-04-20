@@ -46,7 +46,7 @@ public class KukumoJUnitRunner extends Runner {
     protected static final Logger LOGGER = Kukumo.LOGGER;
     protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
 
-    protected final Configuration configuration;
+    protected Configuration configuration;
     protected final Class<?> configurationClass;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
@@ -79,7 +79,7 @@ public class KukumoJUnitRunner extends Runner {
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
-        for (JUnitPlanNodeRunner child : getChildren()) {
+        for (JUnitPlanNodeRunner child : createChildren()) {
             try {
                 child.runNode(notifier);
             } catch (Exception e) {
@@ -97,10 +97,8 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-    public List<JUnitPlanNodeRunner> getChildren() {
-        if (children == null) {
-            children = buildRunners();
-        }
+    public List<JUnitPlanNodeRunner> createChildren() {
+        children = buildRunners();
         return children;
     }
 
@@ -110,7 +108,7 @@ public class KukumoJUnitRunner extends Runner {
         if (description == null) {
             description = Description
                 .createSuiteDescription("Kukumo Test Plan", UUID.randomUUID().toString());
-            for (JUnitPlanNodeRunner child : getChildren()) {
+            for (JUnitPlanNodeRunner child : createChildren()) {
                 description.addChild(child.getDescription());
             }
         }
@@ -174,7 +172,10 @@ public class KukumoJUnitRunner extends Runner {
                 if (!Modifier.isStatic(method.getModifiers())) {
                     throwInitializationError(method, annotation, "should be static");
                 }
-                if (method.getParameterCount() > 0) {
+                boolean setUpConfig = (
+                  method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class
+                );
+                if (method.getParameterCount() > 0 && !setUpConfig) {
                     throwInitializationError(method, annotation, "should have no parameter");
                 }
             }
@@ -199,12 +200,22 @@ public class KukumoJUnitRunner extends Runner {
     ) {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
-                try {
-                    method.invoke(null);
-                } catch (IllegalAccessException
-                                | IllegalArgumentException
-                                | InvocationTargetException e) {
-                    throw new KukumoException(e);
+
+                // accepts a setUp method in form of Configuration setUp(Configuration)
+                if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
+                    try {
+                        this.configuration = (Configuration) method.invoke(null,this.configuration);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        throw new KukumoException(e);
+                    }
+                } else {
+
+                    try {
+                        method.invoke(null);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        throw new KukumoException(e);
+                    }
+
                 }
             }
         }
