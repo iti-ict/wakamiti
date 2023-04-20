@@ -14,7 +14,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -96,7 +95,7 @@ public class PlanNodeSnapshot {
                 .orElse(null);
         this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
         if (node.nodeType == NodeType.STEP && node.executionState().flatMap(ExecutionState::errorClassifier).isPresent()) {
-            this.errorClassifier = node.executionState().flatMap(ExecutionState::errorClassifier).get();
+            this.errorClassifier = node.executionState().flatMap(ExecutionState::errorClassifier).orElse(null);
         } else if (node.nodeType == NodeType.STEP_AGGREGATOR || node.nodeType == NodeType.TEST_CASE) {
             this.errorClassifier = node.errorClassifiers().findFirst().orElse(null);
         } else if (node.nodeType == NodeType.AGGREGATOR && node.hasChildren()) {
@@ -183,7 +182,7 @@ public class PlanNodeSnapshot {
     }
 
     private static Map<Result, Long> countChildren(PlanNodeSnapshot node) {
-        return node.getChildren().stream().collect(groupingBy(it -> it.getResult(), counting()));
+        return node.getChildren().stream().collect(groupingBy(PlanNodeSnapshot::getResult, counting()));
     }
 
     private static String childLocalDateTime(
