@@ -164,6 +164,22 @@ extends TreeNode<S> {
 
 
     /**
+     * Get a stream with the error classifiers of this node, if executed and failed. In the
+     * case of child-populated nodes, return all the error classifiers of its children.
+     *
+     * @return A stream of errors
+     */
+    public Stream<String> errorClassifiers() {
+        if (hasChildren()) {
+            return children().flatMap(S::errorClassifiers);
+        }
+        return executionState().flatMap(ExecutionState::errorClassifier)
+                .map(Stream::of)
+                .orElse(Stream.empty());
+    }
+
+
+    /**
      * @return Check whether the execution of this node has been marked as
      *         started. In the case of child-populated nodes, return if every
      *         child has been started.

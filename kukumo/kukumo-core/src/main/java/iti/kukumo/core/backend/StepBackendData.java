@@ -24,6 +24,7 @@ public class StepBackendData {
     private final Matcher stepMatcher;
     private final Map<String, Argument> invokingArguments;
     private final Exception exception;
+    private final String classifier;
 
 
     public StepBackendData(
@@ -32,7 +33,8 @@ public class StepBackendData {
             Locale dataLocale,
             RunnableStep runnableStep,
             Matcher stepMatcher,
-            Map<String, Argument> invokingArguments
+            Map<String, Argument> invokingArguments,
+            String classifier
     ) {
         this.step = step;
         this.stepLocale = stepLocale;
@@ -41,6 +43,7 @@ public class StepBackendData {
         this.stepMatcher = stepMatcher;
         this.invokingArguments = invokingArguments;
         this.exception = null;
+        this.classifier = classifier;
     }
 
 
@@ -52,6 +55,7 @@ public class StepBackendData {
         this.stepMatcher = null;
         this.invokingArguments = null;
         this.exception = exception;
+        this.classifier = null;
     }
 
 
@@ -87,6 +91,10 @@ public class StepBackendData {
 
     public Exception exception() {
         return exception;
+    }
+
+    public String classifier() {
+        return classifier;
     }
 
 }

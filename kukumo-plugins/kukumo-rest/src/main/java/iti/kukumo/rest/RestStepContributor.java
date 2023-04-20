@@ -41,6 +41,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     private static final String PASSWORD_PARAM = "password";
 
 
+    @Override
+    public String info() {
+        return "REST";
+    }
+
+
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
         specifications.add(request ->

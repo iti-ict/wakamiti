@@ -197,23 +197,24 @@ public class RunnableBackend extends AbstractBackend {
                 dataLocale,
                 runnableStep,
                 stepMatcher,
-                invokingArguments
+                invokingArguments,
+                runnableStep.getProvider()
         );
     }
 
 
     protected void runStep(PlanNode step, Instant instant) {
+        step.prepareExecution().markStarted(instant);
+        StepBackendData stepBackend = stepBackendData.get(step);
+        KukumoStepRunContext.set(
+            new KukumoStepRunContext(
+                    configuration,
+                    this,
+                    stepBackend.stepLocale(),
+                    stepBackend.dataLocale()
+            )
+        );
         try {
-            step.prepareExecution().markStarted(instant);
-            StepBackendData stepBackend = stepBackendData.get(step);
-            KukumoStepRunContext.set(
-                    new KukumoStepRunContext(
-                            configuration,
-                            this,
-                            stepBackend.stepLocale(),
-                            stepBackend.dataLocale()
-                    )
-            );
             if (stepBackend.exception() != null) {
                 throw stepBackend.exception();
             }
@@ -223,15 +224,15 @@ public class RunnableBackend extends AbstractBackend {
             stepBackendResults.add(result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
-            fillErrorState(step, instant, e);
+            fillErrorState(step, instant, e, stepBackend.classifier());
         } finally {
             KukumoStepRunContext.clear();
         }
     }
 
 
-    protected void fillErrorState(PlanNode modelStep, Instant instant, Throwable e) {
-        modelStep.prepareExecution().markFinished(instant, resultFromThrowable(e), e);
+    protected void fillErrorState(PlanNode modelStep, Instant instant, Throwable e, String errorClassifier) {
+        modelStep.prepareExecution().markFinished(instant, resultFromThrowable(e), e, errorClassifier);
         stepsWithErrors.add(modelStep);
     }
 

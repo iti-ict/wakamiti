@@ -49,6 +49,11 @@ public class AmqpStepContributor implements StepContributor {
     private boolean autoDelete;
 
 
+    @Override
+    public String info() {
+        return "AMQP";
+    }
+
     public void setConnectionParams(AmqpConnectionParams connectionParams) {
         this.connectionParams = connectionParams;
     }

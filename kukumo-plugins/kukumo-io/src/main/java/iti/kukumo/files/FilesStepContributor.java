@@ -42,6 +42,12 @@ public class FilesStepContributor implements StepContributor {
     private boolean enableCleanupUponCompletion;
     private Map<Path, Path> links = new LinkedHashMap<>();
 
+
+    @Override
+    public String info() {
+        return "I/O";
+    }
+
     @SetUp
     public void setUp() {
         links.forEach(helper::createSymLink);

@@ -78,6 +78,11 @@ public class DatabaseStepContributor implements StepContributor {
         return connection;
     }
 
+    @Override
+    public String info() {
+        return "DB";
+    }
+
 
     public ConnectionParameters getConnectionParameters() {
         return connectionParameters;
