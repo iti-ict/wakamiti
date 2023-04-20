@@ -53,8 +53,12 @@ public class KukumoSteps implements StepContributor {
     private String word;
     private String text;
 
+    @Override
+    public String info() {
+        return "test";
+    }
 
-    @Step(value = "given.set.of.numbers")
+    @Step(value = "given.set.of.numbers", classifier = "test-step")
     public void setOfNumbers() {
         LOGGER.debug("Numbers type set");
     }

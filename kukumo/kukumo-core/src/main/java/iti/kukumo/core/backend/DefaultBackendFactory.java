@@ -326,12 +326,15 @@ public class DefaultBackendFactory implements BackendFactory {
         Object stepProvider,
         KukumoDataTypeRegistry typeRegistry
     ) {
-        String info = (stepProvider instanceof Contributor) ?
+        String stepProviderName = (stepProvider instanceof Contributor) ?
     		((Contributor)stepProvider).info() :
 			stepProvider.getClass().getCanonicalName();
 
     	for (Method method : stepProvider.getClass().getMethods()) {
             if (method.isAnnotationPresent(Step.class)) {
+                Step stepAnnotation = method.getAnnotation(Step.class);
+                String stepClassifier = stepAnnotation.classifier();
+                String info = (stepClassifier.isBlank() ? stepProviderName : stepClassifier);
                 try {
                     RunnableStep step = createRunnableStep(stepProvider, method, typeRegistry, info);
                     output.add(step);

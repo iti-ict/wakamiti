@@ -36,6 +36,10 @@ public class AppiumStepContributor implements StepContributor {
         //
     }
 
+    @Override
+    public String info() {
+        return "Appium";
+    }
 
     public void setCapabilities(DesiredCapabilities capabilities) {
         this.capabilities = capabilities;
