@@ -44,6 +44,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern = null;
+    private boolean includeFiltered = false;
 
 
     @Override
@@ -66,6 +67,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             this.scenarioFilter = node -> Kukumo.instance().createTagFilter(tagFilterExpression)
                     .filter(node.tags());
         }
+        this.includeFiltered = configuration.get(KukumoConfiguration.INCLUDE_FILTERED_TEST_CASES,Boolean.class)
+                .orElse(false);
     }
 
 
@@ -103,20 +106,20 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             if (abstractScenario instanceof Scenario) {
-                node.addChildIf(
-                        createScenario(feature, (Scenario) abstractScenario, location, node),
-                        scenarioFilter
-                );
+                var child = createScenario(feature, (Scenario) abstractScenario, location, node);
+                if (scenarioFilter.test(child) || includeFiltered) {
+                    node.addChild(child);
+                }
             } else if (abstractScenario instanceof ScenarioOutline) {
-                node.addChildIf(
-                        createScenarioOutline(
-                                feature,
-                                (ScenarioOutline) abstractScenario,
-                                location,
-                                node
-                        ),
-                        scenarioFilter
+                var child = createScenarioOutline(
+                    feature,
+                    (ScenarioOutline) abstractScenario,
+                    location,
+                    node
                 );
+                if (scenarioFilter.test(child) || includeFiltered) {
+                    node.addChild(child);
+                }
             }
         }
         if (node.name() != null) {
@@ -135,6 +138,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder parentNode
     ) {
         PlanNodeBuilder node = newScenarioNode(scenario, location, parentNode);
+        node.filtered(!scenarioFilter.test(node));
+        if (node.filtered()) {
+            return node;
+        }
         Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
         backgroundSteps.ifPresent(background -> node.addChild(background.copy()));
         for (Step step : scenario.getSteps()) {
@@ -212,13 +219,18 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                     )
                     .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
 
-            backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
-            List<PlanNodeBuilder> exampleSteps = replaceOutlineVariables(
-                    outlineSteps,
-                    variables,
-                    values.get(row)
-            );
-            exampleSteps.forEach(exampleScenario::addChild);
+            exampleScenario.filtered(!scenarioFilter.test(exampleScenario));
+            if (!exampleScenario.filtered()) {
+
+                backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
+                List<PlanNodeBuilder> exampleSteps = replaceOutlineVariables(
+                        outlineSteps,
+                        variables,
+                        values.get(row)
+                );
+                exampleSteps.forEach(exampleScenario::addChild);
+
+            }
 
             output.add(exampleScenario);
 
@@ -263,7 +275,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .setSource(source(location, scenario.getLocation()))
                 .setUnderlyingModel(scenario)
                 .addProperties(propertiesFromComments(scenario, parentNode.properties()))
-                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
+                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO)
+                ;
     }
 
 

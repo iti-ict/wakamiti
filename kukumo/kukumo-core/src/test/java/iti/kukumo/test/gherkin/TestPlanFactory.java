@@ -147,6 +147,19 @@ public class TestPlanFactory {
     }
 
     @Test
+    public void test5_includeFilteredTestCases() throws IOException, JSONException, ConfigurationException {
+        Properties properties = new Properties();
+        properties.put(KukumoConfiguration.INCLUDE_FILTERED_TEST_CASES, "true");
+        assertPlan(
+                "src/test/resources/features/test5_includeFiltered.feature",
+                "src/test/resources/features/test5_includeFiltered_plan.json",
+                "Test5 and A",
+                2,
+                properties
+        );
+    }
+
+    @Test
     public void test6_propertySubstitution() throws IOException, JSONException, ConfigurationException {
         Properties properties = new Properties();
         properties.put("number.a", "8.02");

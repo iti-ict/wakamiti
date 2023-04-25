@@ -30,6 +30,7 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     String displayName;
     Optional<PlanNodeData> data;
     List<Argument> arguments;
+    boolean filtered;
 
 
     public PlanNode(NodeType nodeType, List<PlanNode> children) {
@@ -106,6 +107,9 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         return displayName;
     }
 
+    public boolean filtered() {
+        return filtered;
+    }
 
     public int numDescendants(NodeType nodeType) {
         return numDescendants(descendant -> descendant.nodeType() == nodeType);
