@@ -16,6 +16,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.core.junit.KukumoJUnitRunner;
 import iti.kukumo.database.DatabaseConfigContributor;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -36,15 +37,15 @@ import java.nio.charset.StandardCharsets;
         @Property(key = DatabaseConfigContributor.DATABASE_METADATA_CASE_SENSITIVITY, value = "lower_cased"),
         @Property(key = DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
-public class TestDb2DbLoader {
 
+@Category(LinuxTests.class)
+public class TestDb2DbLoader {
     @BeforeClass
     public static Configuration setUp(Configuration config) throws IOException {
 
         GenericContainer db2Container = new GenericContainer("ibmcom/db2:11.5.6.0")
                 .withEnv("DB2_ROOT_PASSWORD","password")
                 .withEnv("LICENSE","accept");
-                //.withCommand("docker run -itd --name DB2_TEST --privileged=true -p 50000:50000 -e LICENSE=accept -e DB2INST1_PASSWORD=INSTPW -e DBNAME=testdb -v C:/DOCKER/db2/persistance_testdb:/database ibmcom/db2\n");
         db2Container.start();
 
         String jdbcUrl = "jdbc:db2://" + db2Container.getContainerIpAddress() + ":" + db2Container.getMappedPort(50000) + "/mydb";

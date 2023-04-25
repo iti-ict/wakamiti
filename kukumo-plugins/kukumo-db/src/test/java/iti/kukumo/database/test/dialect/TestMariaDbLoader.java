@@ -16,6 +16,7 @@ import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.core.junit.KukumoJUnitRunner;
 import iti.kukumo.database.DatabaseConfigContributor;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -36,6 +37,8 @@ import java.nio.charset.StandardCharsets;
         @Property(key = DatabaseConfigContributor.DATABASE_METADATA_CASE_SENSITIVITY, value = "lower_cased"),
         @Property(key = DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
+
+@Category({LinuxTests.class, WindowsTests.class})
 public class TestMariaDbLoader {
 
     @BeforeClass

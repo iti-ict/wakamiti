@@ -8,6 +8,7 @@ module kukumo.db.test {
     requires poi.ooxml;
     requires org.assertj.core;
     requires jsqlparser;
+    requires org.junit.jupiter.api;
 
     exports iti.kukumo.database.test.dialect;
 }
