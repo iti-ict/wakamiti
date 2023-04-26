@@ -14,6 +14,7 @@ import imconfig.Configuration;
 import imconfig.ConfigurationException;
 import imconfig.ConfigurationFactory;
 import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
@@ -74,6 +75,9 @@ public class KukumoJUnitRunner extends Runner {
     public void run(RunNotifier notifier) {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
+        plan.assignExecutionID(
+            configuration.get(KukumoConfiguration.EXECUTION_ID,String.class).orElse(UUID.randomUUID().toString())
+        );
         kukumo.publishEvent(Event.PLAN_RUN_STARTED, plan);
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
