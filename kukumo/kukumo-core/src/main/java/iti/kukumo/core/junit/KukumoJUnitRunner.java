@@ -52,7 +52,6 @@ public class KukumoJUnitRunner extends Runner {
     protected final boolean treatStepsAsTests;
     protected final Kukumo kukumo;
     private PlanNode plan;
-    private List<JUnitPlanNodeRunner> children;
     private Description description;
 
 
@@ -97,10 +96,6 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-    public List<JUnitPlanNodeRunner> createChildren() {
-        children = buildRunners();
-        return children;
-    }
 
 
     @Override
@@ -124,7 +119,7 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-    protected List<JUnitPlanNodeRunner> buildRunners() {
+    protected List<JUnitPlanNodeRunner> createChildren() {
 
         BackendFactory backendFactory = kukumo.newBackendFactory();
         return getPlan().children().map(node -> {
@@ -199,25 +194,27 @@ public class KukumoJUnitRunner extends Runner {
         Class<? extends Annotation> annotation
     ) {
         for (Method method : configurationClass.getMethods()) {
-            if (method.isAnnotationPresent(annotation)) {
-
-                // accepts a setUp method in form of Configuration setUp(Configuration)
-                if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
-                    try {
-                        this.configuration = (Configuration) method.invoke(null,this.configuration);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        throw new KukumoException(e);
-                    }
-                } else {
-
-                    try {
-                        method.invoke(null);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        throw new KukumoException(e);
-                    }
-
-                }
+            if (!method.isAnnotationPresent(annotation)) {
+                continue;
             }
+
+            // accepts a setUp method in form of Configuration setUp(Configuration)
+            if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
+                try {
+                    this.configuration = (Configuration) method.invoke(null,this.configuration);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    throw new KukumoException(e);
+                }
+            } else {
+
+                try {
+                    method.invoke(null);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    throw new KukumoException(e);
+                }
+
+            }
+
         }
     }
 
