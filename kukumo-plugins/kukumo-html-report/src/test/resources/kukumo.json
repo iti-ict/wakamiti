@@ -6,6 +6,9 @@
   "finishInstant": "2019-09-27T10:00:00.000",
   "duration": 8648410,
   "result": "ERROR",
+  "errorClassifiers" : {
+    "test":1
+  },
   "childrenResults": {
     "FAILED": 1,
     "ERROR": 1

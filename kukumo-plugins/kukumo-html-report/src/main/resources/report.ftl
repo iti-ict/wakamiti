@@ -58,6 +58,22 @@
                     </div>
                 </section>
             </li>
+            <#if plan.errorClassifiers?size != 0>
+                <li class="details--item">
+                    <section class="test--component summary--component">
+                        <header class="test--header">
+                            <button class="test--header-btn" type="button">
+                                <h3 class="test--title">Errors By Type</h3>
+                                <hr/>
+                            </button>
+                        </header>
+                        <div class="test--body details--body">
+                            <canvas class="chart-error" data-result='{<#if plan.errorClassifiers??><#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>, </#list></#if>}'>
+                            </canvas>
+                        </div>
+                    </section>
+                </li>
+            </#if>
             <li class="details--item">
                 <section class="test--component summary--component">
                     <header class="test--header">
