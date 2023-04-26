@@ -15,23 +15,19 @@ import imconfig.Property;
 import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.core.junit.KukumoJUnitRunner;
 import iti.kukumo.database.DatabaseConfigContributor;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
-import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.runner.RunWith;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.condition.OS.LINUX;
+
 
 @RunWith(KukumoJUnitRunner.class)
 @AnnotatedConfiguration({
