@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 
 - Result for each feature and scenario
+- Categorize test case errors according the step contributor
 
 ### Fixed
 
