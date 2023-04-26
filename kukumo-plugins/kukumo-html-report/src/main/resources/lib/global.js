@@ -44,12 +44,13 @@ function getColor(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
+function getErrorColor(index){
+    name = '--error-classifier' + index;
+    return getComputedStyle(document.documentElement).getPropertyValue(name);
 
-function newChart(elem, labels, data) {
-    const backgroundColor = [];
-    for (let label of labels) {
-        backgroundColor.push(getColor(label));
-    }
+}
+function newChart(elem, labels, data, backgroundColor) {
+
     const datasets = [{
         data,
         backgroundColor,
@@ -217,9 +218,30 @@ window.onload = function () {
         const result = JSON.parse(chart.getAttribute("data-result"));
         const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
         const counts = Object.values(result);
+        const backgroundColor = [];
 
-        newChart(chart, labels, counts);
+        for (let label of labels) {
+            backgroundColor.push(getColor(label));
+        }
+
+
+        newChart(chart, labels, counts, backgroundColor);
     }
 
+    const chartsError = document.getElementsByClassName('chart-error');
+
+    for (let chart of chartsError) {
+        const result = JSON.parse(chart.getAttribute("data-result"));
+        const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
+        const counts = Object.values(result);
+        const backgroundColor = [];
+
+        for (var i = 0; i < labels.length; i++) {
+            backgroundColor.push(getErrorColor(i));
+        }
+
+
+        newChart(chart, labels, counts, backgroundColor);
+    }
     hljs.highlightAll();
 }
