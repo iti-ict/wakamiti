@@ -58,7 +58,7 @@
                     </div>
                 </section>
             </li>
-            <#if plan.errorClassifiers?size != 0>
+            <#if plan.errorClassifiers??>
                 <li class="details--item">
                     <section class="test--component summary--component">
                         <header class="test--header">
@@ -68,7 +68,7 @@
                             </button>
                         </header>
                         <div class="test--body details--body">
-                            <canvas class="chart-error" data-result='{<#if plan.errorClassifiers??><#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>, </#list></#if>}'>
+                            <canvas class="chart-error" data-result='{<#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>, </#list>}'>
                             </canvas>
                         </div>
                     </section>
