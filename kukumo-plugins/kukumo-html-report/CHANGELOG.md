@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 
 - Result for each feature and scenario
+- Error display by type
 
 ### Fixed
 

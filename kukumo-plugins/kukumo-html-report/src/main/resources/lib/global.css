@@ -1184,6 +1184,11 @@ footer a:hover {
     flex-direction: row;
     margin: 2px 0 !important;
 }
+.chart-legend li p{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 20px;
+}
 .chart-legend span {
     display: inline-block;
     border-radius: 100%;
@@ -1194,4 +1199,22 @@ footer a:hover {
 .chart-legend p {
     margin: 0;
     padding: 0;
+}
+
+@media (min-width: 1199px), screen and (max-width: 991.5px) {
+    .chart-legend li p{
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 739px) {
+    .chart-legend li p{
+        overflow: visible;
+    }
+}
+
+@media (max-width: 468px) {
+    .chart-legend li p{
+        overflow: hidden;
+    }
 }

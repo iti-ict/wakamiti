@@ -7,7 +7,8 @@
   "duration": 8648410,
   "result": "ERROR",
   "errorClassifiers" : {
-    "test":1
+    "wakamiti.custom.CustomStepsContributor":1,
+    "test": 2
   },
   "childrenResults": {
     "FAILED": 1,

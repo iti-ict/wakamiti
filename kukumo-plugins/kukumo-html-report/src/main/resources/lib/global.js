@@ -124,6 +124,7 @@ function newChart(elem, labels, data, backgroundColor) {
                     const boxSpan = document.createElement('span');
                     boxSpan.style.background = item.fillStyle;
                     boxSpan.style.borderColor = item.strokeStyle;
+                    boxSpan.style.padding = '8px';
                     boxSpan.style.borderWidth = item.lineWidth + 'px';
 
                     // Text
