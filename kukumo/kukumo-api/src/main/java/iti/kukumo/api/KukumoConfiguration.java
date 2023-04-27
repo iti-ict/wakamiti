@@ -67,6 +67,9 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
     /** Tag Expression filter */
     public static final String TAG_FILTER = "tagFilter";
 
+    /** Whether filtered tests should be included in the plan, as SKIPPED */
+    public static final String INCLUDE_FILTERED_TEST_CASES = "includeFilteredTestCases";
+
     /** Pattern for use specific tag as an identifier */
     public static final String ID_TAG_PATTERN = "idTagPattern";
 
@@ -124,6 +127,7 @@ public class KukumoConfiguration implements ConfigContributor<Void> {
                     OUTPUT_FILE_PER_TEST_CASE, Boolean.FALSE.toString(),
                     REPORT_GENERATION, Boolean.TRUE.toString(),
                     ID_TAG_PATTERN, "ID-(\\w*)",
+                    INCLUDE_FILTERED_TEST_CASES, "false",
                     REDEFINITION_ENABLED, Boolean.TRUE.toString(),
                     REDEFINITION_DEFINITION_TAG, "definition",
                     REDEFINITION_IMPLEMENTATION_TAG, "implementation",

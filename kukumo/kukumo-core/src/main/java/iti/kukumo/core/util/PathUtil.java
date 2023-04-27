@@ -1,10 +1,15 @@
 package iti.kukumo.core.util;
 
-import java.nio.file.Files;
+import iti.kukumo.api.plan.PlanNode;
+
 import java.nio.file.Path;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PathUtil {
 
@@ -20,7 +25,9 @@ public class PathUtil {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
 
 
-    public static Path replaceTemporalPlaceholders(Path path, LocalDateTime instant) {
+    public static Path replacePlaceholders(Path path, PlanNode planNode) {
+        var instant = planNode.startInstant().orElseGet(Instant::now).atZone(ZoneId.systemDefault());
+        var executionID = Objects.requireNonNullElse(planNode.executionID(),"");
         String pathString = path.toString();
         pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
         pathString = pathString.replace("%YY%",YEAR_2.format(instant));
@@ -32,6 +39,7 @@ public class PathUtil {
         pathString = pathString.replace("%sss%",MILLISEC.format(instant));
         pathString = pathString.replace("%DATE%", DATE.format(instant));
         pathString = pathString.replace("%TIME%", TIME.format(instant));
+        pathString = pathString.replace("%execID%", executionID);
         return Path.of(pathString);
     }
 

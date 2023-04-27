@@ -8,8 +8,10 @@ import iti.kukumo.api.extensions.ConfigContributor;
 import iti.kukumo.api.extensions.StepContributor;
 import iti.kukumo.database.ConnectionManager;
 
+
 module kukumo.db {
     exports iti.kukumo.database;
+    exports iti.kukumo.database.dataset;
 
     requires kukumo.api;
     requires java.sql;
@@ -28,4 +30,6 @@ module kukumo.db {
     provides StepContributor with iti.kukumo.database.DatabaseStepContributor;
     provides ConfigContributor with iti.kukumo.database.DatabaseConfigContributor;
     provides ConnectionManager with iti.kukumo.database.DriverConnectionManager;
+
 }
+

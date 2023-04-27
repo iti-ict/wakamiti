@@ -631,7 +631,7 @@ ul {
     font-size: 11px;
     margin: 0;
     border-radius: 0;
-    max-height: 300px;
+    max-height: 309px;
     overflow: auto;
 }
 .step--code-snippet + .step--code-snippet {
@@ -641,13 +641,7 @@ ul {
     padding: 1em;
     background: none
 }
-.test--component::after,
-.test--component::before {
-    /*! content: " "; *//*! display: table */
-}
-.test--component::after {
-    /*! clear: both */
-}
+
 .test--component {
     position: relative;
     background-color: #fff;

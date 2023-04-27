@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+
+- Capability to use the execution ID as placeholder in the output file name
+- Categorize test case errors according the step contributor
+- New configuration property to include the filtered test cases in the plan result, as SKIPPED
+
 ### Fixed
 
 - StartInstant in NOT_IMPLEMENTED results
 - Add the `keyword` and `description` in the Scenario Outlines nodes to prevent errors in the html report
+- Fill execution ID when using `KukumoJUnitRunner`
 
 ## [1.6.0] - 2023-02-23
 
