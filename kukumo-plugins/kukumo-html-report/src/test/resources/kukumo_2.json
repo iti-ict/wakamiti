@@ -1,0 +1,364 @@
+{
+  "nodeType": "AGGREGATOR",
+  "displayName": "Test Plan B",
+  "startInstant": "2019-09-27T10:00:00.000",
+  "finishInstant": "2019-09-27T10:00:00.000",
+  "duration": 8648410,
+  "result": "ERROR",
+  "childrenResults": {
+    "FAILED": 1,
+    "ERROR": 1
+  },
+  "testCaseResults": {
+    "PASSED": 3,
+    "FAILED": 1,
+    "ERROR": 1
+  },
+  "children": [
+    {
+      "id": "#a327ycn3219c",
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "result": "FAILED",
+      "name": "Esta es la feature 1",
+      "duration": 4680,
+      "description": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ",
+        "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ",
+        "exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure ",
+        "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      ],
+      "childrenResults": {"PASSED": 1 , "FAILED":  1},
+      "children": [
+        {
+          "id": "CP-A",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "result": "PASSED",
+          "name": "Este es el escenario A",
+          "description": [
+            "Lorem ipsum dolor sit amet."
+          ],
+          "tags": [
+            "CP-A"
+          ],
+          "duration": 512,
+          "childrenResults": {"PASSED": 4 },
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Dado",
+              "result": "PASSED",
+              "name": "Paso de negocio A1",
+              "duration": 354,
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion A1_1",
+                  "duration": 12,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion A1_2",
+                  "duration": 342,
+                  "result": "PASSED",
+                  "dataTable": [
+                     [ "casa", "perro", "árbol"],
+                     [ "1", "2", "3"],
+                     [ "143", "23", "34"]
+                  ]
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio A2",
+              "duration": 1,
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Cuando",
+              "result": "PASSED",
+              "name": "Paso de negocio A3",
+              "duration": 123,
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_1",
+                  "keyword": "Cuando",
+                  "duration": 57,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_2",
+                  "keyword": "Y",
+                  "duration": 58,
+                  "result": "PASSED",
+                  "documentType": "json",
+                  "document": "{\n  \"menu\": {\n    \"id\": \"file\",\n    \"value\": \"File\",\n    \"popup\": {\n      \"menuitem\": [\n        {\n          \"value\": \"New\",\n          \"onclick\": \"CreateNewDoc()\"\n        },\n        {\n          \"value\": \"Open\",\n          \"onclick\": \"OpenDoc()\"\n        },\n        {\n          \"value\": \"Close\",\n          \"onclick\": \"CloseDoc()\"\n        }\n      ]\n    }\n  }\n}"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Entonces",
+              "result": "PASSED",
+              "name": "Paso de negocio A4",
+              "duration": 58,
+              "childrenResults": {"PASSED": 1 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A4_1",
+                  "duration": 58,
+                  "keyword": "Entonces",
+                  "result": "PASSED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeType": "TEST_CASE",
+          "id": "CP-B",
+          "keyword": "Scenario",
+          "result": "FAILED",
+          "name": "Este es el escenario B",
+          "tags": [
+            "CP-B"
+          ],
+          "duration": 58,
+          "childrenResults": {"PASSED": 2, "FAILED": 1, "SKIPPED": "1" },
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "PASSED",
+              "keyword": "Dado",
+              "name": "Paso de negocio B1",
+              "duration": 58,
+              "childrenResults": {"PASSED": 2 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion B1_1",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B1_2",
+                  "duration": 58,
+                  "result": "PASSED"
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio B2",
+              "duration": 58,
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "FAILED",
+              "keyword": "Cuando",
+              "name": "Paso de negocio B3",
+              "duration": 58,
+              "childrenResults": {"PASSED": 1, "FAILED": 1, "SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de implementacion B3_1",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_2",
+                  "duration": 58,
+                  "result": "FAILED",
+                  "errorMessage": "Validación incorrecta: <div class=\"other-modules\">Otros modulos</div>"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_3",
+                  "duration": 58,
+                  "result": "SKIPPED"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "result": "SKIPPED",
+              "name": "Paso de negocio B4",
+              "duration": 58,
+              "keyword": "Entonces",
+              "childrenResults": {"SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de implementacion B4_1",
+                  "duration": 58,
+                  "result": "SKIPPED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "#jt9043uv30",
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "result": "ERROR",
+      "name": "Feature esta es la feature 2",
+      "duration": 58,
+      "childrenResults": {"PASSED": 1, "ERROR": 1 },
+      "children": [
+        {
+          "id": "CP-C",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "result": "PASSED",
+          "name": "Este es el escenario C",
+          "tags": [
+            "CP-C"
+          ],
+          "duration": 58,
+          "childrenResults": {"PASSED": 3},
+          "children": [
+            {
+              "nodeType": "STEP",
+              "keyword": "Dado",
+              "name": "Paso de escenario C1",
+              "duration": 58,
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Cuando",
+              "name": "Paso de escenario C2",
+              "duration": 58,
+              "result": "PASSED"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Entonces",
+              "name": "Paso de escenario C3",
+              "duration": 58,
+              "result": "PASSED"
+            }
+          ]
+        },
+        {
+          "nodeType": "AGGREGATOR",
+          "result": "ERROR",
+          "id": "CP-D",
+          "keyword": "Scenario Outline",
+          "name": "Este es el escenario D con ejemplos",
+          "duration": 58,
+          "childrenResults": {"PASSED": 1, "ERROR": 1 },
+          "children": [
+            {
+              "nodeType": "TEST_CASE",
+              "result": "PASSED",
+              "keyword": "Scenario",
+              "id": "CP-D1",
+              "name": "Scenario D con ejemplo 1",
+              "duration": 58,
+              "childrenResults": {"PASSED": 4 },
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de escenario D1_1",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de escenario D1_2",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de escenario D1_3",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de escenario D1_4",
+                  "duration": 58,
+                  "result": "PASSED"
+                }
+              ]
+            },
+            {
+              "nodeType": "TEST_CASE",
+              "result": "ERROR",
+              "keyword": "Scenario",
+              "id": "CP-D2",
+              "name": "Scenario D con ejemplo 2",
+              "duration": 58,
+              "childrenResults": {"PASSED": 2, "ERROR": 1, "SKIPPED": 1},
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_1",
+                  "keyword": "*",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_2",
+                  "keyword": "*",
+                  "duration": 58,
+                  "result": "PASSED"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_3",
+                  "keyword": "*",
+                  "duration": 58,
+                  "result": "ERROR",
+                  "errorMessage": "Unexpected error in transaction",
+                  "errorTrace": "java.lang.Throwable: A test exception\n  at com.stackify.stacktrace.StackElementExample.methodD(StackElementExample.java:23)\n  at com.stackify.stacktrace.StackElementExample.methodC(StackElementExample.java:15)\n  at com.stackify.stacktrace.StackElementExampleTest\n    .whenElementOneIsReadUsingThrowable_thenMethodCatchingThrowableIsObtained(StackElementExampleTest.java:34)\n..."
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_4",
+                  "keyword": "*",
+                  "duration": 58,
+                  "result": "SKIPPED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
