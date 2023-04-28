@@ -18,8 +18,8 @@ then
 fi
 
 #java -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar \
-#   --module-path "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib" \
-#   -cp "${KUKUMO_HOME}/lib-ext/*" \
+#   --module-path "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib/*" \
+#   -cp "${KUKUMO_HOME}/lib-ext/*"  \
 #   -m kukumo.launcher/iti.kukumo.launcher.KukumoLauncher "$@"
 java -javaagent:${KUKUMO_HOME}/kukumo-launcher.jar \
   -classpath "${KUKUMO_HOME}/kukumo-launcher.jar:${KUKUMO_HOME}/lib/*:${KUKUMO_HOME}/lib-ext/*" \

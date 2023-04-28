@@ -1136,7 +1136,7 @@ footer a:hover {
     display: inline-block;
 }
 .summary--component .details--body {
-    max-width: 350px !important;
+    /*max-width: 350px !important;*/
     padding-left: 15px;
     height: 180px !important;
     min-height: 180px !important;
@@ -1150,7 +1150,7 @@ footer a:hover {
     height: 150px !important;
 }
 .chart-legend {
-    width: 200px;
+    /*width: 200px;*/
     font-size: 12px;
     margin: 0 10px 30px 10px;
     display: -webkit-box;

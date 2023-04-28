@@ -9,8 +9,8 @@
  */
 package iti.kukumo.api.extensions;
 
-
 import iti.commons.jext.Extension;
+import org.apache.commons.lang3.StringUtils;
 
 
 /** Base interface for all Kukumo extensions */
@@ -19,16 +19,13 @@ public interface Contributor {
     default String info() {
         Extension extensionData = this.getClass().getAnnotation(Extension.class);
         if (extensionData != null) {
-        	return String.format(
-    			"%s:%s:%s",
-    			extensionData.provider(),
-    			extensionData.name(),
-    			extensionData.version()
-    		);
+            return String.format("%s:%s", extensionData.provider(), extensionData.name());
         } else {
-        	return getClass().getCanonicalName();
+            String pack = StringUtils.substringBeforeLast(
+                    StringUtils.abbreviate(getClass().getPackageName(), "", 14), ".");
+            return String.format("%s:%s", pack,
+                    StringUtils.abbreviate(getClass().getSimpleName(),  "", 14));
         }
-
     }
 
 
