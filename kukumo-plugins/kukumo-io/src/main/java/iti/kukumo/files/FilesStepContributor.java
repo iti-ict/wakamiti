@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-@Extension(provider = "iti.kukumo", name = "files-steps", version = "1.1")
+@Extension(provider = "iti.kukumo", name = "io-steps", version = "1.1")
 @I18nResource("iti_kukumo_kukumo-files")
 public class FilesStepContributor implements StepContributor {
 
@@ -42,11 +42,6 @@ public class FilesStepContributor implements StepContributor {
     private boolean enableCleanupUponCompletion;
     private Map<Path, Path> links = new LinkedHashMap<>();
 
-
-    @Override
-    public String info() {
-        return "I/O";
-    }
 
     @SetUp
     public void setUp() {

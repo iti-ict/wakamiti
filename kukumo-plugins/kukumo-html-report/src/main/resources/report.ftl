@@ -39,7 +39,7 @@
                         </button>
                     </header>
                     <div class="test--body details--body">
-                        <canvas class="chart" data-result='{<#if plan.childrenResults??><#list plan.childrenResults as k, v>"${k}":${v?c}<#sep>, </#list></#if>}'>
+                        <canvas class="chart" data-result='{<#list plan.childrenResults as k, v>"${k}":${v?c}<#sep>, </#list>}'>
                         </canvas>
                     </div>
                 </section>

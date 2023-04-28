@@ -30,26 +30,14 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 public class TestHtmlReportGenerator {
 
     private static Document xml;
+    private static Document xml_2;
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
-        try (Reader reader = Files
-                .newBufferedReader(Paths.get("src/test/resources/kukumo.json"), StandardCharsets.UTF_8)
-        ) {
-            PlanNodeSnapshot plan = KukumoAPI.instance().planSerializer().read(reader);
-            HtmlReportGenerator generator = new HtmlReportGenerator();
-            generator.setConfiguration(new HtmlReportGeneratorConfig()
-                    .defaultConfiguration()
-                    .appendProperty("htmlReport.output", "target/kukumo.html")
-                    .appendProperty("htmlReport.title", "Test Report Title")
-            );
-            generator.report(plan);
-
-            TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder =
-                    new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
-            HTMLDocumentBuilder htmlDocumentBuilder = new HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
-            xml = htmlDocumentBuilder.parse(Files.readString(Path.of("target/kukumo.html")));
-        }
+        xml = load("kukumo",
+                "htmlReport.output", "target/kukumo.html",
+                "htmlReport.title", "Test Report Title");
+        xml_2 = load("kukumo_2", "htmlReport.output", "target/kukumo_2.html");
     }
 
     @Test
@@ -60,7 +48,14 @@ public class TestHtmlReportGenerator {
                 .valueByXPath(elem + "/@title").isEqualTo("Test Report Title");
         assertThat(xml)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Report Title");
+
+        assertThat(xml_2)
+                .valueByXPath(elem + "/@title").isEqualTo("Test Plan B");
+        assertThat(xml_2)
+                .valueByXPath(elem + "/text()").isEqualTo("Test Plan B");
     }
+
+
 
     @Test
     public void testReportMetadata() {
@@ -106,6 +101,26 @@ public class TestHtmlReportGenerator {
                 .extractingText()
                 .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
                         "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
+    }
+
+
+    private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
+        try (Reader reader = Files
+                .newBufferedReader(Paths.get("src/test/resources/" + name + ".json"), StandardCharsets.UTF_8)
+        ) {
+            PlanNodeSnapshot plan = KukumoAPI.instance().planSerializer().read(reader);
+            HtmlReportGenerator generator = new HtmlReportGenerator();
+            generator.setConfiguration(new HtmlReportGeneratorConfig()
+                    .defaultConfiguration()
+                            .appendFromPairs(properties)
+            );
+            generator.report(plan);
+
+            TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder =
+                    new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
+            HTMLDocumentBuilder htmlDocumentBuilder = new HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
+            return htmlDocumentBuilder.parse(Files.readString(Path.of("target/"+ name + ".html")));
+        }
     }
 
 }

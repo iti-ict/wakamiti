@@ -25,6 +25,7 @@ module kukumo.api {
     requires com.fasterxml.jackson.databind;
     requires json.path;
     requires commons.beanutils;
+    requires org.apache.commons.lang3;
 
     uses PropertyEvaluator;
     uses KukumoAPI;
