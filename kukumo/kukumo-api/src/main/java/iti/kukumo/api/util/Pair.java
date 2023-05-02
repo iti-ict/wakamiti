@@ -12,6 +12,7 @@ package iti.kukumo.api.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -38,6 +39,15 @@ public class Pair<T, U> {
         return value;
     }
 
+    public <R, P> Pair<R, P> map(BiFunction<T, U, Pair<R, P>> map) {
+        return map.apply(key, value);
+    }
+
+    public <R> Pair<R, R> mapEach(Function<Object, R> map) {
+        R key = map.apply(this.key);
+        R value = map.apply(this.value);
+        return new Pair<>(key, value);
+    }
 
     @Override
     public String toString() {
