@@ -48,6 +48,7 @@
         <!-- other -->
         <module>kukumo-server-quarkus</module>
         <module>kukumo-docker</module>
+        <module>kukumo-plugins/wakamiti-upload-tests</module>
     </modules>
 
 
@@ -100,9 +101,13 @@
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
-
-
-
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.odlparent</groupId>
+            <artifactId>odl-apache-commons-net</artifactId>
+            <version>10.0.6</version>
+        </dependency>
+    </dependencies>
 
 
     <!-- basic build features -->

@@ -33,7 +33,7 @@ import iti.kukumo.api.plan.*;
 import iti.kukumo.api.util.KukumoLogger;
 import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.api.util.ThrowableFunction;
-import iti.kukumo.core.util.PathUtil;
+import iti.kukumo.api.util.PathUtil;
 import iti.kukumo.core.util.TagFilter;
 import org.slf4j.Logger;
 
@@ -432,6 +432,7 @@ public class Kukumo {
                 planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
                 LOGGER.info("Generated result output file {uri}", testCasePath);
             }
+            publishEvent("outputFileWritte", (PlanNode) testCasePath);
         }
     }
 

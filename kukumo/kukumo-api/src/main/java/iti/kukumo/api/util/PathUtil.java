@@ -1,4 +1,4 @@
-package iti.kukumo.core.util;
+package iti.kukumo.api.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +21,7 @@ public class PathUtil {
 
 
     public static Path replaceTemporalPlaceholders(Path path, LocalDateTime instant) {
+
         String pathString = path.toString();
         pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
         pathString = pathString.replace("%YY%",YEAR_2.format(instant));
@@ -35,4 +36,7 @@ public class PathUtil {
         return Path.of(pathString);
     }
 
+    public static String replaceTemporalPlaceholders(String dirPath) {
+        return dirPath;
+    }
 }

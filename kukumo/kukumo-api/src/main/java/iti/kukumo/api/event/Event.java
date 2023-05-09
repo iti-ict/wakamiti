@@ -27,7 +27,7 @@ public class Event {
     public static final String AFTER_RUN_BACKEND_STEP = "AFTER_RUN_BACKEND_STEP";
 
     private final String type;
-    private final PlanNodeSnapshot data;
+    private final Object data;
 
 
     public Event(String type, Instant instant, PlanNodeSnapshot data) {
@@ -41,7 +41,7 @@ public class Event {
     }
 
 
-    public PlanNodeSnapshot data() {
+    public Object data() {
         return data;
     }
 }
