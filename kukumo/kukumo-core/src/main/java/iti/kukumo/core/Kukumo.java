@@ -161,7 +161,7 @@ public class Kukumo {
         if (configuration.get(STRICT_TEST_CASE_ID,Boolean.class).orElse(Boolean.FALSE)) {
             validateUniqueTestCaseID(plan);
         }
-        publishEvent(Event.PLAN_CREATED, plan);
+        publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan));
         return plan;
     }
 
@@ -220,7 +220,7 @@ public class Kukumo {
         if (plan.isEmpty()) {
             throw new KukumoException("No test plans created");
         } else {
-            publishEvent(Event.PLAN_CREATED, plan.get());
+            publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan.get()));
             return plan.get();
         }
     }
@@ -347,10 +347,6 @@ public class Kukumo {
         getEventDispatcher().removeObserver(observer);
     }
 
-
-    public void publishEvent(String eventType, PlanNode data) {
-        getEventDispatcher().publishEvent(eventType, new PlanNodeSnapshot(data));
-    }
 
     public void publishEvent(String eventType, Object data) {
         getEventDispatcher().publishEvent(eventType, data);

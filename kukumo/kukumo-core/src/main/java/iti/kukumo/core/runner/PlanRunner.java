@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import imconfig.Configuration;
 import imconfig.ConfigurationFactory;
 import iti.kukumo.api.KukumoConfiguration;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import org.slf4j.Logger;
 
 import iti.kukumo.api.BackendFactory;
@@ -53,7 +54,7 @@ public class PlanRunner {
              configuration.get(KukumoConfiguration.EXECUTION_ID,String.class)
              .orElse(UUID.randomUUID().toString())
         );
-        kukumo.publishEvent(Event.PLAN_RUN_STARTED, plan);
+        kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         for (PlanNodeRunner child : getChildren()) {
             try {
@@ -63,7 +64,7 @@ public class PlanRunner {
             }
         }
         planNodeLogger.logTestPlanResult(plan);
-        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, plan);
+        kukumo.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
         return plan;
     }
 
