@@ -6,7 +6,6 @@
     "name" : "Test 6 - Property Substitution",
     "keyword" : "Feature",
     "language" : "en",
-    "source" : "src/test/resources/features/test6_propertySubstitution.feature[4,1]",
     "displayName" : "Feature: Test 6 - Property Substitution",
     "tags" : [ "Test4" ],
     "properties" : {
@@ -18,7 +17,6 @@
       "name" : "Test Scenario",
       "keyword" : "Scenario",
       "language" : "en",
-      "source" : "src/test/resources/features/test6_propertySubstitution.feature[7,1]",
       "displayName" : "[] Scenario: Test Scenario",
       "tags" : [ "Test4" ],
       "properties" : {
@@ -31,7 +29,6 @@
         "name" : "a number with value ${number.a} and another number with ${number.b}",
         "keyword" : "Given",
         "language" : "en",
-        "source" : "src/test/resources/features/test6_propertySubstitution.feature[8,3]",
         "displayName" : "Given a number with value ${number.a} and another number with ${number.b}",
         "properties" : {
           "encoding" : "UTF-8",
@@ -42,7 +39,6 @@
         "name" : "both numbers are ${operation}",
         "keyword" : "When",
         "language" : "en",
-        "source" : "src/test/resources/features/test6_propertySubstitution.feature[9,3]",
         "displayName" : "When both numbers are ${operation}",
         "properties" : {
           "encoding" : "UTF-8",
@@ -53,7 +49,6 @@
         "name" : "the result is equals to ${number.c}",
         "keyword" : "Then",
         "language" : "en",
-        "source" : "src/test/resources/features/test6_propertySubstitution.feature[10,3]",
         "displayName" : "Then the result is equals to ${number.c}",
         "properties" : {
           "encoding" : "UTF-8",

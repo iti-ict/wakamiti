@@ -79,6 +79,10 @@
             <groupId>es.iti.kukumo</groupId>
             <artifactId>kukumo-groovy</artifactId>
         </dependency>
+        <dependency>
+            <groupId>es.iti.kukumo</groupId>
+            <artifactId>kukumo-appium</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

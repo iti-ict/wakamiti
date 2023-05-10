@@ -1,0 +1,78 @@
+{
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "children" : [ {
+    "nodeType" : "AGGREGATOR",
+    "name" : "Test 5 - Include Filteres",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "src/test/resources/features/test5_includeFiltered.feature[3,1]",
+    "displayName" : "Feature: Test 5 - Include Filteres",
+    "tags" : [ "Test5" ],
+    "properties" : {
+      "encoding" : "UTF-8",
+      "gherkinType" : "feature"
+    },
+    "children" : [ {
+      "nodeType" : "TEST_CASE",
+      "name" : "Test Scenario A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "src/test/resources/features/test5_includeFiltered.feature[7,1]",
+      "displayName" : "[] Scenario: Test Scenario A",
+      "tags" : [ "A", "Test5" ],
+      "properties" : {
+        "encoding" : "UTF-8",
+        "gherkinType" : "scenario",
+        "featureName" : "Test 5 - Include Filteres"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "src/test/resources/features/test5_includeFiltered.feature[8,3]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "src/test/resources/features/test5_includeFiltered.feature[9,3]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "src/test/resources/features/test5_includeFiltered.feature[10,3]",
+        "displayName" : "Then the result is equals to 72.18",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        }
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "name" : "Test Scenario B",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "src/test/resources/features/test5_includeFiltered.feature[13,1]",
+      "displayName" : "[] Scenario: Test Scenario B",
+      "tags" : [ "B", "Test5" ],
+      "properties" : {
+        "encoding" : "UTF-8",
+        "gherkinType" : "scenario",
+        "featureName" : "Test 5 - Include Filteres"
+      }
+    } ]
+  } ]
+}

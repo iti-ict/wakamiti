@@ -44,6 +44,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern = null;
+    private boolean includeFiltered = false;
 
 
     @Override
@@ -66,6 +67,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             this.scenarioFilter = node -> Kukumo.instance().createTagFilter(tagFilterExpression)
                     .filter(node.tags());
         }
+        this.includeFiltered = configuration.get(KukumoConfiguration.INCLUDE_FILTERED_TEST_CASES,Boolean.class)
+                .orElse(false);
     }
 
 
@@ -103,20 +106,20 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             if (abstractScenario instanceof Scenario) {
-                node.addChildIf(
-                        createScenario(feature, (Scenario) abstractScenario, location, node),
-                        scenarioFilter
-                );
+                var child = createScenario(feature, (Scenario) abstractScenario, location, node);
+                if (scenarioFilter.test(child) || includeFiltered) {
+                    node.addChild(child);
+                }
             } else if (abstractScenario instanceof ScenarioOutline) {
-                node.addChildIf(
-                        createScenarioOutline(
-                                feature,
-                                (ScenarioOutline) abstractScenario,
-                                location,
-                                node
-                        ),
-                        scenarioFilter
+                var child = createScenarioOutline(
+                    feature,
+                    (ScenarioOutline) abstractScenario,
+                    location,
+                    node
                 );
+                if (scenarioFilter.test(child) || includeFiltered) {
+                    node.addChild(child);
+                }
             }
         }
         if (node.name() != null) {
@@ -135,6 +138,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder parentNode
     ) {
         PlanNodeBuilder node = newScenarioNode(scenario, location, parentNode);
+        node.filtered(!scenarioFilter.test(node));
+        if (node.filtered()) {
+            return node;
+        }
         Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
         backgroundSteps.ifPresent(background -> node.addChild(background.copy()));
         for (Step step : scenario.getSteps()) {
@@ -187,16 +194,19 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         }
 
         for (int row = 0; row < values.size(); row++) {
-
             PlanNodeBuilder exampleScenario = new PlanNodeBuilder(NodeType.TEST_CASE)
                     .setId(id(
                             scenarioOutline.getTags(),
                             scenarioOutline.getName(),
                             ("_" + (row + 1))
                     ))
-                    .setName(trim(scenarioOutline.getName()) + " [" + (row + 1) + "]")
+                    .setKeyword(trim(scenarioOutline.getKeyword()))
+                    .setName(replaceOutlineVariables(scenarioOutline.getName(), variables, values.get(row))
+                            + " [" + (row + 1) + "]")
                     .setLanguage(language)
                     .setSource(source(location, scenarioOutline.getLocation()))
+                    .addDescription(splitAndTrim(replaceOutlineVariables(
+                            scenarioOutline.getDescription(), variables, values.get(row))))
                     .addTags(
                             tags(
                                     scenarioOutlineNode.tags(),
@@ -209,13 +219,18 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                     )
                     .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
 
-            backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
-            List<PlanNodeBuilder> exampleSteps = replaceOutlineVariables(
-                    outlineSteps,
-                    variables,
-                    values.get(row)
-            );
-            exampleSteps.forEach(exampleScenario::addChild);
+            exampleScenario.filtered(!scenarioFilter.test(exampleScenario));
+            if (!exampleScenario.filtered()) {
+
+                backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
+                List<PlanNodeBuilder> exampleSteps = replaceOutlineVariables(
+                        outlineSteps,
+                        variables,
+                        values.get(row)
+                );
+                exampleSteps.forEach(exampleScenario::addChild);
+
+            }
 
             output.add(exampleScenario);
 
@@ -255,11 +270,13 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .setDisplayNamePattern("[{id}] {keyword}: {name}")
                 .setLanguage(parentNode.language())
                 .setKeyword(trim(scenario.getKeyword()))
+                .addDescription(splitAndTrim(scenario.getDescription()))
                 .addTags(tags(parentNode.tags(), scenario.getTags()))
                 .setSource(source(location, scenario.getLocation()))
                 .setUnderlyingModel(scenario)
                 .addProperties(propertiesFromComments(scenario, parentNode.properties()))
-                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
+                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO)
+                ;
     }
 
 
@@ -274,6 +291,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .setDisplayNamePattern("[{id}] {keyword}: {name}")
                 .setLanguage(parentNode.language())
                 .setKeyword(trim(scenarioOutline.getKeyword()))
+                .addDescription(splitAndTrim(scenarioOutline.getDescription()))
                 .addTags(tags(parentNode.tags(), scenarioOutline.getTags()))
                 .setSource(source(location, scenarioOutline.getLocation()))
                 .setUnderlyingModel(scenarioOutline)
@@ -372,17 +390,24 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         ArrayList<PlanNodeBuilder> exampleSteps = new ArrayList<>();
         for (PlanNodeBuilder outlineStep : outlineSteps) {
             PlanNodeBuilder exampleStep = outlineStep.copy();
-            for (int i = 0; i < variables.size(); i++) {
-                String variableValue = values.get(i);
-                String variable = "<" + variables.get(i) + ">";
-                UnaryOperator<String> replacer = s -> s.replace(variable, variableValue);
-                exampleStep
-                        .setName(Optional.ofNullable(trim(exampleStep.name())).map(replacer).orElse(null))
-                        .setData(exampleStep.data().map(data -> data.copyReplacingVariables(replacer)).orElse(null));
-            }
+            exampleStep
+                    .setName(replaceOutlineVariables(exampleStep.name(), variables, values))
+                    .setData(exampleStep.data()
+                            .map(data -> data.copyReplacingVariables(s -> replaceOutlineVariables(s, variables, values)))
+                            .orElse(null));
             exampleSteps.add(exampleStep);
         }
         return exampleSteps;
+    }
+
+    private String replaceOutlineVariables(String string, List<String> variables, List<String> values) {
+        String result = string;
+        for (int i = 0; i < variables.size(); i++) {
+            String variableValue = values.get(i);
+            String variable = "<" + variables.get(i) + ">";
+            result = Optional.ofNullable(trim(result)).map(s -> s.replace(variable, variableValue)).orElse(null);
+        }
+        return result;
     }
 
 

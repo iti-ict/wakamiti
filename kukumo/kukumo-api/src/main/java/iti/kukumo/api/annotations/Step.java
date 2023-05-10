@@ -25,4 +25,7 @@ public @interface Step {
 
     String[] args() default {};
 
+
+    String classifier() default "";
+
 }

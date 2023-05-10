@@ -6,6 +6,10 @@
   "finishInstant": "2019-09-27T10:00:00.000",
   "duration": 8648410,
   "result": "ERROR",
+  "errorClassifiers" : {
+    "wakamiti.custom.CustomStepsContributor":1,
+    "test": 2
+  },
   "childrenResults": {
     "FAILED": 1,
     "ERROR": 1

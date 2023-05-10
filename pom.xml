@@ -41,6 +41,7 @@
         <module>kukumo-plugins/kukumo-amqp</module>
         <module>kukumo-plugins/kukumo-cucumber-exporter</module>
         <module>kukumo-plugins/kukumo-groovy</module>
+        <module>kukumo-plugins/kukumo-appium</module>
         <module>kukumo-plugins/wakamiti-file-uploader</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
@@ -70,7 +71,7 @@
 
     <properties>
         <!-- kukumo version -->
-        <revision>1.6.0</revision>
+        <revision>1.7.0</revision>
 
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -104,7 +105,6 @@
     </properties>
 
 
-
     <!-- basic build features -->
     <build>
         <plugins>
@@ -126,13 +126,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M2</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>enforce</id>
                         <configuration>
                             <rules>
-                                <dependencyConvergence/>
+                                <dependencyConvergence>
+                                    <excludedScopes>
+                                        <scope>test</scope>
+                                    </excludedScopes>
+                                </dependencyConvergence>
                             </rules>
                         </configuration>
                         <goals>
@@ -375,7 +379,6 @@
 
         </plugins>
     </build>
-
 
 
 

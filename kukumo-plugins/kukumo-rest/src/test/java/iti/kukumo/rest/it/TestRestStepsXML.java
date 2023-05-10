@@ -49,6 +49,6 @@ public class TestRestStepsXML {
 
     @AfterClass
     public static void teardownServer() {
-        client.stop();
+        client.close();
     }
 }

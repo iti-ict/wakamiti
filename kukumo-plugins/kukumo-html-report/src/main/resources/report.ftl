@@ -39,7 +39,7 @@
                         </button>
                     </header>
                     <div class="test--body details--body">
-                        <canvas class="chart" data-result='{<#if plan.childrenResults??><#list plan.childrenResults as k, v>"${k}":${v}<#sep>, </#list></#if>}'>
+                        <canvas class="chart" data-result='{<#list plan.childrenResults as k, v>"${k}":${v?c}<#sep>, </#list>}'>
                         </canvas>
                     </div>
                 </section>
@@ -53,11 +53,27 @@
                         </button>
                     </header>
                     <div class="test--body details--body">
-                        <canvas class="chart" data-result='{<#list plan.testCaseResults as k, v>"${k}":${v}<#sep>,</#list>}'>
+                        <canvas class="chart" data-result='{<#list plan.testCaseResults as k, v>"${k}":${v?c}<#sep>,</#list>}'>
                         </canvas>
                     </div>
                 </section>
             </li>
+            <#if plan.errorClassifiers??>
+                <li class="details--item">
+                    <section class="test--component summary--component">
+                        <header class="test--header">
+                            <button class="test--header-btn" type="button">
+                                <h3 class="test--title">Errors By Type</h3>
+                                <hr/>
+                            </button>
+                        </header>
+                        <div class="test--body details--body">
+                            <canvas class="chart-error" data-result='{<#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>, </#list>}'>
+                            </canvas>
+                        </div>
+                    </section>
+                </li>
+            </#if>
             <li class="details--item">
                 <section class="test--component summary--component">
                     <header class="test--header">
@@ -104,33 +120,39 @@
             <li id="${feature.id?replace("#", "")}">
                 <section class="suite--component">
                     <header class="suite--header">
-                        <button class="test--header-btn toggle toggle-group <#if feature.result != "PASSED">on</#if>" type="button">
+                        <button class="test--header-btn toggle toggle-group <#if feature.result != "PASSED">on</#if> <#if !feature.children?has_content>disabled</#if>" type="button">
                             <h2 class="suite--title">
                                 <span><strong class="keyword">${feature.keyword}:</strong> ${feature.name!""}</span>
+                                <#if feature.children?has_content>
                                 <i class="material-icons md-18">expand_more</i>
+                                </#if>
                             </h2>
-                            <#if feature.description??>
+                            <#if feature.description?has_content>
                                 <#list feature.description as line>
                                     <h6 class="test--comment">${line}</h6>
                                 </#list>
                             </#if>
                             <ul class="test-summary--component">
+                                <li class="test-summary--item" title="Result: ${feature.result?capitalize?replace("_", " ")}">
+                                    <i class="material-icons md-18 icon--${feature.result?lower_case?replace("_", "-")}"></i>
+                                </li>
                                 <li class="test-summary--item" title="Duration">
                                     <i class="material-icons md-18">access_time</i>
                                     <span>${(feature.duration!0)?string.@duration}</span>
                                 </li>
                                 <li class="test-summary--item" title="Scenarios">
-                                    <i class="material-icons md-18" style="color:var(--${feature.result?lower_case?replace("_", "-")}-color)">article</i>
+                                    <i class="material-icons md-18">article</i>
                                     <span>${sum(feature.childrenResults?values)}</span>
                                 </li>
-                                <#if feature.childrenResults??>
+                                <#if feature.childrenResults?has_content>
                                 <li class="test-summary--item">
                                     <ul class="test-summary--results">
+
                                     <#list feature.childrenResults as resultType, count>
-                                        <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
-                                            <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
-                                            <span>${count}</span>
-                                        </li>
+                                            <li class="test-summary--item" title="${resultType?capitalize?replace("_", " ")}">
+                                                <i class="material-icons md-18 icon--${resultType?lower_case?replace("_", "-")}"></i>
+                                                <span>${count}</span>
+                                            </li>
                                     </#list>
                                     </ul>
                                 </li>
@@ -138,7 +160,7 @@
                             </ul>
                         </button>
                     </header>
-                    <#if feature.children??>
+                    <#if feature.children?has_content>
                         <div class="suite--body collapsable">
                             <ul class="test--list">
 
@@ -146,16 +168,16 @@
                                     <li class="step--component">
                                         <header class="step--header">
                                             <button class="step--header-btn toggle <#if node.result != "PASSED">on</#if>" type="button">
-                                                <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}"></i>
+                                                <i class="material-icons md-18 icon--${node.result?lower_case?replace("_", "-")}" title="Result: ${node.result?capitalize?replace("_", " ")}"></i>
                                                 <h5 class="step--title" title="${node.name!""}">
                                                     <span><strong class="keyword">${node.keyword}</strong> ${node.name!""}</span>
                                                 </h5>
                                                 <div class="step--info">
-                                                    <#if node.errorMessage??>
+                                                    <#if node.errorMessage?has_content>
                                                         <i class="material-icons-outlined md-18" title="<#outputformat "HTML">${node.errorMessage}</#outputformat>">feedback</i>
                                                     </#if>
-                                                    <span>${(node.duration!0)?string.@duration}</span>
-                                                    <i class="material-icons md-18 step--duration-icon">access_time</i>
+                                                    <span title="Duration">${(node.duration!0)?string.@duration}</span>
+                                                    <i class="material-icons md-18 step--duration-icon" title="Duration">access_time</i>
                                                 </div>
                                             </button>
                                         </header>
@@ -199,34 +221,40 @@
                                     <li id="${scenario.id?replace("#", "")}">
                                         <section class="test--component">
                                             <header class="test--header">
-                                                <button class="test--header-btn toggle toggle-group <#if scenario.result != "PASSED">on</#if>" type="button">
-                                                    <#if scenario.tags??>
+                                                <button class="test--header-btn toggle toggle-group <#if scenario.result != "PASSED">on</#if> <#if !scenario.children?has_content>disabled</#if>" type="button">
+                                                    <#if scenario.tags?has_content>
                                                         <h5 class="test--title">
                                                             <span class="test--tags"><#list scenario.tags as tag>@${tag} </#list></span>
+                                                            <#if scenario.children?has_content>
                                                             <i class="material-icons md-18">expand_more</i>
+                                                            </#if>
                                                         </h5>
                                                     </#if>
                                                     <h3 class="test--title">
                                                         <span><strong class="keyword">${scenario.keyword}:</strong> ${scenario.name!""}</span>
-                                                        <#if scenario.tags??><#else>
+                                                        <#if scenario.tags?has_content><#else>
                                                             <i class="material-icons md-18">expand_more</i>
                                                         </#if>
                                                     </h3>
-                                                    <#if scenario.description??>
+                                                    <#if scenario.description?has_content>
                                                         <#list scenario.description as line>
                                                             <h6 class="test--comment">${line}</h6>
                                                         </#list>
                                                     </#if>
+
                                                     <ul class="test-summary--component">
+                                                        <li class="test-summary--item" title="Result: ${scenario.result?capitalize?replace("_", " ")}">
+                                                            <i class="material-icons md-18 icon--${scenario.result?lower_case?replace("_", "-")}"></i>
+                                                        </li>
                                                         <li class="test-summary--item" title="Duration">
                                                             <i class="material-icons md-18">access_time</i>
                                                             <span>${(scenario.duration!0)?string.@duration}</span>
                                                         </li>
                                                         <li class="test-summary--item" title="Steps">
-                                                            <i class="material-icons md-18" style="color:var(--${scenario.result?lower_case?replace("_", "-")}-color)">fact_check</i>
+                                                            <i class="material-icons md-18">fact_check</i>
                                                             <span>${countSteps(scenario)}</span>
                                                         </li>
-                                                        <#if scenario.childrenResults??>
+                                                        <#if scenario.childrenResults?has_content>
                                                             <li class="test-summary--item">
                                                                 <ul class="test-summary--results">
                                                                     <#list scenario.childrenResults?keys as resultType>
@@ -241,11 +269,11 @@
                                                     </ul>
                                                 </button>
                                             </header>
-                                            <#if scenario.children??>
+                                            <#if scenario.children?has_content>
                                                 <div class="test--body collapsable">
                                                     <ul class="step--list">
                                                         <#list scenario.children as child>
-                                                            <#if child.children??>
+                                                            <#if child.children?has_content>
                                                                 <li>
                                                                     <section class="test--component">
                                                                         <header class="test--header">
@@ -278,7 +306,7 @@
                                 </#macro>
 
                                 <#list feature.children as scenario>
-                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children??>
+                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children?has_content>
                                         <#list scenario.children as child>
                                             <@scenarioPanel child />
                                         </#list>
@@ -359,7 +387,7 @@
                     <li>
                         <a href="#${feature.id?replace("#", "")}">
                             <span class="list-style icon--${feature.result?lower_case?replace("_", "-")}"></span>
-                            <span>${feature.name!feature.displayName!""}</span>
+                            <span title="${feature.name!feature.displayName!""}">${feature.name!feature.displayName!""}</span>
                         </a>
                         <div>
                             <ul class="nav-menu--sub">
@@ -367,12 +395,12 @@
                                     <li data-target="${scenario.result?lower_case?replace("_", "-")}-toggle">
                                         <a href="#${scenario.id?replace("#", "")}">
                                             <span class="list-style icon--${scenario.result?lower_case?replace("_", "-")}"></span>
-                                            <span>${scenario.name!scenario.displayName!""}</span>
+                                            <span title="${scenario.name!scenario.displayName!""}">${scenario.name!scenario.displayName!""}</span>
                                         </a>
                                     </li>
                                 </#macro>
                                 <#list feature.children as scenario>
-                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children??>
+                                    <#if scenario.nodeType == "AGGREGATOR" && scenario.children?has_content>
                                         <#list scenario.children as child>
                                             <@scenarioMenu child />
                                         </#list>

@@ -32,6 +32,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private String displayNamePattern = "[{id}] {keyword} {name}";
     private Optional<PlanNodeData> data = Optional.empty();
     private Object underlyingModel;
+    private boolean filtered;
 
 
     public PlanNodeBuilder(NodeType nodeType) {
@@ -93,6 +94,11 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 
     public String displayNamePattern() {
         return displayNamePattern;
+    }
+
+
+    public boolean filtered() {
+        return filtered;
     }
 
 
@@ -193,6 +199,10 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     }
 
 
+    public void filtered(boolean filtered) {
+        this.filtered = filtered;
+    }
+
     @Override
     public PlanNodeBuilder copy() {
         return copy(new PlanNodeBuilder(nodeType));
@@ -211,6 +221,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         copy.addDescription(this.description);
         copy.properties.putAll(this.properties);
         copy.data = this.data.map(PlanNodeData::copy);
+        copy.filtered = this.filtered;
         super.copy(copy);
         return copy;
     }
@@ -232,6 +243,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         node.name = this.name();
         node.displayName = this.displayName();
         node.data = this.data();
+        node.filtered = this.filtered;
         return node;
     }
 }

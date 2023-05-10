@@ -5,6 +5,8 @@
  */
 package iti.kukumo.api.plan;
 
+import iti.kukumo.api.model.ExecutionState;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
@@ -12,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,6 +52,8 @@ public class PlanNodeSnapshot {
     private String[][] dataTable;
     private String errorMessage;
     private String errorTrace;
+    private String errorClassifier;
+    private Map<String,Long> errorClassifiers;
     private Result result;
     private Map<Result, Long> testCaseResults;
     private Map<Result, Long> childrenResults;
@@ -89,6 +94,13 @@ public class PlanNodeSnapshot {
         this.errorMessage = node.errors().findFirst().map(Throwable::getLocalizedMessage)
                 .orElse(null);
         this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
+        if (node.nodeType == NodeType.STEP && node.executionState().flatMap(ExecutionState::errorClassifier).isPresent()) {
+            this.errorClassifier = node.executionState().flatMap(ExecutionState::errorClassifier).orElse(null);
+        } else if (node.nodeType == NodeType.STEP_AGGREGATOR || node.nodeType == NodeType.TEST_CASE) {
+            this.errorClassifier = node.errorClassifiers().findFirst().orElse(null);
+        } else if (node.nodeType == NodeType.AGGREGATOR && node.hasChildren()) {
+            this.errorClassifiers = countTestClassifiers(node);
+        }
         if (node.hasChildren()) {
             this.children = node.children().map(child -> new PlanNodeSnapshot(child, snapshotInstant))
                     .collect(Collectors.toList());
@@ -149,6 +161,20 @@ public class PlanNodeSnapshot {
         return results;
     }
 
+
+    private static Map<String, Long> countTestClassifiers(PlanNode node) {
+        LinkedHashMap<String, LongAdder> results = new LinkedHashMap<>();
+        if (node.nodeType() == NodeType.TEST_CASE) {
+            node.errorClassifiers().findFirst()
+                    .ifPresent(errorClassifier -> results.computeIfAbsent(errorClassifier,x->new LongAdder()).add(1L));
+        } else if (node.nodeType() == NodeType.AGGREGATOR && node.hasChildren()) {
+            node.children().map(PlanNodeSnapshot::countTestClassifiers).filter(Objects::nonNull)
+                    .flatMap(map -> map.entrySet().stream())
+                    .forEach(entry -> results.computeIfAbsent(entry.getKey(), x->new LongAdder()).add(entry.getValue()));
+        }
+        return results.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->e.getValue().longValue()));
+    }
+
     private static Map<Result, Long> countChildren(PlanNode node) {
         return node.children()
                 .filter(it -> it.result().isPresent())
@@ -156,7 +182,7 @@ public class PlanNodeSnapshot {
     }
 
     private static Map<Result, Long> countChildren(PlanNodeSnapshot node) {
-        return node.getChildren().stream().collect(groupingBy(it -> it.getResult(), counting()));
+        return node.getChildren().stream().collect(groupingBy(PlanNodeSnapshot::getResult, counting()));
     }
 
     private static String childLocalDateTime(
@@ -305,6 +331,12 @@ public class PlanNodeSnapshot {
     }
 
 
+    public String getErrorClassifier() {
+        return errorClassifier;
+    }
+
+
+
     public Result getResult() {
         return result;
     }
@@ -319,6 +351,10 @@ public class PlanNodeSnapshot {
         return childrenResults;
     }
 
+
+    public Map<String, Long> getErrorClassifiers() {
+        return errorClassifiers;
+    }
 
     public List<PlanNodeSnapshot> getChildren() {
         return children;

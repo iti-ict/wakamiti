@@ -24,7 +24,7 @@ import iti.kukumo.core.gherkin.GherkinResourceType;
 @AnnotatedConfiguration({
     @Property(key = KukumoConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
     @Property(key = KukumoConfiguration.RESOURCE_PATH, value = "src/test/resources/features/redefining"),
-    @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo.json"),
+    @Property(key = KukumoConfiguration.OUTPUT_FILE_PATH, value = "target/kukumo-%execID%.json"),
     @Property(key = KukumoConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "iti.kukumo.test.gherkin.KukumoSteps"),
     @Property(key = KukumoJUnitRunner.TREAT_STEPS_AS_TESTS, value = "true")
 })

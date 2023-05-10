@@ -100,7 +100,7 @@ public class FilesUploader implements EventObserver {
 
 
     private void uploadFile(Path fileToSend) throws IOException {
-        Path dirPath = Path.of(PathUtil.replaceTemporalPlaceholders(remotePath));
+        Path dirPath = PathUtil.replaceTemporalPlaceholders(remotePath);
         createDestinationDirectory(dirPath);
         ftpClient.changeWorkingDirectory(dirPath.toString());
         String fileName = fileToSend.toFile().getName();

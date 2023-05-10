@@ -24,7 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>kukumo-amqp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 
     <!-- additional information -->
     <name>Kukumo::AMQP Steps</name>
@@ -62,6 +62,11 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
 
 
         <!-- test -->
@@ -104,7 +109,6 @@
             <version>7.1.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
@@ -132,5 +136,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

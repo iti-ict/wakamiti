@@ -6,7 +6,6 @@
     "name" : "Test 3 - Backgrounds",
     "keyword" : "Feature",
     "language" : "en",
-    "source" : "src/test/resources/features/test3_background.feature[3,1]",
     "displayName" : "Feature: Test 3 - Backgrounds",
     "tags" : [ "Test3" ],
     "properties" : {
@@ -19,7 +18,6 @@
       "name" : "Test Scenario 1",
       "keyword" : "Scenario",
       "language" : "en",
-      "source" : "src/test/resources/features/test3_background.feature[10,1]",
       "displayName" : "[ID-Test3_Scenario1] Scenario: Test Scenario 1",
       "tags" : [ "ID-Test3_Scenario1", "Test3" ],
       "properties" : {
@@ -41,7 +39,6 @@
           "name" : "the set of real numbers ℝ",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
             "encoding" : "UTF-8",
@@ -53,7 +50,6 @@
         "name" : "a number with value 8.02 and another number with value 9",
         "keyword" : "Given",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[11,3]",
         "displayName" : "Given a number with value 8.02 and another number with value 9",
         "properties" : {
           "encoding" : "UTF-8",
@@ -64,7 +60,6 @@
         "name" : "both numbers are multiplied",
         "keyword" : "When",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[12,3]",
         "displayName" : "When both numbers are multiplied",
         "properties" : {
           "encoding" : "UTF-8",
@@ -75,7 +70,6 @@
         "name" : "the result is equals to 72.18",
         "keyword" : "Then",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[13,3]",
         "displayName" : "Then the result is equals to 72.18",
         "properties" : {
           "encoding" : "UTF-8",
@@ -88,7 +82,6 @@
       "name" : "Test Scenario 2",
       "keyword" : "Scenario",
       "language" : "en",
-      "source" : "src/test/resources/features/test3_background.feature[16,1]",
       "displayName" : "[ID-Test3_Scenario2] Scenario: Test Scenario 2",
       "tags" : [ "ID-Test3_Scenario2", "Test3" ],
       "properties" : {
@@ -110,7 +103,6 @@
           "name" : "the set of real numbers ℝ",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
             "encoding" : "UTF-8",
@@ -122,7 +114,6 @@
         "name" : "a number with value 7.02 and another number with value 8",
         "keyword" : "Given",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[17,3]",
         "displayName" : "Given a number with value 7.02 and another number with value 8",
         "properties" : {
           "encoding" : "UTF-8",
@@ -133,7 +124,6 @@
         "name" : "both numbers are multiplied",
         "keyword" : "When",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[18,3]",
         "displayName" : "When both numbers are multiplied",
         "properties" : {
           "encoding" : "UTF-8",
@@ -144,7 +134,6 @@
         "name" : "the result is equals to 56.16",
         "keyword" : "Then",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[19,3]",
         "displayName" : "Then the result is equals to 56.16",
         "properties" : {
           "encoding" : "UTF-8",
@@ -157,7 +146,6 @@
       "name" : "Test Scenario 3",
       "keyword" : "Scenario",
       "language" : "en",
-      "source" : "src/test/resources/features/test3_background.feature[22,1]",
       "displayName" : "[ID-Test3_Scenario3] Scenario: Test Scenario 3",
       "tags" : [ "ID-Test3_Scenario3", "Test3" ],
       "properties" : {
@@ -179,7 +167,6 @@
           "name" : "the set of real numbers ℝ",
           "keyword" : "Given",
           "language" : "en",
-          "source" : "src/test/resources/features/test3_background.feature[6,3]",
           "displayName" : "Given the set of real numbers ℝ",
           "properties" : {
             "encoding" : "UTF-8",
@@ -191,7 +178,6 @@
         "name" : "a number with value 8.09 and another number with value 9",
         "keyword" : "Given",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[23,3]",
         "displayName" : "Given a number with value 8.09 and another number with value 9",
         "properties" : {
           "encoding" : "UTF-8",
@@ -202,7 +188,6 @@
         "name" : "both numbers are multiplied",
         "keyword" : "When",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[24,3]",
         "displayName" : "When both numbers are multiplied",
         "properties" : {
           "encoding" : "UTF-8",
@@ -213,7 +198,6 @@
         "name" : "the result is equals to 72.81",
         "keyword" : "Then",
         "language" : "en",
-        "source" : "src/test/resources/features/test3_background.feature[25,3]",
         "displayName" : "Then the result is equals to 72.81",
         "properties" : {
           "encoding" : "UTF-8",

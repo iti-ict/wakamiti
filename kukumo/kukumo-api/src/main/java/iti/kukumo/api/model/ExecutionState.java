@@ -22,6 +22,7 @@ public class ExecutionState<R> {
     private Optional<Instant> finishInstant = Optional.empty();
     private Optional<R> result = Optional.empty();
     private Optional<Throwable> error = Optional.empty();
+    private Optional<String> errorClassifier = Optional.empty();
 
 
     /**
@@ -84,6 +85,15 @@ public class ExecutionState<R> {
 
 
     /**
+     * Get the error classifier of this node, if executed and failed and the executing step has info defined
+     * @return The error classifier
+     */
+    public Optional<String> errorClassifier() {
+        return errorClassifier;
+    }
+
+
+    /**
      * Mark the current execution as started at the given instant
      *
      * @param instant The start instant
@@ -107,7 +117,7 @@ public class ExecutionState<R> {
      *                               finished
      */
     public void markFinished(Instant instant, R result) {
-        markFinished(instant, result, null);
+        markFinished(instant, result, null, null);
     }
 
 
@@ -120,13 +130,14 @@ public class ExecutionState<R> {
      * @throws IllegalStateException If the execution was already marked as
      *                               finished
      */
-    public void markFinished(Instant instant, R result, Throwable error) {
+    public void markFinished(Instant instant, R result, Throwable error, String errorClassifier) {
         if (finishInstant.isPresent()) {
             throw new IllegalStateException("Node execution already finished");
         }
         finishInstant = Optional.of(instant);
         this.result = Optional.of(result);
         this.error = Optional.ofNullable(error);
+        this.errorClassifier = Optional.ofNullable(errorClassifier);
 
     }
 

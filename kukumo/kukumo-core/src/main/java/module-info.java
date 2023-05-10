@@ -22,6 +22,7 @@ open module kukumo.core {
     exports iti.kukumo.core.util;
     exports iti.kukumo.core.runner;
     exports iti.kukumo.core;
+    exports iti.kukumo.core.junit;
 
     requires transitive imconfig;
     requires transitive iti.commons.jext;

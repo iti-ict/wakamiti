@@ -406,7 +406,7 @@ public class Kukumo {
 
     private String writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(KukumoConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
-        Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
+        Path path = PathUtil.replacePlaceholders(Paths.get(outputPath).toAbsolutePath(), plan);
         Path parentPath = path.getParent();
         if (parentPath != null) {
             Files.createDirectories(parentPath);
@@ -423,7 +423,7 @@ public class Kukumo {
 
     private void writeOutputFilesPerTestCase(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
-        Path path = PathUtil.replaceTemporalPlaceholders(Paths.get(outputPath).toAbsolutePath(), LocalDateTime.now());
+        Path path = PathUtil.replacePlaceholders(Paths.get(outputPath).toAbsolutePath(), plan);
         Files.createDirectories(path);
 
         List<PlanNode> testCases = plan

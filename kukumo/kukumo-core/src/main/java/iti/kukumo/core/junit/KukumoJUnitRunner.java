@@ -14,6 +14,7 @@ import imconfig.Configuration;
 import imconfig.ConfigurationException;
 import imconfig.ConfigurationFactory;
 import iti.kukumo.api.BackendFactory;
+import iti.kukumo.api.KukumoConfiguration;
 import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.plan.PlanNode;
@@ -47,13 +48,12 @@ public class KukumoJUnitRunner extends Runner {
     protected static final Logger LOGGER = Kukumo.LOGGER;
     protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
 
-    protected final Configuration configuration;
+    protected Configuration configuration;
     protected final Class<?> configurationClass;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
     protected final Kukumo kukumo;
     private PlanNode plan;
-    private List<JUnitPlanNodeRunner> children;
     private Description description;
 
 
@@ -76,11 +76,14 @@ public class KukumoJUnitRunner extends Runner {
     public void run(RunNotifier notifier) {
         kukumo.configureLogger(configuration);
         kukumo.configureEventObservers(configuration);
+        plan.assignExecutionID(
+            configuration.get(KukumoConfiguration.EXECUTION_ID,String.class).orElse(UUID.randomUUID().toString())
+        );
         kukumo.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
-        for (JUnitPlanNodeRunner child : getChildren()) {
+        for (JUnitPlanNodeRunner child : createChildren()) {
             try {
                 child.runNode(notifier);
             } catch (Exception e) {
@@ -98,12 +101,6 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-    public List<JUnitPlanNodeRunner> getChildren() {
-        if (children == null) {
-            children = buildRunners();
-        }
-        return children;
-    }
 
 
     @Override
@@ -111,7 +108,7 @@ public class KukumoJUnitRunner extends Runner {
         if (description == null) {
             description = Description
                 .createSuiteDescription("Kukumo Test Plan", UUID.randomUUID().toString());
-            for (JUnitPlanNodeRunner child : getChildren()) {
+            for (JUnitPlanNodeRunner child : createChildren()) {
                 description.addChild(child.getDescription());
             }
         }
@@ -127,7 +124,7 @@ public class KukumoJUnitRunner extends Runner {
     }
 
 
-    protected List<JUnitPlanNodeRunner> buildRunners() {
+    protected List<JUnitPlanNodeRunner> createChildren() {
 
         BackendFactory backendFactory = kukumo.newBackendFactory();
         return getPlan().children().map(node -> {
@@ -175,7 +172,10 @@ public class KukumoJUnitRunner extends Runner {
                 if (!Modifier.isStatic(method.getModifiers())) {
                     throwInitializationError(method, annotation, "should be static");
                 }
-                if (method.getParameterCount() > 0) {
+                boolean setUpConfig = (
+                  method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class
+                );
+                if (method.getParameterCount() > 0 && !setUpConfig) {
                     throwInitializationError(method, annotation, "should have no parameter");
                 }
             }
@@ -199,15 +199,27 @@ public class KukumoJUnitRunner extends Runner {
         Class<? extends Annotation> annotation
     ) {
         for (Method method : configurationClass.getMethods()) {
-            if (method.isAnnotationPresent(annotation)) {
+            if (!method.isAnnotationPresent(annotation)) {
+                continue;
+            }
+
+            // accepts a setUp method in form of Configuration setUp(Configuration)
+            if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
                 try {
-                    method.invoke(null);
-                } catch (IllegalAccessException
-                                | IllegalArgumentException
-                                | InvocationTargetException e) {
+                    this.configuration = (Configuration) method.invoke(null,this.configuration);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     throw new KukumoException(e);
                 }
+            } else {
+
+                try {
+                    method.invoke(null);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    throw new KukumoException(e);
+                }
+
             }
+
         }
     }
 

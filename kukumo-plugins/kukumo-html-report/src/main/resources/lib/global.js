@@ -44,12 +44,13 @@ function getColor(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
+function getErrorColor(index){
+    name = '--error-classifier' + index;
+    return getComputedStyle(document.documentElement).getPropertyValue(name);
 
-function newChart(elem, labels, data) {
-    const backgroundColor = [];
-    for (let label of labels) {
-        backgroundColor.push(getColor(label));
-    }
+}
+function newChart(elem, labels, data, backgroundColor) {
+
     const datasets = [{
         data,
         backgroundColor,
@@ -63,9 +64,16 @@ function newChart(elem, labels, data) {
             responsive: false,
             maintainAspectRatio: true,
             layout: {
-                padding: 5
+                padding: 10
             },
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.data[context.dataIndex];
+                        }
+                    }
+                },
                 htmlLegend: {
                     container: elem.parentElement,
                 },
@@ -116,6 +124,7 @@ function newChart(elem, labels, data) {
                     const boxSpan = document.createElement('span');
                     boxSpan.style.background = item.fillStyle;
                     boxSpan.style.borderColor = item.strokeStyle;
+                    boxSpan.style.padding = '8px';
                     boxSpan.style.borderWidth = item.lineWidth + 'px';
 
                     // Text
@@ -176,12 +185,25 @@ window.onload = function () {
 
                 const scenarios = feature.querySelectorAll('ul.nav-menu--sub > li');
                 const disabled = feature.querySelectorAll('ul.nav-menu--sub > li.' + disabledClass);
-                if (scenarios.length === disabled.length) {
-                    feature.className += ' ' + disabledClass;
-                    id.className += ' hidden';
+                if (scenarios.length > 0) {
+                    if (scenarios.length === disabled.length) {
+                        feature.className += ' ' + disabledClass;
+                        id.className += ' hidden';
+                    } else {
+                        toggleOff(feature, disabledClass);
+                        toggleOff(id, 'hidden');
+                    }
                 } else {
-                    toggleOff(feature, disabledClass);
-                    toggleOff(id, 'hidden');
+                    const href = feature.querySelector('a').getAttribute('href');
+                    const id = document.querySelector(href);
+
+                    if (elem.checked) {
+                        toggleOff(feature, disabledClass);
+                        toggleOff(id, 'hidden');
+                    } else {
+                        feature.className += ' ' + disabledClass;
+                        id.className += ' hidden';
+                    }
                 }
             }
 
@@ -197,9 +219,30 @@ window.onload = function () {
         const result = JSON.parse(chart.getAttribute("data-result"));
         const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
         const counts = Object.values(result);
+        const backgroundColor = [];
 
-        newChart(chart, labels, counts);
+        for (let label of labels) {
+            backgroundColor.push(getColor(label));
+        }
+
+
+        newChart(chart, labels, counts, backgroundColor);
     }
 
+    const chartsError = document.getElementsByClassName('chart-error');
+
+    for (let chart of chartsError) {
+        const result = JSON.parse(chart.getAttribute("data-result"));
+        const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
+        const counts = Object.values(result);
+        const backgroundColor = [];
+
+        for (var i = 0; i < labels.length; i++) {
+            backgroundColor.push(getErrorColor(i));
+        }
+
+
+        newChart(chart, labels, counts, backgroundColor);
+    }
     hljs.highlightAll();
 }

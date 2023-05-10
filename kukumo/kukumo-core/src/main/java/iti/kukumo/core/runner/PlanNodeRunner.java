@@ -100,6 +100,8 @@ public class PlanNodeRunner {
         if (node.nodeType() == NodeType.TEST_CASE
                 && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
             doNotImplemented(node, Result.NOT_IMPLEMENTED);
+        } else if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
+            markFilteredTestCase(node);
         } else if (!getChildren().isEmpty()) {
             if (node.nodeType() == NodeType.TEST_CASE) {
                 testCasePreExecution(node);
@@ -115,6 +117,7 @@ public class PlanNodeRunner {
         Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
         return result;
     }
+
 
     protected void runChildren() {
         children.stream()
@@ -132,12 +135,27 @@ public class PlanNodeRunner {
     }
 
     private void doNotImplemented(PlanNode node, Result result) {
+        Instant startInstant = Instant.now();
+
         node.children().forEach(c -> {
             boolean isBackground = c.properties().get("gherkinType").equals("background");
             doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
         });
+
+        if (result == Result.NOT_IMPLEMENTED) {
+            node.prepareExecution().markStarted(startInstant);
+        }
+
         node.prepareExecution().markFinished(Instant.now(), result);
     }
+
+
+    private void markFilteredTestCase(PlanNode node) {
+        Instant startInstant = Instant.now();
+        node.prepareExecution().markStarted(startInstant);
+        node.prepareExecution().markFinished(startInstant, Result.SKIPPED);
+    }
+
 
     protected List<PlanNodeRunner> createChildren() {
         return node.children()

@@ -1,10 +1,15 @@
 package iti.kukumo.api.util;
 
-import java.nio.file.Files;
+import iti.kukumo.api.plan.PlanNode;
+
 import java.nio.file.Path;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PathUtil {
 
@@ -20,8 +25,26 @@ public class PathUtil {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
 
 
-    public static Path replaceTemporalPlaceholders(Path path, LocalDateTime instant) {
+    public static Path replacePlaceholders(Path path, PlanNode planNode) {
+        var instant = planNode.startInstant().orElseGet(Instant::now).atZone(ZoneId.systemDefault());
+        var executionID = Objects.requireNonNullElse(planNode.executionID(),"");
+        String pathString = path.toString();
+        pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
+        pathString = pathString.replace("%YY%",YEAR_2.format(instant));
+        pathString = pathString.replace("%MM%",MONTH.format(instant));
+        pathString = pathString.replace("%DD%",DAY.format(instant));
+        pathString = pathString.replace("%hh%",HOUR.format(instant));
+        pathString = pathString.replace("%mm%",MINUTE.format(instant));
+        pathString = pathString.replace("%ss%",SEC.format(instant));
+        pathString = pathString.replace("%sss%",MILLISEC.format(instant));
+        pathString = pathString.replace("%DATE%", DATE.format(instant));
+        pathString = pathString.replace("%TIME%", TIME.format(instant));
+        pathString = pathString.replace("%execID%", executionID);
+        return Path.of(pathString);
+    }
 
+    public static Path replaceTemporalPlaceholders(String path) {
+        var instant = Instant.now().atZone(ZoneId.systemDefault());
         String pathString = path.toString();
         pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
         pathString = pathString.replace("%YY%",YEAR_2.format(instant));
@@ -34,9 +57,5 @@ public class PathUtil {
         pathString = pathString.replace("%DATE%", DATE.format(instant));
         pathString = pathString.replace("%TIME%", TIME.format(instant));
         return Path.of(pathString);
-    }
-
-    public static String replaceTemporalPlaceholders(String dirPath) {
-        return dirPath;
     }
 }

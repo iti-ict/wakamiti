@@ -9,7 +9,6 @@
  */
 package iti.kukumo.api.extensions;
 
-
 import iti.commons.jext.Extension;
 
 
@@ -19,16 +18,15 @@ public interface Contributor {
     default String info() {
         Extension extensionData = this.getClass().getAnnotation(Extension.class);
         if (extensionData != null) {
-        	return String.format(
-    			"%s:%s:%s",
-    			extensionData.provider(),
-    			extensionData.name(),
-    			extensionData.version()
-    		);
+            return String.format(
+                    "%s:%s:%s",
+                    extensionData.provider(),
+                    extensionData.name(),
+                    extensionData.version()
+            );
         } else {
-        	return getClass().getCanonicalName();
+            return getClass().getCanonicalName();
         }
-
     }
 
 
