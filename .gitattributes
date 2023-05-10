@@ -2,7 +2,7 @@
 *       text=auto
 
 *.sh    eol=lf
-kukumo  eol=lf
+wakamiti  eol=lf
 mvnw    eol=lf
 
 *.bat   eol=crlf

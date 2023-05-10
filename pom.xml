@@ -11,43 +11,43 @@
         have not to be align with the defined here. The version number will be always
         RELEASE regardless the versions of the children. -->
 
-    <groupId>es.iti.kukumo</groupId>
-    <artifactId>kukumo-project</artifactId>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-project</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
 
-    <name>Kukumo</name>
-    <description>Project containing Kukumo as well as other useful tools</description>
+    <name>Wakamiti</name>
+    <description>Project containing Wakamiti as well as other useful tools</description>
 
     <modules>
-        <module>kukumo-bom</module>
+        <module>wakamiti-bom</module>
         <!-- tools -->
-        <module>kukumo-tools/jext</module>
-        <module>kukumo-tools/jext-spring</module>
-        <module>kukumo-tools/gherkin-parser</module>
-        <module>kukumo-tools/distribution-maven-plugin</module>
-        <!-- kukumo -->
-        <module>kukumo/kukumo-api</module>
-        <module>kukumo/kukumo-core</module>
-        <module>kukumo/kukumo-lsp</module>
-        <module>kukumo/kukumo-maven-plugin</module>
-        <module>kukumo/kukumo-launcher</module>
+        <module>wakamiti-tools/jext</module>
+        <module>wakamiti-tools/jext-spring</module>
+        <module>wakamiti-tools/gherkin-parser</module>
+        <module>wakamiti-tools/distribution-maven-plugin</module>
+        <!-- wakamiti -->
+        <module>wakamiti/wakamiti-api</module>
+        <module>wakamiti/wakamiti-core</module>
+        <module>wakamiti/wakamiti-lsp</module>
+        <module>wakamiti/wakamiti-maven-plugin</module>
+        <module>wakamiti/wakamiti-launcher</module>
         <!-- plugins -->
-        <module>kukumo-plugins/kukumo-rest</module>
-        <module>kukumo-plugins/kukumo-html-report</module>
-        <module>kukumo-plugins/kukumo-db</module>
-        <module>kukumo-plugins/kukumo-spring</module>
-        <module>kukumo-plugins/kukumo-io</module>
-        <module>kukumo-plugins/kukumo-amqp</module>
-        <module>kukumo-plugins/kukumo-cucumber-exporter</module>
-        <module>kukumo-plugins/kukumo-groovy</module>
+        <module>wakamiti-plugins/wakamiti-rest</module>
+        <module>wakamiti-plugins/wakamiti-html-report</module>
+        <module>wakamiti-plugins/wakamiti-db</module>
+        <module>wakamiti-plugins/wakamiti-spring</module>
+        <module>wakamiti-plugins/wakamiti-io</module>
+        <module>wakamiti-plugins/wakamiti-amqp</module>
+        <module>wakamiti-plugins/wakamiti-cucumber-exporter</module>
+        <module>wakamiti-plugins/wakamiti-groovy</module>
         <!-- examples -->
-        <module>kukumo-examples/spring-junit-example</module>
-        <module>kukumo-examples/spring-verify-example</module>
-        <module>kukumo-examples/spring-launcher-example</module>
+        <module>wakamiti-examples/spring-junit-example</module>
+        <module>wakamiti-examples/spring-verify-example</module>
+        <module>wakamiti-examples/spring-launcher-example</module>
         <!-- other -->
-        <module>kukumo-server-quarkus</module>
-        <module>kukumo-docker</module>
+        <module>wakamiti-server-quarkus</module>
+        <module>wakamiti-docker</module>
     </modules>
 
 
@@ -67,7 +67,7 @@
 
 
     <properties>
-        <!-- kukumo version -->
+        <!-- wakamiti version -->
         <revision>1.6.0</revision>
 
         <!-- encoding -->

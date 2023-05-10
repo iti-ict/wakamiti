@@ -1,0 +1,8 @@
+/.project
+/src/site/markdown/index.md
+/.classpath
+/target/
+/wakamiti-spring.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs
+/.settings/

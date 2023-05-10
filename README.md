@@ -1,8 +1,8 @@
-> Please check the [site version](https://iti-ict.github.io/kukumo/) in case you are 
+> Please check the [site version](https://iti-ict.github.io/wakamiti/) in case you are 
 > reading this document directly from the repository
 
 
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/wakamiti/wakamiti?sort=semver&style=for-the-badge)](https://hub.docker.com/repository/docker/wakamiti/wakamiti) [![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/wakamiti/wakamiti?sort=semver&style=for-the-badge)](https://hub.docker.com/repository/docker/wakamiti/wakamiti) [![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_wakamiti?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/project/overview?id=iti-ict_wakamiti) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_wakamiti?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_wakamiti) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_wakamiti?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_wakamiti) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_wakamiti?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_wakamiti)
 
 
 
@@ -88,20 +88,20 @@ Feature: Testing the user data retrieval service
 
 Now we define the execution configuration, that is simply a set of properties that Wakamiti would take 
 into account for several aspects. There are several ways to define them; in this example we will just 
-write them in the default configuration file `kukumo.yaml`:
+write them in the default configuration file `wakamiti.yaml`:
 
 ```yaml
-# kukumo.yaml
-kukumo:
+# wakamiti.yaml
+wakamiti:
     resourceTypes: 
       - gherkin
     modules:
-      - es.iti.kukumo:kukumo-rest:1.3.1
-      - es.iti.kukumo:kukumo-db:1.3.1
-      - es.iti.kukumo:kukumo-html-report:1.3.1
+      - es.iti.wakamiti:wakamiti-rest:1.3.1
+      - es.iti.wakamiti:wakamiti-db:1.3.1
+      - es.iti.wakamiti:wakamiti-html-report:1.3.1
       - com.h2database:h2:1.4.199
     htmlReport:
-        output: target/reports/kukumo/html/kukumo-report.html
+        output: target/reports/wakamiti/html/wakamiti-report.html
 ``` 
 
 > In addition to the core functionality properties, each plugin can make use
@@ -113,20 +113,20 @@ There are several ways of launching it (see `Runners` below); in this example, w
 console command launcher. Assuming it is correctly installed, you just have to type:
 
 ```shell
-kukumo
+wakamiti
 ```
 
 and the test will be executed.
 
 <br/>
 
-![](images/kukumo-run.png)
+![](images/wakamiti-run.png)
 
 <br/>
 
 
 The results of the test execution, besides the console output, are stored in an output file, 
-named by default ```kukumo.json```. Additional plugins can read this file and generate reports 
+named by default ```wakamiti.json```. Additional plugins can read this file and generate reports 
 or do any other post-execution tasks.
 
 
@@ -137,7 +137,7 @@ Currently, there are three methods available to launch a test plan, regarding th
 the test approach:
 
 - **Using JUnit**: For Java projects, you can create an empty testing class to be run as a normal JUnit test suite, 
-setting the custom JUnit runner ```KukumoJUnitRunner```. This way, the plan is treated 
+setting the custom JUnit runner ```WakamitiJUnitRunner```. This way, the plan is treated 
 as a normal JUnit test and will be executed along any other JUnit test existing.
 
     _Suitable scenarios_   
@@ -146,7 +146,7 @@ as a normal JUnit test and will be executed along any other JUnit test existing.
    
     
 - **Using Maven**: If your project uses Maven, and you prefer to execute the Wakamiti test plan in a separate stage,
-you can execute Wakamiti attaching the ```kukumo-maven-plugin``` plugin to the 
+you can execute Wakamiti attaching the ```wakamiti-maven-plugin``` plugin to the 
 Maven lifecycle.  Simply configure the Maven plugin and the desired additional Wakamiti plugins 
 in your POM `build` section.
 
@@ -167,19 +167,19 @@ Plugins
 
 The following Wakamiti plugins are provided as a part of the project:
 
-- [REST Steps](kukumo-plugins/kukumo-rest/target/docsite/index.html): 
+- [REST Steps](wakamiti-plugins/wakamiti-rest/target/docsite/index.html): 
 a set of steps aimed to test RESTful operations. It includes 
 `GET`,`POST`,`PUT`,`PATCH`, and `DELETE` requests, validation of HTTP codes, 
 and validation of response bodies when the content type is JSON, XML, or plain text.
-- [Database Steps](kukumo-plugins/kukumo-db/target/docsite/index.html): 
+- [Database Steps](wakamiti-plugins/wakamiti-db/target/docsite/index.html): 
 a set of steps aimed to test database contents via JDBC. 
 It includes data load/comparison from several sources such as CSV files, Excel files, 
 and in-document tables.
-- [AMQP Steps](kukumo-plugins/kukumo-amqp/target/docsite/index.html):
+- [AMQP Steps](wakamiti-plugins/wakamiti-amqp/target/docsite/index.html):
 a set of steps aimed to test AMQP messaging
-- [I/O Steps](kukumo-plugins/kukumo-amqp/target/docsite/index.html):
+- [I/O Steps](wakamiti-plugins/wakamiti-amqp/target/docsite/index.html):
 a set of steps to work with local files
-- [HTML Report](kukumo-plugins/kukumo-html-report/target/docsite/index.html): 
+- [HTML Report](wakamiti-plugins/wakamiti-html-report/target/docsite/index.html): 
 this plugin creates a static HTML report that shows the results of a test plan 
 execution.
 
@@ -195,7 +195,7 @@ Wakamiti Editor
 Wakamiti implements the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)
 in order to allow editors to provide auto-completion and validation features. As an example, a 
 [Visual Studio Code](https://code.visualstudio.com/) extension is provided 
-[here](https://github.com/iti-ict/kukumo/raw/main/kukumo-vscode-extension/kukumo-vscode-extension-latest.vsix).
+[here](https://github.com/iti-ict/wakamiti/raw/main/wakamiti-vscode-extension/wakamiti-vscode-extension-latest.vsix).
 Check [this section](xxx) to learn more about it.
 
 
@@ -209,15 +209,15 @@ There are several ways in which you can contribute to this project:
 
 If you have detected a potential defect, or there is a missing feature that you really would 
 need, feel free to open a new issue in the 
-[Github page](https://github.com/iti-ict/kukumo/issues). Please check before that a similar
+[Github page](https://github.com/iti-ict/wakamiti/issues). Please check before that a similar
 issue is not already reported.
 
 
 ### Fixing a bug / implementing a feature
 
-If there is any [open issue](https://github.com/iti-ict/kukumo/issues) that you want to implement,
+If there is any [open issue](https://github.com/iti-ict/wakamiti/issues) that you want to implement,
 follow these steps:
-1. Fork the [source code](https://github.com/iti-ict/kukumo)
+1. Fork the [source code](https://github.com/iti-ict/wakamiti)
 2. Create a new branch in your forked repository
 3. Commit the changes
 4. Open a pull request clearly stating the issue that you are attempting to solve

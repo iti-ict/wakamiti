@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+      The Wakamiti Plugins depend on Wakamiti::CORE version (${revision} property)
+   -->
+
+    <parent>
+        <groupId>es.iti.wakamiti</groupId>
+        <artifactId>wakamiti-project</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <!-- coordinates -->
+    <artifactId>wakamiti-spring</artifactId>
+    <version>1.4.0</version>
+
+
+    <!-- additional information -->
+    <name>Wakamiti::SpringBoot support</name>
+    <description>Wakamiti for SpringBoot</description>
+    <inceptionYear>2021</inceptionYear>
+
+
+    <!-- dependency versions -->
+    <properties>
+        <jext.version>1.0.0</jext.version>
+        <jext-spring.version>1.0.0</jext-spring.version>
+        <spring.version>2.7.0</spring.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.wakamiti</groupId>
+                <artifactId>wakamiti-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.luiinge</groupId>
+            <artifactId>immutable-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.commons</groupId>
+            <artifactId>jext-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-db</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-rest</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

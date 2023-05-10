@@ -1,0 +1,10 @@
+/.project
+.factorypath
+/wakamiti.json
+/src/site/markdown/
+/.classpath
+/target/
+/wakamiti-groovy.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs
+/.idea/

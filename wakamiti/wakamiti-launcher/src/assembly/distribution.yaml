@@ -1,0 +1,34 @@
+applicationName: Wakamiti 1.3.0
+distributions:
+  - os: linux
+    fileSet:
+      - destinationFolder: /usr/local/bin
+        access:
+          executableBy: any
+        files:
+          - wakamiti
+      - destinationFolder: /usr/local/share/wakamiti
+        clean: true
+        access:
+          writableBy: user
+        files:
+          - wakamiti-launcher.jar
+          - launcher.properties
+          - lib/**
+          - java-version-checker.jar
+    environmentVariables:
+      WAKAMITI_HOME: /usr/local/share/wakamiti
+
+  - os: windows
+    fileSet:
+      - destinationFolder: "%ProgramFiles%\\Wakamiti"
+        clean: true
+        files:
+          - wakamiti.bat
+          - wakamiti-launcher.jar
+          - launcher.properties
+          - lib/**
+          - java-version-checker.jar
+    environmentVariables:
+      WAKAMITI_HOME: "%ProgramFiles%\\Wakamiti"
+      PATH: "%PATH%;%ProgramFiles%\\Wakamiti"

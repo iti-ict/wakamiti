@@ -4,15 +4,15 @@ jobs:
   build-configurer:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/kukumo/configurer
+    working_directory: ~/wakamiti/configurer
     steps:
       - checkout
       - restore_cache:
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - save_cache:
           paths:
             - ~/.m2
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - run: mvn package
       - store_test_results:
           path: target/surefire-reports
@@ -21,15 +21,15 @@ jobs:
   build-jplugin:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/kukumo/jext
+    working_directory: ~/wakamiti/jext
     steps:
       - checkout
       - restore_cache:
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - save_cache:
           paths:
             - ~/.m2
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - run: mvn package
       - store_test_results:
           path: target/surefire-reports
@@ -37,15 +37,15 @@ jobs:
   build-core:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/kukumo/kukumo-core
+    working_directory: ~/wakamiti/wakamiti-core
     steps:
       - checkout
       - restore_cache:
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - save_cache:
           paths:
             - ~/.m2
-          key: kukumo-{{ checksum "pom.xml" }}
+          key: wakamiti-{{ checksum "pom.xml" }}
       - run: mvn package
       - store_test_results:
           path: target/surefire-reports
