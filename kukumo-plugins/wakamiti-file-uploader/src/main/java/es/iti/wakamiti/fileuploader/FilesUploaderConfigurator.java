@@ -13,11 +13,15 @@ public class FilesUploaderConfigurator implements ConfigContributor<FilesUploade
     private static final String USERNAME = "fileUploader.credentials.username";
     private static final String PASSWORD = "fileUploader.credentials.password";
     private static final String DESTINATION_DIR = "fileUploader.destinationDir";
+    private static final String PROTOCOL = "fileUploader.protocol";
 
 
     @Override
     public Configuration defaultConfiguration() {
-        return Configuration.factory().fromPairs(ENABLE,"false");
+        return Configuration.factory().fromPairs(
+            ENABLE,"false",
+            PROTOCOL,"ftps"
+        );
     }
 
 
@@ -39,6 +43,7 @@ public class FilesUploaderConfigurator implements ConfigContributor<FilesUploade
         configuration.get(USERNAME,String.class).ifPresent(filesUploader::setUsername);
         configuration.get(PASSWORD,String.class).ifPresent(filesUploader::setPassword);
         configuration.get(DESTINATION_DIR,String.class).ifPresent(filesUploader::setRemotePath);
+        configuration.get(PROTOCOL,String.class).ifPresent(filesUploader::setProtocol);
     }
 
 

@@ -59,6 +59,7 @@ public class TestFileUploader {
         filesUploader.setUsername("test");
         filesUploader.setPassword("test");
         filesUploader.setHost("localhost:"+ftpServer.getPort());
+        filesUploader.setProtocol("ftp");
 
         filesUploader.eventReceived(new Event(Event.BEFORE_WRITE_OUTPUT_FILES,Instant.now(),null));
         Path path = Path.of(Thread.currentThread().getContextClassLoader().getResource("file.txt").toURI());

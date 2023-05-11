@@ -1,11 +1,13 @@
 package es.iti.wakamiti.fileuploader;
 
 import iti.commons.jext.Extension;
+import iti.kukumo.api.KukumoException;
 import iti.kukumo.api.event.Event;
 import iti.kukumo.api.extensions.EventObserver;
 import iti.kukumo.api.util.KukumoLogger;
 import iti.kukumo.api.util.PathUtil;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class FilesUploader implements EventObserver {
     private String username;
     private String password;
     private String remotePath;
+    private String protocol;
 
 
     private FTPClient ftpClient;
@@ -49,6 +52,9 @@ public class FilesUploader implements EventObserver {
         this.remotePath = remotePath;
     }
 
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
 
     @Override
     public void eventReceived(Event event) {
@@ -77,7 +83,13 @@ public class FilesUploader implements EventObserver {
         if (ftpClient != null && ftpClient.isConnected()) {
             closeFtpConnection();
         }
-        ftpClient = new FTPClient();
+        if ("ftp".equals(protocol)) {
+            ftpClient = new FTPClient();
+        } else if ("ftps".equals(protocol)) {
+            ftpClient = new FTPSClient();
+        } else {
+            throw new KukumoException("Protocol not supported: "+protocol);
+        }
         if (host.contains(":")) {
             ftpClient.connect(host.split(":")[0],Integer.parseInt(host.split(":")[1]));
         } else {
@@ -100,7 +112,7 @@ public class FilesUploader implements EventObserver {
 
 
     private void uploadFile(Path fileToSend) throws IOException {
-        Path dirPath = PathUtil.replaceTemporalPlaceholders(remotePath);
+        Path dirPath = PathUtil.replaceTemporalPlaceholders(Path.of(remotePath));
         createDestinationDirectory(dirPath);
         ftpClient.changeWorkingDirectory(dirPath.toString());
         String fileName = fileToSend.toFile().getName();
