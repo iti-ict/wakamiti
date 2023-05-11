@@ -239,7 +239,10 @@ and capabilities of developing excellence in the matter of independant R&D, spre
 the results of conducted researches, and driving knowledge transfer among companies from the 
 *Comunitat Valenciana*. 
 
-File Number: IMAMCN/2021/1
+
+<img src="https://github.com/iti-ict/wakamiti/assets/22094564/94ebfe59-822e-4aad-9d54-4ee91ad92490" width="300">
+<img src="https://github.com/iti-ict/wakamiti/assets/22094564/588a2acb-fd35-4bf3-a642-30b7df5c41bb" width="300" align="right">
+
 
 
 License
@@ -261,4 +264,5 @@ Authors
 - **Luis Iñesta Gelabert**   linesta@iti.es | luiinge@gmail.com
 - **María Galbis**  mgalbis@iti.es
     
- 
+
+
