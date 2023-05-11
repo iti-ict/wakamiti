@@ -33,7 +33,7 @@ import iti.kukumo.api.plan.*;
 import iti.kukumo.api.util.KukumoLogger;
 import iti.kukumo.api.util.ResourceLoader;
 import iti.kukumo.api.util.ThrowableFunction;
-import iti.kukumo.core.util.PathUtil;
+import iti.kukumo.api.util.PathUtil;
 import iti.kukumo.core.util.TagFilter;
 import org.slf4j.Logger;
 
@@ -161,7 +161,7 @@ public class Kukumo {
         if (configuration.get(STRICT_TEST_CASE_ID,Boolean.class).orElse(Boolean.FALSE)) {
             validateUniqueTestCaseID(plan);
         }
-        publishEvent(Event.PLAN_CREATED, plan);
+        publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan));
         return plan;
     }
 
@@ -220,7 +220,7 @@ public class Kukumo {
         if (plan.isEmpty()) {
             throw new KukumoException("No test plans created");
         } else {
-            publishEvent(Event.PLAN_CREATED, plan.get());
+            publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan.get()));
             return plan.get();
         }
     }
@@ -348,8 +348,8 @@ public class Kukumo {
     }
 
 
-    public void publishEvent(String eventType, PlanNode data) {
-        getEventDispatcher().publishEvent(eventType, new PlanNodeSnapshot(data));
+    public void publishEvent(String eventType, Object data) {
+        getEventDispatcher().publishEvent(eventType, data);
     }
 
 
@@ -382,11 +382,15 @@ public class Kukumo {
 
         try {
 
+            publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES,null);
+
             writeStandardOutputFile(plan, configuration);
 
             if (configuration.get(KukumoConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElse(Boolean.FALSE)){
                 writeOutputFilesPerTestCase(plan, configuration);
             }
+
+            publishEvent(Event.AFTER_WRITE_OUTPUT_FILES,null);
 
         } catch (IOException e) {
             LOGGER.error(
@@ -411,6 +415,8 @@ public class Kukumo {
             planSerializer().write(writer, plan);
             LOGGER.info("Generated result output file {uri}", path);
         }
+        publishEvent(Event.OUTPUT_FILE_WRITTEN, path);
+
         return outputPath;
     }
 
@@ -432,6 +438,7 @@ public class Kukumo {
                 planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
                 LOGGER.info("Generated result output file {uri}", testCasePath);
             }
+            publishEvent(Event.OUTPUT_FILE_PER_TEST_CASE_WRITTEN, testCasePath);
         }
     }
 

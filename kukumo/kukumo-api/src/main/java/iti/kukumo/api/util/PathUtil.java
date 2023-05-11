@@ -1,4 +1,4 @@
-package iti.kukumo.core.util;
+package iti.kukumo.api.util;
 
 import iti.kukumo.api.plan.PlanNode;
 
@@ -43,4 +43,19 @@ public class PathUtil {
         return Path.of(pathString);
     }
 
+    public static Path replaceTemporalPlaceholders(Path path) {
+        var instant = Instant.now().atZone(ZoneId.systemDefault());
+        String pathString = path.toString();
+        pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
+        pathString = pathString.replace("%YY%",YEAR_2.format(instant));
+        pathString = pathString.replace("%MM%",MONTH.format(instant));
+        pathString = pathString.replace("%DD%",DAY.format(instant));
+        pathString = pathString.replace("%hh%",HOUR.format(instant));
+        pathString = pathString.replace("%mm%",MINUTE.format(instant));
+        pathString = pathString.replace("%ss%",SEC.format(instant));
+        pathString = pathString.replace("%sss%",MILLISEC.format(instant));
+        pathString = pathString.replace("%DATE%", DATE.format(instant));
+        pathString = pathString.replace("%TIME%", TIME.format(instant));
+        return Path.of(pathString);
+    }
 }

@@ -25,12 +25,16 @@ public class Event {
     public static final String NODE_RUN_FINISHED = "NODE_RUN_FINISHED";
     public static final String BEFORE_RUN_BACKEND_STEP = "BEFORE_RUN_BACKEND_STEP";
     public static final String AFTER_RUN_BACKEND_STEP = "AFTER_RUN_BACKEND_STEP";
+    public static final String BEFORE_WRITE_OUTPUT_FILES = "BEFORE_WRITE_OUTPUT_FILES";
+    public static final String AFTER_WRITE_OUTPUT_FILES = "AFTER_WRITE_OUTPUT_FILES";
+    public static final String OUTPUT_FILE_WRITTEN = "OUTPUT_FILE_WRITTEN";
+    public static final String OUTPUT_FILE_PER_TEST_CASE_WRITTEN = "OUTPUT_FILE_PER_TEST_CASE_WRITTEN";
 
     private final String type;
-    private final PlanNodeSnapshot data;
+    private final Object data;
 
 
-    public Event(String type, Instant instant, PlanNodeSnapshot data) {
+    public Event(String type, Instant instant, Object data) {
         this.type = type;
         this.data = data;
     }
@@ -41,7 +45,7 @@ public class Event {
     }
 
 
-    public PlanNodeSnapshot data() {
+    public Object data() {
         return data;
     }
 }

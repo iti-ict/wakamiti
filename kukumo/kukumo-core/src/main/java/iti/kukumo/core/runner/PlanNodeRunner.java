@@ -12,6 +12,7 @@ import iti.kukumo.api.event.Event;
 import iti.kukumo.api.model.ExecutionState;
 import iti.kukumo.api.plan.NodeType;
 import iti.kukumo.api.plan.PlanNode;
+import iti.kukumo.api.plan.PlanNodeSnapshot;
 import iti.kukumo.api.plan.Result;
 import iti.kukumo.core.Kukumo;
 
@@ -94,7 +95,7 @@ public class PlanNodeRunner {
         }
         Result result = null;
         state = State.RUNNING;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, node);
+        Kukumo.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
         if (node.nodeType() == NodeType.TEST_CASE
                 && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
@@ -113,7 +114,7 @@ public class PlanNodeRunner {
             result = runStep();
         }
         state = State.FINISHED;
-        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, node);
+        Kukumo.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
         return result;
     }
 

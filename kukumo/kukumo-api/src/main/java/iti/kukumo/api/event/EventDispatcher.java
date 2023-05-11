@@ -33,7 +33,7 @@ public class EventDispatcher {
     }
 
 
-    public  void publishEvent(String type, PlanNodeSnapshot data) {
+    public  void publishEvent(String type, Object data) {
         Event event = new Event(type, clock.instant(), data);
         for (EventObserver observer : this.observers) {
             if (observer.acceptType(type)) {

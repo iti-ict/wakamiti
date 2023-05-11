@@ -42,7 +42,7 @@
         <module>kukumo-plugins/kukumo-cucumber-exporter</module>
         <module>kukumo-plugins/kukumo-groovy</module>
         <module>kukumo-plugins/kukumo-appium</module>
-
+        <module>kukumo-plugins/wakamiti-file-uploader</module>
         <!-- examples -->
         <module>kukumo-examples/spring-junit-example</module>
         <module>kukumo-examples/spring-verify-example</module>
@@ -50,6 +50,7 @@
         <!-- other -->
         <module>kukumo-server-quarkus</module>
         <module>kukumo-docker</module>
+
     </modules>
 
 
