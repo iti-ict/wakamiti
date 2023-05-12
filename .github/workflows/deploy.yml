@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'kukumo-doc/**'
+      - 'wakamiti-doc/**'
 
 jobs:
   build:
@@ -40,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_wakamiti -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
            ./mvnw -B install -DskipTests
 
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: Generate site
         run: |
-          cd kukumo-doc
+          cd wakamiti-doc
           npm i
           npm run build
 
@@ -64,11 +64,11 @@ jobs:
         env:
           REPO: self
           BRANCH: docs
-          FOLDER: kukumo-doc/dist
+          FOLDER: wakamiti-doc/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
 
 
       - name: Publish Docker Alpha version
-        run: ./mvnw -B deploy -pl kukumo-docker -P alpha -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
+        run: ./mvnw -B deploy -pl wakamiti-docker -P alpha -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 

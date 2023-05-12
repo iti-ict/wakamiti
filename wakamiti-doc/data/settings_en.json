@@ -1,0 +1,58 @@
+{
+  "sidebar": [
+    {
+      "section": "Introduction",
+      "topics": [
+        {
+          "title": "What is Wakamiti?",
+          "slug": "en/introduction/what-is-wakamiti"
+        },
+        {
+          "title": "Getting started",
+          "slug": "en/introduction/getting-started"
+        }
+      ]
+    },
+    {
+      "section": "Wakamiti in-depth",
+      "topics": [
+        {
+          "title": "Architecture",
+          "slug": "en/wakamiti/architecture"
+        },
+        {
+          "title": "Plugins",
+          "slug": "en/plugins",
+          "headings": [
+            {
+              "value": "REST steps",
+              "anchor": "/rest",
+              "depth": 2
+            },
+            {
+              "value": "DB steps",
+              "anchor": "/database",
+              "depth": 2
+            },
+            {
+              "value": "AMQP steps",
+              "anchor": "/amqp",
+              "depth": 2
+            },
+            {
+              "value": "HTML reporter",
+              "anchor": "/html-reporter",
+              "depth": 2
+            },
+            {
+              "value": "Cucumber reporter",
+              "anchor": "/cucumber-exporter",
+              "depth": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

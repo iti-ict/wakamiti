@@ -14,18 +14,18 @@ mkdir $lib
 
 for plugin in "$@"
 do
-  cp kukumo-plugins/${plugin}/target/${plugin}*.jar ${lib}/ 2>/dev/null
-  cp kukumo-plugins/${plugin}/target/dependency/*.jar ${lib}/ 2>/dev/null
+  cp wakamiti-plugins/${plugin}/target/${plugin}*.jar ${lib}/ 2>/dev/null
+  cp wakamiti-plugins/${plugin}/target/dependency/*.jar ${lib}/ 2>/dev/null
 done
 rm ${lib}/*jar-with-dependencies.jar 2>/dev/null
 rm ${lib}/*-sources.jar 2>/dev/null
 
-for file in kukumo/kukumo-core/target/dependency
+for file in wakamiti/wakamiti-core/target/dependency
 do
   rm $lib/$file 2>/dev/null
 done
 
-for file in kukumo/kukumo-api/target/dependency
+for file in wakamiti/wakamiti-api/target/dependency
 do
   rm $lib/$file 2>/dev/null
 done

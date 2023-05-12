@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning][2].
 #### Fixed
 - StartInstant in NOT_IMPLEMENTED results
 - Add the `keyword` and `description` in the Scenario Outlines nodes to prevent errors in the html report
-- Fill execution ID when using `KukumoJUnitRunner`
+- Fill execution ID when using `WakamitiJUnitRunner`
 
 ### HTML Report [1.5.1] 
 #### Added
@@ -46,10 +46,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [1.3.1] 
 
-- Added a *Bill of Materials* project (`kukumo-bom`). All artifacts versions should
+- Added a *Bill of Materials* project (`wakamiti-bom`). All artifacts versions should
 be defined here and **not** specified in the corresponding subprojects. This way, the 
 dependency conflicts that might occur when assembling components should be minimized.
-- Removed some satellite projects from `kukumo-tools` and use the public versions instead.
+- Removed some satellite projects from `wakamiti-tools` and use the public versions instead.
 - Included utility scripts for install/update and collect plugin dependencies
 - Included the [Flatten Maven plugin](https://www.mojohaus.org/flatten-maven-plugin/) in 
 the build lifecycle, to solve some issues in the installation stage due to the use of

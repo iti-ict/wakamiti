@@ -1,0 +1,5 @@
+/.project
+/src/site/markdown/index.md
+/target/
+/wakamiti-examples.iml
+/.settings/org.eclipse.core.resources.prefs

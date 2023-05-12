@@ -12,9 +12,9 @@
         <fluidoSkin>
             <topBarEnabled>true</topBarEnabled>
             <topBarIcon>
-                <name>Kukumo</name>
-                <alt>Kukumo</alt>
-                <src>/images/kukumo-white.png</src>
+                <name>Wakamiti</name>
+                <alt>Wakamiti</alt>
+                <src>/images/wakamiti-white.png</src>
                 <href>/index.html</href>
             </topBarIcon>
             <navBarStyle>navbar-inverse</navBarStyle>
@@ -53,27 +53,27 @@
             <item name="License" href="index.html#License"/>
         </menu>
         <menu name="Components">
-            <item name="Kukumo CORE" href="kukumo/kukumo-core/kukumo/kukumo-core/index.html"/>
-            <item name="Maven Plugin" href="kukumo/kukumo-maven-plugin/kukumo/kukumo-maven-plugin/index.html"/>
-            <item name="Launcher" href="kukumo/kukumo-launcher/kukumo/kukumo-launcher/index.html"/>
-            <item name="Plugin Archetype" href="kukumo/kukumo-plugin-archetype/kukumo/kukumo-plugin-archetype/index.html"/>
+            <item name="Wakamiti CORE" href="wakamiti/wakamiti-core/wakamiti/wakamiti-core/index.html"/>
+            <item name="Maven Plugin" href="wakamiti/wakamiti-maven-plugin/wakamiti/wakamiti-maven-plugin/index.html"/>
+            <item name="Launcher" href="wakamiti/wakamiti-launcher/wakamiti/wakamiti-launcher/index.html"/>
+            <item name="Plugin Archetype" href="wakamiti/wakamiti-plugin-archetype/wakamiti/wakamiti-plugin-archetype/index.html"/>
         </menu>
         <menu name="Plugins">
-            <item name="REST Steps" href="kukumo-plugins/kukumo-rest/kukumo-plugins/kukumo-rest/index.html"/>
-            <item name="Database Steps" href="kukumo-plugins/kukumo-db/kukumo-plugins/kukumo-db/index.html"/>
-            <item name="HTML Reporter" href="kukumo-plugins/kukumo-html-report/kukumo-plugins/kukumo-html-report/index.html"/>
-            <item name="Spring" href="kukumo-plugins/kukumo-spring/kukumo-plugins/kukumo-spring/index.html"/>
+            <item name="REST Steps" href="wakamiti-plugins/wakamiti-rest/wakamiti-plugins/wakamiti-rest/index.html"/>
+            <item name="Database Steps" href="wakamiti-plugins/wakamiti-db/wakamiti-plugins/wakamiti-db/index.html"/>
+            <item name="HTML Reporter" href="wakamiti-plugins/wakamiti-html-report/wakamiti-plugins/wakamiti-html-report/index.html"/>
+            <item name="Spring" href="wakamiti-plugins/wakamiti-spring/wakamiti-plugins/wakamiti-spring/index.html"/>
         </menu>
         <menu name="Tools">
-            <item name="jExt" href="kukumo-tools/jext/kukumo-tools/jext/index.html"/>
-            <item name="Configurer" href="kukumo-tools/configurer/kukumo-tools/configurer/index.html"/>
-            <item name="Maven Fetcher" href="kukumo-tools/maven-fetcher/kukumo-tools/maven-fetcher/index.html"/>
-            <item name="SLF4J ANSI" href="kukumo-tools/slf4j-ansi/kukumo-tools/slf4j-ansi/index.html"/>
+            <item name="jExt" href="wakamiti-tools/jext/wakamiti-tools/jext/index.html"/>
+            <item name="Configurer" href="wakamiti-tools/configurer/wakamiti-tools/configurer/index.html"/>
+            <item name="Maven Fetcher" href="wakamiti-tools/maven-fetcher/wakamiti-tools/maven-fetcher/index.html"/>
+            <item name="SLF4J ANSI" href="wakamiti-tools/slf4j-ansi/wakamiti-tools/slf4j-ansi/index.html"/>
         </menu>
         <menu name="Examples">
-            <item name="JUnit example" href="kukumo-examples/spring-junit-example/kukumo-examples/spring-junit-example/index.html"/>
-            <item name="Maven plugin example" href="kukumo-examples/spring-verify-example/kukumo-examples/spring-verify-example/index.html"/>
-            <item name="Launcher example" href="kukumo-examples/spring-launcher-example/kukumo-examples/spring-launcher-example/index.html"/>
+            <item name="JUnit example" href="wakamiti-examples/spring-junit-example/wakamiti-examples/spring-junit-example/index.html"/>
+            <item name="Maven plugin example" href="wakamiti-examples/spring-verify-example/wakamiti-examples/spring-verify-example/index.html"/>
+            <item name="Launcher example" href="wakamiti-examples/spring-launcher-example/wakamiti-examples/spring-launcher-example/index.html"/>
         </menu>
 
 
