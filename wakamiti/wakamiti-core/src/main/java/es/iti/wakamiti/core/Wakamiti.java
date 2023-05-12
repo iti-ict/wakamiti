@@ -26,14 +26,12 @@ import es.iti.wakamiti.core.backend.DefaultBackendFactory;
 import es.iti.wakamiti.core.runner.PlanRunner;
 import es.iti.wakamiti.core.util.TagFilter;
 import imconfig.Configuration;
-import es.iti.wakamiti.api.*;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.event.EventDispatcher;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.extensions.PlanTransformer;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.api.plan.*;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
@@ -357,7 +355,7 @@ public class Wakamiti {
         PlanNode result = new PlanRunner(plan, configuration).run();
         writeOutputFile(plan, configuration);
         if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
-            generateReports(configuration);
+            generateReports(configuration,new PlanNodeSnapshot(plan));
         }
         return result;
     }
@@ -368,7 +366,7 @@ public class Wakamiti {
     }
 
 
-    public void writeOutputFile(PlanNode plan, Configuration configuration) {
+    public Path writeOutputFile(PlanNode plan, Configuration configuration) {
         List<String> toHide = configuration.getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
                 .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
                 .collect(Collectors.toList());
@@ -377,14 +375,14 @@ public class Wakamiti {
     	if (!configuration
 			.get(WakamitiConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
 			.orElse(Boolean.TRUE)) {
-    		return;
+    		return null;
     	}
 
         try {
 
             publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES,null);
 
-            writeStandardOutputFile(plan, configuration);
+            Path standardOutputFile = writeStandardOutputFile(plan, configuration);
 
             if (configuration.get(WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElse(Boolean.FALSE)){
                 writeOutputFilesPerTestCase(plan, configuration);
@@ -392,19 +390,22 @@ public class Wakamiti {
 
             publishEvent(Event.AFTER_WRITE_OUTPUT_FILES,null);
 
+            return standardOutputFile;
+
         } catch (IOException e) {
             LOGGER.error(
                 "Error writing output file : {}",
                 e.getMessage(),
                 e
             );
+            return null;
         }
 
     }
 
 
 
-    private String writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
+    private Path writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(WakamitiConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
         Path path = PathUtil.replacePlaceholders(Paths.get(outputPath).toAbsolutePath(), plan);
         Path parentPath = path.getParent();
@@ -417,7 +418,7 @@ public class Wakamiti {
         }
         publishEvent(Event.OUTPUT_FILE_WRITTEN, path);
 
-        return outputPath;
+        return path;
     }
 
 
@@ -442,24 +443,32 @@ public class Wakamiti {
         }
     }
 
-
-
     public void generateReports(Configuration configuration) {
+        String reportSource = configuration.get(REPORT_SOURCE, String.class)
+                .orElse(configuration.get(OUTPUT_FILE_PATH,String.class).orElse(null));
+        if (reportSource == null) {
+            throw new WakamitiException(
+                "The report source file/folder is not defined.\n" + "Perhaps you may set the property {}",
+                REPORT_SOURCE
+            );
+        }
+        generateReports(configuration, Path.of(reportSource));
+    }
+
+
+
+    public void generateReports(Configuration configuration, Path reportSource) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
             return;
         }
         LOGGER.info(IMPORTANT, "Generating reports...");
-        String reportSource = configuration.get(REPORT_SOURCE, String.class)
-            .orElse(configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null));
-        Path sourceFolder = Paths.get(reportSource).toAbsolutePath();
+
+        Path sourceFolder = reportSource.toAbsolutePath();
         if (!sourceFolder.toFile().exists()) {
             throw new WakamitiException(
-                "The report source file/folder {} does not exist.\n" + "Perhaps you may set the property {} to the path defined by the property {}:{}",
-                sourceFolder,
-                REPORT_SOURCE,
-                OUTPUT_FILE_PATH,
-                configuration.get(OUTPUT_FILE_PATH, String.class).orElse("<undefined>")
+                "The defined report source file/folder {} does not exist!",
+                sourceFolder
             );
         }
         PlanSerializer deserializer = planSerializer();
@@ -474,6 +483,21 @@ public class Wakamiti {
         } catch (IOException e1) {
             throw new WakamitiException("Error searching source file/folder", e1);
         }
+        generateReports(configuration, plans);
+
+    }
+
+    public void generateReports(Configuration configuration, PlanNodeSnapshot plan) {
+        generateReports(configuration, new PlanNodeSnapshot[]{plan});
+    }
+
+
+    public void generateReports(Configuration configuration, PlanNodeSnapshot[] plans) {
+        List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
+        if (reporters.isEmpty()) {
+            return;
+        }
+        LOGGER.info(IMPORTANT, "Generating reports...");
         PlanNodeSnapshot rootNode = PlanNodeSnapshot.group(plans);
         for (Reporter reporter : reporters) {
             try {

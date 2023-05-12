@@ -95,9 +95,10 @@ public class WakamitiJUnitRunner extends Runner {
         executeAnnotatedMethod(configurationClass, AfterClass.class);
 
         planNodeLogger.logTestPlanResult(plan);
-        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(getPlan()));
+        var snapshot = new PlanNodeSnapshot(getPlan());
+        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);
         wakamiti.writeOutputFile(plan, configuration);
-        wakamiti.generateReports(configuration);
+        wakamiti.generateReports(configuration,snapshot);
     }
 
 
