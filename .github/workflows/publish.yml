@@ -23,6 +23,7 @@ jobs:
         #server-username: sonatype_iti
         #server-password: bieth7Eiyaixep5+
     - name: Publish package
+      run: |
        ./mvnw verify -pl kukumo-plugins/kukumo-rest -am org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       #env:
       #  MAVEN_USERNAME: sonatype_iti
