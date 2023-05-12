@@ -19,9 +19,9 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-        #server-id: ossrh
-        #server-username: sonatype_iti
-        #server-password: bieth7Eiyaixep5+
+        server-id: ossrh
+        server-username: sonatype_iti
+        server-password: bieth7Eiyaixep5+
     - name: Publish package
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
