@@ -382,7 +382,7 @@
          
  <profiles>   
     <profile>
-      <id>release</id>
+      <id>upload-repository</id>
       <build>
         <plugins>
           <plugin>
