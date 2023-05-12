@@ -25,5 +25,5 @@ jobs:
           MAVEN_USERNAME: sonatype_iti
           MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
       run: |
-       ./mvnw deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+       ./mvnw deploy -P release -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
         
