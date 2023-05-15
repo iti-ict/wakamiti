@@ -60,7 +60,7 @@ public class FilesHelper {
 
     public void moveToFile(File source, File target) throws IOException {
         if (!source.exists()) {
-            throw new FileNotFoundException("Source '" + source + "' does not exist");
+            throwSourceNotExistsException(source);
         }
 
         File p = getFirstExistingParent(target);
@@ -75,9 +75,13 @@ public class FilesHelper {
         });
     }
 
+    private void throwSourceNotExistsException(File source) throws FileNotFoundException {
+        throw new FileNotFoundException("Source '" + source + "' does not exist");
+    }
+
     public void moveToDir(File source, File target) throws IOException {
         if (!source.exists()) {
-            throw new FileNotFoundException("Source '" + source + "' does not exist");
+            throwSourceNotExistsException(source);
         }
 
         File p = getFirstExistingParent(target);
@@ -122,7 +126,7 @@ public class FilesHelper {
 
     public void copyToDir(File source, File target) throws FileNotFoundException {
         if (!source.exists()) {
-            throw new FileNotFoundException("Source '" + source + "' does not exist");
+            throwSourceNotExistsException(source);
         }
 
         File p = getFirstExistingParent(target);
@@ -144,7 +148,7 @@ public class FilesHelper {
 
     public void delete(File file) throws IOException {
         if (!file.exists()) {
-            throw new FileNotFoundException("Source '" + file + "' does not exist");
+            throwSourceNotExistsException(file);
         }
 
         if (file.isDirectory()) {

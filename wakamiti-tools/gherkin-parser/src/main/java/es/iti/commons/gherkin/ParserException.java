@@ -15,7 +15,7 @@ import es.iti.commons.gherkin.internal.Token;
 @SuppressWarnings("serial")
 public class ParserException extends RuntimeException {
 
-    private final Location location;
+    private final transient Location location;
 
     protected ParserException(String message) {
         super(message);
@@ -50,8 +50,8 @@ public class ParserException extends RuntimeException {
     public static class UnexpectedTokenException extends ParserException {
         public String stateComment;
 
-        public final Token receivedToken;
-        public final List<String> expectedTokenTypes;
+        public final transient Token receivedToken;
+        public final transient List<String> expectedTokenTypes;
 
         public UnexpectedTokenException(Token receivedToken, List<String> expectedTokenTypes, String stateComment) {
             super(getMessage(receivedToken, expectedTokenTypes), getLocation(receivedToken));
@@ -75,7 +75,7 @@ public class ParserException extends RuntimeException {
 
     public static class UnexpectedEOFException extends ParserException {
         public final String stateComment;
-        public final List<String> expectedTokenTypes;
+        public final transient List<String> expectedTokenTypes;
 
         public UnexpectedEOFException(Token receivedToken, List<String> expectedTokenTypes, String stateComment) {
             super(getMessage(expectedTokenTypes), receivedToken.location);

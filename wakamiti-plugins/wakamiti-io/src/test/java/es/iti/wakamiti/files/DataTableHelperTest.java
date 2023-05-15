@@ -26,6 +26,7 @@ public class DataTableHelperTest {
         // act
         DataTableHelper helper = new DataTableHelper(dataTable);
         log.debug("Result: {}", helper);
+
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -120,32 +120,52 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
 
 
     private static String dateTimeRegex(Locale locale, boolean withDate, boolean withTime) {
-        final Set<String> regexs = new HashSet<>();
+        final Set<String> regexs;
         if (withDate && withTime) {
-            for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
-                for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
-                    regexs.add(dateTimeRegex(locale, dateFormatStyle, timeFormatStyle));
-                }
-            }
+            regexs = regexsWithDateAndTime(locale);
         } else {
-            for (final FormatStyle formatStyle : FORMAT_STYLES) {
-                regexs.add(
-                    dateTimeRegex(
-                        locale,
-                        withDate ? formatStyle : null,
-                        withTime ? formatStyle : null
-                    )
-                );
-            }
+            regexs = regexsWithDateOrTime(locale, withDate, withTime);
         }
         regexs.addAll(dateTimeRegexISO(withDate, withTime));
         return "(" + regexs.stream().collect(Collectors.joining(")|(")) + ")";
     }
 
 
+    private static Set<String> regexsWithDateOrTime(Locale locale, boolean withDate, boolean withTime) {
+        Set<String> regexs = new HashSet<>();
+        for (final FormatStyle formatStyle : FORMAT_STYLES) {
+            regexs.add(
+                dateTimeRegex(
+                        locale,
+                    withDate ? formatStyle : null,
+                    withTime ? formatStyle : null
+                )
+            );
+        }
+        return regexs;
+    }
+
+
+    private static Set<String> regexsWithDateAndTime(Locale locale) {
+        Set<String> regexs = new HashSet<>();
+        for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
+            for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
+                regexs.add(dateTimeRegex(locale, dateFormatStyle, timeFormatStyle));
+            }
+        }
+        return regexs;
+    }
+
+
     private static List<String> dateTimeRegexISO(boolean withDate, boolean withTime) {
-        String[] formats = (withDate && withTime ? ISO_8601_DATETIME_FORMATS
-                        : (withDate ? ISO_8601_DATE_FORMATS : ISO_8601_TIME_FORMATS));
+        String[] formats;
+        if (withDate && withTime) {
+            formats = ISO_8601_DATETIME_FORMATS;
+        } else if (withDate) {
+            formats = ISO_8601_DATE_FORMATS;
+        } else {
+            formats = ISO_8601_TIME_FORMATS;
+        }
         return Stream.of(formats).map(WakamitiDateDataType::patternToRegex)
             .collect(Collectors.toList());
     }
@@ -205,28 +225,38 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
         boolean withDate,
         boolean withTime
     ) {
-        final List<String> patterns = new ArrayList<>();
         if (withDate && withTime) {
-            patterns.addAll(Arrays.asList(ISO_8601_DATETIME_FORMATS));
-            for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
-                for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
-                    patterns.add(dateTimePattern(locale, dateFormatStyle, timeFormatStyle));
-                }
-            }
+            return patternsWithDateAndTime(locale);
         } else {
-            patterns
-                .addAll(Arrays.asList(withDate ? ISO_8601_DATE_FORMATS : ISO_8601_TIME_FORMATS));
-            for (final FormatStyle formatStyle : FORMAT_STYLES) {
-                patterns.add(
-                    dateTimePattern(
+            return patternsWithDateOrTime(locale, withDate, withTime);
+        }
+    }
+
+
+    private static List<String> patternsWithDateOrTime(Locale locale, boolean withDate, boolean withTime) {
+        List<String> patterns = new ArrayList<>();
+        patterns
+            .addAll(Arrays.asList(withDate ? ISO_8601_DATE_FORMATS : ISO_8601_TIME_FORMATS));
+        for (final FormatStyle formatStyle : FORMAT_STYLES) {
+            patterns.add(
+                dateTimePattern(
                         locale,
-                        withDate ? formatStyle : null,
-                        withTime ? formatStyle : null
-                    )
-                );
+                    withDate ? formatStyle : null,
+                    withTime ? formatStyle : null
+                )
+            );
+        }
+        return patterns;
+    }
+
+    private static List<String> patternsWithDateAndTime(Locale locale) {
+        List<String> patterns = new ArrayList<>();
+        patterns.addAll(Arrays.asList(ISO_8601_DATETIME_FORMATS));
+        for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
+            for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
+                patterns.add(dateTimePattern(locale, dateFormatStyle, timeFormatStyle));
             }
         }
-
         return patterns;
     }
 
@@ -238,31 +268,45 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
         TemporalQuery<T> temporalQuery
     ) {
 
-        List<DateTimeFormatter> formatters = new ArrayList<>();
+        List<DateTimeFormatter> formatters;
         if (withDate && withTime) {
-            for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
-                for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
-                    DateTimeFormatter formatter = formatter(
-                        locale,
-                        dateFormatStyle,
-                        timeFormatStyle
-                    );
-                    formatters.add(formatter);
-                }
-            }
-            formatters.add(DateTimeFormatter.ISO_DATE_TIME);
+            formatters= formattersWithDateAndTime(locale);
         } else {
-            for (final FormatStyle formatStyle : FORMAT_STYLES) {
-                DateTimeFormatter formatter = formatter(
+            formatters= formattersWithDateOrTime(locale, withDate, withTime);
+        }
+        return (String input) -> parse(formatters, input, temporalQuery);
+    }
+
+
+    private static List<DateTimeFormatter> formattersWithDateOrTime(Locale locale, boolean withDate, boolean withTime) {
+        List<DateTimeFormatter> formatters = new ArrayList<>();
+        for (final FormatStyle formatStyle : FORMAT_STYLES) {
+            DateTimeFormatter formatter = formatter(
                     locale,
-                    withDate ? formatStyle : null,
-                    withTime ? formatStyle : null
+                withDate ? formatStyle : null,
+                withTime ? formatStyle : null
+            );
+            formatters.add(formatter);
+        }
+        formatters.add(withDate ? DateTimeFormatter.ISO_DATE : DateTimeFormatter.ISO_TIME);
+        return formatters;
+    }
+
+
+    private static List<DateTimeFormatter> formattersWithDateAndTime(Locale locale) {
+        List<DateTimeFormatter> formatters = new ArrayList<>();
+        for (final FormatStyle dateFormatStyle : FORMAT_STYLES) {
+            for (final FormatStyle timeFormatStyle : FORMAT_STYLES) {
+                DateTimeFormatter formatter = formatter(
+                        locale,
+                    dateFormatStyle,
+                    timeFormatStyle
                 );
                 formatters.add(formatter);
             }
-            formatters.add(withDate ? DateTimeFormatter.ISO_DATE : DateTimeFormatter.ISO_TIME);
         }
-        return (String input) -> parse(formatters, input, temporalQuery);
+        formatters.add(DateTimeFormatter.ISO_DATE_TIME);
+        return formatters;
     }
 
 

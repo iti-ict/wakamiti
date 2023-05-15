@@ -73,7 +73,7 @@ public class PermissionSetter {
             permissions.add(PosixFilePermission.GROUP_EXECUTE);
             permissions.add(PosixFilePermission.OWNER_EXECUTE);
             break;
-        case Access.USER:
+        default:
             permissions.add(PosixFilePermission.OWNER_EXECUTE);
             break;
         }

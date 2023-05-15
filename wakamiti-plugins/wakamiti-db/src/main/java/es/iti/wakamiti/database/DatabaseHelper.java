@@ -13,7 +13,6 @@ package es.iti.wakamiti.database;
 import es.iti.wakamiti.database.dataset.*;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.database.dataset.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.JdbcParameter;
@@ -83,23 +82,29 @@ public class DatabaseHelper {
         return this;
     }
 
+
+    private void logCleanUpError(Exception e) {
+        LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
+    }
+
     public DatabaseHelper setCleanUpOperations(String sql) {
         manualCleanup = () -> {
             try {
                 executeSQLStatements(sql, false);
             } catch (SQLException | JSQLParserException e) {
-                LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
+                logCleanUpError(e);
             }
         };
        return this;
     }
+
 
     public DatabaseHelper setCleanUpOperations(String sql, String fileName) {
         manualCleanup = () -> {
             try {
                 executeSQLStatements(sql, fileName, false);
             } catch (SQLException | JSQLParserException e) {
-                LOGGER.debug("Error on clean-up operation: {}", e.getMessage(), e);
+                logCleanUpError(e);
             }
         };
         return this;
@@ -217,7 +222,7 @@ public class DatabaseHelper {
             true
         )) {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("[SQL] {sql}  | {}", sql, mapValues(columns, values));
+                LOGGER.trace("[SQL] {sql} | {}", sql, mapValues(columns, values));
             }
             assertCount(statement, matcher);
         } catch (SQLException e) {
@@ -344,7 +349,7 @@ public class DatabaseHelper {
                 cleanUpOperations.addFirst(parser.toSelect(delete)
                         .map(select -> executeSelect(select))
                         .map(dataSet -> insertDataSetRunner(dataSet))
-                        .get());
+                        .orElseThrow());
             }
 
             @Override
@@ -352,7 +357,7 @@ public class DatabaseHelper {
                 cleanUpOperations.addFirst(parser.toSelect(update)
                         .map(select -> executeSelect(select))
                         .map(dataSet -> updateDataSetRunner(dataSet, update))
-                        .get());
+                        .orElseThrow());
             }
         });
     }
@@ -365,7 +370,7 @@ public class DatabaseHelper {
             return read(table, resultSet);
         } catch (SQLException e) {
             LOGGER.error("[SQL] {sql}", select);
-            throw new RuntimeException(e);
+            throw new WakamitiException(e);
         }
     }
 
