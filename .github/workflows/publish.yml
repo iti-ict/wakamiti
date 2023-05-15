@@ -18,7 +18,25 @@ jobs:
         server-id: ossrh
         server-username: MAVEN_USERNAME
         server-password: MAVEN_CENTRAL_TOKEN
-        gpg-private-key: ${{ secrets.GPC_SECRET_KEYS }}
+        gpg-private-key: -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+ 
+
+lIYEZFol8BYJKwYBBAHaRw8BAQdAH3jzv+YSsCqIEbZH2rBsljkH0gJnf5tqkrth
+X8bD7+j+BwMCAkfBZ+pFqWz+E58QhP+nxGCgaco33QZ2qoyWMk6+56XF4swSQlRy
+r3NvTOH1lvXZmiVz4ClHSsCWkCrwmRWOECcrA6IqPWiaOV+96aaojrQVSVRJIDxz
+b25hdHlwZUBpdGkuZXM+iJkEExYKAEEWIQRilYW7NPpk1Ysnylif0bJE2OrhygUC
+ZFol8AIbAwUJA8JnAAULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCRCf0bJE
+2OrhyhnFAQDE8eJFwCgFzWMv4EYEvUmLULUXlmA9/ZP31KEfggqJ8AD/VivMihup
+d8uognJpBC/oBGeV/f3/pG2RLZy2pnGFUQOciwRkWiXwEgorBgEEAZdVAQUBAQdA
+LmkjfIt2sUo4pZ/7ORKqvnKyDY/3YlQwFfjQttRownYDAQgH/gcDAtf7SrLv2BAv
+/kN+rfeHx+v1gDtBnyn7Jw/LdPE30y5eLpvVSvJQlWSFEuwATzZ4GFL8f++gE4G3
+Q781oxQX/NOxRtz04r7fspCxjIRq83+IfgQYFgoAJhYhBGKVhbs0+mTViyfKWJ/R
+skTY6uHKBQJkWiXwAhsMBQkDwmcAAAoJEJ/RskTY6uHK2U8BALS/0admDfm5UX7K
+aINZEXmwjbQwsovFFnnE25qz5pr4AQCWVUposiunqup2evCyTVPRedd2Ku+a5lpO
+uqOQBe0ZAA==
+=U7QT
+-----END PGP PRIVATE KEY BLOCK-----
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
     - name: Publish package
       env:
