@@ -162,7 +162,7 @@ public class FilesHelper {
             File tmp = File.createTempFile(TMP_PREFIX, null);
             FilesHelper.copyFile(file, tmp);
 
-            file.delete();
+            Files.delete(file.toPath());
 
             cleanUpOperations.addFirst(() -> FilesHelper.copyFile(tmp, file));
         }

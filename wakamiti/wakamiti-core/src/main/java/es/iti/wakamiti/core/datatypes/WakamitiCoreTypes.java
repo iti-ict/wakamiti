@@ -139,8 +139,8 @@ public class WakamitiCoreTypes implements DataTypeContributor {
 
     /* remove leading and tailing " or ' , and replace escaped characters */
     private static String prepareString(String input) {
-        return input.substring(1, input.length() - 1).replaceAll("\\\\\"", "\"")
-            .replaceAll("\\\\'", "'");
+        return input.substring(1, input.length() - 1).replace("\\\"", "\"")
+            .replace("\\'", "'");
     }
 
 }

@@ -11,7 +11,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class GherkinDialect {
+
+    private static final String STEP = "step";
+    private static final String GIVEN = "given";
+    private static final String WHEN = "when";
+    private static final String THEN = "then";
+    private static final String AND = "and";
+    private static final String BUT = "but";
+    private static final String BACKGROUND = "background";
+    private static final String SCENARIO = "scenario";
+    private static final String SCENARIO_OUTLINE = "scenarioOutline";
+    private static final String EXAMPLES = "examples";
+    private static final String FEATURE = "feature";
+    private static final String ALL = "all";
+    private static final String FEATURE_CONTENT = "feature-content";
+
+    
     private final Map<String, List<String>> keywords;
     private String language;
 
@@ -19,72 +36,72 @@ public class GherkinDialect {
         this.language = language;
         this.keywords = new HashMap<>(keywords);
         this.keywords.put(
-            "step",
-            merge(keywords,"given","when","then","and","but")
+            STEP,
+            merge(keywords, GIVEN,WHEN, THEN, AND, BUT)
         );
         this.keywords.put(
-            "feature-content",
-            merge(keywords,"background","scenario","scenarioOutline")
+            FEATURE_CONTENT,
+            merge(keywords, BACKGROUND, SCENARIO, SCENARIO_OUTLINE)
         );
         this.keywords.put(
-            "all",
-            merge(keywords,"given","when","then","and","but","background","examples","feature","scenario","scenarioOutline")
+            ALL,
+            merge(keywords, GIVEN,WHEN, THEN, AND, BUT, BACKGROUND, EXAMPLES, FEATURE, SCENARIO, SCENARIO_OUTLINE)
         );
     }
 
 
     public List<String> getFeatureKeywords() {
-        return keywords.get("feature");
+        return keywords.get(FEATURE);
     }
 
     public List<String> getScenarioKeywords() {
-        return keywords.get("scenario");
+        return keywords.get(SCENARIO);
     }
 
     public List<String> getStepKeywords() {
-        return keywords.get("step");
+        return keywords.get(STEP);
     }
 
     public List<String> getBackgroundKeywords() {
-        return keywords.get("background");
+        return keywords.get(BACKGROUND);
     }
 
     public List<String> getScenarioOutlineKeywords() {
-        return keywords.get("scenarioOutline");
+        return keywords.get(SCENARIO_OUTLINE);
     }
 
 
     public List<String> getFeatureContentKeywords() {
-        return keywords.get("feature-content");
+        return keywords.get(FEATURE_CONTENT);
     }
 
 
     public List<String> getExamplesKeywords() {
-        return keywords.get("examples");
+        return keywords.get(EXAMPLES);
     }
 
     public List<String> getGivenKeywords() {
-        return keywords.get("given");
+        return keywords.get(GIVEN);
     }
 
     public List<String> getWhenKeywords() {
-        return keywords.get("when");
+        return keywords.get(WHEN);
     }
 
     public List<String> getThenKeywords() {
-        return keywords.get("then");
+        return keywords.get(THEN);
     }
 
     public List<String> getAndKeywords() {
-        return keywords.get("and");
+        return keywords.get(AND);
     }
 
     public List<String> getButKeywords() {
-        return keywords.get("but");
+        return keywords.get(BUT);
     }
 
     public List<String> getKeywords() {
-        return keywords.get("all");
+        return keywords.get(ALL);
     }
 
     public String getLanguage() {

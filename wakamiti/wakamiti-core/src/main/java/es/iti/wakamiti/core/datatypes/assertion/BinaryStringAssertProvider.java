@@ -136,7 +136,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     private static String prepareString(String input) {
         return input
             .substring(1, input.length() - 1)
-            .replaceAll("\\\\\"", "\"")
-            .replaceAll("\\\\'", "'");
+            .replace("\\\"", "\"")
+            .replace("\\'", "'");
     }
 }

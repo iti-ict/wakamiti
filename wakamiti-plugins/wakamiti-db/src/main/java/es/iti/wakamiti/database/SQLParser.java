@@ -34,6 +34,9 @@ import java.util.stream.Stream;
 
 public class SQLParser {
 
+    private static final String TRIM = "trim";
+    private static final String COUNT = "count";
+
     private final CaseSensitivity caseSensitivity;
 
     public SQLParser(CaseSensitivity caseSensitivity) {
@@ -110,7 +113,7 @@ public class SQLParser {
             if (expression.getClass().getSimpleName().contains("Value")) {
                 EqualsTo equalsTo = new EqualsTo();
                 Function f = new Function();
-                f.setName("trim");
+                f.setName(TRIM);
                 f.setParameters(new ExpressionList(columns.get(i)));
                 equalsTo.setLeftExpression(f);
                 equalsTo.setRightExpression(expression);
@@ -130,7 +133,7 @@ public class SQLParser {
                 .map(column -> {
                     EqualsTo exp = new EqualsTo();
                     Function f = new Function();
-                    f.setName("trim");
+                    f.setName(TRIM);
                     f.setParameters(new ExpressionList(new Column(column)));
                     exp.setLeftExpression(f);
                     exp.setRightExpression(new JdbcParameter());
@@ -163,7 +166,7 @@ public class SQLParser {
     public Select sqlSelectCountFrom(String table) {
         Select select = new Select();
         Function count = new Function();
-        count.setName("count");
+        count.setName(COUNT);
         count.setAllColumns(true);
         SelectItem countAll = new SelectExpressionItem(count);
         select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll));
@@ -173,7 +176,7 @@ public class SQLParser {
     public Select sqlSelectCountFrom(String table, String where) throws JSQLParserException {
         Select select = new Select();
         Function count = new Function();
-        count.setName("count");
+        count.setName(COUNT);
         count.setAllColumns(true);
         SelectItem countAll = new SelectExpressionItem(count);
         select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, CCJSqlParserUtil.parseCondExpression(where)));
@@ -183,7 +186,7 @@ public class SQLParser {
     public Select sqlSelectCountFrom(String table, String[] columns) {
         Select select = new Select();
         Function count = new Function();
-        count.setName("count");
+        count.setName(COUNT);
         count.setAllColumns(true);
         SelectItem countAll = new SelectExpressionItem(count);
         select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, createWhere(columns)));

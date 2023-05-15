@@ -67,11 +67,13 @@ public class DatabaseStepContributor implements StepContributor {
     public Connection connection() throws SQLException {
         if (connection == null) {
             connection = connectionManager.obtainConnection(connectionParameters);
-            LOGGER.debug(
-                    "Using database connection of type {} provided by {contributor}",
-                    connection.getClass().getSimpleName(),
-                    connectionManager.info()
-            );
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(
+                        "Using database connection of type {} provided by {contributor}",
+                        connection.getClass().getSimpleName(),
+                        connectionManager.info()
+                );
+            }
         } else {
             connection = connectionManager.refreshConnection(connection, connectionParameters);
         }
@@ -277,7 +279,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.exists.row.single.id", args = { "id:text", "table:word" })
     public void assertRowExistsBySingleId(String id, String table) throws SQLException {
-        String keyColumn = helper.primaryKey(table).get()[0];
+        String keyColumn = helper.primaryKey(table).orElseThrow()[0];
         helper.assertCountRowsInTableByColumns(
             matcherNonEmpty(),
             table,
@@ -360,7 +362,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.not.exists.row.single.id", args = { "id:text", "table:word" })
     public void assertRowNotExistsBySingleId(String id, String table) throws SQLException {
-        String keyColumn = helper.primaryKey(table).get()[0];
+        String keyColumn = helper.primaryKey(table).orElseThrow()[0];
         helper.assertCountRowsInTableByColumns(
             matcherEmpty(),
             table,
