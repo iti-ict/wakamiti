@@ -26,6 +26,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           MAVEN_USERNAME: sonatype_iti
           MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
-          MAVEN_GPG_PASSPHRASE: Iti.2023
+          #MAVEN_GPG_PASSPHRASE: Iti.2023
       run: mvn -X -P upload-repository -B deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
         
