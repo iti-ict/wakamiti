@@ -18,12 +18,15 @@ jobs:
         server-id: ossrh
         server-username: MAVEN_USERNAME
         server-password: MAVEN_CENTRAL_TOKEN
+        gpg-private-key: $
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
     - name: Publish package
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           MAVEN_USERNAME: sonatype_iti
           MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
+          MAVEN_GPG_PASSPHRASE: $
       run: |
        ./mvnw deploy -P upload-repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -X
         
