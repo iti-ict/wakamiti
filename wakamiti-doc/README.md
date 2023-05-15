@@ -1,0 +1,2 @@
+# wakamiti-doc
+Wakamiti Documentation

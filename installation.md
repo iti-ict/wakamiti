@@ -7,7 +7,7 @@ the best option is to build and install the Wakamiti packages locally:
 
 1. Clone the whole repository:
 ```
-git clone git@github.com:iti-ict/kukumo.git 
+git clone git@github.com:iti-ict/wakamiti.git 
 ```
 2. Compile and install the packages in the local repository (use Java 11 or later)
 ```
@@ -19,10 +19,10 @@ sudo ./update-local-launcher.sh
 ```
 
 Being the Wakamiti packages installed locally, you must configure your 
-test execution setting the local repository in the `kukumo.yaml` file:
+test execution setting the local repository in the `wakamiti.yaml` file:
 
 ```yaml
-kukumo:
+wakamiti:
   ...
 mavenFetcher:
   remoteRepositories: local=file:///home/<your_username>/.m2/repository
@@ -31,5 +31,5 @@ mavenFetcher:
 
 
 ### Cleaning Wakamiti cache
-Some artifacts are cached in the directory `${home}/.local/share/kukumo`.
+Some artifacts are cached in the directory `${home}/.local/share/wakamiti`.
 Deleting it will force to download the new/updated artifacts.

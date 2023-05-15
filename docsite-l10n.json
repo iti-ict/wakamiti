@@ -1,9 +1,9 @@
 {
   "en": {
-    "kukumo.description": "A human-friendly BDD testing tool"
+    "wakamiti.description": "A human-friendly BDD testing tool"
   },
   "es": {
-    "kukumo.description": "BDD testing para humanos",
+    "wakamiti.description": "BDD testing para humanos",
     "Guides": "Guias",
     "Components" : "Componentes",
     "License": "Licencia"
