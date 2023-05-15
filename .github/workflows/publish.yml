@@ -27,6 +27,6 @@ jobs:
           #MAVEN_USERNAME: sonatype_iti
           #MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-      run: mvn verify -P release 
+      run: mvn verify -P release -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       #run: mvn -P upload-repository deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -e
         
