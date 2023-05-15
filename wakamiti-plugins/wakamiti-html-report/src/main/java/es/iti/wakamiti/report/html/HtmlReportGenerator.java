@@ -108,7 +108,6 @@ public class HtmlReportGenerator implements Reporter {
             }
         } catch (IOException | TemplateException e) {
             LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
-            e.printStackTrace();
         }
 
     }

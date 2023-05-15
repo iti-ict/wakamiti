@@ -15,7 +15,7 @@ import org.apache.logging.log4j.core.config.*;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 
 
-public class Launcher extends Thread {
+public class Launcher {
 
     public static void main(String[] args) throws ParseException, IOException {
 
@@ -47,9 +47,6 @@ public class Launcher extends Thread {
             launcher.startListening();
         }
     }
-
-
-
 
 
 	private static void disableConsoleLogs() throws IOException {
