@@ -20,7 +20,7 @@ jobs:
         server-password: MAVEN_CENTRAL_TOKEN
         gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
         #gpg-passphrase: MAVEN_GPG_PASSPHRASE
-        gpg-passphrase: Iti.2023
+        #gpg-passphrase: Iti.2023
     - name: Publish package
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -28,5 +28,5 @@ jobs:
           MAVEN_USERNAME: sonatype_iti
           MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
           #MAVEN_GPG_PASSPHRASE: Iti.2023
-      run: mvn -X -P upload-repository -B deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      run: mvn -X -P upload-repository -B deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dgpg.passphrase=Iti.2023
         
