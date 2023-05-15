@@ -28,5 +28,5 @@ jobs:
           MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
           MAVEN_GPG_PASSPHRASE: Iti.2023
       run: |
-       ./mvnw deploy -P upload-repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+       ./mvnw deploy -P upload-repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -e
         
