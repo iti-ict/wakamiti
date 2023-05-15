@@ -24,8 +24,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          MAVEN_USERNAME: sonatype_iti
-          MAVEN_CENTRAL_TOKEN: bieth7Eiyaixep5+
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PWD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}     
       run: mvn -P upload-repository deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -e
         
