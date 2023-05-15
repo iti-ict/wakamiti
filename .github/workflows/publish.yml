@@ -20,6 +20,7 @@ jobs:
         server-password: MAVEN_CENTRAL_TOKEN
         gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
         #gpg-passphrase: MAVEN_GPG_PASSPHRASE
+        gpg-passphrase: Iti.2023
     - name: Publish package
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
