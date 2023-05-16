@@ -9,24 +9,24 @@
 #  Also, a previous execution of `./mvnw clean package` is needed
 
 
-kukumo=/usr/local/share/kukumo
+wakamiti=/usr/local/share/wakamiti
 
-echo "About to update the contents of folder $kukumo"
+echo "About to update the contents of folder $wakamiti"
 read -n 1 -s -r -p "Press any key to proceed."
 echo
 
-mkdir $kukumo 2>/dev/null
-mkdir $kukumo/lib 2>/dev/null
+mkdir $wakamiti 2>/dev/null
+mkdir $wakamiti/lib 2>/dev/null
 
-rm -f $kukumo/*  2>/dev/null
-rm -f $kukumo/lib/*
+rm -f $wakamiti/*  2>/dev/null
+rm -f $wakamiti/lib/*
 
-cp -rf kukumo/kukumo-launcher/target/staging/* $kukumo/
+cp -rf wakamiti/wakamiti-launcher/target/staging/* $wakamiti/
 
-cp -f kukumo/kukumo-core/target/kukumo-core*.jar $kukumo/lib/
-cp -f kukumo/kukumo-core/target/dependency/*.jar $kukumo/lib/
-cp -f kukumo/kukumo-api/target/kukumo-api*.jar $kukumo/lib/
-cp -f kukumo/kukumo-api/target/dependency/*.jar $kukumo/lib/
+cp -f wakamiti/wakamiti-core/target/wakamiti-core*.jar $wakamiti/lib/
+cp -f wakamiti/wakamiti-core/target/dependency/*.jar $wakamiti/lib/
+cp -f wakamiti/wakamiti-api/target/wakamiti-api*.jar $wakamiti/lib/
+cp -f wakamiti/wakamiti-api/target/dependency/*.jar $wakamiti/lib/
 
-cp kukumo/kukumo-launcher/target/staging/kukumo /usr/local/bin/kukumo
-chmod +x /usr/local/bin/kukumo
+cp wakamiti/wakamiti-launcher/target/staging/wakamiti /usr/local/bin/wakamiti
+chmod +x /usr/local/bin/wakamiti

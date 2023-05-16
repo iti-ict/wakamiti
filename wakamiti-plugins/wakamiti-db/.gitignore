@@ -1,0 +1,17 @@
+/.project
+.factorypath
+**/.~lock*
+wakamiti.json
+/src/site/markdown/
+/create_db_error.log
+/create_db.log
+/.classpath
+/target/
+/.classpath
+/create_db.log
+/create_db_error.log
+/wakamiti.json
+/wakamiti-db.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs
+/.settings/

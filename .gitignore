@@ -8,7 +8,7 @@
 /**/.attach_pid*
 /tmp/
 *.log
-/kukumo-examples/spring-launcher-example/kukumo/.vscode/settings.json
+/wakamiti-examples/spring-launcher-example/wakamiti/.vscode/settings.json
 .vscode/**
 .flattened-pom.xml
 .mvn/wrapper/maven-wrapper.jar

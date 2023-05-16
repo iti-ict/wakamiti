@@ -1,0 +1,12 @@
+/.project
+.factorypath
+**/.~lock*
+wakamiti.json
+/src/site/markdown/
+/.classpath
+/target/
+/.classpath
+/wakamiti.json
+/wakamiti-amqp.iml
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.core.resources.prefs

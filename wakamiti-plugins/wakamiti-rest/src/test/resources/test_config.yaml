@@ -1,0 +1,24 @@
+wakamiti:
+  rest:
+    baseURL: http://localhost:8080/api
+    contentType: XML
+    httpCodeThreshold: 999
+    timeout: 10000
+    oauth2:
+      url: http://localhost:8080/token
+      clientId: WEB
+      clientSecret: dhg3h89ec8h
+      cached: true
+      parameters:
+        grant_type: password
+        username: pepe
+        password: 1234asdf
+        scope: something
+    config:
+      multipart:
+        subtype: digest
+      redirect:
+        follow: false
+        allowCircular: true
+        rejectRelative: true
+        max: 5

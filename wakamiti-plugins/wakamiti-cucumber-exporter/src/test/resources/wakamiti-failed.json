@@ -1,0 +1,755 @@
+{
+  "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+  "snapshotInstant" : "2022-05-04T11:34:47.216858",
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "startInstant" : "2022-05-04T09:34:45.456512",
+  "finishInstant" : "2022-05-04T09:34:47.196046",
+  "duration" : 983,
+  "errorMessage" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+  "errorTrace" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat es.iti.wakamiti.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat es.iti.wakamiti.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat es.iti.wakamiti.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat es.iti.wakamiti.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat es.iti.wakamiti.api.Wakamiti.executePlan(Wakamiti.java:330)\n\tat es.iti.wakamiti.launcher.WakamitiRunner.run(WakamitiRunner.java:43)\n\tat es.iti.wakamiti.launcher.WakamitiLauncher.main(WakamitiLauncher.java:52)\n",
+  "result" : "FAILED",
+  "testCaseResults" : {
+    "PASSED" : 2,
+    "FAILED" : 1
+  },
+  "childrenResults" : {
+    "FAILED" : 1
+  },
+  "children" : [ {
+    "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+    "snapshotInstant" : "2022-05-04T11:34:47.216858",
+    "nodeType" : "AGGREGATOR",
+    "id" : "#c36fc",
+    "name" : "Operaciones con dueños de mascotas",
+    "keyword" : "Característica",
+    "language" : "es",
+    "source" : "dueños.feature[3,1]",
+    "displayName" : "Característica: Operaciones con dueños de mascotas",
+    "description" : [ "-------------------------------------------------" ],
+    "tags" : [ "definition" ],
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "startInstant" : "2022-05-04T09:34:45.456512",
+    "finishInstant" : "2022-05-04T09:34:47.196046",
+    "duration" : 983,
+    "errorMessage" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+    "errorTrace" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat es.iti.wakamiti.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat es.iti.wakamiti.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat es.iti.wakamiti.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat es.iti.wakamiti.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat es.iti.wakamiti.api.Wakamiti.executePlan(Wakamiti.java:330)\n\tat es.iti.wakamiti.launcher.WakamitiRunner.run(WakamitiRunner.java:43)\n\tat es.iti.wakamiti.launcher.WakamitiLauncher.main(WakamitiLauncher.java:52)\n",
+    "result" : "FAILED",
+    "testCaseResults" : {
+      "PASSED" : 2,
+      "FAILED" : 1
+    },
+    "childrenResults" : {
+      "FAILED" : 1,
+      "PASSED" : 2
+    },
+    "children" : [ {
+      "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+      "snapshotInstant" : "2022-05-04T11:34:47.216858",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-1",
+      "name" : "Se consulta un dueño existente",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "dueños.feature[7,5]",
+      "displayName" : "[ID-1] Escenario: Se consulta un dueño existente",
+      "tags" : [ "definition", "ID-1" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "redefinition.stepMap" : "2-1-2"
+      },
+      "startInstant" : "2022-05-04T09:34:45.456512",
+      "finishInstant" : "2022-05-04T09:34:46.720695",
+      "duration" : 983,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "childrenResults" : {
+        "PASSED" : 4
+      },
+      "children" : [ {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "<preparation>",
+        "displayName" : "<preparation>",
+        "tags" : [ "implementation", "ID-1" ],
+        "properties" : {
+          "gherkinType" : "background",
+          "redefinition.stepMap" : "2-1-2"
+        },
+        "startInstant" : "2022-05-04T09:34:45.456512",
+        "finishInstant" : "2022-05-04T09:34:45.460812",
+        "duration" : 0,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 3
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "keyword" : "Dada",
+          "language" : "es",
+          "source" : "dueños-impl.feature[7,9]",
+          "displayName" : "Dada la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.456512",
+          "finishInstant" : "2022-05-04T09:34:45.456983",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL base http://localhost:9966/petclinic/api",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[8,9]",
+          "displayName" : "Y la URL base http://localhost:9966/petclinic/api",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.460243",
+          "finishInstant" : "2022-05-04T09:34:45.460285",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el servicio REST '/owners'",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[9,9]",
+          "displayName" : "Y el servicio REST '/owners'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.460768",
+          "finishInstant" : "2022-05-04T09:34:45.460812",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "un dueño existente",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "dueños.feature[8,9]",
+        "displayName" : "Dado un dueño existente",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:45.463873",
+        "finishInstant" : "2022-05-04T09:34:45.721488",
+        "duration" : 256,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 2
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "un usuario identificado por '20'",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "dueños-impl.feature[16,9]",
+          "displayName" : "Dado un usuario identificado por '20'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.463873",
+          "finishInstant" : "2022-05-04T09:34:45.463930",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "se ha insertado los siguientes datos en la tabla de BBDD owners:",
+          "keyword" : "Y que",
+          "language" : "es",
+          "source" : "dueños-impl.feature[17,9]",
+          "displayName" : "Y que se ha insertado los siguientes datos en la tabla de BBDD owners:",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.464630",
+          "finishInstant" : "2022-05-04T09:34:45.721488",
+          "duration" : 256,
+          "dataTable" : [ [ "ID", "FIRST_NAME", "LAST_NAME" ], [ "20", "Pepe", "Perez Martinez" ] ],
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "se consultan los datos del dueño",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "dueños.feature[9,9]",
+        "displayName" : "Cuando se consultan los datos del dueño",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:45.722301",
+        "finishInstant" : "2022-05-04T09:34:46.705909",
+        "duration" : 983,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "se consulta el usuario",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "dueños-impl.feature[20,9]",
+          "displayName" : "Cuando se consulta el usuario",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:45.722301",
+          "finishInstant" : "2022-05-04T09:34:46.705909",
+          "duration" : 983,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "se obtienen todos los datos esperados",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "dueños.feature[10,9]",
+        "displayName" : "Entonces se obtienen todos los datos esperados",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:46.706848",
+        "finishInstant" : "2022-05-04T09:34:46.720695",
+        "duration" : 12,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 2
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el código de respuesta HTTP es 200",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "dueños-impl.feature[21,9]",
+          "displayName" : "Entonces el código de respuesta HTTP es 200",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.706848",
+          "finishInstant" : "2022-05-04T09:34:46.707486",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la respuesta es parcialmente:",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[22,9]",
+          "displayName" : "Y la respuesta es parcialmente:",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.707974",
+          "finishInstant" : "2022-05-04T09:34:46.720695",
+          "duration" : 12,
+          "document" : "    {\n        \"id\": 20,\n        \"firstName\": \"Pepe\",\n        \"lastName\": \"Perez Martinez\"\n    }",
+          "documentType" : "json",
+          "result" : "PASSED"
+        } ]
+      } ]
+    }, {
+      "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+      "snapshotInstant" : "2022-05-04T11:34:47.216858",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-2",
+      "name" : "Se crea un nuevo dueño",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "dueños.feature[14,5]",
+      "displayName" : "[ID-2] Escenario: Se crea un nuevo dueño",
+      "tags" : [ "ID-2", "definition" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "redefinition.stepMap" : "2-1-2"
+      },
+      "startInstant" : "2022-05-04T09:34:46.765627",
+      "finishInstant" : "2022-05-04T09:34:46.976945",
+      "duration" : 182,
+      "errorMessage" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+      "errorTrace" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat es.iti.wakamiti.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat es.iti.wakamiti.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat es.iti.wakamiti.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat es.iti.wakamiti.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat es.iti.wakamiti.api.Wakamiti.executePlan(Wakamiti.java:330)\n\tat es.iti.wakamiti.launcher.WakamitiRunner.run(WakamitiRunner.java:43)\n\tat es.iti.wakamiti.launcher.WakamitiLauncher.main(WakamitiLauncher.java:52)\n",
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "FAILED" : 1
+      },
+      "childrenResults" : {
+        "FAILED" : 1,
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "<preparation>",
+        "displayName" : "<preparation>",
+        "tags" : [ "ID-2", "implementation" ],
+        "properties" : {
+          "gherkinType" : "background",
+          "redefinition.stepMap" : "2-1-2"
+        },
+        "startInstant" : "2022-05-04T09:34:46.765627",
+        "finishInstant" : "2022-05-04T09:34:46.770063",
+        "duration" : 0,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 3
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "keyword" : "Dada",
+          "language" : "es",
+          "source" : "dueños-impl.feature[7,9]",
+          "displayName" : "Dada la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.765627",
+          "finishInstant" : "2022-05-04T09:34:46.765855",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL base http://localhost:9966/petclinic/api",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[8,9]",
+          "displayName" : "Y la URL base http://localhost:9966/petclinic/api",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.768227",
+          "finishInstant" : "2022-05-04T09:34:46.768351",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el servicio REST '/owners'",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[9,9]",
+          "displayName" : "Y el servicio REST '/owners'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.770016",
+          "finishInstant" : "2022-05-04T09:34:46.770063",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "un dueño que aún no está dado de alta",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "dueños.feature[15,9]",
+        "displayName" : "Dado un dueño que aún no está dado de alta",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:46.771990",
+        "finishInstant" : "2022-05-04T09:34:46.789434",
+        "duration" : 15,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 2
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "Al finalizar, se ejecuta el siguiente script SQL:",
+          "keyword" : "*",
+          "language" : "es",
+          "source" : "dueños-impl.feature[34,9]",
+          "displayName" : "* Al finalizar, se ejecuta el siguiente script SQL:",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.771990",
+          "finishInstant" : "2022-05-04T09:34:46.772994",
+          "duration" : 1,
+          "document" : "   delete from owners where first_name = 'Pascual'",
+          "documentType" : "sql",
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "un dueño con first_name = 'Pascual' no existe en la tabla de BBDD owners",
+          "keyword" : "Dado que",
+          "language" : "es",
+          "source" : "dueños-impl.feature[38,9]",
+          "displayName" : "Dado que un dueño con first_name = 'Pascual' no existe en la tabla de BBDD owners",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.773969",
+          "finishInstant" : "2022-05-04T09:34:46.789434",
+          "duration" : 15,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "se da de alta el dueño",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "dueños.feature[16,9]",
+        "displayName" : "Cuando se da de alta el dueño",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:46.791161",
+        "finishInstant" : "2022-05-04T09:34:46.974023",
+        "duration" : 182,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "se crea el dueño con los siguientes datos:",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "dueños-impl.feature[39,9]",
+          "displayName" : "Cuando se crea el dueño con los siguientes datos:",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.791161",
+          "finishInstant" : "2022-05-04T09:34:46.974023",
+          "duration" : 182,
+          "document" : "    {\n      \"firstName\": \"Pascual\",\n      \"lastName\": \"Iniesta\",\n      \"telephone\": \"6085551023\",\n      \"address\": \"C/ Piruleta\",\n      \"city\": \"Valencia\"\n   }",
+          "documentType" : "json",
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "sus datos quedan registrados en el sistema",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "dueños.feature[17,9]",
+        "displayName" : "Entonces sus datos quedan registrados en el sistema",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:46.975324",
+        "finishInstant" : "2022-05-04T09:34:46.976945",
+        "duration" : 1,
+        "errorMessage" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+        "errorTrace" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat es.iti.wakamiti.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat es.iti.wakamiti.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat es.iti.wakamiti.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat es.iti.wakamiti.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat es.iti.wakamiti.api.Wakamiti.executePlan(Wakamiti.java:330)\n\tat es.iti.wakamiti.launcher.WakamitiRunner.run(WakamitiRunner.java:43)\n\tat es.iti.wakamiti.launcher.WakamitiLauncher.main(WakamitiLauncher.java:52)\n",
+        "result" : "FAILED",
+        "childrenResults" : {
+          "FAILED" : 1,
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el código de respuesta HTTP es 201",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "dueños-impl.feature[49,9]",
+          "displayName" : "Entonces el código de respuesta HTTP es 201",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.975324",
+          "finishInstant" : "2022-05-04T09:34:46.976380",
+          "duration" : 1,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el siguiente registro existe en la tabla de BBDD owners:",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[50,9]",
+          "displayName" : "Y el siguiente registro existe en la tabla de BBDD owners:",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "2-1-2"
+          },
+          "startInstant" : "2022-05-04T09:34:46.976945",
+          "finishInstant" : "2022-05-04T09:34:46.976945",
+          "duration" : 0,
+          "dataTable" : [ [ "first_name", "last_name", "telephone", "address", "city" ], [ "Pascual", "Iniesta", "6085551023", "C/ Piruleta", "Valencio" ] ],
+          "errorMessage" : "Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found",
+          "errorTrace" : "java.lang.AssertionError: Expected row {first_name=Pascual, last_name=Iniesta, telephone=6085551023, address=C/ Piruleta, city=Valencio} existed in table owners but was not found\n\tat es.iti.wakamiti.database.DatabaseHelper.assertRowExists(DatabaseHelper.java:642)\n\tat es.iti.wakamiti.database.DatabaseHelper.assertDataSetExists(DatabaseHelper.java:622)\n\tat es.iti.wakamiti.database.DatabaseStepContributor.assertDataTableExists(DatabaseStepContributor.java:346)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:379)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:117)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:209)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:82)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$1(PlanNodeRunner.java:144)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:144)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:126)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)\n\tat java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.reduce(ReferencePipeline.java:558)\n\tat java.base/java.util.stream.ReferencePipeline.max(ReferencePipeline.java:594)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runChildren(PlanNodeRunner.java:137)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:121)\n\tat es.iti.wakamiti.core.runner.PlanRunner.run(PlanRunner.java:60)\n\tat es.iti.wakamiti.api.Wakamiti.executePlan(Wakamiti.java:330)\n\tat es.iti.wakamiti.launcher.WakamitiRunner.run(WakamitiRunner.java:43)\n\tat es.iti.wakamiti.launcher.WakamitiLauncher.main(WakamitiLauncher.java:52)\n",
+          "result" : "FAILED"
+        } ]
+      } ]
+    }, {
+      "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+      "snapshotInstant" : "2022-05-04T11:34:47.216858",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-3",
+      "name" : "Se elimina un dueño",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "dueños.feature[21,5]",
+      "displayName" : "[ID-3] Escenario: Se elimina un dueño",
+      "tags" : [ "ID-3", "definition" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "redefinition.stepMap" : "1-1-1"
+      },
+      "startInstant" : "2022-05-04T09:34:47.099543",
+      "finishInstant" : "2022-05-04T09:34:47.196046",
+      "duration" : 85,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "childrenResults" : {
+        "PASSED" : 4
+      },
+      "children" : [ {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "<preparation>",
+        "displayName" : "<preparation>",
+        "tags" : [ "ID-3", "implementation" ],
+        "properties" : {
+          "gherkinType" : "background",
+          "redefinition.stepMap" : "1-1-1"
+        },
+        "startInstant" : "2022-05-04T09:34:47.099543",
+        "finishInstant" : "2022-05-04T09:34:47.102963",
+        "duration" : 0,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 3
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "keyword" : "Dada",
+          "language" : "es",
+          "source" : "dueños-impl.feature[7,9]",
+          "displayName" : "Dada la URL de conexión a BBDD 'jdbc:mysql://localhost:3309/petclinic?useUnicode=true' usando el usuario 'root' y la contraseña 'petclinic'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.099543",
+          "finishInstant" : "2022-05-04T09:34:47.099702",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "la URL base http://localhost:9966/petclinic/api",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[8,9]",
+          "displayName" : "Y la URL base http://localhost:9966/petclinic/api",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.101126",
+          "finishInstant" : "2022-05-04T09:34:47.101306",
+          "duration" : 0,
+          "result" : "PASSED"
+        }, {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el servicio REST '/owners'",
+          "keyword" : "Y",
+          "language" : "es",
+          "source" : "dueños-impl.feature[9,9]",
+          "displayName" : "Y el servicio REST '/owners'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.102855",
+          "finishInstant" : "2022-05-04T09:34:47.102963",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "un dueño existente",
+        "keyword" : "Dado",
+        "language" : "es",
+        "source" : "dueños.feature[22,6]",
+        "displayName" : "Dado un dueño existente",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:47.105031",
+        "finishInstant" : "2022-05-04T09:34:47.105080",
+        "duration" : 0,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "un usuario identificado por '30'",
+          "keyword" : "Dado",
+          "language" : "es",
+          "source" : "dueños-impl.feature[61,9]",
+          "displayName" : "Dado un usuario identificado por '30'",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.105031",
+          "finishInstant" : "2022-05-04T09:34:47.105080",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "se elimina el dueño",
+        "keyword" : "Cuando",
+        "language" : "es",
+        "source" : "dueños.feature[23,6]",
+        "displayName" : "Cuando se elimina el dueño",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:47.106324",
+        "finishInstant" : "2022-05-04T09:34:47.191965",
+        "duration" : 85,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "se elimina el usuario",
+          "keyword" : "Cuando",
+          "language" : "es",
+          "source" : "dueños-impl.feature[62,9]",
+          "displayName" : "Cuando se elimina el usuario",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.106324",
+          "finishInstant" : "2022-05-04T09:34:47.191965",
+          "duration" : 85,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+        "snapshotInstant" : "2022-05-04T11:34:47.216858",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "los datos ya no están en el sistema",
+        "keyword" : "Entonces",
+        "language" : "es",
+        "source" : "dueños.feature[24,6]",
+        "displayName" : "Entonces los datos ya no están en el sistema",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2022-05-04T09:34:47.194871",
+        "finishInstant" : "2022-05-04T09:34:47.196046",
+        "duration" : 1,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "2f7ba677-276f-4d57-bb18-83fbf95af048",
+          "snapshotInstant" : "2022-05-04T11:34:47.216858",
+          "nodeType" : "STEP",
+          "name" : "el código de respuesta HTTP es 404",
+          "keyword" : "Entonces",
+          "language" : "es",
+          "source" : "dueños-impl.feature[63,9]",
+          "displayName" : "Entonces el código de respuesta HTTP es 404",
+          "properties" : {
+            "gherkinType" : "step",
+            "redefinition.stepMap" : "1-1-1"
+          },
+          "startInstant" : "2022-05-04T09:34:47.194871",
+          "finishInstant" : "2022-05-04T09:34:47.196046",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      } ]
+    } ]
+  } ]
+}

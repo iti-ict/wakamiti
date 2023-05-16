@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3a6bbc45-4630-4e04-9651-b351a5aef8ab" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/simple-it/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/simple-it/verify.groovy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/iti/kukumo/FilesUploader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/iti/kukumo/MyMojo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/es/iti/kukumo/UploadConfigContributor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-bom/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-bom/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-docker/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-docker/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-examples/spring-junit-example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-examples/spring-junit-example/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-examples/spring-launcher-example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-examples/spring-launcher-example/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-examples/spring-verify-example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-examples/spring-verify-example/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-amqp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-amqp/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-cucumber-exporter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-cucumber-exporter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-db/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-db/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-groovy/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-groovy/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-html-report/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-html-report/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-io/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-io/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-rest/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-rest/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kukumo-spring/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kukumo-spring/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-server-quarkus/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-server-quarkus/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-tools/distribution-maven-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-tools/distribution-maven-plugin/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-tools/gherkin-parser/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-tools/gherkin-parser/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-tools/jext-spring/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-tools/jext-spring/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo-tools/jext/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo-tools/jext/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo/kukumo-api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo/kukumo-api/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo/kukumo-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo/kukumo-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo/kukumo-launcher/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo/kukumo-launcher/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo/kukumo-lsp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo/kukumo-lsp/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../kukumo/kukumo-maven-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../kukumo/kukumo-maven-plugin/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/Users/amartinezgil/IdeaProjects/wakamiti",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>
