@@ -15,9 +15,15 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
       - name: Set up JDK 11
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: '11'
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE      
 
       - name: Cache Maven packages
         uses: actions/cache@v1
@@ -36,3 +42,11 @@ jobs:
       - name: Publish Docker tagged version and latest version
         run: ./mvnw -B deploy -pl kukumo-docker -P release -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
+      - name: Publish package Maven Central Repository
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+            MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PWD }}
+            MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}     
+        run: mvn -P sonatype deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -DskipTests=true -e
