@@ -29,6 +29,11 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
     }
 
     @Override
+    public void publishEvent(String eventType, Object data) {
+        Wakamiti.instance().publishEvent(eventType,data);
+    }
+
+    @Override
     public String version() {
         return getClass().getPackage().getImplementationVersion();
     }

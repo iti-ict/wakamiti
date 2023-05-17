@@ -5,15 +5,18 @@ import imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 
-@Extension(provider =  "es.iti.wakamiti", name = "file-uploader-configurator", extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
-public class FilesUploaderConfigurator implements ConfigContributor<FilesUploader> {
+import java.util.Arrays;
 
-    private static final String ENABLE = "fileUploader.enable";
-    private static final String HOST = "fileUploader.host";
-    private static final String USERNAME = "fileUploader.credentials.username";
-    private static final String PASSWORD = "fileUploader.credentials.password";
-    private static final String DESTINATION_DIR = "fileUploader.destinationDir";
-    private static final String PROTOCOL = "fileUploader.protocol";
+@Extension(provider =  "es.iti.wakamiti", name = "file-uploader-configurator", extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
+
+    private static final String PREFIX = "fileUploader";
+    private static final String ENABLE = "enable";
+    private static final String HOST = "host";
+    private static final String USERNAME = "credentials.username";
+    private static final String PASSWORD = "credentials.password";
+    private static final String DESTINATION_DIR = "destinationDir";
+    private static final String PROTOCOL = "protocol";
 
 
     @Override
@@ -27,24 +30,29 @@ public class FilesUploaderConfigurator implements ConfigContributor<FilesUploade
 
     @Override
     public boolean accepts(Object contributor) {
-        return contributor instanceof FilesUploader;
+        return contributor instanceof AbstractFilesUploader;
     }
 
 
     @Override
-    public Configurer<FilesUploader> configurer() {
+    public Configurer<AbstractFilesUploader> configurer() {
         return this::configure;
     }
 
 
-    private void configure(FilesUploader filesUploader, Configuration configuration) {
-        configuration.get(ENABLE,Boolean.class).ifPresent(filesUploader::setEnable);
-        configuration.get(HOST,String.class).ifPresent(filesUploader::setHost);
-        configuration.get(USERNAME,String.class).ifPresent(filesUploader::setUsername);
-        configuration.get(PASSWORD,String.class).ifPresent(filesUploader::setPassword);
-        configuration.get(DESTINATION_DIR,String.class).ifPresent(filesUploader::setRemotePath);
-        configuration.get(PROTOCOL,String.class).ifPresent(filesUploader::setProtocol);
+    private void configure(AbstractFilesUploader filesUploader, Configuration configuration) {
+        Configuration global = configuration.inner(PREFIX);
+        Configuration spec = global.inner(filesUploader.category());
+        for (Configuration conf : Arrays.asList(global,spec)) {
+            conf.get(ENABLE, Boolean.class).ifPresent(filesUploader::setEnable);
+            conf.get(HOST, String.class).ifPresent(filesUploader::setHost);
+            conf.get(USERNAME, String.class).ifPresent(filesUploader::setUsername);
+            conf.get(PASSWORD, String.class).ifPresent(filesUploader::setPassword);
+            conf.get(DESTINATION_DIR, String.class).ifPresent(filesUploader::setRemotePath);
+            conf.get(PROTOCOL, String.class).ifPresent(filesUploader::setProtocol);
+        }
     }
+
 
 
 }

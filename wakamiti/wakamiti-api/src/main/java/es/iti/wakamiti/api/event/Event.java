@@ -25,16 +25,19 @@ public class Event {
     public static final String AFTER_RUN_BACKEND_STEP = "AFTER_RUN_BACKEND_STEP";
     public static final String BEFORE_WRITE_OUTPUT_FILES = "BEFORE_WRITE_OUTPUT_FILES";
     public static final String AFTER_WRITE_OUTPUT_FILES = "AFTER_WRITE_OUTPUT_FILES";
-    public static final String OUTPUT_FILE_WRITTEN = "OUTPUT_FILE_WRITTEN";
-    public static final String OUTPUT_FILE_PER_TEST_CASE_WRITTEN = "OUTPUT_FILE_PER_TEST_CASE_WRITTEN";
+    public static final String STANDARD_OUTPUT_FILE_WRITTEN = "STANDARD_OUTPUT_FILE_WRITTEN";
+    public static final String TEST_CASE_OUTPUT_FILE_WRITTEN = "TEST_CASE_OUTPUT_FILE_WRITTEN";
+    public static final String REPORT_OUTPUT_FILE_WRITTEN = "REPORT_OUTPUT_FILE_WRITTEN";
 
     private final String type;
     private final Object data;
+    private final Instant instant;
 
 
     public Event(String type, Instant instant, Object data) {
         this.type = type;
         this.data = data;
+        this.instant = instant;
     }
 
 
@@ -46,4 +49,10 @@ public class Event {
     public Object data() {
         return data;
     }
+
+
+    public Instant instant() {
+        return instant;
+    }
+
 }

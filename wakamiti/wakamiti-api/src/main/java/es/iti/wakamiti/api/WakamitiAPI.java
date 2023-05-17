@@ -17,5 +17,6 @@ public interface WakamitiAPI {
     ExtensionManager extensionManager();
     PlanSerializer planSerializer();
     ResourceLoader resourceLoader();
+    void publishEvent(String eventType, Object data);
     String version();
 }

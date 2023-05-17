@@ -1,7 +1,9 @@
-import es.iti.wakamiti.fileuploader.FilesUploader;
+import es.iti.wakamiti.fileuploader.ReportOutputFilesUploader;
+import es.iti.wakamiti.fileuploader.StandardOutputFilesUploader;
 import es.iti.wakamiti.fileuploader.FilesUploaderConfigurator;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.fileuploader.TestCaseOutputFilesUploader;
 
 module es.iti.wakamiti.file.uploader {
 
@@ -9,6 +11,6 @@ module es.iti.wakamiti.file.uploader {
     requires org.apache.commons.net;
 
     provides ConfigContributor with FilesUploaderConfigurator;
-    provides EventObserver with FilesUploader;
+    provides EventObserver with StandardOutputFilesUploader, TestCaseOutputFilesUploader, ReportOutputFilesUploader;
 
 }

@@ -1,11 +1,10 @@
 package es.iti.wakamiti.fileuploader;
 
-import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
-import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
@@ -15,11 +14,13 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Extension(provider =  "es.iti.wakamiti", name = "files-uploader")
-public class FilesUploader implements EventObserver {
+public abstract class AbstractFilesUploader implements EventObserver {
 
 
-    private final Logger logger = WakamitiLogger.forClass(FilesUploader.class);
+    private final Logger logger = WakamitiLogger.forClass(AbstractFilesUploader.class);
+
+    private final String eventType;
+    private final String category;
 
     private boolean enabled;
     private String host;
@@ -28,8 +29,13 @@ public class FilesUploader implements EventObserver {
     private String remotePath;
     private String protocol;
 
-
     private FTPClient ftpClient;
+
+
+    protected AbstractFilesUploader(String eventType, String category) {
+        this.eventType = eventType;
+        this.category = category;
+    }
 
 
     public void setEnable(boolean enabled) {
@@ -56,9 +62,14 @@ public class FilesUploader implements EventObserver {
         this.protocol = protocol;
     }
 
+
+    public String category() {
+        return this.category;
+    }
+
+
     @Override
     public void eventReceived(Event event) {
-
         if (!enabled) {
             return;
         }
@@ -66,7 +77,7 @@ public class FilesUploader implements EventObserver {
         try {
             if (Event.BEFORE_WRITE_OUTPUT_FILES.equals(event.type())) {
                 openFtpConnection();
-            } else if (Event.OUTPUT_FILE_PER_TEST_CASE_WRITTEN.equals(event.type())) {
+            } else if (this.eventType.equals(event.type())) {
                 uploadFile((Path)event.data());
             } else if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
                 closeFtpConnection();
@@ -83,6 +94,7 @@ public class FilesUploader implements EventObserver {
         if (ftpClient != null && ftpClient.isConnected()) {
             closeFtpConnection();
         }
+        logger.info("Opening FTP connection to {}", host);
         if ("ftp".equals(protocol)) {
             ftpClient = new FTPClient();
         } else if ("ftps".equals(protocol)) {
@@ -105,6 +117,7 @@ public class FilesUploader implements EventObserver {
             return;
         }
         if (ftpClient.isConnected()) {
+            logger.info("Closing FTP connection to {}", host);
             ftpClient.disconnect();
         }
         ftpClient = null;
@@ -113,6 +126,7 @@ public class FilesUploader implements EventObserver {
 
     private void uploadFile(Path fileToSend) throws IOException {
         Path dirPath = PathUtil.replaceTemporalPlaceholders(Path.of(remotePath));
+        logger.info("Uploading file {uri} to {uri}", fileToSend, host+"/"+dirPath);
         createDestinationDirectory(dirPath);
         ftpClient.changeWorkingDirectory(dirPath.toString());
         String fileName = fileToSend.toFile().getName();
@@ -136,8 +150,9 @@ public class FilesUploader implements EventObserver {
     public boolean acceptType(String eventType) {
         return Event.BEFORE_WRITE_OUTPUT_FILES.equals(eventType) ||
                 Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType) ||
-                Event.OUTPUT_FILE_PER_TEST_CASE_WRITTEN.equals(eventType);
+                this.eventType.equals(eventType);
     }
+
 
 
 }
