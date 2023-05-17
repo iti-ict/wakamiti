@@ -6,6 +6,7 @@
 package es.iti.wakamiti.api.extensions;
 
 import es.iti.commons.jext.Extension;
+import es.iti.commons.jext.ExtensionPoint;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,13 +31,17 @@ public class ContributorTest {
     }
 
 
-    class TestContributor implements Contributor {}
+    @ExtensionPoint
+    interface MockContributor extends Contributor {}
+
+
+    class TestContributor implements MockContributor {}
     @Extension(provider = "wakamiti-moreText", name = "test-contrib-moreText")
-    class TestContributorExt1 implements Contributor {}
+    class TestContributorExt1 implements MockContributor {}
     @Extension(provider = "es.iti_somethingElse", name = "test_somethingElse")
-    class TestContributorExt2 implements Contributor { }
+    class TestContributorExt2 implements MockContributor { }
     @Extension(provider = "es.iti_someText", name = "test_aCapText")
-    class TestContributorExt3 implements Contributor {}
+    class TestContributorExt3 implements MockContributor {}
 
     class TestStepContributor implements StepContributor {}
     @Extension(provider = "wakamiti-moreText", name = "test-contrib-moreText")

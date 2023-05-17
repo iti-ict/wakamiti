@@ -7,6 +7,8 @@ package es.iti.wakamiti.report.html;
 
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.util.PathUtil;
 import freemarker.template.*;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
@@ -20,6 +22,7 @@ import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,10 +87,10 @@ public class HtmlReportGenerator implements Reporter {
     @SuppressWarnings("unchecked")
     public void report(PlanNodeSnapshot rootNode) {
         try {
-            File output = new File(Objects.requireNonNull(
-                    this.outputFile,
-                    "Output file not configured"
-            ));
+            Path output = PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
+                this.outputFile,
+                "Output file not configured"
+            )));
             parameters.put("globalStyle", readStyles());
             parameters.put("globalScript", readJavascript());
             parameters.put("plan", rootNode);
@@ -97,14 +100,15 @@ public class HtmlReportGenerator implements Reporter {
             parameters.put("sum", new SumAllMethod());
             parameters.put("countSteps", new CountStepsMethod());
 
-            File parent = output.getCanonicalFile().getParentFile();
+            File parent = output.toFile().getCanonicalFile().getParentFile();
             if (!parent.exists()) {
                 parent.mkdirs();
             }
 
-            try (var writer = new FileWriter(output, StandardCharsets.UTF_8)) {
-                template("report.ftl")
-                        .process(parameters, writer);
+            try (var writer = new FileWriter(output.toFile(), StandardCharsets.UTF_8)) {
+                template("report.ftl").process(parameters, writer);
+                WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN,output);
+
             }
         } catch (IOException | TemplateException e) {
             LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);

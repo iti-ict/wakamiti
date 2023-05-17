@@ -416,7 +416,7 @@ public class Wakamiti {
             planSerializer().write(writer, plan);
             LOGGER.info("Generated result output file {uri}", path);
         }
-        publishEvent(Event.OUTPUT_FILE_WRITTEN, path);
+        publishEvent(Event.STANDARD_OUTPUT_FILE_WRITTEN, path);
 
         return path;
     }
@@ -439,7 +439,7 @@ public class Wakamiti {
                 planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
                 LOGGER.info("Generated result output file {uri}", testCasePath);
             }
-            publishEvent(Event.OUTPUT_FILE_PER_TEST_CASE_WRITTEN, testCasePath);
+            publishEvent(Event.TEST_CASE_OUTPUT_FILE_WRITTEN, testCasePath);
         }
     }
 
@@ -492,6 +492,7 @@ public class Wakamiti {
     }
 
 
+
     public void generateReports(Configuration configuration, PlanNodeSnapshot[] plans) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
@@ -499,6 +500,7 @@ public class Wakamiti {
         }
         LOGGER.info(IMPORTANT, "Generating reports...");
         PlanNodeSnapshot rootNode = PlanNodeSnapshot.group(plans);
+        publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES,null);
         for (Reporter reporter : reporters) {
             try {
                 if (LOGGER.isDebugEnabled()) {
@@ -518,6 +520,7 @@ public class Wakamiti {
                 );
             }
         }
+        publishEvent(Event.AFTER_WRITE_OUTPUT_FILES,null);
 
     }
 
