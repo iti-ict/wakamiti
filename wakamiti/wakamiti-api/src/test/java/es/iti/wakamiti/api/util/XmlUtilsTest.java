@@ -31,7 +31,9 @@ import static org.mockito.Mockito.when;
 public class XmlUtilsTest {
 
     private final String xml = "<item><name>Arnold</name><age>47</age></item>";
-    private final String xml_error = "<item><nameArnold</name><age>47</age></item>";
+    private final String xmlError = "<item><nameArnold</name><age>47</age></item>";
+
+    private final String xmlList = "<list><item><name>Arnold</name><age>47</age></item><item><name>Susan</name><age>32</age></item></list>";
 
     @Test
     public void testXmlWhenStringWithSuccess() {
@@ -43,7 +45,7 @@ public class XmlUtilsTest {
 
     @Test(expected = XmlRuntimeException.class)
     public void testXmlWhenStringWithError() {
-        XmlUtils.xml(xml_error);
+        XmlUtils.xml(xmlError);
     }
 
     @Test
@@ -56,7 +58,7 @@ public class XmlUtilsTest {
 
     @Test(expected = XmlRuntimeException.class)
     public void testXmlWhenStreamWithError() {
-        XmlUtils.xml(new ByteArrayInputStream(xml_error.getBytes()));
+        XmlUtils.xml(new ByteArrayInputStream(xmlError.getBytes()));
     }
 
     @Test
@@ -144,18 +146,9 @@ public class XmlUtilsTest {
 
         result = XmlUtils.readStringValue(object, "//body/@id");
         assertThat(result).isEmpty();
+
+        result = XmlUtils.readStringValue(XmlUtils.xml(xmlList), "item.find{ it.name == 'Susan' }.age");
+        assertThat(result).isEqualTo("32");
     }
 
-    @Test(expected = XmlRuntimeException.class)
-    public void testReadStringValueWithError() throws XmlException, IOException {
-        XmlObject object = XmlUtils.xml("response",
-                Map.of(
-                        "statusCode", "200",
-                        "body", XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())),
-                        "headers", Map.of("keep-alive", "true", "content-type", "application/json"),
-                        "other", XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode()
-                ));
-
-        XmlUtils.readStringValue(object, "function(abc)");
-    }
 }

@@ -26,6 +26,7 @@ module es.iti.wakamiti.api {
     requires json.path;
     requires commons.beanutils;
     requires org.apache.commons.lang3;
+    requires org.codehaus.groovy;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;
