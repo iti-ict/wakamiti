@@ -32,12 +32,48 @@ import java.util.Map;
 @Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigurable {
 
-    @Parameter
+    /**
+     * Skip the plugin execution.
+     *
+     * <pre>{@code
+     *   <configuration>
+     *     <skipTests>true</skipTests>
+     *   </configuration>
+     * }</pre>
+     *
+     * @parameter default-value="false"
+     */
+    @Parameter(defaultValue = "false")
     public boolean skipTests;
 
+    /**
+     * Sets wakamiti properties {@link Map}.
+     * Eg:
+     *
+     * <pre>{@code
+     *   <configuration>
+     *     <properties>
+     *         <key>value</key>
+     *     </properties>
+     *   </configuration>
+     * }</pre>
+     *
+     * @parameter alias="properties"
+     */
     @Parameter
     public Map<String, String> properties = new LinkedHashMap<>();
 
+    /**
+     * Sets wakamiti configuration files
+     *
+     * <pre>{@code
+     *   <configuration>
+     *     <configurationFiles>file1,file2</configurationFiles>
+     *   </configuration>
+     * }</pre>
+     *
+     * @parameter alias="configurationFiles"
+     */
     @Parameter
     public List<String> configurationFiles = new LinkedList<>();
 
