@@ -8,6 +8,7 @@ package es.iti.wakamiti.api.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.PathNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,9 @@ public class JsonUtilsTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final String json = "{\"name\":\"Arnold\",\"age\":47}";
-    private final String json_error = "{\"name:\"Arnold\",\"age\":47}";
+    private final String jsonError = "{\"name:\"Arnold\",\"age\":47}";
+
+    private final String jsonList = "{ \"list\": [{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]}";
 
     @Test
     public void testJsonWhenStringWithSuccess() {
@@ -44,7 +47,7 @@ public class JsonUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void testJsonWhenStringWithError() {
-        JsonUtils.json(json_error);
+        JsonUtils.json(jsonError);
     }
 
     @Test
@@ -57,7 +60,7 @@ public class JsonUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void testJsonWhenStreamWithError() {
-        JsonUtils.json(new ByteArrayInputStream(json_error.getBytes()));
+        JsonUtils.json(new ByteArrayInputStream(jsonError.getBytes()));
     }
 
     @Test
@@ -123,6 +126,9 @@ public class JsonUtilsTest {
 
         result = JsonUtils.readStringValue(obj, "$..*.length()");
         assertThat(result).isEqualTo("6");
+
+        result = JsonUtils.readStringValue(JsonUtils.json(jsonList), "list.find{ it.name == 'Susan' }.age");
+        assertThat(result).isEqualTo("32");
     }
 
     @Test(expected = PathNotFoundException.class)
