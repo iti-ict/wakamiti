@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,11 +51,19 @@ public class JsonUtils {
     }
 
     public static String readStringValue(JsonNode obj, String expression) throws JsonProcessingException {
-        JsonNode result = MAPPER.readTree(JsonPath.using(CONFIG).parse(obj).read(expression).toString());
-        if (result.getNodeType() == JsonNodeType.STRING) {
-            return result.textValue();
+        if (expression.startsWith("$")) {
+            JsonNode result = MAPPER.readTree(JsonPath.using(CONFIG).parse(obj).read(expression).toString());
+            if (result.getNodeType() == JsonNodeType.STRING) {
+                return result.textValue();
+            }
+            return result.toString();
+        } else {
+            Binding binding = new Binding();
+            binding.setVariable("obj", obj.toString());
+            binding.setVariable("exp", expression);
+            GroovyShell shell = new GroovyShell(binding);
+            return shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), 'x.' + exp)").toString();
         }
-        return result.toString();
     }
 
 }

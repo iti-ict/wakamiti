@@ -5,6 +5,8 @@
  */
 package es.iti.wakamiti.api.util;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlRuntimeException;
@@ -103,9 +105,14 @@ public class XmlUtils {
                 }
             }
         } catch (XPathExpressionException e) {
-            throw new XmlRuntimeException(e);
+            Binding binding = new Binding();
+            binding.setVariable("obj", obj.toString());
+            binding.setVariable("exp", expression);
+            GroovyShell shell = new GroovyShell(binding);
+            return shell.evaluate("Eval.x(new groovy.xml.XmlSlurper().parseText(obj), 'x.' + exp)").toString();
         }
         return result.size() > 1 ? result.toString() : result.stream().findFirst().orElse("");
+
     }
 
 }
