@@ -51,4 +51,5 @@ jobs:
             MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
             MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PWD }}
             MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}     
-        run: mvn -P sonatype deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -DskipTests=true -e
+        run: mvn -P sonatype deploy -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -DskipTests=true -e -pl -wakamiti-examples/spring-junit-example,-wakamiti-examples/spring-launcher-example,-wakamiti-examples/spring-verify-example
+
