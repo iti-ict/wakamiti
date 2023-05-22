@@ -25,18 +25,19 @@
 
         <!-- internal dependencies -->
         <gherkin-parser.version>1.0.2</gherkin-parser.version>
-        <wakamiti-api.version>1.5.1</wakamiti-api.version>
+        <wakamiti-api.version>2.0.0</wakamiti-api.version>
         <wakamiti-core.version>${revision}</wakamiti-core.version> <!-- must be the same as revision -->
         <wakamiti-lsp.version>${revision}</wakamiti-lsp.version>   <!-- must be the same as revision -->
-        <wakamiti-rest.version>1.6.2</wakamiti-rest.version>
-        <wakamiti-groovy.version>1.0.0</wakamiti-groovy.version>
-        <wakamiti-db.version>1.4.1</wakamiti-db.version>
-        <wakamiti-amqp.version>1.4.1</wakamiti-amqp.version>
-        <wakamiti-io.version>1.4.1</wakamiti-io.version>
-        <wakamiti-html-report.version>1.5.1</wakamiti-html-report.version>
-        <wakamiti-cucumber-exporter.version>1.0.0</wakamiti-cucumber-exporter.version>
-        <wakamiti-spring.version>1.4.0</wakamiti-spring.version>
-        <wakamiti-appium.version>1.0.0</wakamiti-appium.version>
+        <wakamiti-rest.version>2.0.0</wakamiti-rest.version>
+        <wakamiti-groovy.version>2.0.0</wakamiti-groovy.version>
+        <wakamiti-db.version>2.0.0</wakamiti-db.version>
+        <wakamiti-amqp.version>2.0.0</wakamiti-amqp.version>
+        <wakamiti-io.version>2.0.0</wakamiti-io.version>
+        <wakamiti-html-report.version>2.0.0</wakamiti-html-report.version>
+        <wakamiti-cucumber-exporter.version>2.0.0</wakamiti-cucumber-exporter.version>
+        <wakamiti-spring.version>2.0.0</wakamiti-spring.version>
+        <wakamiti-appium.version>2.0.0</wakamiti-appium.version>
+        <wakamiti-fileuploader.version>2.0.0</wakamiti-fileuploader.version>
         <jext.version>1.0.0</jext.version>
 
         <!-- external dependencies -->
@@ -178,6 +179,11 @@
                 <groupId>es.iti.wakamiti</groupId>
                 <artifactId>wakamiti-appium</artifactId>
                 <version>${wakamiti-appium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>es.iti.wakamiti</groupId>
+                <artifactId>wakamiti-file-uploader</artifactId>
+                <version>${wakamiti-fileuploader.version}</version>
             </dependency>
 
             <!-- external dependencies -->

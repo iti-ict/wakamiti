@@ -71,7 +71,7 @@
 
     <properties>
         <!-- wakamiti version -->
-        <revision>1.7.0</revision>
+        <revision>2.0.0-alpha</revision>
 
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
