@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'kukumo-doc/**'
+      - 'wakamiti-doc/**'
 
 jobs:
   build:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Generate site
         run: |
-          cd kukumo-doc
+          cd wakamiti-doc
           npm i
           npm run build
 
@@ -64,11 +64,11 @@ jobs:
         env:
           REPO: self
           BRANCH: docs
-          FOLDER: kukumo-doc/dist
+          FOLDER: wakamiti-doc/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
 
 
       - name: Publish Docker Alpha version
-        run: ./mvnw -B deploy -pl kukumo-docker -P alpha -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
+        run: ./mvnw -B deploy -pl wakamiti-docker -P alpha -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 

@@ -11,45 +11,46 @@
         have not to be align with the defined here. The version number will be always
         RELEASE regardless the versions of the children. -->
 
-    <groupId>es.iti.kukumo</groupId>
-    <artifactId>kukumo-project</artifactId>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-project</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
 
-    <name>Kukumo</name>
-    <description>Project containing Kukumo as well as other useful tools</description>
+    <name>Wakamiti</name>
+    <description>Project containing Wakamiti as well as other useful tools</description>
 
     <modules>
-        <module>kukumo-bom</module>
+        <module>wakamiti-bom</module>
         <!-- tools -->
-        <module>kukumo-tools/jext</module>
-        <module>kukumo-tools/jext-spring</module>
-        <module>kukumo-tools/gherkin-parser</module>
-        <module>kukumo-tools/distribution-maven-plugin</module>
-        <!-- kukumo -->
-        <module>kukumo/kukumo-api</module>
-        <module>kukumo/kukumo-core</module>
-        <module>kukumo/kukumo-lsp</module>
-        <module>kukumo/kukumo-maven-plugin</module>
-        <module>kukumo/kukumo-launcher</module>
+        <module>wakamiti-tools/jext</module>
+        <module>wakamiti-tools/jext-spring</module>
+        <module>wakamiti-tools/gherkin-parser</module>
+        <module>wakamiti-tools/distribution-maven-plugin</module>
+        <!-- wakamiti -->
+        <module>wakamiti/wakamiti-api</module>
+        <module>wakamiti/wakamiti-core</module>
+        <module>wakamiti/wakamiti-lsp</module>
+        <module>wakamiti/wakamiti-maven-plugin</module>
+        <module>wakamiti/wakamiti-launcher</module>
         <!-- plugins -->
-        <module>kukumo-plugins/kukumo-rest</module>
-        <module>kukumo-plugins/kukumo-html-report</module>
-        <module>kukumo-plugins/kukumo-db</module>
-        <module>kukumo-plugins/kukumo-spring</module>
-        <module>kukumo-plugins/kukumo-io</module>
-        <module>kukumo-plugins/kukumo-amqp</module>
-        <module>kukumo-plugins/kukumo-cucumber-exporter</module>
-        <module>kukumo-plugins/kukumo-groovy</module>
-        <module>kukumo-plugins/kukumo-appium</module>
-
+        <module>wakamiti-plugins/wakamiti-rest</module>
+        <module>wakamiti-plugins/wakamiti-html-report</module>
+        <module>wakamiti-plugins/wakamiti-db</module>
+        <module>wakamiti-plugins/wakamiti-spring</module>
+        <module>wakamiti-plugins/wakamiti-io</module>
+        <module>wakamiti-plugins/wakamiti-amqp</module>
+        <module>wakamiti-plugins/wakamiti-cucumber-exporter</module>
+        <module>wakamiti-plugins/wakamiti-groovy</module>
+        <module>wakamiti-plugins/wakamiti-appium</module>
+        <module>wakamiti-plugins/wakamiti-file-uploader</module>
         <!-- examples -->
-        <module>kukumo-examples/spring-junit-example</module>
-        <module>kukumo-examples/spring-verify-example</module>
-        <module>kukumo-examples/spring-launcher-example</module>
+        <module>wakamiti-examples/spring-junit-example</module>
+        <module>wakamiti-examples/spring-verify-example</module>
+        <module>wakamiti-examples/spring-launcher-example</module>
         <!-- other -->
-        <module>kukumo-server-quarkus</module>
-        <module>kukumo-docker</module>
+        <module>wakamiti-server-quarkus</module>
+        <module>wakamiti-docker</module>
+
     </modules>
 
 
@@ -69,8 +70,8 @@
 
 
     <properties>
-        <!-- kukumo version -->
-        <revision>1.7.0</revision>
+        <!-- wakamiti version -->
+        <revision>2.0.0-alpha</revision>
 
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,7 +87,8 @@
 
         <!-- plugin versions -->
         <jacoco.version>0.8.2</jacoco.version>
-        <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
+        <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <surefire.report.version>2.6</surefire.report.version>
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
@@ -380,5 +382,66 @@
     </build>
 
 
+     <profiles>
+        <profile>
+          <id>sonatype</id>
+          <build>
+             <plugins>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+                   <executions>
+                     <execution>
+                       <id>sign-artifacts</id>
+                       <phase>verify</phase>
+                       <goals>
+                         <goal>sign</goal>
+                       </goals>
+
+                     </execution>
+                   </executions>
+              </plugin>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <version>2.2.1</version>
+                   <executions>
+                     <execution>
+                       <id>attach-sources</id>
+                       <goals>
+                         <goal>jar-no-fork</goal>
+                       </goals>
+                     </execution>
+                   </executions>
+              </plugin>
+              <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-javadoc-plugin</artifactId>
+                   <version>2.9.1</version>
+                   <executions>
+                     <execution>
+                       <id>attach-javadocs</id>
+                       <goals>
+                         <goal>jar</goal>
+                       </goals>
+                     </execution>
+                   </executions>
+                 </plugin>
+            </plugins>
+          </build>
+        </profile>
+      </profiles>
+         
+     <distributionManagement>
+      <snapshotRepository>
+        <id>ossrh</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+      <repository>
+        <id>ossrh</id>
+        <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+    </distributionManagement>
 
 </project>

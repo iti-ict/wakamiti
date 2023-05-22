@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+        The Wakamiti docker image depends on Wakamiti::CORE version (${revision} property)
+     -->
+
+    <parent>
+        <groupId>es.iti.wakamiti</groupId>
+        <artifactId>wakamiti-project</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- coordinates -->
+    <artifactId>wakamiti-docker</artifactId>
+    <packaging>pom</packaging>
+
+
+    <!-- additional information -->
+    <name>Wakamiti::Docker</name>
+    <description>Docker image of Wakamiti</description>
+    <inceptionYear>2020</inceptionYear>
+
+    <properties>
+        <wakamiti.launcher.path>${parent.basedir}/wakamiti/wakamiti-launcher</wakamiti.launcher.path>
+        <docker.image.name>nexus-wakamiti.iti.upv.es/wakamiti</docker.image.name>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.wakamiti</groupId>
+                <artifactId>wakamiti-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- plugins included in the docker image -->
+    <dependencies>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-html-report</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-cucumber-exporter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-appium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-file-uploader</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly/distribution.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>assembly</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.26.0</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>wakamiti/wakamiti:test</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>remove-test</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>remove</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>remove</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>-v</argument>
+                                <argument>${project.basedir}/target:/target</argument>
+                                <argument>-v</argument>
+                                <argument>${project.basedir}/test:/wakamiti</argument>
+                                <argument>--rm</argument>
+                                <argument>wakamiti/wakamiti:test</argument>
+                            </arguments>
+                            <quietLogs>false</quietLogs>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>alpha</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.26.0</version>
+                        <configuration>
+                            <authConfig>
+                                <username>wakamiti</username>
+                                <password>${docker.pwd}</password>
+                            </authConfig>
+                            <images>
+                                <image>
+                                    <name>wakamiti/wakamiti:alpha</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-alpha</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>deploy-alpha</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>release</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.26.0</version>
+                        <configuration>
+                            <authConfig>
+                                <username>wakamiti</username>
+                                <password>${docker.pwd}</password>
+                            </authConfig>
+                            <images>
+                                <image>
+                                    <name>wakamiti/wakamiti:${project.version}</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                                <image>
+                                    <name>wakamiti/wakamiti:latest</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-release</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>deploy-release</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+</project>

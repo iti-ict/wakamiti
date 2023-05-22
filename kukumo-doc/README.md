@@ -1,2 +1,0 @@
-# kukumo-doc
-Wakamiti Documentation

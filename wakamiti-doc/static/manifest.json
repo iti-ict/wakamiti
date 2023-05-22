@@ -1,0 +1,9 @@
+{
+  "name": "Wakamiti",
+  "short_name": "Wakamiti",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#33c275",
+  "background_color": "#FFF"
+}

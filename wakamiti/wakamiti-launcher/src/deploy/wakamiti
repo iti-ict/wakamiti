@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
+if test -z "${WAKAMITI_HOME}"
+then
+  export WAKAMITI_HOME="/usr/local/share/wakamiti"
+fi
+java -jar "${WAKAMITI_HOME}/java-version-checker.jar" 11
+
+if test $? -ne 0
+then
+  exit -2
+fi
+
+#java -javaagent:${WAKAMITI_HOME}/wakamiti-launcher.jar \
+#   --module-path "${WAKAMITI_HOME}/wakamiti-launcher.jar:${WAKAMITI_HOME}/lib/*" \
+#   -cp "${WAKAMITI_HOME}/lib-ext/*"  \
+#   -m wakamiti.launcher/iti.wakamiti.launcher.WakamitiLauncher "$@"
+java -javaagent:${WAKAMITI_HOME}/wakamiti-launcher.jar \
+  -classpath "${WAKAMITI_HOME}/wakamiti-launcher.jar:${WAKAMITI_HOME}/lib/*:${WAKAMITI_HOME}/lib-ext/*" \
+  es.iti.wakamiti.launcher.WakamitiLauncher "$@"

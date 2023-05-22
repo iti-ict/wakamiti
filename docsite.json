@@ -1,6 +1,6 @@
 {
-  "title": "Kukumo",
-  "description": "kukumo.description",
+  "title": "Wakamiti",
+  "description": "wakamiti.description",
   "logo": "images/logo.png",
   "favicon": "images/logo.png",
   "companyLogo": "images/iti.png",
@@ -29,13 +29,13 @@
           "name": "Core",
           "type": "copy",
           "icon": "fas:cogs",
-          "source": "kukumo/kukumo-core/target/docsite"
+          "source": "wakamiti/wakamiti-core/target/docsite"
         },
         {
           "name": "Editor",
           "type": "generated",
           "icon": "fas:edit",
-          "source": "kukumo-vscode-extension/docs/guide.md"
+          "source": "wakamiti-vscode-extension/docs/guide.md"
         }
       ]
     },
@@ -47,27 +47,27 @@
         {
           "name": "REST steps",
           "type": "copy",
-          "source": "kukumo-plugins/kukumo-rest/target/docsite"
+          "source": "wakamiti-plugins/wakamiti-rest/target/docsite"
         },
         {
           "name": "DB steps",
           "type": "copy",
-          "source": "kukumo-plugins/kukumo-db/target/docsite"
+          "source": "wakamiti-plugins/wakamiti-db/target/docsite"
         },
         {
           "name": "AMQP steps",
           "type": "copy",
-          "source": "kukumo-plugins/kukumo-amqp/target/docsite"
+          "source": "wakamiti-plugins/wakamiti-amqp/target/docsite"
         },
         {
           "name": "I/O steps",
           "type": "copy",
-          "source": "kukumo-plugins/kukumo-io/target/docsite"
+          "source": "wakamiti-plugins/wakamiti-io/target/docsite"
         },
         {
           "name": "HTML report",
           "type": "copy",
-          "source": "kukumo-plugins/kukumo-html-report/target/docsite"
+          "source": "wakamiti-plugins/wakamiti-html-report/target/docsite"
         }
       ]
     },
@@ -81,7 +81,7 @@
       "type": "link",
       "icon": "fab:github",
       "name": "Github",
-      "source": "https://github.com/iti-ict/kukumo"
+      "source": "https://github.com/iti-ict/wakamiti"
     }
 
 
