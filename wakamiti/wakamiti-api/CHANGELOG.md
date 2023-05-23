@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 
 - Gpath expressions in json and xml evaluators
+- Extra properties in Backend context
 
 ### Modified
 
