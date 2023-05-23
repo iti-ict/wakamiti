@@ -5,7 +5,6 @@
  */
 package es.iti.wakamiti.core.backend;
 
-import imconfig.Configuration;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
@@ -21,6 +20,7 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
 import java.time.Clock;
@@ -31,8 +31,6 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
- *
- *
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 public class RunnableBackend extends AbstractBackend {
@@ -41,6 +39,8 @@ public class RunnableBackend extends AbstractBackend {
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
+    public static final String RESULTS_PROP = "results";
+    public static final String ID_PROP = "id";
 
     private static final List<String> DATA_ARG_ALTERNATIVES = Arrays.asList(
             DOCUMENT_ARG,
@@ -53,6 +53,7 @@ public class RunnableBackend extends AbstractBackend {
     private final List<ThrowableRunnable> tearDownOperations;
     private final Map<PlanNode, StepBackendData> stepBackendData;
     private final List<Object> stepBackendResults;
+    private final Map<String, Object> extraProperties;
     private final List<PlanNode> stepsWithErrors;
 
 
@@ -72,6 +73,7 @@ public class RunnableBackend extends AbstractBackend {
         this.clock = clock;
         this.stepBackendData = new HashMap<>();
         this.stepBackendResults = new LinkedList<>();
+        this.extraProperties = new ContextMap();
         this.stepsWithErrors = new ArrayList<>();
     }
 
@@ -203,16 +205,17 @@ public class RunnableBackend extends AbstractBackend {
     }
 
 
+    @SuppressWarnings("unchecked")
     protected void runStep(PlanNode step, Instant instant) {
         step.prepareExecution().markStarted(instant);
         StepBackendData stepBackend = stepBackendData.get(step);
         WakamitiStepRunContext.set(
-            new WakamitiStepRunContext(
-                    configuration,
-                    this,
-                    stepBackend.stepLocale(),
-                    stepBackend.dataLocale()
-            )
+                new WakamitiStepRunContext(
+                        configuration,
+                        this,
+                        stepBackend.stepLocale(),
+                        stepBackend.dataLocale()
+                )
         );
         try {
             if (stepBackend.exception() != null) {
@@ -221,7 +224,8 @@ public class RunnableBackend extends AbstractBackend {
             Map<String, Argument> arguments = stepBackend.invokingArguments();
             step.arguments().addAll(arguments.values());
             Object result = stepBackend.runnableStep().run(arguments);
-            stepBackendResults.add(result);
+            ((List<Object>) extraProperties.get(RESULTS_PROP)).add(result);
+            //stepBackendResults.add(result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());
@@ -320,10 +324,31 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     @Override
-    public List<Object> getResults() {
-        List<Object> results = super.getResults();
-        results.addAll(stepBackendResults);
-        return results;
+    public Map<String, Object> getExtraProperties() {
+        return extraProperties;
     }
 
+    private class ContextMap extends LinkedHashMap<String, Object> {
+
+        ContextMap() {
+            super.put(ID_PROP, testCase.id());
+            super.put(RESULTS_PROP, new LinkedList<>());
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            if (Arrays.asList(RESULTS_PROP, ID_PROP).contains(key)) {
+                throw new IllegalArgumentException(key);
+            } else {
+                return super.put(key, value);
+            }
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ?> m) {
+            m.remove(ID_PROP);
+            m.remove(RESULTS_PROP);
+            super.putAll(m);
+        }
+    }
 }

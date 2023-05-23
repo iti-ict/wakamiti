@@ -12,9 +12,13 @@ import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.core.backend.RunnableBackend;
 import org.apache.xmlbeans.XmlObject;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +49,10 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
         String name = matcher.group("name");
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
         int step = Integer.parseInt(matcher.group(3)) - 1;
-        Object result = context.backend().getResults().get(step);
+        Object result = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.RESULTS_PROP))
+                .map(List.class::cast)
+                .orElse(new LinkedList<>())
+                .get(step);
         String fragment = name.replaceAll("^\\d+#", "").trim();
         String evaluation = Objects.toString(result);
         if (!fragment.isBlank()) {
