@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.maven;
 
 
@@ -29,57 +25,86 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ *
+ */
 @Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigurable {
 
     /**
      * Skip the plugin execution.
+     * E.g.:
      *
-     * <pre>{@code
+     * <blockquote><pre>{@code
      *   <configuration>
      *     <skipTests>true</skipTests>
      *   </configuration>
-     * }</pre>
+     * }</pre></blockquote>
      *
-     * @parameter default-value="false"
+     * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
     public boolean skipTests;
 
     /**
-     * Sets wakamiti properties {@link Map}.
-     * Eg:
+     * Sets wakamiti properties as {@link Map}.
+     * E.g.:
      *
-     * <pre>{@code
+     * <blockquote><pre>{@code
      *   <configuration>
      *     <properties>
      *         <key>value</key>
      *     </properties>
      *   </configuration>
-     * }</pre>
+     * }</pre></blockquote>
      *
-     * @parameter alias="properties"
      */
     @Parameter
     public Map<String, String> properties = new LinkedHashMap<>();
 
     /**
-     * Sets wakamiti configuration files
+     * Sets wakamiti configuration files.
+     * E.g.:
      *
-     * <pre>{@code
+     * <blockquote><pre>{@code
      *   <configuration>
      *     <configurationFiles>file1,file2</configurationFiles>
      *   </configuration>
-     * }</pre>
+     * }</pre></blockquote>
      *
-     * @parameter alias="configurationFiles"
      */
     @Parameter
     public List<String> configurationFiles = new LinkedList<>();
 
+    /**
+     * Sets wakamiti log level.
+     * E.g.:
+     *
+     * <blockquote><pre>{@code
+     *   <configuration>
+     *     <logLevel>debug</logLevel>
+     *   </configuration>
+     * }</pre></blockquote>
+     *
+     *
+     * Default value is {@code info}
+     */
     @Parameter(defaultValue = "info")
     public String logLevel;
 
+    /**
+     * Set this to {@code true} to ignore a failure during testing. Its use is
+     * NOT RECOMMENDED, but quite convenient on occasion.
+     * E.g.:
+     *
+     * <blockquote><pre>{@code
+     *   <configuration>
+     *     <testFailureIgnore>true</testFailureIgnore>
+     *   </configuration>
+     * }</pre></blockquote>
+     *
+     * Default value is {@code false}
+     */
     @Parameter(property = "maven.test.failure.ignore", defaultValue = "false")
     public boolean testFailureIgnore;
 
