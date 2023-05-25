@@ -52,7 +52,6 @@ public class RunnableBackend extends AbstractBackend {
     private final List<ThrowableRunnable> setUpOperations;
     private final List<ThrowableRunnable> tearDownOperations;
     private final Map<PlanNode, StepBackendData> stepBackendData;
-    private final List<Object> stepBackendResults;
     private final Map<String, Object> extraProperties;
     private final List<PlanNode> stepsWithErrors;
 
@@ -72,7 +71,6 @@ public class RunnableBackend extends AbstractBackend {
         this.tearDownOperations = tearDownOperations;
         this.clock = clock;
         this.stepBackendData = new HashMap<>();
-        this.stepBackendResults = new LinkedList<>();
         this.extraProperties = new ContextMap();
         this.stepsWithErrors = new ArrayList<>();
     }
@@ -225,7 +223,6 @@ public class RunnableBackend extends AbstractBackend {
             step.arguments().addAll(arguments.values());
             Object result = stepBackend.runnableStep().run(arguments);
             ((List<Object>) extraProperties.get(RESULTS_PROP)).add(result);
-            //stepBackendResults.add(result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());

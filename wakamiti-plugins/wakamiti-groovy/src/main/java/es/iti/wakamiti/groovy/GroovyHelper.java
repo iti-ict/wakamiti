@@ -17,15 +17,12 @@ public class GroovyHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
 
     public static Object executeScript(String script) {
-        //Map<String, Object> ctx = WakamitiStepRunContext.current().backend().getExtraProperties();
         try {
             Binding binding = new Binding();
             binding.setVariable("log", LOGGER);
             binding.setVariable("ctx", WakamitiStepRunContext.current().backend().getExtraProperties());
             GroovyShell shell = new GroovyShell(binding);
-            Object result = shell.evaluate(script);
-            //WakamitiStepRunContext.current().backend().getExtraProperties().putAll(ctx);
-            return result;
+            return shell.evaluate(script);
         } catch (Throwable e) { //NOSONAR
             throw new WakamitiException("Error executing groovy script", e);
         }
