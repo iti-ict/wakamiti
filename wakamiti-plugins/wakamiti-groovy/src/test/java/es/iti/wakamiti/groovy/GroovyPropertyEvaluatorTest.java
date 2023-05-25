@@ -44,6 +44,10 @@ public class GroovyPropertyEvaluatorTest {
         result = evaluator.eval("Today is ${=new Date().format('yyyy-MM-dd')}");
         assertThat(result.value())
                 .isEqualTo("Today is " + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+        result = evaluator.eval("Current ID: ${=ctx.id}");
+        assertThat(result.value())
+                .isEqualTo("Current ID: ID-01");
     }
 
     @Test(expected = WakamitiException.class)
