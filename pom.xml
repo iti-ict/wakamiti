@@ -43,6 +43,7 @@
         <module>wakamiti-plugins/wakamiti-groovy</module>
         <module>wakamiti-plugins/wakamiti-appium</module>
         <module>wakamiti-plugins/wakamiti-file-uploader</module>
+        <module>wakamiti-plugins/wakamiti-email</module>
         <!-- examples -->
         <module>wakamiti-examples/spring-junit-example</module>
         <module>wakamiti-examples/spring-verify-example</module>
