@@ -18,6 +18,27 @@
 
     <name>Wakamiti</name>
     <description>Project containing Wakamiti as well as other useful tools</description>
+    <url>https://github.com/iti-ict/wakamiti</url>
+    <inceptionYear>2019</inceptionYear>
+    <organization>
+        <name>ITI - Instituto Tecnológico de Informática</name>
+        <url>https://www.iti.es</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>MPL-2.0</name>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/iti-ict/wakamiti/issues</url>
+    </scm>
+    <developers>
+        <developer>
+            <email>luiinge@gmail.com</email>
+        </developer>
+    </developers>
+
 
     <modules>
         <module>wakamiti-bom</module>
@@ -57,16 +78,7 @@
     <!-- ============================================================= The following
         configuration will be inherited by every module ============================================================= -->
 
-    <organization>
-        <name>ITI - Instituto Tecnológico de Informática</name>
-        <url>https://www.iti.es</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>MPL-2.0</name>
-            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
-        </license>
-    </licenses>
+
 
 
     <properties>
@@ -315,6 +327,17 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <pomElements>
+                        <name/>
+                        <description/>
+                        <url/>
+                        <inceptionYear/>
+                        <organization/>
+                        <scm/>
+                        <developers/>
+                    </pomElements>
+                </configuration>
             </plugin>
 
 
@@ -378,6 +401,36 @@
                 </executions>
             </plugin>
 
+            <!-- generate sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- generate javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -400,40 +453,7 @@
                        </goals>
                      </execution>
                    </executions>
-                  <configuration>
-                      <gpgArguments>
-                          <arg>--no-tty</arg>
-                          <arg>--pinentry-mode</arg>
-                          <arg>loopback</arg>
-                      </gpgArguments>
-                  </configuration>
               </plugin>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-source-plugin</artifactId>
-                  <version>2.2.1</version>
-                   <executions>
-                     <execution>
-                       <id>attach-sources</id>
-                       <goals>
-                         <goal>jar-no-fork</goal>
-                       </goals>
-                     </execution>
-                   </executions>
-              </plugin>
-              <plugin>
-                   <groupId>org.apache.maven.plugins</groupId>
-                   <artifactId>maven-javadoc-plugin</artifactId>
-                   <version>2.9.1</version>
-                   <executions>
-                     <execution>
-                       <id>attach-javadocs</id>
-                       <goals>
-                         <goal>jar</goal>
-                       </goals>
-                     </execution>
-                   </executions>
-                 </plugin>
             </plugins>
           </build>
         </profile>
