@@ -2,11 +2,9 @@ name: Release a new tagged version
 on:
   push:
     branches: 
-      - release/2.0.0-alpha
-#     branches:
-#       - main
-#     tags:
-#       - 'v*'
+      - main
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -46,8 +44,11 @@ jobs:
       - name: Publish Docker tagged version and latest version
         run: ./mvnw -B deploy -ntp -pl wakamiti-docker -P release -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
+      - name: Publish Docker tagged version and latest version (with all plugins included)
+        run: ./mvnw -B deploy -ntp -pl wakamiti-docker -P release-all -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
-      - name: Publish package Maven Central Repository
+
+      - name: Stage JARs into Maven Central Repository
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
