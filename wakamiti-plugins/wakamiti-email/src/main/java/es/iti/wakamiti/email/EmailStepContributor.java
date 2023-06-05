@@ -13,11 +13,9 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
-import org.w3c.dom.Element;
 
 import javax.mail.*;
 import javax.mail.search.FlagTerm;
-import javax.naming.NamingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -25,20 +23,17 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Properties;
 
 @I18nResource("iti_wakamiti_wakamiti-email")
 @Extension(provider = "es.iti.wakamiti", name = "email-steps")
 public class EmailStepContributor implements StepContributor {
-    private static String protocol;
-    private static String host;
+    private final EmailReader emailReader = new EmailReader();
+    private String protocol;
+    private String host;
     private String port;
-    private static String user;
-    private static String password;
+    private String user;
+    private String password;
 
     @Step(value = "mail.server.protocol", args = "text")
     public void setProtocol(String protocol) {
@@ -72,13 +67,12 @@ public class EmailStepContributor implements StepContributor {
             Folder folder = openInboxFolder(store);
             Message[] unreadMessages = searchUnreadMessages(folder);
             org.w3c.dom.Document xmlDoc = createXmlDocument();
-            processMessages(unreadMessages, xmlDoc);
+        emailReader.processMessages(unreadMessages, xmlDoc);
             saveXmlDocument(xmlDoc);
             closeConnections(folder, store);
     }
 
-
-    private static Properties getMailProperties(String protocol, String host, String port, String user, String password) {
+    private Properties getMailProperties(String protocol, String host, String port, String user, String password) {
         Properties properties = new Properties();
         properties.setProperty("mail.server.protocol", protocol);
         properties.setProperty("mail.server.host", host);
@@ -88,114 +82,46 @@ public class EmailStepContributor implements StepContributor {
         return properties;
     }
 
-    private static Session getSession(Properties properties) {
+    @Step(value = "mail.auth.session")
+    private Session getSession(Properties properties) {
         return Session.getInstance(properties, null);
     }
 
-    private static Store connectToMailServer(Session session) throws MessagingException {
+    @Step(value = "mail.auth.connection")
+    private Store connectToMailServer(Session session) throws MessagingException {
         Store store = session.getStore(protocol);
         store.connect(host, user, password);
         return store;
     }
 
-    private static Folder openInboxFolder(Store store) throws MessagingException {
+    @Step(value = "mail.auth.openInboxFolder")
+    private Folder openInboxFolder(Store store) throws MessagingException {
         Folder folder = store.getFolder("INBOX");
         folder.open(Folder.READ_ONLY);
         return folder;
     }
 
-    private static Message[] searchUnreadMessages(Folder folder) throws MessagingException {
+    @Step(value = "mail.auth.unreadMessages")
+    private Message[] searchUnreadMessages(Folder folder) throws MessagingException {
         Flags seen = new Flags(Flags.Flag.SEEN);
         FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
         return folder.search(unseenFlagTerm);
     }
 
-    private static org.w3c.dom.Document createXmlDocument() throws Exception {
+    @Step(value = "mail.auth.createXml")
+    private org.w3c.dom.Document createXmlDocument() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.newDocument();
     }
 
-    private static void processMessages(Message[] messages, org.w3c.dom.Document xmlDoc) throws Exception {
-        Element rootElement = xmlDoc.createElement("emails");
-        xmlDoc.appendChild(rootElement);
-
-        for (Message message : messages) {
-            Element emailElement = xmlDoc.createElement("email");
-
-            Element dateElement = xmlDoc.createElement("date");
-            dateElement.appendChild(xmlDoc.createTextNode(message.getSentDate().toString()));
-            emailElement.appendChild(dateElement);
-
-            Element fromElement = xmlDoc.createElement("from");
-            fromElement.appendChild(xmlDoc.createTextNode(message.getFrom()[0].toString()));
-            emailElement.appendChild(fromElement);
-
-            Element toElement = xmlDoc.createElement("to");
-            toElement.appendChild(xmlDoc.createTextNode(Arrays.toString(message.getRecipients(Message.RecipientType.TO))));
-            emailElement.appendChild(toElement);
-
-            Element subjectElement = xmlDoc.createElement("subject");
-            subjectElement.appendChild(xmlDoc.createTextNode(message.getSubject()));
-            emailElement.appendChild(subjectElement);
-
-            Element contentElement = xmlDoc.createElement("content");
-
-            if (message.getContent() instanceof Multipart) {
-                Multipart multipart = (Multipart) message.getContent();
-                for (int i = 0; i < multipart.getCount(); i++) {
-                    BodyPart bodyPart = multipart.getBodyPart(i);
-                    if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())) {
-                        String fileName = bodyPart.getFileName();
-                        String downloadsDir = System.getProperty("user.home") + "/Downloads/";
-                        String filePath = downloadsDir + fileName;
-                        InputStream inputStream = bodyPart.getInputStream();
-                        OutputStream outputStream = new FileOutputStream(new File(filePath));
-
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-
-                        outputStream.close();
-                        inputStream.close();
-
-                        Element attachmentElement = xmlDoc.createElement("attachment");
-                        attachmentElement.appendChild(xmlDoc.createTextNode(fileName));
-                        emailElement.appendChild(attachmentElement);
-                    }
-                }
-            }
-
-            Object emailContent = message.getContent();
-            if (emailContent instanceof Multipart) {
-                Multipart multipart = (Multipart) emailContent;
-                for (int i = 0; i < multipart.getCount(); i++) {
-                    BodyPart bodyPart = multipart.getBodyPart(i);
-                    if (bodyPart.isMimeType("text/html")) {
-                        String html = (String) bodyPart.getContent();
-
-                        Element textElement = xmlDoc.createElement("text");
-                        textElement.appendChild(xmlDoc.createTextNode(html));
-                        contentElement.appendChild(textElement);
-                    }
-                }
-            } else if (emailContent instanceof String) {
-                Element textElement = xmlDoc.createElement("text");
-                textElement.appendChild(xmlDoc.createTextNode(emailContent.toString()));
-                contentElement.appendChild(textElement);
-            }
-
-            emailElement.appendChild(contentElement);
-            rootElement.appendChild(emailElement);
-
-        }
-
+    @Step(value = "mail.auth.process")
+    private void processMessages(Message[] messages, org.w3c.dom.Document xmlDoc) throws Exception {
+        emailReader.processMessages(messages, xmlDoc);
     }
 
-
-    private static void saveXmlDocument(org.w3c.dom.Document xmlDoc) throws Exception {
+    @Step(value = "mail.auth.saveXml")
+    private void saveXmlDocument(org.w3c.dom.Document xmlDoc) throws Exception {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(xmlDoc);
@@ -203,7 +129,8 @@ public class EmailStepContributor implements StepContributor {
         transformer.transform(source, result);
     }
 
-    private static void closeConnections(Folder folder, Store store) throws MessagingException {
+    @Step(value = "mail.auth.close")
+    private void closeConnections(Folder folder, Store store) throws MessagingException {
         folder.close(false);
         store.close();
     }

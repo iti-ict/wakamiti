@@ -15,9 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.Properties;
 
-
-import static org.testng.Assert.*;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.Assert.*;
 
 public class EmailStepContributorTest {
 
