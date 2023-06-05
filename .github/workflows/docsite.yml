@@ -1,0 +1,42 @@
+name: Generate documentation site
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'wakamiti-doc/**'
+
+jobs:
+  build:
+    name:
+      runs-on: ubuntu-latest
+      steps:
+
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+
+        - name: Setup Node
+          uses: actions/setup-node@v2
+          with:
+            node-version: 12.x
+
+        - name: Set environment variables
+          run: |
+            echo CI_PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*\/}/" >> $GITHUB_ENV
+
+        - name: Generate site
+          run: |
+            cd kukumo-doc
+            npm i
+            npm run build
+
+        - name: Deploy site
+          uses: s0/git-publish-subdir-action@develop
+          env:
+            REPO: self
+            BRANCH: docs
+            FOLDER: kukumo-doc/dist
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            MESSAGE: "Build: ({sha}) {msg}"

@@ -5,6 +5,7 @@ on:
       - main
     paths-ignore:
       - 'wakamiti-doc/**'
+      - 'wakamiti-vscode-extension/**'
 
 jobs:
   build:
@@ -42,33 +43,4 @@ jobs:
         run: |
            ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
            ./mvnw -B install -DskipTests
-
-
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 12.x
-
-      - name: Set environment variables
-        run: |
-          echo CI_PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*\/}/" >> $GITHUB_ENV
-
-      - name: Generate site
-        run: |
-          cd wakamiti-doc
-          npm i
-          npm run build
-
-      - name: Deploy site
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: docs
-          FOLDER: wakamiti-doc/dist
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MESSAGE: "Build: ({sha}) {msg}"
-
-
-      - name: Publish Docker Alpha version
-        run: ./mvnw -B deploy -pl wakamiti-docker -P alpha -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
