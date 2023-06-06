@@ -678,7 +678,7 @@ public class DatabaseHelper {
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             while (dataSet.nextRow()) {
                 bindRowValues(statement, dataSet, true);
-                count += extractSingleResult(statement, Long.class);
+                count += Optional.ofNullable(extractSingleResult(statement, Long.class)).orElse(0L);
             }
         } catch (SQLException e) {
             LOGGER.error("[SQL] {sql}",sql);
