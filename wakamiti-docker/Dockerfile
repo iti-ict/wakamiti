@@ -2,10 +2,11 @@ FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 
 WORKDIR /wakamiti
 
+ENV TZ Europe/Madrid
 ENV WAKAMITI_HOME /opt/wakamiti
 ENV WAKAMITI_REPOSITORY /root/.local/share/wakamiti/repository
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash tzdata
 
 COPY src/entrypoint.sh /
 
@@ -13,7 +14,8 @@ COPY src/entrypoint.sh /
 
 COPY target/assembly/staging $WAKAMITI_HOME/
 
-
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo "$TZ" >  /etc/timezone
 RUN mkdir -p $WAKAMITI_REPOSITORY \
     && chmod +x /entrypoint.sh \
     && chmod +x $WAKAMITI_HOME/wakamiti \
