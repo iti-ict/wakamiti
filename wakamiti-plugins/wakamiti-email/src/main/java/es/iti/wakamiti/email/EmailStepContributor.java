@@ -32,8 +32,9 @@ public class EmailStepContributor implements StepContributor {
     private String protocol;
     private String host;
     private String port;
-    private String user;
+    private String address;
     private String password;
+    private String xmlName;
 
     @Step(value = "mail.server.protocol", args = "text")
     public void setProtocol(String protocol) {
@@ -50,9 +51,9 @@ public class EmailStepContributor implements StepContributor {
         this.port = port;
     }
 
-    @Step(value = "mail.server.user", args = "text")
-    public void setUser(String user) {
-        this.user = user;
+    @Step(value = "mail.server.address", args = "text")
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Step(value = "mail.server.password", args = "text")
@@ -60,19 +61,24 @@ public class EmailStepContributor implements StepContributor {
         this.password = password;
     }
 
-    public void leerCorreo() throws Exception {
-            Properties properties = getMailProperties(this.protocol, this.host, this.port, this.user, this.password);
-            Session session = getSession(properties);
-            Store store = connectToMailServer(session);
-            Folder folder = openInboxFolder(store);
-            Message[] unreadMessages = searchUnreadMessages(folder);
-            org.w3c.dom.Document xmlDoc = createXmlDocument();
-        emailReader.processMessages(unreadMessages, xmlDoc);
-            saveXmlDocument(xmlDoc);
-            closeConnections(folder, store);
+    @Step(value = "mail.auth.nameXml", args = "text")
+    public void setXmlName(String xmlName){
+        this.xmlName = xmlName;
     }
 
-    private Properties getMailProperties(String protocol, String host, String port, String user, String password) {
+    public void leerCorreo() throws Exception {
+        Properties properties = getMailProperties(this.protocol, this.host, this.port, this.address, this.password);
+        Session session = getSession(properties);
+        Store store = connectToMailServer(session);
+        Folder folder = openInboxFolder(store);
+        Message[] unreadMessages = searchUnreadMessages(folder);
+        org.w3c.dom.Document xmlDoc = createXmlDocument();
+        processMessages(unreadMessages, xmlDoc);
+        saveXmlDocument(xmlDoc);
+        closeConnections(folder, store);
+    }
+    @Step(value = "mail.server.properties")
+    public Properties getMailProperties(String protocol, String host, String port, String user, String password) {
         Properties properties = new Properties();
         properties.setProperty("mail.server.protocol", protocol);
         properties.setProperty("mail.server.host", host);
@@ -83,54 +89,58 @@ public class EmailStepContributor implements StepContributor {
     }
 
     @Step(value = "mail.auth.session")
-    private Session getSession(Properties properties) {
+    public Session getSession(Properties properties) {
         return Session.getInstance(properties, null);
     }
 
     @Step(value = "mail.auth.connection")
-    private Store connectToMailServer(Session session) throws MessagingException {
+    public Store connectToMailServer(Session session) throws MessagingException {
         Store store = session.getStore(protocol);
-        store.connect(host, user, password);
+        store.connect(host, address, password);
         return store;
     }
 
     @Step(value = "mail.auth.openInboxFolder")
-    private Folder openInboxFolder(Store store) throws MessagingException {
+    public Folder openInboxFolder(Store store) throws MessagingException {
         Folder folder = store.getFolder("INBOX");
         folder.open(Folder.READ_ONLY);
         return folder;
     }
 
     @Step(value = "mail.auth.unreadMessages")
-    private Message[] searchUnreadMessages(Folder folder) throws MessagingException {
+    public Message[] searchUnreadMessages(Folder folder) throws MessagingException {
         Flags seen = new Flags(Flags.Flag.SEEN);
         FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
         return folder.search(unseenFlagTerm);
     }
 
     @Step(value = "mail.auth.createXml")
-    private org.w3c.dom.Document createXmlDocument() throws Exception {
+    public org.w3c.dom.Document createXmlDocument() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.newDocument();
     }
 
     @Step(value = "mail.auth.process")
-    private void processMessages(Message[] messages, org.w3c.dom.Document xmlDoc) throws Exception {
+    public void processMessages(Message[] messages, org.w3c.dom.Document xmlDoc) throws Exception {
         emailReader.processMessages(messages, xmlDoc);
     }
 
     @Step(value = "mail.auth.saveXml")
-    private void saveXmlDocument(org.w3c.dom.Document xmlDoc) throws Exception {
+    public void saveXmlDocument(org.w3c.dom.Document xmlDoc) throws Exception {
+        String xmlName =this.xmlName;
+        if(xmlName == null){
+            xmlName = "unreadEmails";
+        }
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(xmlDoc);
-        StreamResult result = new StreamResult(new File("emails.xml"));
+        StreamResult result = new StreamResult(new File(xmlName + ".xml"));
         transformer.transform(source, result);
     }
 
     @Step(value = "mail.auth.close")
-    private void closeConnections(Folder folder, Store store) throws MessagingException {
+    public void closeConnections(Folder folder, Store store) throws MessagingException {
         folder.close(false);
         store.close();
     }

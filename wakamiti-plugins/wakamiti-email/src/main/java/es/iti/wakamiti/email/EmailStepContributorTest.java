@@ -22,8 +22,9 @@ public class EmailStepContributorTest {
     private static final String PROTOCOL = "imaps";
     private static final String HOST = "imap.gmail.com";
     private static final String PORT = "993";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private static final String ADDRESS = "adrianmargil8@gmail.com";
+    private static final String PASSWORD = "dknznnvcayxvrarz";
+    private static final String XMLNAME = "unreadEmails";
 
     @Test
     public void testLeerCorreo() throws Exception {
@@ -31,32 +32,35 @@ public class EmailStepContributorTest {
         properties.setProperty("mail.server.protocol", PROTOCOL);
         properties.setProperty("mail.server.host", HOST);
         properties.setProperty("mail.server.port", PORT);
-        properties.setProperty("mail.server.user", USER);
+        properties.setProperty("mail.server.user", ADDRESS);
         properties.setProperty("mail.server.password", PASSWORD);
+        properties.setProperty("mail.auth.createXML", XMLNAME);
 
         Session session = Session.getInstance(properties, null);
 
         Store store = session.getStore(PROTOCOL);
-        store.connect(HOST, USER, PASSWORD);
+        store.connect(HOST, ADDRESS, PASSWORD);
 
         javax.mail.Folder folder = store.getFolder("INBOX");
         folder.open(javax.mail.Folder.READ_WRITE);
 
         SearchTerm searchCriteria = new FlagTerm(new javax.mail.Flags(javax.mail.Flags.Flag.SEEN), false);
-        Message[] unreadMessages = folder.search(searchCriteria);
+        Message[] unreadEmails = folder.search(searchCriteria);
 
-        assertNotNull(unreadMessages);
+        assertNotNull(unreadEmails);
 
         EmailStepContributor emailStepContributor = new EmailStepContributor();
         emailStepContributor.setProtocol(PROTOCOL);
         emailStepContributor.setHost(HOST);
         emailStepContributor.setPort(PORT);
-        emailStepContributor.setUser(USER);
+        emailStepContributor.setAddress(ADDRESS);
         emailStepContributor.setPassword(PASSWORD);
         emailStepContributor.leerCorreo();
+        emailStepContributor.setXmlName(XMLNAME);
 
-        File xmlFile = new File("emails.xml");
-        assertTrue(xmlFile.exists());
+        File xmlFile = new File(XMLNAME + ".xml");
+        assertTrue("No se ha creado correctamente "+ XMLNAME + ".xml",xmlFile.exists());
+
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -81,6 +85,7 @@ public class EmailStepContributorTest {
             assertNotNull(String.valueOf(emailElement.getElementsByTagName("text").item(0)));
 
         }
+
 
         folder.close(false);
         store.close();

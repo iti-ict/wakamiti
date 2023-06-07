@@ -18,7 +18,6 @@ public class EmailReader {
     public EmailReader() {
     }
 
-    @Step(value = "mail.auth.process")
     void processMessages(Message[] messages, Document xmlDoc) throws Exception {
         Element rootElement = xmlDoc.createElement("emails");
         xmlDoc.appendChild(rootElement);
