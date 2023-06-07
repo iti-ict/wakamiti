@@ -15,7 +15,7 @@ COPY src/entrypoint.sh /
 COPY target/assembly/staging $WAKAMITI_HOME/
 
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo "$TZ" >  /etc/timezone \
+    && echo "$TZ" >  /etc/timezone
 
 RUN mkdir -p $WAKAMITI_REPOSITORY \
     && chmod +x /entrypoint.sh \
