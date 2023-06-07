@@ -12,7 +12,10 @@ COPY src/entrypoint.sh /
 
 # launcher executables are including in the staging directory (from wakamiti-launcher)
 
+
 COPY target/assembly/staging $WAKAMITI_HOME/
+
+COPY target/assembly/lib-ext $WAKAMITI_HOME/lib-ext/
 
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo "$TZ" >  /etc/timezone
@@ -25,5 +28,5 @@ RUN mkdir -p $WAKAMITI_REPOSITORY \
     && chmod +x /usr/local/bin/wakamiti
 
 
-
 ENTRYPOINT ["/entrypoint.sh"]
+
