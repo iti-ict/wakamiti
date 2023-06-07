@@ -89,110 +89,117 @@
     </dependencies>
 
 
-    <build>
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>assembly/distribution.xml</descriptor>
-                            </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <finalName>assembly</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
-
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.26.0</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>wakamiti/wakamiti:test</name>
-                            <build>
-                                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>build-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>remove-test</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>remove</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>remove</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>docker</executable>
-                    <arguments>
-                        <argument>run</argument>
-                        <argument>-v</argument>
-                        <argument>${project.basedir}/target:/target</argument>
-                        <argument>-v</argument>
-                        <argument>${project.basedir}/test:/wakamiti</argument>
-                        <argument>--rm</argument>
-                        <argument>wakamiti/wakamiti:test</argument>
-                    </arguments>
-                    <quietLogs>false</quietLogs>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
-
-
-
     <profiles>
+
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>assembly/distribution.xml</descriptor>
+                                    </descriptors>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>assembly</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+
+
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.26.0</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>wakamiti/wakamiti:test</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>remove-test</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>remove</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>remove</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>-v</argument>
+                                <argument>${project.basedir}/target:/target</argument>
+                                <argument>-v</argument>
+                                <argument>${project.basedir}/test:/wakamiti</argument>
+                                <argument>--rm</argument>
+                                <argument>wakamiti/wakamiti:test</argument>
+                            </arguments>
+                            <quietLogs>false</quietLogs>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+
+        </profile>
+
 
 
         <!-- release : publish runtime image ================================================ -->
@@ -241,6 +248,28 @@
                                     <goal>push</goal>
                                 </goals>
                             </execution>
+
+                                <execution>
+                                    <id>build-test</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>build</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>remove-test</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>remove</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <phase>clean</phase>
+                                    <goals>
+                                        <goal>remove</goal>
+                                    </goals>
+                                </execution>
+
                         </executions>
                     </plugin>
                 </plugins>
