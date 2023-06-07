@@ -261,28 +261,6 @@
                                     <goal>push</goal>
                                 </goals>
                             </execution>
-
-                                <execution>
-                                    <id>build-test</id>
-                                    <phase>pre-integration-test</phase>
-                                    <goals>
-                                        <goal>build</goal>
-                                    </goals>
-                                </execution>
-                                <execution>
-                                    <id>remove-test</id>
-                                    <phase>post-integration-test</phase>
-                                    <goals>
-                                        <goal>remove</goal>
-                                    </goals>
-                                </execution>
-                                <execution>
-                                    <phase>clean</phase>
-                                    <goals>
-                                        <goal>remove</goal>
-                                    </goals>
-                                </execution>
-
                         </executions>
                     </plugin>
                 </plugins>
