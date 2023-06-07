@@ -42,10 +42,10 @@ jobs:
 
 
       - name: Publish Docker tagged version and latest version
-        run: ./mvnw -B clean install deploy -DskipTests -ntp -pl wakamiti-docker -P release -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
+        run: ./mvnw -B deploy -DskipTests -ntp -pl wakamiti-docker -P release -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
       - name: Publish Docker tagged version and latest version (with all plugins included)
-        run: ./mvnw -B clean install deploy -DskipTests -ntp -pl wakamiti-docker -P release-all -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
+        run: ./mvnw -B deploy -DskipTests -ntp -pl wakamiti-docker -P release-all -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
 
       - name: Stage JARs into Maven Central Repository
