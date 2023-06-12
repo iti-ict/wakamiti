@@ -8,6 +8,9 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.rest.RestStepContributor;
 import groovy.util.logging.Slf4j
 
+import java.time.ZoneId
+import java.time.ZoneOffset;
+
 
 @Slf4j
 @I18nResource("customs")
@@ -30,6 +33,9 @@ class CustomSteps implements StepContributor {
 	@Step(value = "something", args = ["name:word"])
 	def something(String name) {
 		log.info("Hello {}!", name)
+		log.info("TZ: {}", ZoneId.systemDefault())
+
+		assert ZoneOffset.systemDefault() == ZoneOffset.of(ZoneId.of("Europe/Madrid").offset.id)
 	}
 
 }
