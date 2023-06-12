@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate site
         run: |
-          cd kukumo-doc
+          cd wakamiti-doc
           npm i
           npm run build
 
@@ -37,6 +37,6 @@ jobs:
         env:
           REPO: self
           BRANCH: docs
-          FOLDER: kukumo-doc/dist
+          FOLDER: wakamiti-doc/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
