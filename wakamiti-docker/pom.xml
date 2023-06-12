@@ -49,7 +49,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- plugins included in the docker image -->
     <dependencies>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
@@ -83,30 +82,29 @@
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-appium</artifactId>
         </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-file-uploader</artifactId>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
+                        <id>enforce</id>
                         <configuration>
-                            <descriptors>
-                                <descriptor>assembly/distribution.xml</descriptor>
-                            </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <finalName>assembly</finalName>
+                            <fail>false</fail>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -117,15 +115,47 @@
         </plugins>
     </build>
 
+
     <profiles>
+
         <profile>
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-
             <build>
                 <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>assembly/distribution.xml</descriptor>
+                                    </descriptors>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>assembly</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+
+
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
@@ -193,57 +223,17 @@
 
                 </plugins>
             </build>
+
+
         </profile>
 
 
-        <profile>
-            <id>alpha</id>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
-                        <configuration>
-                            <authConfig>
-                                <username>wakamiti</username>
-                                <password>${docker.pwd}</password>
-                            </authConfig>
-                            <images>
-                                <image>
-                                    <name>wakamiti/wakamiti:alpha</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-alpha</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>deploy-alpha</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+        <!-- release : publish runtime image ================================================ -->
 
 
         <profile>
             <id>release</id>
-
             <build>
                 <plugins>
                     <plugin>
@@ -291,6 +281,68 @@
             </build>
         </profile>
 
+
+
+
+        <!-- release-all : publish image with all dependencies ================================================ -->
+
+
+        <profile>
+            <id>release-all</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.26.0</version>
+                        <configuration>
+                            <authConfig>
+                                <username>wakamiti</username>
+                                <password>${docker.pwd}</password>
+                            </authConfig>
+                            <images>
+                                <image>
+                                    <name>wakamiti/wakamiti-all:${project.version}</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile_all</dockerFile>
+                                    </build>
+                                </image>
+                                <image>
+                                    <name>wakamiti/wakamiti-all:latest</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile_all</dockerFile>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-release-all</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>deploy-release-all</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+
     </profiles>
+
+
+
+
 
 </project>

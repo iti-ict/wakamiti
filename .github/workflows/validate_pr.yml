@@ -1,10 +1,14 @@
-name: Build
+name: Validate Pull Request
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  paths-ignore:
+     - 'wakamiti-doc/**'
+     - 'wakamiti-vscode-extension/**'
+
 jobs:
   build:
-    name: Build
+    name: Validate PR
     runs-on: ubuntu-latest
     steps:
       

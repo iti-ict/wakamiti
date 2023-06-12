@@ -24,7 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>wakamiti-amqp</artifactId>
-    <version>1.4.1</version>
+    <version>2.0.0</version>
 
     <!-- additional information -->
     <name>Wakamiti::AMQP Steps</name>

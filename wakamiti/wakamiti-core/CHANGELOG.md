@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning][2].
 - Extra properties in Backend context
 
 
+## [2.0.0] - 2023-05-22
+
+### Modified
+
+- Renamed packages to ```es.iti.wakamiti.*```
+
+
 ## [1.7.0] - 2023-05-03
 
 ### Added

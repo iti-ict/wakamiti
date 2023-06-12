@@ -14,7 +14,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/staging/lib-ext</outputDirectory>
+            <outputDirectory>/lib-ext</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
