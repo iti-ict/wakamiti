@@ -234,7 +234,7 @@ public class PlanNodeSnapshot {
     }
 
     private String instantToString(Instant instant) {
-        return LocalDateTime.ofInstant(instant, ZoneOffset.UTC).toString();
+        return LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()).toString();
     }
 
     private String errorTrace(Throwable error) {
