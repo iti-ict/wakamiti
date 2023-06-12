@@ -1,7 +1,7 @@
 ---
 title: File Uploader
-date: 2022-05-29
-slug: /es/plugins/fileuploader
+date: 2023-05-29
+slug: /plugins/fileuploader
 ---
 
 Este plugin registra un observador de eventos que se dispara cuando se genera un fichero de 
@@ -14,24 +14,35 @@ Configuración
 -------------
 
 ### `fileUploader.enable` : `true`|`false`
+Since: ```2.0.0```
 
 Activa - desactiva el observador de eventos. El valor por defecto es `false`
 
 
 ### `fileUploader.host`
+Since: ```2.0.0```
+
 El nombre o dirección IP de la máquina a la que se van a subir los ficheros. Opcionalmenbte,
 puede incluir un número de puerto, en la forma `hostname:port`
 
 ### `fileUploader.credentials.username`
+Since: ```2.0.0```
+
 El nombre de usuario usado para establecer la conexión FTP/FTPS
 
 ### `fileUploader.credentials.password`
+Since: ```2.0.0```
+
 La contraseña usada para establecer la conexión FTP/FTPS
 
 ### `fileUploader.protocol` : `ftp` | `ftps`
+Since: ```2.0.0```
+
 El protocolo específico a usar (se recomiendo `ftps`)
 
 ### `fileUploader.destinationDir`
+Since: ```2.0.0```
+
 El directorio de destino al cual los ficheros deberían subirse, dentro de la ubicación remota. 
 Puede incluir variables de ruta como `%DATE%`, `%TIME%`, or `%execID%`
 

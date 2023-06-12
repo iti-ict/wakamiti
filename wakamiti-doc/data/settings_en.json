@@ -48,6 +48,16 @@
               "value": "Cucumber reporter",
               "anchor": "/cucumber-exporter",
               "depth": 2
+            },
+            {
+              "value": "File Uploader",
+              "anchor": "/fileuploader",
+              "depth": 2
+            },
+            {
+              "value": "Appium",
+              "anchor": "/appium",
+              "depth": 2
             }
           ]
         }

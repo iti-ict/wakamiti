@@ -12,5 +12,8 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!:
 - [Pasos AMQP](plugins/amqp)
 - [Informe HTML](plugins/html-reporter)
 - [Informe Cucumber](plugins/cucumber-exporter)
+- [File Uploader](plugins/fileuploader)
+- [Pasos Appium](plugins/appium)
+
 
 
