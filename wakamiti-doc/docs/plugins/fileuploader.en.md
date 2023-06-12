@@ -1,6 +1,6 @@
 ---
 title: File Uploader
-date: 2022-05-29
+date: 2023-05-29
 slug: /en/plugins/fileuploader
 ---
 
@@ -15,24 +15,36 @@ Configuration
 -------------
 
 ### `fileUploader.enable` : `true`|`false`
+Since: ```2.0.0```
 
 Enable / disable the event observer. Default value is `false`
 
 
+
 ### `fileUploader.host`
+Since: ```2.0.0```
+
 The host name or IP address to be used to upload the files. Optionally, it can include a specific
 port in the form `hostname:port`
 
 ### `fileUploader.credentials.username`
+Since: ```2.0.0```
+
 The username to be used to stablish the FTP/FTPS connection
 
 ### `fileUploader.credentials.password`
+Since: ```2.0.0```
+
 The password to be used to stablish the FTP/FTPS connection
 
 ### `fileUploader.protocol` : `ftp` | `ftps`
+Since: ```2.0.0```
+
 The specific protocol to be used (`ftps` is recommended)
 
 ### `fileUploader.destinationDir`
+Since: ```2.0.0```
+
 The destination directory where the files should be uploaded within the remote location. It can include
 placeholders like `%DATE%`, `%TIME%`, or `%execID%`
 
