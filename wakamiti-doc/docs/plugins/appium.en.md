@@ -1,7 +1,7 @@
 ---
 title: Appium
 date: 2023-06-09
-slug: /en/plugins/appium
+slug: /plugins/appium
 ---
 
 This plugin allows Wakamiti to write scenarios that interact with an 

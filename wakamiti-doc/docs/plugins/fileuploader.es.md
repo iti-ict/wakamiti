@@ -1,7 +1,7 @@
 ---
 title: File Uploader
 date: 2023-05-29
-slug: /es/plugins/fileuploader
+slug: /plugins/fileuploader
 ---
 
 Este plugin registra un observador de eventos que se dispara cuando se genera un fichero de 
