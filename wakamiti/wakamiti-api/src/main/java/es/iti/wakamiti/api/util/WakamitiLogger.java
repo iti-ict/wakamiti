@@ -10,7 +10,7 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.WakamitiVersion;
+import es.iti.wakamiti.api.WakamitiAPI;
 import imconfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class WakamitiLogger {
             "██║ █╗ ██║███████║█████╔╝ ███████║██╔████╔██║██║   ██║   ██║\n"+
             "██║███╗██║██╔══██║██╔═██╗ ██╔══██║██║╚██╔╝██║██║   ██║   ██║\n"+
             "╚███╔███╔╝██║  ██║██║  ██╗██║  ██║██║ ╚═╝ ██║██║   ██║   ██║\n"+
-            " ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  "+ WakamitiVersion.version()+"\n";
+            " ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  "+ WakamitiAPI.instance().version()+"\n";
     }
 
 
