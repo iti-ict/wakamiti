@@ -1,7 +1,7 @@
 ---
 title: Appium
 date: 2023-06-09
-slug: /es/plugins/appium
+slug: /plugins/appium
 ---
 
 Este plugin permite usar Wakamiti para escribir escenarios que interactuen con un servidor 

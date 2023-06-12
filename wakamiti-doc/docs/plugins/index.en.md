@@ -12,5 +12,7 @@ exist, but you can also develop your own plugins!:
 - [AMQP steps](en/plugins/amqp)
 - [HTML report](en/plugins/html-reporter)
 - [Cucumber report](en/plugins/cucumber-exporter)
+- [File Uploader](plugins/fileuploader)
+- [Appium steps](plugins/appium)
 
 

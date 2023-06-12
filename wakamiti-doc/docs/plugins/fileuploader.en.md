@@ -1,7 +1,7 @@
 ---
 title: File Uploader
 date: 2023-05-29
-slug: /en/plugins/fileuploader
+slug: /plugins/fileuploader
 ---
 
 
