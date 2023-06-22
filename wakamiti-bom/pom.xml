@@ -25,7 +25,7 @@
 
         <!-- internal dependencies -->
         <gherkin-parser.version>1.0.2</gherkin-parser.version>
-        <wakamiti-api.version>2.0.0</wakamiti-api.version>
+        <wakamiti-api.version>2.0.1</wakamiti-api.version>
         <wakamiti-core.version>${revision}</wakamiti-core.version> <!-- must be the same as revision -->
         <wakamiti-lsp.version>${revision}</wakamiti-lsp.version>   <!-- must be the same as revision -->
         <wakamiti-rest.version>2.0.0</wakamiti-rest.version>
