@@ -228,6 +228,8 @@ public class PlanNodeSnapshot {
         copy.errorTrace = this.errorTrace;
         copy.testCaseResults = this.testCaseResults;
         copy.childrenResults = this.childrenResults;
+        copy.errorClassifiers = this.errorClassifiers;
+        copy.errorClassifier = this.errorClassifier;
         return copy;
     }
 
