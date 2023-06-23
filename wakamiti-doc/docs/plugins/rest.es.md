@@ -289,7 +289,8 @@ rest:
 {type} como el tipo de contenido REST
 ```
 Establece el tipo de contenido de la API en la cabecera `content-type`. Este paso es equivalente a configurar la 
-propiedad [`rest.contentType`](#restcontenttype). 
+propiedad [`rest.contentType`](#
+). 
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |

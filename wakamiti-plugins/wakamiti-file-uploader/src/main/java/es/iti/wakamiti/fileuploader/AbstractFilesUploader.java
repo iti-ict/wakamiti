@@ -21,7 +21,6 @@ public abstract class AbstractFilesUploader implements EventObserver {
 
     private final String eventType;
     private final String category;
-
     private boolean enabled;
     private String host;
     private String username;
