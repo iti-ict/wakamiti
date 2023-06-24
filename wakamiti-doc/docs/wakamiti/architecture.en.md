@@ -5,6 +5,19 @@ slug: /en/wakamiti/architecture
 ---
 
 
+
+
+- [Global configuration](#global-configuration)
+- [Feature configuration](#feature-configuration)
+- [Data types](#data-types)
+- [Comparators](#comparators)
+- [Dynamic properties](#dynamic-properties)
+
+
+
+---
+
+
 ## Global configuration
 
 Wakamiti's configuration is defined via `yaml` file located in the test directory. By default, Wakamiti will look for the 
@@ -13,14 +26,21 @@ file named `wakamiti.yaml`.
 - [`wakamiti.resourceTypes`](#wakamitiresourcetypes)
 - [`wakamiti.resourcePath`](#wakamitiresourcepath)
 - [`wakamiti.outputFilePath`](#wakamitioutputfilepath)
+- [`wakamiti.outputFilePerTestCase`](#wakamitioutputfilepertestcase)
 - [`wakamiti.tagFilter`](#wakamititagfilter)
 - [`wakamiti.idTagPattern`](#wakamitiidtagpattern)
+- [`wakamiti.strictTestCaseID`](#wakamitistricttestcaseid)
 - [`wakamiti.launcher.modules`](#wakamitilaunchermodules)
 - [`wakamiti.report.generation`](#wakamitireportgeneration)
 - [`wakamiti.redefinition.definitionTag`](#wakamitiredefinitiondefinitiontag)
 - [`wakamiti.redefinition.implementationTag`](#wakamitiredefinitionimplementationtag)
 - [`wakamiti.log.path`](#wakamitilogpath)
 - [`wakamiti.log.level`](#wakamitiloglevel)
+- [`wakamiti.logs.ansi.enabled`](#wakamitilogsansienabled)
+- [`wakamiti.logs.showLogo`](#wakamitilogsshowlogo)
+- [`wakamiti.logs.showElapsedTime`](#wakamitilogsshowelapsedtime)
+- [`wakamiti.junit.treatStepsAsTests`](#wakamitijunittreatstepsastests)
+- [`wakamiti.nonRegisteredStepProviders`](#wakamitinonregisteredstepproviders)
 - [`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories)
 - [`mavenFetcher.localRepository`](#mavenfetcherlocalrepository)
 
@@ -50,10 +70,28 @@ wakamiti:
   resourcePath: /other/path
 ```
 
+
+
 ---
 ### `wakamiti.outputFilePath`
 
-Sets the results file directory.
+Set the results file directory.
+
+Output path may contain the following replacement placeholders (**since** 1.7.0):
+
+| placeholder | replacement            |
+|-------------|------------------------|
+| `%YYYY%`    | year (4 dígits)        |
+| `%YY%`      | year (2 dígits)        |
+| `%MM%`      | month                  |
+| `%DD%`      | day of month           |
+| `%hh%`      | hour (24H)             |
+| `%mm%`      | minutes                |
+| `%ss%`      | seconds                |
+| `%sss%`     | miliseconds (3 dígits) |
+| `%DATE%`    | `%YYYY%%MM%%DD%`       |
+| `%TIME%`    | `%hh%%mm%%ss%%ssss%`   |
+| `%execID%`  | unique execution       |
 
 Default value is `wakamiti.json` (in the current directory).
 
@@ -63,6 +101,27 @@ Example:
 wakamiti:
   outputFilePath: result/wakamiti.json
 ```
+
+
+
+---
+### `wakamiti.outputFilePerTestCase`
+
+Set whether each test case should produce an output file. If enabled, the output files would be produce in the 
+folder set in `wakamiti.outputFilePath`, and the file name would be directly the ID of the test case.
+
+Default value is `false`
+
+Example:
+```yaml
+wakamiti:
+  outputFilePerTestCase: true
+
+```
+
+**Since** 1.7.0
+
+
 
 ---
 ### `wakamiti.tagFilter`
@@ -89,6 +148,35 @@ Example:
 wakamiti:
   idTagPattern: ([0-9]+)
 ```
+
+
+
+
+
+---
+### `wakamiti.strictTestCaseID`
+
+Set whether the plan executor should assert that each test case is properly annotated with a tag 
+matching the pattern from  `idTagPattern`. If enabled and some test case does not satisfiy this requisite, the 
+executor will stop resulting in an error.
+
+Default value is `false`
+
+Example:
+
+```yaml
+wakamiti:
+  strictTestCaseID: true
+```
+
+**Since** 1.7.0
+
+
+
+
+
+
+
 
 ---
 ### `wakamiti.launcher.modules`
@@ -184,6 +272,104 @@ wakamiti:
     level: debug
 ```
 
+
+
+
+
+
+---
+### `wakamiti.logs.ansi.enabled`
+
+Set whether the console logs should use [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)).
+
+Default value is `true`.
+
+Example:
+
+```yaml
+wakamiti:
+  logs:
+    ansi.enabled: true
+```
+
+
+
+---
+### `wakamiti.logs.showLogo`
+
+Set whether the Wakamiti logo should be printed in the console logs.
+
+Default value is `true`.
+
+Example:
+
+```yaml
+wakamiti:
+  logs:
+    showLogo: true
+```
+
+
+
+
+---
+### `wakamiti.logs.showElapsedTime`
+
+
+Set whether the console logs should include the ellapsed time of each test case.
+
+Default value is `true`.
+
+Example:
+
+```yaml
+wakamiti:
+  logs:
+    showElapsedTime: true
+```
+
+
+
+
+---
+### `wakamiti.junit.treatStepsAsTests`
+
+When using the Wakamiti JUnit runner, set whether each step should be notified as a test, so that
+reports and other integration tools that use JUnit show more relevant info.
+
+Default value is `false`.
+
+Example:
+
+```yaml
+wakamiti:
+  junit:
+    treatStepsAsTests: true
+```
+
+
+
+
+
+
+---
+### `wakamiti.nonRegisteredStepProviders`
+
+Allows the use of dynamically-included step contributors, instead of require them to be provided as part of a plugin.
+This way, project-specific steps can be tailored on the fly.
+
+
+Example:
+
+```yaml
+wakamiti:
+  nonRegisteredStepProviders:
+    - com.example.CustomSteps
+```
+
+
+
+
 ---
 ### `mavenFetcher.remoteRepositories`
 
@@ -208,6 +394,107 @@ Example:
 mavenFetcher:
   localRepository: /usr/mvn-repo
 ```
+
+
+
+
+
+
+
+## Feature configuration
+
+In addition to the global configuration, feature-specific properties can be set within each file.
+
+- [`language`](#language)
+- [`dataFormatLanguage`](#language)
+- [`modules`](#modules)
+- [`redefinition.stepMap`](#redefinitionstepmap)
+
+
+---
+### `language`
+
+Set the language (identified by means of the standard [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
+which be used to write the test steps.
+
+Default value is `en`.
+
+Example:
+
+```gherkin
+# language: es
+Feature: ...
+```
+
+
+---
+### `dataFormatLanguage`
+
+
+Set the language (identified by means of the standard [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
+which be used to write the parameter values within a step, in case the value type accepts localized formats, such as dates 
+and numbers using separation symbols.
+
+Default value is inherited from `language`.
+
+Example:
+
+```gherkin
+# language: es
+# dataFormatLanguage: en  
+Feature: ...
+```
+
+
+---
+### `modules`
+
+Restrict what steps can be used in a feature file, in order to avoid potential expression conflicts
+among several plugins that were not desgined to work together.
+
+
+Example:
+
+```gherkin
+#modules: database-steps, rest-steps
+Feature: ...
+```
+
+
+---
+### `redefinition.stepMap`
+
+When a test case is represented both at definition and implementation levels, this property
+declares the correspondence between definition steps and implementation steps. Otherwise, a default 
+one-to-one correspondence would be used.
+
+The value of this property must be a list of numbers split by `-` , being each one the number 
+of implementation steps corresponding to the definition step at that position. For instance, the 
+value `1-2-1` implies the following correspondence:
+
+| definition  | implementation | 
+|-------------|----------------|
+| 1           | 1              |
+| 2           | 2,3            |
+| 3           | 4              |
+
+Notice that this property must be defined in the implementation side, above the proper scenario.
+In addition, the scenario must have a unique identifier.
+
+Example:
+
+```gherkin
+@implementation
+Feature: ...
+
+  
+# redefinition.stepMap: 2-1-2  
+@ID-43242   
+Scenario: ...
+```
+
+
+
 
 
 ---
