@@ -62,7 +62,8 @@ public class JsonUtils {
             binding.setVariable("obj", obj.toString());
             binding.setVariable("exp", expression);
             GroovyShell shell = new GroovyShell(binding);
-            return shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), 'x.' + exp)").toString();
+            String exp = (obj.isArray() && expression.matches("\\[\\d+].*") ? "'x'" : "'x.'") + " + exp";
+            return shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")").toString();
         }
     }
 

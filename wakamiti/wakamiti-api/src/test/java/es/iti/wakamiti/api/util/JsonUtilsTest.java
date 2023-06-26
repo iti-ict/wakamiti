@@ -35,7 +35,7 @@ public class JsonUtilsTest {
     private final String json = "{\"name\":\"Arnold\",\"age\":47}";
     private final String jsonError = "{\"name:\"Arnold\",\"age\":47}";
 
-    private final String jsonList = "{ \"list\": [{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]}";
+    private final String jsonList = "[{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]";
 
     @Test
     public void testJsonWhenStringWithSuccess() {
@@ -127,8 +127,11 @@ public class JsonUtilsTest {
         result = JsonUtils.readStringValue(obj, "$..*.length()");
         assertThat(result).isEqualTo("6");
 
-        result = JsonUtils.readStringValue(JsonUtils.json(jsonList), "list.find{ it.name == 'Susan' }.age");
+        result = JsonUtils.readStringValue(JsonUtils.json(jsonList), "find{ it.name == 'Susan' }.age");
         assertThat(result).isEqualTo("32");
+
+        result = JsonUtils.readStringValue(JsonUtils.json(jsonList), "[0].age");
+        assertThat(result).isEqualTo("47");
     }
 
     @Test(expected = PathNotFoundException.class)
