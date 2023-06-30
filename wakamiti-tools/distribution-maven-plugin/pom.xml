@@ -120,10 +120,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.honton.chas</groupId>
-                <artifactId>exists-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <artifact>${artifactId}-${version}.jar</artifact>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>

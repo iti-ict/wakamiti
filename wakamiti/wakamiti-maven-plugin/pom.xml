@@ -141,13 +141,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.honton.chas</groupId>
-                <artifactId>exists-maven-plugin</artifactId>
-                <configuration>
-                    <artifact>${artifactId}-${version}.jar</artifact>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.6.4</version>
             </plugin>

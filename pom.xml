@@ -441,21 +441,6 @@
           <id>sonatype</id>
           <build>
              <plugins>
-               <plugin>
-                 <groupId>org.honton.chas</groupId>
-                 <artifactId>exists-maven-plugin</artifactId>
-                 <version>0.9.0</version>
-                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>remote</goal>
-                         </goals>
-                         <configuration>
-                             <repository>https://repo.maven.apache.org/maven2/</repository>
-                         </configuration>
-                     </execution>
-                 </executions>
-              </plugin>
               <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
