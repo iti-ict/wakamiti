@@ -12,16 +12,18 @@ and this project adheres to [Semantic Versioning][2].
 
 - Output field `errorClassifier` was not included when `outputFilePerTestCase = true`
 
+## [Unreleased]
 
+### Added
+
+- Extra properties in Backend context
 
 
 ## [2.0.0] - 2023-05-22
 
-
 ### Added
 
 - Gpath expressions in json and xml evaluators
-- Extra properties in Backend context
 
 ### Modified
 

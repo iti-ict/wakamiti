@@ -49,7 +49,7 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
         String name = matcher.group("name");
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
         int step = Integer.parseInt(matcher.group(3)) - 1;
-        Object result = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.RESULTS_PROP))
+        Object result = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.ContextMap.RESULTS_PROP))
                 .map(List.class::cast)
                 .orElse(new LinkedList<>())
                 .get(step);

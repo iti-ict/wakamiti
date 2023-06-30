@@ -39,8 +39,7 @@ public class RunnableBackend extends AbstractBackend {
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
-    public static final String RESULTS_PROP = "results";
-    public static final String ID_PROP = "id";
+
 
     private static final List<String> DATA_ARG_ALTERNATIVES = Arrays.asList(
             DOCUMENT_ARG,
@@ -222,7 +221,7 @@ public class RunnableBackend extends AbstractBackend {
             Map<String, Argument> arguments = stepBackend.invokingArguments();
             step.arguments().addAll(arguments.values());
             Object result = stepBackend.runnableStep().run(arguments);
-            ((List<Object>) extraProperties.get(RESULTS_PROP)).add(result);
+            ((List<Object>) extraProperties.get(ContextMap.RESULTS_PROP)).add(result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());
@@ -325,7 +324,10 @@ public class RunnableBackend extends AbstractBackend {
         return extraProperties;
     }
 
-    private class ContextMap extends LinkedHashMap<String, Object> {
+    public class ContextMap extends LinkedHashMap<String, Object> {
+
+        public static final String RESULTS_PROP = "results";
+        public static final String ID_PROP = "id";
 
         ContextMap() {
             super.put(ID_PROP, testCase.id());
