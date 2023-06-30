@@ -7,8 +7,6 @@ import imconfig.Configuration;
 import imconfig.Configurer;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Extension(
     provider =  "es.iti.wakamiti",
@@ -20,16 +18,22 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
 
 
     public static final String AZURE_HOST = "azure.host";
-    public static final String AZURE_CREDENTIALS = "azure.credentials";
-    public static final String AZURE_API_VERSION_PLAN = "azure.apiVersion.plan";
-    public static final String AZURE_API_VERSION_RUN = "azure.apiVersion.run";
+    public static final String AZURE_CREDENTIALS_USER = "azure.credentials.user";
+    public static final String AZURE_CREDENTIALS_PASSWORD = "azure.credentials.password";
+    public static final String AZURE_API_VERSION = "azure.apiVersion";
     public static final String AZURE_ORGANIZATION = "azure.organization";
     public static final String AZURE_PROJECT = "azure.project";
+    public static final String AZURE_TAG = "azure.tag";
 
 
     @Override
     public Configuration defaultConfiguration() {
-        return Configuration.factory().empty();
+        return Configuration.factory().fromPairs(
+            AZURE_CREDENTIALS_USER, "",
+            AZURE_CREDENTIALS_PASSWORD, "",
+            AZURE_TAG, "Azure",
+            AZURE_API_VERSION, "5.0"
+        );
     }
 
 
@@ -42,19 +46,19 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
 
 
     private void configure(AzureReporter azureReporter, Configuration configuration) {
-        AzureApiBuilder apiBuilder = new AzureApiBuilder();
-        requiredProperty(configuration,azureReporter,AZURE_HOST, apiBuilder::host);
-        requiredProperty(configuration,azureReporter,AZURE_CREDENTIALS,AzureReporter::setCredentials);
-        requiredProperty(configuration,azureReporter,AZURE_API_VERSION_PLAN,AzureReporter::setPlanApiVersion);
-        requiredProperty(configuration,azureReporter,AZURE_API_VERSION_RUN,AzureReporter::setRunApiVersion);
+        requiredProperty(configuration,azureReporter,AZURE_HOST, AzureReporter::setHost);
         requiredProperty(configuration,azureReporter,AZURE_ORGANIZATION,AzureReporter::setOrganization);
         requiredProperty(configuration,azureReporter,AZURE_PROJECT,AzureReporter::setProject);
+        azureReporter.setAzureTag(configuration.get(AZURE_TAG,String.class).orElse("Azure"));
+        azureReporter.setCredentialsUser(configuration.get(AZURE_CREDENTIALS_USER,String.class).orElse(""));
+        azureReporter.setCredentialsPassword(configuration.get(AZURE_CREDENTIALS_PASSWORD,String.class).orElse(""));
+        requiredProperty(configuration,azureReporter,AZURE_API_VERSION,AzureReporter::setApiVersion);
     }
 
 
 
 
-    private void requiredProperty(Configuration config, AzureApiBuilder builder, String property, BiConsumer<AzureApiBuilder,String> setter) {
+    private void requiredProperty(Configuration config, AzureReporter reporter, String property, BiConsumer<AzureReporter,String> setter) {
         String value = config.get(property,String.class).orElseThrow(()->new WakamitiException("Property {} is required",property));
         setter.accept(reporter,value);
     }
