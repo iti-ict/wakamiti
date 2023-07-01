@@ -33,6 +33,11 @@ public class WakamitiLogger {
     }
 
 
+    public static Logger forName(String name) {
+        return of(LoggerFactory.getLogger(name));
+    }
+
+
     public static Logger forClass(Class<?> logger) {
         return of(LoggerFactory.getLogger(logger));
     }

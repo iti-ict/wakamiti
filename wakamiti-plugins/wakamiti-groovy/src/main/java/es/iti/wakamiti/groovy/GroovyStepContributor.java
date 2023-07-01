@@ -29,8 +29,8 @@ public class GroovyStepContributor implements StepContributor {
      * </ul>
      *
      * <p> Examples:
-     * <blockquote><pre>{@code
-     * @ID-01
+     * <blockquote><pre>
+     * <code>@ID-01</code>
      * Scenario: Example scenario
      *   When the following groovy code is executed:
      *     """groovy
@@ -44,7 +44,7 @@ public class GroovyStepContributor implements StepContributor {
      *     assert ctx.a == 'something'
      *     assert ctx.id == 'ID-01'
      *     """
-     * }</pre></blockquote>
+     * </pre></blockquote>
      *
      *
      * @param document The script content
