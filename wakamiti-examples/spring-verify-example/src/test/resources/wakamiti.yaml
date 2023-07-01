@@ -12,6 +12,6 @@ wakamiti:
 
   database:
     connection:
-      url: jdbc:h2:tcp://localhost:9092/~/test
+      url: jdbc:h2:tcp://localhost:9092/./target/db
       username: sa
       driver: org.h2.Driver
