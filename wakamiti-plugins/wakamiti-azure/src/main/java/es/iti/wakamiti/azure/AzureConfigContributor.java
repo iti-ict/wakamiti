@@ -24,6 +24,9 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
     public static final String AZURE_ORGANIZATION = "azure.organization";
     public static final String AZURE_PROJECT = "azure.project";
     public static final String AZURE_TAG = "azure.tag";
+    public static final String AZURE_ATTACHMENTS = "azure.attachments";
+    public static final String DEFAULT_AZURE_TAG = "Azure";
+    public static final String DEFAULT_AZURE_API_VERSION = "5.0-preview";
 
 
     @Override
@@ -31,8 +34,8 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
         return Configuration.factory().fromPairs(
             AZURE_CREDENTIALS_USER, "",
             AZURE_CREDENTIALS_PASSWORD, "",
-            AZURE_TAG, "Azure",
-            AZURE_API_VERSION, "5.0"
+            AZURE_TAG, DEFAULT_AZURE_TAG,
+            AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION
         );
     }
 
@@ -49,10 +52,11 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
         requiredProperty(configuration,azureReporter,AZURE_HOST, AzureReporter::setHost);
         requiredProperty(configuration,azureReporter,AZURE_ORGANIZATION,AzureReporter::setOrganization);
         requiredProperty(configuration,azureReporter,AZURE_PROJECT,AzureReporter::setProject);
-        azureReporter.setAzureTag(configuration.get(AZURE_TAG,String.class).orElse("Azure"));
+        azureReporter.setAzureTag(configuration.get(AZURE_TAG,String.class).orElse(DEFAULT_AZURE_TAG));
         azureReporter.setCredentialsUser(configuration.get(AZURE_CREDENTIALS_USER,String.class).orElse(""));
         azureReporter.setCredentialsPassword(configuration.get(AZURE_CREDENTIALS_PASSWORD,String.class).orElse(""));
         requiredProperty(configuration,azureReporter,AZURE_API_VERSION,AzureReporter::setApiVersion);
+        azureReporter.setAttachments(configuration.getList(AZURE_ATTACHMENTS,String.class));
     }
 
 

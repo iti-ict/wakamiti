@@ -13,12 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AzureApi {
 
 
+    public static final String APIS_TEST_PLANS = "/_apis/test/plans/";
+    public static final String APIS_TEST_RUNS = "/_apis/test/runs/";
     private final String urlBase;
     private final String credentials;
     private final String apiVersion;
@@ -66,9 +68,8 @@ public class AzureApi {
 
 
 
-    public String getTestSuiteID(String planName, String suiteName) {
-        String planID = getPlanID(planName);
-        String url = "/_apis/test/plans/"+planID+"/suites";
+    public String getTestSuiteID(String planID, String suiteName) {
+        String url = APIS_TEST_PLANS +planID+"/suites";
         String response = get(url);
         return extract(
             response,
@@ -79,10 +80,8 @@ public class AzureApi {
 
 
 
-    public String getTestCaseID(String planName, String suiteName, String testCaseName) {
-        String planID = getPlanID(planName);
-        String suiteID = getTestSuiteID(planName,suiteName);
-        String url = "/_apis/test/plans/" + planID + "/suites/" + suiteID+ "/points";
+    public String getTestCaseID(String planID, String suiteID, String testCaseName) {
+        String url = APIS_TEST_PLANS + planID + "/suites/" + suiteID+ "/points";
         String response = get(url);
         return extract(
             response,
@@ -93,27 +92,21 @@ public class AzureApi {
 
 
 
-    public String getTestPointID(String planName, String suiteName, String testCaseName) {
-        String planID = getPlanID(planName);
-        String suiteID = getTestSuiteID(planName,suiteName);
-        String testCaseID = getTestCaseID(planName,suiteName,testCaseName);
-        String url = "/_apis/test/plans/"+planID+"/suites/"+suiteID+"/points?testCaseId="+testCaseID;
+    public String getTestPointID(String planID, String suiteID, String testCaseID) {
+        String url = APIS_TEST_PLANS +planID+"/suites/"+suiteID+"/points?testCaseId="+testCaseID;
         String response = get(url);
         return extract(
             response,
             "$.value.[0].id",
-            "Cannot find a test point for the test case '"+testCaseName+"'"
+            "Cannot find a test point for the test case '"+testCaseID+"'"
         );
     }
 
 
-    public String createRun(String planName, String suiteName, String testCaseName, String instant) {
-        String runName = testCaseName + "-" + instant;
-        String planID = getPlanID(planName);
-        String pointID = getTestPointID(planName, suiteName, testCaseName);
-        String url = "/_apis/test/runs";
-        String payload = "{\"name\":\""+runName+"\",\"plan\":{\"id\":"+planID+"},\"pointIds\":["+pointID+"]}";
-        String response = post(url,payload);
+    public String createRun(String planID, Set<String> testPoints, String runName) {
+        String pointIDs = String.join(",", testPoints);
+        String payload = "{\"name\":\""+runName+"\",\"plan\":{\"id\":"+planID+"},\"pointIds\":["+pointIDs+"]}";
+        String response = post(APIS_TEST_RUNS,payload);
         return extract(
             response,
             "$.id",
@@ -122,24 +115,10 @@ public class AzureApi {
     }
 
 
-
-
-    public ResultData getTestResultID(String runID) {
-        String url = "/_apis/test/runs/"+runID+"/results";
-        String response = get(url);
-        String resultID = extract(
-            response,"$.value.[0].id","Cannot get the test result for the run"
-        );
-        return new ResultData(resultID,runID);
-    }
-
-
-
-
-    public void attachReport(String runID, Path report) {
+    public void attachFile(String runID, Path report) {
         try {
             String reportEnconded = Base64.getEncoder().encodeToString(Files.readAllBytes(report));
-            String urlFile = "/_apis/test/runs/" + runID + "/attachments";
+            String urlFile = APIS_TEST_RUNS + runID + "/attachments";
             String payloadFile = "{ \"attachmentType\": \"GeneralAttachment\", \"comment\": \"Resultados ejecución\", \"fileName\": \"wakamiti.html\" , \"stream\": \"" + reportEnconded + "\" }";
             post(urlFile, payloadFile);
         } catch (IOException e) {
@@ -150,21 +129,28 @@ public class AzureApi {
 
 
 
-    public void updateTestResult(String runID, String status) {
+    public void updateRunResults(String runID, Map<String,String> statusByTestPoint) {
 
-        ResultData resultData = getTestResultID(runID);
-        String resultID = resultData.resultID;
-        String url = "/_apis/test/runs/"+runID+"/results";
+        String response = get(APIS_TEST_RUNS+runID+"/results");
 
-        String payload;
-        if (status.equalsIgnoreCase("PASSED")) {
-            payload = "[{ \"id\": " + resultID + ",  \"outcome\": \"Passed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Successful\"  }]";
-        } else if (status.equalsIgnoreCase("FAILED")) {
-            payload = "[{ \"id\": " + resultID + ",  \"outcome\": \"Failed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Failed\"  }]";
-        } else {
-            payload = "[{ \"id\": " + resultID + ",  \"outcome\": \"Unspecified\" ,   \"state\": \"Completed\",    \"comment\": \"Execution Error\"  }]";
-        }
-        patch(url,payload);
+        List<String> payloads = new LinkedList<>();
+        statusByTestPoint.forEach((testPointID, status)-> {
+            String resultID = extract(
+                    response,
+                    "$.value[?(@.testPoint.id==" + testPointID + ")].id",
+                    "Cannot get the test result for the run"
+            );
+            if (status.equalsIgnoreCase("PASSED")) {
+                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Passed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Successful\"  }");
+            } else if (status.equalsIgnoreCase("FAILED")) {
+                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Failed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Failed\"  }");
+            } else {
+                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Unspecified\" ,   \"state\": \"Completed\",    \"comment\": \"Execution Error\"  }");
+            }
+        });
+
+
+        patch(APIS_TEST_RUNS +runID+"/results","["+String.join(",",payloads)+"]");
 
     }
 

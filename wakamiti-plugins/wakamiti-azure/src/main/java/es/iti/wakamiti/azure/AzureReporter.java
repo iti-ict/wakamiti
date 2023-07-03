@@ -1,12 +1,23 @@
 package es.iti.wakamiti.azure;
 
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Stream;
 
 
 @Extension(
@@ -18,16 +29,18 @@ import org.slf4j.Logger;
 public class AzureReporter implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureReporter.class);
+    public static final String AZURE_PLAN = "azurePlan";
+    public static final String AZURE_SUITE = "azureSuite";
+    public static final String AZURE_TEST = "azureTest";
 
     private String host;
     private String credentialsUser;
     private String credentialsPassword;
     private String apiVersion;
-    private String runApiVersion;
     private String organization;
     private String project;
     private String azureTag;
-
+    private List<String> attachments;
 
     public void setHost(String host) {
         this.host = host;
@@ -57,6 +70,10 @@ public class AzureReporter implements Reporter {
         this.azureTag = azureTag;
     }
 
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
+    }
+
     @Override
     public void report(PlanNodeSnapshot result) {
 
@@ -69,40 +86,82 @@ public class AzureReporter implements Reporter {
         );
 
 
-        reportNode(result,api);
+        Map<String,List<PlanNodeSnapshot>> testCases = getTestCases(result, new HashMap<>());
+        if (testCases.isEmpty()) {
+            return;
+        }
+
+
+
+        testCases.forEach((testPlan, planTestCases)->{
+
+            String planID = api.getPlanID(testPlan);
+            Map<String,String> testPoints = getTestPointsStatus(planID, planTestCases, api);
+            String runID = api.createRun(planID, testPoints.keySet(), testPlan + " - run by Wakamiti ");
+            api.updateRunResults(runID,testPoints);
+            attachFiles(runID, api);
+
+        });
 
     }
 
-    private void reportNode(PlanNodeSnapshot node, AzureApi api) {
+
+
+    private void attachFiles(String runID, AzureApi api) {
+        for (String attachment : attachments) {
+            var pathMatcher = FileSystems.getDefault().getPathMatcher("glob:"+attachment);
+            try (Stream<Path> walker = Files.walk(Path.of("")).filter(pathMatcher::matches)) {
+                walker.forEach(file -> {
+                    LOGGER.info("attaching {}...", file);
+                    api.attachFile(runID, file);
+                });
+            } catch (IOException e) {
+                LOGGER.error("Cannot attach file {} : {}", attachment, e.getMessage());
+                LOGGER.debug("",e);
+            }
+        }
+    }
+
+
+    private Map<String,List<PlanNodeSnapshot>> getTestCases(PlanNodeSnapshot node, Map<String,List<PlanNodeSnapshot>> result) {
         if (node.getNodeType() == NodeType.TEST_CASE && node.getTags().contains(azureTag)) {
-            updateTestCase(node,api);
+            String testPlan = property(node, AZURE_PLAN);
+            String suiteName = property(node, AZURE_SUITE);
+            if (testPlan != null && suiteName != null) {
+                result.computeIfAbsent(testPlan, x->new LinkedList<>()).add(node);
+            }
         } else if (node.getChildren() != null){
-            node.getChildren().forEach(child -> reportNode(child,api));
+            node.getChildren().forEach(child -> getTestCases(child,result));
         }
+        return result;
     }
 
 
 
-    private void updateTestCase(PlanNodeSnapshot testCase, AzureApi api) {
-        try {
-            String runID = api.createRun(
-                property(testCase, "azurePlan"),
-                property(testCase, "azureSuite"),
-                property(testCase, "azureTest", testCase.getName()),
-                testCase.getFinishInstant()
-            );
-            api.updateTestResult(runID, testCase.getResult().name());
-        } catch (RuntimeException e) {
-            LOGGER.error("Cannot update test case result in Azure: {}",e.getMessage());
-            LOGGER.debug("",e);
-        }
 
+    private Map<String,String> getTestPointsStatus(String planID, List<PlanNodeSnapshot> planTestCases, AzureApi api) {
+        Map<String,String> testPoints = new HashMap<>();
+        for (PlanNodeSnapshot testCase : planTestCases) {
+            String suiteName = property(testCase, AZURE_SUITE);
+            String testName = property(testCase, AZURE_TEST, testCase.getName());
+            String suiteID = api.getTestSuiteID(planID, suiteName);
+            String testCaseID = api.getTestCaseID(planID,suiteID, testName);
+            testPoints.put(api.getTestPointID(
+                planID,
+                suiteID,
+                testCaseID
+            ), testCase.getResult().name());
+        }
+        return testPoints;
     }
+
+
 
 
     private String property(PlanNodeSnapshot node, String property) {
         if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            throw new WakamitiException("Property {} not present in test case {}", property, node.getDisplayName());
+            LOGGER.warn("Property {} not present in test case {}", property, node.getDisplayName());
+            return null;
         }
         return node.getProperties().get(property);
     }

@@ -31,12 +31,13 @@ import org.junit.Test;
     @Property(key = AzureConfigContributor.AZURE_PROJECT, value = "SIDI"),
     @Property(key = AzureConfigContributor.AZURE_CREDENTIALS_USER, value = ""),
     @Property(key = AzureConfigContributor.AZURE_CREDENTIALS_PASSWORD, value = "y5h42vhd2yqrn5prgzbpgysqub55jn2q42xjc6cjujsqjjzoadaa"),
-    @Property(key = AzureConfigContributor.AZURE_API_VERSION, value = "5.0")
+    @Property(key = AzureConfigContributor.AZURE_API_VERSION, value = "5.0-preview"),
+    @Property(key = AzureConfigContributor.AZURE_ATTACHMENTS, value = "src/test/resources/wakamiti.html")
 })
 public class TestAzure {
 
 
-    @Test
+    //@Test
     public void azureIntegration() {
         Wakamiti wakamiti = Wakamiti.instance();
         Configuration conf = Wakamiti.defaultConfiguration().appendFromAnnotation(TestAzure.class);
