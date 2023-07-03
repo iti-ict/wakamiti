@@ -12,7 +12,7 @@ import java.io.StringWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BinaryOperator;
@@ -53,7 +53,7 @@ public class PlanNodeSnapshot {
     private String errorMessage;
     private String errorTrace;
     private String errorClassifier;
-    private Map<String,Long> errorClassifiers;
+    private Map<String, Long> errorClassifiers;
     private Result result;
     private Map<Result, Long> testCaseResults;
     private Map<Result, Long> childrenResults;
@@ -166,13 +166,13 @@ public class PlanNodeSnapshot {
         LinkedHashMap<String, LongAdder> results = new LinkedHashMap<>();
         if (node.nodeType() == NodeType.TEST_CASE) {
             node.errorClassifiers().findFirst()
-                    .ifPresent(errorClassifier -> results.computeIfAbsent(errorClassifier,x->new LongAdder()).add(1L));
+                    .ifPresent(errorClassifier -> results.computeIfAbsent(errorClassifier, x -> new LongAdder()).add(1L));
         } else if (node.nodeType() == NodeType.AGGREGATOR && node.hasChildren()) {
             node.children().map(PlanNodeSnapshot::countTestClassifiers).filter(Objects::nonNull)
                     .flatMap(map -> map.entrySet().stream())
-                    .forEach(entry -> results.computeIfAbsent(entry.getKey(), x->new LongAdder()).add(entry.getValue()));
+                    .forEach(entry -> results.computeIfAbsent(entry.getKey(), x -> new LongAdder()).add(entry.getValue()));
         }
-        return results.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->e.getValue().longValue()));
+        return results.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().longValue()));
     }
 
     private static Map<Result, Long> countChildren(PlanNode node) {
@@ -234,7 +234,7 @@ public class PlanNodeSnapshot {
     }
 
     private String instantToString(Instant instant) {
-        return LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()).toString();
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toString();
     }
 
     private String errorTrace(Throwable error) {
@@ -336,7 +336,6 @@ public class PlanNodeSnapshot {
     public String getErrorClassifier() {
         return errorClassifier;
     }
-
 
 
     public Result getResult() {
