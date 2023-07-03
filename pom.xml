@@ -85,6 +85,12 @@
         <!-- wakamiti version -->
         <revision>2.1.0-SNAPSHOT</revision>
 
+        <gherkin-parser.version>1.0.3-SNAPSHOT</gherkin-parser.version>
+        <wakamiti-api.version>2.1.0-SNAPSHOT</wakamiti-api.version>
+        <wakamiti-core.version>${revision}</wakamiti-core.version> <!-- must be the same as revision -->
+        <wakamiti-lsp.version>${revision}</wakamiti-lsp.version>   <!-- must be the same as revision -->
+        <jext.version>1.0.0</jext.version>
+
         <!-- encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -108,9 +114,6 @@
         <maven.javadoc.version>2.8</maven.javadoc.version>
         <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
         <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
-
-        <!-- annotation processor versions -->
-        <jext.version>1.0.0</jext.version>
 
         <!-- sonar cloud -->
         <sonar.organization>iti-ict</sonar.organization>

@@ -24,21 +24,16 @@
     <properties>
 
         <!-- internal dependencies -->
-        <gherkin-parser.version>1.0.2</gherkin-parser.version>
-        <wakamiti-api.version>2.0.1</wakamiti-api.version>
-        <wakamiti-core.version>${revision}</wakamiti-core.version> <!-- must be the same as revision -->
-        <wakamiti-lsp.version>${revision}</wakamiti-lsp.version>   <!-- must be the same as revision -->
-        <wakamiti-rest.version>2.0.0</wakamiti-rest.version>
-        <wakamiti-groovy.version>2.0.0</wakamiti-groovy.version>
-        <wakamiti-db.version>2.0.0</wakamiti-db.version>
-        <wakamiti-amqp.version>2.0.0</wakamiti-amqp.version>
-        <wakamiti-io.version>2.0.0</wakamiti-io.version>
-        <wakamiti-html-report.version>2.0.0</wakamiti-html-report.version>
-        <wakamiti-cucumber-exporter.version>2.0.0</wakamiti-cucumber-exporter.version>
-        <wakamiti-spring.version>2.0.0</wakamiti-spring.version>
-        <wakamiti-appium.version>2.0.0</wakamiti-appium.version>
-        <wakamiti-fileuploader.version>2.0.0</wakamiti-fileuploader.version>
-        <jext.version>1.0.0</jext.version>
+<!--        <wakamiti-rest.version>2.0.0</wakamiti-rest.version>-->
+<!--        <wakamiti-groovy.version>2.1.0-SNAPSHOT</wakamiti-groovy.version>-->
+<!--        <wakamiti-db.version>2.0.0</wakamiti-db.version>-->
+<!--        <wakamiti-amqp.version>2.0.0</wakamiti-amqp.version>-->
+<!--        <wakamiti-io.version>2.0.0</wakamiti-io.version>-->
+<!--        <wakamiti-html-report.version>2.0.1-SNAPSHOT</wakamiti-html-report.version>-->
+<!--        <wakamiti-cucumber-exporter.version>2.0.0</wakamiti-cucumber-exporter.version>-->
+<!--        <wakamiti-spring.version>2.0.0</wakamiti-spring.version>-->
+<!--        <wakamiti-appium.version>2.0.0</wakamiti-appium.version>-->
+<!--        <wakamiti-fileuploader.version>2.0.0</wakamiti-fileuploader.version>-->
 
         <!-- external dependencies -->
         <jsonassert.version>1.5.0</jsonassert.version>
@@ -135,56 +130,56 @@
                 <artifactId>wakamiti-lsp</artifactId>
                 <version>${wakamiti-lsp.version}</version>
             </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-rest</artifactId>
-                <version>${wakamiti-rest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-groovy</artifactId>
-                <version>${wakamiti-groovy.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-db</artifactId>
-                <version>${wakamiti-db.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-amqp</artifactId>
-                <version>${wakamiti-amqp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-io</artifactId>
-                <version>${wakamiti-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-spring</artifactId>
-                <version>${wakamiti-spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-html-report</artifactId>
-                <version>${wakamiti-html-report.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-cucumber-exporter</artifactId>
-                <version>${wakamiti-cucumber-exporter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-appium</artifactId>
-                <version>${wakamiti-appium.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-file-uploader</artifactId>
-                <version>${wakamiti-fileuploader.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-rest</artifactId>-->
+<!--                <version>${wakamiti-rest.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-groovy</artifactId>-->
+<!--                <version>${wakamiti-groovy.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-db</artifactId>-->
+<!--                <version>${wakamiti-db.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-amqp</artifactId>-->
+<!--                <version>${wakamiti-amqp.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-io</artifactId>-->
+<!--                <version>${wakamiti-io.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-spring</artifactId>-->
+<!--                <version>${wakamiti-spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-html-report</artifactId>-->
+<!--                <version>${wakamiti-html-report.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-cucumber-exporter</artifactId>-->
+<!--                <version>${wakamiti-cucumber-exporter.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-appium</artifactId>-->
+<!--                <version>${wakamiti-appium.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>es.iti.wakamiti</groupId>-->
+<!--                <artifactId>wakamiti-file-uploader</artifactId>-->
+<!--                <version>${wakamiti-fileuploader.version}</version>-->
+<!--            </dependency>-->
 
             <!-- external dependencies -->
             <dependency>
