@@ -7,7 +7,7 @@ Característica: Test Spanish
 Antecedentes: Estos son los antecedentes
   Dado el conjunto de números reales ℝ
 
-@ID-1 #comment
+@ID-1 something
 Escenario: Escenario de test
  Dado un número con valor 6,1 y otro número con valor 3
  Cuando se multiplican ambos números

@@ -9,9 +9,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,15 +41,21 @@ public class TestParser {
 
     @Test(expected = ParserException.CompositeParserException.class)
     public void testParserError() throws IOException {
-        for (String feature : List.of(
-                "gherkinDocument_tag_err.feature"
+        try (var reader = new InputStreamReader(
+                Objects.requireNonNull(classLoader.getResourceAsStream("gherkinDocument_tag_err.feature"))
         )) {
-            try (var reader = new InputStreamReader(
-                    Objects.requireNonNull(classLoader.getResourceAsStream(feature))
-            )) {
-                GherkinDocument document = new GherkinParser().parse(reader);
-                assertNotNull(document);
-            }
+            GherkinDocument document = new GherkinParser().parse(reader);
+            assertNotNull(document);
+        }
+    }
+
+    @Test(expected = ParserException.CompositeParserException.class)
+    public void testParserError2() throws IOException {
+        try (var reader = new InputStreamReader(
+                Objects.requireNonNull(classLoader.getResourceAsStream("gherkinDocument_tag_err2.feature"))
+        )) {
+            GherkinDocument document = new GherkinParser().parse(reader);
+            assertNotNull(document);
         }
     }
 }

@@ -9,6 +9,7 @@ package es.iti.commons.gherkin.internal;
 import static es.iti.commons.gherkin.internal.Parser.ITokenMatcher;
 import static es.iti.commons.gherkin.internal.Parser.TokenType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,8 +110,8 @@ public class TokenMatcher implements ITokenMatcher {
 
     @Override
     public boolean match_TagLine(Token token) {
-        if (token.line.startsWith(GherkinLanguageConstants.TAG_PREFIX)
-                && !token.getTokenValue().contains(GherkinLanguageConstants.COMMENT_PREFIX)) {
+        if (Arrays.stream(token.getTokenValue().split("\\s+"))
+                .allMatch(t -> t.startsWith(GherkinLanguageConstants.TAG_PREFIX))) {
             setTokenMatched(token, TokenType.TagLine, null, null, null, token.line.getTags());
             return true;
         }
