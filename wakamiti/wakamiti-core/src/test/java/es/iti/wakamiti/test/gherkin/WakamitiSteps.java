@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class WakamitiSteps implements StepContributor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.test");
-    private static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+    private static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader(new File("."));
 
     private int value1;
     private float value2;

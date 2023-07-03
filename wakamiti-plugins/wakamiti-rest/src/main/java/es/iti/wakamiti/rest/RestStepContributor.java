@@ -10,6 +10,8 @@
 package es.iti.wakamiti.rest;
 
 
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.rest.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -40,6 +42,11 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
 
+
+    @SetUp
+    public void init() {
+        resourceLoader = WakamitiStepRunContext.current().resourceLoader();
+    }
 
 
     @Step(value = "rest.define.contentType", args = "word")
