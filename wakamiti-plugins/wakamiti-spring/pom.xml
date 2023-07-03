@@ -38,6 +38,9 @@
         <jext.version>1.0.0</jext.version>
         <jext-spring.version>1.0.0</jext-spring.version>
         <spring.version>2.7.0</spring.version>
+
+        <wakamiti-rest.version>2.0.0</wakamiti-rest.version>
+        <wakamiti-db.version>2.0.1</wakamiti-db.version>
     </properties>
 
     <dependencyManagement>
@@ -82,11 +85,13 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-db</artifactId>
+            <version>${wakamiti-db.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-rest</artifactId>
+            <version>${wakamiti-rest.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
