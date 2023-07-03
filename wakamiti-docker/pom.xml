@@ -123,6 +123,15 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
+
+            <dependencies>
+                <dependency>
+                    <groupId>es.iti.wakamiti</groupId>
+                    <artifactId>wakamiti-api</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
 
@@ -211,9 +220,7 @@
                             <arguments>
                                 <argument>run</argument>
                                 <argument>-v</argument>
-                                <argument>${project.basedir}/target:/target</argument>
-                                <argument>-v</argument>
-                                <argument>${project.basedir}/test:/wakamiti</argument>
+                                <argument>${project.basedir}/target:/wakamiti</argument>
                                 <argument>--rm</argument>
                                 <argument>wakamiti/wakamiti:test</argument>
                             </arguments>

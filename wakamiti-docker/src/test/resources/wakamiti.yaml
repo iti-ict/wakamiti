@@ -1,0 +1,16 @@
+wakamiti:
+  resourceTypes:
+    - gherkin
+
+  resourcePath: test-classes
+
+  nonRegisteredStepProviders:
+    - es.iti.wakamiti.test.WakamitiSteps
+
+  log:
+    path: /wakamiti
+
+  outputFilePath: /wakamiti/wakamiti.json
+  htmlReport:
+    title: Pruebas wakamiti
+    output: /wakamiti/wakamiti.html
