@@ -6,6 +6,7 @@
 package es.iti.wakamiti.rest;
 
 
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
@@ -54,7 +55,6 @@ public class RestSupport {
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 
 
-    protected ResourceLoader resourceLoader;
     protected URL baseURL;
     protected String path;
     protected String subject;
@@ -258,8 +258,12 @@ public class RestSupport {
         }
     }
 
-    private String readFile(File file) {
-        return resourceLoader.readFileAsString(file);
+    String readFile(File file) {
+        return resourceLoader().readFileAsString(file);
     }
 
+
+    protected ResourceLoader resourceLoader() {
+        return WakamitiRunContext.current().resourceLoader();
+    }
 }

@@ -57,4 +57,8 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
         return Wakamiti.workingDir(configuration);
     }
 
+    @Override
+    public Configuration defaultConfiguration() {
+        return Wakamiti.defaultConfiguration();
+    }
 }

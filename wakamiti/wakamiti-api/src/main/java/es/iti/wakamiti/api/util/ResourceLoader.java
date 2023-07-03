@@ -352,6 +352,14 @@ public class ResourceLoader {
     }
 
 
+    public Path absolutePath(Path path) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return workingDir.toPath().resolve(path);
+    }
+
+
     protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
         try {
             return Collections.list(classLoader.getResources(classPath)).stream()

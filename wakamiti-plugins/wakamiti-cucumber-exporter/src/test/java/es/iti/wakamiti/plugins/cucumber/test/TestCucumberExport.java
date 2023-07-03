@@ -1,10 +1,13 @@
 package es.iti.wakamiti.plugins.cucumber.test;
 
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,6 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestCucumberExport {
+
+    @Before
+    public void prepare() {
+        WakamitiRunContext.set(new WakamitiRunContext(Wakamiti.defaultConfiguration()));
+    }
 
     @Test
     public void testCucumberExport() throws IOException {

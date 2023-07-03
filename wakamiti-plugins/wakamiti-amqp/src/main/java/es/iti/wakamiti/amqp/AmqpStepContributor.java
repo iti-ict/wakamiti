@@ -9,6 +9,7 @@ package es.iti.wakamiti.amqp;
 import com.rabbitmq.client.*;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.SetUp;
@@ -51,7 +52,6 @@ public class AmqpStepContributor implements StepContributor {
     private boolean exclusive;
     private boolean autoDelete;
 
-    private ResourceLoader resourceLoader;
 
     public void setConnectionParams(AmqpConnectionParams connectionParams) {
         this.connectionParams = connectionParams;
@@ -86,11 +86,6 @@ public class AmqpStepContributor implements StepContributor {
         this.autoDelete = autoDelete;
     }
 
-
-    @SetUp
-    public void init() {
-        resourceLoader = WakamitiStepRunContext.current().resourceLoader();
-    }
 
 
     @TearDown
@@ -191,7 +186,7 @@ public class AmqpStepContributor implements StepContributor {
 
 
     private String readFile(File file) {
-        return resourceLoader.readFileAsString(file);
+        return WakamitiRunContext.current().resourceLoader().readFileAsString(file);
     }
 
 

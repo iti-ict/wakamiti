@@ -177,10 +177,11 @@
                             <logLevel>${wakamitiLog}</logLevel>
                             <!-- Wakamiti configuration -->
                             <properties>
+                                <workingDir>target</workingDir>
                                 <resourcePath>${project.basedir}/src/test/resources</resourcePath>
-                                <outputFilePath>target/wakamiti/wakamiti.json</outputFilePath>
+                                <outputFilePath>wakamiti/wakamiti.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
-                                <htmlReport.output>target/wakamiti/wakamiti.html</htmlReport.output>
+                                <htmlReport.output>wakamiti/wakamiti.html</htmlReport.output>
                             </properties>
                         </configuration>
                         <dependencies>
@@ -226,6 +227,12 @@
                                 <artifactId>h2</artifactId>
                                 <version>1.4.200</version>
                             </dependency>
+                            <dependency>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-lang3</artifactId>
+                                <version>3.9</version>
+                            </dependency>
+
                         </dependencies>
                     </plugin>
 
