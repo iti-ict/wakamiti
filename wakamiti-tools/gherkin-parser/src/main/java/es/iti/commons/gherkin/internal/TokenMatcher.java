@@ -109,7 +109,8 @@ public class TokenMatcher implements ITokenMatcher {
 
     @Override
     public boolean match_TagLine(Token token) {
-        if (token.line.startsWith(GherkinLanguageConstants.TAG_PREFIX)) {
+        if (token.line.startsWith(GherkinLanguageConstants.TAG_PREFIX)
+                && !token.getTokenValue().contains(GherkinLanguageConstants.COMMENT_PREFIX)) {
             setTokenMatched(token, TokenType.TagLine, null, null, null, token.line.getTags());
             return true;
         }
