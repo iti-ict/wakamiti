@@ -49,6 +49,14 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 <!--    <dependencies>-->
 <!--        <dependency>-->
 <!--            <groupId>es.iti.wakamiti</groupId>-->
@@ -125,15 +133,54 @@
             </activation>
 
 
-            <dependencies>
-                <dependency>
-                    <groupId>es.iti.wakamiti</groupId>
-                    <artifactId>wakamiti-api</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven.compiler.version}</version>
+                        <configuration>
+                            <!--release>${maven.compiler.release}</release-->
+                            <compilerArgs>
+                                <arg>-Xlint:all</arg>
+                            </compilerArgs>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>es.iti.commons</groupId>
+                                    <artifactId>jext</artifactId>
+                                    <version>${jext.version}</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>test-compile</id>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.0</version>
+
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+
+                        <executions>
+                            <!-- src/test/resources/* ► target/test-classes/ -->
+                            <execution>
+                                <id>default-testResources</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>testResources</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -219,9 +266,13 @@
                             <executable>docker</executable>
                             <arguments>
                                 <argument>run</argument>
+                                <argument>-e</argument>
+                                <argument>ADD_CLASSPATH=/wakamiti/test-classes</argument>
                                 <argument>-v</argument>
                                 <argument>${project.basedir}/target:/wakamiti</argument>
                                 <argument>--rm</argument>
+                                <argument>-w</argument>
+                                <argument>/wakamiti/test-classes</argument>
                                 <argument>wakamiti/wakamiti:test</argument>
                             </arguments>
                             <quietLogs>false</quietLogs>
