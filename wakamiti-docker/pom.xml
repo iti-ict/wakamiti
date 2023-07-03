@@ -165,7 +165,7 @@
                                 <image>
                                     <name>wakamiti/wakamiti:test</name>
                                     <build>
-                                        <dockerFile>${project.basedir}/Dockerfile_all</dockerFile>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                     </build>
                                 </image>
                             </images>
