@@ -1,11 +1,11 @@
 wakamiti:
   resourceTypes:
     - gherkin
-  launcher:
-    modules:
-      - com.h2database:h2:1.4.199
-  nonRegisteredStepProviders:
-    - es.iti.wakamiti.custom.CustomSteps
+#  launcher:
+#    modules:
+#      - com.h2database:h2:1.4.199
+#  nonRegisteredStepProviders:
+#    - es.iti.wakamiti.custom.CustomSteps
 
   log:
     path: /target
