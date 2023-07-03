@@ -369,11 +369,13 @@ public class Wakamiti {
 
 
     public PlanNode executePlan(PlanNode plan, Configuration configuration) {
+        WakamitiRunContext.set(new WakamitiRunContext(configuration));
         PlanNode result = new PlanRunner(plan, configuration).run();
         writeOutputFile(plan, configuration);
         if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
             generateReports(configuration,new PlanNodeSnapshot(plan));
         }
+        WakamitiRunContext.clear();
         return result;
     }
 
@@ -424,7 +426,9 @@ public class Wakamiti {
 
     private Path writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(WakamitiConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
-        Path path = PathUtil.replacePlaceholders(Paths.get(outputPath).toAbsolutePath(), plan);
+        Path path = resourceLoader(configuration).absolutePath(
+            PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
+        );
         Path parentPath = path.getParent();
         if (parentPath != null) {
             Files.createDirectories(parentPath);
@@ -441,7 +445,9 @@ public class Wakamiti {
 
     private void writeOutputFilesPerTestCase(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
-        Path path = PathUtil.replacePlaceholders(Paths.get(outputPath).toAbsolutePath(), plan);
+        Path path = resourceLoader(configuration).absolutePath(
+            PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
+        );
         Files.createDirectories(path);
 
         List<PlanNode> testCases = plan
@@ -469,7 +475,7 @@ public class Wakamiti {
                 REPORT_SOURCE
             );
         }
-        generateReports(configuration, Path.of(reportSource));
+        generateReports(configuration, resourceLoader(configuration).absolutePath(Path.of(reportSource)));
     }
 
 

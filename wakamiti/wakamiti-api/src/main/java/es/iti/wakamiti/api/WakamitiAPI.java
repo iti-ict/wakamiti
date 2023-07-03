@@ -37,4 +37,5 @@ public interface WakamitiAPI {
     String version();
     Path workingDir(Configuration configuration);
 
+    Configuration defaultConfiguration();
 }

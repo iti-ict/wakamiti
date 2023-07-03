@@ -7,7 +7,9 @@
 package es.iti.wakamiti.files;
 
 
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -186,7 +188,7 @@ public class FilesHelper {
     private static Path createSymbolicLink(Path link, Path path) {
         try {
             LOGGER.debug("Creating symbolic link [{}] to [{}]", link, path);
-            return Files.createSymbolicLink(link, path);
+            return Files.createSymbolicLink(absolutePath(link), absolutePath(path));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -274,20 +276,18 @@ public class FilesHelper {
     }
 
 
-
     private static File absolutePath(File file) {
-        if (file.isAbsolute()) {
-            return file;
-        }
-        return new File(WakamitiStepRunContext.current().workingDir().toFile(),file.toString());
+        return resourceLoader().absolutePath(file);
     }
 
 
     private static Path absolutePath(Path path) {
-        if (path.isAbsolute()) {
-            return path;
-        }
-        return WakamitiStepRunContext.current().workingDir().resolve(path);
+        return resourceLoader().absolutePath(path);
+    }
+
+
+    private static ResourceLoader resourceLoader() {
+        return WakamitiRunContext.current().resourceLoader();
     }
 
 }

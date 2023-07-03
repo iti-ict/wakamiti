@@ -55,6 +55,11 @@
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

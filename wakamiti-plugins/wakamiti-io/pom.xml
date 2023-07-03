@@ -76,6 +76,11 @@
             <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- jExt annotation processor -->
