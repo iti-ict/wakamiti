@@ -134,21 +134,21 @@
             <artifactId>quarkus-test-security</artifactId>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>es.iti.wakamiti</groupId>-->
+<!--            <artifactId>wakamiti-db</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>es.iti.wakamiti</groupId>-->
+<!--            <artifactId>wakamiti-rest</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>es.iti.wakamiti</groupId>-->
+<!--            <artifactId>wakamiti-html-report</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-html-report</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-core</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,4 @@
 #language: es
-#modules: groovy-steps
 @test1
 Característica: Prueba
 	
