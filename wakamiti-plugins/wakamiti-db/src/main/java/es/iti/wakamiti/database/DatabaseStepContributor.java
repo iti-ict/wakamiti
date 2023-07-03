@@ -18,6 +18,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.SetUp;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.hamcrest.Matchers;
@@ -62,6 +65,13 @@ public class DatabaseStepContributor implements StepContributor {
     private String nullSymbol;
     private String csvFormat;
     private boolean enableCleanupUponCompletion;
+    private ResourceLoader resourceLoader;
+
+
+    @SetUp
+    public void init() {
+        resourceLoader = WakamitiStepRunContext.current().resourceLoader();
+    }
 
 
     public Connection connection() throws SQLException {
@@ -144,9 +154,7 @@ public class DatabaseStepContributor implements StepContributor {
     // TODO: mostrar la ruta absoluta del fichero en el mensaje de error cuando no lo encuentra
     @Step("db.define.cleanup.file")
     public void setManualCleanup(File file) throws IOException {
-        try (Reader reader = new FileReader(file)) {
-            helper.setCleanUpOperations(IOUtils.toString(reader), file.toString());
-        }
+        helper.setCleanUpOperations(resourceLoader.readFileAsString(file), file.toString());
     }
 
     @Step(
@@ -172,9 +180,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step("db.action.script.file")
     public void executeSQLScript(File file) throws IOException, SQLException, JSQLParserException {
-        try (Reader reader = new FileReader(file)) {
-            helper.executeSQLStatements(IOUtils.toString(reader), file.toString(), enableCleanupUponCompletion);
-        }
+        helper.executeSQLStatements(resourceLoader.readFileAsString(file), file.toString(), enableCleanupUponCompletion);
     }
 
 
@@ -192,7 +198,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step("db.action.insert.from.xls")
     public void insertFromXLSFile(File file) throws IOException, SQLException {
-        try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
+        try (MultiDataSet multiDataSet = new OoxmlDataSet(resourceLoader.absolutePath(file), xlsIgnoreSheetRegex, nullSymbol)) {
             helper.deleteMultiDataSet(multiDataSet, false);
             helper.insertMultiDataSet(multiDataSet.copy(), enableCleanupUponCompletion);
         }
@@ -201,7 +207,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.insert.from.csv", args = { "csv:file", "table:word" })
     public void insertFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, resourceLoader.absolutePath(file), csvFormat, nullSymbol)) {
             helper.deleteDataSet(dataSet, false);
             helper.insertDataSet(dataSet.copy(), enableCleanupUponCompletion);
         }
@@ -224,7 +230,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws IOException, SQLException, InvalidFormatException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, nullSymbol
+            resourceLoader.absolutePath(file), xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.deleteMultiDataSet(multiDataSet, enableCleanupUponCompletion);
         }
@@ -233,7 +239,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.action.delete.from.csv", args = { "csv:file", "table:word" })
     public void deleteFromCSVFile(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, resourceLoader.absolutePath(file), csvFormat, nullSymbol)) {
             helper.deleteDataSet(dataSet, enableCleanupUponCompletion);
         }
     }
@@ -345,7 +351,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws InvalidFormatException, IOException, SQLException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, nullSymbol
+            resourceLoader.absolutePath(file), xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.assertMultiDataSetExists(multiDataSet);
         }
@@ -354,7 +360,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, resourceLoader.absolutePath(file), csvFormat, nullSymbol)) {
             helper.assertDataSetExists(dataSet);
         }
     }
@@ -486,7 +492,7 @@ public class DatabaseStepContributor implements StepContributor {
         File file
     ) throws InvalidFormatException, IOException, SQLException {
         try (MultiDataSet multiDataSet = new OoxmlDataSet(
-            file, xlsIgnoreSheetRegex, nullSymbol
+            resourceLoader.absolutePath(file), xlsIgnoreSheetRegex, nullSymbol
         )) {
             helper.assertMultiDataSetNotExists(multiDataSet);
         }
@@ -495,7 +501,7 @@ public class DatabaseStepContributor implements StepContributor {
 
     @Step(value = "db.assert.table.not.exists.csv", args = { "csv:file", "table:word" })
     public void assertCSVFileNotExists(File file, String table) throws IOException, SQLException {
-        try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
+        try (DataSet dataSet = new CsvDataSet(table, resourceLoader.absolutePath(file), csvFormat, nullSymbol)) {
             helper.assertDataSetNotExists(dataSet);
         }
     }

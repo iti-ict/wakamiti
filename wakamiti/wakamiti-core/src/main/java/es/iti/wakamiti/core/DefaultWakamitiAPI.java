@@ -5,6 +5,10 @@ import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiContributors;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
+import imconfig.Configuration;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class DefaultWakamitiAPI implements WakamitiAPI {
 
@@ -25,7 +29,17 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
 
     @Override
     public ResourceLoader resourceLoader() {
-        return Wakamiti.resourceLoader();
+        return Wakamiti.resourceLoader(new File("."));
+    }
+
+    @Override
+    public ResourceLoader resourceLoader(File workingDir) {
+        return Wakamiti.resourceLoader(workingDir);
+    }
+
+    @Override
+    public ResourceLoader resourceLoader(Configuration configuration) {
+        return Wakamiti.resourceLoader(configuration);
     }
 
     @Override
@@ -36,6 +50,11 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
     @Override
     public String version() {
         return getClass().getPackage().getImplementationVersion();
+    }
+
+    @Override
+    public Path workingDir(Configuration configuration) {
+        return Wakamiti.workingDir(configuration);
     }
 
 }

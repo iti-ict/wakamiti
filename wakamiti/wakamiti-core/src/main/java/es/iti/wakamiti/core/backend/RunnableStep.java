@@ -13,6 +13,7 @@ import es.iti.wakamiti.api.util.*;
 import es.iti.wakamiti.core.Wakamiti;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -30,7 +31,7 @@ public class RunnableStep {
     private final Map<Locale, String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
-    private final ResourceLoader resourceLoader = new ResourceLoader();
+    private final ResourceLoader resourceLoader = new ResourceLoader(new File("."));
     private final String stepProvider;
 
 

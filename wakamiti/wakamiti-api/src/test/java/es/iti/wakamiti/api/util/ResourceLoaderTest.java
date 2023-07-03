@@ -27,7 +27,7 @@ public class ResourceLoaderTest {
 
         Predicate<String> txtFilter = filename -> filename.endsWith(".txt");
 
-        List<Resource> discoveredResources = new ResourceLoader()
+        List<Resource> discoveredResources = new ResourceLoader(new File("."))
                 .discoverResources("classpath:discovery", txtFilter, IOUtils::toString)
                 .stream().sorted(Comparator.comparing(Resource::absolutePath))
                 .collect(Collectors.toList());

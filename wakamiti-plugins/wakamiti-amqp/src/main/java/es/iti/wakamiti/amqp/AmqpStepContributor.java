@@ -9,11 +9,14 @@ package es.iti.wakamiti.amqp;
 import com.rabbitmq.client.*;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Duration;
 import org.awaitility.core.ConditionTimeoutException;
@@ -48,6 +51,7 @@ public class AmqpStepContributor implements StepContributor {
     private boolean exclusive;
     private boolean autoDelete;
 
+    private ResourceLoader resourceLoader;
 
     public void setConnectionParams(AmqpConnectionParams connectionParams) {
         this.connectionParams = connectionParams;
@@ -80,6 +84,12 @@ public class AmqpStepContributor implements StepContributor {
 
     public void setAutoDelete(boolean autoDelete) {
         this.autoDelete = autoDelete;
+    }
+
+
+    @SetUp
+    public void init() {
+        resourceLoader = WakamitiStepRunContext.current().resourceLoader();
     }
 
 
@@ -181,11 +191,7 @@ public class AmqpStepContributor implements StepContributor {
 
 
     private String readFile(File file) {
-        try {
-            return Files.readString(file.toPath(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new WakamitiException(e);
-        }
+        return resourceLoader.readFileAsString(file);
     }
 
 

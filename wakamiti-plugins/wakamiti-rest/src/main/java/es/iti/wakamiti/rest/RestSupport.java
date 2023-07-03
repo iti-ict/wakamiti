@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.rest;
 
+
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
@@ -45,13 +46,15 @@ import java.util.stream.Stream;
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
-    public static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+
 
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
 
+
+    protected ResourceLoader resourceLoader;
     protected URL baseURL;
     protected String path;
     protected String subject;

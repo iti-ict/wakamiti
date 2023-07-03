@@ -10,8 +10,11 @@
 package es.iti.wakamiti.api;
 
 
+import es.iti.wakamiti.api.util.ResourceLoader;
 import imconfig.Configuration;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Locale;
 
 
@@ -40,6 +43,8 @@ public class WakamitiStepRunContext {
     private final Backend backend;
     private final Locale stepLocale;
     private final Locale dataLocale;
+    private final ResourceLoader resourceLoader;
+    private final Path workingDir;
 
 
     public WakamitiStepRunContext(
@@ -52,6 +57,8 @@ public class WakamitiStepRunContext {
         this.backend = backend;
         this.stepLocale = stepLocale;
         this.dataLocale = dataLocale;
+        this.workingDir = WakamitiAPI.instance().workingDir(configuration);
+        this.resourceLoader = WakamitiAPI.instance().resourceLoader(workingDir.toFile());
     }
 
 
@@ -78,4 +85,28 @@ public class WakamitiStepRunContext {
         return this.backend;
     }
 
+
+    public ResourceLoader resourceLoader() {
+        return resourceLoader;
+    }
+
+    public Path workingDir() {
+        return workingDir;
+    }
+
+
+    public File absolutePath(File file) {
+        if (file.isAbsolute()) {
+            return file;
+        }
+        return new File(workingDir.toFile(),file.toString());
+    }
+
+
+    public Path absolutePath(Path path) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return workingDir.resolve(path);
+    }
 }

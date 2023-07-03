@@ -47,7 +47,7 @@ public class Wakamiti {
 
     public static final Logger LOGGER = WakamitiLogger.forClass(Wakamiti.class);
 
-    private static final ResourceLoader resourceLoader = new ResourceLoader();
+    private static final ResourceLoader resourceLoader = new ResourceLoader(new File("."));
     private static final WakamitiContributors contributors = new WakamitiContributors();
     private static final PlanSerializer planSerializer = new JsonPlanSerializer();
     private static final EventDispatcher eventDispatcher = new EventDispatcher();
@@ -66,8 +66,19 @@ public class Wakamiti {
     }
 
 
+    @Deprecated
     public static ResourceLoader resourceLoader() {
         return resourceLoader;
+    }
+
+
+    public static ResourceLoader resourceLoader(File workingDir) {
+        return new ResourceLoader(workingDir);
+    }
+
+
+    public static ResourceLoader resourceLoader(Configuration configuration) {
+        return new ResourceLoader(workingDir(configuration));
     }
 
 
@@ -103,6 +114,12 @@ public class Wakamiti {
     /** @return The default configuration. Any configuration should be derived from this one */
     public static Configuration defaultConfiguration() {
         return WakamitiConfiguration.DEFAULTS;
+    }
+
+
+    /** @return The working directory for a given configuration*/
+    public static Path workingDir(Configuration configuration) {
+        return Path.of(configuration.get(WORKING_DIR,String.class).orElse("")).toAbsolutePath();
     }
 
 

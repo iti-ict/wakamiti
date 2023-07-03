@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning][2].
 - Extra properties in Backend context
 - Delete WakamitiVersion class
 - Add WakamitiLogger forName method
+- New property `workingDir`
 
 ## [2.0.1] - 2023-06-22
 
