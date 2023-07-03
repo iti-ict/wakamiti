@@ -2,7 +2,7 @@ wakamiti:
   resourceTypes:
     - gherkin
 
-  resourcePath: test-classes
+#  resourcePath: test-classes
 
   nonRegisteredStepProviders:
     - es.iti.wakamiti.test.WakamitiSteps
