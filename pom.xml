@@ -64,6 +64,7 @@
         <module>wakamiti-plugins/wakamiti-groovy</module>
         <module>wakamiti-plugins/wakamiti-appium</module>
         <module>wakamiti-plugins/wakamiti-file-uploader</module>
+        <module>wakamiti-plugins/wakamiti-azure</module>
         <!-- examples -->
         <module>wakamiti-examples/spring-junit-example</module>
         <module>wakamiti-examples/spring-verify-example</module>
@@ -444,6 +445,21 @@
           <id>sonatype</id>
           <build>
              <plugins>
+               <plugin>
+                 <groupId>org.honton.chas</groupId>
+                 <artifactId>exists-maven-plugin</artifactId>
+                 <version>0.11.0</version>
+                 <executions>
+                     <execution>
+                         <goals>
+                             <goal>remote</goal>
+                         </goals>
+                         <configuration>
+                             <repository>https://repo.maven.apache.org/maven2/</repository>
+                         </configuration>
+                     </execution>
+                 </executions>
+              </plugin>
               <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

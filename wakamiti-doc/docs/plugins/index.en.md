@@ -14,5 +14,6 @@ exist, but you can also develop your own plugins!:
 - [Cucumber report](en/plugins/cucumber-exporter)
 - [File Uploader](en/plugins/fileuploader)
 - [Appium steps](en/plugins/appium)
+- [Azure Integration](en/plugins/azure)
 
 
