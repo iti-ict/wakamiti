@@ -177,10 +177,11 @@
                             <logLevel>${wakamitiLog}</logLevel>
                             <!-- Wakamiti configuration -->
                             <properties>
+                                <workingDir>target</workingDir>
                                 <resourcePath>${project.basedir}/src/test/resources</resourcePath>
-                                <outputFilePath>target/wakamiti/wakamiti.json</outputFilePath>
+                                <outputFilePath>wakamiti/wakamiti.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
-                                <htmlReport.output>target/wakamiti/wakamiti.html</htmlReport.output>
+                                <htmlReport.output>wakamiti/wakamiti.html</htmlReport.output>
                             </properties>
                         </configuration>
                         <dependencies>

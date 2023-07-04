@@ -3,6 +3,8 @@ package es.iti.wakamiti.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.rest.oauth.GrantType;
 import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
 import io.restassured.RestAssured;
@@ -69,6 +71,7 @@ public class RestStepContributorTest {
     @BeforeClass
     public static void setup() {
         ConfigurationProperties.logLevel("OFF");
+        WakamitiRunContext.set(new WakamitiRunContext(Wakamiti.defaultConfiguration()));
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
                 new MockServerLogger()).sslContext().getSocketFactory());
     }

@@ -7,6 +7,7 @@ package es.iti.wakamiti.report.html;
 
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.util.PathUtil;
 import freemarker.template.*;
@@ -87,10 +88,11 @@ public class HtmlReportGenerator implements Reporter {
     @SuppressWarnings("unchecked")
     public void report(PlanNodeSnapshot rootNode) {
         try {
-            Path output = PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
+            var resourceLoader = WakamitiRunContext.current().resourceLoader();
+            Path output = resourceLoader.absolutePath(PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
                 this.outputFile,
                 "Output file not configured"
-            )));
+            ))));
             parameters.put("globalStyle", readStyles());
             parameters.put("globalScript", readJavascript());
             parameters.put("plan", rootNode);

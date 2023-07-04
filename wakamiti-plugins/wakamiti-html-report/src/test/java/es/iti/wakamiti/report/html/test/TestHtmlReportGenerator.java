@@ -6,7 +6,9 @@
 package es.iti.wakamiti.report.html.test;
 
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
 import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
 import org.custommonkey.xmlunit.HTMLDocumentBuilder;
@@ -34,6 +36,7 @@ public class TestHtmlReportGenerator {
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
+        WakamitiRunContext.set(new WakamitiRunContext(Wakamiti.defaultConfiguration()));
         xml = load("wakamiti",
                 "htmlReport.output", "target/wakamiti.html",
                 "htmlReport.title", "Test Report Title");

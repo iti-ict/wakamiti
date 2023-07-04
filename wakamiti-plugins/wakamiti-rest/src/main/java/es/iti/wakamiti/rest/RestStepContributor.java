@@ -10,6 +10,9 @@
 package es.iti.wakamiti.rest;
 
 
+import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.rest.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -155,7 +158,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
         assertFileExists(file);
-        setBearerAuth(resourceLoader.readFileAsString(file).trim());
+        setBearerAuth(WakamitiRunContext.current().resourceLoader().readFileAsString(file).trim());
     }
 
     @Step("rest.define.auth.none")
@@ -237,7 +240,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 request.multiPart(
                         name,
                         file.getName(),
-                        resourceLoader.readFileAsString(file),
+                        readFile(file),
                         mimeType.getContentTypeStrings()[0])
         );
     }
@@ -270,7 +273,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.execute.PUT.subject.from.file")
     public Object executePutSubjectUsingFile(File file) {
         assertFileExists(file);
-        executeRequest(RequestSpecification::put, resourceLoader.readFileAsString(file));
+        executeRequest(RequestSpecification::put, readFile(file));
         return parsedResponse();
     }
 
@@ -289,7 +292,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.execute.PATCH.subject.from.file")
     public Object executePatchSubjectUsingFile(File file) {
         assertFileExists(file);
-        executeRequest(RequestSpecification::patch, resourceLoader.readFileAsString(file));
+        executeRequest(RequestSpecification::patch, readFile(file));
         return parsedResponse();
     }
 
@@ -302,7 +305,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.execute.POST.subject.from.file")
     public Object executePostSubjectUsingFile(File file) {
         assertFileExists(file);
-        executeRequest(RequestSpecification::post, resourceLoader.readFileAsString(file));
+        executeRequest(RequestSpecification::post, readFile(file));
         return parsedResponse();
     }
 
@@ -344,7 +347,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.execute.DELETE.data.from.file")
     public Object executeDeleteDataUsingFile(File file) {
         assertFileExists(file);
-        executeRequest(RequestSpecification::delete, resourceLoader.readFileAsString(file));
+        executeRequest(RequestSpecification::delete, readFile(file));
         return parsedResponse();
     }
 
@@ -450,7 +453,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void assertBodyContentSchema(File file) {
         assertResponseNotNull();
         assertFileExists(file);
-        assertContentSchema(resourceLoader.readFileAsString(file));
+        assertContentSchema(readFile(file));
     }
 
 }

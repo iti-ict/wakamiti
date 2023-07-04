@@ -42,6 +42,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -1,6 +1,8 @@
 package es.iti.wakamiti.fileuploader;
 
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.core.Wakamiti;
 import imconfig.Configuration;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.*;
@@ -20,6 +22,7 @@ public class TestFileUploader {
 
     @Before
     public void setUp()  {
+        WakamitiRunContext.set(new WakamitiRunContext(Wakamiti.defaultConfiguration()));
         try {
             ftpServer = new MockFtpServer().start();
         } catch (IOException | FtpException | RuntimeException e) {

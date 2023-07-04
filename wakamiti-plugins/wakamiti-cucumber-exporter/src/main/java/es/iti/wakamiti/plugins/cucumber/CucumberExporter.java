@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -70,7 +70,8 @@ public class CucumberExporter implements Reporter {
     @Override
     public void report(PlanNodeSnapshot rootNode) {
 
-        try (Writer writer = new BufferedWriter(new FileWriter(outputFile,charset))) {
+        ResourceLoader resourceLoader = WakamitiRunContext.current().resourceLoader();
+        try (Writer writer = new BufferedWriter(new FileWriter(resourceLoader.absolutePath(new File(outputFile)),charset))) {
             List<Map<String,Object>> features = stream(rootNode)
                 .filter(this::gherkinFeature)
                 .map(this::mapFeature)

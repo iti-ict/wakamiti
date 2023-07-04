@@ -134,6 +134,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
             }
 
             configuration = readConfiguration(configurationFiles, properties);
+
             PlanNode plan = wakamiti.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 warn("Test Plan is empty!");

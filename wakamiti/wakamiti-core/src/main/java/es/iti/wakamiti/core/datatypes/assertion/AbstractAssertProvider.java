@@ -10,6 +10,7 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,7 +35,7 @@ public abstract class AbstractAssertProvider {
     public static final String MATCHERS_RESOURCE = "iti_wakamiti_core-matchers";
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = new ResourceLoader();
+    protected static final ResourceLoader resourceLoader = new ResourceLoader(new File("."));
 
     private final Map<Locale, ResourceBundle> bundles = new HashMap<>();
     private final Map<Locale, Map<String, Pattern>> translatedExpressions = new HashMap<>();
