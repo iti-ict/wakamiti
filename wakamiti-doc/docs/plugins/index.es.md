@@ -14,6 +14,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!:
 - [Informe Cucumber](plugins/cucumber-exporter)
 - [File Uploader](plugins/fileuploader)
 - [Pasos Appium](plugins/appium)
+- [Integración Azure](plugins/azure)
 
 
 
