@@ -97,6 +97,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- build versions -->
         <java.version>11</java.version>
+        <maven.resources.version>3.3.0</maven.resources.version>
         <maven.compiler.version>3.8.0</maven.compiler.version>
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>

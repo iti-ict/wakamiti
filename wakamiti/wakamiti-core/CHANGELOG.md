@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Added
 - Extra properties in Backend context
+- New property `workingDir`
 
 
 ## [2.0.0] - 2023-05-22
