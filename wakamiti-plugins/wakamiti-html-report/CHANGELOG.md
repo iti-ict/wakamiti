@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning][2].
 
 ## Fixed
 - Do not display error classifiers when there are no errors
+
+## Modified
 - Use absolute file paths based on working dir
 
 
