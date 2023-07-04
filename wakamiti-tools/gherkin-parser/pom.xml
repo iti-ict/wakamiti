@@ -22,7 +22,7 @@
     <!-- coordinates -->
     <groupId>es.iti.commons</groupId>
     <artifactId>gherkin-parser</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <!-- additional information -->
     <name>gherkin-parser</name>

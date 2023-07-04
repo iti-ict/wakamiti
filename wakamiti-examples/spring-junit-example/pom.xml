@@ -133,16 +133,19 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-spring</artifactId>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-rest</artifactId>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-db</artifactId>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
 

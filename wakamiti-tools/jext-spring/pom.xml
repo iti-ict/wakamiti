@@ -72,7 +72,7 @@
                         <annotationProcessorPath>
                             <groupId>es.iti.commons</groupId>
                             <artifactId>jext</artifactId>
-                            <version>1.0.0</version>
+                            <version>${jext.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
                 </configuration>
