@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class AzureApi {
 
@@ -28,16 +28,6 @@ public class AzureApi {
     private final Logger logger;
 
 
-
-
-    private static class ResultData {
-        final String resultID;
-        final String runID;
-        public ResultData(String resultID, String runID) {
-            this.resultID = resultID;
-            this.runID = runID;
-        }
-    }
 
 
 
@@ -61,7 +51,7 @@ public class AzureApi {
         String response = get(url);
         return extract(
             response,
-            "$.value.[?(@.name == '" + planName + "')].id",
+            valueIdByName(planName),
             "Cannot find a test plan with name '"+planName+"'"
         );
     }
@@ -73,7 +63,7 @@ public class AzureApi {
         String response = get(url);
         return extract(
             response,
-            "$.value.[?(@.name == '" + suiteName + "')].id",
+            valueIdByName(suiteName),
             "Cannot find a test suite with name '"+suiteName+"'"
         );
     }
@@ -136,16 +126,17 @@ public class AzureApi {
         List<String> payloads = new LinkedList<>();
         statusByTestPoint.forEach((testPointID, status)-> {
             String resultID = extract(
-                    response,
-                    "$.value[?(@.testPoint.id==" + testPointID + ")].id",
-                    "Cannot get the test result for the run"
+                response,
+                "$.value[?(@.testPoint.id==" + testPointID + ")].id",
+                "Cannot get the test result for the run"
             );
+            String template = "{ \"id\": %s,  \"outcome\": \"%s\" ,    \"state\": \"Completed\",    \"comment\": \"%s\"  }";
             if (status.equalsIgnoreCase("PASSED")) {
-                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Passed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Successful\"  }");
+                payloads.add(String.format(template, resultID, "Passed", "Execution Successful"));
             } else if (status.equalsIgnoreCase("FAILED")) {
-                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Failed\" ,    \"state\": \"Completed\",    \"comment\": \"Execution Failed\"  }");
+                payloads.add(String.format(template, resultID, "Failed", "Execution Failed"));
             } else {
-                payloads.add("{ \"id\": " + resultID + ",  \"outcome\": \"Unspecified\" ,   \"state\": \"Completed\",    \"comment\": \"Execution Error\"  }");
+                payloads.add(String.format(template, resultID, "Unspecified", "Execution Error"));
             }
         });
 
@@ -173,36 +164,39 @@ public class AzureApi {
 
 
     private String get(String uri) {
-        return send(HttpRequest.newBuilder().GET()
-            .uri(url(uri))
-            .header("Authorization","Basic "+credentials)
-            .build(),
-            ""
-        );
+        return send(request("GET",uri),"");
     }
 
 
 
     private String post(String uri, String payload) {
-        return send(HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(payload))
-            .uri(url(uri))
-            .header("Authorization", "Basic "+credentials)
-            .header("Content-Type", "application/json")
-            .build(),
-            payload
-        );
+        return send(request("POST",uri,payload),payload);
     }
 
 
 
     private String patch(String uri, String payload) {
-        return send(HttpRequest.newBuilder().method("PATCH",HttpRequest.BodyPublishers.ofString(payload))
-            .uri(url(uri))
-            .header("Authorization", "Basic "+credentials)
-            .header("Content-Type", "application/json")
-            .build(),
-            payload
-        );
+        return send(request("PATCH",uri,payload),payload);
+    }
+
+
+
+    private HttpRequest request(String method, String uri) {
+        return HttpRequest.newBuilder()
+                .method(method, HttpRequest.BodyPublishers.noBody())
+                .uri(url(uri))
+                .header("Authorization", "Basic "+credentials)
+                .build();
+    }
+
+
+    private HttpRequest request(String method, String uri, String payload) {
+        return HttpRequest.newBuilder()
+                .method(method, HttpRequest.BodyPublishers.ofString(payload))
+                .uri(url(uri))
+                .header("Authorization", "Basic "+credentials)
+                .header("Content-Type", "application/json")
+                .build();
     }
 
 
@@ -212,6 +206,10 @@ public class AzureApi {
         return URI.create(urlBase+uri+(uri.contains("?") ? "&" : "?")+"api-version="+apiVersion);
     }
 
+
+    private String valueIdByName(String name) {
+        return "$.value.[?(@.name == '" + name + "')].id";
+    }
 
 
     private String send(HttpRequest request, String payload) {
