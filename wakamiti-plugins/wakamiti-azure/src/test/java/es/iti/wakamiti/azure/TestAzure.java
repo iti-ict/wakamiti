@@ -37,7 +37,7 @@ import org.junit.Test;
 public class TestAzure {
 
 
-    //@Test
+    @Test
     public void azureIntegration() {
         Wakamiti wakamiti = Wakamiti.instance();
         Configuration conf = Wakamiti.defaultConfiguration().appendFromAnnotation(TestAzure.class);
