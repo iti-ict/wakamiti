@@ -45,13 +45,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-bom</artifactId>
-                <version>${revision}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -110,7 +103,27 @@
             </activation>
             <build>
                 <plugins>
-
+                    <!-- Start H2 before integration tests, accepting tcp connections on the randomly selected port -->
+                    <plugin>
+                        <groupId>com.edugility</groupId>
+                        <artifactId>h2-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <!-- default url: jdbc:h2:tcp://localhost:9092/./target/db -->
+                        <executions>
+                            <execution>
+                                <id>Spawn a new H2 TCP server</id>
+                                <goals>
+                                    <goal>spawn</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>Stop a spawned H2 TCP server</id>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <!-- Start Spring Boot application prior to integration tests and stop it afterwards -->
                     <plugin>
@@ -122,6 +135,8 @@
                                 -Dspring.application.admin.enabled=true
                                 -Dspring.devtools.add-properties=false
                             </jvmArguments>
+                            <wait>1000</wait>
+                            <maxAttempts>180</maxAttempts>
                         </configuration>
                         <executions>
                             <execution>
@@ -162,10 +177,11 @@
                             <logLevel>${wakamitiLog}</logLevel>
                             <!-- Wakamiti configuration -->
                             <properties>
+                                <workingDir>target</workingDir>
                                 <resourcePath>${project.basedir}/src/test/resources</resourcePath>
-                                <outputFilePath>target/wakamiti/wakamiti.json</outputFilePath>
+                                <outputFilePath>wakamiti/wakamiti.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
-                                <htmlReport.output>target/wakamiti/wakamiti.html</htmlReport.output>
+                                <htmlReport.output>wakamiti/wakamiti.html</htmlReport.output>
                             </properties>
                         </configuration>
                         <dependencies>
@@ -176,11 +192,6 @@
                                 <version>2.0.0</version>
                             </dependency>
                             <dependency>
-                                <groupId>com.h2database</groupId>
-                                <artifactId>h2</artifactId>
-                                <version>2.1.210</version>
-                            </dependency>
-                            <dependency>
                                 <groupId>es.iti.wakamiti</groupId>
                                 <artifactId>wakamiti-db</artifactId>
                                 <version>2.0.0</version>
@@ -189,6 +200,32 @@
                                 <groupId>es.iti.wakamiti</groupId>
                                 <artifactId>wakamiti-html-report</artifactId>
                                 <version>2.0.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>es.iti.wakamiti</groupId>
+                                <artifactId>wakamiti-groovy</artifactId>
+                                <version>2.0.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>es.iti.wakamiti</groupId>
+                                <artifactId>wakamiti-appium</artifactId>
+                                <version>2.0.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>es.iti.wakamiti</groupId>
+                                <artifactId>wakamiti-amqp</artifactId>
+                                <version>2.0.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>es.iti.wakamiti</groupId>
+                                <artifactId>wakamiti-io</artifactId>
+                                <version>2.0.0</version>
+                            </dependency>
+
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>1.4.200</version>
                             </dependency>
                         </dependencies>
                     </plugin>

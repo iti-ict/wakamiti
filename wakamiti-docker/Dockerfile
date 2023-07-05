@@ -6,16 +6,13 @@ ENV TZ Europe/Madrid
 ENV WAKAMITI_HOME /opt/wakamiti
 ENV WAKAMITI_REPOSITORY /root/.local/share/wakamiti/repository
 
-RUN apk add --no-cache bash tzdata
+RUN apk add --no-cache bash
 
 COPY src/entrypoint.sh /
 
 # launcher executables are including in the staging directory (from wakamiti-launcher)
 
 COPY target/assembly/staging $WAKAMITI_HOME/
-
-RUN cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo "$TZ" >  /etc/timezone
 
 RUN mkdir -p $WAKAMITI_REPOSITORY \
     && chmod +x /entrypoint.sh \

@@ -49,45 +49,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-html-report</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-cucumber-exporter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-groovy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-appium</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-file-uploader</artifactId>
-        </dependency>
-    </dependencies>
-
 
     <build>
         <plugins>
@@ -123,8 +84,63 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>es.iti.wakamiti</groupId>
+                    <artifactId>wakamiti-api</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven.compiler.version}</version>
+                        <configuration>
+                            <!--release>${maven.compiler.release}</release-->
+                            <compilerArgs>
+                                <arg>-Xlint:all</arg>
+                            </compilerArgs>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>es.iti.commons</groupId>
+                                    <artifactId>jext</artifactId>
+                                    <version>${jext.version}</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>test-compile</id>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven.resources.version}</version>
+
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+
+                        <executions>
+                            <!-- src/test/resources/* ► target/test-classes/ -->
+                            <execution>
+                                <id>default-testResources</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>testResources</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -210,11 +226,13 @@
                             <executable>docker</executable>
                             <arguments>
                                 <argument>run</argument>
+                                <argument>-e</argument>
+                                <argument>ADD_CLASSPATH=/wakamiti/test-classes</argument>
                                 <argument>-v</argument>
-                                <argument>${project.basedir}/target:/target</argument>
-                                <argument>-v</argument>
-                                <argument>${project.basedir}/test:/wakamiti</argument>
+                                <argument>${project.basedir}/target:/wakamiti</argument>
                                 <argument>--rm</argument>
+                                <argument>-w</argument>
+                                <argument>/wakamiti/test-classes</argument>
                                 <argument>wakamiti/wakamiti:test</argument>
                             </arguments>
                             <quietLogs>false</quietLogs>
@@ -282,52 +300,52 @@
         </profile>
 
 
-
-
-        <!-- release-all : publish image with all dependencies ================================================ -->
-
-
+        <!-- Image for local tests -->
         <profile>
-            <id>release-all</id>
+            <id>local</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>assembly/distribution.xml</descriptor>
+                                    </descriptors>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>assembly</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>0.26.0</version>
                         <configuration>
-                            <authConfig>
-                                <username>wakamiti</username>
-                                <password>${docker.pwd}</password>
-                            </authConfig>
                             <images>
                                 <image>
-                                    <name>wakamiti/wakamiti-all:${project.version}</name>
+                                    <name>wakamiti/wakamiti:local</name>
                                     <build>
-                                        <dockerFile>${project.basedir}/Dockerfile_all</dockerFile>
-                                    </build>
-                                </image>
-                                <image>
-                                    <name>wakamiti/wakamiti-all:latest</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile_all</dockerFile>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                     </build>
                                 </image>
                             </images>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>build-release-all</id>
+                                <id>build-release</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>deploy-release-all</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>push</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -335,9 +353,6 @@
                 </plugins>
             </build>
         </profile>
-
-
-
 
     </profiles>
 

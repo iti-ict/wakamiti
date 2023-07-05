@@ -6,8 +6,11 @@
 
 package es.iti.wakamiti.files;
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
+import imconfig.Configuration;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.junit.*;
@@ -36,6 +39,7 @@ public class FilesStepContributorTest {
 
     @Before
     public void startup() {
+        WakamitiRunContext.set(new WakamitiRunContext(Configuration.factory().fromPairs("workingDir","target")));
         contributor.setEnableCleanupUponCompletion(true);
     }
 

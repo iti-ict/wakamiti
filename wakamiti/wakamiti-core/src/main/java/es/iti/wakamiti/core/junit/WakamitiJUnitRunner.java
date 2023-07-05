@@ -10,6 +10,7 @@
 package es.iti.wakamiti.core.junit;
 
 
+import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import imconfig.Configuration;
 import imconfig.ConfigurationException;
@@ -83,6 +84,8 @@ public class WakamitiJUnitRunner extends Runner {
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
+        WakamitiRunContext.set(new WakamitiRunContext(configuration));
+
         for (JUnitPlanNodeRunner child : createChildren()) {
             try {
                 child.runNode(notifier);
@@ -99,6 +102,8 @@ public class WakamitiJUnitRunner extends Runner {
         wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);
         wakamiti.writeOutputFile(plan, configuration);
         wakamiti.generateReports(configuration,snapshot);
+
+        WakamitiRunContext.clear();
     }
 
 

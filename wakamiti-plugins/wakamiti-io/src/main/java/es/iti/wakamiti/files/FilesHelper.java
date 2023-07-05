@@ -7,6 +7,9 @@
 package es.iti.wakamiti.files;
 
 
+import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -80,6 +83,9 @@ public class FilesHelper {
     }
 
     public void moveToDir(File source, File target) throws IOException {
+
+
+
         if (!source.exists()) {
             throwSourceNotExistsException(source);
         }
@@ -182,7 +188,7 @@ public class FilesHelper {
     private static Path createSymbolicLink(Path link, Path path) {
         try {
             LOGGER.debug("Creating symbolic link [{}] to [{}]", link, path);
-            return Files.createSymbolicLink(link, path);
+            return Files.createSymbolicLink(absolutePath(link), absolutePath(path));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -191,7 +197,7 @@ public class FilesHelper {
     private static void deleteSymbolicLink(Path path) {
         try {
             LOGGER.debug("Deleting symbolic link [{}]", path);
-            Files.delete(path);
+            Files.delete(absolutePath(path));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -200,7 +206,7 @@ public class FilesHelper {
     private static void moveFile(File source, File target) {
         try {
             LOGGER.debug("Moving file [{}] to [{}]", source, target);
-            FileUtils.moveFile(source, target);
+            FileUtils.moveFile(absolutePath(source), absolutePath(target));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -209,7 +215,7 @@ public class FilesHelper {
     private static void moveFileToDirectory(File source, File target) {
         try {
             LOGGER.debug("Moving [{}] to directory [{}]", source, target);
-            FileUtils.moveFileToDirectory(source, target, true);
+            FileUtils.moveFileToDirectory(absolutePath(source), absolutePath(target), true);
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -218,7 +224,7 @@ public class FilesHelper {
     private static void deleteDirectory(File file) {
         try {
             LOGGER.debug("Deleting directory [{}]", file);
-            FileUtils.deleteDirectory(file);
+            FileUtils.deleteDirectory(absolutePath(file));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -227,7 +233,7 @@ public class FilesHelper {
     private static void moveDirectory(File source, File target) {
         try {
             LOGGER.debug("Moving [{}] to directory [{}]", source, target);
-            FileUtils.moveDirectory(source, target);
+            FileUtils.moveDirectory(absolutePath(source), absolutePath(target));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -236,7 +242,7 @@ public class FilesHelper {
     private static void copyFile(File source, File target) {
         try {
             LOGGER.debug("Copying file [{}] to [{}]", source, target);
-            FileUtils.copyFile(source, target, true);
+            FileUtils.copyFile(absolutePath(source), absolutePath(target), true);
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -245,7 +251,7 @@ public class FilesHelper {
     private static void copyFileToDirectory(File source, File target) {
         try {
             LOGGER.debug("Creating [{}] to directory [{}]", source, target);
-            FileUtils.copyFileToDirectory(source, target, true);
+            FileUtils.copyFileToDirectory(absolutePath(source), absolutePath(target), true);
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -254,7 +260,7 @@ public class FilesHelper {
     private static void copyDirectory(File source, File target) {
         try {
             LOGGER.debug(" Copy[{}] to directory [{}]", source, target);
-            FileUtils.copyDirectory(source, target, true);
+            FileUtils.copyDirectory(absolutePath(source), absolutePath(target), true);
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
@@ -263,10 +269,25 @@ public class FilesHelper {
     private static void cleanDirectory(File dir) {
         try {
             LOGGER.debug("Cleaning up directory [{}]", dir);
-            FileUtils.cleanDirectory(dir);
+            FileUtils.cleanDirectory(absolutePath(dir));
         } catch (IOException e) {
             throw new FilesHelperException(e);
         }
+    }
+
+
+    private static File absolutePath(File file) {
+        return resourceLoader().absolutePath(file);
+    }
+
+
+    private static Path absolutePath(Path path) {
+        return resourceLoader().absolutePath(path);
+    }
+
+
+    private static ResourceLoader resourceLoader() {
+        return WakamitiRunContext.current().resourceLoader();
     }
 
 }

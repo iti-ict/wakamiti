@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,11 +33,12 @@ public class StepPropertyEvaluatorTest {
 
     @Before
     public void setup() {
-        List<Object> results = Arrays.asList(null, json, xml, json.toString(), xml.toString());
+        LinkedHashMap<String, Object> results = new LinkedHashMap<>();
+        results.put("results", Arrays.asList(null, json, xml, json.toString(), xml.toString()));
 
         WakamitiStepRunContext context = mock(WakamitiStepRunContext.class);
         Backend backend = mock(Backend.class);
-        when(backend.getResults()).thenReturn(results);
+        when(backend.getExtraProperties()).thenReturn(results);
         when(context.backend()).thenReturn(backend);
         WakamitiStepRunContext.set(context);
     }

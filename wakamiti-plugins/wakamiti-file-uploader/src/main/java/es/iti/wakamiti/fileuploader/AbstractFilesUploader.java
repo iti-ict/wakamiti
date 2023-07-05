@@ -1,9 +1,12 @@
 package es.iti.wakamiti.fileuploader;
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPSClient;
@@ -130,7 +133,8 @@ public abstract class AbstractFilesUploader implements EventObserver {
         createDestinationDirectory(dirPath);
         ftpClient.changeWorkingDirectory(dirPath.toString());
         String fileName = fileToSend.toFile().getName();
-        try (InputStream inputStream = Files.newInputStream(fileToSend)) {
+        ResourceLoader resourceLoader = WakamitiRunContext.current().resourceLoader();
+        try (InputStream inputStream = Files.newInputStream(resourceLoader.absolutePath(fileToSend))) {
             ftpClient.storeFile(fileName, inputStream);
         }
     }
