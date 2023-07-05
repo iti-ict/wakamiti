@@ -84,7 +84,7 @@
 
     <properties>
         <!-- wakamiti version -->
-        <revision>2.1.0</revision>
+        <revision>2.1.1</revision>
 
         <gherkin-parser.version>1.0.3</gherkin-parser.version>
         <wakamiti-api.version>2.1.0</wakamiti-api.version>
