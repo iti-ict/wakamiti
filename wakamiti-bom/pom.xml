@@ -25,11 +25,11 @@
 
         <!-- internal dependencies -->
 <!--        <wakamiti-rest.version>2.0.0</wakamiti-rest.version>-->
-<!--        <wakamiti-groovy.version>2.1.0-SNAPSHOT</wakamiti-groovy.version>-->
+<!--        <wakamiti-groovy.version>2.1.0</wakamiti-groovy.version>-->
 <!--        <wakamiti-db.version>2.0.0</wakamiti-db.version>-->
 <!--        <wakamiti-amqp.version>2.0.0</wakamiti-amqp.version>-->
 <!--        <wakamiti-io.version>2.0.0</wakamiti-io.version>-->
-<!--        <wakamiti-html-report.version>2.0.1-SNAPSHOT</wakamiti-html-report.version>-->
+<!--        <wakamiti-html-report.version>2.0.1</wakamiti-html-report.version>-->
 <!--        <wakamiti-cucumber-exporter.version>2.0.0</wakamiti-cucumber-exporter.version>-->
 <!--        <wakamiti-spring.version>2.0.0</wakamiti-spring.version>-->
 <!--        <wakamiti-appium.version>2.0.0</wakamiti-appium.version>-->
