@@ -6,7 +6,6 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
@@ -25,7 +24,6 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.*;
 import org.apache.xmlbeans.XmlObject;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -264,6 +262,6 @@ public class RestSupport {
 
 
     protected ResourceLoader resourceLoader() {
-        return WakamitiRunContext.current().resourceLoader();
+        return WakamitiAPI.instance().resourceLoader();
     }
 }
