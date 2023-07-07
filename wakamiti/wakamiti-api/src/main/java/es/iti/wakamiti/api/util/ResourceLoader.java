@@ -46,25 +46,26 @@ public class ResourceLoader {
 
 
     private final Charset charset;
-    private final File workingDir;
+    private File workingDir = new File(".");
 
 
-    public ResourceLoader(File workingDir, Charset charset) {
+    public ResourceLoader(Charset charset) {
         this.charset = charset;
-        this.workingDir = workingDir.getAbsoluteFile();
         Locale.setDefault(Locale.ENGLISH); // avoid different behaviours regarding the OS language
     }
 
-
-    public ResourceLoader(File workingDir) {
-        this(workingDir, StandardCharsets.UTF_8);
+    public ResourceLoader() {
+        this(StandardCharsets.UTF_8);
     }
 
 
-    public ResourceLoader(Path workingDir) {
-        this(workingDir.toAbsolutePath().toFile());
+    public void setWorkingDir(File workingDir) {
+        this.workingDir = workingDir.getAbsoluteFile();
     }
 
+    public void setWorkingDir(Path workingDir) {
+        this.workingDir = workingDir.toAbsolutePath().toFile();
+    }
 
 
     public <T> Resource<T> fromInputStream(ResourceType<T> resourceType, InputStream inputStream) {

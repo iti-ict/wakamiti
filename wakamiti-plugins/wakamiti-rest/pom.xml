@@ -24,7 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>wakamiti-rest</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1-SNAPSHOT</version>
 
     <!-- additional information -->
     <name>Wakamiti::REST Steps</name>
