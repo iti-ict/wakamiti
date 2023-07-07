@@ -3,51 +3,50 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core;
 
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.*;
-
+import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.*;
-import es.iti.wakamiti.api.plan.*;
-import es.iti.wakamiti.core.backend.DefaultBackendFactory;
-import es.iti.wakamiti.core.runner.PlanRunner;
-import es.iti.wakamiti.core.util.TagFilter;
-import imconfig.Configuration;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.event.EventDispatcher;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.extensions.PlanTransformer;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.plan.*;
+import es.iti.wakamiti.api.util.PathUtil;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.backend.DefaultBackendFactory;
+import es.iti.wakamiti.core.runner.PlanRunner;
+import es.iti.wakamiti.core.util.TagFilter;
+import imconfig.Configuration;
 import org.slf4j.Logger;
 
-import es.iti.commons.jext.ExtensionManager;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class Wakamiti {
 
-    private static final AtomicBoolean instantiated = new AtomicBoolean();
-
     public static final Logger LOGGER = WakamitiLogger.forClass(Wakamiti.class);
-
-    private static final ResourceLoader resourceLoader = new ResourceLoader(new File("."));
+    private static final AtomicBoolean instantiated = new AtomicBoolean();
+    private static final ResourceLoader resourceLoader = new ResourceLoader();
     private static final WakamitiContributors contributors = new WakamitiContributors();
     private static final PlanSerializer planSerializer = new JsonPlanSerializer();
     private static final EventDispatcher eventDispatcher = new EventDispatcher();
@@ -58,50 +57,6 @@ public class Wakamiti {
     private static Wakamiti instance;
 
 
-    public static Wakamiti instance() {
-        if (!instantiated.getAndSet(true)) {
-            instance = new Wakamiti();
-        }
-        return instance;
-    }
-
-
-    @Deprecated
-    public static ResourceLoader resourceLoader() {
-        return resourceLoader;
-    }
-
-
-    public static ResourceLoader resourceLoader(File workingDir) {
-        return new ResourceLoader(workingDir);
-    }
-
-
-    public static ResourceLoader resourceLoader(Configuration configuration) {
-        return new ResourceLoader(workingDir(configuration));
-    }
-
-
-    public static WakamitiContributors contributors() {
-        return contributors;
-    }
-
-
-    public static PlanSerializer planSerializer() {
-        return planSerializer;
-    }
-
-
-    public static ExtensionManager extensionManager() {
-        return contributors.extensionManager();
-    }
-
-
-    public static WakamitiFetcher artifactFetcher() {
-        return artifactFetcher;
-    }
-
-
     private Wakamiti() {
         WakamitiLogger.configure(WakamitiConfiguration.DEFAULTS);
         if (LOGGER.isInfoEnabled()) {
@@ -110,6 +65,32 @@ public class Wakamiti {
         contributors.eventObservers().forEach(eventDispatcher::addObserver);
     }
 
+    public static Wakamiti instance() {
+        if (!instantiated.getAndSet(true)) {
+            instance = new Wakamiti();
+        }
+        return instance;
+    }
+
+    public static ResourceLoader resourceLoader() {
+        return resourceLoader;
+    }
+
+    public static WakamitiContributors contributors() {
+        return contributors;
+    }
+
+    public static PlanSerializer planSerializer() {
+        return planSerializer;
+    }
+
+    public static ExtensionManager extensionManager() {
+        return contributors.extensionManager();
+    }
+
+    public static WakamitiFetcher artifactFetcher() {
+        return artifactFetcher;
+    }
 
     /** @return The default configuration. Any configuration should be derived from this one */
     public static Configuration defaultConfiguration() {
@@ -117,16 +98,14 @@ public class Wakamiti {
     }
 
 
-    /** @return The working directory for a given configuration*/
+    /** @return The working directory for a given configuration */
     public static Path workingDir(Configuration configuration) {
-        return Path.of(configuration.get(WORKING_DIR,String.class).orElse("")).toAbsolutePath();
+        return Path.of(configuration.get(WORKING_DIR, String.class).orElse("")).toAbsolutePath();
     }
 
 
     /**
      * Configure the logger
-     *
-     * @param configuration
      */
     public void configureLogger(Configuration configuration) {
         WakamitiLogger.configure(configuration);
@@ -137,13 +116,14 @@ public class Wakamiti {
      * Attempt to create a plan using the resource type and the feature path
      * defined in the received configuration.
      *
-     * @param configuration
      * @return A new plan ready to be executed
      * @throws WakamitiException if the plan was not created
      */
     public PlanNode createPlanFromConfiguration(Configuration configuration) {
 
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
+
+        resourceLoader.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -155,15 +135,15 @@ public class Wakamiti {
 
         List<String> resourceTypeNames = configuration.getList(RESOURCE_TYPES, String.class);
         if (resourceTypeNames.isEmpty()) {
-            throw new WakamitiException("No resource types configured\nConfiguration was:\n{}",configuration);
+            throw new WakamitiException("No resource types configured\nConfiguration was:\n{}", configuration);
         }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {
-        	LOGGER.debug("Creating plan for resource type {resourceType}..., resourceTypeName");
+            LOGGER.debug("Creating plan for resource type {resourceType}..., resourceTypeName");
             Optional<PlanNode> plan = createPlanForResourceType(
-                resourceTypeName,
-                discoveryPaths,
-                configuration
+                    resourceTypeName,
+                    discoveryPaths,
+                    configuration
             );
             plan.ifPresent(plans::add);
         }
@@ -173,7 +153,7 @@ public class Wakamiti {
         PlanNode plan = mergePlans(plans);
 
 
-        if (configuration.get(STRICT_TEST_CASE_ID,Boolean.class).orElse(Boolean.FALSE)) {
+        if (configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(Boolean.FALSE)) {
             validateUniqueTestCaseID(plan);
         }
         publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan));
@@ -181,17 +161,16 @@ public class Wakamiti {
     }
 
 
-
-
     /**
      * Attempt to create a plan using the resource path and the feature path
      * defined in the received configuration.
      *
-     * @param configuration
      * @return A new plan ready to be executed
      * @throws WakamitiException if the plan was not created
      */
     public PlanNode createPlanFromWorkspace(Configuration configuration) {
+
+        resourceLoader.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -200,7 +179,7 @@ public class Wakamiti {
 
         // try to load a wakamiti.yaml file if exists
         for (String discoveryPath : discoveryPaths) {
-        	LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
+            LOGGER.debug("Looking for configuration file {} in {}...", DEFAULT_CONF_FILE, discoveryPath);
             Path confFile = Path.of(discoveryPath, DEFAULT_CONF_FILE);
             if (Files.exists(confFile)) {
                 Configuration confFromFile = Configuration.factory().fromPath(confFile).inner(PREFIX);
@@ -218,19 +197,19 @@ public class Wakamiti {
     /**
      * Attempt to create a plan using the resource type defined in the received configuration,
      * but using the given content instead of discovering resources
-     * @param configuration
-     * @param inputStream
+     *
      * @return a new plan ready to be executed
      * @throws WakamitiException if the plan was not created
      */
     public PlanNode createPlanFromContent(Configuration configuration, InputStream inputStream) {
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
+        resourceLoader.setWorkingDir(workingDir(configuration));
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
-            .orElseThrow(()->new WakamitiException("No resource types configured\nConfiguration was:\n{}",configuration));
+                .orElseThrow(() -> new WakamitiException("No resource types configured\nConfiguration was:\n{}", configuration));
         Optional<PlanNode> plan = createPlanForResourceType(
-             resourceTypeName,
-             inputStream,
-             configuration
+                resourceTypeName,
+                inputStream,
+                configuration
         );
         if (plan.isEmpty()) {
             throw new WakamitiException("No test plans created");
@@ -248,37 +227,34 @@ public class Wakamiti {
     }
 
     private Optional<PlanNode> createPlanForResourceType(
-        String resourceTypeName,
-        List<String> discoveryPaths,
-        Configuration configuration
-    ) {
-       return createPlanForResourceType(
-           resourceTypeName,
-           resourceType->resourceLoader().discoverResources(discoveryPaths, resourceType),
-           configuration
-       );
-    }
-
-
-
-    private Optional<PlanNode> createPlanForResourceType(
-        String resourceTypeName,
-        InputStream inputStream,
-        Configuration configuration
+            String resourceTypeName,
+            List<String> discoveryPaths,
+            Configuration configuration
     ) {
         return createPlanForResourceType(
-            resourceTypeName,
-            resourceType->List.of(resourceLoader().fromInputStream(resourceType,inputStream)),
-            configuration
+                resourceTypeName,
+                resourceType -> resourceLoader().discoverResources(discoveryPaths, resourceType),
+                configuration
         );
     }
 
 
+    private Optional<PlanNode> createPlanForResourceType(
+            String resourceTypeName,
+            InputStream inputStream,
+            Configuration configuration
+    ) {
+        return createPlanForResourceType(
+                resourceTypeName,
+                resourceType -> List.of(resourceLoader().fromInputStream(resourceType, inputStream)),
+                configuration
+        );
+    }
 
 
     private Optional<PlanNode> createPlanForResourceType(
             String resourceTypeName,
-            Function<ResourceType<?>,List<Resource<?>>> resourceSupplier,
+            Function<ResourceType<?>, List<Resource<?>>> resourceSupplier,
             Configuration configuration
     ) {
         var resourceType = contributors.resourceTypeByName(resourceTypeName);
@@ -323,9 +299,6 @@ public class Wakamiti {
     }
 
 
-
-
-
     private PlanNode mergePlans(List<PlanNode> plans) {
         if (plans.isEmpty()) {
             return null;
@@ -349,7 +322,7 @@ public class Wakamiti {
 
     public void configureEventObservers(Configuration configuration) {
         getEventDispatcher().observers()
-            .forEach(observer -> contributors.configure(observer, configuration));
+                .forEach(observer -> contributors.configure(observer, configuration));
     }
 
 
@@ -369,13 +342,11 @@ public class Wakamiti {
 
 
     public PlanNode executePlan(PlanNode plan, Configuration configuration) {
-        WakamitiRunContext.set(new WakamitiRunContext(configuration));
         PlanNode result = new PlanRunner(plan, configuration).run();
         writeOutputFile(plan, configuration);
         if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
-            generateReports(configuration,new PlanNodeSnapshot(plan));
+            generateReports(configuration, new PlanNodeSnapshot(plan));
         }
-        WakamitiRunContext.clear();
         return result;
     }
 
@@ -391,31 +362,31 @@ public class Wakamiti {
                 .collect(Collectors.toList());
         plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
 
-    	if (!configuration
-			.get(WakamitiConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
-			.orElse(Boolean.TRUE)) {
-    		return null;
-    	}
+        if (!configuration
+                .get(WakamitiConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
+                .orElse(Boolean.TRUE)) {
+            return null;
+        }
 
         try {
 
-            publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES,null);
+            publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES, null);
 
             Path standardOutputFile = writeStandardOutputFile(plan, configuration);
 
-            if (configuration.get(WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElse(Boolean.FALSE)){
+            if (configuration.get(WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE, Boolean.class).orElse(Boolean.FALSE)) {
                 writeOutputFilesPerTestCase(plan, configuration);
             }
 
-            publishEvent(Event.AFTER_WRITE_OUTPUT_FILES,null);
+            publishEvent(Event.AFTER_WRITE_OUTPUT_FILES, null);
 
             return standardOutputFile;
 
         } catch (IOException e) {
             LOGGER.error(
-                "Error writing output file : {}",
-                e.getMessage(),
-                e
+                    "Error writing output file : {}",
+                    e.getMessage(),
+                    e
             );
             return null;
         }
@@ -423,11 +394,10 @@ public class Wakamiti {
     }
 
 
-
     private Path writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(WakamitiConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
-        Path path = resourceLoader(configuration).absolutePath(
-            PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
+        Path path = resourceLoader.absolutePath(
+                PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
         );
         Path parentPath = path.getParent();
         if (parentPath != null) {
@@ -445,19 +415,19 @@ public class Wakamiti {
 
     private void writeOutputFilesPerTestCase(PlanNode plan, Configuration configuration) throws IOException {
         String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
-        Path path = resourceLoader(configuration).absolutePath(
-            PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
+        Path path = resourceLoader.absolutePath(
+                PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
         );
         Files.createDirectories(path);
 
         List<PlanNode> testCases = plan
-            .descendants()
-            .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-            .collect(Collectors.toList());
+                .descendants()
+                .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+                .collect(Collectors.toList());
 
         for (PlanNode testCase : testCases) {
-            String testCaseId = Objects.requireNonNull(testCase.id(),"test case have no id");
-            Path testCasePath = path.resolve(testCaseId+".json");
+            String testCaseId = Objects.requireNonNull(testCase.id(), "test case have no id");
+            Path testCasePath = path.resolve(testCaseId + ".json");
             try (Writer writer = new FileWriter(testCasePath.toFile())) {
                 planSerializer().write(writer, new PlanNodeSnapshot(testCase).withoutChildren());
                 LOGGER.info("Generated result output file {uri}", testCasePath);
@@ -468,16 +438,15 @@ public class Wakamiti {
 
     public void generateReports(Configuration configuration) {
         String reportSource = configuration.get(REPORT_SOURCE, String.class)
-                .orElse(configuration.get(OUTPUT_FILE_PATH,String.class).orElse(null));
+                .orElse(configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null));
         if (reportSource == null) {
             throw new WakamitiException(
-                "The report source file/folder is not defined.\n" + "Perhaps you may set the property {}",
-                REPORT_SOURCE
+                    "The report source file/folder is not defined.\n" + "Perhaps you may set the property {}",
+                    REPORT_SOURCE
             );
         }
-        generateReports(configuration, resourceLoader(configuration).absolutePath(Path.of(reportSource)));
+        generateReports(configuration, resourceLoader.absolutePath(Path.of(reportSource)));
     }
-
 
 
     public void generateReports(Configuration configuration, Path reportSource) {
@@ -490,19 +459,19 @@ public class Wakamiti {
         Path sourceFolder = reportSource.toAbsolutePath();
         if (!sourceFolder.toFile().exists()) {
             throw new WakamitiException(
-                "The defined report source file/folder {} does not exist!",
-                sourceFolder
+                    "The defined report source file/folder {} does not exist!",
+                    sourceFolder
             );
         }
         PlanSerializer deserializer = planSerializer();
         PlanNodeSnapshot[] plans;
         try (Stream<Path> walker = Files.walk(sourceFolder)) {
             plans = walker
-                .map(Path::toFile)
-                .filter(File::exists)
-                .filter(File::isFile)
-                .map(ThrowableFunction.unchecked(deserializer::read))
-                .toArray(PlanNodeSnapshot[]::new);
+                    .map(Path::toFile)
+                    .filter(File::exists)
+                    .filter(File::isFile)
+                    .map(ThrowableFunction.unchecked(deserializer::read))
+                    .toArray(PlanNodeSnapshot[]::new);
         } catch (IOException e1) {
             throw new WakamitiException("Error searching source file/folder", e1);
         }
@@ -515,7 +484,6 @@ public class Wakamiti {
     }
 
 
-
     public void generateReports(Configuration configuration, PlanNodeSnapshot[] plans) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
@@ -523,33 +491,33 @@ public class Wakamiti {
         }
         LOGGER.info(IMPORTANT, "Generating reports...");
         PlanNodeSnapshot rootNode = PlanNodeSnapshot.group(plans);
-        publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES,null);
+        publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES, null);
         for (Reporter reporter : reporters) {
             try {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(
-                        "Generating report provided by plugin {contributor}...",
-                        reporter.info()
+                            "Generating report provided by plugin {contributor}...",
+                            reporter.info()
                     );
                 }
                 contributors.configure(reporter, configuration).report(rootNode);
             } catch (Exception e) {
                 LOGGER.error(
-                    "{error} {contributor} : {error}",
-                    "Error running reporter",
-                    reporter.info(),
-                    e.getMessage(),
-                    e
+                        "{error} {contributor} : {error}",
+                        "Error running reporter",
+                        reporter.info(),
+                        e.getMessage(),
+                        e
                 );
             }
         }
-        publishEvent(Event.AFTER_WRITE_OUTPUT_FILES,null);
+        publishEvent(Event.AFTER_WRITE_OUTPUT_FILES, null);
 
     }
 
 
     public Hinter createHinterFor(Configuration configuration) {
-    	var backendFactory = newBackendFactory();
+        var backendFactory = newBackendFactory();
         return backendFactory.createHinter(configuration);
     }
 
@@ -560,15 +528,15 @@ public class Wakamiti {
         }
         Map<String, AtomicInteger> ids = new HashMap<>();
         plan
-            .descendants()
-            .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-            .forEach(node -> ids.computeIfAbsent(node.id(), x->new AtomicInteger()).incrementAndGet());
+                .descendants()
+                .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+                .forEach(node -> ids.computeIfAbsent(node.id(), x -> new AtomicInteger()).incrementAndGet());
         if (ids.get(null) != null) {
             throw new WakamitiException("There is one or more test cases withouth a valid ID");
         }
-        ids.forEach((id, count)->{
+        ids.forEach((id, count) -> {
             if (count.get() > 1) {
-                throw new WakamitiException("The ID {} is used in {} test cases",id,count);
+                throw new WakamitiException("The ID {} is used in {} test cases", id, count);
             }
         });
     }

@@ -29,17 +29,7 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
 
     @Override
     public ResourceLoader resourceLoader() {
-        return Wakamiti.resourceLoader(new File("."));
-    }
-
-    @Override
-    public ResourceLoader resourceLoader(File workingDir) {
-        return Wakamiti.resourceLoader(workingDir);
-    }
-
-    @Override
-    public ResourceLoader resourceLoader(Configuration configuration) {
-        return Wakamiti.resourceLoader(configuration);
+        return Wakamiti.resourceLoader();
     }
 
     @Override

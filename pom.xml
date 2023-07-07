@@ -84,10 +84,10 @@
 
     <properties>
         <!-- wakamiti version -->
-        <revision>2.1.1</revision>
+        <revision>2.1.2-SNAPSHOT</revision>
 
         <gherkin-parser.version>1.0.3</gherkin-parser.version>
-        <wakamiti-api.version>2.1.0</wakamiti-api.version>
+        <wakamiti-api.version>2.1.1-SNAPSHOT</wakamiti-api.version>
         <wakamiti-core.version>${revision}</wakamiti-core.version> <!-- must be the same as revision -->
         <wakamiti-lsp.version>${revision}</wakamiti-lsp.version>   <!-- must be the same as revision -->
         <jext.version>1.0.0</jext.version>

@@ -3,21 +3,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 import com.rabbitmq.client.*;
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiRunContext;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
-import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Duration;
 import org.awaitility.core.ConditionTimeoutException;
@@ -27,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 import static org.awaitility.Awaitility.await;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "amqp-steps", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "1.1")
 @I18nResource("iti_wakamiti_wakamiti-amqp")
 public class AmqpStepContributor implements StepContributor {
 
@@ -45,7 +40,7 @@ public class AmqpStepContributor implements StepContributor {
     private AmqpConnectionParams connectionParams;
     private Connection connection;
     private Channel channel;
-    private Map<String,List<String>> receivedMessages = new HashMap<>();
+    private final Map<String, List<String>> receivedMessages = new HashMap<>();
     private String destination;
 
     private boolean durable;
@@ -87,7 +82,6 @@ public class AmqpStepContributor implements StepContributor {
     }
 
 
-
     @TearDown
     public void releaseConnection() {
         try {
@@ -99,7 +93,7 @@ public class AmqpStepContributor implements StepContributor {
             }
         } catch (IOException | TimeoutException e) {
             logger.warn("There were problems releasing the connection: {}", e.getMessage());
-            logger.debug(e.toString(),e);
+            logger.debug(e.toString(), e);
         }
     }
 
@@ -114,20 +108,20 @@ public class AmqpStepContributor implements StepContributor {
             declareQueue(queueName);
             var bytes = text.getBytes(StandardCharsets.UTF_8);
             AMQP.BasicProperties props = new AMQP.BasicProperties(
-                contentType,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                    contentType,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
             );
             channel().basicPublish("", queueName, props, bytes);
         } catch (IOException e) {
@@ -160,9 +154,9 @@ public class AmqpStepContributor implements StepContributor {
     private boolean messageExistsInReceived(String message) {
         Objects.requireNonNull(destination, "Destination queue is not defined");
         return receivedMessages
-            .computeIfAbsent(destination, x->new ArrayList<>())
-            .stream()
-            .anyMatch(receivedMessage -> receivedMessage.equals(message));
+                .computeIfAbsent(destination, x -> new ArrayList<>())
+                .stream()
+                .anyMatch(receivedMessage -> receivedMessage.equals(message));
     }
 
 
@@ -173,10 +167,9 @@ public class AmqpStepContributor implements StepContributor {
                     .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)
                     .until(() -> messageExistsInReceived(message));
         } catch (ConditionTimeoutException e) {
-            throw new AssertionError("Message not received in "+seconds+" seconds");
+            throw new AssertionError("Message not received in " + seconds + " seconds");
         }
     }
-
 
 
     private void declareQueue(String queueName) throws IOException {
@@ -186,11 +179,11 @@ public class AmqpStepContributor implements StepContributor {
 
 
     private String readFile(File file) {
-        return WakamitiRunContext.current().resourceLoader().readFileAsString(file);
+        return WakamitiAPI.instance().resourceLoader().readFileAsString(file);
     }
 
 
-    @Step(value="amqp.define.connection.parameters", args = {"url:text", "username:text", "password:text"})
+    @Step(value = "amqp.define.connection.parameters", args = {"url:text", "username:text", "password:text"})
     public void defineConnectionParameters(String url, String username, String password) {
         this.connectionParams = new AmqpConnectionParams(url, username, password);
     }
@@ -209,7 +202,7 @@ public class AmqpStepContributor implements StepContributor {
     }
 
 
-    @Step(value = "amqp.send.json.from.file", args = { "queue:word", "file:file" })
+    @Step(value = "amqp.send.json.from.file", args = {"queue:word", "file:file"})
     public void sendJSONFromFile(String queueName, File file) {
         sendJsonMessageToQueue(queueName, readFile(file));
     }
@@ -217,7 +210,7 @@ public class AmqpStepContributor implements StepContributor {
 
     @Step("amqp.send.await")
     public void awaitFor(Long seconds) {
-        await().timeout(seconds+1, TimeUnit.SECONDS).pollDelay(seconds, TimeUnit.SECONDS).until(() -> true);
+        await().timeout(seconds + 1, TimeUnit.SECONDS).pollDelay(seconds, TimeUnit.SECONDS).until(() -> true);
     }
 
 
@@ -227,11 +220,10 @@ public class AmqpStepContributor implements StepContributor {
     }
 
 
-    @Step(value="amqp.check.received.json.from.file", args={"seconds:integer", "file:file"})
+    @Step(value = "amqp.check.received.json.from.file", args = {"seconds:integer", "file:file"})
     public void checkReceivedJSONFromString(Long seconds, File file) {
         checkMessageExistsInReceived(readFile(file), seconds);
     }
-
 
 
 }
