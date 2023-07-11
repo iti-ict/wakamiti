@@ -3,8 +3,9 @@ package es.iti.wakamiti.api;
 import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
+import imconfig.Configuration;
 
-
+import java.nio.file.Path;
 import java.util.ServiceLoader;
 
 public interface WakamitiAPI {
@@ -14,9 +15,18 @@ public interface WakamitiAPI {
     }
 
     WakamitiContributors contributors();
+
     ExtensionManager extensionManager();
+
     PlanSerializer planSerializer();
+
     ResourceLoader resourceLoader();
+
     void publishEvent(String eventType, Object data);
+
     String version();
+
+    Path workingDir(Configuration configuration);
+
+    Configuration defaultConfiguration();
 }

@@ -1,5 +1,6 @@
 package es.iti.wakamiti.plugins.cucumber.test;
 
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.core.JsonPlanSerializer;
 import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestCucumberExport {
+
 
     @Test
     public void testCucumberExport() throws IOException {
@@ -44,13 +46,13 @@ public class TestCucumberExport {
         exporter.report(planFailed);
 
         ReportBuilder cucumberReportBuilder = new ReportBuilder(
-            List.of(
-                "target/cucumber-ok-inner.json",
-                "target/cucumber-ok-outer.json",
-                "target/cucumber-failed-inner.json",
-                "target/cucumber-failed-outer.json"
-            ),
-            new Configuration(new File("target"),"test")
+                List.of(
+                        "target/cucumber-ok-inner.json",
+                        "target/cucumber-ok-outer.json",
+                        "target/cucumber-failed-inner.json",
+                        "target/cucumber-failed-outer.json"
+                ),
+                new Configuration(new File("target"), "test")
         );
         cucumberReportBuilder.generateReports();
 

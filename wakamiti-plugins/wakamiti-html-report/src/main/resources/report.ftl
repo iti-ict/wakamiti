@@ -39,7 +39,7 @@
                         </button>
                     </header>
                     <div class="test--body details--body">
-                        <canvas class="chart" data-result='{<#list plan.childrenResults as k, v>"${k}":${v?c}<#sep>, </#list>}'>
+                        <canvas class="chart" data-result='{<#list plan.childrenResults as k, v>"${k}":${v?c}<#sep>,</#list>}'>
                         </canvas>
                     </div>
                 </section>
@@ -58,7 +58,7 @@
                     </div>
                 </section>
             </li>
-            <#if plan.errorClassifiers??>
+            <#if plan.errorClassifiers?has_content>
                 <li class="details--item">
                     <section class="test--component summary--component">
                         <header class="test--header">
@@ -68,7 +68,7 @@
                             </button>
                         </header>
                         <div class="test--body details--body">
-                            <canvas class="chart-error" data-result='{<#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>, </#list>}'>
+                            <canvas class="chart-error" data-result='{<#list plan.errorClassifiers as k, v>"${k}":${v?c}<#sep>,</#list>}'>
                             </canvas>
                         </div>
                     </section>

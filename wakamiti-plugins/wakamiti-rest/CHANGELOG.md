@@ -6,12 +6,23 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.1.1] - 2023-07-07
+
+## Fixed
+
+- Use absolute file paths based on working dir
+
+## [2.1.0] - 2023-07-05
+
+### Modified
+
+- Use `ResourceLoader` from execution context
+
 ## [2.0.0] - 2023-05-22
 
 ### Modified
 
 - Renamed packages to ```es.iti.wakamiti.*```
-
 
 ## [1.6.2] - 2023-05-03
 
@@ -95,7 +106,6 @@ and this project adheres to [Semantic Versioning][2].
 - Fixed bug counting SUCCESS test cases
 - Fixed some step translations
 
-  
 ## [1.0.0] - 2019-04-03
 
 Initial release.  

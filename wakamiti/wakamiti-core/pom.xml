@@ -20,7 +20,6 @@
 
     <!-- coordinates -->
     <artifactId>wakamiti-core</artifactId>
-<!--    <version>1.6.0</version>-->
 
     <!-- additional information -->
     <name>Wakamiti::CORE</name>
@@ -52,6 +51,7 @@
         <dependency>
             <groupId>es.iti.commons</groupId>
             <artifactId>jext</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

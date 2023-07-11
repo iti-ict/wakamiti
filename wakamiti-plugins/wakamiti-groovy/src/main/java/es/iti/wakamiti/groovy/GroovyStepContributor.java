@@ -6,7 +6,6 @@
 package es.iti.wakamiti.groovy;
 
 import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
@@ -25,22 +24,28 @@ public class GroovyStepContributor implements StepContributor {
      * Runs the given groovy script with the available variables:
      * <ul>
      * <li>{@code log} - The {@link org.slf4j.Logger} groovy</li>
-     * <li>{@code ctx} - The {@link WakamitiStepRunContext} with the current
+     * <li>{@code ctx} - The {@link java.util.Map} context with the current
      * scenario running information</li>
      * </ul>
      *
      * <p> Examples:
-     * <blockquote><pre>{@code
-     * When the following groovy code is executed:
-     *   """groovy
-     *   1+1
-     *   """
-     * And the following groovy code is executed:
-     *   """groovy
-     *   log.debug("Results: {}", ctx.backend().getResults())
-     *   assert ctx.backend().getResults()[0] == 2
-     *   """
-     * }</pre></blockquote>
+     * <blockquote><pre>
+     * <code>@ID-01</code>
+     * Scenario: Example scenario
+     *   When the following groovy code is executed:
+     *     """groovy
+     *     ctx['a'] = 'something'
+     *     1+1
+     *     """
+     *   And the following groovy code is executed:
+     *     """groovy
+     *     log.debug("Context: {}", ctx)
+     *     assert ctx.results[0] == 2
+     *     assert ctx.a == 'something'
+     *     assert ctx.id == 'ID-01'
+     *     """
+     * </pre></blockquote>
+     *
      *
      * @param document The script content
      * @return The script return object

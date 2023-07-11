@@ -1,9 +1,11 @@
 package es.iti.wakamiti.fileuploader;
 
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPSClient;
@@ -78,7 +80,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
             if (Event.BEFORE_WRITE_OUTPUT_FILES.equals(event.type())) {
                 openFtpConnection();
             } else if (this.eventType.equals(event.type())) {
-                uploadFile((Path)event.data());
+                uploadFile((Path) event.data());
             } else if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
                 closeFtpConnection();
             }
@@ -87,7 +89,6 @@ public abstract class AbstractFilesUploader implements EventObserver {
         }
 
     }
-
 
 
     private void openFtpConnection() throws IOException {
@@ -100,10 +101,10 @@ public abstract class AbstractFilesUploader implements EventObserver {
         } else if ("ftps".equals(protocol)) {
             ftpClient = new FTPSClient();
         } else {
-            throw new WakamitiException("Protocol not supported: "+protocol);
+            throw new WakamitiException("Protocol not supported: " + protocol);
         }
         if (host.contains(":")) {
-            ftpClient.connect(host.split(":")[0],Integer.parseInt(host.split(":")[1]));
+            ftpClient.connect(host.split(":")[0], Integer.parseInt(host.split(":")[1]));
         } else {
             ftpClient.connect(host);
         }
@@ -126,18 +127,19 @@ public abstract class AbstractFilesUploader implements EventObserver {
 
     private void uploadFile(Path fileToSend) throws IOException {
         Path dirPath = PathUtil.replaceTemporalPlaceholders(Path.of(remotePath));
-        logger.info("Uploading file {uri} to {uri}", fileToSend, host+"/"+dirPath);
+        logger.info("Uploading file {uri} to {uri}", fileToSend, host + "/" + dirPath);
         createDestinationDirectory(dirPath);
         ftpClient.changeWorkingDirectory(dirPath.toString());
         String fileName = fileToSend.toFile().getName();
-        try (InputStream inputStream = Files.newInputStream(fileToSend)) {
+        ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+        try (InputStream inputStream = Files.newInputStream(resourceLoader.absolutePath(fileToSend))) {
             ftpClient.storeFile(fileName, inputStream);
         }
     }
 
 
     private void createDestinationDirectory(Path dirPath) throws IOException {
-        if (dirPath.getParent()!=null) {
+        if (dirPath.getParent() != null) {
             createDestinationDirectory(dirPath.getParent());
         }
         if (!ftpClient.changeWorkingDirectory(dirPath.toString())) {
@@ -152,7 +154,6 @@ public abstract class AbstractFilesUploader implements EventObserver {
                 Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType) ||
                 this.eventType.equals(eventType);
     }
-
 
 
 }

@@ -3,10 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
 
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -16,17 +17,121 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class FilesHelper {
 
     private static final Logger LOGGER = WakamitiLogger
-            .of(LoggerFactory.getLogger( "es.iti.wakamiti.files"));
+            .of(LoggerFactory.getLogger("es.iti.wakamiti.files"));
     private static final String TMP_PREFIX = "wakamiti";
 
     private final Deque<Runnable> cleanUpOperations = new LinkedList<>();
+
+    private static Path createSymbolicLink(Path link, Path path) {
+        try {
+            LOGGER.debug("Creating symbolic link [{}] to [{}]", link, path);
+            return Files.createSymbolicLink(absolutePath(link), absolutePath(path));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void deleteSymbolicLink(Path path) {
+        try {
+            LOGGER.debug("Deleting symbolic link [{}]", path);
+            Files.delete(absolutePath(path));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void moveFile(File source, File target) {
+        try {
+            LOGGER.debug("Moving file [{}] to [{}]", source, target);
+            FileUtils.moveFile(absolutePath(source), absolutePath(target));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void moveFileToDirectory(File source, File target) {
+        try {
+            LOGGER.debug("Moving [{}] to directory [{}]", source, target);
+            FileUtils.moveFileToDirectory(absolutePath(source), absolutePath(target), true);
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void deleteDirectory(File file) {
+        try {
+            LOGGER.debug("Deleting directory [{}]", file);
+            FileUtils.deleteDirectory(absolutePath(file));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void moveDirectory(File source, File target) {
+        try {
+            LOGGER.debug("Moving [{}] to directory [{}]", source, target);
+            FileUtils.moveDirectory(absolutePath(source), absolutePath(target));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void copyFile(File source, File target) {
+        try {
+            LOGGER.debug("Copying file [{}] to [{}]", source, target);
+            FileUtils.copyFile(absolutePath(source), absolutePath(target), true);
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void copyFileToDirectory(File source, File target) {
+        try {
+            LOGGER.debug("Creating [{}] to directory [{}]", source, target);
+            FileUtils.copyFileToDirectory(absolutePath(source), absolutePath(target), true);
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void copyDirectory(File source, File target) {
+        try {
+            LOGGER.debug(" Copy[{}] to directory [{}]", source, target);
+            FileUtils.copyDirectory(absolutePath(source), absolutePath(target), true);
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static void cleanDirectory(File dir) {
+        try {
+            LOGGER.debug("Cleaning up directory [{}]", dir);
+            FileUtils.cleanDirectory(absolutePath(dir));
+        } catch (IOException e) {
+            throw new FilesHelperException(e);
+        }
+    }
+
+    private static File absolutePath(File file) {
+        return resourceLoader().absolutePath(file);
+    }
+
+    private static Path absolutePath(Path path) {
+        return resourceLoader().absolutePath(path);
+    }
+
+    private static ResourceLoader resourceLoader() {
+        return WakamitiAPI.instance().resourceLoader();
+    }
 
     public void waitForFile(File file, WatchEvent.Kind<Path> eventKind, long timeout) throws IOException, InterruptedException, TimeoutException {
         WatchService watcher = FileSystems.getDefault().newWatchService();
@@ -80,6 +185,8 @@ public class FilesHelper {
     }
 
     public void moveToDir(File source, File target) throws IOException {
+
+
         if (!source.exists()) {
             throwSourceNotExistsException(source);
         }
@@ -177,96 +284,6 @@ public class FilesHelper {
             return getFirstExistingParent(parent);
         }
         return parent;
-    }
-
-    private static Path createSymbolicLink(Path link, Path path) {
-        try {
-            LOGGER.debug("Creating symbolic link [{}] to [{}]", link, path);
-            return Files.createSymbolicLink(link, path);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void deleteSymbolicLink(Path path) {
-        try {
-            LOGGER.debug("Deleting symbolic link [{}]", path);
-            Files.delete(path);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void moveFile(File source, File target) {
-        try {
-            LOGGER.debug("Moving file [{}] to [{}]", source, target);
-            FileUtils.moveFile(source, target);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void moveFileToDirectory(File source, File target) {
-        try {
-            LOGGER.debug("Moving [{}] to directory [{}]", source, target);
-            FileUtils.moveFileToDirectory(source, target, true);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void deleteDirectory(File file) {
-        try {
-            LOGGER.debug("Deleting directory [{}]", file);
-            FileUtils.deleteDirectory(file);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void moveDirectory(File source, File target) {
-        try {
-            LOGGER.debug("Moving [{}] to directory [{}]", source, target);
-            FileUtils.moveDirectory(source, target);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void copyFile(File source, File target) {
-        try {
-            LOGGER.debug("Copying file [{}] to [{}]", source, target);
-            FileUtils.copyFile(source, target, true);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void copyFileToDirectory(File source, File target) {
-        try {
-            LOGGER.debug("Creating [{}] to directory [{}]", source, target);
-            FileUtils.copyFileToDirectory(source, target, true);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void copyDirectory(File source, File target) {
-        try {
-            LOGGER.debug(" Copy[{}] to directory [{}]", source, target);
-            FileUtils.copyDirectory(source, target, true);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
-    }
-
-    private static void cleanDirectory(File dir) {
-        try {
-            LOGGER.debug("Cleaning up directory [{}]", dir);
-            FileUtils.cleanDirectory(dir);
-        } catch (IOException e) {
-            throw new FilesHelperException(e);
-        }
     }
 
 }

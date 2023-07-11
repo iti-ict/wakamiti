@@ -38,6 +38,26 @@ public class TestHtmlReportGenerator {
                 "htmlReport.output", "target/wakamiti.html",
                 "htmlReport.title", "Test Report Title");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
+
+    }
+
+    private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
+        try (Reader reader = Files
+                .newBufferedReader(Paths.get("src/test/resources/" + name + ".json"), StandardCharsets.UTF_8)
+        ) {
+            PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
+            HtmlReportGenerator generator = new HtmlReportGenerator();
+            generator.setConfiguration(new HtmlReportGeneratorConfig()
+                    .defaultConfiguration()
+                    .appendFromPairs(properties)
+            );
+            generator.report(plan);
+
+            TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder =
+                    new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
+            HTMLDocumentBuilder htmlDocumentBuilder = new HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
+            return htmlDocumentBuilder.parse(Files.readString(Path.of("target/" + name + ".html")));
+        }
     }
 
     @Test
@@ -54,8 +74,6 @@ public class TestHtmlReportGenerator {
         assertThat(xml_2)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Plan B");
     }
-
-
 
     @Test
     public void testReportMetadata() {
@@ -101,26 +119,6 @@ public class TestHtmlReportGenerator {
                 .extractingText()
                 .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
                         "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
-    }
-
-
-    private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
-        try (Reader reader = Files
-                .newBufferedReader(Paths.get("src/test/resources/" + name + ".json"), StandardCharsets.UTF_8)
-        ) {
-            PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
-            HtmlReportGenerator generator = new HtmlReportGenerator();
-            generator.setConfiguration(new HtmlReportGeneratorConfig()
-                    .defaultConfiguration()
-                            .appendFromPairs(properties)
-            );
-            generator.report(plan);
-
-            TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder =
-                    new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
-            HTMLDocumentBuilder htmlDocumentBuilder = new HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
-            return htmlDocumentBuilder.parse(Files.readString(Path.of("target/"+ name + ".html")));
-        }
     }
 
 }

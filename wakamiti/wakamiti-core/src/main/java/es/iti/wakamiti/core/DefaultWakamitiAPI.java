@@ -5,6 +5,10 @@ import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiContributors;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
+import imconfig.Configuration;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class DefaultWakamitiAPI implements WakamitiAPI {
 
@@ -38,4 +42,13 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
         return getClass().getPackage().getImplementationVersion();
     }
 
+    @Override
+    public Path workingDir(Configuration configuration) {
+        return Wakamiti.workingDir(configuration);
+    }
+
+    @Override
+    public Configuration defaultConfiguration() {
+        return Wakamiti.defaultConfiguration();
+    }
 }

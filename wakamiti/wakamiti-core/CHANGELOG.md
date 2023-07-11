@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [2.1.2] - 2023-07-07
+
+## Fixed
+
+- Property `workingDir`
+
+## [2.1.1] - 2023-07-05
+
+### Fixed
+- Add compile scope to jext dependency
+
+
+## [2.1.0] - 2023-07-05
+
+### Added
+- Extra properties in Backend context
+- New property `workingDir`
+
+
 ## [2.0.0] - 2023-05-22
 
 ### Modified

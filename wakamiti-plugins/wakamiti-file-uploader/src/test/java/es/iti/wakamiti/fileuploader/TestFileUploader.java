@@ -1,9 +1,12 @@
 package es.iti.wakamiti.fileuploader;
 
+
 import es.iti.wakamiti.api.event.Event;
 import imconfig.Configuration;
 import org.apache.ftpserver.ftplet.FtpException;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,7 +22,7 @@ public class TestFileUploader {
     MockFtpServer ftpServer;
 
     @Before
-    public void setUp()  {
+    public void setUp() {
         try {
             ftpServer = new MockFtpServer().start();
         } catch (IOException | FtpException | RuntimeException e) {
@@ -36,12 +39,12 @@ public class TestFileUploader {
     @Test
     public void testStandardOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
-            "fileUploader.host", "localhost:"+ftpServer.getPort(),
-            "fileUploader.protocol","ftp",
-            "fileUploader.credentials.username", "test",
-            "fileUploader.credentials.password", "test",
-            "fileUploader.standardOutputs.enable", "true",
-            "fileUploader.standardOutputs.destinationDir","dira/dirb/dirc"
+                "fileUploader.host", "localhost:" + ftpServer.getPort(),
+                "fileUploader.protocol", "ftp",
+                "fileUploader.credentials.username", "test",
+                "fileUploader.credentials.password", "test",
+                "fileUploader.standardOutputs.enable", "true",
+                "fileUploader.standardOutputs.destinationDir", "dira/dirb/dirc"
 
         );
         AbstractFilesUploader filesUploader = new StandardOutputFilesUploader();
@@ -52,16 +55,15 @@ public class TestFileUploader {
     }
 
 
-
     @Test
     public void testTestCasedOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
-            "fileUploader.host", "localhost:"+ftpServer.getPort(),
-            "fileUploader.protocol","ftp",
-            "fileUploader.credentials.username", "test",
-            "fileUploader.credentials.password", "test",
-            "fileUploader.testCaseOutputs.enable", "true",
-            "fileUploader.testCaseOutputs.destinationDir","dira/dirb/dirc"
+                "fileUploader.host", "localhost:" + ftpServer.getPort(),
+                "fileUploader.protocol", "ftp",
+                "fileUploader.credentials.username", "test",
+                "fileUploader.credentials.password", "test",
+                "fileUploader.testCaseOutputs.enable", "true",
+                "fileUploader.testCaseOutputs.destinationDir", "dira/dirb/dirc"
 
         );
         AbstractFilesUploader filesUploader = new TestCaseOutputFilesUploader();
@@ -72,16 +74,15 @@ public class TestFileUploader {
     }
 
 
-
     @Test
     public void testReportOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
-            "fileUploader.host", "localhost:"+ftpServer.getPort(),
-            "fileUploader.protocol","ftp",
-            "fileUploader.credentials.username", "test",
-            "fileUploader.credentials.password", "test",
-            "fileUploader.reportOutputs.enable", "true",
-            "fileUploader.reportOutputs.destinationDir","dira/dirb/dirc"
+                "fileUploader.host", "localhost:" + ftpServer.getPort(),
+                "fileUploader.protocol", "ftp",
+                "fileUploader.credentials.username", "test",
+                "fileUploader.credentials.password", "test",
+                "fileUploader.reportOutputs.enable", "true",
+                "fileUploader.reportOutputs.destinationDir", "dira/dirb/dirc"
 
         );
         AbstractFilesUploader filesUploader = new ReportOutputFilesUploader();
@@ -92,15 +93,14 @@ public class TestFileUploader {
     }
 
 
-
     @Test
     public void testStandardOutputFileUploaderDisabledByDefault() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
-            "fileUploader.host", "localhost:"+ftpServer.getPort(),
-            "fileUploader.protocol","ftp",
-            "fileUploader.credentials.username", "test",
-            "fileUploader.credentials.password", "test",
-            "fileUploader.standardOutputs.destinationDir","dira/dirb/dirc"
+                "fileUploader.host", "localhost:" + ftpServer.getPort(),
+                "fileUploader.protocol", "ftp",
+                "fileUploader.credentials.username", "test",
+                "fileUploader.credentials.password", "test",
+                "fileUploader.standardOutputs.destinationDir", "dira/dirb/dirc"
         );
         StandardOutputFilesUploader filesUploader = new StandardOutputFilesUploader();
         FilesUploaderConfigurator configurator = new FilesUploaderConfigurator();
@@ -109,19 +109,18 @@ public class TestFileUploader {
     }
 
 
-
     private void produceEvents(
-        Configuration c,
-        AbstractFilesUploader filesUploader,
-        FilesUploaderConfigurator configurator,
-        String eventType
+            Configuration c,
+            AbstractFilesUploader filesUploader,
+            FilesUploaderConfigurator configurator,
+            String eventType
     ) throws URISyntaxException {
         assertTrue(configurator.accepts(filesUploader));
         configurator.configurer().configure(filesUploader, c);
         Path path = Path.of(Thread.currentThread().getContextClassLoader().getResource("file.txt").toURI());
-        filesUploader.eventReceived(new Event(Event.BEFORE_WRITE_OUTPUT_FILES,Instant.now(),null));
-        filesUploader.eventReceived(new Event(eventType,Instant.now(),path));
-        filesUploader.eventReceived(new Event(Event.AFTER_WRITE_OUTPUT_FILES,Instant.now(),null));
+        filesUploader.eventReceived(new Event(Event.BEFORE_WRITE_OUTPUT_FILES, Instant.now(), null));
+        filesUploader.eventReceived(new Event(eventType, Instant.now(), path));
+        filesUploader.eventReceived(new Event(Event.AFTER_WRITE_OUTPUT_FILES, Instant.now(), null));
     }
 
 

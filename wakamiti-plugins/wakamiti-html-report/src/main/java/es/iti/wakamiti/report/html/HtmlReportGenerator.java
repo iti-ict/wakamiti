@@ -7,17 +7,20 @@ package es.iti.wakamiti.report.html;
 
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.util.PathUtil;
-import freemarker.template.*;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.PathUtil;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.report.html.factory.CountStepsMethod;
 import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
 import es.iti.wakamiti.report.html.factory.SumAllMethod;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -35,7 +38,7 @@ import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider =  "es.iti.wakamiti", name = "html-report", version = "1.2")
+@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "1.2")
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);
@@ -87,10 +90,11 @@ public class HtmlReportGenerator implements Reporter {
     @SuppressWarnings("unchecked")
     public void report(PlanNodeSnapshot rootNode) {
         try {
-            Path output = PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
-                this.outputFile,
-                "Output file not configured"
-            )));
+            var resourceLoader = WakamitiAPI.instance().resourceLoader();
+            Path output = resourceLoader.absolutePath(PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
+                    this.outputFile,
+                    "Output file not configured"
+            ))));
             parameters.put("globalStyle", readStyles());
             parameters.put("globalScript", readJavascript());
             parameters.put("plan", rootNode);
@@ -107,7 +111,7 @@ public class HtmlReportGenerator implements Reporter {
 
             try (var writer = new FileWriter(output.toFile(), StandardCharsets.UTF_8)) {
                 template("report.ftl").process(parameters, writer);
-                WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN,output);
+                WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN, output);
 
             }
         } catch (IOException | TemplateException e) {

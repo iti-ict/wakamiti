@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.rest;
 
+
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
@@ -23,7 +24,6 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.*;
 import org.apache.xmlbeans.XmlObject;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -45,12 +45,13 @@ import java.util.stream.Stream;
 public class RestSupport {
 
     public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
-    public static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+
 
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
+
 
     protected URL baseURL;
     protected String path;
@@ -255,8 +256,12 @@ public class RestSupport {
         }
     }
 
-    private String readFile(File file) {
-        return resourceLoader.readFileAsString(file);
+    String readFile(File file) {
+        return resourceLoader().readFileAsString(file);
     }
 
+
+    protected ResourceLoader resourceLoader() {
+        return WakamitiAPI.instance().resourceLoader();
+    }
 }

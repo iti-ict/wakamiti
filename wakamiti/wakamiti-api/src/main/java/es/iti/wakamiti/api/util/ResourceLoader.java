@@ -34,7 +34,7 @@ public class ResourceLoader {
 
     private static final String CLASSPATH_PROTOCOL = "classpath:";
     private static final String FILE_PROTOCOL = "file";
-    private static final File APPLICATION_FOLDER = new File(System.getProperty("user.dir"));
+
     private static final Logger LOGGER = WakamitiLogger.forClass(ResourceLoader.class);
     private static final int BUFFER_SIZE = 2048;
 
@@ -46,19 +46,26 @@ public class ResourceLoader {
 
 
     private final Charset charset;
+    private File workingDir = new File(".");
 
 
     public ResourceLoader(Charset charset) {
         this.charset = charset;
-    }
-
-
-    public ResourceLoader() {
-        this.charset = StandardCharsets.UTF_8;
         Locale.setDefault(Locale.ENGLISH); // avoid different behaviours regarding the OS language
     }
 
+    public ResourceLoader() {
+        this(StandardCharsets.UTF_8);
+    }
 
+
+    public void setWorkingDir(File workingDir) {
+        this.workingDir = workingDir.getAbsoluteFile();
+    }
+
+    public void setWorkingDir(Path workingDir) {
+        this.workingDir = workingDir.toAbsolutePath().toFile();
+    }
 
 
     public <T> Resource<T> fromInputStream(ResourceType<T> resourceType, InputStream inputStream) {
@@ -112,12 +119,14 @@ public class ResourceLoader {
      * @return The file content
      */
     public String readFileAsString(File file, Charset charset) {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
+        try (FileInputStream inputStream = new FileInputStream(absolutePath(file))) {
             return PropertyEvaluator.makeEvalIfCan(toString(inputStream, charset)).value();
         } catch (IOException e) {
             throw new WakamitiException("Error reading text file {} : {}", file, e.getMessage(), e);
         }
     }
+
+
 
 
     /**
@@ -253,7 +262,7 @@ public class ResourceLoader {
                 if (Paths.get(path).isAbsolute()) {
                     uri = Paths.get(path).toUri();
                 } else {
-                    uri = new File(APPLICATION_FOLDER, path).toURI();
+                    uri = new File(workingDir, path).toURI();
                 }
                 discoverResourcesInURI(path, uri, filenameFilter, parser, discovered);
             }
@@ -336,6 +345,22 @@ public class ResourceLoader {
     }
 
 
+    public File absolutePath(File file) {
+        if (file.isAbsolute()) {
+            return file;
+        }
+        return new File(workingDir,file.toString());
+    }
+
+
+    public Path absolutePath(Path path) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return workingDir.toPath().resolve(path);
+    }
+
+
     protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
         try {
             return Collections.list(classLoader.getResources(classPath)).stream()
@@ -380,6 +405,8 @@ public class ResourceLoader {
              output.write(buffer, 0, n);
          }
     }
+
+
 
 
 

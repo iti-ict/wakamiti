@@ -3,15 +3,15 @@ package es.iti.wakamiti.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import es.iti.wakamiti.rest.oauth.GrantType;
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
-import io.restassured.RestAssured;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.rest.oauth.GrantType;
+import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
+import io.restassured.RestAssured;
 import org.apache.xmlbeans.XmlObject;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -1453,6 +1453,7 @@ public class RestStepContributorTest {
         // check
         assertThat(result).isNotNull();
     }
+
     @Test
     public void testWhenPostDataAndParamWithSuccess() throws MalformedURLException {
         // prepare

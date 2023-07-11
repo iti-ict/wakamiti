@@ -3,38 +3,30 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+package es.iti.wakamiti.core.datatypes.assertion;
+
+
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.core.backend.ExpressionMatcher;
+import org.hamcrest.Matcher;
+
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-package es.iti.wakamiti.core.datatypes.assertion;
-
-
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.hamcrest.Matcher;
-
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
-;
-
-
 public abstract class AbstractAssertProvider {
 
     public static final String MATCHERS_RESOURCE = "iti_wakamiti_core-matchers";
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = new ResourceLoader();
+    protected static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
 
     private final Map<Locale, ResourceBundle> bundles = new HashMap<>();
     private final Map<Locale, Map<String, Pattern>> translatedExpressions = new HashMap<>();
@@ -44,19 +36,25 @@ public abstract class AbstractAssertProvider {
 
     }
 
+    public static List<String> getAllExpressions(Locale locale, String prefix) {
+        ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
+        return bundle.keySet().stream()
+                .filter(key -> key.startsWith(prefix))
+                .map(bundle::getString)
+                .collect(Collectors.toList());
+    }
 
     protected ResourceBundle bundle(Locale locale) {
         return bundles.computeIfAbsent(
-            locale,
-            bundleLocale -> resourceLoader.resourceBundle(MATCHERS_RESOURCE, bundleLocale)
+                locale,
+                bundleLocale -> resourceLoader.resourceBundle(MATCHERS_RESOURCE, bundleLocale)
         );
     }
-
 
     public Optional<Matcher<?>> matcherFromExpression(Locale locale, String expression) {
 
         Map<String, Pattern> expressions = translatedExpressions
-            .computeIfAbsent(locale, this::translatedExpressions);
+                .computeIfAbsent(locale, this::translatedExpressions);
 
         String key = null;
         String value = null;
@@ -70,8 +68,8 @@ public abstract class AbstractAssertProvider {
             if (patternMatcher.find()) {
                 found = true;
                 value = (pattern.pattern().contains("<" + VALUE_GROUP + ">")
-                                ? patternMatcher.group(VALUE_GROUP)
-                                : null);
+                        ? patternMatcher.group(VALUE_GROUP)
+                        : null);
                 break;
             }
         }
@@ -88,36 +86,24 @@ public abstract class AbstractAssertProvider {
 
     }
 
-
     protected abstract LinkedHashMap<String, Pattern> translatedExpressions(Locale locale);
 
-
     protected abstract Matcher<?> createMatcher(
-        Locale locale,
-        String key,
-        String value
+            Locale locale,
+            String key,
+            String value
     ) throws ParseException;
 
-
     protected String translateBundleExpression(
-        Locale locale,
-        String expression,
-        String valueGroupReplacing
+            Locale locale,
+            String expression,
+            String valueGroupReplacing
     ) {
         String translatedExpression = bundle(locale).getString(expression);
         translatedExpression = ExpressionMatcher.computeRegularExpression(translatedExpression);
         String regexGroupExpression = "(?<" + VALUE_GROUP + ">" + valueGroupReplacing + ")";
         translatedExpression = translatedExpression.replace(VALUE_WILDCARD, regexGroupExpression);
         return "^" + translatedExpression + "$";
-    }
-
-
-    public static List<String> getAllExpressions(Locale locale, String prefix) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
-        return bundle.keySet().stream()
-            .filter(key->key.startsWith(prefix))
-            .map(bundle::getString)
-            .collect(Collectors.toList());
     }
 
 }

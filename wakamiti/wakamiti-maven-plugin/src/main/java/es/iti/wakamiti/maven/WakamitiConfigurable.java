@@ -38,7 +38,10 @@ public interface WakamitiConfigurable {
         }
         if (configuration.isEmpty()) {
             warn("configuration is empty");
+        } else {
+            info("using the following configuration\n"+configuration);
         }
+
         return configuration;
     }
 

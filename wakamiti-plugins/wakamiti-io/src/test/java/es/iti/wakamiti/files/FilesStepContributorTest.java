@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
 
 import es.iti.wakamiti.api.plan.DataTable;
@@ -27,12 +26,12 @@ import static org.junit.Assert.assertTrue;
 
 public class FilesStepContributorTest {
 
-    private static Logger log = LoggerFactory.getLogger( "es.iti.wakamiti.test");
+    private static final Logger log = LoggerFactory.getLogger("es.iti.wakamiti.test");
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private FilesStepContributor contributor = new FilesStepContributor();
+    private final FilesStepContributor contributor = new FilesStepContributor();
 
     @Before
     public void startup() {
@@ -71,8 +70,6 @@ public class FilesStepContributorTest {
     /**
      * The method must copy the files that are in the source folder to the destination folder and delete the source
      * directory.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToDirWhenSrcIsAnExistentDirectoryAndDestIsAnExistentDirectoryWithSuccess() throws IOException {
@@ -95,8 +92,6 @@ public class FilesStepContributorTest {
     /**
      * The method must create a destination folder, copy there the files in the source folder, and delete the source
      * directory.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToDirWhenSrcIsAnExistentDirectoryAndDestIsANotExistentDirectoryWithSuccess() throws IOException {
@@ -118,8 +113,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must remove the source folder.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToDirWhenSrcIsAnEmptyDirectoryWithSuccess() throws IOException {
@@ -154,8 +147,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must copy the source file in the destination folder, and then delete it.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToDirWhenSrcIsAnExistentFileAndDestIsExistentDirectoryWithSuccess() throws IOException {
@@ -176,8 +167,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must create a destination folder, copy the source file in there, and then remove it.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToDirWhenSrcIsAFileAndDestIsNotExistentDirectoryWithSuccess() throws IOException {
@@ -199,8 +188,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must copy the source file in the destination directory, rename it, and then remove the source file.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToFileWhenSrcIsAnExistentFileAndDestinationFolderExistsWithSuccess() throws IOException {
@@ -222,8 +209,6 @@ public class FilesStepContributorTest {
     /**
      * The method must create a destination folder, copy the source file there, rename it, and then remove the source
      * file.
-     *
-     * @throws IOException
      */
     @Test
     public void moveToFileWhenSrcIsAnExistentFileAndDestinationFolderNotExistsWithSuccess() throws IOException {
@@ -291,8 +276,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must copy the files that are in the source folder to the destination folder.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToDirWhenSrcIsAnExistentDirectoryAndDestIsAnExistentDirectoryWithSuccess() throws IOException {
@@ -314,8 +297,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must create a destination folder and copy there the files in the source folder.
-     *
-     * @throws IllegalArgumentException
      */
     @Test
     public void copyToDirWhenSrcIsAnExistentDirectoryAndDestIsANotExistentDirectoryWithSuccess() throws IOException {
@@ -337,8 +318,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must do nothing.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToDirWhenSrcIsAnEmptyDirectoryWithSuccess() throws IOException {
@@ -373,8 +352,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must copy the source file in the destination folder.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToDirWhenSrcIsAnExistentFileAndDestIsExistentDirectoryWithSuccess() throws IOException {
@@ -395,8 +372,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must create a destination folder and copy the source file in there.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToDirWhenSrcIsAFileAndDestIsNotExistentDirectoryWithSuccess() throws IOException {
@@ -418,8 +393,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must copy the source file in the destination directory and rename it.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToFileWhenSrcIsAnExistentFileAndDestinationFolderExistsWithSuccess() throws IOException {
@@ -440,8 +413,6 @@ public class FilesStepContributorTest {
 
     /**
      * The method must create a destination folder, copy the source file there and rename it.
-     *
-     * @throws IOException
      */
     @Test
     public void copyToFileWhenSrcIsAnExistentFileAndDestinationFolderNotExistsWithSuccess() throws IOException {

@@ -5,6 +5,22 @@
  */
 package es.iti.wakamiti.test.gherkin;
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +29,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,27 +40,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.util.JsonUtils;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
-
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.api.annotations.I18nResource;
-import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @I18nResource("steps/test-wakamiti-steps")
 public class WakamitiSteps implements StepContributor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.test");
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
     private static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
 
     private int value1;
@@ -63,7 +64,7 @@ public class WakamitiSteps implements StepContributor {
         LOGGER.debug("Numbers type set");
     }
 
-    @Step(value = "given.two.numbers", args = { "value1:int", "value2:float" })
+    @Step(value = "given.two.numbers", args = {"value1:int", "value2:float"})
     public void setNumbers(Integer value1, Float value2) throws Exception {
         this.value1 = value1;
         this.value2 = value2;
@@ -131,8 +132,8 @@ public class WakamitiSteps implements StepContributor {
     }
 
 
-    @Step(value = "simple.step.with.multiple.asserts", args = { "a:integer-assertion", "b:integer",
-                    "c:text-assertion" })
+    @Step(value = "simple.step.with.multiple.asserts", args = {"a:integer-assertion", "b:integer",
+            "c:text-assertion"})
     public void simpleStepWithMultipleAsserts(Assertion<Integer> a, Long b, Assertion<String> c) {
         // nothing
     }
@@ -145,8 +146,7 @@ public class WakamitiSteps implements StepContributor {
     }
 
 
-
-    @Step(value = "given.today.is", args = { "date" })
+    @Step(value = "given.today.is", args = {"date"})
     public Object setDate(LocalDate date) {
         LOGGER.info("Today is: {}", date);
 
@@ -159,7 +159,7 @@ public class WakamitiSteps implements StepContributor {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
-    @Step(value = "given.now.is", args = { "time" })
+    @Step(value = "given.now.is", args = {"time"})
     public Object setTime(LocalTime time) {
         LOGGER.info("It is now: {}", time);
         assert time != null : "time is null";
@@ -171,7 +171,7 @@ public class WakamitiSteps implements StepContributor {
         return time.format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
     }
 
-    @Step(value = "given.instant.is", args = { "datetime" })
+    @Step(value = "given.instant.is", args = {"datetime"})
     public Object setDatetime(LocalDateTime datetime) {
         LOGGER.info("This instant is: {}", datetime);
 
@@ -189,114 +189,114 @@ public class WakamitiSteps implements StepContributor {
         return datetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
     }
 
-    @Step(value = "given.integer", args = { "integer" })
+    @Step(value = "given.integer", args = {"integer"})
     public Object setInteger(Long number) {
         LOGGER.info("This integer is: {}", number);
         assert number == 6L : "Integer is " + number;
         return number;
     }
 
-    @Step(value = "given.decimal", args = { "decimal" })
+    @Step(value = "given.decimal", args = {"decimal"})
     public Object setDecimal(BigDecimal number) {
         LOGGER.info("This bigdecimal is: {}", number);
         assert number.doubleValue() == 3.2 : "BigDecimal is " + number;
         return number.toString().replace(".", ",");
     }
 
-    @Step(value = "given.int", args = { "int" })
+    @Step(value = "given.int", args = {"int"})
     public Object setInt(Integer number) {
         LOGGER.info("This int is: {}", number);
         assert number == 6 : "Int is " + number;
         return number;
     }
 
-    @Step(value = "given.short", args = { "short" })
+    @Step(value = "given.short", args = {"short"})
     public Object setShort(Short number) {
         LOGGER.info("This short is: {}", number);
         assert number.intValue() == 6 : "Short is " + number;
         return number;
     }
 
-    @Step(value = "given.long", args = { "long" })
+    @Step(value = "given.long", args = {"long"})
     public Object setLong(Long number) {
         LOGGER.info("This long is: {}", number);
         assert number == 6L : "Long is " + number;
         return number;
     }
 
-    @Step(value = "given.biginteger", args = { "biginteger" })
+    @Step(value = "given.biginteger", args = {"biginteger"})
     public Object setBigInteger(BigInteger number) {
         LOGGER.info("This biginteger is: {}", number);
         assert number.intValue() == 6 : "BigInteger is " + number;
         return number;
     }
 
-    @Step(value = "given.byte", args = { "byte" })
+    @Step(value = "given.byte", args = {"byte"})
     public Object setByte(Byte number) {
         LOGGER.info("This byte is: {}", number);
         assert number.intValue() == 6 : "Byte is " + number;
         return number;
     }
 
-    @Step(value = "given.double", args = { "double" })
+    @Step(value = "given.double", args = {"double"})
     public Object setDouble(Double number) {
         LOGGER.info("This double is: {}", number);
         assert number == 3.2 : "Double is " + number;
         return number.toString().replace(".", ",");
     }
 
-    @Step(value = "given.float", args = { "float" })
+    @Step(value = "given.float", args = {"float"})
     public Object setFloat(Float number) {
         LOGGER.info("This float is: {}", number);
         assert number == 3.2F : "Float is " + number;
         return number.toString().replace(".", ",");
     }
 
-    @Step(value = "given.bigdecimal", args = { "bigdecimal" })
+    @Step(value = "given.bigdecimal", args = {"bigdecimal"})
     public Object setBigDecimal(BigDecimal number) {
         LOGGER.info("This bigdecimal is: {}", number);
         assert number.doubleValue() == 3.2;
         return number.toString().replace(".", ",");
     }
 
-    @Step(value = "given.string", args = { "string" })
+    @Step(value = "given.string", args = {"string"})
     public Object setString(String string) {
         LOGGER.info("This string is: {}", string);
         assert Objects.equals(string, "ABC aa");
         return string;
     }
 
-    @Step(value = "given.text", args = { "text" })
+    @Step(value = "given.text", args = {"text"})
     public Object setText(String text) {
         LOGGER.info("This text is: {}", text);
         assert Objects.equals(text, "ABC aa");
         return text;
     }
 
-    @Step(value = "given.word", args = { "word" })
+    @Step(value = "given.word", args = {"word"})
     public Object setWord(String word) {
         LOGGER.info("This word is: {}", word);
         assert Objects.equals(word, "ABC");
         return word;
     }
 
-    @Step(value = "given.id", args = { "id" })
+    @Step(value = "given.id", args = {"id"})
     public Object setId(String id) {
         LOGGER.info("This id is: {}", id);
         assert Objects.equals(id, "ABC");
         return id;
     }
 
-    @Step(value = "given.file", args = { "file" })
-    public Object setFile(File file) {
+    @Step(value = "given.file", args = {"file"})
+    public Object setFile(File file) throws IOException {
         LOGGER.info("This file is: {}", file);
         assert file != null : "File is null";
-        assert Objects.equals(file.getPath().replace("\\", "/"), "src/test/resources/features/properties/ABC")
+        assert Files.isSameFile(file.toPath(), Path.of("src/test/resources/features/properties/ABC"))
                 : "File is " + file.getPath().replace("\\", "/");
         return file.getPath().replace("\\", "/");
     }
 
-    @Step(value = "file.content", args = { "file" })
+    @Step(value = "file.content", args = {"file"})
     public Object getFile(File file, Document document) {
         LOGGER.info("This file is: {}", file);
         assert file != null : "File is null";
@@ -305,7 +305,7 @@ public class WakamitiSteps implements StepContributor {
         return content;
     }
 
-    @Step(value = "given.url" , args = { "url" })
+    @Step(value = "given.url", args = {"url"})
     public Object setURL(URL url) throws MalformedURLException {
         LOGGER.info("This url is: {}", url);
         assert url != null : "URL is null";

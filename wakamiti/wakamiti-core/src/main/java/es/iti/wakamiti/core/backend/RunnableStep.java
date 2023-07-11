@@ -5,10 +5,10 @@
  */
 package es.iti.wakamiti.core.backend;
 
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.*;
 import es.iti.wakamiti.api.util.*;
 import es.iti.wakamiti.core.Wakamiti;
 import org.slf4j.Logger;
@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 /**
- *
- *
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 public class RunnableStep {
@@ -30,7 +28,7 @@ public class RunnableStep {
     private final Map<Locale, String> translatedDefinitions = new HashMap<>();
     private final BackendArguments arguments;
     private final ThrowableRunnable executor;
-    private final ResourceLoader resourceLoader = new ResourceLoader();
+    private final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
     private final String stepProvider;
 
 
