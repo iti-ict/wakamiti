@@ -24,7 +24,7 @@
 
     <!-- coordinates -->
     <artifactId>wakamiti-azure</artifactId>
-    <version>1.2.0</version>
+    <version>1.1.0</version>
 
     <!-- additional information -->
     <name>Wakamiti::Azure integration</name>
