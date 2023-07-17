@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+        This POM is used as base for any Wakamiti plugin
+     -->
+
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-plugin-starter</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <properties>
+        <wakamiti.api.version>2.2.0-SNAPSHOT</wakamiti.api.version>
+    </properties>
+
+
+    <parent>
+        <artifactId>wakamiti-starter</artifactId>
+        <groupId>es.iti.wakamiti</groupId>
+        <version>1.0.0</version>
+        <relativePath>../wakamiti-starter</relativePath>
+    </parent>
+
+    <name>Wakamiti Plugin Starter</name>
+    <description>Starter POM to Wakamiti plugins</description>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-api</artifactId>
+            <version>${wakamiti.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+
+    <!-- jExt annotation processor -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>es.iti.commons</groupId>
+                            <artifactId>jext</artifactId>
+                            <version>1.0.0</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>

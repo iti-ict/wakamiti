@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!--
+        This POM is used as parent for any Wakamiti component in order to share the build process
+        and some other global properties (organization, etc.).
+
+        The version number will be always the same regardless the versions of the components.
+
+    -->
+
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-starter</artifactId>
+    <packaging>pom</packaging>
+    <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
+    <version>1.0.0</version>
+
+
+
+    <name>Wakamiti Starter</name>
+    <description>Parent POM for sharing build configuration among Wakamiti components</description>
+    <url>https://github.com/iti-ict/wakamiti</url>
+    <inceptionYear>2023</inceptionYear>
+    <organization>
+        <name>ITI - Instituto Tecnológico de Informática</name>
+        <url>https://www.iti.es</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>MPL-2.0</name>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/iti-ict/wakamiti/issues</url>
+    </scm>
+    <developers>
+        <developer>
+            <email>luiinge@gmail.com</email>
+        </developer>
+        <developer>
+            <email>mgalbis@iti.es</email>
+        </developer>
+    </developers>
+
+
+
+
+
+
+    <properties>
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- build versions -->
+        <java.version>11</java.version>
+        <maven.version>3.8.6</maven.version>
+        <maven.resources.version>3.3.0</maven.resources.version>
+        <maven.compiler.version>3.8.0</maven.compiler.version>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!-- paths -->
+        <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
+
+        <!-- plugin versions -->
+        <jacoco.version>0.8.2</jacoco.version>
+        <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <surefire.report.version>2.6</surefire.report.version>
+        <maven.site.version>3.7.1</maven.site.version>
+        <maven.ant.version>1.8</maven.ant.version>
+        <maven.info.reports.version>3.0.0</maven.info.reports.version>
+        <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+        <exists-maven-plugin.version>0.11.0</exists-maven-plugin.version>
+
+        <!-- sonar cloud -->
+        <sonar.organization>iti-ict</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+
+    </properties>
+
+
+    <!-- basic build features -->
+    <build>
+        <plugins>
+
+            <!-- specific version of maven compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <verbose>${verbose}</verbose>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+            </plugin>
+            <!-- dependency convergence enforce -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence>
+                                    <excludedScopes>
+                                        <scope>test</scope>
+                                    </excludedScopes>
+                                </dependencyConvergence>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Surefire with JaCoCo agent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <argLine>${surefireJacocoAgent}
+                        -Djdk.net.URLClassPath.disableClassPathURLCheck=true
+                        --illegal-access=permit</argLine>
+                </configuration>
+            </plugin>
+            <!-- Failsafe with JaCoCo agent -->
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <argLine>${failsafeJacocoAgent}
+                                -Djdk.net.URLClassPath.disableClassPathURLCheck=true
+                                --illegal-access=permit</argLine>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- JaCoCo coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                            <propertyName>surefireJacocoAgent</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                            <propertyName>failsafeJacocoAgent</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-test-report</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- dependency info report -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- test info report -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>report-only</goal>
+                            <goal>failsafe-report-only</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- flatten prior install, required since ${revision} is used -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <pomElements>
+                        <name/>
+                        <description/>
+                        <url/>
+                        <inceptionYear/>
+                        <organization/>
+                        <scm/>
+                        <developers/>
+                    </pomElements>
+                </configuration>
+            </plugin>
+            <!-- display available updates -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.16.0</version>
+                <configuration>
+                    <allowMajorUpdates>false</allowMajorUpdates>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>display-dependency-updates</goal>
+                            <goal>display-plugin-updates</goal>
+                            <goal>display-property-updates</goal>
+                            <goal>display-parent-updates</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+
+
+    <profiles>
+        <!-- The sonatype profile is used to deploy artifacts to the Sonatype repository -->
+        <profile>
+            <id>sonatype</id>
+            <build>
+                <plugins>
+                    <!-- This plugin disable the deploy for artifacts that already exists -->
+                    <plugin>
+                        <groupId>org.honton.chas</groupId>
+                        <artifactId>exists-maven-plugin</artifactId>
+                        <version>${exists-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>remote</goal>
+                                </goals>
+                                <configuration>
+                                    <repository>https://repo.maven.apache.org/maven2/</repository>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- generate additional jar with sources -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven.source.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- generate javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Sign the artifacts in order to deploy them -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+
+
+    <!-- Share versions of some common dependencies -->
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>es.iti.wakamiti</groupId>
+                <artifactId>wakamiti-bom</artifactId>
+                <version>2.2.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
+</project>
