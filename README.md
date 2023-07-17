@@ -2,8 +2,28 @@
 > reading this document directly from the repository
 
 
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/wakamiti/wakamiti?sort=semver&style=for-the-badge)](https://hub.docker.com/repository/docker/wakamiti/wakamiti) [![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo)
 
+
+### Latest versions
+
+| component | version |
+| --- | --- |
+| API  | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-api?label=%20) |
+| Core | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-core?label=%20) |
+| Quarkus Server | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-server-quarkus?label=%20) |
+| Plugin Rest | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-rest?label=%20) |
+| Plugin DB | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-db?label=%20) |
+| Plugin Html Report | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-html-report?label=%20) |
+| Plugin Cucumber Exporter | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-cucumber-exporter?label=%20) |
+| Plugin File Uploader | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-file-uploader?label=%20) |
+| Plugin AMQP | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-amqp?label=%20) |
+| Plugin Groovy | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-groovy?label=%20) |
+| Plugin I/O | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-io?label=%20) |
+| Plugin Azure | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-azure?label=%20) |
+| Plugin Appium | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-appium?label=%20) |
+
+---
 
 
 
