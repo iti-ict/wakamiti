@@ -10,15 +10,13 @@
 package es.iti.wakamiti.rest.helpers;
 
 
-import es.iti.wakamiti.api.datatypes.Assertion;
-
-
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.rest.ContentTypeHelper;
 import es.iti.wakamiti.rest.MatchMode;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;

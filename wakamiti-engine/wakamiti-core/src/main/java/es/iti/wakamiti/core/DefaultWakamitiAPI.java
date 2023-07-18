@@ -7,7 +7,7 @@ import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import imconfig.Configuration;
 
-import java.io.File;
+
 import java.nio.file.Path;
 
 public class DefaultWakamitiAPI implements WakamitiAPI {
@@ -29,17 +29,7 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
 
     @Override
     public ResourceLoader resourceLoader() {
-        return Wakamiti.resourceLoader(new File("."));
-    }
-
-    @Override
-    public ResourceLoader resourceLoader(File workingDir) {
-        return Wakamiti.resourceLoader(workingDir);
-    }
-
-    @Override
-    public ResourceLoader resourceLoader(Configuration configuration) {
-        return Wakamiti.resourceLoader(configuration);
+        return Wakamiti.resourceLoader();
     }
 
     @Override

@@ -17,6 +17,7 @@ import es.iti.wakamiti.api.util.Pair;
 import imconfig.Configurable;
 import imconfig.Configuration;
 import imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.extensions.*;
 
 import java.util.LinkedList;
 import java.util.List;

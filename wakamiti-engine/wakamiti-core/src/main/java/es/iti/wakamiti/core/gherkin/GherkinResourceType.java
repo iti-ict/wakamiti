@@ -16,11 +16,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
-import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ResourceType;
-
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
 
 
 @Extension(provider =  "es.iti.wakamiti", name = GherkinResourceType.NAME, extensionPoint =  "es.iti.wakamiti.api.extensions.ResourceType", version = "1.1")

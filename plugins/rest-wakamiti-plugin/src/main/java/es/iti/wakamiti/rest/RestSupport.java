@@ -6,7 +6,6 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
@@ -263,6 +262,6 @@ public class RestSupport {
 
 
     protected ResourceLoader resourceLoader() {
-        return WakamitiRunContext.current().resourceLoader();
+        return WakamitiAPI.instance().resourceLoader();
     }
 }

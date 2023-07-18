@@ -10,7 +10,6 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.api.WakamitiRunContext;
 import es.iti.wakamiti.rest.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -156,7 +155,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     @Step("rest.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
         assertFileExists(file);
-        setBearerAuth(WakamitiRunContext.current().resourceLoader().readFileAsString(file).trim());
+        setBearerAuth(resourceLoader().readFileAsString(file).trim());
     }
 
     @Step("rest.define.auth.none")

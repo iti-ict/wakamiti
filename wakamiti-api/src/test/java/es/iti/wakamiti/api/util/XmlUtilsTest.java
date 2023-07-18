@@ -8,7 +8,6 @@ package es.iti.wakamiti.api.util;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlRuntimeException;
-import org.apache.xmlbeans.impl.schema.XmlObjectFactory;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -73,7 +72,7 @@ public class XmlUtilsTest {
 //    @Test(expected = XmlRuntimeException.class)
 //    public void testXmlWhenNodeWithError() throws XmlException, IOException {
 //        Node node = XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode();
-//        try (var utilities = Mockito.mockStatic(XmlObject.Factory.getClass())) {
+//        try (MockedStatic<XmlObject.Factory> utilities = Mockito.mockStatic(XmlObject.Factory.class)) {
 //            utilities.when(() -> XmlObject.Factory.parse(any(Node.class))).thenThrow(XmlException.class);
 //
 //            XmlUtils.xml(node);

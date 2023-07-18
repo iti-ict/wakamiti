@@ -18,10 +18,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import imconfig.Configuration;
 import es.iti.wakamiti.core.gherkin.parser.Examples;
 import es.iti.wakamiti.core.gherkin.parser.Feature;
 import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import imconfig.Configuration;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;

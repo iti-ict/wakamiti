@@ -15,7 +15,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <wakamiti.api.version>2.2.0-SNAPSHOT</wakamiti.api.version>
+        <wakamiti.api.version>2.2.1-SNAPSHOT</wakamiti.api.version>
     </properties>
 
 

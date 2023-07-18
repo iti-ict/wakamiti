@@ -10,16 +10,17 @@
 package es.iti.wakamiti.rest.helpers;
 
 
+import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
-
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
-import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.rest.ContentTypeHelper;
 import es.iti.wakamiti.rest.MatchMode;
-import org.xml.sax.*;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.sax.SAXSource;

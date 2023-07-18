@@ -34,7 +34,7 @@ public abstract class PropertyEvaluator implements Contributor {
         AtomicReference<String> result = new AtomicReference<>(value);
         WakamitiAPI.instance().extensionManager().getExtensions(PropertyEvaluator.class)
                 .forEach(evaluator -> {
-                    PropertyEvaluator.Result evalResult = action.apply(evaluator, result.get());
+                    Result evalResult = action.apply(evaluator, result.get());
                     evalResult.evaluations().forEach(evaluations::putIfAbsent);
                     result.set(evalResult.value());
                 });
@@ -130,8 +130,8 @@ public abstract class PropertyEvaluator implements Contributor {
         Map<String, String> evaluations;
         String value;
 
-        public static PropertyEvaluator.Result of(Map<String, String> evaluations, String value) {
-            PropertyEvaluator.Result result = new PropertyEvaluator.Result();
+        public static Result of(Map<String, String> evaluations, String value) {
+            Result result = new Result();
             result.evaluations = evaluations;
             result.value = value;
             return result;

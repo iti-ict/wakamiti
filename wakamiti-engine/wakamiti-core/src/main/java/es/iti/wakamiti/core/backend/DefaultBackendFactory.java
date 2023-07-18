@@ -234,7 +234,7 @@ public class DefaultBackendFactory implements BackendFactory {
 
         return runnables.entrySet().stream()
             .sorted(sorter)
-            .map(Map.Entry::getKey)
+            .map(Entry::getKey)
             .collect(Collectors.toList());
     }
 

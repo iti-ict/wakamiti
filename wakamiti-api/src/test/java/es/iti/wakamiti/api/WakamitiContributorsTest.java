@@ -6,6 +6,7 @@
 package es.iti.wakamiti.api;
 
 import es.iti.wakamiti.api.extensions.*;
+import es.iti.wakamiti.api.extensions.*;
 import org.junit.Test;
 
 import java.util.List;

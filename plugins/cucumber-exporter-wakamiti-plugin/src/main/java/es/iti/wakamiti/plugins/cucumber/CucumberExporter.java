@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiRunContext;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
@@ -44,19 +44,25 @@ public class CucumberExporter implements Reporter {
     private static final String ID = "id";
     private static final String ELEMENTS = "elements";
     private static final String URI = "uri";
-
-    public enum Strategy {INNERSTEPS, OUTERSTEPS}
-
     private final ObjectMapper mapper = new ObjectMapper()
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-        .enable(SerializationFeature.INDENT_OUTPUT);
-
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            .enable(SerializationFeature.INDENT_OUTPUT);
     private final Charset charset = StandardCharsets.UTF_8;
-
     private String outputFile = "cucumber-report.json";
     private Strategy strategy = Strategy.INNERSTEPS;
 
+    private static String description(PlanNodeSnapshot node) {
+        if (node.getDescription() != null && !node.getDescription().isEmpty()) {
+            return String.join("\n", node.getDescription());
+        } else {
+            return null;
+        }
+    }
+
+    private static String keyword(PlanNodeSnapshot node) {
+        return (node.getKeyword() == null || node.getKeyword().isEmpty() ? " " : node.getKeyword());
+    }
 
     public void setOutputFile(String outputFile) {
         this.outputFile = outputFile;
@@ -69,12 +75,12 @@ public class CucumberExporter implements Reporter {
     @Override
     public void report(PlanNodeSnapshot rootNode) {
 
-        ResourceLoader resourceLoader = WakamitiRunContext.current().resourceLoader();
-        try (Writer writer = new BufferedWriter(new FileWriter(resourceLoader.absolutePath(new File(outputFile)),charset))) {
-            List<Map<String,Object>> features = stream(rootNode)
-                .filter(this::gherkinFeature)
-                .map(this::mapFeature)
-                .collect(Collectors.toList());
+        ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+        try (Writer writer = new BufferedWriter(new FileWriter(resourceLoader.absolutePath(new File(outputFile)), charset))) {
+            List<Map<String, Object>> features = stream(rootNode)
+                    .filter(this::gherkinFeature)
+                    .map(this::mapFeature)
+                    .collect(Collectors.toList());
             mapper.writeValue(writer, features);
         } catch (IOException e) {
             LOGGER.error("Error exporting to Cucumber format: {}", e.getMessage(), e);
@@ -83,38 +89,36 @@ public class CucumberExporter implements Reporter {
 
     }
 
-
-    private Map<String,Object> mapFeature(PlanNodeSnapshot feature) {
-        Map<String,Object> map = new LinkedHashMap<>();
-        map.put(URI,feature.getSource());
-        map.put(KEYWORD,keyword(feature));
-        map.put(ID,feature.getId());
+    private Map<String, Object> mapFeature(PlanNodeSnapshot feature) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(URI, feature.getSource());
+        map.put(KEYWORD, keyword(feature));
+        map.put(ID, feature.getId());
         map.put(NAME, feature.getName());
         map.put(DESCRIPTION, description(feature));
         map.put(TAGS, mapTags(feature));
         var elements = stream(feature)
-            .filter(it -> it.getNodeType() == NodeType.TEST_CASE)
-            .map(this::mapScenario)
-            .collect(Collectors.toList());
+                .filter(it -> it.getNodeType() == NodeType.TEST_CASE)
+                .map(this::mapScenario)
+                .collect(Collectors.toList());
         map.put(ELEMENTS, elements);
         return map;
     }
 
-
-    private Map<String,Object> mapScenario(PlanNodeSnapshot scenario) {
-        Map<String,Object> map = new LinkedHashMap<>();
-        map.put(KEYWORD,keyword(scenario));
-        map.put(ID,scenario.getId());
+    private Map<String, Object> mapScenario(PlanNodeSnapshot scenario) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(KEYWORD, keyword(scenario));
+        map.put(ID, scenario.getId());
         map.put(NAME, scenario.getName());
         map.put(DESCRIPTION, description(scenario));
         map.put(TAGS, mapTags(scenario));
-        map.put(TYPE,"scenario");
+        map.put(TYPE, "scenario");
         if (scenario.getChildren() != null && !scenario.getChildren().isEmpty()) {
-            List<Map<String,Object>> steps = new LinkedList<>();
+            List<Map<String, Object>> steps = new LinkedList<>();
             for (var child : scenario.getChildren()) {
-                if (child.getNodeType().isAnyOf(NodeType.STEP,NodeType.VIRTUAL_STEP)) {
-                    steps.add(mapStep(child,child));
-                } else if (child.getNodeType() == NodeType.STEP_AGGREGATOR){
+                if (child.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
+                    steps.add(mapStep(child, child));
+                } else if (child.getNodeType() == NodeType.STEP_AGGREGATOR) {
                     steps.addAll(mapStepAggregator(child));
                 }
             }
@@ -122,7 +126,6 @@ public class CucumberExporter implements Reporter {
         }
         return map;
     }
-
 
     private Map<String, Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -170,62 +173,45 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-
-
-    private List<Map<String,Object>> mapStepAggregator(PlanNodeSnapshot step) {
+    private List<Map<String, Object>> mapStepAggregator(PlanNodeSnapshot step) {
         if (strategy == Strategy.INNERSTEPS) {
             return stream(step)
-                .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP,NodeType.VIRTUAL_STEP))
-                .map(it -> mapStep(it,it))
-                .collect(Collectors.toList());
+                    .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP))
+                    .map(it -> mapStep(it, it))
+                    .collect(Collectors.toList());
         } else {
             var firstError = stream(step)
-                .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP))
-                .filter(it -> it.getErrorMessage() != null)
-                .findFirst()
-                .orElse(null);
-            return List.of(mapStep(step,firstError));
+                    .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP))
+                    .filter(it -> it.getErrorMessage() != null)
+                    .findFirst()
+                    .orElse(null);
+            return List.of(mapStep(step, firstError));
         }
     }
-
 
     private List<?> mapTags(PlanNodeSnapshot node) {
         if (node.getTags() == null || node.getTags().isEmpty()) {
             return null;
         }
         return node.getTags().stream()
-            .filter(tag -> !tag.equals(node.getId()))
-            .map(tag -> Map.of(NAME,"@"+tag))
-            .collect(Collectors.toList());
+                .filter(tag -> !tag.equals(node.getId()))
+                .map(tag -> Map.of(NAME, "@" + tag))
+                .collect(Collectors.toList());
     }
-
-
-    private static String description (PlanNodeSnapshot node) {
-        if (node.getDescription() != null && !node.getDescription().isEmpty()) {
-            return String.join("\n", node.getDescription());
-        } else {
-            return null;
-        }
-    }
-
-
-    private static String keyword(PlanNodeSnapshot node) {
-        return (node.getKeyword() == null || node.getKeyword().isEmpty() ? " " : node.getKeyword());
-    }
-
 
     private Stream<PlanNodeSnapshot> stream(PlanNodeSnapshot node) {
         return Stream.concat(
-            Stream.of(node),
-            node.getChildren() == null ? Stream.empty() : node.getChildren().stream().flatMap(this::stream)
+                Stream.of(node),
+                node.getChildren() == null ? Stream.empty() : node.getChildren().stream().flatMap(this::stream)
         );
     }
-
 
     private boolean gherkinFeature(PlanNodeSnapshot node) {
         return node.getProperties() != null && "feature".equals(node.getProperties().get("gherkinType"));
     }
 
+
+    public enum Strategy {INNERSTEPS, OUTERSTEPS}
 
 
 }

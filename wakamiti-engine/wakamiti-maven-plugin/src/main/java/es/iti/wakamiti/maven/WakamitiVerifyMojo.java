@@ -118,7 +118,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     @Override
     public void execute() {
 
-        System.setProperty("org.slf4j.simpleLogger.log.iti.wakamiti", logLevel);
+        System.setProperty("org.slf4j.simpleLogger.log.es.iti.wakamiti", logLevel);
 
         if (skipTests) {
             info("Wakamiti tests skipped");

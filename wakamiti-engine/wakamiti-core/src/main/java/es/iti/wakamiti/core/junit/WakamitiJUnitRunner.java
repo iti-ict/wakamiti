@@ -3,18 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core.junit;
 
 
-import es.iti.wakamiti.api.WakamitiRunContext;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import imconfig.Configuration;
-import imconfig.ConfigurationException;
-import imconfig.ConfigurationFactory;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
@@ -22,6 +13,10 @@ import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
+import imconfig.ConfigurationFactory;
 import org.junit.*;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -38,6 +33,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class WakamitiJUnitRunner extends Runner {
 
     /**
@@ -48,12 +46,11 @@ public class WakamitiJUnitRunner extends Runner {
 
     protected static final Logger LOGGER = Wakamiti.LOGGER;
     protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
-
-    protected Configuration configuration;
     protected final Class<?> configurationClass;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
     protected final Wakamiti wakamiti;
+    protected Configuration configuration;
     private PlanNode plan;
     private Description description;
 
@@ -64,7 +61,7 @@ public class WakamitiJUnitRunner extends Runner {
         this.configuration = retrieveConfiguration(configurationClass);
         this.planNodeLogger = new PlanNodeLogger(LOGGER, configuration, getPlan());
         this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class)
-            .orElse(Boolean.FALSE);
+                .orElse(Boolean.FALSE);
         validateStaticZeroArgumentAnnotatedMethod(configurationClass, BeforeClass.class);
         validateStaticZeroArgumentAnnotatedMethod(configurationClass, AfterClass.class);
         validateNoAnnotatedMethod(configurationClass, Before.class);
@@ -72,19 +69,27 @@ public class WakamitiJUnitRunner extends Runner {
         validateNoAnnotatedMethod(configurationClass, Test.class);
     }
 
+    private static Configuration retrieveConfiguration(
+            Class<?> testedClass
+    ) throws InitializationError {
+        try {
+            return Wakamiti.defaultConfiguration().appendFromAnnotation(testedClass);
+        } catch (ConfigurationException e) {
+            LOGGER.error("Error loading configuration from {}", testedClass);
+            throw new InitializationError(e);
+        }
+    }
 
     @Override
     public void run(RunNotifier notifier) {
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(
-            configuration.get(WakamitiConfiguration.EXECUTION_ID,String.class).orElse(UUID.randomUUID().toString())
+                configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString())
         );
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
-
-        WakamitiRunContext.set(new WakamitiRunContext(configuration));
 
         for (JUnitPlanNodeRunner child : createChildren()) {
             try {
@@ -101,26 +106,20 @@ public class WakamitiJUnitRunner extends Runner {
         var snapshot = new PlanNodeSnapshot(getPlan());
         wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);
         wakamiti.writeOutputFile(plan, configuration);
-        wakamiti.generateReports(configuration,snapshot);
-
-        WakamitiRunContext.clear();
+        wakamiti.generateReports(configuration, snapshot);
     }
-
-
-
 
     @Override
     public Description getDescription() {
         if (description == null) {
             description = Description
-                .createSuiteDescription("Wakamiti Test Plan", UUID.randomUUID().toString());
+                    .createSuiteDescription("Wakamiti Test Plan", UUID.randomUUID().toString());
             for (JUnitPlanNodeRunner child : createChildren()) {
                 description.addChild(child.getDescription());
             }
         }
         return description;
     }
-
 
     protected PlanNode getPlan() {
         if (plan == null) {
@@ -129,37 +128,23 @@ public class WakamitiJUnitRunner extends Runner {
         return plan;
     }
 
-
     protected List<JUnitPlanNodeRunner> createChildren() {
 
         BackendFactory backendFactory = wakamiti.newBackendFactory();
         return getPlan().children().map(node -> {
             Configuration featureConfiguration = configuration.append(
-                confBuilder.fromMap(node.properties())
+                    confBuilder.fromMap(node.properties())
             );
             return treatStepsAsTests ? new JUnitPlanNodeStepRunner(
-                node, featureConfiguration, backendFactory, planNodeLogger
+                    node, featureConfiguration, backendFactory, planNodeLogger
             ) : new JUnitPlanNodeRunner(node, featureConfiguration, backendFactory, planNodeLogger);
         }).collect(Collectors.toList());
 
     }
 
-
-    private static Configuration retrieveConfiguration(
-        Class<?> testedClass
-    ) throws InitializationError {
-        try {
-            return Wakamiti.defaultConfiguration().appendFromAnnotation(testedClass);
-        } catch (ConfigurationException e) {
-            LOGGER.error("Error loading configuration from {}", testedClass);
-            throw new InitializationError(e);
-        }
-    }
-
-
     private void validateNoAnnotatedMethod(
-        Class<?> configurationClass,
-        Class<? extends Annotation> annotation
+            Class<?> configurationClass,
+            Class<? extends Annotation> annotation
     ) throws InitializationError {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
@@ -170,8 +155,8 @@ public class WakamitiJUnitRunner extends Runner {
 
 
     private void validateStaticZeroArgumentAnnotatedMethod(
-        Class<?> configurationClass,
-        Class<? extends Annotation> annotation
+            Class<?> configurationClass,
+            Class<? extends Annotation> annotation
     ) throws InitializationError {
         for (Method method : configurationClass.getMethods()) {
             if (method.isAnnotationPresent(annotation)) {
@@ -179,7 +164,7 @@ public class WakamitiJUnitRunner extends Runner {
                     throwInitializationError(method, annotation, "should be static");
                 }
                 boolean setUpConfig = (
-                  method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class
+                        method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class
                 );
                 if (method.getParameterCount() > 0 && !setUpConfig) {
                     throwInitializationError(method, annotation, "should have no parameter");
@@ -190,19 +175,19 @@ public class WakamitiJUnitRunner extends Runner {
 
 
     private void throwInitializationError(
-        Method method,
-        Class<? extends Annotation> annotation,
-        String message
+            Method method,
+            Class<? extends Annotation> annotation,
+            String message
     ) throws InitializationError {
         throw new InitializationError(
-            "Method " + method.getName() + " annotated with " + annotation + " " + message
+                "Method " + method.getName() + " annotated with " + annotation + " " + message
         );
     }
 
 
     private void executeAnnotatedMethod(
-        Class<?> configurationClass,
-        Class<? extends Annotation> annotation
+            Class<?> configurationClass,
+            Class<? extends Annotation> annotation
     ) {
         for (Method method : configurationClass.getMethods()) {
             if (!method.isAnnotationPresent(annotation)) {
@@ -212,7 +197,7 @@ public class WakamitiJUnitRunner extends Runner {
             // accepts a setUp method in form of Configuration setUp(Configuration)
             if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
                 try {
-                    this.configuration = (Configuration) method.invoke(null,this.configuration);
+                    this.configuration = (Configuration) method.invoke(null, this.configuration);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     throw new WakamitiException(e);
                 }

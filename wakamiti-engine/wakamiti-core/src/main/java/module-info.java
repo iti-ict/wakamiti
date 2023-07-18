@@ -28,18 +28,18 @@ open module es.iti.wakamiti.core {
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
     requires transitive maven.fetcher;
-    requires transitive junit;
-    requires transitive es.iti.wakamiti.api;
 
+    requires transitive junit;
     requires org.hamcrest;
     requires tag.expressions;
+
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
     requires net.harawata.appdirs;
     requires java.instrument;
+    requires es.iti.wakamiti.api;
     requires org.apache.xmlbeans;
-
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 

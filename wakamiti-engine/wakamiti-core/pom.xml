@@ -36,6 +36,11 @@
             <artifactId>wakamiti-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>es.iti.commons</groupId>
+            <artifactId>jext</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
