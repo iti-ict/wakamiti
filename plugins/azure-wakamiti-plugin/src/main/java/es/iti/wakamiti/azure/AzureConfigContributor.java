@@ -25,6 +25,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
     public static final String AZURE_PROJECT = "azure.project";
     public static final String AZURE_TAG = "azure.tag";
     public static final String AZURE_ATTACHMENTS = "azure.attachments";
+    public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
     public static final String DEFAULT_AZURE_TAG = "Azure";
     public static final String DEFAULT_AZURE_API_VERSION = "5.0-preview";
 
@@ -35,7 +36,8 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
             AZURE_CREDENTIALS_USER, "",
             AZURE_CREDENTIALS_PASSWORD, "",
             AZURE_TAG, DEFAULT_AZURE_TAG,
-            AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION
+            AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION,
+            AZURE_TEST_CASE_PER_FEATURE, "false"
         );
     }
 
@@ -57,6 +59,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
         azureReporter.setCredentialsPassword(configuration.get(AZURE_CREDENTIALS_PASSWORD,String.class).orElse(""));
         requiredProperty(configuration,azureReporter,AZURE_API_VERSION,AzureReporter::setApiVersion);
         azureReporter.setAttachments(configuration.getList(AZURE_ATTACHMENTS,String.class));
+        azureReporter.setTestCasePerFeature(configuration.get(AZURE_TEST_CASE_PER_FEATURE,Boolean.class).orElse(Boolean.FALSE));
     }
 
 

@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 
@@ -36,6 +39,8 @@ public class AzureReporter implements Reporter {
     private String project;
     private String azureTag;
     private List<String> attachments;
+    private boolean testCasePerFeature;
+
 
     public void setHost(String host) {
         this.host = host;
@@ -69,6 +74,12 @@ public class AzureReporter implements Reporter {
         this.attachments = attachments;
     }
 
+    public void setTestCasePerFeature(boolean testCasePerFeature) {
+        this.testCasePerFeature = testCasePerFeature;
+    }
+
+
+
     @Override
     public void report(PlanNodeSnapshot result) {
 
@@ -85,7 +96,6 @@ public class AzureReporter implements Reporter {
         if (testCases.isEmpty()) {
             return;
         }
-
 
 
         testCases.forEach((testPlan, planTestCases)->{
@@ -119,7 +129,11 @@ public class AzureReporter implements Reporter {
 
 
     private Map<String,List<PlanNodeSnapshot>> getTestCases(PlanNodeSnapshot node, Map<String,List<PlanNodeSnapshot>> result) {
-        if (node.getNodeType() == NodeType.TEST_CASE && node.getTags().contains(azureTag)) {
+        boolean matchAzureTestCase = (testCasePerFeature ?
+            node.getNodeType() == NodeType.AGGREGATOR && "feature".equals(node.getProperties().get("gherkinType")) :
+            node.getNodeType() == NodeType.TEST_CASE
+        );
+        if (matchAzureTestCase && node.getTags().contains(azureTag)) {
             String testPlan = property(node, AZURE_PLAN);
             String suiteName = property(node, AZURE_SUITE);
             if (testPlan != null && suiteName != null) {
