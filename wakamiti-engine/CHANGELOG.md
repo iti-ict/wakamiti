@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [2.2.0] - 2023-07-18
+
+## Modified
+
+- Group all core componentes under `wakamiti-engine`
+
+
 ## [2.1.2] - 2023-07-07
 
 ## Fixed

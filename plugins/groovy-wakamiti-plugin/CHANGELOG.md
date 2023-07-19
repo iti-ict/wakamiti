@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+
+## [2.2.0] - 2023-07-18
+
+### Modified
+
+- Change plugin nomenclature
 
 ### Added
 - Extra properties in context object

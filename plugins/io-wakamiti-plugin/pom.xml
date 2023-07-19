@@ -20,14 +20,14 @@
     </parent>
 
     <artifactId>io-wakamiti-plugin</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.2.0</version>
 
     <name>[Wakamiti Plugin] Files Steps</name>
     <description>Files steps for Wakamiti</description>
     <inceptionYear>2020</inceptionYear>
 
     <properties>
-        <wakamiti.api.version>2.2.1-SNAPSHOT</wakamiti.api.version>
+        <wakamiti.api.version>2.2.0</wakamiti.api.version>
     </properties>
 
     <dependencies>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.1.2-SNAPSHOT</version>
+            <version>2.2.0</version>
             <scope>test</scope>
         </dependency>
 
