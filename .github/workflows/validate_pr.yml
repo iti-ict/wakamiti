@@ -40,6 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp -Dsonar.projectKey=iti-ict_kukumo -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   
 
