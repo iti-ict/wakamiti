@@ -50,5 +50,5 @@ jobs:
             MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
             MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PWD }}
             MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-        run: ./mvnw -B -P sonatype deploy -ntp -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -DskipTests=true -e
+        run: ./mvnw -B -P sonatype deploy -ntp -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -DskipTests=true -e -DaltDeploymentRepository=ossrh::https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
 
