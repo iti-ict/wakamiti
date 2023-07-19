@@ -18,7 +18,10 @@
 
     <name>Wakamiti Aggregator</name>
 
-
+    <properties>
+        <sonar.organization>iti-ict</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
 
     <modules>
 
