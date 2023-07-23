@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.2.1] - 2023-07-27
+
+### Fixed
+
+- Api Groovy dependencies compatibility
+
 ## [1.2.0] - 2023-07-18
 
 ### Modified
