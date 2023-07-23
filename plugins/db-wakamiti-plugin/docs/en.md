@@ -209,10 +209,10 @@ equivalent to set the configuration properties [`database.connection.url`](#data
 
 #### Parameters:
 | Name       | Wakamiti type | Description        |
-|------------|-------------|--------------------|
-| `url`      | `text`      | The URL connection |
-| `username` | `text`      | User name          |
-| `password` | `text`      | User password      |
+|------------|---------------|--------------------|
+| `url`      | `text`        | The URL connection |
+| `username` | `text`        | User name          |
+| `password` | `text`        | User password      |
 
 #### Examples:
 ```gherkin
@@ -228,8 +228,8 @@ Sets the SQL statements that will be executed one the scenario is finished, rega
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-|        | `document`  | Script content |
+|--------|---------------|----------------|
+|        | `document`    | Script content |
 
 #### Examples:
 ```gherkin
@@ -249,8 +249,8 @@ Sets the SQL statements from file that will be executed one the scenario is fini
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | SQL file    |
+|--------|---------------|-------------|
+| `file` | `file`        | SQL file    |
 
 #### Examples:
 ```gherkin
@@ -266,8 +266,8 @@ Execute a in-line SQL script.
 
 #### Parameters:
 | Name | Wakamiti type | Description    |
-|------|-------------|----------------|
-|      | `document`  | Script content |
+|------|---------------|----------------|
+|      | `document`    | Script content |
 
 #### Examples:
 ```gherkin
@@ -287,8 +287,8 @@ Execute a SQL script file.
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | SQL file    |
+|--------|---------------|-------------|
+| `file` | `file`        | SQL file    |
 
 #### Examples:
 ```gherkin
@@ -304,8 +304,8 @@ Clear the given table, first attempting to execute `TRUNCATE`, and then using `D
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `word` | `word`      | The table name |
+|--------|---------------|----------------|
+| `word` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -321,10 +321,10 @@ Delete the rows in the given table that match the specified value.
 
 #### Parameters:
 | Name     | Wakamiti type | Description    |
-|----------|-------------|----------------|
-| `column` | `word`      | Column name    |
-| `value`  | `text`      | Column value   |
-| `table`  | `word`      | The table name |
+|----------|---------------|----------------|
+| `column` | `word`        | Column name    |
+| `value`  | `text`        | Column value   |
+| `table`  | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -343,9 +343,9 @@ Delete the following in-line rows from the given table.
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `word` | `word`      | The table name |
-|        | `table`     | Data table     |
+|--------|---------------|----------------|
+| `word` | `word`        | The table name |
+|        | `table`       | Data table     |
 
 #### Examples:
 ```gherkin
@@ -369,8 +369,8 @@ Delete the rows contained in the specified XLS file, one sheet per table.
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | XLS file    |
+|--------|---------------|-------------|
+| `file` | `file`        | XLS file    |
 
 #### Examples:
 ```gherkin
@@ -386,9 +386,9 @@ Delete the rows contained in the specified CSV file from the given table.
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `csv`   | `file`      | CSV file       |
-| `table` | `word`      | The table name |
+|---------|---------------|----------------|
+| `csv`   | `file`        | CSV file       |
+| `table` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -405,9 +405,9 @@ values.
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `word` | `word`      | The table name |
-|        | `table`     | Data table     |
+|--------|---------------|----------------|
+| `word` | `word`        | The table name |
+|        | `table`       | Data table     |
 
 #### Examples:
 ```gherkin
@@ -432,8 +432,8 @@ populated with random values.
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | XLS file    |
+|--------|---------------|-------------|
+| `file` | `file`        | XLS file    |
 
 #### Examples:
 ```gherkin
@@ -450,9 +450,9 @@ populated with random values.
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `csv`   | `file`      | CSV file       |
-| `table` | `word`      | The table name |
+|---------|---------------|----------------|
+| `csv`   | `file`        | CSV file       |
+| `table` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -468,10 +468,10 @@ Assert that at least one row in the given table matches the specified value for 
 
 #### Parameters:
 | Name     | Wakamiti type | Description    |
-|----------|-------------|----------------|
-| `column` | `word`      | Column name    |
-| `value`  | `text`      | Column value   |
-| `table`  | `word`      | The table name |
+|----------|---------------|----------------|
+| `column` | `word`        | Column name    |
+| `value`  | `text`        | Column value   |
+| `table`  | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -487,10 +487,10 @@ Assert that no row in the given table matches the specified value for a column.
 
 #### Parameters:
 | Name     | Wakamiti type | Description    |
-|----------|-------------|----------------|
-| `column` | `word`      | Column name    |
-| `value`  | `text`      | Column value   |
-| `table`  | `word`      | The table name |
+|----------|---------------|----------------|
+| `column` | `word`        | Column name    |
+| `value`  | `text`        | Column value   |
+| `table`  | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -507,9 +507,9 @@ primary key accessible from the database metadata.
 
 #### Parameters:
 | Name    | Wakamiti type | Description       |
-|---------|-------------|-------------------|
-| `id`    | `text`      | Primary key value |
-| `table` | `word`      | The table name    |
+|---------|---------------|-------------------|
+| `id`    | `text`        | Primary key value |
+| `table` | `word`        | The table name    |
 
 #### Examples:
 ```gherkin
@@ -526,9 +526,9 @@ primary key accessible from the database metadata.
 
 #### Parameters:
 | Name    | Wakamiti type | Description       |
-|---------|-------------|-------------------|
-| `id`    | `text`      | Primary key value |
-| `table` | `word`      | The table name    |
+|---------|---------------|-------------------|
+| `id`    | `text`        | Primary key value |
+| `table` | `word`        | The table name    |
 
 #### Examples:
 ```gherkin
@@ -544,9 +544,9 @@ Assert that all the subsequent data rows exist in the given table.
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `table` | `word`      | The table name |
-|         | `table`     | Data table     |
+|---------|---------------|----------------|
+| `table` | `word`        | The table name |
+|         | `table`       | Data table     |
 
 #### Examples:
 ```gherkin
@@ -565,9 +565,9 @@ Assert that none of the subsequent data rows exist in the given table.
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `table` | `word`      | The table name |
-|         | `table`     | Data table     |
+|---------|---------------|----------------|
+| `table` | `word`        | The table name |
+|         | `table`       | Data table     |
 
 #### Examples:
 ```gherkin
@@ -586,8 +586,8 @@ Assert that all the data rows included in the specified XLS file exist in the da
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | XLS file    |
+|--------|---------------|-------------|
+| `file` | `file`        | XLS file    |
 
 #### Examples:
 ```gherkin
@@ -603,8 +603,8 @@ Assert that none of the data rows included in the specified XLS file exist in th
 
 #### Parameters:
 | Name   | Wakamiti type | Description |
-|--------|-------------|-------------|
-| `file` | `file`      | XLS file    |
+|--------|---------------|-------------|
+| `file` | `file`        | XLS file    |
 
 #### Examples:
 ```gherkin
@@ -620,9 +620,9 @@ Assert that all the data rows included in the specified CSV file exists in the g
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `csv`   | `file`      | CSV file       |
-| `table` | `word`      | The table name |
+|---------|---------------|----------------|
+| `csv`   | `file`        | CSV file       |
+| `table` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -638,9 +638,9 @@ Assert that all the data rows included in the specified CSV file does not exist 
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `csv`   | `file`      | CSV file       |
-| `table` | `word`      | The table name |
+|---------|---------------|----------------|
+| `csv`   | `file`        | CSV file       |
+| `table` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
@@ -656,9 +656,9 @@ Assert that at least one row in the given table satisfies the specified SQL clau
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `table` | `word`      | The table name |
-|         | `document`  | Where clause   |
+|---------|---------------|----------------|
+| `table` | `word`        | The table name |
+|         | `document`    | Where clause   |
 
 #### Examples:
 ```gherkin
@@ -677,9 +677,9 @@ Assert that no row in the given table satisfies the specified SQL clause exist.
 
 #### Parameters:
 | Name    | Wakamiti type | Description    |
-|---------|-------------|----------------|
-| `table` | `word`      | The table name |
-|         | `document`  | Where clause   |
+|---------|---------------|----------------|
+| `table` | `word`        | The table name |
+|         | `document`    | Where clause   |
 
 #### Examples:
 ```gherkin
@@ -698,12 +698,12 @@ Assert that the number of rows in the given table matching the specified values 
 assertion.
 
 #### Parameters:
-| Name      | Wakamiti type      | Description             |
-|-----------|------------------|-------------------------|
-| `column`  | `word`           | Column name             |
-| `value`   | `text`           | Column value            |
-| `table`   | `word`           | The table name          |
-| `matcher` | `long-assertion` | Numeric [comparator][2] |
+| Name      | Wakamiti type     | Description             |
+|-----------|-------------------|-------------------------|
+| `column`  | `word`            | Column name             |
+| `value`   | `text`            | Column value            |
+| `table`   | `word`            | The table name          |
+| `matcher` | `long-assertion`  | Numeric [comparator][2] |
 
 #### Examples:
 ```gherkin
@@ -713,21 +713,27 @@ assertion.
 ---
 ### Check row count (table)
 ```
-the number of * satisfying the following * in the database table {table} {matcher}:
+the number of * satisfying the following (info) in the database table {table} {matcher}:
 ```
 Assert that the number of rows in the given table matching the specified values for every column satisfies a numeric 
 expression. Only the first row of the given data is considered.
 
 #### Parameters:
-| Name      | Wakamiti type      | Description             |
-|-----------|------------------|-------------------------|
-| `table`   | `word`           | The table name          |
-| `matcher` | `long-assertion` | Numeric [comparator][2] |
-|           | `table`          | Data table              |
+| Name      | Wakamiti type     | Description             |
+|-----------|-------------------|-------------------------|
+| `table`   | `word`            | The table name          |
+| `matcher` | `long-assertion`  | Numeric [comparator][2] |
+|           | `table`           | Data table              |
 
 #### Examples:
 ```gherkin
-  Then the number of users satisfying the following data in the database table USER is 0:
+  Then the number of users satisfying the following in the database table USER is 0:
+    | USER  | STATE | BLOCKING_DATE |   
+    | user1 | 2     | <null>        |
+```
+
+```gherkin
+  Then the number of records satisfying the following info in the database table USER is more than 0:
     | USER  | STATE | BLOCKING_DATE |   
     | user1 | 2     | <null>        |
 ```

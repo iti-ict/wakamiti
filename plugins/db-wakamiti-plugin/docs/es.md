@@ -235,8 +235,8 @@ ejecución.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
-|--------|-------------|----------------------|
-|        | `document`  | Contenido del script |
+|--------|---------------|----------------------|
+|        | `document`    | Contenido del script |
 
 #### Ejemplos:
 ```gherkin
@@ -257,8 +257,8 @@ del estado de la ejecución.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
-|--------|-------------|-------------|
-| `file` | `file`      | Fichero SQL |
+|--------|---------------|-------------|
+| `file` | `file`        | Fichero SQL |
 
 #### Ejemplos:
 ```gherkin
@@ -274,8 +274,8 @@ Ejecuta el script SQL escrito a continuación.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
-|--------|-------------|----------------------|
-|        | `document`  | Contenido del script |
+|--------|---------------|----------------------|
+|        | `document`    | Contenido del script |
 
 #### Ejemplos:
 ```gherkin
@@ -295,8 +295,8 @@ Ejecuta el script SQL existente en el fichero indicado.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
-|--------|-------------|-------------|
-| `file` | `file`      | Fichero SQL |
+|--------|---------------|-------------|
+| `file` | `file`        | Fichero SQL |
 
 #### Ejemplos:
 ```gherkin
@@ -313,8 +313,8 @@ fallar la primera.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |
-|--------|-------------|--------------------|
-| `word` | `word`      | Nombre de la tabla |
+|--------|---------------|--------------------|
+| `word` | `word`        | Nombre de la tabla |
 
 #### Ejemplos:
 ```gherkin
@@ -330,10 +330,10 @@ Elimina de una tabla dada las filas que satisfagan la comparación indicada.
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción          |
-|----------|-------------|----------------------|
-| `column` | `word`      | Nombre de la columna |
-| `value`  | `text`      | Valor de la columna  |
-| `table`  | `word`      | Nombre de la tabla   |
+|----------|---------------|----------------------|
+| `column` | `word`        | Nombre de la columna |
+| `value`  | `text`        | Valor de la columna  |
+| `table`  | `word`        | Nombre de la tabla   |
 
 #### Ejemplos:
 ```gherkin
@@ -352,9 +352,9 @@ Elimina de una tabla dada las filas indicadas.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción         |
-|--------|-------------|---------------------|
-| `word` | `word`      | Nombre de la tabla  |
-|        | `table`     | Tabla con los datos |
+|--------|---------------|---------------------|
+| `word` | `word`        | Nombre de la tabla  |
+|        | `table`       | Tabla con los datos |
 
 #### Ejemplos:
 ```gherkin
@@ -378,8 +378,8 @@ Elimina las filas que concuerdan con los datos del fichero XLS indicado.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
-|--------|-------------|-------------|
-| `file` | `file`      | Fichero XLS |
+|--------|---------------|-------------|
+| `file` | `file`        | Fichero XLS |
 
 #### Ejemplos:
 ```gherkin
@@ -398,9 +398,9 @@ Elimina las filas de una tabla dada que concuerdan con los datos del fichero CSV
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción        |
-|---------|-------------|--------------------|
-| `csv`   | `file`      | Fichero CSV        |
-| `table` | `word`      | Nombre de la tabla |
+|---------|---------------|--------------------|
+| `csv`   | `file`        | Fichero CSV        |
+| `table` | `word`        | Nombre de la tabla |
 
 #### Ejemplos:
 ```gherkin
@@ -420,9 +420,9 @@ datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción         |
-|--------|-------------|---------------------|
-| `word` | `word`      | Nombre de la tabla  |
-|        | `table`     | Tabla con los datos |
+|--------|---------------|---------------------|
+| `word` | `word`        | Nombre de la tabla  |
+|        | `table`       | Tabla con los datos |
 
 #### Ejemplos:
 ```gherkin
@@ -448,8 +448,8 @@ proporcionen datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
-|--------|-------------|-------------|
-| `file` | `file`      | Fichero XLS |
+|--------|---------------|-------------|
+| `file` | `file`        | Fichero XLS |
 
 #### Ejemplos:
 ```gherkin
@@ -469,9 +469,9 @@ se proporcionen datos se rellenarán con datos aleatorios.
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción         |
-|----------|-------------|---------------------|
-| `csv`    | `file`      | Fichero CSV         |
-| `table`  | `word`      | Nombre de la tabla  |
+|----------|---------------|---------------------|
+| `csv`    | `file`        | Fichero CSV         |
+| `table`  | `word`        | Nombre de la tabla  |
 
 #### Ejemplos:
 ```gherkin
@@ -490,10 +490,10 @@ Comprueba que existe al menos una fila en la tabla indicada para la cual se cump
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción          |
-|----------|-------------|----------------------|
-| `column` | `word`      | Nombre de la columna |
-| `value`  | `text`      | Valor de la columna  |
-| `table`  | `word`      | Nombre de la tabla   |
+|----------|---------------|----------------------|
+| `column` | `word`        | Nombre de la columna |
+| `value`  | `text`        | Valor de la columna  |
+| `table`  | `word`        | Nombre de la tabla   |
 
 #### Ejemplos:
 ```gherkin
@@ -509,10 +509,10 @@ Comprueba que no existe ninguna fila en la tabla indicada para la cual se cumpla
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción          |
-|----------|-------------|----------------------|
-| `column` | `word`      | Nombre de la columna |
-| `value`  | `text`      | Valor de la columna  |
-| `table`  | `word`      | Nombre de la tabla   |
+|----------|---------------|----------------------|
+| `column` | `word`        | Nombre de la columna |
+| `value`  | `text`        | Valor de la columna  |
+| `table`  | `word`        | Nombre de la tabla   |
 
 #### Ejemplos:
 ```gherkin
@@ -529,9 +529,9 @@ clave primaria formada por una sola columna.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción                |
-|---------|-------------|----------------------------|
-| `id`    | `text`      | Valor de la clave primaria |
-| `table` | `word`      | Nombre de la tabla         |
+|---------|---------------|----------------------------|
+| `id`    | `text`        | Valor de la clave primaria |
+| `table` | `word`        | Nombre de la tabla         |
 
 #### Ejemplos:
 ```gherkin
@@ -551,9 +551,9 @@ clave primaria formada por una sola columna.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción                |
-|---------|-------------|----------------------------|
-| `id`    | `text`      | Valor de la clave primaria |
-| `table` | `word`      | Nombre de la tabla         |
+|---------|---------------|----------------------------|
+| `id`    | `text`        | Valor de la clave primaria |
+| `table` | `word`        | Nombre de la tabla         |
 
 #### Ejemplos:
 ```gherkin
@@ -572,9 +572,9 @@ Comprueba que todas las filas siguientes existen en una tabla dada.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción         |
-|---------|-------------|---------------------|
-| `table` | `word`      | Nombre de la tabla  |
-|         | `table`     | Tabla con los datos |
+|---------|---------------|---------------------|
+| `table` | `word`        | Nombre de la tabla  |
+|         | `table`       | Tabla con los datos |
 
 #### Ejemplos:
 ```gherkin
@@ -593,9 +593,9 @@ Comprueba que ninguna de las filas siguientes existen en una tabla dada.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción         |
-|---------|-------------|---------------------|
-| `table` | `word`      | Nombre de la tabla  |
-|         | `table`     | Tabla con los datos |
+|---------|---------------|---------------------|
+| `table` | `word`        | Nombre de la tabla  |
+|         | `table`       | Tabla con los datos |
 
 #### Ejemplos:
 ```gherkin
@@ -615,8 +615,8 @@ tabla.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción |
-|---------|-------------|-------------|
-| `file`  | `file`      | Fichero XLS |
+|---------|---------------|-------------|
+| `file`  | `file`        | Fichero XLS |
 
 #### Ejemplos:
 ```gherkin
@@ -633,8 +633,8 @@ a una tabla.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción |
-|---------|-------------|-------------|
-| `file`  | `file`      | Fichero XLS |
+|---------|---------------|-------------|
+| `file`  | `file`        | Fichero XLS |
 
 #### Ejemplos:
 ```gherkin
@@ -650,9 +650,9 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado existen 
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción         |
-|----------|-------------|---------------------|
-| `csv`    | `file`      | Fichero CSV         |
-| `table`  | `word`      | Nombre de la tabla  |
+|----------|---------------|---------------------|
+| `csv`    | `file`        | Fichero CSV         |
+| `table`  | `word`        | Nombre de la tabla  |
 
 #### Ejemplos:
 ```gherkin
@@ -668,9 +668,9 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado no exist
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción         |
-|----------|-------------|---------------------|
-| `csv`    | `file`      | Fichero CSV         |
-| `table`  | `word`      | Nombre de la tabla  |
+|----------|---------------|---------------------|
+| `csv`    | `file`        | Fichero CSV         |
+| `table`  | `word`        | Nombre de la tabla  |
 
 #### Ejemplos:
 ```gherkin
@@ -686,9 +686,9 @@ Comprueba que al menos una fila de la tabla dada satisface la claúsula SQL indi
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción        |
-|---------|-------------|--------------------|
-| `table` | `word`      | Nombre de la tabla |
-|         | `document`  | Cláusula where     |
+|---------|---------------|--------------------|
+| `table` | `word`        | Nombre de la tabla |
+|         | `document`    | Cláusula where     |
 
 #### Ejemplos:
 ```gherkin
@@ -707,9 +707,9 @@ Comprueba que ninguna fila de la tabla dada satisface la claúsula SQL indicada.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción        |
-|---------|-------------|--------------------|
-| `table` | `word`      | Nombre de la tabla |
-|         | `document`  | Cláusula where     |
+|---------|---------------|--------------------|
+| `table` | `word`        | Nombre de la tabla |
+|         | `document`    | Cláusula where     |
 
 #### Ejemplos:
 ```gherkin
@@ -728,12 +728,12 @@ Comprueba que el número de filas que satisfacen la condición indicada en la ta
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Wakamiti type      | Descripción              |
-|-----------|------------------|--------------------------|
-| `column`  | `word`           | Nombre de la columna     |
-| `value`   | `text`           | Valor de la columna      |
-| `table`   | `word`           | Nombre de la tabla       |
-| `matcher` | `long-assertion` | [Comparador][2] numérico |
+| Nombre    | Wakamiti type     | Descripción              |
+|-----------|-------------------|--------------------------|
+| `column`  | `word`            | Nombre de la columna     |
+| `value`   | `text`            | Valor de la columna      |
+| `table`   | `word`            | Nombre de la tabla       |
+| `matcher` | `long-assertion`  | [Comparador][2] numérico |
 
 #### Ejemplos:
 ```gherkin
@@ -743,21 +743,27 @@ numérica indicada.
 ---
 ### Comprobar número de datos (tabla)
 ```
-el número de * que satisfacen (lo|el|la|los|las) siguiente(s) * en la tabla de BBDD {table} {matcher}:
+el número de * que satisfacen (lo|la) siguiente (información) en la tabla de BBDD {table} {matcher}:
 ```
 Comprueba que el número de filas que satisfacen los valores indicados en la tabla indicada cumple la comparación
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Wakamiti type      | Descripción              |
-|-----------|------------------|--------------------------|
-| `table`   | `word`           | Nombre de la tabla       |
-| `matcher` | `long-assertion` | [Comparador][2] numérico |
-|           | `table`          | Tabla con los datos      |
+| Nombre    | Wakamiti type     | Descripción              |
+|-----------|-------------------|--------------------------|
+| `table`   | `word`            | Nombre de la tabla       |
+| `matcher` | `long-assertion`  | [Comparador][2] numérico |
+|           | `table`           | Tabla con los datos      |
 
 #### Ejemplos:
 ```gherkin
-  Entonces el número de usuarios que satisfacen lo siguiente en la tabla de BBDD USER es 0
+  Entonces el número de usuarios que satisfacen lo siguiente en la tabla de BBDD USER es 0:
+    | USER  | STATE | BLOCKING_DATE |   
+    | user1 | 2     | <null>        |
+```
+
+```gherkin
+  Entonces el número de registros que satisfacen la siguiente información en la tabla de BBDD USER es mayor que 0:
     | USER  | STATE | BLOCKING_DATE |   
     | user1 | 2     | <null>        |
 ```
@@ -771,11 +777,11 @@ Comprueba que el número de filas que satisfacen la condición indicada en la ta
 numérica indicada.
 
 #### Parámetros:
-| Nombre    | Wakamiti type      | Descripción              |
-|-----------|------------------|--------------------------|
-| `table`   | `word`           | Nombre de la tabla       |
-| `matcher` | `long-assertion` | [Comparador][2] numérico |
-|           | `document`       | Cláusula where           |
+| Nombre    | Wakamiti type     | Descripción              |
+|-----------|-------------------|--------------------------|
+| `table`   | `word`            | Nombre de la tabla       |
+| `matcher` | `long-assertion`  | [Comparador][2] numérico |
+|           | `document`        | Cláusula where           |
 
 #### Ejemplos:
 ```gherkin
@@ -794,8 +800,8 @@ Comprueba que no existe ninguna fila en la tabla indicada.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |
-|--------|-------------|--------------------|
-| `word` | `word`      | Nombre de la tabla |
+|--------|---------------|--------------------|
+| `word` | `word`        | Nombre de la tabla |
 
 #### Ejemplos:
 ```gherkin
@@ -811,8 +817,8 @@ Comprueba que existe al menos una fila en la tabla indicada.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |
-|--------|-------------|--------------------|
-| `word` | `word`      | Nombre de la tabla |
+|--------|---------------|--------------------|
+| `word` | `word`        | Nombre de la tabla |
 
 #### Ejemplos:
 ```gherkin
