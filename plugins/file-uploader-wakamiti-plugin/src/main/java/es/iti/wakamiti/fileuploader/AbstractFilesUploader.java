@@ -1,19 +1,12 @@
 package es.iti.wakamiti.fileuploader;
 
 import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.util.PathUtil;
-import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract class AbstractFilesUploader implements EventObserver {
@@ -31,7 +24,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
     private String remotePath;
     private String protocol;
 
-    private FTPClient ftpClient;
+    private FTPTransmitter transmitter;
 
 
     protected AbstractFilesUploader(String eventType, String category) {
@@ -92,60 +85,39 @@ public abstract class AbstractFilesUploader implements EventObserver {
 
 
     private void openFtpConnection() throws IOException {
-        if (ftpClient != null && ftpClient.isConnected()) {
+        if (transmitter != null && transmitter.isConnected()) {
             closeFtpConnection();
         }
         logger.info("Opening FTP connection to {}", host);
-        if ("ftp".equals(protocol)) {
-            ftpClient = new FTPClient();
-        } else if ("ftps".equals(protocol)) {
-            ftpClient = new FTPSClient();
-        } else {
-            throw new WakamitiException("Protocol not supported: " + protocol);
-        }
+        transmitter = FTPTransmitter.of(protocol);
         if (host.contains(":")) {
-            ftpClient.connect(host.split(":")[0], Integer.parseInt(host.split(":")[1]));
+            transmitter.connect(username, password, host.split(":")[0], Integer.parseInt(host.split(":")[1]));
         } else {
-            ftpClient.connect(host);
+            transmitter.connect(username, password, host);
         }
 
-        ftpClient.login(username, password);
     }
 
 
     private void closeFtpConnection() throws IOException {
-        if (ftpClient == null) {
+        if (transmitter == null) {
             return;
         }
-        if (ftpClient.isConnected()) {
+        if (transmitter.isConnected()) {
             logger.info("Closing FTP connection to {}", host);
-            ftpClient.disconnect();
+            transmitter.disconnect();
         }
-        ftpClient = null;
+        transmitter = null;
     }
 
 
     private void uploadFile(Path fileToSend) throws IOException {
         Path dirPath = PathUtil.replaceTemporalPlaceholders(Path.of(remotePath));
-        logger.info("Uploading file {uri} to {uri}", fileToSend, host + "/" + dirPath);
-        createDestinationDirectory(dirPath);
-        ftpClient.changeWorkingDirectory(dirPath.toString());
-        String fileName = fileToSend.toFile().getName();
-        ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
-        try (InputStream inputStream = Files.newInputStream(resourceLoader.absolutePath(fileToSend))) {
-            ftpClient.storeFile(fileName, inputStream);
-        }
+        Path localFile = WakamitiAPI.instance().resourceLoader().absolutePath(fileToSend);
+        logger.info("Uploading file {uri} to {uri}", localFile, host + "/" + dirPath);
+        transmitter.transferFile(localFile, dirPath);
     }
 
-
-    private void createDestinationDirectory(Path dirPath) throws IOException {
-        if (dirPath.getParent() != null) {
-            createDestinationDirectory(dirPath.getParent());
-        }
-        if (!ftpClient.changeWorkingDirectory(dirPath.toString())) {
-            ftpClient.makeDirectory(dirPath.toString());
-        }
-    }
 
 
     @Override
@@ -154,6 +126,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
                 Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType) ||
                 this.eventType.equals(eventType);
     }
+
 
 
 }
