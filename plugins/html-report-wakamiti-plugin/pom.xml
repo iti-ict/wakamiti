@@ -22,14 +22,14 @@
 
 
     <artifactId>html-report-wakamiti-plugin</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 
     <name>[Wakamiti Plugin] HTML Report</name>
     <description>HTML Report generator for Wakamiti results</description>
     <inceptionYear>2019</inceptionYear>
 
     <properties>
-        <wakamiti.api.version>2.2.0</wakamiti.api.version>
+        <wakamiti.api.version>2.2.1</wakamiti.api.version>
         <xmlunit.version>2.9.0</xmlunit.version>
     </properties>
 
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
