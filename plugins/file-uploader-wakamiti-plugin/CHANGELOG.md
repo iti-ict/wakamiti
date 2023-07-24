@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning][2].
 
 - Api Groovy dependencies compatibility
 
+## [Unreleased]
+
+### Added
+
+- Support for SFTP protocol
+
+
 ## [2.2.0] - 2023-07-18
 
 ### Modified
