@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+## [2.3.0] - 2023-07-25
+
+### Added
+
+- Support for SFTP protocol
+
+  
 ## [2.2.1] - 2023-07-27
 
 ### Fixed
