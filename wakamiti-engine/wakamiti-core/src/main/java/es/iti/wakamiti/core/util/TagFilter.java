@@ -10,11 +10,11 @@
 package es.iti.wakamiti.core.util;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import io.cucumber.tagexpressions.Expression;
 import io.cucumber.tagexpressions.TagExpressionParser;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class TagFilter {
@@ -23,7 +23,8 @@ public class TagFilter {
 
     public TagFilter(String tagExpression) {
         TagExpressionParser tagExpressionParser = new TagExpressionParser();
-        this.tagParsedExpression = tagExpressionParser.parse(tagExpression);
+        this.tagParsedExpression =
+                tagExpressionParser.parse(tagExpression.replace("@", "").toLowerCase());
     }
 
 

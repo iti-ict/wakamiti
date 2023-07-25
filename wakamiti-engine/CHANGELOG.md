@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unreleased]
+
+## Fixed
+- Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
+
 ## [2.2.1] - 2023-07-27
 
 ### Fixed

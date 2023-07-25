@@ -1,5 +1,5 @@
 # encoding: UTF-8
-@Test4
+@TesT4
 Feature: Test 4 - Tag Expressions
 
 

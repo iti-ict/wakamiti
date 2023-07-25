@@ -14,13 +14,13 @@
     },
     "children" : [ {
       "nodeType" : "TEST_CASE",
-      "id" : "ID-1",
+      "id" : "id-1",
       "name" : "Test scenario",
       "keyword" : "Scenario",
       "language" : "en",
       "source" : "definition.feature[6,1]",
-      "displayName" : "[ID-1] Scenario: Test scenario",
-      "tags" : [ "definition", "ID-1" ],
+      "displayName" : "[id-1] Scenario: Test scenario",
+      "tags" : [ "id-1","definition"],
       "properties" : {
         "gherkinType" : "scenario",
         "featureName" : "Test feature [Spanish]",
@@ -31,7 +31,7 @@
         "name" : "Estos son los antecedentes",
         "keyword" : "Antecedentes",
         "displayName" : "Antecedentes: Estos son los antecedentes",
-        "tags" : [ "implementation", "ID-1" ],
+        "tags" : [ "id-1","implementation"],
         "properties" : {
           "gherkinType" : "background",
           "redefinition.stepMap" : "2-1-2"
@@ -139,26 +139,26 @@
       } ]
     }, {
       "nodeType" : "AGGREGATOR",
-      "id" : "ID-2",
+      "id" : "id-2",
       "name" : "Test scenario outline",
       "keyword" : "Scenario Outline",
       "language" : "en",
       "source" : "definition.feature[12,1]",
-      "displayName" : "[ID-2] Scenario Outline: Test scenario outline",
-      "tags" : [ "ID-2", "definition" ],
+      "displayName" : "[id-2] Scenario Outline: Test scenario outline",
+      "tags" : [ "id-2", "definition" ],
       "properties" : {
         "gherkinType" : "scenarioOutline"
       },
       "dataTable" : [ [ "a", "b", "c" ], [ "1.0", "2", "2.0" ], [ "2.0", "4", "8.0" ], [ "3.0", "6", "18.0" ] ],
       "children" : [ {
         "nodeType" : "TEST_CASE",
-        "id" : "ID-2_1",
+        "id" : "id-2_1",
         "name" : "Test scenario outline [1]",
         "keyword" : "Scenario Outline",
         "language" : "en",
         "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_1] Scenario Outline Test scenario outline [1]",
-        "tags" : [ "ID-2", "definition" ],
+        "displayName" : "[id-2_1] Scenario Outline Test scenario outline [1]",
+        "tags" : [ "id-2", "definition" ],
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
@@ -170,7 +170,7 @@
           "name" : "Estos son los antecedentes",
           "keyword" : "Antecedentes",
           "displayName" : "Antecedentes: Estos son los antecedentes",
-          "tags" : [ "ID-2", "implementation" ],
+          "tags" : [ "id-2", "implementation" ],
           "properties" : {
             "dataFormatLanguage" : "en",
             "gherkinType" : "background",
@@ -283,13 +283,13 @@
         } ]
       }, {
         "nodeType" : "TEST_CASE",
-        "id" : "ID-2_2",
+        "id" : "id-2_2",
         "name" : "Test scenario outline [2]",
         "keyword" : "Scenario Outline",
         "language" : "en",
         "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_2] Scenario Outline Test scenario outline [2]",
-        "tags" : [ "ID-2", "definition" ],
+        "displayName" : "[id-2_2] Scenario Outline Test scenario outline [2]",
+        "tags" : [ "id-2", "definition" ],
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
@@ -301,7 +301,7 @@
           "name" : "Estos son los antecedentes",
           "keyword" : "Antecedentes",
           "displayName" : "Antecedentes: Estos son los antecedentes",
-          "tags" : [ "ID-2", "implementation" ],
+          "tags" : [ "id-2", "implementation" ],
           "properties" : {
             "dataFormatLanguage" : "en",
             "gherkinType" : "background",
@@ -414,13 +414,13 @@
         } ]
       }, {
         "nodeType" : "TEST_CASE",
-        "id" : "ID-2_3",
+        "id" : "id-2_3",
         "name" : "Test scenario outline [3]",
         "keyword" : "Scenario Outline",
         "language" : "en",
         "source" : "definition.feature[12,1]",
-        "displayName" : "[ID-2_3] Scenario Outline Test scenario outline [3]",
-        "tags" : [ "ID-2", "definition" ],
+        "displayName" : "[id-2_3] Scenario Outline Test scenario outline [3]",
+        "tags" : [ "id-2", "definition" ],
         "properties" : {
           "dataFormatLanguage" : "en",
           "gherkinType" : "scenario",
@@ -432,7 +432,7 @@
           "name" : "Estos son los antecedentes",
           "keyword" : "Antecedentes",
           "displayName" : "Antecedentes: Estos son los antecedentes",
-          "tags" : [ "ID-2", "implementation" ],
+          "tags" : [ "id-2", "implementation" ],
           "properties" : {
             "dataFormatLanguage" : "en",
             "gherkinType" : "background",
