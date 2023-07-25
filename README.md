@@ -12,16 +12,16 @@
 | API  | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-api?label=%20) |
 | Core | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-core?label=%20) |
 | Quarkus Server | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-server-quarkus?label=%20) |
-| Plugin Rest | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-rest?label=%20) |
-| Plugin DB | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-db?label=%20) |
-| Plugin Html Report | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-html-report?label=%20) |
-| Plugin Cucumber Exporter | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-cucumber-exporter?label=%20) |
-| Plugin File Uploader | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-file-uploader?label=%20) |
-| Plugin AMQP | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-amqp?label=%20) |
-| Plugin Groovy | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-groovy?label=%20) |
-| Plugin I/O | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-io?label=%20) |
-| Plugin Azure | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-azure?label=%20) |
-| Plugin Appium | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-appium?label=%20) |
+| Plugin Rest | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/rest-wakamiti-plugin?label=%20) |
+| Plugin DB | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/db-wakamiti-plugin?label=%20) |
+| Plugin Html Report | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/html-report-wakamiti-plugin?label=%20) |
+| Plugin Cucumber Exporter | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin?label=%20) |
+| Plugin File Uploader | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/file-uploader-wakamiti-plugin?label=%20) |
+| Plugin AMQP | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/amqp-wakamiti-plugin?label=%20) |
+| Plugin Groovy | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/groovy-wakamiti-plugin?label=%20) |
+| Plugin I/O | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20) |
+| Plugin Azure | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/azure-wakamiti-plugin?label=%20) |
+| Plugin Appium | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/appium-wakamiti-plugin?label=%20) |
 
 ---
 
