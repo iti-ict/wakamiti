@@ -26,7 +26,6 @@ module es.iti.wakamiti.rest {
     requires org.hamcrest;
     requires org.everit.json.schema;
     requires java.xml;
-    requires plexus.utils;
     requires org.apache.xmlbeans;
     requires json;
 
