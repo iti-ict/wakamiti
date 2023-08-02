@@ -3,22 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
-    <!--
-        This POM is used as base for any Wakamiti plugin
-     -->
-
-    <groupId>es.iti.wakamiti</groupId>
-    <artifactId>wakamiti-plugin-starter</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0</version>
-
-    <properties>
-        <wakamiti.api.version>2.2.0</wakamiti.api.version>
-    </properties>
-
-
     <parent>
         <artifactId>wakamiti-starter</artifactId>
         <groupId>es.iti.wakamiti</groupId>
@@ -26,16 +10,33 @@
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
+    <!--
+        This POM is used as base for any Wakamiti plugin
+     -->
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-plugin-starter</artifactId>
+    <packaging>pom</packaging>
+    <!-- This version number must be the same as wakamiti-api -->
+    <version>${revision}</version>
+
+
     <name>Wakamiti Plugin Starter</name>
     <description>Starter POM to Wakamiti plugins</description>
 
-
+    <properties>
+        <revision>2.3.0-SNAPSHOT</revision>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-api</artifactId>
-            <version>${wakamiti.api.version}</version>
+            <version>${revision}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

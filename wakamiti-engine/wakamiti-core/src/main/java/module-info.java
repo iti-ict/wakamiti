@@ -24,12 +24,12 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core.junit;
     exports es.iti.wakamiti.core.gherkin.parser;
 
+    requires transitive es.iti.wakamiti.api;
     requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
     requires transitive maven.fetcher;
-
-    requires transitive junit;
+    requires junit;
     requires org.hamcrest;
     requires tag.expressions;
 
@@ -38,7 +38,6 @@ open module es.iti.wakamiti.core {
     requires com.fasterxml.jackson.annotation;
     requires net.harawata.appdirs;
     requires java.instrument;
-    requires es.iti.wakamiti.api;
     requires org.apache.xmlbeans;
 
     provides WakamitiAPI with DefaultWakamitiAPI;

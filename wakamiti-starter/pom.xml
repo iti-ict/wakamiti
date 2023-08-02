@@ -4,13 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <!--
         This POM is used as parent for any Wakamiti component in order to share the build process
         and some other global properties (organization, etc.).
 
         The version number will be always the same regardless the versions of the components.
-
     -->
 
     <groupId>es.iti.wakamiti</groupId>
@@ -18,7 +16,6 @@
     <packaging>pom</packaging>
     <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
     <version>1.0.0</version>
-
 
 
     <name>Wakamiti Starter</name>
@@ -83,7 +80,7 @@
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-
+        <jext.version>1.0.0</jext.version>
     </properties>
 
 
