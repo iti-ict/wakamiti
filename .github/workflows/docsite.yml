@@ -47,7 +47,4 @@ jobs:
         if: ${{ success() }}
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
-          needs: ${{ toJson(needs) }}
-          job: ${{ toJson(job) }}
-          steps: ${{ toJson(steps) }}
-          dry_run: True
+          overwrite: "{title: `Documentacion Wakamiti actualizada`}"
