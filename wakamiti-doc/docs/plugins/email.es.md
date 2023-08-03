@@ -1,351 +1,472 @@
 ---
-title: Appium
-date: 2023-06-09
-slug: /en/plugins/appium
+title: Email
+date: 2023-07-31
+slug: /plugins/email
 ---
 
-This plugin allows Wakamiti to write scenarios that interact with an 
-[Appium](http://appium.io/docs/en/2.0/) server. Appium is an open-source project 
-designed to facilitate UI automation of many app platforms, including mobile apps.
+Este plugin permite comprobar el estado de las carpetas de un servidor de correo,
+verificar el número de mensajes sin leer, e interceptar nuevos mensajes entrantes.
+También permite validar campos del último mensaje tales como asunto, remitente, cuerpo
+y adjuntos.
 
-The usage of this plugin requires that an Appium server is up and running, as well as an
-emulated virtual device. Below, there is an example of how to set up a testing environment
-for this.
-
-
-> **DISCLAIMER**
-> 
-> In its current state, this plugin is mostly a proof of concept rather than a fully 
-> functional plugin, and the provided steps and configuration may vary in future 
-> versions.
+Este plugin está diseñador para usarse conjuntamente con otros para formar escenarios completos.
+Por ejemplo, para validar que una aplicación envía correos como consecuencia de alguna otra 
+operación como una petición REST.
 
 
 
-Configuration
+Coordenadas
 ----------------------------------------------------------------------------------------------------
 
-> You can specify any capability to be passed to the Web Driver using the proper property key in
-> the form ```appium.capabilities.xxxxxx```. In this document, the most relevant options are described,
-> but for an exhaustive list of the available properties, please check the
-> [W3C WebDriver draft](https://w3c.github.io/webdriver/#capabilities).
+### Fichero de configuración Wakamiti
 
----
-
-### `appium.url` 
-The URL of the Appium server
-
-Example:
 ```yaml
-appium:
-  url: http://127.0.0.1:4723/wd/hub
+wakamiti:
+    modules:
+        - es.iti.wakamiti:email-wakamiti-plugin:1.0.0
 ```
 
----
+### Maven
 
-### `appium.capabilities.app`
-The full path of the packaged app to test
-
-Example:
-```yaml
-appium:
-  capabilities:
-    app: ApiDemos-debug.apk
 ```
-
----
-
-### `appium.capabilities.platformName`
-The mobile platform that would be tested 
-
-Example:
-```yaml
-appium:
-  capabilities:
-    platformName: Android
-```
-
----
-
-### `appium.capabilities.platformVersion`
-The version of the platform that would be tested
-
-Example:
-```yaml
-appium:
-  capabilities:
-    platformVersion: 11
+  <dependency>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>email-wakamiti-plugin</artifactId>
+    <version>1.0.0</version>
+  </dependency>
 ```
 
 
----
-
-### `appium.capabilities.appPackage`
-The name of the package that contains the application to be tested
-
-Example:
-```yaml
-appium:
-  capabilities:
-    appPackage: io.appium.android.apis
-```
-
----
 
 
-### `appium.capabilities.appActivity`
-The name of the activity to be tested
-
-Example:
-```yaml
-appium:
-  capabilities:
-    appActivity: '.view.TextFields'
-```
-
-
-Steps
+Configuración
 ----------------------------------------------------------------------------------------------------
 
 
+### `email.store.address`
+
+Dirección de correo del usuario del servidor, para usarse como crendenciales de login.
+
+Ejemplo:
+```yaml
+email:
+  address: test@localhost
+```
+
+Desde: 1.0.0
 
 ---
-### Select a UI element by its ID
-```
-the UI element with ID {text}
-```
-Select an element that would be the subject of the following steps.
-#### Examples:
-```gherkin
-  Given the UI element with ID '3423423'
+
+### `email.password`
+
+Contraseña del usuario del servidor de correo, para usarse como credenciales de login.
+
+Ejemplo:
+```yaml
+email:
+  password: xjlk4324
 ```
 
-
----
-### Select a UI element by its type
-```
-the UI element with type {text}
-```
-Select an element that would be the subject of the following steps.
-#### Examples:
-```gherkin
-  Given the UI element with type 'android.widget.EditText'
-```
-
-
----
-### Select a UI element by its path
-```
-the UI element with path {text}
-```
-Select an element that would be the subject of the following steps.
-#### Examples:
-```gherkin
-  Given the UI element with path 'main.form.name'
-```
+Desde: 1.0.0
 
 
 ---
-### Type a text on an element
+
+### `email.store.host`
+
+Nombre de red o dirección IP donde está ubicado el almacén del servidor de correo.
+
+Ejemplo:
+```yaml
+email:
+  store:
+    host: imap.gmail.com
 ```
-the text {text} is typed on that element
-```
-Emulate the action of typing a text when an element is selected
-#### Examples:
-```gherkin
-  When the text 'John' is typed on that element
-```
+
+Desde: 1.0.0
 
 
 ---
-### Tap on an element
-```
-a tap is done over that element
-```
-Emulate the action of tapping on the selected element
-#### Examples:
-```gherkin
-  When a tap is done over that element
+
+### `email.store.port`
+
+Puerto para acceder al almacén del servidor de correo (suele variar en función del protocolo)
+
+Ejemplo:
+```yaml
+email:
+  port: 993
 ```
 
-
-
----
-### Double-tap on an element
-```
-a double-tap is done over that element
-```
-Emulate the action of double-tapping on the selected element
-#### Examples:
-```gherkin
-  When a double-tap is done over that element
-```
-
+Desde: 1.0.0
 
 
 ---
-### Validate the text of an element
-```
-that element contains the value {text}
-```
-Assert that the previously selected element contains a certain text
-#### Examples:
-```gherkin
-  Then that element contains the value 'Accepted'
-```
 
 
----
-### Validate an element is enabled
-```
-that element is enabled
-```
-Assert that the previously selected element is currently enabled
-#### Examples:
-```gherkin
-  Then that element is enabled
-```
+### `email.store.protocol`
 
+Protocolo usado por el almacén del servidor de correo
 
-
----
-### Validate an element is disabled
-```
-that element is disabled
-```
-Assert that the previously selected element is currently disabled
-#### Examples:
-```gherkin
-  Then that element is disabled
-```
-
-
----
-### Validate an element is displayed
-```
-that element is displayed
-```
-Assert that the previously selected element is displayed on screen
-#### Examples:
-```gherkin
-  Then that element is displayed
+Ejemplo:
+```yaml
+email:
+  store:
+    protocol: imap
 ```
 
 ---
-### Validate an element is not displayed
-```
-that element is not displayed
-```
-Assert that the previously selected element is not displayed on screen
-#### Examples:
-```gherkin
-  Then that element is not displayed
+
+### `email.store.folder`
+
+Nombre de la carpeta a comprobar dentro del almacén de correo
+Ejemplo:
+```yaml
+email:
+  store:
+    folder: INBOX
 ```
 
-
----
-### Emulate an incoming call
-```
-an incoming call with number {text} is received
-```
-Emulate an incoming call from a specific phone number. Only available if the tested application 
-runs on a emulated device.
-#### Examples:
-```gherkin
-  When an incoming call with number '555-4324-432' is received
-```
-
-
----
-### Accepts an incoming call
-```
-the incoming call is accepted
-```
-Accepts the current incoming call. 
-#### Examples:
-```gherkin
-  When the incoming call is accepted
-```
-
-
----
-### Rejects an incoming call
-```
-the incoming call is rejected
-```
-Rejects the current incoming call.
-#### Examples:
-```gherkin
-  When the incoming call is rejected
-```
-
-
----
-### Ends the current call
-```
-the call is ended
-```
-Ends (hangs up) the current call
-#### Examples:
-```gherkin
-  When the call is ended
-```
+Desde: 1.0.0
 
 
 
 
-Setting up a test environment
+Pasos
 ----------------------------------------------------------------------------------------------------
 
-1. Install Android SDK
+
+---
+### Definir la ubicación del servidor de correo
 ```
-  sudo apt install android-sdk
+el servidor de correo ubicado en {host:text}:{port:int} usando el protocolo {protocol:word}
+```
+#### Parámetros:
+| nombre      | tipo wakamiti | descripción                                    |
+|-------------|---------------|------------------------------------------------|
+| `host`      | `text`        | IP o nombre de red del servidor de correo      |
+| `port`      | `int`         | Puerto del almacén de correo (según protocolo) |
+| `protocol`  | `word`        | Protocolo del almacén de correo                |
+
+#### Ejemplos:
+```gherkin
+  Dado el servidor de correo ubicado en 'imap.gmail.com':993 usando el protocolo imap
+```
+
+Desde: 1.0.0
+
+
+---
+### Definir las credenciales de usuario
+```
+el usuario de correo con dirección {address:text} y contraseña {password:text}
+```
+#### Parámetros:
+| nombre     | tipo wakamiti | descripción               |
+|------------|---------------|---------------------------|
+| `address`  | `text`        | La dirección de correo    |
+| `password` | `text`        | La contraseña de usuario  |
+
+#### Ejemplos:
+```gherkin
+  Dado el usuario de correo con dirección 'john@mymail.com'  y contraseña 'daDjkl3434S'
+```
+
+Desde: 1.0.0
+
+
+---
+### Definir la carpeta de correo usada para las pruebas
+```
+la carpeta de correo {text}
+```
+#### Parámetros:
+| tipo wakamiti  | descripción                       |
+|----------------|-----------------------------------|
+| `text`         | El nombre de la carpeta de correo |
+
+#### Ejemplos:
+```gherkin
+  Dada la carpeta de correo 'INBOX'
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar el número de correos sin leer
+```
+(que) el número de correos sin leer {integer-assertion}
+```
+#### Parámetros:
+| tipo wakamiti       | descripción                                           |
+|---------------------|-------------------------------------------------------|
+| `integer-assertion` | Comprobación a aplicar al número de mensajes sin leer |
+#### Ejemplos:
+```gherkin
+  Dado que el número de correos sin leer is mayor que 0
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar que se recibe un nuevo correo en un intervalo de tiempo determinado
+```
+(que) se recibe un nuevo correo en los próximos {sec:integer} segundos
+```
+#### Parámetros:
+| nombre     | tipo wakamiti | descripción                                        |
+|------------|---------------|----------------------------------------------------|
+| `sec`      | `integer`     | Segundos a la espera de que llegue un nuevo correo |
+
+#### Ejemplos:
+```gherkin
+  Entonces se recibe un nuevo correo en los próximos 5 segundos
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar el asunto del último correo
+```
+(que) el asunto del correo {text-assertion}
+```
+#### Parámetros:
+| tipo wakamiti    | descripción                                  |
+|------------------|----------------------------------------------|
+| `text-assertion` | Comprobación a aplicar al asunto del correo  |
+#### Ejemplos:
+```gherkin
+  Entonces el asunto del correo empieza por 'Nueva incidencia'
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar el remitente del último correo
+```
+(que) el remitente del correo {text-assertion}
+```
+#### Parámetros:
+| tipo wakamiti    | descripción                                    |
+|------------------|------------------------------------------------|
+| `text-assertion` | Comprobación a aplicar al remitente del correo |
+#### Ejemplos:
+```gherkin
+  Entonces el remitente del correo es 'support@company.com'
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar el contenido del cuerpo del último correo
+```
+(que) el cuerpo del correo es:
+```
+#### Parámetros:
+| tipo wakamiti | descripción             |
+|---------------|-------------------------|
+| `document`    | El contenido a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el cuerpo del correo es:
+  """
+     Hola,
+     Su incidencia ha sido recibida.
+     Saludos.
+  """
+```
+
+Desde: 1.0.0
+
+
+---
+### Comprobar parcialmente el contenido del cuerpo del último correo
+```
+(que) el cuerpo del correo contiene lo siguiente:
+```
+#### Parámetros:
+| tipo wakamiti | descripción             |
+|---------------|-------------------------|
+| `document`    | El contenido a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el cuerpo del correo contiene lo siguiente:
+  """
+     Su incidencia ha sido recibida.
+  """
+```
+
+Desde: 1.0.0
+
+
+---
+### Comparar el contenido del cuerpo del último correo con un fichero
+```
+(que) el cuerpo del correo es el contenido del fichero {file}
+```
+#### Parámetros:
+| tipo wakamiti | descripción                 |
+|---------------|-----------------------------|
+| `file`        | Ruta del fichero a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el cuerpo del correo es el contenido del fichero 'email.txt'
 ```
 
 
-2. Add the environment variable ANDROID_HOME
-```
-  (p.ej. $HOME/Android/Sdk )
-```
+Desde: 1.0.0
 
-3. Install cmdline-tools
 
-![](android-sdk.png)
-
-5. Install Appium and Appium-doctor
+---
+### Comparar parcialmente el contenido del cuerpo del último correo con un fichero
 ```
-   npm install -g appium
-   npm install @appium/doctor --location=global
+(que) el cuerpo del correo contiene el contenido del fichero {file}
 ```
-
-4. Check the installation
-```
-appium-doctor --android
-```
-All should be OK, otherwise check the red messages
-
-5. Start the Appium server
-```
-appium
-```
-Default port is 4723
-
-Download a demo APK from:
-https://github.com/appium/appium/raw/1.x/sample-code/apps/ApiDemos-debug.apk
-
-6. Create an Android Virtual Device
-```
-$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"```
-```
-
-7. Start the emulator
-```
-$ANDROID_HOME/emulator/emulator -avd Nexus6P
-```
-
-In case the emulator fails due to a previous emulation process in a zombie state, it can be 
-cleared using
-```
-$ANDROID_HOME/platform-tools/adb kill-server
+#### Parámetros:
+| tipo wakamiti | descripción                 |
+|---------------|-----------------------------|
+| `file`        | Ruta del fichero a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el cuerpo del correo contiene el contenido del fichero 'email.txt'
 ```
 
 
+Desde: 1.0.0
+
+
+---
+### Comprobar el número de adjuntos en el último correo
+```
+(que) el número de adjuntos en el correo {integer-assertion}
+```
+#### Parámetros:
+| tipo wakamiti       | descripción                                  |
+|---------------------|----------------------------------------------|
+| `integer-assertion` | Comprobación a aplicar al número de adjuntos |
+#### Ejemplos:
+```gherkin
+  Entonces el número de adjuntos en el correo es menor que 2
+```
+
+
+Desde: 1.0.0
+
+
+---
+### Comprobar que el último correo contiene un adjunto con determinado nombre de fichero
+```
+(que) el correo tiene un fichero adjunto cuyo nombre {text-assertion}
+```
+#### Parámetros:
+| tipo wakamiti    | descripción                                               |
+|------------------|-----------------------------------------------------------|
+| `text-assertion` | Comprobación a aplicar al nombre de los ficheros adjuntos |
+#### Ejemplos:
+```gherkin
+  Entonces el correo tiene un fichero adjunto cuyo nombre es 'attach.txt'
+```
+
+
+Desde: 1.0.0
+
+
+---
+### Comparar el contenido de un fichero adjunto en formato binario
+```
+(que) el correo tiene un fichero adjunto con el contenido del fichero binario {file}
+```
+#### Parámetros:
+| tipo wakamiti | descripción                 |
+|---------------|-----------------------------|
+| `file`        | Ruta del fichero a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el correo tiene un fichero adjunto con el contenido del fichero binario 'attach.dat'
+```
+
+
+Desde: 1.0.0
+
+
+
+---
+### Comparar el contenido de un fichero adjunto en formato de texto
+```
+(que) el correo tiene un fichero adjunto con el contenido del fichero de texto {file}
+```
+#### Parámetros:
+| tipo wakamiti | descripción                 |
+|---------------|-----------------------------|
+| `file`        | Ruta del fichero a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el correo tiene un fichero adjunto con el contenido del fichero de texto 'attach.txt'
+```
+
+
+Desde: 1.0.0
+
+
+---
+### Comparar el contenido de un adjunto con el texto indicado
+```
+(que) el correo tiene un fichero adjunto con el siguiente contenido:
+```
+#### Parámetros:
+| tipo wakamiti | descripción      |
+|---------------|------------------|
+| `document`    | Texto a comparar |
+#### Ejemplos:
+```gherkin
+  Entonces el correo tiene un fichero adjunto con el siguiente contenido:
+  """
+  Esto es un contenido adjunto
+  """
+```
+
+
+Desde: 1.0.0
+
+
+---
+### Eliminar todos los correos con un remitente determinado (operación de limpieza)
+```
+Al finalizar, se borran todos los correos cuyo remitente {text-assertion}
+```
+#### Parámetros:
+| tipo wakamiti    | descripción                                        |
+|------------------|----------------------------------------------------|
+| `text-assertion` | Comprobación a aplicar al remitente de los correos |
+#### Ejemplos:
+```gherkin
+  Antecedentes:
+    * Al finalizar, se borran todos los correos cuyo remitente es 'test@localhost'
+```
+
+
+Desde: 1.0.0
+
+
+---
+### Eliminar todos los correos con un asunto determinado (operación de limpieza)
+```
+Al finalizar, se borran todos los correos cuyo asunto {text-assertion}
+```
+#### Parámetros:
+| tipo wakamiti    | descripción                                     |
+|------------------|-------------------------------------------------|
+| `text-assertion` | Comprobación a aplicar al asunto de los correos |
+#### Ejemplos:
+```gherkin
+  Antecedentes:
+    * Al finalizar, se borran todos los correos cuyo asunto empieza por 'Testing'
+```
+
+
+Desde: 1.0.0
