@@ -1,6 +1,6 @@
 ---
 title: Email
-date: 2023-07-31
+date: 2023-08-03
 slug: /en/plugins/email
 ---
 
