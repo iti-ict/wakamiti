@@ -60,6 +60,11 @@
               "depth": 2
             },
             {
+              "value": "Azure Integration",
+              "anchor": "/azure",
+              "depth": 2
+            },
+            {
               "value": "Email steps",
               "anchor": "/email",
               "depth": 2
