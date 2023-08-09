@@ -97,11 +97,11 @@ public class PlanNodeRunner {
         state = State.RUNNING;
         Wakamiti.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
-        if (node.nodeType() == NodeType.TEST_CASE
+        if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
+            markFilteredTestCase(node);
+        } else if (node.nodeType() == NodeType.TEST_CASE
                 && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
             doNotImplemented(node, Result.NOT_IMPLEMENTED);
-        } else if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
-            markFilteredTestCase(node);
         } else if (!getChildren().isEmpty()) {
             if (node.nodeType() == NodeType.TEST_CASE) {
                 testCasePreExecution(node);
@@ -142,11 +142,8 @@ public class PlanNodeRunner {
             doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
         });
 
-        if (result == Result.NOT_IMPLEMENTED) {
-            node.prepareExecution().markStarted(startInstant);
-        }
-
-        node.prepareExecution().markFinished(Instant.now(), result);
+        node.prepareExecution().markStarted(startInstant);
+        node.prepareExecution().markFinished(startInstant, result);
     }
 
 

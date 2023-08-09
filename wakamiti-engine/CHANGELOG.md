@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
-## Fixed
+### Fixed
+- The filtered scenarios results appear as `SKIPPED`
 - Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
 
 ## [2.2.1] - 2023-07-27
