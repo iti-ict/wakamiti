@@ -98,7 +98,12 @@ public class WakamitiLauncher {
                 level = Optional.of(Level.INFO);
             }
         }
-        level.ifPresent(l -> Configurator.setLevel(loggerName, l)); //NOSONAR
+
+        level.ifPresent(l -> {
+            Configurator.setLevel(loggerName, l);          //NOSONAR
+            Configurator.setLevel("es.iti.commons", l);    //NOSONAR
+        });
+
 
         return LoggerFactory.getLogger(loggerName);
     }
