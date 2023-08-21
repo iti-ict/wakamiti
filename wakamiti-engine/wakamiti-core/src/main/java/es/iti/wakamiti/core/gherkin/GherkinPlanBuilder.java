@@ -75,7 +75,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     protected void configureIdTagPattern(Configuration configuration) {
         this.idTagPattern = configuration.get(WakamitiConfiguration.ID_TAG_PATTERN, String.class)
                 .map(this::nullIfEmpty)
-                .map(s -> Pattern.compile(s, Pattern.CASE_INSENSITIVE))
+                .map(Pattern::compile)
                 .orElse(null);
     }
 
@@ -464,7 +464,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
 
     private List<String> tags(List<Tag> tags) {
-        return tags.stream().map(Tag::getName).map(s -> s.substring(1)).map(String::toLowerCase).distinct()
+        return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct()
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -474,10 +474,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         Set<String> tagList = tags.stream()
                 .map(Tag::getName)
                 .map(s -> s.substring(1))
-                .map(String::toLowerCase)
                 .filter(s -> !ignoredTagList.contains(s))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-        tagList.addAll(parentTags.stream().map(String::toLowerCase).collect(Collectors.toCollection(LinkedList::new)));
+        tagList.addAll(parentTags);
         return tagList;
     }
 
@@ -491,7 +490,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     protected String id(List<Tag> tags, String nodeName, String suffix) {
         String idTag = null;
         if (idTagPattern != null) {
-            List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1)).map(String::toLowerCase)
+            List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1))
                     .map(idTagPattern::matcher)
                     .filter(Matcher::matches).map(Matcher::group).collect(Collectors.toList());
             if (idTags.size() > 1) {

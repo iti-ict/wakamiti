@@ -19,5 +19,5 @@ logging:
     org.springframework: INFO
     es.iti.wakamiti: INFO
     org.hibernate: INFO
-    iti.commons.jext: ERROR
+    iti.commons.jext: INFO
 spring.output.ansi.enabled: DETECT

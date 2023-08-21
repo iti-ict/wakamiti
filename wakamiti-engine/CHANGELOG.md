@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning][2].
 - The filtered scenarios results appear as `SKIPPED`
 - Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
 
+### Changed
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`
+
 ## [2.2.1] - 2023-07-27
 
 ### Fixed

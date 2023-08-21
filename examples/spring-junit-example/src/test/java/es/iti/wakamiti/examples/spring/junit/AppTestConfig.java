@@ -16,8 +16,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @TestConfiguration
 @ComponentScan(basePackages = {
-                 "es.iti.commons.jext.spring", // include jExt Spring integration
-                 "es.iti.wakamiti.spring" // include Wakamiti Spring integration
+        "es.iti.commons.jext.spring", // include jExt Spring integration
+        "es.iti.wakamiti.spring", // include Wakamiti Spring integration
 })
 public class AppTestConfig {
 

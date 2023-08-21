@@ -55,10 +55,6 @@
             <artifactId>immutable-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.github.luiinge</groupId>
-            <artifactId>maven-fetcher</artifactId>
-        </dependency>
-        <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
             <version>${revision}</version>

@@ -25,8 +25,7 @@ module es.iti.wakamiti.api {
     requires org.apache.xmlbeans;
     requires com.fasterxml.jackson.databind;
     requires json.path;
-    requires commons.beanutils;
-    requires org.codehaus.groovy;
+    requires org.apache.groovy;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;

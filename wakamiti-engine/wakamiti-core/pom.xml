@@ -40,6 +40,12 @@
             <artifactId>wakamiti-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>es.iti.commons</groupId>
+            <artifactId>jext</artifactId>
+            <version>${jext.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <scope>compile</scope>
@@ -47,11 +53,6 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.commons</groupId>
-            <artifactId>jext</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -134,7 +135,7 @@
                         <annotationProcessorPath>
                             <groupId>es.iti.commons</groupId>
                             <artifactId>jext</artifactId>
-                            <version>1.0.0</version>
+                            <version>${jext.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
                 </configuration>

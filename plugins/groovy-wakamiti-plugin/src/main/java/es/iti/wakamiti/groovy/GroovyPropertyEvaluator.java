@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
  * <p> Pattern: {@code ${=[groovy script]}}
  *
  * <p> Examples:
- * <blockquote><pre>{@code
+ * <blockquote><pre>
  *     ${=1+1}
  *     ${=new Date().format('yyyy-MM-dd')}
- * }</pre></blockquote>
+ * </pre></blockquote>
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
  */

@@ -24,7 +24,6 @@
     <description>HTML Report generator for Wakamiti results</description>
     <inceptionYear>2019</inceptionYear>
 
-
     <properties>
         <xmlunit.version>2.9.0</xmlunit.version>
     </properties>
