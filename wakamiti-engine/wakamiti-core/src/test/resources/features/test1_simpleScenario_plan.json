@@ -8,19 +8,19 @@
     "language" : "en",
     "displayName" : "Feature: Test 1 - Simple Scenario",
     "description" : [ "This is a simple scenario feature without additional behaviour.", "And this is the second line of comments." ],
-    "tags" : [ "test1" ],
+    "tags" : [ "Test1" ],
     "properties" : {
       "featureProperty" : "A",
       "gherkinType" : "feature"
     },
     "children" : [ {
       "nodeType" : "TEST_CASE",
-      "id" : "id-test1_scenario1",
+      "id" : "ID-Test1_Scenario1",
       "name" : "Test Scenario",
       "keyword" : "Scenario",
       "language" : "en",
-      "displayName" : "[id-test1_scenario1] Scenario: Test Scenario",
-      "tags" : [ "id-test1_scenario1","test1"],
+      "displayName" : "[ID-Test1_Scenario1] Scenario: Test Scenario",
+      "tags" : [ "ID-Test1_Scenario1","Test1"],
       "properties" : {
         "featureProperty" : "A",
         "gherkinType" : "scenario",

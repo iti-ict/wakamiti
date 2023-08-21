@@ -7,7 +7,7 @@
     "keyword" : "Feature",
     "language" : "en",
     "displayName" : "Feature: Test 4 - Tag Expressions",
-    "tags" : [ "test4" ],
+    "tags" : [ "Test4" ],
     "properties" : {
       "encoding" : "UTF-8",
       "gherkinType" : "feature"
@@ -18,7 +18,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[] Scenario: Test Scenario B C",
-      "tags" : [  "b", "c","test4"],
+      "tags" : [ "B", "C", "Test4" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",

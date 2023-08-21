@@ -7,7 +7,7 @@
     "keyword" : "Feature",
     "language" : "en",
     "displayName" : "Feature: Test 6 - Property Substitution",
-    "tags" : [ "test4" ],
+    "tags" : [ "Test4" ],
     "properties" : {
       "encoding" : "UTF-8",
       "gherkinType" : "feature"
@@ -18,7 +18,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[] Scenario: Test Scenario",
-      "tags" : [ "test4" ],
+      "tags" : [ "Test4" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",

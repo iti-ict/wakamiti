@@ -7,19 +7,19 @@
     "keyword" : "Feature",
     "language" : "en",
     "displayName" : "Feature: Test 2 - Scenario Outline",
-    "tags" : [ "test2" ],
+    "tags" : [ "Test2" ],
     "properties" : {
       "gherkinType" : "feature"
     },
     "children" : [ {
       "nodeType" : "AGGREGATOR",
-      "id" : "id-scenariooutline1",
+      "id" : "ID-ScenarioOutline1",
       "name" : "Test Scenario Outline",
       "keyword" : "Scenario Outline",
       "language" : "en",
-      "displayName" : "[id-scenariooutline1] Scenario Outline: Test Scenario Outline",
+      "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
       "description": ["This is a description for <a>"],
-      "tags" : [ "id-scenariooutline1","test2"],
+      "tags" : [ "ID-ScenarioOutline1", "Test2" ],
       "properties" : {
         "propertyScenarioOutline" : "A",
         "gherkinType" : "scenarioOutline"
@@ -27,13 +27,13 @@
       "dataTable" : [ [ "a", "b", "c" ], [ "1.0", "2", "2.0" ], [ "2.0", "3", "6.0" ], [ "5.0", "4", "20.0" ] ],
       "children" : [ {
         "nodeType" : "TEST_CASE",
-        "id" : "id-scenariooutline1_1",
+        "id" : "ID-ScenarioOutline1_1",
         "name" : "Test Scenario Outline [1]",
         "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[id-scenariooutline1_1] Scenario Outline Test Scenario Outline [1]",
+        "displayName" : "[ID-ScenarioOutline1_1] Scenario Outline Test Scenario Outline [1]",
         "description": ["This is a description for 1.0"],
-        "tags" : [ "id-scenariooutline1","test2"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
           "gherkinType" : "scenario",
@@ -72,13 +72,13 @@
         } ]
       }, {
         "nodeType" : "TEST_CASE",
-        "id" : "id-scenariooutline1_2",
+        "id" : "ID-ScenarioOutline1_2",
         "name" : "Test Scenario Outline [2]",
         "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[id-scenariooutline1_2] Scenario Outline Test Scenario Outline [2]",
+        "displayName" : "[ID-ScenarioOutline1_2] Scenario Outline Test Scenario Outline [2]",
         "description": ["This is a description for 2.0"],
-        "tags" : [ "id-scenariooutline1","test2"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
           "gherkinType" : "scenario",
@@ -117,13 +117,13 @@
         } ]
       }, {
         "nodeType" : "TEST_CASE",
-        "id" : "id-scenariooutline1_3",
+        "id" : "ID-ScenarioOutline1_3",
         "name" : "Test Scenario Outline [3]",
         "keyword" : "Scenario Outline",
         "language" : "en",
-        "displayName" : "[id-scenariooutline1_3] Scenario Outline Test Scenario Outline [3]",
+        "displayName" : "[ID-ScenarioOutline1_3] Scenario Outline Test Scenario Outline [3]",
         "description": ["This is a description for 5.0"],
-        "tags" : [ "id-scenariooutline1","test2"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
         "properties" : {
           "propertyScenarioOutline" : "A",
           "gherkinType" : "scenario",

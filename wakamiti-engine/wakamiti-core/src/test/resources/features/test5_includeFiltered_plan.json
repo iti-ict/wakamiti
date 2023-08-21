@@ -8,7 +8,7 @@
     "language" : "en",
     "source" : "src/test/resources/features/test5_includeFiltered.feature[3,1]",
     "displayName" : "Feature: Test 5 - Include Filteres",
-    "tags" : [ "test5" ],
+    "tags" : [ "Test5" ],
     "properties" : {
       "encoding" : "UTF-8",
       "gherkinType" : "feature"
@@ -20,7 +20,7 @@
       "language" : "en",
       "source" : "src/test/resources/features/test5_includeFiltered.feature[7,1]",
       "displayName" : "[] Scenario: Test Scenario A",
-      "tags" : [ "a","test5"],
+      "tags" : [ "A", "Test5" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",
@@ -67,7 +67,7 @@
       "language" : "en",
       "source" : "src/test/resources/features/test5_includeFiltered.feature[13,1]",
       "displayName" : "[] Scenario: Test Scenario B",
-      "tags" : [  "b","test5"],
+      "tags" : [ "B", "Test5" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",
