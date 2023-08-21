@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+- It is allowed to obtain the result of a step relatively by indicating a negative number.
+
 ### Fixed
 - The filtered scenarios results appear as `SKIPPED`
 - Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
