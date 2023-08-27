@@ -4,7 +4,7 @@ date: 2022-09-20
 slug: /plugins
 ---
 
-Wakamiti, por sí solo, no tiene pasos definidos, sino que se incluyen a través de diferentes plugins. Actualmente, existen 
+Wakamiti, por si solo, no tiene pasos definidos, sino que se incluyen a través de diferentes plugins. Actualmente, existen 
 los siguientes, ¡pero también puedes desarrollar tus propios plugins!:
 
 - [Pasos REST](plugins/rest)
@@ -15,6 +15,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!:
 - [File Uploader](plugins/fileuploader)
 - [Pasos Appium](plugins/appium)
 - [Integración Azure](plugins/azure)
+- [Pasos Email](plugins/email)
 
 
 

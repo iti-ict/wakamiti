@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning][2].
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `es.iti.wakamiti:wakamiti-core`
 
+## [2.3.0] - 2023-07-25
+
+### Added
+- Support for SFTP protocol
+
 ## [2.2.1] - 2023-07-27
 
 ### Fixed

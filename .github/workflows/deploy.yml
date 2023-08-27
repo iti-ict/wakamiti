@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - 'wakamiti-doc/**'
       - 'wakamiti-vscode-extension/**'
+      - '.github/workflows/**'
 
 jobs:
   build:
