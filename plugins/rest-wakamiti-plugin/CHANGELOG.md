@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unreleased]
+
+### Added
+
+- Steps to submit forms (issue #152)
+
+### Fixed
+
+- Attached files were not sent correctly
+
+
 ## [2.2.1] - 2023-07-27
 
 ### Fixed

@@ -8,6 +8,7 @@ package es.iti.wakamiti.api.util;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlRuntimeException;
+import org.apache.xmlbeans.impl.schema.XmlObjectFactory;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -20,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +34,7 @@ public class XmlUtilsTest {
 
     private final String xml = "<item><name>Arnold</name><age>47</age></item>";
     private final String xmlError = "<item><nameArnold</name><age>47</age></item>";
-
+    private final String xmlNull = "<item><name>Arnold</name><age/></item>";
     private final String xmlList = "<list><item><name>Arnold</name><age>47</age></item><item><name>Susan</name><age>32</age></item></list>";
 
     @Test
@@ -69,15 +71,15 @@ public class XmlUtilsTest {
         assertThat(obj.xmlText()).isEqualTo(xml);
     }
 
-//    @Test(expected = XmlRuntimeException.class)
-//    public void testXmlWhenNodeWithError() throws XmlException, IOException {
-//        Node node = XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode();
-//        try (MockedStatic<XmlObject.Factory> utilities = Mockito.mockStatic(XmlObject.Factory.class)) {
-//            utilities.when(() -> XmlObject.Factory.parse(any(Node.class))).thenThrow(XmlException.class);
-//
-//            XmlUtils.xml(node);
-//        }
-//    }
+    @Test(expected = XmlRuntimeException.class)
+    public void testXmlWhenNodeWithError() throws XmlException, IOException {
+        Node node = XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode();
+        try (MockedStatic<XmlObjectFactory> utilities = Mockito.mockStatic(XmlObjectFactory.class)) {
+            utilities.when(() -> XmlObject.Factory.parse(any(Node.class))).thenThrow(XmlException.class);
+
+            XmlUtils.xml(node);
+        }
+    }
 
     @Test
     public void testXmlWhenMapWithSuccess() throws XmlException, IOException {
@@ -112,11 +114,12 @@ public class XmlUtilsTest {
     @Test
     public void testReadStringValueWithSuccess() throws XmlException, IOException {
         XmlObject object = XmlUtils.xml("response",
-                Map.of(
+                map(
                         "statusCode", "200",
                         "body", XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())),
                         "headers", Map.of("keep-alive", "true", "content-type", "application/json"),
-                        "other", XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode()
+                        "other", XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode(),
+                        "nullValue", null
                 ));
 
         String result = XmlUtils.readStringValue(object, "//content-type");
@@ -135,20 +138,40 @@ public class XmlUtilsTest {
                         + "<headers><content-type>application/json</content-type><keep-alive>true</keep-alive></headers>"
                         + "<statusCode>200</statusCode>"
                         + "<other><item><name>Arnold</name><age>47</age></item></other>"
+                        + "<nullValue/>"
                         + "</response>")
                 .ignoreWhitespace()
                 .normalizeWhitespace()
                 .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
                 .areSimilar();
 
+        result = XmlUtils.readStringValue(object, "statusCode");
+        assertThat(result).isEqualTo("200");
+
         result = XmlUtils.readStringValue(object, "count(//*)");
-        assertThat(result).isEqualTo("13.0");
+        assertThat(result).isEqualTo("14.0");
 
         result = XmlUtils.readStringValue(object, "//body/@id");
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
+
+        result = XmlUtils.readStringValue(XmlUtils.xml(xmlNull), "//age/text()");
+        assertThat(result).isNull();
+
+        result = XmlUtils.readStringValue(XmlUtils.xml(xmlNull), "age");
+        assertThat(result).isNull();
 
         result = XmlUtils.readStringValue(XmlUtils.xml(xmlList), "item.find{ it.name == 'Susan' }.age");
         assertThat(result).isEqualTo("32");
+
+        result = XmlUtils.readStringValue(XmlUtils.xml(xmlList), "item[0].age");
+        assertThat(result).isEqualTo("47");
     }
 
+    private Map<String, Object> map(Object... pairs) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (int i = 0; i < pairs.length; i=i+2) {
+            result.put((String) pairs[i], pairs[i+1]);
+        }
+        return result;
+    }
 }

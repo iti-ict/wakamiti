@@ -6,10 +6,12 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.api.util.JsonUtils;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.api.util.ThrowableSupplier;
-import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.*;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
 import io.restassured.RestAssured;
@@ -19,16 +21,10 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
 import org.apache.xmlbeans.XmlObject;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -44,7 +40,7 @@ import java.util.stream.Stream;
  */
 public class RestSupport {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
+    public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
 
 
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()
@@ -181,6 +177,7 @@ public class RestSupport {
         );
 
         return body instanceof XmlObject
+                || ContentType.fromContentType(response.contentType()) == ContentType.XML
                 ? XmlUtils.xml("response", result)
                 : JsonUtils.json(result);
     }
@@ -198,8 +195,13 @@ public class RestSupport {
     private Object doTry(ThrowableSupplier<?>... suppliers) {
         for (ThrowableSupplier<?> supplier : suppliers) {
             try {
-                return supplier.get();
-            } catch (Exception ignored) { }
+                Object result = supplier.get();
+                if (result == null || result.toString().isEmpty()) {
+                    throw new Exception();
+                }
+                return result;
+            } catch (Exception ignored) {
+            }
         }
         return null;
     }
