@@ -138,7 +138,7 @@ public class TestPlanFactory {
         assertFilePlan(
                 "src/test/resources/features/test4_tagExpression.feature",
                 "src/test/resources/features/test4_tagExpression_plan.json",
-                "Test4 and (B and (C or D))",
+                "Test4 and (b and (@C or @d))",
                 1
         );
     }

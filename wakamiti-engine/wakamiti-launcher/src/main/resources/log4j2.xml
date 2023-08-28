@@ -18,7 +18,8 @@
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name= "es.iti.wakamiti" level="info"/>
+        <Logger name="es.iti.wakamiti" level="info"/>
+        <Logger name="es.iti.commons" level="info"/>
         <Logger name="org.eclipse" level="info"/>
     </Loggers>
 </Configuration>

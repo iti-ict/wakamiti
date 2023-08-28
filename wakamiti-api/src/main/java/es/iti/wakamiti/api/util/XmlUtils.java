@@ -66,6 +66,7 @@ public class XmlUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void processMap(Document doc, Element current, Map<String, Object> map) {
         map.forEach((key, value) -> {
             Element element = doc.createElement(key);

@@ -70,11 +70,6 @@
                 <version>2.11.0</version>
             </dependency>
             <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>jext</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-            <dependency>
                 <groupId>io.github.luiinge</groupId>
                 <artifactId>immutable-config</artifactId>
                 <version>1.1.0</version>
@@ -163,9 +158,9 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-bom</artifactId>
-                <version>3.0.9</version>
+                <version>4.0.13</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

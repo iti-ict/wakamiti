@@ -12,21 +12,23 @@ import es.iti.wakamiti.rest.RestStepContributor;
 module es.iti.wakamiti.rest {
 
     exports es.iti.wakamiti.rest;
-    exports es.iti.wakamiti.rest.oauth;
+//    exports es.iti.wakamiti.rest.oauth;
+//    exports es.iti.wakamiti.rest.helpers;
+//    exports es.iti.wakamiti.rest.log;
+//    exports es.iti.wakamiti.rest.matcher;
 
-    requires transitive es.iti.wakamiti.api;
-    requires transitive rest.assured;
-    requires transitive xml.path;
-    requires json.path;
+    requires es.iti.wakamiti.api;
+    requires rest.assured;
+//    requires xml.path;
+//    requires json.path;
     requires com.fasterxml.jackson.databind;
-    requires iti.commons.jext;
+//    requires iti.commons.jext;
     requires junit;
     requires com.fasterxml.jackson.dataformat.xml;
-    requires org.apache.commons.lang3;
+//    requires org.apache.commons.lang3;
     requires org.hamcrest;
     requires org.everit.json.schema;
     requires java.xml;
-    requires plexus.utils;
     requires org.apache.xmlbeans;
     requires json;
 

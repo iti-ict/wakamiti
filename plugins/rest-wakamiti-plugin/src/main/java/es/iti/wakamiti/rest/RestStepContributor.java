@@ -10,11 +10,6 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.rest.oauth.GrantType;
-import io.restassured.RestAssured;
-import io.restassured.config.HttpClientConfig;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
@@ -23,7 +18,11 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import org.codehaus.plexus.util.FileUtils;
+import es.iti.wakamiti.rest.oauth.GrantType;
+import io.restassured.RestAssured;
+import io.restassured.config.HttpClientConfig;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -34,12 +33,11 @@ import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
 
 
 @I18nResource("iti_wakamiti_wakamiti-rest")
-@Extension(provider =  "es.iti.wakamiti", name = "rest-steps")
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
-
 
 
     @Step(value = "rest.define.contentType", args = "word")
@@ -229,7 +227,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
         ContentType mimeType = Optional.of(file.getName())
-                .map(FileUtils::getExtension)
+                .filter(s -> s.contains("."))
+                .map(f -> f.split("\\."))
+                .map(it -> it[it.length - 1])
                 .map(ContentTypeHelper.contentTypeFromExtension::get)
                 .orElse(ContentType.TEXT);
 
@@ -335,6 +335,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         executeRequest(RequestSpecification::post);
         return parsedResponse();
     }
+
     @Step("rest.execute.DELETE.data.from.document")
     public Object executeDeleteDataUsingDocument(Document document) {
         executeRequest(RequestSpecification::delete, document.getContent());

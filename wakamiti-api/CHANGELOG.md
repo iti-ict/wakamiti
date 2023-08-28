@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unreleased]
+
+### Changed
+- Upgrade dependencies: `es.iti.commons:jext`, `org.apache.groovy`
+
+### Removed
+- Unused dependencies: `xerces:xercesImpl`, `org.apache.poi:poi-ooxml`, `org.xmlunit:xmlunit-core`
+
 ## [2.1.1] - 2023-07-07
 
-## Fixed
+### Fixed
 
 - Property `workingDir`
 

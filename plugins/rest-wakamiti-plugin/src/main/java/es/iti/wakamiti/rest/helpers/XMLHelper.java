@@ -33,7 +33,7 @@ import java.io.StringReader;
 
 
 @Extension(provider =  "es.iti.wakamiti", name = "rest-xml-helper", extensionPoint =  "es.iti.wakamiti.rest.ContentTypeHelper")
-public class XMLHelper extends JSONHelper implements ContentTypeHelper {
+public class XMLHelper implements ContentTypeHelper {
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
     private final SchemaFactory schemaFactory;

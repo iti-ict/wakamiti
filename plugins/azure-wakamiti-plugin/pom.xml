@@ -9,40 +9,29 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
-
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-plugin-starter</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
         <relativePath>../../wakamiti-plugin-starter</relativePath>
     </parent>
 
+
     <artifactId>azure-wakamiti-plugin</artifactId>
-    <version>1.2.1</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Azure integration</name>
     <description>Azure plan test integration</description>
     <inceptionYear>2023</inceptionYear>
 
 
-    <properties>
-        <wakamiti.api.version>2.2.1</wakamiti.api.version>
-    </properties>
-
-
-
     <dependencies>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.8.0</version>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>
@@ -53,7 +42,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

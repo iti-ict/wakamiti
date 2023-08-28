@@ -4,12 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
-
     <!--
         This POM is used as a parent/aggregator in order to build all the core components at the same time.
      -->
-
     <parent>
         <artifactId>wakamiti-starter</artifactId>
         <groupId>es.iti.wakamiti</groupId>
@@ -24,7 +21,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>2.2.1</revision>
+        <revision>2.3.0-SNAPSHOT</revision>
     </properties>
 
 
@@ -46,33 +43,20 @@
             <dependency>
                 <groupId>io.github.luiinge</groupId>
                 <artifactId>maven-fetcher</artifactId>
-                <version>1.6.0</version>
+                <version>1.7.0</version>
             </dependency>
             <dependency>
                 <groupId>es.iti.wakamiti</groupId>
                 <artifactId>wakamiti-api</artifactId>
-                <version>2.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.resolver</groupId>
-                <artifactId>maven-resolver-impl</artifactId>
-                <version>1.9.7</version>
+                <version>2.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven</artifactId>
-                <version>3.9.1</version>
+                <version>3.9.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.maven.resolver</groupId>
-                <artifactId>maven-resolver-api</artifactId>
-                <version>1.9.7</version>
-            </dependency>
-
-
-
         </dependencies>
     </dependencyManagement>
 

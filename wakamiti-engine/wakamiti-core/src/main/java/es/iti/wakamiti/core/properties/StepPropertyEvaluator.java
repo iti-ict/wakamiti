@@ -41,19 +41,19 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
 
     @Override
     public Pattern pattern() {
-        return Pattern.compile("\\$\\{(?<name>((\\d+)#((?!\\$\\{|\\}).)*))\\}");
+        return Pattern.compile("\\$\\{(?<name>((-?\\d+)#((?!\\$\\{|\\}).)*))\\}");
     }
 
     @Override
     public String evalProperty(String property, Matcher matcher) {
         String name = matcher.group("name");
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
-        int step = Integer.parseInt(matcher.group(3)) - 1;
-        Object result = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.ContextMap.RESULTS_PROP))
+        int step = Integer.parseInt(matcher.group(3));
+        List<?> steps = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.ContextMap.RESULTS_PROP))
                 .map(List.class::cast)
-                .orElse(new LinkedList<>())
-                .get(step);
-        String fragment = name.replaceAll("^\\d+#", "").trim();
+                .orElse(new LinkedList<>());
+        Object result = steps.get(step < 0 ? steps.size() + step : step - 1);
+        String fragment = name.replaceAll("^-?\\d+#", "").trim();
         String evaluation = Objects.toString(result);
         if (!fragment.isBlank()) {
             try {

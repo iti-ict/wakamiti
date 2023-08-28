@@ -16,14 +16,13 @@ import imconfig.Property;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 
 // Wakamiti Configuration
 @RunWith(WakamitiSpringJUnitRunner.class)
 @AnnotatedConfiguration({
-    @Property(key="resourceTypes",value="gherkin"),
     @Property(key="resourcePath",value="src/test/resources"),
+    @Property(key="resourceTypes",value="gherkin"),
     @Property(key="outputFilePath",value="target/wakamiti/wakamiti.json"),
     @Property(key="junit.treatStepsAsTests",value="true"),
     @Property(key="logs.showStepSource",value="false"),
@@ -32,8 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 })
 
 // Spring Configuration
-@ContextConfiguration(classes = AppTestConfig.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = AppTestConfig.class)
 @ActiveProfiles(profiles = "test")
 public class WakamitiTest {
 

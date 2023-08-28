@@ -9,26 +9,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
-
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-plugin-starter</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
         <relativePath>../../wakamiti-plugin-starter</relativePath>
     </parent>
 
+
     <artifactId>io-wakamiti-plugin</artifactId>
-    <version>2.2.1</version>
+    <version>2.3.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Files Steps</name>
     <description>Files steps for Wakamiti</description>
     <inceptionYear>2020</inceptionYear>
 
-    <properties>
-        <wakamiti.api.version>2.2.1</wakamiti.api.version>
-    </properties>
 
     <dependencies>
 

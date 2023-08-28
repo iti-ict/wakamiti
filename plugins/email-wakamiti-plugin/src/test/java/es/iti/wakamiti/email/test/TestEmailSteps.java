@@ -39,7 +39,8 @@ import java.util.stream.Stream;
     @Property(key = EmailConfigContributor.STORE_PROTOCOL, value = "imap"),
     @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
     @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
-    @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps")
+    @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
+    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
 })
 @I18nResource("test-steps")
 public class TestEmailSteps implements StepContributor {

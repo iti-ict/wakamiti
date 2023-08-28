@@ -5,20 +5,20 @@
  */
 package es.iti.wakamiti.core.gherkin;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.api.plan.DataTable;
-import imconfig.Configurable;
-import imconfig.Configuration;
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.extensions.PlanBuilder;
 import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.parser.*;
+import imconfig.Configurable;
+import imconfig.Configuration;
 
 import java.security.SecureRandom;
 import java.util.*;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider =  "es.iti.wakamiti", name = "wakamiti-gherkin", extensionPoint =  "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin", extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     public static final String GHERKIN_PROPERTY = "gherkinType";
@@ -63,11 +63,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     protected void configureFilterFromTagExpression(Configuration configuration) {
         String tagFilterExpression = configuration.get(WakamitiConfiguration.TAG_FILTER, String.class)
                 .orElse("");
-        if (tagFilterExpression != null && !tagFilterExpression.isEmpty()) {
+        if (!tagFilterExpression.isEmpty()) {
             this.scenarioFilter = node -> Wakamiti.instance().createTagFilter(tagFilterExpression)
                     .filter(node.tags());
         }
-        this.includeFiltered = configuration.get(WakamitiConfiguration.INCLUDE_FILTERED_TEST_CASES,Boolean.class)
+        this.includeFiltered = configuration.get(WakamitiConfiguration.INCLUDE_FILTERED_TEST_CASES, Boolean.class)
                 .orElse(false);
     }
 
@@ -112,10 +112,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 }
             } else if (abstractScenario instanceof ScenarioOutline) {
                 var child = createScenarioOutline(
-                    feature,
-                    (ScenarioOutline) abstractScenario,
-                    location,
-                    node
+                        feature,
+                        (ScenarioOutline) abstractScenario,
+                        location,
+                        node
                 );
                 if (scenarioFilter.test(child) || includeFiltered) {
                     node.addChild(child);
@@ -465,7 +465,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private List<String> tags(List<Tag> tags) {
         return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct()
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
 
@@ -475,7 +475,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .map(Tag::getName)
                 .map(s -> s.substring(1))
                 .filter(s -> !ignoredTagList.contains(s))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         tagList.addAll(parentTags);
         return tagList;
     }
