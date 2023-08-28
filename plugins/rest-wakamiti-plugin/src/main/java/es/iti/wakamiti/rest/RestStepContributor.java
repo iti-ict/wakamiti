@@ -23,10 +23,15 @@ import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
@@ -59,7 +64,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
+    /**
+     * Concatenates the subject to the service path.
+     *
+     * @param subject The entity identification
+     * @deprecated Use {@link RestStepContributor#setPathParameter(String, String)} and
+     * {@link RestStepContributor#setPathParameters(DataTable)} instead.
+     */
     @Step("rest.define.subject")
+    @Deprecated
     public void setSubject(String subject) {
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
@@ -208,17 +221,33 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
 
+    @Step("rest.define.multipart.filename")
+    public void setFilename(String name) {
+        config(
+                RestAssured.config().multiPartConfig(
+                        RestAssured.config().getMultiPartConfig().defaultFileName(name)
+                )
+        );
+    }
+
+
     @Step(value = "rest.define.attached.data", args = "name:text")
-    public void setAttachedFile(String name, Document document) {
-        ContentType mimeType = Optional.ofNullable(document.getContentType())
-                .map(ContentTypeHelper.contentTypeFromExtension::get)
-                .orElse(ContentType.TEXT);
+    public void setAttachedFile(String name, Document document) throws IOException {
+        String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
+        ContentType mimeType = ContentTypeHelper.contentTypeFromExtension.get(ext);
+
+
+        File tempFile = new File(System.getProperty("java.io.tmpdir"),
+                RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
+        tempFile.deleteOnExit();
+        try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            IOUtil.copy(document.getContent().getBytes(StandardCharsets.UTF_8), out);
+        }
 
         specifications.add(request ->
-                request.multiPart(
-                        name,
-                        document.getContent(),
-                        mimeType.getContentTypeStrings()[0])
+                request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
+        specifications.add(request ->
+                request.multiPart(name, tempFile, mimeType.getContentTypeStrings()[0])
         );
     }
 
@@ -227,19 +256,27 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
         ContentType mimeType = Optional.of(file.getName())
-                .filter(s -> s.contains("."))
-                .map(f -> f.split("\\."))
-                .map(it -> it[it.length - 1])
+                .map(FileUtils::getExtension)
                 .map(ContentTypeHelper.contentTypeFromExtension::get)
-                .orElse(ContentType.TEXT);
+                .orElse(ContentType.BINARY);
 
         specifications.add(request ->
-                request.multiPart(
-                        name,
-                        file.getName(),
-                        readFile(file),
-                        mimeType.getContentTypeStrings()[0])
+                request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
+        specifications.add(request ->
+                request.multiPart(name, file, mimeType.getContentTypeStrings()[0])
         );
+    }
+
+    @Step(value = "rest.define.form.parameters")
+    public void setFormParameters(DataTable table) {
+        specifications.add(request -> request.contentType(ContentType.URLENC));
+        specifications.add(request -> request.formParams(tableToMap(table)));
+    }
+
+    @Step(value = "rest.define.form.parameter", args = {"name:text", "value:text"})
+    public void setFormParameter(String name, String value) {
+        specifications.add(request -> request.contentType(ContentType.URLENC));
+        specifications.add(request -> request.formParam(name, value));
     }
 
 

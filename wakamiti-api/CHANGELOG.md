@@ -13,8 +13,11 @@ and this project adheres to [Semantic Versioning][2].
 ### Removed
 - Unused dependencies: `xerces:xercesImpl`, `org.apache.poi:poi-ooxml`, `org.xmlunit:xmlunit-core`
 
-## Fixed
+### Fixed
 - JsonUtils and XmlUtils issues when return null values
+
+### Added
+- New steps multipart forms
 
 ## [2.1.1] - 2023-07-07
 
