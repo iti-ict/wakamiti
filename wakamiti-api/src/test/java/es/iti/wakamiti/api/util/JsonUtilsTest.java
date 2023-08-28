@@ -8,7 +8,6 @@ package es.iti.wakamiti.api.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.PathNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,11 +82,17 @@ public class JsonUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void testJsonWhenMapWithError() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
+
         ObjectMapper mapperMock = mock(ObjectMapper.class);
         when(mapperMock.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
         setField(JsonUtils.class, "MAPPER", mapperMock);
-
-        JsonUtils.json(Map.of());
+        try {
+            JsonUtils.json(Map.of());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            setField(JsonUtils.class, "MAPPER", mapper);
+        }
     }
 
     @Test(expected = RuntimeException.class)

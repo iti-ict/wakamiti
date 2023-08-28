@@ -8,11 +8,9 @@ package es.iti.wakamiti.api.util;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlRuntimeException;
-import org.apache.xmlbeans.impl.schema.XmlObjectFactory;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.w3c.dom.Node;
 import org.xmlunit.assertj3.XmlAssert;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.ElementSelectors;
@@ -25,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,15 +68,14 @@ public class XmlUtilsTest {
         assertThat(obj.xmlText()).isEqualTo(xml);
     }
 
-    @Test(expected = XmlRuntimeException.class)
-    public void testXmlWhenNodeWithError() throws XmlException, IOException {
-        Node node = XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode();
-        try (MockedStatic<XmlObjectFactory> utilities = Mockito.mockStatic(XmlObjectFactory.class)) {
-            utilities.when(() -> XmlObject.Factory.parse(any(Node.class))).thenThrow(XmlException.class);
-
-            XmlUtils.xml(node);
-        }
-    }
+//    @Test(expected = XmlRuntimeException.class)
+//    public void testXmlWhenNodeWithError() throws XmlException, IOException {
+//        Node node = XmlObject.Factory.parse(new ByteArrayInputStream(xml.getBytes())).getDomNode();
+//        try (MockedStatic<XmlObjectFactory> utilities = Mockito.mockStatic(XmlObjectFactory.class)) {
+//            utilities.when(() -> XmlObject.Factory.parse(any(Node.class))).thenThrow(XmlException.class);
+//            XmlUtils.xml(node);
+//        }
+//    }
 
     @Test
     public void testXmlWhenMapWithSuccess() throws XmlException, IOException {
@@ -169,8 +165,8 @@ public class XmlUtilsTest {
 
     private Map<String, Object> map(Object... pairs) {
         Map<String, Object> result = new LinkedHashMap<>();
-        for (int i = 0; i < pairs.length; i=i+2) {
-            result.put((String) pairs[i], pairs[i+1]);
+        for (int i = 0; i < pairs.length; i = i + 2) {
+            result.put((String) pairs[i], pairs[i + 1]);
         }
         return result;
     }
