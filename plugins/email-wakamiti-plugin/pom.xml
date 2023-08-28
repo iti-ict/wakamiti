@@ -15,7 +15,7 @@
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-plugin-starter</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
         <relativePath>../../wakamiti-plugin-starter</relativePath>
     </parent>
 
@@ -25,12 +25,6 @@
     <name>[Wakamiti Plugin] Email Steps</name>
     <description>Email steps for Wakamiti</description>
     <inceptionYear>2023</inceptionYear>
-
-
-    <properties>
-        <wakamiti.api.version>2.2.1</wakamiti.api.version>
-    </properties>
-
 
 
     <dependencies>
