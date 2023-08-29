@@ -168,13 +168,12 @@ public class RestSupport {
                 () -> response.body().asString()
         );
 
-        Map<String, Object> result = Map.of(
-                "headers", response.headers().asList().stream()
-                        .collect(Collectors.toMap(Header::getName, Header::getValue, this::collectIfDuplicated)),
-                "body", body,
-                "statusCode", response.statusCode(),
-                "statusLine", response.statusLine()
-        );
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("headers", response.headers().asList().stream()
+                .collect(Collectors.toMap(Header::getName, Header::getValue, this::collectIfDuplicated)));
+        result.put("body", body);
+        result.put("statusCode", response.statusCode());
+        result.put("statusLine", response.statusLine());
 
         return body instanceof XmlObject
                 || ContentType.fromContentType(response.contentType()) == ContentType.XML
