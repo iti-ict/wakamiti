@@ -1,0 +1,28 @@
+wakamiti:
+  resourceTypes:
+    - gherkin
+    
+  log:
+    level: debug
+    
+  launcher:
+    modules:
+      - mysql:mysql-connector-java:8.0.28
+      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.0
+      - es.iti.wakamiti:db-wakamiti-plugin:2.3.0
+      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.0
+      
+  outputFilePath: result/report-petclinic.json
+  htmlReport:
+    title: Pruebas Pet Clinic
+    output: result/report-petclinic.html
+    
+  database:
+    connection:
+      url: jdbc:mysql://host.docker.internal:3309/petclinic?useUnicode=true
+      username: root
+      password: petclinic
+      driver: com.mysql.cj.jdbc.Driver
+    enableCleanupUponCompletion: "true" 
+  rest:
+    baseURL: http://host.docker.internal:9966/petclinic/api

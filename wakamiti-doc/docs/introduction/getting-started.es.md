@@ -15,11 +15,12 @@ Ten en cuenta que este tutorial asume que tienes:
 - Algo de experiencia usando un editor de texto.
 - Comprensión básica de la sintaxis de `gherkin`.
 
-Antes de empezar, será necesario tener instaladas las siguientes aplicaciones:
+Antes de empezar, necesitarás lo siguiente:
 - [Docker](https://www.docker.com/get-started/)
 - Un IDE, como por ejemplo:
   - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
   - [VS Code](https://code.visualstudio.com/)
+- El código fuente de [este tutorial](https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial) 
 
 
 ### 1. Configurar Wakamiti
@@ -54,7 +55,7 @@ wakamiti:
       password: p4ssw0rd
 ```
 Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](plugins).
-También puedes consultar otras opciones de [configuración global](architecture#configuración-global).
+También puedes consultar otras opciones de [configuración global](wakamiti/architecture#configuración-global).
 
 
 ### 2. Definir escenario
@@ -124,12 +125,12 @@ Una vez ejecutados los tests, se generarán los resultados en dos formatos: `wak
 
 Los estados que existen actualmente en Wakamiti son:
 
-- <span style="color:#5fc95f">PASSED</span>: el caso de test está correcto, se recibe del sistema el mismo resultado 
+- <span style="color:#5fc95f">**PASSED**</span>: el caso de test está correcto, se recibe del sistema el mismo resultado 
   que se espera.
-- <span style="color:#4fc3f7">NOT IMPLEMENTED</span>: existe el caso de test, pero no están definidos sus pasos.
-- <span style="color:#9e9e9e">SKIPPED</span>: no se ha ejecutado el caso de test.
-- <span style="color:#ffc107">UNDEFINED</span>: no existe el paso en Wakamiti.
-- <span style="color:#ff7b7e">FAILED</span>: hay un error de comprobación, no coincide lo que se espera de lo que 
+- <span style="color:#4fc3f7">**NOT IMPLEMENTED**</span>: existe el caso de test, pero no están definidos sus pasos.
+- <span style="color:#9e9e9e">**SKIPPED**</span>: no se ha ejecutado el caso de test.
+- <span style="color:#ffc107">**UNDEFINED**</span>: no existe el paso en Wakamiti.
+- <span style="color:#ff7b7e">**FAILED**</span>: hay un error de comprobación, no coincide lo que se espera de lo que 
   devuelve el sistema.
-- <span style="color:#ff0000">ERROR</span>: hay un error no esperado en el sistema (error de conexión, error en base de 
+- <span style="color:#ff0000">**ERROR**</span>: hay un error no esperado en el sistema (error de conexión, error en base de 
   datos, error time out...).
