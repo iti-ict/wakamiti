@@ -98,7 +98,7 @@ will execute.
 
 [See more](https://cucumber.io/docs/gherkin/) in detail the `gherkin` syntax.
 
-### 3. Ejecutar los tests
+### 3. Run Wakamiti
 The tests are run from the directory containing the Wakamiti features with the following command:
 
 * Windows:
