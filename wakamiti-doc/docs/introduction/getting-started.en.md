@@ -52,8 +52,8 @@ wakamiti:
       username: user
       password: p4ssw0rd
 ```
-Note that each plugin has its own configuration, which you can check in [their respective sections](/wakamiti/en/plugins).
-You can also check other options in [global configuration](/wakamiti/en/architecture#global-configuration).
+Note that each plugin has its own configuration, which you can check in [their respective sections](en/plugins).
+You can also check other options in [global configuration](en/architecture#global-configuration).
 
 
 ### 2. Scenario definition
