@@ -53,8 +53,8 @@ wakamiti:
       username: user
       password: p4ssw0rd
 ```
-Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](/wakamiti/plugins).
-También puedes consultar otras opciones de [configuración global](/wakamiti/architecture#configuración-global).
+Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](plugins).
+También puedes consultar otras opciones de [configuración global](architecture#configuración-global).
 
 
 ### 2. Definir escenario
