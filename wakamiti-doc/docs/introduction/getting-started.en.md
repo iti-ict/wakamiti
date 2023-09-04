@@ -119,10 +119,10 @@ Once the tests are executed, the results are generated in two formats: `wakamiti
 
 The current states available in Wakamiti are:
 
-- <span style="color:#5fc95f">PASSED</span>: the test case is correct, the same result as expected is received from the 
+- <span style="color:#5fc95f">PASSED</span>: test case is correct, the same result as expected is received from the 
   system.
-- <span style="color:#4fc3f7">NOT IMPLEMENTED</span>: existe el caso de test, pero no están definidos sus pasos.
-- <span style="color:#9e9e9e">SKIPPED</span>: test case exists, but its steps are not defined.
+- <span style="color:#4fc3f7">NOT IMPLEMENTED</span>: test case exists, but its steps are not defined.
+- <span style="color:#9e9e9e">SKIPPED</span>: test case has not been executed.
 - <span style="color:#ffc107">UNDEFINED</span>: there is no such step in Wakamiti.
 - <span style="color:#ff7b7e">FAILED</span>: there is a check error, it does not match what is expected from what the 
   system returns.
