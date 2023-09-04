@@ -103,7 +103,7 @@ The tests are run from the directory containing the Wakamiti features with the f
 
 * Windows:
 ```Shell
-docker run --rm -it -v "%cd%:/wakamiti" wakamiti/wakamiti
+docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 * Linux:
 ```Shell
