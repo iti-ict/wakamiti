@@ -4,9 +4,10 @@
       <h1>{{ $t('description') }}</h1>
       <nav>
         <!-- To use other icons here, you need to import them in the Shortcut component -->
-        <Shortcut v-bind:link="$tp('introduction/getting-started')" v-bind:text="$t('index1')" icon="play-icon" />
-        <Shortcut v-bind:link="$tp('plugins')" v-bind:text="$t('index2')" icon="file-text-icon" />
-        <Shortcut v-bind:link="$tp('wakamiti/architecture#configuración-global')" v-bind:text="$t('index3')" icon="sliders-icon" />
+          <Shortcut v-bind:link="$tp('introduction/what-is-wakamiti')" v-bind:text="$t('index1')" icon="help-circle-icon" />
+          <Shortcut v-bind:link="$tp('introduction/getting-started')" v-bind:text="$t('index2')" icon="play-icon" />
+          <Shortcut v-bind:link="$tp('plugins')" v-bind:text="$t('index3')" icon="file-text-icon" />
+          <Shortcut v-bind:link="$tp('wakamiti/architecture#configuración-global')" v-bind:text="$t('index4')" icon="sliders-icon" />
       </nav>
       <GitLink class="git" size="large" />
     </div>

@@ -4,7 +4,6 @@ date: 2022-09-20
 slug: /introduction/what-is-wakamiti
 ---
 
-
 > **Conocimiento básico** <br />
 > Esta guía asume que conoce los conceptos básicos de [Cucumber](https://cucumber.io/docs/guides/overview/), 
 > [Gherkin](https://cucumber.io/docs/gherkin/) y metodología [Behaviour-Driven Development](https://cucumber.io/docs/bdd/).

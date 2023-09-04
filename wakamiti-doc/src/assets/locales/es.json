@@ -1,6 +1,7 @@
 {
   "description": "BDD testing para humanos",
-  "index1": "Introducción",
-  "index2": "Catálogo",
-  "index3": "Configuración"
+  "index1": "¿Qué es Wakamiti?",
+  "index2": "Primeros pasos",
+  "index3": "Plugins",
+  "index4": "Wakamiti a fondo"
 }
