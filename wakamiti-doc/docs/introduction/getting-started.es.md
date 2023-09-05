@@ -16,11 +16,9 @@ Ten en cuenta que este tutorial asume que tienes:
 - Comprensión básica de la sintaxis de `gherkin`.
 
 Antes de empezar, necesitarás lo siguiente:
-- [Docker](https://www.docker.com/get-started/)
-- Un IDE, como por ejemplo:
-  - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-  - [VS Code](https://code.visualstudio.com/)
-- El código fuente de [este tutorial](https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial) 
+- Instalar [Docker](https://www.docker.com/get-started/).
+- Instalar un IDE, como [IntelliJ IDEA](https://www.jetbrains.com/idea/) o [VS Code](https://code.visualstudio.com/).
+- El código fuente de [este tutorial](https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
 
 
 ### 1. Configurar Wakamiti
