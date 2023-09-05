@@ -14,7 +14,7 @@ Característica: Alta de un nuevo usuario con mascota
       """sql
       delete from owners where first_name = 'Pascual'
       """
-    Dado que un dueño con first_name = 'Pascual' no existen en la tabla de BBDD owners
+    Dado que un dueño con first_name = 'Pascual' no existe en la tabla de BBDD owners
     Cuando se crea el dueño con los siguientes datos:
       """json
       {
