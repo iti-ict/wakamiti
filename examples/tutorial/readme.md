@@ -25,12 +25,12 @@ docker logs -f app-petclinic
 
 * Windows:
 ```Shell
-docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti:2.3.0
+docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti:2.2.1
 ```
 
 * Linux:
 ```Shell
-docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti:2.3.0
+docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti:2.2.1
 ```
 
 ## Eliminar contenedores:
