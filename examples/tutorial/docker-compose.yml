@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  app:
+    container_name: app-petclinic
+    image: springcommunity/spring-petclinic-rest:2.1.5
+    ports:
+      - "9966:9966"
+    environment:
+      - JAVA_TOOL_OPTIONS="-Dspring.profiles.active=wakamiti,spring-data-jpa"
+    volumes:
+      - "./application-wakamiti.properties:/app/classes/application-wakamiti.properties"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    container_name: mysql-petclinic
+    image: mysql:5.7.8 
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 1s
+      retries: 120
