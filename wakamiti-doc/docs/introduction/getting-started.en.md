@@ -94,7 +94,7 @@ similar to the file name.
 The third line, `Scenario: An existing owner is queried`, is a scenario, which is a concrete example that illustrates 
 how the software should behave.
 
-The rest of the lines starting with `Done`, `When`, `Then`, `And` are the steps of our scenario, and are what Wakamiti 
+The rest of the lines starting with `Given`, `When`, `Then`, `And` are the steps of our scenario, and are what Wakamiti 
 will execute.
 
 [See more](https://cucumber.io/docs/gherkin/) in detail the `gherkin` syntax.
