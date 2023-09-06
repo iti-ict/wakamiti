@@ -121,6 +121,16 @@ Feature: REST Test Feature
       ]
       """
     And the response fragment 'find{ it.id == "user1" }.vegetables' is equal to the file 'src/test/resources/data/vegetables_user1.json' (in any order)
+    And the response fragment 'find{ it.id == "user1" }' contains:
+      """json
+      {
+        "name": "User One",
+        "vegetables": [
+            { "id": 1, "description": "Cucumber" }
+        ]
+      }
+      """
+    And the response fragment 'find{ it.id == "user1" }.vegetables' contains the file 'src/test/resources/data/vegetables_user1.json'
 
 
   Scenario: URL with parameters
