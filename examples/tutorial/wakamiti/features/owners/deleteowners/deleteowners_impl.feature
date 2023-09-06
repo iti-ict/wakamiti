@@ -21,7 +21,7 @@ Característica: Eliminar un propietario de mascotas
   @ID-eliminarPropietario02
     # redefinition.stepMap: 1-1-1
   Escenario: Se elimina un usuario que no existe
-    Dado un usuario identificado por '2000'
+    Dado el parámetro de ruta 'id' con el valor '2000'
     Cuando se elimina el usuario
     Entonces el código de respuesta HTTP es 404
       
