@@ -14,6 +14,7 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [`rest.oauth2.cached`](#restoauth2cached)
 - [`rest.oauth2.parameters`](#restoauth2parameters)
 - [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
+- [`rest.config.multipart.filename`](#restconfigmultipartfilename)
 - [`rest.config.redirect.follow`](#restconfigredirectfollow)
 - [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
 - [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
@@ -37,6 +38,7 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 - [Definir autenticación oauth2 por cliente](#definir-autenticaci%C3%B3n-oauth2-por-cliente)
 - [Borrar autenticación](#borrar-autenticaci%C3%B3n)
 - [Definir subtipo multiparte](#definir-subtipo-multiparte)
+- [Definir nombre de fichero multiparte](#definir-nombre-de-fichero-multiparte)
 - [Definir archivo adjunto](#definir-archivo-adjunto)
 - [Definir archivo adjunto (fichero)](#definir-archivo-adjunto-fichero)
 - [Realizar llamada GET](#realizar-llamada-get)
@@ -66,7 +68,7 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 
 ---
 ###  `rest.baseURL`
-Establece la URL base para las llamadas REST. Esto es equivalente al paso `{word} como el tipo de contenido REST` si se 
+Establece la URL base para las llamadas REST. Esto es equivalente al paso `{word} como el tipo de contenido REST` si se
 prefiere una declaración más descriptiva.
 
 Ejemplo:
@@ -80,15 +82,16 @@ rest:
 Establece el tipo de contenido que se enviará en la cabecera de las llamadas REST.
 Los valores aceptados son:
 
-| literal    | valor de la cabecera `content-type`                                    |
-|------------|------------------------------------------------------------------------|
-| `ANY`      | `*/*`                                                                  |
-| `TEXT`     | `text/plain`                                                           |
-| `JSON`     | `application/json, application/javascript, text/javascript, text/json` |
-| `XML`      | `application/xml, text/xml, application/xhtml+xml`                     |
-| `HTML`     | `text/html`                                                            |
-| `URLENC`   | `application/x-www-form-urlencoded`                                    |
-| `BINARY`   | `application/octet-stream`                                             |
+| literal     | valor de la cabecera `content-type`                                                                                                                                                                                      |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ANY`       | `*/*`                                                                                                                                                                                                                    |
+| `TEXT`      | `text/plain`                                                                                                                                                                                                             |
+| `JSON`      | `application/json, application/javascript, text/javascript, text/json`                                                                                                                                                   |
+| `XML`       | `application/xml, text/xml, application/xhtml+xml`                                                                                                                                                                       |
+| `HTML`      | `text/html`                                                                                                                                                                                                              |
+| `URLENC`    | `application/x-www-form-urlencoded`                                                                                                                                                                                      |
+| `BINARY`    | `application/octet-stream`                                                                                                                                                                                               |
+| `MULTIPART` | `multipart/form-data`, `multipart/alternative`, `multipart/byteranges`, `multipart/digest`, `multipart/mixed`, `multipart/parallel`, `multipart/related`, `multipart/report`, `multipart/signed`, `multipart/encrypted`  |
 
 
 El valor por defecto es `JSON`.
@@ -102,7 +105,7 @@ rest:
 ---
 ### `rest.httpCodeThreshold`
 
-Establece un límite a los códigos de respuesta HTTP. Cada vez que una llamada REST retorne un código HTTP igual o 
+Establece un límite a los códigos de respuesta HTTP. Cada vez que una llamada REST retorne un código HTTP igual o
 superior a este valor, el paso se marcará como fallido automáticamente, sin comprobar ninguna otra condición.
 
 El valor por defecto es `500`.
@@ -116,7 +119,7 @@ rest:
 ---
 ### `rest.timeout`
 
-Establece un tiempo máximo de respuesta (en milisegundos) para las siguientes peticiones HTTP. En el caso de exceder el 
+Establece un tiempo máximo de respuesta (en milisegundos) para las siguientes peticiones HTTP. En el caso de exceder el
 tiempo indicado se detendrá la llamada y se producirá un error.
 
 El valor por defecto es `60000`.
@@ -130,7 +133,7 @@ rest:
 ---
 ### `rest.oauth2.url`
 
-Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para generar el token que se enviará en la 
+Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para generar el token que se enviará en la
 cabecera HTTP `Authorization` de las llamadas REST.
 
 Ejemplo:
@@ -142,7 +145,7 @@ rest:
 
 ---
 ### `rest.oauth2.clientId`
-Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la 
+Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la
 propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
@@ -154,7 +157,7 @@ rest:
 
 ---
 ### `rest.oauth2.clientSecret`
-Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la 
+Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la
 propiedad de configuración `rest.oauth2.url`.
 
 Ejemplo:
@@ -166,7 +169,7 @@ rest:
 
 ---
 ### `rest.oauth2.cached`
-Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos son 
+Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos son
 los mismos.
 
 El valor por defecto es `false`.
@@ -221,8 +224,22 @@ rest:
 ```
 
 ---
+### `rest.config.multipart.filename`
+Establece el nombre fichero de las llamadas multiparte.
+
+El valor por defecto es `file`.
+
+Ejemplo:
+```yaml
+rest:
+  config:
+    multipart:
+      filename: otro_nombre
+```
+
+---
 ### `rest.config.redirect.follow`
-Establece si se permite seguir las redirecciones en las llamadas HTTP. 
+Establece si se permite seguir las redirecciones en las llamadas HTTP.
 
 El valor por defecto es `true`.
 
@@ -285,8 +302,8 @@ rest:
 ```
 {type} como el tipo de contenido REST
 ```
-Establece el tipo de contenido de la API en la cabecera `content-type`. Este paso es equivalente a configurar la 
-propiedad [`rest.contentType`](#restcontenttype). 
+Establece el tipo de contenido de la API en la cabecera `content-type`. Este paso es equivalente a configurar la
+propiedad [`rest.contentType`](#restcontenttype).
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción        |
@@ -303,7 +320,7 @@ propiedad [`rest.contentType`](#restcontenttype).
 ```
 la URL base {url}
 ```
-Establece la ruta base de la API. Este paso es equivalente a configurar la propiedad [`rest.baseURL`](#restbaseurl). 
+Establece la ruta base de la API. Este paso es equivalente a configurar la propiedad [`rest.baseURL`](#restbaseurl).
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción |
@@ -337,7 +354,7 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
 ```
 * identificad(o|a|os|as) por {text}
 ```
-Establece un identificador de recurso REST para ser usado por el servicio. Se concatenará al valor de la 
+Establece un identificador de recurso REST para ser usado por el servicio. Se concatenará al valor de la
 [url base](#definir-url-base) y del [servicio](#definir-servicio) en concreto.
 
 #### Parámetros:
@@ -354,17 +371,17 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
 ```
 
 ---
-### Definir parámetros o cabeceras 
+### Definir parámetros o cabeceras
 ```
-el parámetro de (solicitud|búsqueda|ruta) {name} con el valor {value}
+el parámetro de (solicitud|búsqueda|ruta|formulario) {name} con el valor {value}
 ```
 ```
 las cabecera {name} con el valor {value}
 ```
-Establece una cabecera o parámetro de petición, búsqueda o ruta REST. Los parámetros de petición se enviarán como 
-datos de formulario wn las llamadas POST, los parámetros de búsqueda se concatenarán a la URL de la petición tras la 
-ruta (p.e. `/user?param1=abc&param2=123`), y los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio indicados 
-con llaves `{}`.
+Establece una cabecera o parámetro de petición, búsqueda, ruta o formulario REST. Los parámetros de petición se enviarán
+como datos de formulario en las llamadas POST, los parámetros de búsqueda se concatenarán a la URL de la petición tras
+la ruta (p.e. `/user?param1=abc&param2=123`), los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio
+indicados con llaves `{}` y los parámetros de formulario se enviarán con el content-type `application/x-www-form-urlencoded`.
 
 ##### Parámetros:
 | Nombre  | Wakamiti type | Descripción                     |
@@ -386,21 +403,27 @@ con llaves `{}`.
   Y el parámetro de ruta 'usuario' con el valor '25'
 ```
 ```gherkin
+  Dado el parámetro de formulario 'city' con el valor 'Valencia'
+  Cuando se envía al servicio la información
+```
+```gherkin
   Dada la cabeceras 'Keep-alive' con el valor '1200'
 ```
 
 ---
 ### Definir parámetros o cabeceras (tabla)
 ```
-los siguientes parámetros de (solicitud|búsqueda|ruta):
+los siguientes parámetros de (solicitud|búsqueda|ruta|formulario):
 ```
 ```
 las siguientes cabeceras:
 ```
-Establece varias cabeceras o parámetros de petición, búsqueda o ruta REST. Los parámetros de petición se enviarán como
-datos de formulario, los parámetros de búsqueda se concatenarán a la URL de la petición tras la ruta (p.e.
-`/user?param1=abc&param2=123`), y los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio indicados
-con llaves `{}`.
+Establece varias cabeceras o parámetros de petición, búsqueda, ruta o formulario REST. Los parámetros de petición se
+enviarán como datos de formulario en las llamadas POST, los parámetros de búsqueda se concatenarán a la URL de la
+petición tras la ruta (p.e. `/user?param1=abc&param2=123`), los parámetros de ruta reemplazarán los fragmentos de la
+ruta del servicio indicados con llaves `{}` y los parámetros de formulario se enviarán con el content-type
+`application/x-www-form-urlencoded`.
+
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción                                   |
@@ -430,6 +453,13 @@ con llaves `{}`.
     | item    | 7        |
 ```
 ```gherkin
+  Dados los siguiente parámetros de formulario:
+    | nombre | valor    |
+    | age    | 13       |
+    | city   | Valencia |
+  Cuando se envía al servicio la información
+```
+```gherkin
   Dadas las siguientes cabeceras:
     | nombre       | valor |
     | Age          | 3600  |
@@ -441,7 +471,7 @@ con llaves `{}`.
 ```
 un timeout de {int} (mili)segundos
 ```
-Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de 
+Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de
 exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 
 ##### Parámetros:
@@ -462,7 +492,7 @@ exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 ```
 (que) toda petición se considera fallida si su código HTTP {matcher}
 ```
-Establece una validación general para el código HTTP de todas las respuestas siguientes. Es similar a la propiedad de 
+Establece una validación general para el código HTTP de todas las respuestas siguientes. Es similar a la propiedad de
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
 ##### Parámetros:
@@ -512,7 +542,7 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 ```
 (que) el servicio usa autenticación oauth con el token {token}
 ```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes 
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes
 peticiones.
 
 ##### Parámetros:
@@ -530,7 +560,7 @@ peticiones.
 ```
 (que) el servicio usa autenticación oauth con el token del fichero {file}
 ```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes llamadas, 
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes llamadas,
 obtenido desde un fichero.
 
 ##### Parámetros:
@@ -551,9 +581,9 @@ obtenido desde un fichero.
 ```
 (que) el servicio usa autenticación oauth con las credenciales {username}:{password} y los siguientes parámetros:
 ```
-Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente 
-del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid), 
-[clientSecret](#restoauth2clientsecret)), usando las credenciales indicadas, para las siguientes peticiones. 
+Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
+del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
+[clientSecret](#restoauth2clientsecret)), usando las credenciales indicadas, para las siguientes peticiones.
 
 También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
 
@@ -618,12 +648,28 @@ Elimina la cabecera con la autenticación.
   Dado que el servicio no usa autenticación
 ```
 
+---
 ### Definir subtipo multiparte
 ```
 {type} como subtipo multiparte
 ```
-Establece el subtipo por defecto de las llamadas multiparte. Este paso es equivalente a configurar la propiedad 
-[`rest.config.multipart.subtype`](#restconfigmultipartsubtype).
+Establece el subtipo por defecto de las llamadas multiparte. Este paso es equivalente a configurar la propiedad
+[`rest.config.multipart.subtype`](#restconfigmultipartsubtype). Los valores disponibles son:
+
+| literal       |
+|---------------|
+| `form-data`   |
+| `alternative` | 
+| `byteranges`  | 
+| `digest`      |
+| `mixed`       | 
+| `parallel`    | 
+| `related`     |
+| `report`      |
+| `signed`      |
+| `encrypted`   |
+
+El valor por defecto es `form-data`.
 
 ##### Parámetros:
 | Nombre     | Wakamiti type | Descripción        |
@@ -633,6 +679,24 @@ Establece el subtipo por defecto de las llamadas multiparte. Este paso es equiva
 ##### Ejemplos:
 ```gherkin
   Dado 'mixed' como subtipo multiparte
+```
+
+---
+### Definir nombre de fichero multiparte
+```
+{name} como nombre de fichero adjunto
+```
+Establece el nombre por defecto de los ficheros multiparte. Este paso es equivalente a configurar la propiedad
+[`rest.config.multipart.filename`](#restconfigmultipartfilename).
+
+##### Parámetros:
+| Nombre | Wakamiti type | Descripción                  |
+|--------|---------------|------------------------------|
+| `name` | `text`        | Nombre de fichero multiparte |
+
+##### Ejemplos:
+```gherkin
+  Dado 'otro_nombre' como nombre de fichero adjunto
 ```
 
 ---
@@ -718,7 +782,7 @@ Envía una petición `DELETE` al servicio y recurso REST definido previamente.
 ```
 se reemplaza(n) * con los siguientes datos:
 ```
-Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido 
+Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 indicado a continuación.
 
 ##### Parámetros:
@@ -746,7 +810,7 @@ indicado a continuación.
 ```
 se reemplaza(n) * con los datos del fichero {file}
 ```
-Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido del 
+Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido del
 fichero indicado.
 
 ##### Parámetros:
@@ -766,7 +830,7 @@ fichero indicado.
 ```
 se modifica(n) * 
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente. 
+Envía una petición `PATCH` al servicio y recurso REST definido previamente.
 
 ##### Ejemplos:
 ```gherkin
@@ -784,7 +848,7 @@ Envía una petición `PATCH` al servicio y recurso REST definido previamente.
 ```
 se modifica(n) * con los siguientes datos:
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido 
+Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 indicado a continuación.
 
 ##### Parámetros:
@@ -809,7 +873,7 @@ indicado a continuación.
 ```
 se modifica(n) * con los datos del fichero {file}
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido 
+Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 del fichero indicado.
 
 ##### Parámetros:
@@ -852,7 +916,7 @@ se crea(n) * con los siguientes datos:
 ```
 se envía al servicio los siguientes datos:
 ```
-Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido 
+Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido
 indicado a continuación.
 
 ##### Parámetros:
@@ -889,7 +953,7 @@ se crea(n) * con los datos del fichero {file}
 ```
 se envía al servicio los datos del fichero {file}
 ```
-Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido del 
+Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido del
 fichero indicado.
 
 ##### Parámetros:
@@ -928,15 +992,15 @@ Comprueba que el código HTTP de la última respuesta satisface una validación 
 ```
 la respuesta es exactamente:
 ```
-Valida que el cuerpo de la respuesta sea exacto al indicado, incluyendo el orden de los campos.
+Comprueba que el cuerpo de la respuesta sea exacto al indicado, incluyendo el orden de los campos.
 ```
 la respuesta es exactamente \(en cualquier orden\):
 ```
-Valida que el cuerpo de la respuesta sea exacto al indicado, pero pueden llegar los campos en diferente orden.
+Comprueba que el cuerpo de la respuesta sea exacto al indicado, pero pueden llegar los campos en diferente orden.
 ```
 la respuesta es parcialmente:
 ```
-Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados.
+Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción           |
@@ -959,15 +1023,15 @@ Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 ```
 la respuesta es exactamente el contenido del fichero {file}
 ```
-Valida que el cuerpo de la respuesta sea exacto al indicado en el fichero, incluyendo el orden de los campos.
+Comprueba que el cuerpo de la respuesta sea exacto al indicado en el fichero, incluyendo el orden de los campos.
 ```
 la respuesta es exactamente el contenido del fichero {file} \(en cualquier orden\)
 ```
-Valida que el cuerpo de la respuesta sea exacto al indicado en el fichero, pero pueden llegar los campos en diferente orden.
+Comprueba que el cuerpo de la respuesta sea exacto al indicado en el fichero, pero pueden llegar los campos en diferente orden.
 ```
 la respuesta es parcialmente el contenido del fichero {file}
 ```
-Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados en el fichero.
+Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados en el fichero.
 
 ##### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
@@ -984,7 +1048,7 @@ Valida que el cuerpo de la respuesta incluya, al menos, los campos indicados en 
 ```
 el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
 ```
-Valida el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta dada
+Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta dada
 (usando [JSONPath][jsonpath] o [XPath][xpath] dependiendo del tipo de contenido).
 
 ##### Parámetros:
@@ -1043,7 +1107,7 @@ Comprueba que la longitud en bytes de la última respuesta satisface una validac
 ```
 el (texto|entero|decimal) de la cabecera de la respuesta {name} {matcher}
 ```
-Comprueba que una determinada cabecera HTTP en la última respuesta satisface una validación de *texto*, *entero* o 
+Comprueba que una determinada cabecera HTTP en la última respuesta satisface una validación de *texto*, *entero* o
 *decimal*.
 
 ##### Parámetros:
@@ -1066,8 +1130,8 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 ```
 la respuesta cumple el siguiente esquema:
 ```
-Valida que la estructura del cuerpo de la respuesta REST satisface el esquema proporcionado a continuación. Los formatos 
-de esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas 
+Valida que la estructura del cuerpo de la respuesta REST satisface el esquema proporcionado a continuación. Los formatos
+de esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas
 XML (en función de la cabecera de respuesta HTTP `Content-Type`).
 
 ##### Parámetros:
@@ -1078,7 +1142,7 @@ XML (en función de la cabecera de respuesta HTTP `Content-Type`).
 ##### Ejemplo:
 ```gherkin
   Entonces la respuesta cumple el siguiente esquema:
-    """json
+"""json
      {
        "$schema": "http://json-schema.org/draft-04/schema#",
        "type": "object",
@@ -1113,8 +1177,8 @@ XML (en función de la cabecera de respuesta HTTP `Content-Type`).
 ```
 la respuesta cumple el esquema del fichero {file}
 ```
-Valida que la estructura del cuerpo de la respuesta REST satisface un esquema proporcionado por fichero. Los formatos de 
-esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas XML 
+Valida que la estructura del cuerpo de la respuesta REST satisface un esquema proporcionado por fichero. Los formatos de
+esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas XML
 (en función de la cabecera de respuesta HTTP `Content-Type`).
 
 ##### Parámetros:

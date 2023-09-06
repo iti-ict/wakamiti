@@ -3,13 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.rest;
 
 
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
 import imconfig.Configuration;
@@ -18,11 +19,6 @@ import io.restassured.RestAssured;
 import io.restassured.config.Config;
 import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.ConfigContributor;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.ThrowableFunction;
 import org.hamcrest.Matchers;
 
 import java.lang.reflect.Field;
@@ -30,7 +26,11 @@ import java.net.URL;
 import java.util.Map;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "rest-configurator", extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+@Extension(provider = "es.iti.wakamiti", name = "rest-configurator",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 
     public static final String BASE_URL = "rest.baseURL";
@@ -45,6 +45,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
 
     // RestAssured config
     public static final String MULTIPART_SUBTYPE = "rest.config.multipart.subtype";
+    public static final String MULTIPART_FILENAME = "rest.config.multipart.filename";
+
     public static final String REDIRECT_FOLLOW = "rest.config.redirect.follow";
     public static final String REDIRECT_ALLOW_CIRCULAR = "rest.config.redirect.allowCircular";
     public static final String REDIRECT_REJECT_RELATIVE = "rest.config.redirect.rejectRelative";
@@ -58,6 +60,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
             TIMEOUT, "60000"
     );
 
+    private static void config(RestAssuredConfig config) {
+        RestAssured.config = config;
+    }
 
     @Override
     public boolean accepts(Object contributor) {
@@ -75,9 +80,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     }
 
     private void configure(RestStepContributor contributor, Configuration configuration) {
-        RestAssured.reset();
-        config(RestAssured.config().logConfig(new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())));
-        RestAssured.useRelaxedHTTPSValidation();
+        restassuredConfigure();
 
         configuration.get(BASE_URL, String.class)
                 .map(ThrowableFunction.unchecked(URL::new))
@@ -99,6 +102,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.inner(OAUTH2_DEFAULT_PARAMETERS).asMap().forEach(oauth2Provider::addParameter);
 
         configuration.get(MULTIPART_SUBTYPE, String.class).ifPresent(contributor::setMultipartSubtype);
+        configuration.get(MULTIPART_FILENAME, String.class).ifPresent(contributor::setFilename);
         configuration.get(REDIRECT_FOLLOW, Boolean.class)
                 .map(RestAssured.config().getRedirectConfig()::followRedirects)
                 .ifPresent(this::config);
@@ -113,8 +117,10 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
                 .ifPresent(this::config);
     }
 
-    private static void config(RestAssuredConfig config) {
-        RestAssured.config = config;
+    private void restassuredConfigure() {
+        RestAssured.reset();
+        config(RestAssured.config().logConfig(new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())));
+        RestAssured.useRelaxedHTTPSValidation();
     }
 
     @SuppressWarnings(value = "unchecked")

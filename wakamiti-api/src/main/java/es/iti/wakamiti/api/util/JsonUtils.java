@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
@@ -17,6 +18,7 @@ import groovy.lang.GroovyShell;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 
 public class JsonUtils {
@@ -28,7 +30,11 @@ public class JsonUtils {
 
     public static JsonNode json(String input) {
         try {
-            return MAPPER.readTree(input);
+            JsonNode result = MAPPER.readTree(input);
+            if (result instanceof ValueNode) {
+                throw new RuntimeException("Single value not allowed");
+            }
+            return result;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +42,11 @@ public class JsonUtils {
 
     public static JsonNode json(InputStream input) {
         try {
-            return MAPPER.readTree(input);
+            JsonNode result = MAPPER.readTree(input);
+            if (result instanceof ValueNode) {
+                throw new RuntimeException("Single value not allowed");
+            }
+            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +54,7 @@ public class JsonUtils {
 
     public static JsonNode json(Object input) {
         try {
-            return MAPPER.readTree(MAPPER.writeValueAsString(input));
+            return json(MAPPER.writeValueAsString(input));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -53,6 +63,9 @@ public class JsonUtils {
     public static String readStringValue(JsonNode obj, String expression) throws JsonProcessingException {
         if (expression.startsWith("$")) {
             JsonNode result = MAPPER.readTree(JsonPath.using(CONFIG).parse(obj).read(expression).toString());
+            if (List.of(JsonNodeType.NULL, JsonNodeType.MISSING).contains(result.getNodeType())) {
+                return null;
+            }
             if (result.getNodeType() == JsonNodeType.STRING) {
                 return result.textValue();
             }
@@ -63,7 +76,8 @@ public class JsonUtils {
             binding.setVariable("exp", expression);
             GroovyShell shell = new GroovyShell(binding);
             String exp = (obj.isArray() && expression.matches("\\[\\d+].*") ? "'x'" : "'x.'") + " + exp";
-            return shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")").toString();
+            Object result = shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")");
+            return result != null ? result.toString() : null;
         }
     }
 

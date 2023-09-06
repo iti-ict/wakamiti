@@ -22,8 +22,9 @@ Coordenadas
 
 ```yaml
 wakamiti:
-    modules:
-        - es.iti.wakamiti:email-wakamiti-plugin:1.0.0
+    launcher:
+        modules:
+            - es.iti.wakamiti:email-wakamiti-plugin:1.0.0
 ```
 
 ### Maven

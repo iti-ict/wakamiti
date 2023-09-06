@@ -14,6 +14,7 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [`rest.oauth2.cached`](#restoauth2cached)
 - [`rest.oauth2.parameters`](#restoauth2parameters)
 - [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
+- [`rest.config.multipart.filename`](#restconfigmultipartfilename)
 - [`rest.config.redirect.follow`](#restconfigredirectfollow)
 - [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
 - [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
@@ -37,6 +38,7 @@ This plugin provides a set of steps to interact with a RESTful API.
 - [Define oauth2 authentication by client](#define-oauth2-authentication-by-client)
 - [Clear authentication](#clear-authentication)
 - [Define multipart subtype](#define-multipart-subtype)
+- [Define multipart filename](#define-multipart-filename)
 - [Define attached file](#define-attached-file)
 - [Define attached file (file)](#define-attached-file-file)
 - [Execute GET request](#execute-get-request)
@@ -66,7 +68,7 @@ This plugin provides a set of steps to interact with a RESTful API.
 
 ---
 ###  `rest.baseURL`
-Set the base URL for subsequents API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you 
+Set the base URL for subsequents API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you
 prefer the descriptive configuration.
 
 Example:
@@ -81,15 +83,16 @@ rest:
 Set the content type that would be sent in the request header of subsequent API calls.
 Accepted values are:
 
-| literal    | `content-type` header value                                            |
-|------------|------------------------------------------------------------------------|
-| `ANY`      | `*/*`                                                                  |
-| `TEXT`     | `text/plain`                                                           |
-| `JSON`     | `application/json, application/javascript, text/javascript, text/json` |
-| `XML`      | `application/xml, text/xml, application/xhtml+xml`                     |
-| `HTML`     | `text/html`                                                            |
-| `URLENC`   | `application/x-www-form-urlencoded`                                    |
-| `BINARY`   | `application/octet-stream`                                             |
+| literal     | `content-type` header value                                                                                                                                                                                             |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ANY`       | `*/*`                                                                                                                                                                                                                   |
+| `TEXT`      | `text/plain`                                                                                                                                                                                                            |
+| `JSON`      | `application/json, application/javascript, text/javascript, text/json`                                                                                                                                                  |
+| `XML`       | `application/xml, text/xml, application/xhtml+xml`                                                                                                                                                                      |
+| `HTML`      | `text/html`                                                                                                                                                                                                             |
+| `URLENC`    | `application/x-www-form-urlencoded`                                                                                                                                                                                     |
+| `BINARY`    | `application/octet-stream`                                                                                                                                                                                              |
+| `MULTIPART` | `multipart/form-data`, `multipart/alternative`, `multipart/byteranges`, `multipart/digest`, `multipart/mixed`, `multipart/parallel`, `multipart/related`, `multipart/report`, `multipart/signed`, `multipart/encrypted` |
 
 
 Default value is `JSON`.
@@ -102,7 +105,7 @@ rest:
 
 ---
 ### `rest.httpCodeThreshold`
-Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step 
+Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step
 would automatically fail regardless any other condition.
 
 Default value is `500`.
@@ -116,7 +119,7 @@ rest:
 ---
 ### `rest.timeout`
 
-Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the 
+Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the
 request will be stopped and an error will occur.
 
 Default value is `60000`.
@@ -129,7 +132,7 @@ rest:
 
 ---
 ### `rest.oauth2.url`
-Set an [OAuth 2.0][oauth2] authentication service that would be used to generate a token in the request header 
+Set an [OAuth 2.0][oauth2] authentication service that would be used to generate a token in the request header
 `Authorization` of the API calls.
 
 Example:
@@ -153,7 +156,7 @@ rest:
 
 ---
 ### `rest.oauth2.clientSecret`
-Sets the parameter `clientSecret` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url` 
+Sets the parameter `clientSecret` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url`
 value.
 
 Example:
@@ -216,6 +219,20 @@ rest:
   config:
     multipart:
       subtype: mixed
+```
+
+---
+### `rest.config.multipart.filename`
+Sets the filename of multipart HTTP requests.
+
+Default value is `file`.
+
+Example:
+```yaml
+rest:
+  config:
+    multipart:
+      filename: other_name
 ```
 
 ---
@@ -299,7 +316,7 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 ```
 the base URL {url}
 ```
-Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl). 
+Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl).
 
 #### Parameters:
 | Name  | Wakamiti type | Description |
@@ -351,14 +368,15 @@ Sets an entity identifier to be used by the REST service. It would be appended t
 ---
 ### Define parameters or headers
 ```
-the (request|query|path) parameter {name} with value {value}
+the (request|query|path|form) parameter {name} with value {value}
 ```
 ```
 the header {name} with value {value}
 ```
-Sets a header or request, query or path parameter. The request parameters will be sent as form data for POST 
-requests, the query parameters will be pass after the service URL (like `/user?param1=abc&param2=123`), and path 
-parameters will be part of the request URL replacing the segments marked with `{}`.
+Sets a header or request, query, path or form parameter. Request parameters will be sent as form data in POST requests,
+query parameters will be concatenated to the request URL after the path (e.g. `/user?param1=abc&param2=123`), path
+parameters will replace the service path fragments indicate with `{}`, and form parameters will be sent with
+content-type `application/x-www-form-urlencoded`.
 
 ##### Parámetros:
 | Nombre  | Wakamiti type | Descripción               |
@@ -380,6 +398,10 @@ parameters will be part of the request URL replacing the segments marked with `{
   And the path parameter 'usuario' with value '25'
 ```
 ```gherkin
+  Given the form parameter 'age' with value '13'
+  When the data info is sent to the service
+```
+```gherkin
   Given the header 'Keep-alive' with value '1200'
 ```
 
@@ -391,9 +413,10 @@ the following (request|query|path) parameters:
 ```
 the following headers:
 ```
-Sets headers or request, query or path parameters. The request parameters will be sent as form data for POST
-requests, the query parameters will be pass after the service URL (like `/user?param1=abc&param2=123`), and path
-parameters will be part of the request URL replacing the segments marked with `{}`.
+Sets multiple headers or request, query, path or form parameters. Request parameters will be sent as form data in POST
+requests, query parameters will be concatenated to the request URL after the path (e.g. `/user?param1=abc&param2=123`),
+path parameters will replace the service path fragments indicate with `{}`, and form parameters will be sent with
+content-type `application/x-www-form-urlencoded`.
 
 ##### Parameters:
 | Name | Wakamiti type | Description                             |
@@ -421,6 +444,13 @@ parameters will be part of the request URL replacing the segments marked with `{
     | Name | Value |
     | user | 25    |
     | item | 7     |
+```
+```gherkin
+  Given the following form parameters:
+    | Name | Value    |
+    | age  | 13       |
+    | city | Valencia |
+  When the data info is sent to the service
 ```
 ```gherkin
   Given the following headers:
@@ -454,7 +484,7 @@ Sets a response timeout (in second or milliseconds) for the subsequent HTTP requ
 ```
 any request will fail when response HTTP code {matcher}
 ```
-Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer 
+Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer
 assertion.
 
 ##### Parameters:
@@ -491,7 +521,7 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 the service use the oauth authentication
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
-configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), 
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret), [parameters](#restoauth2parameters)), for the following requests.
 
 
@@ -542,8 +572,8 @@ the service use the oauth authentication credentials {username}:{password}
 ```
 the service use the oauth authentication credentials {username}:{password} with the following parameters:
 ```
-Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the 
-configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)), 
+Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
+configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
 using the indicated credentials, for the following requests.
 
 Additional parameters supported by `Oauth` can also be added using a table.
@@ -613,8 +643,23 @@ Deletes the authentication header.
 ```
 {type} as subtype multipart
 ```
-Sets the default subtype for multipart requests. This step is equivalent to setting the 
-[`rest.config.multipart.subtype`](#restconfigmultipartsubtype) property.
+Sets the default subtype for multipart requests. This step is equivalent to setting the
+[`rest.config.multipart.subtype`](#restconfigmultipartsubtype) property. Available values are:
+
+| literal       |
+|---------------|
+| `form-data`   |
+| `alternative` | 
+| `byteranges`  | 
+| `digest`      |
+| `mixed`       | 
+| `parallel`    | 
+| `related`     |
+| `report`      |
+| `signed`      |
+| `encrypted`   |
+
+Default value is `form-data`.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description       |
@@ -624,6 +669,24 @@ Sets the default subtype for multipart requests. This step is equivalent to sett
 ##### Examples:
 ```gherkin
   Given 'mixed' as subtype multipart
+```
+
+---
+### Definir nombre de fichero multiparte
+```
+{name} as attached file name
+```
+Sets the default name for multipart files. This step is equivalent to setting the
+[`rest.config.multipart.filename`](#restconfigmultipartfilename).
+
+##### Parameters:
+| Nombre | Wakamiti type | Description         |
+|--------|---------------|---------------------|
+| `name` | `text`        | Multipart file name |
+
+##### Examples:
+```gherkin
+  Given 'other_name' as attached file name
 ```
 
 ---
@@ -641,7 +704,7 @@ Sets a multipart form-data including an attachment from the given in-document co
 ##### Examples:
 ```gherkin
   Given the attached file is included with the following data:
-    """
+"""
     File content
     """
 ```
@@ -673,16 +736,16 @@ Sends a `GET` request to the previously defined parameters.
 ##### Examples:
 ```gherkin
   Given the service 'users'
-  And the following query parameters:
-    | Name | Value |
-    | user | 25    |
-    | item | 7     |
-  When the users are queried
+And the following query parameters:
+| Name | Value |
+| user | 25    |
+| item | 7     |
+When the users are queried
 ```
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is requested
+And a user identified by '123'
+When the user is requested
 ```
 
 ---
@@ -695,8 +758,8 @@ Sends a `DELETE` request to the previously defined endpoint formed with the base
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is deleted
+And a user identified by '123'
+When the user is deleted
 ```
 
 ---
@@ -704,7 +767,7 @@ Sends a `DELETE` request to the previously defined endpoint formed with the base
 ```
 * (is|are) modified with following data:
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id. 
+Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -715,9 +778,9 @@ The payload is provided in-document.
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is modified with the following data:
-    """json
+And a user identified by '123'
+When the user is modified with the following data:
+"""json
     {
         "firstName": "John",
         "lastName": "Doe",
@@ -732,7 +795,7 @@ The payload is provided in-document.
 ```
 * (is|are) modified with the data from the file {file}
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id. 
+Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -743,8 +806,8 @@ The payload is provided by the given file.
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is modified with the data from the file 'data/user123.json'
+And a user identified by '123'
+When the user is modified with the data from the file 'data/user123.json'
 ```
 
 ---
@@ -757,12 +820,12 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  And the following query parameters:
-    | Name | Value    |
-    | age  | 13       |
-    | city | Valencia |
-  When the user is patched
+And a user identified by '123'
+And the following query parameters:
+| Name | Value    |
+| age  | 13       |
+| city | Valencia |
+When the user is patched
 ```
 
 ---
@@ -770,7 +833,7 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 ```
 * (is|are) patched with the following data:
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id. 
+Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -781,9 +844,9 @@ The payload is provided in-document.
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is patched with the following data:
-    """json
+And a user identified by '123'
+When the user is patched with the following data:
+"""json
     {
         "firstName": "Jim"
     }
@@ -795,7 +858,7 @@ The payload is provided in-document.
 ```
 * (is|are) patched with the data from the file {file}
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id. 
+Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -806,8 +869,8 @@ The payload is provided by the given file.
 ##### Examples:
 ```gherkin
   Given the REST service 'users'
-  And a user identified by '123'
-  When the user is patched with the data from the file 'data/user123.json'
+And a user identified by '123'
+When the user is patched with the data from the file 'data/user123.json'
 ```
 
 ---
@@ -818,17 +881,17 @@ The payload is provided by the given file.
 ```
 the data info is sent to the service
 ```
-Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is 
+Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
 empty.
 
 ##### Example:
 ```gherkin
   Given the REST service 'users'
-  And the following request parameters:
-    | nombre | valor    |
-    | age    | 13       |
-    | city   | Valencia |
-  When the data info is sent to the service
+And the following request parameters:
+| nombre | valor    |
+| age    | 13       |
+| city   | Valencia |
+When the data info is sent to the service
 ```
 
 ---
@@ -839,7 +902,7 @@ empty.
 ```
 the following data is sent to the service:
 ```
-Send a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is 
+Send a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
 provided in-document.
 
 ##### Parameters:
@@ -850,7 +913,7 @@ provided in-document.
 ##### Examples:
 ```gherkin
   When the user is created with the following data:
-    """json
+"""json
     {
         "firstName": "John",
         "lastName": "Doe",
@@ -861,7 +924,7 @@ provided in-document.
 ```
 ```gherkin
   When the following data is sent to the service:
-    """json
+"""json
     {
         "date": "2021-10-30"
     }
@@ -876,7 +939,7 @@ provided in-document.
 ```
 the data from the file {file} is sent to the service
 ```
-Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is 
+Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
 provided by the given file.
 
 ##### Parameters:
@@ -933,7 +996,7 @@ Validates that the last response body contains the given in-document content.
 ##### Examples:
 ```gherkin
   Then the response is:
-    """json
+"""json
     {
         "age": 23,
         "name": "John"
@@ -971,7 +1034,7 @@ Validates that the last response body contains the content of the given file.
 ```
 the (text|integer|decimal) from response fragment {fragment} {matcher}
 ```
-Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according a 
+Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according a
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
@@ -995,7 +1058,7 @@ Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragm
 ```
 the response content type is {word}
 ```
-Validate that the content type of the last response is the expected. This step would be equivalent to validate the 
+Validate that the content type of the last response is the expected. This step would be equivalent to validate the
 `Content-Type` response header against the corresponding MIME type.
 
 ##### Parameters:
@@ -1052,8 +1115,8 @@ Validate that a header value from the last REST response satisfies the *text*, *
 ```
 the response satisfies the following schema:
 ```
-Asserts that the response body structure satisfies a given schema. The accepted schema formats are 
-[JSON Schema](https://json-schema.org/) for JSON responses and [XML Schema](https://www.w3.org/2001/XMLSchema) for XML 
+Asserts that the response body structure satisfies a given schema. The accepted schema formats are
+[JSON Schema](https://json-schema.org/) for JSON responses and [XML Schema](https://www.w3.org/2001/XMLSchema) for XML
 responses (according the`Content-Type` response header).
 
 #### Parameters:
@@ -1064,7 +1127,7 @@ responses (according the`Content-Type` response header).
 #### Examples:
 ```gherkin
   Then the response satisfies the following schema:
-    """json
+"""json
      {
        "$schema": "http://json-schema.org/draft-04/schema#",
        "type": "object",
@@ -1099,8 +1162,8 @@ responses (according the`Content-Type` response header).
 ```
 the response satisfies the schema from the file {file}
 ```
-Asserts that the response body structure satisfies a schema from a given file. The accepted schema formats are 
-[JSON Schema][jsonschema] for JSON responses and [XML Schema][xmlschema] for XML responses (according the `Content-Type` 
+Asserts that the response body structure satisfies a schema from a given file. The accepted schema formats are
+[JSON Schema][jsonschema] for JSON responses and [XML Schema][xmlschema] for XML responses (according the `Content-Type`
 response header).
 
 ##### Parameters:

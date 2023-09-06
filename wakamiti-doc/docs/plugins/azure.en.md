@@ -14,11 +14,63 @@ In order to notify the results, the following conditions must be satisfied:
 valued with the plan name, the suite name, and the test case name that are defined in the Azure
 project.
 
+Examples:
+
+```gherkin
+@Azure
+# azurePlan: MyPlan
+# azureSuite: MySuite
+# azureTest: MyTest
+Feature: User creation tests
+
+Scenario: Create a non-existing user
+...
+
+Scenario: Create an existing user
+...
+```
+
+```gherkin
+@Azure
+# azurePlan: MyPlan
+# azureSuite: MySuite
+Feature: User creation tests
+
+# azureTest: MyFirstTest
+Scenario: Create a non-existing user
+...
+
+# azureTest: MySecondTest
+Scenario: Create an existing use
+...
+```
+
 Test cases not satisfying this criteria will be ignored.
 
 In case the Wakamiti plan includes test cases from several Azure test plans, the plugin will create 
 a diferent run for each one of them.
 
+Coordinates
+----------------------------------------------------------------------------------------------------
+
+### Wakamiti configuration file
+
+```yaml
+wakamiti:
+    launcher:
+        modules:
+            - es.iti.wakamiti:azure-wakamiti-plugin:1.2.1
+```
+
+### Maven
+
+```
+  <dependency>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>azure-wakamiti-plugin</artifactId>
+    <version>1.2.1</version>
+  </dependency>
+```
 
 ## Configuration
 
@@ -132,4 +184,15 @@ azure:
   attachments:
     - 'wakamiti.html'
     - '*.json'  
+```
+
+
+---
+#### `azure.testCasePerFeature`
+Set whether the mapping with the Azure test cases should be done by either by feature or by scenario.
+
+Example:
+```yaml
+azure:
+  testCasePerFeature: true
 ```
