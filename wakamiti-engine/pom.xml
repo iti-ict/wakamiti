@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        This POM is used as a parent/aggregator in order to build all the core components at the same time.
+     -->
+    <parent>
+        <artifactId>wakamiti-starter</artifactId>
+        <groupId>es.iti.wakamiti</groupId>
+        <version>1.0.0</version>
+        <relativePath>../wakamiti-starter</relativePath>
+    </parent>
+
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-engine</artifactId>
+    <packaging>pom</packaging>
+    <!-- This version number is shared by all core components -->
+    <version>${revision}</version>
+
+    <properties>
+        <revision>2.3.0-SNAPSHOT</revision>
+    </properties>
+
+
+    <name>Wakamiti Engine</name>
+    <description>Aggregation of all Wakamiti core componentes</description>
+
+
+    <modules>
+        <module>wakamiti-core</module>
+        <module>wakamiti-lsp</module>
+        <module>wakamiti-maven-plugin</module>
+        <module>wakamiti-launcher</module>
+        <module>wakamiti-docker</module>
+    </modules>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.luiinge</groupId>
+                <artifactId>maven-fetcher</artifactId>
+                <version>1.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>es.iti.wakamiti</groupId>
+                <artifactId>wakamiti-api</artifactId>
+                <version>2.3.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven</artifactId>
+                <version>3.9.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

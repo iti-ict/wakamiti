@@ -72,6 +72,10 @@ nav {
   }
 }
 
+article {
+  min-width: 180px;
+}
+
 .git {
   margin: 3em 0 0;
   align-self: center;

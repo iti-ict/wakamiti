@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: Spring Sample App
+  datasource:
+    driverClassName: org.h2.Driver
+    data: classpath:initial-data.sql
+
+
+server:
+  port: 9191

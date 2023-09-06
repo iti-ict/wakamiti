@@ -24,8 +24,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.*;
 
-import es.iti.wakamiti.api.*;
-import es.iti.wakamiti.server.domain.model.*;
 import es.iti.wakamiti.server.spi.ExecutionRepository;
 
 @ApplicationScoped

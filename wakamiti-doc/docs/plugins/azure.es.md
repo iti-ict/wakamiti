@@ -15,10 +15,64 @@ Para que el plugin envíe los resultados, se deben cumplir dos condiciones:
 - El escenario debe tener definidas las propiedades `azurePlan`, `azureSuite` y `azureTest`,
 con los nombres del plan, de la suite y del caso de test tal cual estén definidos en Azure.
 
+Ejemplos:
+
+```gherkin
+@Azure
+# azurePlan: MyPlan
+# azureSuite: MySuite
+# azureTest: MyTest
+Característica: Pruebas de alta de usuario
+
+Escenario: Alta de usuario inexiste
+...
+
+Escenario: Alta de usuario existente
+...
+```
+
+```gherkin
+@Azure
+# azurePlan: MyPlan
+# azureSuite: MySuite
+Característica: Pruebas de alta de usuario
+
+# azureTest: MyFirstTest
+Escenario: Alta de usuario inexiste
+...
+
+# azureTest: MySecondTest
+Escenario: Alta de usuario existente
+...
+```
+
 Los casos de test que no tengan esto definido se ignorarán a la hora de hacer la integración.
 
 En caso de que la ejecución de Wakamiti incluya casos de tests de varios planes de Azure distintos,
 se creará una ejecución Azure distinta por cada uno de ellos.
+
+
+Coordenadas
+----------------------------------------------------------------------------------------------------
+
+### Fichero de configuración Wakamiti
+
+```yaml
+wakamiti:
+    launcher:
+        modules:
+            - es.iti.wakamiti:azure-wakamiti-plugin:1.2.1
+```
+
+### Maven
+
+```
+  <dependency>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>azure-wakamiti-plugin</artifactId>
+    <version>1.2.1</version>
+  </dependency>
+```
 
 
 ## Configuración
@@ -135,4 +189,15 @@ azure:
   attachments:
     - 'wakamiti.html'
     - '*.json'  
+```
+
+
+---
+#### `azure.testCasePerFeature`
+Establece si el mapeo con los casos de test de Azure debe ser a nivel de feature o de escenario.
+
+Ejemplo:
+```yaml
+azure:
+  testCasePerFeature: true
 ```

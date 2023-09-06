@@ -1,0 +1,23 @@
+local.server.port: 0
+wakamiti:
+  resourceTypes: gherkin
+  resourcePath: src/test/resources
+  outputFilePath: target/wakamiti/wakamiti.json
+  junit:
+    treatStepsAsTests: true
+  logs:
+    showStepSource: false
+  database:
+    useSpringDataSource: true
+  rest:
+    useSpringLocalServerPort: true
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    es.iti.wakamiti: INFO
+    org.hibernate: INFO
+    iti.commons.jext: INFO
+spring.output.ansi.enabled: DETECT

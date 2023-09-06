@@ -34,11 +34,6 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import es.iti.wakamiti.api.*;
-import es.iti.wakamiti.api.plan.*;
-import es.iti.wakamiti.server.domain.model.*;
-import es.iti.wakamiti.server.spi.*;
-
 
 @ApplicationScoped
 public class ExecutionService {

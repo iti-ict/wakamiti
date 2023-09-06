@@ -58,6 +58,16 @@
               "value": "Appium",
               "anchor": "/appium",
               "depth": 2
+            },
+            {
+              "value": "Integración Azure",
+              "anchor": "/azure",
+              "depth": 2
+            },
+            {
+              "value": "Pasos Email",
+              "anchor": "/email",
+              "depth": 2
             }
           ]
         }

@@ -4,7 +4,7 @@ date: 2022-09-20
 slug: /en/plugins
 ---
 
-Wakamiti itself does not have defined steps, but they are included through different plugins. Currently, the following 
+Wakamiti does not have defined steps on its own, but they are provided by different plugins. Currently, the following 
 exist, but you can also develop your own plugins!:
 
 - [REST steps](en/plugins/rest)
@@ -15,5 +15,4 @@ exist, but you can also develop your own plugins!:
 - [File Uploader](en/plugins/fileuploader)
 - [Appium steps](en/plugins/appium)
 - [Azure Integration](en/plugins/azure)
-
-
+- [Email steps](en/plugins/email)

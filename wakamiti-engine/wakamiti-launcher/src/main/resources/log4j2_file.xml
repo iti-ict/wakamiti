@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<Configuration status="WARN">
+    <Properties>
+        <Property name="log4j.skipJansi">false</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
+
+        <File name="File" fileName="${sys:path}" append="false">
+            <PatternLayout>
+                <Pattern>%d  [%C{1.}.%M] %6p -  %replace{%m}{\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]}{}%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File" />
+        </Root>
+        <Logger name= "es.iti.wakamiti" level="info" />
+        <Logger name="es.iti.commons" level="info"/>
+        <Logger name="org.eclipse" level="info" />
+    </Loggers>
+</Configuration>

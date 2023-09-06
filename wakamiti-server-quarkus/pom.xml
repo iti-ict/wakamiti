@@ -10,29 +10,25 @@
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
-
-    <!--
-      The Wakamiti Server depends on Wakamiti::CORE version (${revision} property)
-   -->
-
     <parent>
         <groupId>es.iti.wakamiti</groupId>
-        <artifactId>wakamiti-project</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>wakamiti-starter</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
     <!-- coordinates -->
     <artifactId>wakamiti-server-quarkus</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
 
     <!-- additional information -->
-    <name>Wakamiti::Execution Server</name>
+    <name>Wakamiti Execution Server</name>
     <description>HTTP server for Wakamiti executions</description>
     <inceptionYear>2021</inceptionYear>
 
 
     <properties>
+        <wakamiti-engine.version>2.3.0-SNAPSHOT</wakamiti-engine.version>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <docker.expose.debug.port>5005</docker.expose.debug.port>
         <docker.expose.port>8080</docker.expose.port>
@@ -41,44 +37,45 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-plugin.version>1.11.3.Final</quarkus-plugin.version>
-        <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>1.11.3.Final</quarkus.platform.version>
+        <quarkus.version>1.13.7.Final</quarkus.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     </properties>
+
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${quarkus.platform.group-id}</groupId>
-                <artifactId>${quarkus.platform.artifact-id}</artifactId>
-                <version>${quarkus.platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-bom</artifactId>
-                <version>${revision}</version>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-universe-bom</artifactId>
+                <version>${quarkus.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+
     <dependencies>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
+            <version>${wakamiti-engine.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.github.luiinge</groupId>
+                    <artifactId>maven-fetcher</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-lsp</artifactId>
+            <version>${wakamiti-engine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.6.0</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -93,11 +90,6 @@
             <artifactId>quarkus-arc</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.6.0</version>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jsonb</artifactId>
         </dependency>
@@ -109,24 +101,22 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.maven.resolver</groupId>
             <artifactId>maven-resolver-api</artifactId>
+            <version>1.9.7</version>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.maven.resolver</groupId>
-                    <artifactId>maven-resolver-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
+
+        <!-- test -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -134,30 +124,22 @@
             <artifactId>quarkus-test-security</artifactId>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>es.iti.wakamiti</groupId>-->
-<!--            <artifactId>wakamiti-db</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>es.iti.wakamiti</groupId>-->
-<!--            <artifactId>wakamiti-rest</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>es.iti.wakamiti</groupId>-->
-<!--            <artifactId>wakamiti-html-report</artifactId>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
         </dependency>
+
+
     </dependencies>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
-                <version>${quarkus-plugin.version}</version>
+                <version>${quarkus.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
