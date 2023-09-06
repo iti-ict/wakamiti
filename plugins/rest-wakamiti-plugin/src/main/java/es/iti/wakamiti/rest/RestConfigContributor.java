@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.rest;
 
 
@@ -30,7 +26,11 @@ import java.net.URL;
 import java.util.Map;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
+@Extension(provider = "es.iti.wakamiti", name = "rest-configurator",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 
     public static final String BASE_URL = "rest.baseURL";
@@ -80,9 +80,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     }
 
     private void configure(RestStepContributor contributor, Configuration configuration) {
-        RestAssured.reset();
-        config(RestAssured.config().logConfig(new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())));
-        RestAssured.useRelaxedHTTPSValidation();
+        restassuredConfigure();
 
         configuration.get(BASE_URL, String.class)
                 .map(ThrowableFunction.unchecked(URL::new))
@@ -117,6 +115,12 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(REDIRECT_MAX, Integer.class)
                 .map(RestAssured.config().getRedirectConfig()::maxRedirects)
                 .ifPresent(this::config);
+    }
+
+    private void restassuredConfigure() {
+        RestAssured.reset();
+        config(RestAssured.config().logConfig(new LogConfig().defaultStream(RestAssuredLogger.getPrintStream())));
+        RestAssured.useRelaxedHTTPSValidation();
     }
 
     @SuppressWarnings(value = "unchecked")

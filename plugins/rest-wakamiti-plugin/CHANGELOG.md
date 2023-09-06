@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 
 - Steps to submit forms (issue #152)
+- Steps to object/list fragment comparison (issue #149)
 
 ### Fixed
 

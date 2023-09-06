@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.rest;
 
 
@@ -37,6 +33,9 @@ import java.util.Optional;
 import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 @I18nResource("iti_wakamiti_wakamiti-rest")
 @Extension(provider = "es.iti.wakamiti", name = "rest-steps")
 public class RestStepContributor extends RestSupport implements StepContributor {
@@ -51,25 +50,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 request.contentType(parseContentType(contentType)));
     }
 
-
     @Step(value = "rest.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         this.baseURL = url;
     }
-
 
     @Step("rest.define.service")
     public void setService(String service) {
         this.path = (service.startsWith("/") ? service.substring(1) : service);
     }
 
-
     /**
      * Concatenates the subject to the service path.
      *
      * @param subject The entity identification
-     * @deprecated Use {@link RestStepContributor#setPathParameter(String, String)} and
-     * {@link RestStepContributor#setPathParameters(DataTable)} instead.
+     * @deprecated Use {@link
+     * RestStepContributor#setPathParameter(String, String)} and {@link
+     * RestStepContributor#setPathParameters(DataTable)} instead.
      */
     @Step("rest.define.subject")
     @Deprecated
@@ -77,12 +74,10 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
-
     @Step("rest.define.request.parameters")
     public void setRequestParameters(DataTable dataTable) {
         specifications.add(request -> request.params(tableToMap(dataTable)));
     }
-
 
     @Step(value = "rest.define.request.parameter", args = {"name:text", "value:text"})
     public void setRequestParameter(String name, String value) {
@@ -94,36 +89,30 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         specifications.add(request -> request.queryParams(tableToMap(dataTable)));
     }
 
-
     @Step(value = "rest.define.query.parameter", args = {"name:text", "value:text"})
     public void setQueryParameter(String name, String value) {
         specifications.add(request -> request.queryParam(name, value));
     }
-
 
     @Step("rest.define.path.parameters")
     public void setPathParameters(DataTable dataTable) {
         specifications.add(request -> request.pathParams(tableToMap(dataTable)));
     }
 
-
     @Step(value = "rest.define.path.parameter", args = {"name:text", "value:text"})
     public void setPathParameter(String name, String value) {
         specifications.add(request -> request.pathParam(name, value));
     }
-
 
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
         specifications.add(request -> request.headers(tableToMap(dataTable)));
     }
 
-
     @Step(value = "rest.define.header", args = {"name:text", "value:text"})
     public void setHeader(String name, String value) {
         specifications.add(request -> request.header(name, value));
     }
-
 
     @Step("rest.define.timeout.millis")
     public void setTimeoutInMillis(Integer millis) {
@@ -135,18 +124,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
-
     @Step("rest.define.timeout.secs")
     public void setTimeoutInSecs(Integer secs) {
         setTimeoutInMillis(secs * 1000);
     }
 
-
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
     public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
         this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
-
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
@@ -155,7 +141,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         }
         authSpecification = Optional.of(request -> request.auth().preemptive().basic(username, password));
     }
-
 
     @Step("rest.define.auth.bearer.token")
     public void setBearerAuth(String token) {
@@ -209,7 +194,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         setBearerDefault();
     }
 
-
     @Step("rest.define.multipart.subtype")
     public void setMultipartSubtype(String subtype) {
         assertSubtype(subtype);
@@ -220,7 +204,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
-
     @Step("rest.define.multipart.filename")
     public void setFilename(String name) {
         config(
@@ -229,7 +212,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 )
         );
     }
-
 
     @Step(value = "rest.define.attached.data", args = "name:text")
     public void setAttachedFile(String name, Document document) throws IOException {
@@ -250,7 +232,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 request.multiPart(name, tempFile, mimeType.getContentTypeStrings()[0])
         );
     }
-
 
     @Step(value = "rest.define.attached.file", args = {"name:text", "file"})
     public void setAttachedFile(String name, File file) {
@@ -278,7 +259,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         specifications.add(request -> request.contentType(ContentType.URLENC));
         specifications.add(request -> request.formParam(name, value));
     }
-
 
     @Step("rest.execute.GET.query")
     public Object executeGetQuery() {
@@ -476,6 +456,41 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, assertion, BigDecimal.class);
     }
 
+    @Step(value = "rest.assert.response.body.fragment.strict.from.document", args = {"fragment:text"})
+    public void assertBodyFragmentStrict(String fragment, Document document) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, document.getContent(), MatchMode.STRICT);
+    }
+
+    @Step(value = "rest.assert.response.body.fragment.strict.from.file", args = {"fragment:text", "file"})
+    public void assertBodyFragmentStrict(String fragment, File file) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, readFile(file), MatchMode.STRICT);
+    }
+
+    @Step(value = "rest.assert.response.body.fragment.strict.from.document.any-order", args = {"fragment:text"})
+    public void assertBodyFragmentStrictAnyOrder(String fragment, Document document) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, document.getContent(), MatchMode.STRICT_ANY_ORDER);
+    }
+
+    @Step(value = "rest.assert.response.body.fragment.strict.from.file.any-order", args = {"fragment:text", "file"})
+    public void assertBodyFragmentStrictAnyOrder(String fragment, File file) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, readFile(file), MatchMode.STRICT_ANY_ORDER);
+    }
+
+    @Step(value = "rest.assert.response.body.fragment.loose.from.document", args = {"fragment:text"})
+    public void assertBodyFragmentLoose(String fragment, Document document) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, document.getContent(), MatchMode.LOOSE);
+    }
+
+    @Step(value = "rest.assert.response.body.fragment.loose.from.file", args = {"fragment:text", "file"})
+    public void assertBodyFragmentLoose(String fragment, File file) {
+        assertResponseNotNull();
+        assertBodyFragment(fragment, readFile(file), MatchMode.LOOSE);
+    }
 
     @Step("rest.assert.response.body.schema.from.document")
     public void assertBodyContentSchema(Document document) {

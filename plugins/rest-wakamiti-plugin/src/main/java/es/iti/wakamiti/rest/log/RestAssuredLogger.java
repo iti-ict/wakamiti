@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.rest.log;
 
 
@@ -28,6 +24,9 @@ import java.io.PrintStream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class RestAssuredLogger implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
@@ -36,7 +35,7 @@ public class RestAssuredLogger implements Filter {
 
     public static PrintStream getPrintStream() {
         if (printStream == null) {
-            printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: autoflush must be set!
+            printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: auto flush must be set!
 
                 @Override
                 public void println(String x) {
@@ -49,10 +48,10 @@ public class RestAssuredLogger implements Filter {
 
     @Override
     public Response filter(
-            FilterableRequestSpecification freqs,
-            FilterableResponseSpecification freps,
+            FilterableRequestSpecification filterableReqSpecification,
+            FilterableResponseSpecification filterableRespSpecification,
             FilterContext ctx) {
-        Response response = ctx.next(freqs, freps);
+        Response response = ctx.next(filterableReqSpecification, filterableRespSpecification);
 
         final StringBuilder builder = new StringBuilder();
         builder.append(response.statusLine());

@@ -4,6 +4,7 @@ package es.iti.wakamiti.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
@@ -71,7 +72,7 @@ public class RestStepContributorTest {
 
     @BeforeClass
     public static void setup() {
-        ConfigurationProperties.logLevel("DEBUG");
+        ConfigurationProperties.logLevel("OFF");
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
                 new MockServerLogger()).sslContext().getSocketFactory());
     }
@@ -93,7 +94,9 @@ public class RestStepContributorTest {
         client.reset();
     }
 
-
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testWhenDefaultsWithSuccess() throws JsonProcessingException {
         // prepare
@@ -117,6 +120,9 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setContentType(String)}
+     */
     @Test
     public void testSetContentTypeWithSuccess() throws JsonProcessingException {
         // prepare
@@ -141,6 +147,22 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setContentType(String)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetContentTypeWithError() {
+        // act
+        contributor.setContentType("AAA");
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testJsonResponseWithSuccess() throws JsonProcessingException {
         // prepare
@@ -168,6 +190,9 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "body.name")).isEqualTo("Susan");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} json response
+     */
     @Test
     public void testJsonResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
         // prepare
@@ -189,6 +214,9 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} xml response
+     */
     @Test
     public void testXmlResponseWithSuccess() {
         // prepare
@@ -216,6 +244,9 @@ public class RestStepContributorTest {
         assertThat(XmlUtils.readStringValue(result, "body.item.name")).isEqualTo("Susan");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} xml null response
+     */
     @Test
     public void testXmlResponseWhenNullBodyWithSuccess() {
         // prepare
@@ -237,6 +268,9 @@ public class RestStepContributorTest {
         assertThat(XmlUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} text response
+     */
     @Test
     public void testTextResponseWithSuccess() throws JsonProcessingException {
         // prepare
@@ -264,6 +298,9 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "body")).isEqualTo("5567");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} text null response
+     */
     @Test
     public void testTextResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
         // prepare
@@ -285,6 +322,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testRequestParametersWithSuccess() throws JsonProcessingException {
         // prepare
@@ -310,6 +351,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setRequestParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testRequestParameterListWithSuccess() throws JsonProcessingException {
         // prepare
@@ -335,6 +380,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setQueryParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testQueryParametersWithSuccess() throws JsonProcessingException {
         // prepare
@@ -361,6 +410,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setQueryParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testQueryParameterListWithSuccess() throws JsonProcessingException {
         // prepare
@@ -386,6 +439,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setPathParameter(String, String)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testPathParametersWithSuccess() throws JsonProcessingException {
         // prepare
@@ -409,6 +467,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setPathParameters(DataTable)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testPathParameterListWithSuccess() throws JsonProcessingException {
         // prepare
@@ -431,8 +494,13 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setPathParameters(DataTable)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
-    public void testPathParameterListWhenIncorrectColumnsWithError() throws JsonProcessingException {
+    public void testPathParameterListWhenIncorrectColumnsWithError() {
         // prepare
         mockServer(
                 request()
@@ -454,6 +522,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setHeader(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testHeadersWithSuccess() throws JsonProcessingException {
         // prepare
@@ -480,6 +552,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setHeaders(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testHeaderListWithSuccess() throws JsonProcessingException {
         // prepare
@@ -505,6 +581,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setHeaders(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testHeaderListWhenIncorrectColumnsWithError() {
         // act
@@ -519,6 +599,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setTimeoutInSecs(Integer)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = SocketTimeoutException.class)
     public void testSetTimeoutWithError() {
         // prepare
@@ -538,6 +622,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBasicAuth(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBasicAuthWithSuccess() {
         // prepare
@@ -562,6 +650,10 @@ public class RestStepContributorTest {
         assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthClientWithSuccess()
             throws NoSuchFieldException, IllegalAccessException, JsonProcessingException, MalformedURLException {
@@ -596,6 +688,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthClientWhenScopeWithSuccess()
             throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
@@ -631,6 +727,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthClientWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
@@ -666,6 +766,10 @@ public class RestStepContributorTest {
         verify(contributor, times(2)).retrieveOauthToken();
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthPasswordWithSuccess()
             throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
@@ -702,6 +806,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link
+     * RestStepContributor#setBearerAuthPassword(String, String, DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthPasswordWhenScopeWithSuccess()
             throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
@@ -739,6 +848,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthPasswordWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
@@ -775,6 +888,11 @@ public class RestStepContributorTest {
         verify(contributor, times(2)).retrieveOauthToken();
     }
 
+    /**
+     * Test {@link RestStepContributor#setNoneAuth()},
+     * {@link RestStepContributor#setHeader(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetNoneAuthWithSuccess() throws MalformedURLException, JsonProcessingException {
         // prepare
@@ -808,6 +926,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("401");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerDefault()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoGrantTypeConfigWithError() throws MalformedURLException {
         // prepare
@@ -823,6 +945,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() {
         // prepare
@@ -837,6 +963,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientIdConfigWithError() throws MalformedURLException {
         // prepare
@@ -851,6 +981,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientSecretConfigWithError() throws MalformedURLException {
         // prepare
@@ -865,6 +999,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerDefault()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoRequiredParamConfigWithError() throws MalformedURLException {
         // prepare
@@ -880,6 +1018,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenCodeErrorWithError() throws MalformedURLException {
         // prepare
@@ -904,6 +1046,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenTokenMissingWithError() throws MalformedURLException {
         // prepare
@@ -928,6 +1074,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthFile(File)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testWhenAuthHeaderWithSuccess() throws JsonProcessingException {
         // prepare
@@ -952,6 +1102,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetAttachedFileWithSuccess() throws IOException {
         // prepare
@@ -996,6 +1150,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetAttachedFileWhenContentTypeWithSuccess() throws IOException {
         // prepare
@@ -1034,6 +1192,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)},
+     * {@link RestStepContributor#setMultipartSubtype(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetAttachedFileWhenSubtypeWithSuccess() throws IOException {
         // prepare
@@ -1062,6 +1225,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)},
+     * {@link RestStepContributor#setFilename(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetAttachedFileWhenFilenameWithSuccess() throws IOException {
         // prepare
@@ -1090,6 +1258,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetAttachedFileWhenFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1127,6 +1299,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetAttachedFileWhenFileNotFoundWithError() {
         // act
@@ -1136,6 +1312,10 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setFormParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testWithFormParametersWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1166,6 +1346,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setFormParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testWithFormParametersListWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1195,6 +1379,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executeDeleteSubject()}
+     */
     @Test
     public void testDeleteSubjectWithSuccess() {
         // prepare
@@ -1217,6 +1405,9 @@ public class RestStepContributorTest {
         assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("204");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeDeleteDataUsingDocument(Document)}
+     */
     @Test
     public void testDeleteDataWhenDocumentWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1239,6 +1430,9 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)} 
+     */
     @Test
     public void testDeleteDataWhenFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1260,6 +1454,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingDocument(Document)} 
+     */
     @Test
     public void testWhenPutSubjectDocumentWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1284,6 +1482,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingFile(File)} 
+     */
     @Test
     public void testWhenPutSubjectFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1308,6 +1510,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePutSubject()} 
+     */
     @Test
     public void testWhenPutSubjectAndParamsWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1336,6 +1543,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubject()}
+     */
     @Test
     public void testWhenPutSubjectWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1362,6 +1573,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingDocument(Document)} 
+     */
     @Test
     public void testWhenPatchSubjectDocumentWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1386,6 +1601,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingFile(File)} 
+     */
     @Test
     public void testWhenPatchSubjectFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1409,6 +1628,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePatchSubject()}
+     */
     @Test
     public void testWhenPatchSubjectAndParamsWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1436,6 +1660,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubject()}
+     */
     @Test
     public void testWhenPatchSubjectWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1462,6 +1690,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubjectUsingDocument(Document)} 
+     */
     @Test
     public void testWhenPostSubjectDocumentWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1487,6 +1719,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubjectUsingFile(File)} 
+     */
     @Test
     public void testWhenPostSubjectFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1511,6 +1747,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePostSubject()} 
+     */
     @Test
     public void testWhenPostSubjectAndParamWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1537,6 +1778,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubject()}
+     */
     @Test
     public void testWhenPostSubjectWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1562,6 +1807,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubjectUsingDocument(Document)} 
+     */
     @Test
     public void testWhenPostDataDocumentWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1586,6 +1835,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubjectUsingFile(File)} 
+     */
     @Test
     public void testWhenPostDataFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1609,6 +1862,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executeDeleteDataUsingFile(File)} 
+     */
     @Test
     public void testWhenDeleteDataFileWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1632,6 +1889,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePostData()} 
+     */
     @Test
     public void testWhenPostDataAndParamWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1658,6 +1920,10 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostData()} 
+     */
     @Test
     public void testWhenPostDataWithSuccess() throws JsonProcessingException {
         // prepare
@@ -1683,9 +1949,64 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#assertHttpCode(Assertion)} 
+     */
     @Test(expected = WakamitiException.class)
     public void testWhenResponseIsNullWithError() {
         contributor.assertHttpCode(new MatcherAssertion<>(equalTo(200)));
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} and
+     * {@link RestStepContributor#assertBodyStrictComparison(Document)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testWhenResponseHasInvalidContentTypeWithError() {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_BINARY)
+                        .withBody("test")
+        );
+
+        // act
+        contributor.executeGetSubject();
+        contributor.assertBodyStrictComparison(new Document("test"));
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} and
+     * {@link RestStepContributor#assertBodyStrictComparison(Document)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testWhenResponseHasInvalidContentTypeHelperWithError() {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .withBody("test")
+        );
+
+        // act
+        contributor.executeGetSubject();
+        contributor.assertBodyStrictComparison(new Document("test"));
+
+        // check
+        // An error should be thrown
     }
 
 

@@ -14,6 +14,8 @@ import io.restassured.http.ContentType;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.rest.ContentTypeHelper;
 import es.iti.wakamiti.rest.MatchMode;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.ComparisonFailure;
 
 
@@ -42,5 +44,6 @@ public class TextHelper implements ContentTypeHelper {
                 }
         }
     }
+
 
 }

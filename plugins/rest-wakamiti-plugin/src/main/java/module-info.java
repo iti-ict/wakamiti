@@ -18,17 +18,16 @@ module es.iti.wakamiti.rest {
     exports es.iti.wakamiti.rest.matcher;
 
     requires es.iti.wakamiti.api;
-    requires rest.assured;
-    requires com.fasterxml.jackson.databind;
     requires junit;
-    requires com.fasterxml.jackson.dataformat.xml;
     requires org.hamcrest;
-    requires org.everit.json.schema;
-    requires java.xml;
-    requires org.apache.xmlbeans;
-
-    requires json;
+    requires rest.assured;
+    requires rest.assured.common;
     requires plexus.utils;
+    requires json.schema.validator;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.dataformat.xml;
+    requires org.apache.xmlbeans;
+    requires xml.path;
 
     uses ConfigContributor;
     uses StepContributor;

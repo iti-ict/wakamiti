@@ -232,6 +232,11 @@ public class RestSupport {
         helper.assertFragment(fragment, validatableResponse, dataType, assertion);
     }
 
+    protected void assertBodyFragment(String fragment, String expected, MatchMode matchMode) {
+        ContentTypeHelper helper = contentTypeHelperForResponse();
+        helper.assertContent(fragment, expected, validatableResponse.extract(), matchMode);
+    }
+
     protected ContentType parseContentType(String contentType) {
         try {
             return ContentType.valueOf(contentType.toUpperCase());
