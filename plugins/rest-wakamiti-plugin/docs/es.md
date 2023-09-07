@@ -2,71 +2,12 @@
 Este plugin proporciona un conjunto de pasos para interactuar con una API RESTful.
 
 ---
-
-**Configuración**:
-- [`rest.baseURL`](#restbaseurl)
-- [`rest.contentType`](#restcontenttype)
-- [`rest.httpCodeThreshold`](#resthttpcodethreshold)
-- [`rest.timeout`](#resttimeout)
-- [`rest.oauth2.url`](#restoauth2url)
-- [`rest.oauth2.clientId`](#restoauth2clientid)
-- [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
-- [`rest.oauth2.cached`](#restoauth2cached)
-- [`rest.oauth2.parameters`](#restoauth2parameters)
-- [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
-- [`rest.config.multipart.filename`](#restconfigmultipartfilename)
-- [`rest.config.redirect.follow`](#restconfigredirectfollow)
-- [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
-- [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
-- [`rest.config.redirect.max`](#restconfigredirectmax)
-
-
-**Pasos**:
-- [Definir tipo de contenido](#definir-tipo-de-contenido)
-- [Definir URL base](#definir-url-base)
-- [Definir servicio](#definir-servicio)
-- [Definir identificador](#definir-identificador)
-- [Definir parámetros o cabeceras](#definir-par%C3%A1metros-o-cabeceras)
-- [Definir parámetros o cabeceras (tabla)](#definir-par%C3%A1metros-o-cabeceras-tabla)
-- [Definir timeout](#definir-timeout)
-- [Definir umbral de códigos HTTP](#definir-umbral-de-c%C3%B3digos-http)
-- [Definir autenticación básica](#definir-autenticaci%C3%B3n-b%C3%A1sica)
-- [Definir autenticación oauth2](#definir-autenticaci%C3%B3n-oauth2)
-- [Definir autenticación oauth2 por token](#definir-autenticaci%C3%B3n-oauth2-por-token)
-- [Definir autenticación oauth2 por token (fichero)](#definir-autenticaci%C3%B3n-oauth2-por-token-fichero)
-- [Definir autenticación oauth2 por credenciales](#definir-autenticaci%C3%B3n-oauth2-por-credenciales)
-- [Definir autenticación oauth2 por cliente](#definir-autenticaci%C3%B3n-oauth2-por-cliente)
-- [Borrar autenticación](#borrar-autenticaci%C3%B3n)
-- [Definir subtipo multiparte](#definir-subtipo-multiparte)
-- [Definir nombre de fichero multiparte](#definir-nombre-de-fichero-multiparte)
-- [Definir archivo adjunto](#definir-archivo-adjunto)
-- [Definir archivo adjunto (fichero)](#definir-archivo-adjunto-fichero)
-- [Realizar llamada GET](#realizar-llamada-get)
-- [Realizar llamada DELETE](#realizar-llamada-delete)
-- [Realizar llamada PUT con mensaje](#realizar-llamada-put-con-mensaje)
-- [Realizar llamada PUT con mensaje (fichero)](#realizar-llamada-put-con-mensaje-fichero)
-- [Realizar llamada PATCH](#realizar-llamada-patch)
-- [Realizar llamada PATCH con mensaje](#realizar-llamada-patch-con-mensaje)
-- [Realizar llamada PATCH con mensaje (fichero)](#realizar-llamada-patch-con-mensaje-fichero)
-- [Realizar llamada POST](#realizar-llamada-post)
-- [Realizar llamada POST con mensaje](#realizar-llamada-post-con-mensaje)
-- [Realizar llamada POST con mensaje (fichero)](#realizar-llamada-post-con-mensaje-fichero)
-- [Comprobar código HTTP de respuesta](#comprobar-c%C3%B3digo-http-de-respuesta)
-- [Comprobar mensaje de respuesta](#comprobar-mensaje-de-respuesta)
-- [Comprobar mensaje de respuesta (fichero)](#comprobar-mensaje-de-respuesta-fichero)
-- [Comprobar fragmento de la respuesta](#comprobar-fragmento-de-la-respuesta)
-- [Comprobar tipo de contenido de la respuesta](#comprobar-tipo-de-contenido-de-la-respuesta)
-- [Comprobar tamaño de la respuesta](#comprobar-tama%C3%B1o-de-la-respuesta)
-- [Comprobar cabecera](#comprobar-cabecera)
-- [Comprobar esquema de la respuesta](#comprobar-esquema-de-la-respuesta)
-- [Comprobar esquema de la respuesta (fichero)](#comprobar-esquema-de-la-respuesta-fichero)
+## Tabla de contenido
 
 ---
-
 
 ## Configuración
 
----
 ###  `rest.baseURL`
 Establece la URL base para las llamadas REST. Esto es equivalente al paso `{word} como el tipo de contenido REST` si se
 prefiere una declaración más descriptiva.
@@ -293,11 +234,10 @@ rest:
       max: 150
 ```
 
-
+---
 
 ## Pasos
 
----
 ### Definir tipo de contenido
 ```
 {type} como el tipo de contenido REST
@@ -351,6 +291,7 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
 
 ---
 ### Definir identificador
+###### Deprecated
 ```
 * identificad(o|a|os|as) por {text}
 ```
@@ -637,7 +578,7 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
 ```
 
 ---
-### Borrar autenticación
+### Limpiar autenticación
 ```
 (que) el servicio no usa autenticación
 ```
@@ -1011,10 +952,41 @@ Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 ```gherkin
   Entonces la respuesta es exactamente:
     """json
-    {
-        "age": 23,
-        "name": "John"
-    }
+    [
+        {
+            "age": 46,
+            "name": "Michael"
+        },
+        {
+            "age": 23,
+            "name": "John"
+        }
+    ]
+    """
+```
+```gherkin
+  Entonces la respuesta es exactamente (en cualquier orden):
+    """json
+    [
+        {
+            "age": 23,
+            "name": "John"
+        },
+        {
+            "name": "Michael",
+            "age": 46
+        }
+    ]
+    """
+```
+```gherkin
+  Entonces la respuesta es parcialmente:
+    """json
+    [
+        {
+            "name": "John"
+        }
+    ]
     """
 ```
 
@@ -1043,19 +1015,106 @@ Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados 
   Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
 ```
 
+
 ---
 ### Comprobar fragmento de la respuesta
 ```
-el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
+el fragmento de la respuesta {fragment} es exactamente:
 ```
-Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta dada
-(usando [JSONPath][jsonpath] o [XPath][xpath] dependiendo del tipo de contenido).
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, incluyendo el orden de los 
+campos.
+```
+el fragmento de la respuesta {fragment} es exactamente \(en cualquier orden\):
+```
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, pero pueden llegar los campos 
+en diferente orden.
+```
+el fragmento de la respuesta {fragment} es parcialmente:
+```
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) incluya, al menos, los campos indicados.
 
 ##### Parámetros:
-| Nombre     | Wakamiti type  | Descripción                 |
-|------------|----------------|-----------------------------|
-| `fragment` | `text`         | Una ruta JSONPath or XPath  |
-| `matcher`  | `*-assertion`  | El comparador del fragmento |
+| Nombre     | Wakamiti type | Descripción                      |
+|------------|---------------|----------------------------------|
+| `fragment` | `text`        | Una ruta JSONPath, XPath o GPath |
+|            | `document`    | El contenido esperado            |
+
+##### Ejemplos:
+```gherkin
+  Entonces el fragmento de la respuesta 'users[1]' es exactamente:
+    """json
+    {
+        "age": 23,
+        "name": "John"
+    }
+    """
+```
+```gherkin
+  Entonces el fragmento de la respuesta 'users[1]' es exactamente \(en cualquier orden\):
+    """json
+    {
+        "name": "John",
+        "age": 23
+    }
+    """
+```
+```gherkin
+  Entonces el fragmento de la respuesta 'users[1]' es parcialmente:
+    """json
+    {
+        "name": "John"
+    }
+    """
+```
+
+---
+### Comprobar fragmento de la respuesta (fichero)
+```
+la respuesta es exactamente el contenido del fichero {file}
+```
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, incluyendo el 
+orden de los campos.
+```
+la respuesta es exactamente el contenido del fichero {file} \(en cualquier orden\)
+```
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, pero pueden 
+llegar los campos en diferente orden.
+```
+la respuesta es parcialmente el contenido del fichero {file}
+```
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) incluya, al menos, los campos indicados en el fichero.
+
+##### Parámetros:
+| Nombre     | Wakamiti type | Descripción                      |
+|------------|---------------|----------------------------------|
+| `fragment` | `text`        | Una ruta JSONPath, XPath o GPath |
+| `file`     | `file`        | Un fichero existente             |
+
+##### Ejemplos:
+```gherkin
+  Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
+```
+
+
+---
+### Comprobar fragmento de la respuesta (valor)
+```
+el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
+```
+Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta 
+dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido).
+
+##### Parámetros:
+| Nombre     | Wakamiti type  | Descripción                      |
+|------------|----------------|----------------------------------|
+| `fragment` | `text`         | Una ruta JSONPath, XPath o GPath |
+| `matcher`  | `*-assertion`  | El comparador del fragmento      |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
 ##### Ejemplos:
@@ -1198,4 +1257,5 @@ esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Sche
 [jsonpath]: https://goessner.net/articles/JsonPath/
 [xmlschema]: https://www.w3.org/2001/XMLSchema (XML Schema)
 [xpath]: https://en.wikipedia.org/wiki/XPath (XPath)
+[gpath]: https://accenture.github.io/bdd-for-all/GPATH.html (GPath)
 [1]: wakamiti/architecture#comparadores
