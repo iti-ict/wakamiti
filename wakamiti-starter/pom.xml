@@ -301,21 +301,21 @@
             <build>
                 <plugins>
                     <!-- This plugin disable the deploy for artifacts that already exists -->
-                    <plugin>
-                        <groupId>org.honton.chas</groupId>
-                        <artifactId>exists-maven-plugin</artifactId>
-                        <version>${exists-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>remote</goal>
-                                </goals>
-                                <configuration>
-                                    <repository>https://repo.maven.apache.org/maven2/</repository>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+<!--                    <plugin>-->
+<!--                        <groupId>org.honton.chas</groupId>-->
+<!--                        <artifactId>exists-maven-plugin</artifactId>-->
+<!--                        <version>${exists-maven-plugin.version}</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <goals>-->
+<!--                                    <goal>remote</goal>-->
+<!--                                </goals>-->
+<!--                                <configuration>-->
+<!--                                    <repository>https://repo.maven.apache.org/maven2/</repository>-->
+<!--                                </configuration>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                    </plugin>-->
 
                     <!-- generate additional jar with sources -->
                     <plugin>
