@@ -20,7 +20,7 @@
       "language" : "en",
       "source" : "definition.feature[6,1]",
       "displayName" : "[ID-1] Scenario: Test scenario",
-      "tags" : [ "definition", "ID-1" ],
+      "tags" : [ "ID-1","definition"],
       "properties" : {
         "gherkinType" : "scenario",
         "featureName" : "Test feature [Spanish]",
@@ -31,7 +31,7 @@
         "name" : "Estos son los antecedentes",
         "keyword" : "Antecedentes",
         "displayName" : "Antecedentes: Estos son los antecedentes",
-        "tags" : [ "implementation", "ID-1" ],
+        "tags" : [ "ID-1","implementation"],
         "properties" : {
           "gherkinType" : "background",
           "redefinition.stepMap" : "2-1-2"

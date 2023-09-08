@@ -74,6 +74,12 @@ public class StepPropertyEvaluatorTest {
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
                 "${2#}", json.toString()
         ));
+
+        result = resolver.eval("${-4#}");
+        assertThat(result.value()).isEqualTo(json.toString());
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${-4#}", json.toString()
+        ));
     }
 
     @Test
@@ -113,6 +119,12 @@ public class StepPropertyEvaluatorTest {
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
                 "${4#}", json.toString()
         ));
+
+        result = resolver.eval("${-2#}");
+        assertThat(result.value()).isEqualTo(json.toString());
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${-2#}", json.toString()
+        ));
     }
 
     @Test
@@ -146,6 +158,12 @@ public class StepPropertyEvaluatorTest {
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
                 "${3#}", xml.toString()
         ));
+
+        result = resolver.eval("${-3#}");
+        assertThat(result.value()).isEqualTo(xml.toString());
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${-3#}", xml.toString()
+        ));
     }
 
     @Test
@@ -178,6 +196,12 @@ public class StepPropertyEvaluatorTest {
         assertThat(result.value()).isEqualTo(xml.toString());
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
                 "${5#}", xml.toString()
+        ));
+
+        result = resolver.eval("${-1#}");
+        assertThat(result.value()).isEqualTo(xml.toString());
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${-1#}", xml.toString()
         ));
     }
 

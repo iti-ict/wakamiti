@@ -16,14 +16,14 @@ Ten en cuenta que este tutorial asume que tienes:
 - Comprensión básica de la sintaxis de `gherkin`.
 
 Antes de empezar, necesitarás lo siguiente:
-- Instalar [Docker](https://www.docker.com/get-started/).
+- Instalar y arrancar [Docker](https://www.docker.com/get-started/).
 - Instalar un IDE, como [IntelliJ IDEA](https://www.jetbrains.com/idea/) o [VS Code](https://code.visualstudio.com/).
-- El código fuente de [este tutorial](https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
+- El código fuente de [este tutorial](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
 
 
 ### 1. Configurar Wakamiti
-La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio raíz de la carpeta 
-donde se ubiquen los tests, por ejemplo:
+La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen los 
+tests, por ejemplo:
 ```
 .
 ├── features
@@ -52,8 +52,9 @@ wakamiti:
       username: user
       password: p4ssw0rd
 ```
-Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](plugins).
-También puedes consultar otras opciones de [configuración global](wakamiti/architecture#configuración-global).
+> **NOTA** <br />
+> Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](plugins).
+> También puedes consultar otras opciones de [configuración global](wakamiti/architecture#configuración-global).
 
 
 ### 2. Definir escenario
@@ -113,9 +114,11 @@ docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```Shell
 docker run --rm -v "$(pwd):/wakamiti" wakamiti/wakamiti
 ```
-Con este comando, se bajará la última versión de wakamiti, para trabajar con una versión específica, se debe de indicar 
-en el comando docker: `wakamiti/wakamiti:version`, se pueden ver las versiones disponibles en el repositorio
-de [dockerhub de Wakamiti](https://hub.docker.com/r/wakamiti/wakamiti/tags).
+Con este comando, se lanzarán todos los tests que haya en el directorio, 
+utilizando la última versión de wakamiti. Para trabajar con una versión 
+específica, se debe de indicar en el comando docker: `wakamiti/wakamiti:version`, 
+se pueden ver las versiones disponibles en el repositorio de 
+[dockerhub de Wakamiti](https://hub.docker.com/r/wakamiti/wakamiti/tags).
 
 
 ### 4.Informes

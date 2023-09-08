@@ -17,10 +17,6 @@
             <outputDirectory>lib</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
             <useProjectArtifact>false</useProjectArtifact>
-            <excludes>
-                <exclude>com.google.code.findbugs:jsr305</exclude>
-                <exclude>org.hamcrest:hamcrest-core</exclude>
-            </excludes>
         </dependencySet>
     </dependencySets>
     <fileSets>

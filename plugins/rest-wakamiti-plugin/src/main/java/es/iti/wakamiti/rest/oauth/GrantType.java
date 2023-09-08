@@ -9,6 +9,7 @@ package es.iti.wakamiti.rest.oauth;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public enum GrantType {
 
     /**

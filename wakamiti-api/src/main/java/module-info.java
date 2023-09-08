@@ -16,6 +16,7 @@ module es.iti.wakamiti.api {
     requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive org.slf4j;
+    requires transitive org.apache.commons.lang3;
 
     requires org.hamcrest;
     requires slf4jansi;
@@ -24,9 +25,7 @@ module es.iti.wakamiti.api {
     requires org.apache.xmlbeans;
     requires com.fasterxml.jackson.databind;
     requires json.path;
-    requires commons.beanutils;
-    requires org.apache.commons.lang3;
-    requires org.codehaus.groovy;
+    requires org.apache.groovy;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 
     private final List<String> description = new ArrayList<>();
-    private final Set<String> tags = new HashSet<>();
+    private final Set<String> tags = new LinkedHashSet<>();
     private final Map<String, String> properties = new HashMap<>();
 
     private NodeType nodeType;

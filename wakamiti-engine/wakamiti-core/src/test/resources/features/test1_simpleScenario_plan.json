@@ -20,7 +20,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[ID-Test1_Scenario1] Scenario: Test Scenario",
-      "tags" : [ "Test1", "ID-Test1_Scenario1" ],
+      "tags" : [ "ID-Test1_Scenario1","Test1"],
       "properties" : {
         "featureProperty" : "A",
         "gherkinType" : "scenario",

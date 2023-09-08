@@ -109,7 +109,6 @@ public class TestFileUploader {
     }
 
 
-
     private void produceEvents(
             Configuration c,
             AbstractFilesUploader filesUploader,

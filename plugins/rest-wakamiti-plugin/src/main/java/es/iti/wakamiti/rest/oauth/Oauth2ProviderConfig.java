@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.rest.oauth;
 
+
 import es.iti.wakamiti.api.WakamitiException;
 
 import java.net.URL;
@@ -12,7 +13,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
-import static org.codehaus.plexus.util.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 
 public class Oauth2ProviderConfig {
 

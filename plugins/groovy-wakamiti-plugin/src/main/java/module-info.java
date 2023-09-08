@@ -16,9 +16,8 @@ module es.iti.wakamiti.groovy {
     exports es.iti.wakamiti.groovy;
 
     requires transitive es.iti.wakamiti.api;
-    requires org.codehaus.groovy;
+    requires org.apache.groovy;
     requires iti.commons.jext;
-//    requires junit;
 
     uses ConfigContributor;
     uses StepContributor;

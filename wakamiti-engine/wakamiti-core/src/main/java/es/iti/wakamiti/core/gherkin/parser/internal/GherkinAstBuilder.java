@@ -12,13 +12,7 @@ package es.iti.wakamiti.core.gherkin.parser.internal;
 
 import static es.iti.wakamiti.core.gherkin.parser.internal.StringUtils.join;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import es.iti.wakamiti.core.gherkin.parser.Background;
@@ -319,7 +313,7 @@ public class GherkinAstBuilder implements Parser.Builder<GherkinDocument> {
         }
 
         List<Token> tokens = tagsNode.getTokens(Parser.TokenType.TagLine);
-        List<Tag> tags = new ArrayList<>();
+        List<Tag> tags = new LinkedList<>();
         for (Token token : tokens) {
             for (GherkinLineSpan tagItem : token.mathcedItems) {
                 tags.add(new Tag(getLocation(token, tagItem.column), tagItem.text));

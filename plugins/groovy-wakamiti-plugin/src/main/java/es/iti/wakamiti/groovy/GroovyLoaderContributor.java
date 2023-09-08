@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.groovy;
 
+import es.iti.wakamiti.api.WakamitiAPI;
 import groovy.lang.GroovyClassLoader;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.LoaderContributor;
@@ -51,6 +52,7 @@ public class GroovyLoaderContributor implements LoaderContributor {
         groovyPaths.stream().map(Path::getParent).map(Objects::toString).distinct()
                 .forEach(groovyClassLoader::addClasspath);
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
+        WakamitiAPI.instance().contributors().setClassLoaders(Thread.currentThread().getContextClassLoader());
 
         return groovyPaths.stream().map(this::loadClass)
                 .filter(Objects::nonNull);

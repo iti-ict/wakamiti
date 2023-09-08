@@ -16,13 +16,13 @@ Please be aware that this tutorial assumes that you have a:
 - Basic understanding of `gherkin` syntax.
 
 Before we begin, you will need the following:
-- Install [Docker](https://www.docker.com/get-started/).
+- Install and run [Docker](https://www.docker.com/get-started/).
 - Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/).
-- The source code of [this tutorial](https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
+- The source code of [this tutorial](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
 
 ### 1. Wakamiti configuration
-Wakamiti configuration is done by means of a `yaml` file that will be placed in the root directory of the folder where 
-the tests are located, for example:
+Wakamiti configuration is done by means of a `yaml` file that will be placed in the same directory where the tests are 
+located, for example:
 ```
 .
 ├── features
@@ -51,8 +51,9 @@ wakamiti:
       username: user
       password: p4ssw0rd
 ```
-Note that each plugin has its own configuration, which you can check in [their respective sections](en/plugins).
-You can also check other options in [global configuration](en/wakamiti/architecture#global-configuration).
+> **NOTE** <br />
+> Note that each plugin has its own configuration, which you can check in [their respective sections](en/plugins).
+> You can also check other options in [global configuration](en/wakamiti/architecture#global-configuration).
 
 
 ### 2. Scenario definition

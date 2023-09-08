@@ -19,7 +19,7 @@ Feature: REST Test Feature
     <name>User One</name>
 </item>
       """
-    And the text from response fragment 'data.contact.email' is 'user1@mail'
+    And the text from response fragment 'item.contact.email' is 'user1@mail'
     And the response satisfies the schema from the file 'src/test/resources/data/schema.xml'
 
   Scenario: URL with parameters
@@ -43,4 +43,11 @@ Feature: REST Test Feature
     </ArrayList>
       """
     And the text from response fragment 'ArrayList.item[1].id' is '2'
-    And the text from response fragment 'ArrayList.item[1].description' is not 'Cucumber'
+    And the text from response fragment '*.item[1].description' is not 'Cucumber'
+    And the response fragment 'ArrayList.item[1]' is:
+      """xml
+      <item>
+         <id>2</id>
+         <description>Gherkin</description>
+      </item>
+      """

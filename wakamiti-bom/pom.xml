@@ -40,6 +40,11 @@
                 <version>2.15.2</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>2.15.2</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>2.15.2</version>
@@ -60,6 +65,11 @@
                 <version>1.9.4</version>
             </dependency>
             <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.15</version>
@@ -68,11 +78,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
-            </dependency>
-            <dependency>
-                <groupId>es.iti.commons</groupId>
-                <artifactId>jext</artifactId>
-                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.luiinge</groupId>
@@ -163,9 +168,9 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-bom</artifactId>
-                <version>3.0.9</version>
+                <version>4.0.13</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
