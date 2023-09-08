@@ -18,7 +18,29 @@
 
 
     <name>Wakamiti Bill of Materials</name>
-
+    <description>Wakamiti Bill of Materials</description>
+    <inceptionYear>2023</inceptionYear>
+    <organization>
+        <name>ITI - Instituto Tecnológico de Informática</name>
+        <url>https://www.iti.es</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>MPL-2.0</name>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/iti-ict/wakamiti/issues</url>
+    </scm>
+    <developers>
+        <developer>
+            <email>luiinge@gmail.com</email>
+        </developer>
+        <developer>
+            <email>mgalbis@iti.es</email>
+        </developer>
+    </developers>
 
     <dependencyManagement>
 
@@ -198,8 +220,8 @@
 
 
 
-<!--    <build>-->
-<!--        <plugins>-->
+    <build>
+        <plugins>
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
 <!--                <artifactId>maven-deploy-plugin</artifactId>-->
@@ -208,8 +230,22 @@
 <!--                    <skip>true</skip>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
