@@ -5,10 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [Unreleased]
+## [2.3.0] - 2023-09-08
 
 ### Added
-- It is allowed to obtain the result of a step relatively by indicating a negative number.
+- A dynamic property is allowed to obtain the result of a step relatively, indicating a negative number.
 
 ### Fixed
 - The filtered scenarios results appear as `SKIPPED`

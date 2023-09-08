@@ -29,7 +29,7 @@ import es.iti.wakamiti.database.ConnectionParameters;
                                                                                                                                // bean
                                                                                                                                // infrastructure
                                                                                                                                // will
-                                                                                                                               // manage
+                                                                                                                               // managed
                                                                                                                                // the
                                                                                                                                // lifecycle
                 overrides =  "es.iti.wakamiti.database.DriverConnectionManager")

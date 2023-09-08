@@ -6,10 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [Unreleased]
-
-### Added
-- `StepPropertyEvaluator` allows to get the result of a step using a negative index
+## [2.3.0] - 2023-09-08
 
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-core`

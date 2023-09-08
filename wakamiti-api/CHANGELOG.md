@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [Unreleased]
+## [2.3.0] - 2023-09-08
 
 ### Changed
 - Upgrade dependencies: `es.iti.commons:jext`, `org.apache.groovy`
@@ -15,9 +15,6 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 - JsonUtils and XmlUtils issues when return null values
-
-### Added
-- New steps multipart forms
 
 ## [2.1.1] - 2023-07-07
 
