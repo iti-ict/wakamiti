@@ -196,7 +196,7 @@ public class RestSupport {
             try {
                 Object result = supplier.get();
                 if (result == null || result.toString().isEmpty()) {
-                    throw new Exception();
+                    throw new NullPointerException();
                 }
                 return result;
             } catch (Exception ignored) {

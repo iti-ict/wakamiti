@@ -32,11 +32,11 @@ public class JsonUtils {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
-                throw new RuntimeException("Single value not allowed");
+                throw new IllegalArgumentException("Single value not allowed");
             }
             return result;
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonRuntimeException(e);
         }
     }
 
@@ -44,11 +44,11 @@ public class JsonUtils {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
-                throw new RuntimeException("Single value not allowed");
+                throw new IllegalArgumentException("Single value not allowed");
             }
             return result;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JsonRuntimeException(e);
         }
     }
 
@@ -56,7 +56,7 @@ public class JsonUtils {
         try {
             return json(MAPPER.writeValueAsString(input));
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonRuntimeException(e);
         }
     }
 
@@ -81,4 +81,10 @@ public class JsonUtils {
         }
     }
 
+    private static class JsonRuntimeException extends RuntimeException {
+
+        JsonRuntimeException(Throwable cause) {
+            super(cause);
+        }
+    }
 }

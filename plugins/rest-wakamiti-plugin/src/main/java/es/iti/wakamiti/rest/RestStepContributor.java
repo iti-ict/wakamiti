@@ -69,7 +69,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * RestStepContributor#setPathParameters(DataTable)} instead.
      */
     @Step("rest.define.subject")
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public void setSubject(String subject) {
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }

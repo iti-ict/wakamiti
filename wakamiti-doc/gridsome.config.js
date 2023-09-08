@@ -38,6 +38,7 @@ module.exports = {
         typeName: 'Doc',
         remark: {
           plugins: [
+            ['remark-toc', { heading: "Table of content|Tabla de contenido", maxDepth: 3}],
             '@gridsome/remark-prismjs',
             ["@mgalbis/remark-prefix-links", { pathPrefix }]
           ]
@@ -48,9 +49,9 @@ module.exports = {
       use: "gridsome-plugin-i18n",
       options: {
         locales: [ 'es', 'en' ],
-        fallbackLocale: 'es', // fallback language
-        defaultLocale, // default language
-        enablePathRewrite: false, // rewrite path with locale prefix, default: true
+        fallbackLocale: 'es',          // fallback language
+        defaultLocale,                 // default language
+        enablePathRewrite: false,      // rewrite path with locale prefix, default: true
         rewriteDefaultLanguage: false, // rewrite default locale, default: true
         enablePathGeneration: false,
         routes: {

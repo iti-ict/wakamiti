@@ -2,71 +2,12 @@
 This plugin provides a set of steps to interact with a RESTful API.
 
 ---
+## Table of content
 
-**Configuration**:
-- [`rest.baseURL`](#restbaseurl)
-- [`rest.contentType`](#restcontenttype)
-- [`rest.httpCodeThreshold`](#resthttpcodethreshold)
-- [`rest.timeout`](#resttimeout)
-- [`rest.oauth2.url`](#restoauth2url)
-- [`rest.oauth2.clientId`](#restoauth2clientid)
-- [`rest.oauth2.clientSecret`](#restoauth2clientsecret)
-- [`rest.oauth2.cached`](#restoauth2cached)
-- [`rest.oauth2.parameters`](#restoauth2parameters)
-- [`rest.config.multipart.subtype`](#restconfigmultipartsubtype)
-- [`rest.config.multipart.filename`](#restconfigmultipartfilename)
-- [`rest.config.redirect.follow`](#restconfigredirectfollow)
-- [`rest.config.redirect.allowCircular`](#restconfigredirectallowcircular)
-- [`rest.config.redirect.rejectRelative`](#restconfigredirectrejectrelative)
-- [`rest.config.redirect.max`](#restconfigredirectmax)
-
-
-**Steps**:
-- [Define content type](#define-content-type)
-- [Define base URL](#define-base-url)
-- [Define service](#define-service)
-- [Define id](#define-id)
-- [Define parameters or headers](#define-parameters-or-headers)
-- [Define parameters or headers (table)](#define-parameters-or-headers-table)
-- [Define timeout](#define-timeout)
-- [Define HTTP code threshold](#define-http-code-threshold)
-- [Define basic authentication](#define-basic-authentication)
-- [Define oauth2 authentication](#define-oauth2-authentication)
-- [Define oauth2 authentication by token](#define-oauth2-authentication)
-- [Define oauth2 authentication by token (file)](#define-oauth2-authentication-file)
-- [Define oauth2 authentication by credentials](#define-oauth2-authentication-by-credentials)
-- [Define oauth2 authentication by client](#define-oauth2-authentication-by-client)
-- [Clear authentication](#clear-authentication)
-- [Define multipart subtype](#define-multipart-subtype)
-- [Define multipart filename](#define-multipart-filename)
-- [Define attached file](#define-attached-file)
-- [Define attached file (file)](#define-attached-file-file)
-- [Execute GET request](#execute-get-request)
-- [Execute DELETE request](#execute-delete-request)
-- [Execute PUT request with body](#execute-put-request-with-body)
-- [Execute PUT request with body (file)](#execute-put-request-with-body-file)
-- [Execute PATCH request](#execute-patch-request)
-- [Execute PATCH request with body](#execute-patch-request-with-body)
-- [Execute PATCH request with body (file)](#execute-patch-request-with-body-file)
-- [Execute POST request](#execute-post-request)
-- [Execute POST request with body](#execute-post-request-with-body)
-- [Execute POST request with body (file)](#execute-post-request-with-body-file)
-- [Check response HTTP code](#check-response-http-code)
-- [Check response body](#check-response-body)
-- [Check response body (file)](#check-response-body-file)
-- [Check response body fragment](#check-response-body-fragment)
-- [Check response content type](#check-response-content-type)
-- [Check response size](#check-response-size)
-- [Check response header](#check-response-header)
-- [Check response schema](#check-response-schema)
-- [Check response schema (file)](#check-response-schema-file)
-
-
-
+---
 
 ## Configuration
 
----
 ###  `rest.baseURL`
 Set the base URL for subsequents API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you
 prefer the descriptive configuration.
@@ -292,9 +233,9 @@ rest:
 ```
 
 
+---
 ## Steps
 
----
 ### Define content type
 ```
 the REST content type {word}
@@ -347,6 +288,7 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 
 ---
 ### Define id
+###### Deprecated
 ```
 * identified by {text}
 ```
@@ -978,15 +920,15 @@ Validate that the HTTP code of the last response satisfies the given assertion.
 ```
 the response is:
 ```
-Validates that the last response body is exactly the content of the in-document content.
+Validates that the response body is exactly the content of the in-document content.
 ```
 the response is \(in any order\):
 ```
-Validates that the last response body has all the elements specified by the in-document content, but in any order.
+Validates that the response body has all the elements specified by the in-document content, but in any order.
 ```
 the response contains:
 ```
-Validates that the last response body contains the given in-document content.
+Validates that the response body contains the given in-document content.
 
 ##### Parameters:
 | Name | Wakamiti type | Description                  |
@@ -996,11 +938,42 @@ Validates that the last response body contains the given in-document content.
 ##### Examples:
 ```gherkin
   Then the response is:
-"""json
-    {
-        "age": 23,
-        "name": "John"
-    }
+    """json
+    [
+        {
+            "age": 46,
+            "name": "Michael"
+        },
+        {
+            "age": 23,
+            "name": "John"
+        }
+    ]
+    """
+```
+```gherkin
+  Then the response is (in any order):
+    """json
+    [
+        {
+            "age": 23,
+            "name": "John"
+        },
+        {
+            "name": "Michael",
+            "age": 46
+        }
+    ]
+    """
+```
+```gherkin
+  Then the response contains:
+    """json
+    [
+        {
+            "name": "John"
+        }
+    ]
     """
 ```
 
@@ -1009,15 +982,15 @@ Validates that the last response body contains the given in-document content.
 ```
 the response is equal to the file {file}
 ```
-Validates that the last response body is exactly the content of the given file.
+Validates that the response body is exactly the content of the given file.
 ```
 the response is equal to the file {file} \(in any order\)
 ```
-Validates that the last response body has all the elements provided by the given file, but in any order.
+Validates that the response body has all the elements provided by the given file, but in any order.
 ```
 the response contains the file {file}
 ```
-Validates that the last response body contains the content of the given file.
+Validates that the response body contains the content of the given file.
 
 ##### Parameters:
 | Name   | Wakamiti type | Description      |
@@ -1029,19 +1002,101 @@ Validates that the last response body contains the content of the given file.
   Then the response contains the file 'data/response1.json'
 ```
 
+
 ---
 ### Check response body fragment
 ```
+the response fragment {fragment} is:
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of 
+the in-document content.
+```
+the response fragment {fragment} is \(in any order\):
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified 
+by the in-document content, but in any order.
+```
+the response fragment {fragment} contains:
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document 
+content.
+
+##### Parameters:
+| Name       | Wakamiti type | Description                      |
+|------------|---------------|----------------------------------|
+| `fragment` | `text`        | A JSONPath, XPath or GPath query |
+|            | `document`    | The expected partial content     |
+
+##### Examples:
+```gherkin
+  Then the response fragment 'users[1]' is:
+    """json
+    {
+        "age": 23,
+        "name": "John"
+    }
+    """
+```
+```gherkin
+  Then the response fragment 'users[1]' is (in any order):
+    """json
+    {
+        "name": "John",
+        "age": 23
+    }
+    """
+```
+```gherkin
+  Then the response fragment 'users[1]' contains:
+    """json
+    {
+        "name": "John"
+    }
+    """
+```
+
+---
+### Check response body fragment (file)
+```
+the response is equal to the file {file}
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of the 
+given file.
+```
+the response is equal to the file {file} \(in any order\)
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
+by the given file, but in any order.
+```
+the response contains the file {file}
+```
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given file.
+
+##### Parameters:
+| Name       | Wakamiti type | Description                      |
+|------------|---------------|----------------------------------|
+| `fragment` | `text`        | A JSONPath, XPath or GPath query |
+| `file`     | `file`        | An existing file                 |
+
+##### Examples:
+```gherkin
+  Then the response fragment 'users[1]' contains the file 'data/response1.json'
+```
+
+
+---
+### Check response body fragment (value)
+```
 the (text|integer|decimal) from response fragment {fragment} {matcher}
 ```
-Validates the value from a [JSONPath][jsonpath] or [XPath][xpath] response fragment according a
+Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment according a
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name       | Wakamiti type  | Description               |
-|------------|----------------|---------------------------|
-| `fragment` | `text`         | A JSONPath or XPath query |
-| `matcher`  | `*-assertion`  | [Comparator][1]           |
+| Name       | Wakamiti type  | Description                      |
+|------------|----------------|----------------------------------|
+| `fragment` | `text`         | A JSONPath, XPath or GPath query |
+| `matcher`  | `*-assertion`  | [Comparator][1]                  |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -1184,4 +1239,5 @@ response header).
 [jsonpath]: https://goessner.net/articles/JsonPath/
 [xmlschema]: https://www.w3.org/2001/XMLSchema (XML Schema)
 [xpath]: https://en.wikipedia.org/wiki/XPath (XPath)
+[gpath]: https://accenture.github.io/bdd-for-all/GPATH.html (GPath)
 [1]: wakamiti/architecture#comparators
