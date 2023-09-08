@@ -5,13 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [2.1.1] - 2023-07-07
-
-## Fixed
-
-- Property `workingDir`
-
-## [2.1.0] - 2023-07-05
+## [Unreleased]
 
 ### Changed
 - Upgrade dependencies: `es.iti.commons:jext`, `org.apache.groovy`
