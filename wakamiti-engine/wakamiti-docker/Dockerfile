@@ -15,6 +15,8 @@ COPY src/entrypoint.sh /
 COPY target/assembly/staging $WAKAMITI_HOME/
 
 RUN mkdir -p $WAKAMITI_REPOSITORY \
+    && ln -s $WAKAMITI_REPOSITORY /repository \
+    && chmod +x /repository \
     && chmod +x /entrypoint.sh \
     && chmod +x $WAKAMITI_HOME/wakamiti \
     && echo $WAKAMITI_HOME >> ~/.profile \

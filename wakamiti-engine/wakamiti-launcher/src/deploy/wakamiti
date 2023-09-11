@@ -31,3 +31,7 @@ fi
 java -javaagent:${WAKAMITI_HOME}/wakamiti-launcher.jar \
   -classpath "$CLASSPATH" \
   es.iti.wakamiti.launcher.WakamitiLauncher "$@"
+
+status=$?
+echo "Wakamiti finished with exit code $status"
+exit $status

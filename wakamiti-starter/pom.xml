@@ -15,7 +15,7 @@
     <artifactId>wakamiti-starter</artifactId>
     <packaging>pom</packaging>
     <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
 
     <name>Wakamiti Starter</name>
@@ -80,7 +80,7 @@
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <jext.version>1.1.0</jext.version>
+        <jext.version>1.1.1</jext.version>
     </properties>
 
 
@@ -387,15 +387,109 @@
     <!-- Share versions of some common dependencies -->
 
     <dependencyManagement>
+
         <dependencies>
+
             <dependency>
-                <groupId>es.iti.wakamiti</groupId>
-                <artifactId>wakamiti-bom</artifactId>
-                <version>2.2.1</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.15.2</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.15.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.15.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>2.15.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>2.15.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.luiinge</groupId>
+                <artifactId>immutable-config</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.luiinge</groupId>
+                <artifactId>slf4j-ansi</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.19.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.19.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.19.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.21.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-bom</artifactId>
+                <version>4.0.13</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.36</version>
+            </dependency>
+
         </dependencies>
+
     </dependencyManagement>
 
 

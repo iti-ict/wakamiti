@@ -18,7 +18,7 @@
 
 
     <artifactId>io-wakamiti-plugin</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
 
     <name>[Wakamiti Plugin] Files Steps</name>
     <description>Files steps for Wakamiti</description>
@@ -36,7 +36,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -61,7 +60,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.1</version>
             <scope>test</scope>
         </dependency>
 

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+## [2.3.1] - 2023-09-08
+
+### Changed
+- Moved Bill of materials dependencies
+
+
 ## [2.3.0] - 2023-09-08
 
 ### Changed
@@ -16,10 +23,12 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - JsonUtils and XmlUtils issues when return null values
 
+
 ## [2.1.1] - 2023-07-07
 
 ### Fixed
 - Property `workingDir`
+
 
 ## [2.1.0] - 2023-07-05
 
@@ -28,6 +37,7 @@ and this project adheres to [Semantic Versioning][2].
 - Delete WakamitiVersion class
 - Add WakamitiLogger forName method
 - New property `workingDir`
+
 
 ## [2.0.1] - 2023-06-22
 

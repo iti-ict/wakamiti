@@ -52,7 +52,7 @@ public class WakamitiRunner {
             } else {
                 wakamiti.executePlan(plan, configuration);
             }
-            return plan.result().map(Result::isPassed).orElse(true);
+            return plan.result().map(Result::isPassed).orElse(false);
         } catch (ConfigurationException e) {
             WakamitiLauncher.logger()
                 .error("Error reading configuration: {}", e.getLocalizedMessage(), e);

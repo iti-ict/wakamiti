@@ -19,6 +19,3 @@ done
 
 echo Executing at $(date): wakamiti ${args[@]}
 wakamiti "$@"
-status=$?
-
-exit $status

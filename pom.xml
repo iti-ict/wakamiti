@@ -21,7 +21,6 @@
 
     <modules>
 
-        <module>wakamiti-bom</module>
         <module>wakamiti-starter</module>
         <module>wakamiti-plugin-starter</module>
         <module>wakamiti-api</module>

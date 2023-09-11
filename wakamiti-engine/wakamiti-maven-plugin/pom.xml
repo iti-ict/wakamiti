@@ -84,6 +84,11 @@
             <version>1.7.29</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-xml</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
