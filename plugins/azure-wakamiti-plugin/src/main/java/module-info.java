@@ -8,4 +8,5 @@ module es.iti.wakamiti.azure {
     requires es.iti.wakamiti.api;
     requires java.net.http;
     requires json.path;
+
 }
