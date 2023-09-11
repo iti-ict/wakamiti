@@ -26,8 +26,11 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
     public static final String AZURE_TAG = "azure.tag";
     public static final String AZURE_ATTACHMENTS = "azure.attachments";
     public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
+    public static final String AZURE_WORK_ITEM_TEST_CASE_TYPE = "azure.workItemTestCaseType";
+    public static final String AZURE_CREATE_ITEMS_IF_ABSENT = "azure.createItemsIfAbsent";
+    public static final String AZURE_TIME_ZONE_ADJUSTMENT = "azure.timeZoneAdjustment";
     public static final String DEFAULT_AZURE_TAG = "Azure";
-    public static final String DEFAULT_AZURE_API_VERSION = "5.0-preview";
+    public static final String DEFAULT_AZURE_API_VERSION = "6.0-preview";
 
 
     @Override
@@ -37,7 +40,9 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
             AZURE_CREDENTIALS_PASSWORD, "",
             AZURE_TAG, DEFAULT_AZURE_TAG,
             AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION,
-            AZURE_TEST_CASE_PER_FEATURE, "false"
+            AZURE_TEST_CASE_PER_FEATURE, "false",
+            AZURE_CREATE_ITEMS_IF_ABSENT, "true",
+            AZURE_TIME_ZONE_ADJUSTMENT, "0"
         );
     }
 
@@ -60,6 +65,9 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
         requiredProperty(configuration,azureReporter,AZURE_API_VERSION,AzureReporter::setApiVersion);
         azureReporter.setAttachments(configuration.getList(AZURE_ATTACHMENTS,String.class));
         azureReporter.setTestCasePerFeature(configuration.get(AZURE_TEST_CASE_PER_FEATURE,Boolean.class).orElse(Boolean.FALSE));
+        requiredProperty(configuration,azureReporter,AZURE_WORK_ITEM_TEST_CASE_TYPE, AzureReporter::setTestCaseType);
+        azureReporter.setCreateItemsIfAbsent(configuration.get(AZURE_CREATE_ITEMS_IF_ABSENT,Boolean.class).orElse(Boolean.TRUE));
+        azureReporter.setTimeZoneAdjustment(configuration.get(AZURE_TIME_ZONE_ADJUSTMENT,Integer.class).orElse(0));
     }
 
 
