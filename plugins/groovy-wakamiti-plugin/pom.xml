@@ -17,7 +17,7 @@
 
 
     <artifactId>groovy-wakamiti-plugin</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
 
     <name>[Wakamiti Plugin] Groovy Steps</name>
     <description>Groovy steps for Wakamiti</description>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.3.1</version>
+            <version>2.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

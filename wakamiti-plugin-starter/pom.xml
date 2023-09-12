@@ -6,7 +6,7 @@
     <parent>
         <artifactId>wakamiti-starter</artifactId>
         <groupId>es.iti.wakamiti</groupId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
@@ -24,7 +24,7 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.3.1</revision>
+        <revision>2.3.2</revision>
     </properties>
 
     <dependencies>
@@ -64,31 +64,6 @@
                 </configuration>
             </plugin>
 
-            <!-- flatten prior install, required since ${revision} is used -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.7</version>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten-clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

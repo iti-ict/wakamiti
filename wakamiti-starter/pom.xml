@@ -15,7 +15,7 @@
     <artifactId>wakamiti-starter</artifactId>
     <packaging>pom</packaging>
     <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
 
     <name>Wakamiti Starter</name>
@@ -80,7 +80,7 @@
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <jext.version>1.1.1</jext.version>
+        <jext.version>1.1.2</jext.version>
     </properties>
 
 
@@ -253,6 +253,7 @@
                         <organization/>
                         <scm/>
                         <developers/>
+                        <dependencyManagement/>
                     </pomElements>
                 </configuration>
             </plugin>

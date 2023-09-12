@@ -12,14 +12,14 @@
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-starter</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
     <!-- coordinates -->
     <groupId>es.iti.commons</groupId>
     <artifactId>jext</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 
     <!-- additional information -->
     <name>jExt</name>
