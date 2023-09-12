@@ -3,20 +3,18 @@
 # azureArea: ACS
 # azureIteration: ACS\\Iteración 1
 # azureSuite: Wakamiti Test Suite 2
-# azureTest: Wakamiti Feature One - Fail
+# azureTest: Wakamiti Feature Three - Ok
 Feature: Azure integration feature
 
 
   Scenario: Test Case B
-    * this step fails
+    * this step do nothing
 
 
   Scenario: Test Case C
-    * this step fails
+    * this step do nothing
 
 
   Scenario: Test Case A
     * this step do nothing
-
-
 

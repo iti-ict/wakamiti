@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class AzureReporter implements Reporter {
     public static final String AZURE_PLAN = "azurePlan";
     public static final String AZURE_SUITE = "azureSuite";
     public static final String AZURE_TEST = "azureTest";
+    public static final String AZURE_AREA = "azureArea";
+    public static final String AZURE_ITERATION = "azureIteration";
 
     private String host;
     private String credentialsUser;
@@ -40,6 +43,9 @@ public class AzureReporter implements Reporter {
     private String azureTag;
     private List<String> attachments;
     private boolean testCasePerFeature;
+    private String testCaseType;
+    private boolean createItemsIfAbsent;
+    private int timeZoneAdjustment;
 
 
     public void setHost(String host) {
@@ -78,6 +84,17 @@ public class AzureReporter implements Reporter {
         this.testCasePerFeature = testCasePerFeature;
     }
 
+    public void setTestCaseType(String testCaseType) {
+        this.testCaseType = testCaseType;
+    }
+
+    public void setCreateItemsIfAbsent(boolean createItemsIfAbsent) {
+        this.createItemsIfAbsent = createItemsIfAbsent;
+    }
+
+    public void setTimeZoneAdjustment(int timeZoneAdjustment) {
+        this.timeZoneAdjustment = timeZoneAdjustment;
+    }
 
 
     @Override
@@ -88,28 +105,56 @@ public class AzureReporter implements Reporter {
             credentialsUser,
             credentialsPassword,
             apiVersion,
+            testCaseType,
             LOGGER
         );
 
 
-        Map<String,List<PlanNodeSnapshot>> testCases = getTestCases(result, new HashMap<>());
+        Map<AzurePlan,Map<AzureSuite,List<PlanNodeSnapshot>>> testCases = getTestCases(result, new HashMap<>());
         if (testCases.isEmpty()) {
             return;
         }
 
+        for (var testCaseEntry: testCases.entrySet()) {
 
-        testCases.forEach((testPlan, planTestCases)->{
+            AzurePlan testPlan = testCaseEntry.getKey();
+            AzurePlan azurePlan = getAzurePlan(testPlan,api);
+            if (azurePlan == null) {
+                continue;
+            }
 
-            String planID = api.getPlanID(testPlan);
-            Map<String,String> testPoints = getTestPointsStatus(planID, planTestCases, api);
-            String runID = api.createRun(planID, testPoints.keySet(), testPlan + " - run by Wakamiti ");
-            api.updateRunResults(runID,testPoints);
-            attachFiles(runID, api);
+            for (var suiteEntry : testCaseEntry.getValue().entrySet()) {
 
-        });
+                String suiteName = suiteEntry.getKey().name();
+                AzureSuite azureSuite = getAzureSuite(azurePlan, suiteName, api);
+                if (azureSuite == null) {
+                    continue;
+                }
+
+                List<PlanNodeSnapshot> nodes = suiteEntry.getValue();
+
+                Map<String,PlanNodeSnapshot> testPoints = getTestPointsStatus(azureSuite, nodes, api);
+
+                String runID = api.createRun(
+                    azurePlan.id(),
+                    testPoints.keySet(),
+                testPlan.name() + " - run by Wakamiti ",
+                    adjustTimeZone(result.getStartInstant()),
+                    adjustTimeZone(result.getFinishInstant())
+                );
+                api.updateRunResults(runID,testPoints);
+                attachFiles(runID, api);
+
+            }
+        }
 
     }
 
+
+
+    private String adjustTimeZone(String datetime) {
+        return LocalDateTime.parse(datetime).plusHours(timeZoneAdjustment).toString();
+    }
 
 
     private void attachFiles(String runID, AzureApi api) {
@@ -128,7 +173,12 @@ public class AzureReporter implements Reporter {
     }
 
 
-    private Map<String,List<PlanNodeSnapshot>> getTestCases(PlanNodeSnapshot node, Map<String,List<PlanNodeSnapshot>> result) {
+
+
+    private Map<AzurePlan,Map<AzureSuite,List<PlanNodeSnapshot>>> getTestCases(
+        PlanNodeSnapshot node,
+        Map<AzurePlan,Map<AzureSuite,List<PlanNodeSnapshot>>> result
+    ) {
         boolean matchAzureTestCase = (testCasePerFeature ?
             node.getNodeType() == NodeType.AGGREGATOR && "feature".equals(node.getProperties().get("gherkinType")) :
             node.getNodeType() == NodeType.TEST_CASE
@@ -136,8 +186,14 @@ public class AzureReporter implements Reporter {
         if (matchAzureTestCase && node.getTags().contains(azureTag)) {
             String testPlan = property(node, AZURE_PLAN);
             String suiteName = property(node, AZURE_SUITE);
+            String area = property(node, AZURE_AREA, null);
+            String iteration = property(node, AZURE_ITERATION, null);
             if (testPlan != null && suiteName != null) {
-                result.computeIfAbsent(testPlan, x->new LinkedList<>()).add(node);
+                AzurePlan azurePlan = new AzurePlan(testPlan,area,iteration);
+                Map<AzureSuite,List<PlanNodeSnapshot>> suites = result.computeIfAbsent(azurePlan, x -> new HashMap<>());
+                AzureSuite azureSuite = new AzureSuite(suiteName);
+                List<PlanNodeSnapshot> nodes = suites.computeIfAbsent(azureSuite, x -> new LinkedList<>());
+                nodes.add(node);
             }
         } else if (node.getChildren() != null){
             node.getChildren().forEach(child -> getTestCases(child,result));
@@ -148,20 +204,66 @@ public class AzureReporter implements Reporter {
 
 
 
-    private Map<String,String> getTestPointsStatus(String planID, List<PlanNodeSnapshot> planTestCases, AzureApi api) {
-        Map<String,String> testPoints = new HashMap<>();
+
+    private Map<String,PlanNodeSnapshot> getTestPointsStatus(AzureSuite suite, List<PlanNodeSnapshot> planTestCases, AzureApi api) {
+        Map<String,PlanNodeSnapshot> testPoints = new HashMap<>();
         for (PlanNodeSnapshot testCase : planTestCases) {
-            String suiteName = property(testCase, AZURE_SUITE);
             String testName = property(testCase, AZURE_TEST, testCase.getName());
-            String suiteID = api.getTestSuiteID(planID, suiteName);
-            String testCaseID = api.getTestCaseID(planID,suiteID, testName);
+            String planID = suite.plan().id();
+            String suiteID = suite.id();
+            String testCaseID = getTestCase(suite, testName, api);
+            if (testCaseID == null) {
+                continue;
+            }
             testPoints.put(api.getTestPointID(
                 planID,
                 suiteID,
                 testCaseID
-            ), testCase.getResult().name());
+            ), testCase);
         }
         return testPoints;
+    }
+
+
+
+    private AzurePlan getAzurePlan(AzurePlan testPlan, AzureApi api) {
+        return api.getPlan(testPlan.name(), testPlan.area(), testPlan.iteration()).orElseGet(()-> {
+            if (createItemsIfAbsent) {
+                LOGGER.info("Creating new test plan '{}' [ {} / {} ]", testPlan.name(), testPlan.area(), testPlan.iteration());
+                return api.createPlan(testPlan.name(), testPlan.area(), testPlan.iteration());
+            } else {
+                LOGGER.warn("Test plan '{}' [ {} / {} ] is not defined and will be ignored", testPlan.name(), testPlan.area(), testPlan.iteration());
+                return null;
+            }
+        });
+    }
+
+
+
+    private AzureSuite getAzureSuite(AzurePlan azurePlan, String suiteName, AzureApi api) {
+        return api.getTestSuite(azurePlan, suiteName).orElseGet(()-> {
+            if (createItemsIfAbsent) {
+                LOGGER.info("Creating new test suite '{}'", suiteName);
+                return api.createSuite(azurePlan, suiteName);
+            } else {
+                LOGGER.warn("Test suite '{}' is not defined and will be ignored", suiteName);
+                return null;
+            }
+        });
+    }
+
+
+
+    private String getTestCase(AzureSuite suite, String testName, AzureApi api) {
+        return api.getTestCaseID(suite,testName).orElseGet(()-> {
+            if (createItemsIfAbsent) {
+                LOGGER.info("Creating new work item for test case '{}'", testName);
+                return api.createTestCase(suite,testName);
+            } else {
+                LOGGER.warn("Test case '{}' is not defined in Azure test plan and will be ignored", testName);
+                return null;
+            }
+        });
     }
 
 
