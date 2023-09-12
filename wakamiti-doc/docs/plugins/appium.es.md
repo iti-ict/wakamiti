@@ -18,7 +18,7 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 > plenamente funcional. Los pasos y la configuración indicada pueden variar en futuras versiones.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Configuración

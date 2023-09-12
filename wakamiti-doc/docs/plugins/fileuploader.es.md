@@ -10,7 +10,7 @@ Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Configuración

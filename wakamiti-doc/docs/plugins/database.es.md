@@ -16,7 +16,7 @@ validación de datos.
 
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Configuración

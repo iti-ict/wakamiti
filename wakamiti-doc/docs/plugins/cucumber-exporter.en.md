@@ -14,7 +14,7 @@ whereas Cucumber expects a fixed three-level structure. Thus, the exported Cucum
 representation of the executed test plan.
 
 ---
-## toc
+## Table of content
 
 ---
 ## Configuration

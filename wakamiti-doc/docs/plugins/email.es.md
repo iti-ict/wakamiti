@@ -14,7 +14,7 @@ Por ejemplo, para validar que una aplicación envía correos como consecuencia d
 operación como una petición REST.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Coordenadas

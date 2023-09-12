@@ -14,7 +14,7 @@ profundidad ilimitada, mientras que Cucumber espera una estructura fija de tres 
 de Cucumber exportado podría no ser una representación fiel del plan de prueba ejecutado.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Configuración

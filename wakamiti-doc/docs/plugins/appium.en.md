@@ -20,7 +20,7 @@ for this.
 > versions.
 
 ---
-## toc
+## Table of content
 
 ---
 ## Configuration

@@ -52,7 +52,7 @@ En caso de que la ejecución de Wakamiti incluya casos de tests de varios planes
 se creará una ejecución Azure distinta por cada uno de ellos.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Coordenadas

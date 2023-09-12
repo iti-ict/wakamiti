@@ -51,7 +51,7 @@ In case the Wakamiti plan includes test cases from several Azure test plans, the
 a diferent run for each one of them.
 
 ---
-## toc
+## Table of content
 
 ---
 ## Coordinates

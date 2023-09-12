@@ -11,7 +11,7 @@ The underlying implementation is based on [RabbitMQ](https://rabbitmq.com), alth
 Currently, this library provides very limited functionality and exists mostly as a proof of concept.
 
 ---
-## toc
+## Table of content
 
 ---
 ## Configuration

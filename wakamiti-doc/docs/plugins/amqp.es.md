@@ -12,7 +12,7 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 Actualmente, esta librería proporciona una funcionalidad muy limitada y existe como prueba de concepto.
 
 ---
-## toc
+## Tabla de contenido
 
 ---
 ## Configuración

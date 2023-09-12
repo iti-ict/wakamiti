@@ -15,7 +15,7 @@ assert data.
 > require.
 
 ---
-## toc
+## Table of content
 
 ---
 ## Configuración
