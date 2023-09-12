@@ -10,6 +10,8 @@ A report generator in `HTML` format with the tests results.
 ## Table of content
 
 ---
+
+---
 ## Configuration
 
 

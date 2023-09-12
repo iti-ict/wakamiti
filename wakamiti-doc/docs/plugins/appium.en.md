@@ -23,6 +23,8 @@ for this.
 ## Table of content
 
 ---
+
+---
 ## Configuration
 
 > You can specify any capability to be passed to the Web Driver using the proper property key in

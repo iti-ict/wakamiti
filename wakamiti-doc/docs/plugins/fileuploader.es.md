@@ -13,6 +13,8 @@ Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 

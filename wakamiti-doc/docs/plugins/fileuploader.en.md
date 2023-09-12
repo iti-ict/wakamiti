@@ -14,6 +14,8 @@ it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPU
 ## Table of content
 
 ---
+
+---
 ## Configuration
 
 

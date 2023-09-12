@@ -10,6 +10,8 @@ Un generador de informes en formato `HTML` con los resultados de las pruebas.
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 

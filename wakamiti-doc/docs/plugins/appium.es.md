@@ -21,6 +21,8 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 

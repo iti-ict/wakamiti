@@ -15,6 +15,8 @@ Actualmente, esta librería proporciona una funcionalidad muy limitada y existe 
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 

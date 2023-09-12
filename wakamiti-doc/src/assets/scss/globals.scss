@@ -81,3 +81,17 @@ td, th {
 table {
   margin-bottom: 10px;
 }
+
+#toc {
+  padding-left: 0;
+
+  & > li {
+    list-style-type: none;
+    font-weight: bold;
+  }
+
+  & li li {
+    list-style-type: disc;
+    font-weight: normal;
+  }
+}

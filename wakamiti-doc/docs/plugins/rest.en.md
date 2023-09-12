@@ -11,6 +11,8 @@ This plugin provides a set of steps to interact with a RESTful API.
 ## Table of content
 
 ---
+
+---
 ## Configuration
 
 ###  `rest.baseURL`

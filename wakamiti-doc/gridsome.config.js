@@ -52,7 +52,7 @@ module.exports = {
                 node.children = [
                   ...node.children.slice(0, result.index-1),
                   result.map,
-                  ...node.children.slice(result.endIndex)
+                  ...node.children.slice(result.endIndex-1)
                 ]
               }
             },

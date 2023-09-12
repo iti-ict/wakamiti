@@ -17,6 +17,8 @@ de Cucumber exportado podría no ser una representación fiel del plan de prueba
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 
