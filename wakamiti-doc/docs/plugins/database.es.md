@@ -23,7 +23,7 @@ validación de datos.
 ---
 ## Configuración
 
----
+
 ### `database.connection.url`
 Establece la URL de conexión a la base de datos con esquema JDBC. El driver usado para acceder a la base de datos se
 determinará a partir del formato de URL indicado.

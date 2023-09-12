@@ -84,7 +84,7 @@ wakamiti:
 ## Configuración
 
 
-####  `azure.host`
+###  `azure.host`
 La dirección de la máquina donde está alojado el servidor Azure.
 
 Ejemplo:
@@ -97,7 +97,7 @@ azure:
 
 <br /><br />
 
-####  `azure.credentials.user`
+###  `azure.credentials.user`
 El nombre de usuario que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
 
 Ejemplo:
@@ -111,7 +111,7 @@ azure:
 
 <br /><br />
 
-####  `azure.credentials.password`
+###  `azure.credentials.password`
 El password que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
 
 Ejemplo:
@@ -125,7 +125,7 @@ azure:
 
 <br /><br />
 
-####  `azure.apiVersion`
+###  `azure.apiVersion`
 El número de versión de la API REST de Azure que se va a usar para enviar las notificaciones.
 
 El valor por defecto es `5.0-preview`.
@@ -140,7 +140,7 @@ azure:
 
 <br /><br />
 
-####  `azure.organization`
+###  `azure.organization`
 El nombre de la organización en Azure al que pertenece el plan de test.
 
 Ejemplo:
@@ -153,7 +153,7 @@ azure:
 
 <br /><br />
 
-####  `azure.project`
+###  `azure.project`
 El nombre del proyecto Azure al que pertenece el plan de test.
 
 Ejemplo:
@@ -166,7 +166,7 @@ azure:
 
 <br /><br />
 
-####  `azure.tag`
+###  `azure.tag`
 La etiqueta que se buscará a la hora de determinar si se debe realizar o no la integración
 con Azure.
 
@@ -182,7 +182,7 @@ azure:
 
 <br /><br />
 
-####  `azure.attachments`
+###  `azure.attachments`
 Una lista de ficheros, o de patrones de nombre de fichero en formato _glob_, que 
 se adjuntarán a la ejecución Azure.
 
@@ -198,7 +198,7 @@ azure:
 
 <br /><br />
 
-#### `azure.testCasePerFeature`
+### `azure.testCasePerFeature`
 Establece si el mapeo con los casos de test de Azure debe ser a nivel de feature o de escenario.
 
 Ejemplo:

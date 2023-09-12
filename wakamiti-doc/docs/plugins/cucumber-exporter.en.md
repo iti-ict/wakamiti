@@ -22,7 +22,7 @@ representation of the executed test plan.
 ## Configuration
 
 
-####  `cucumberExporter.outputFile`
+###  `cucumberExporter.outputFile`
 The (relative) path and name of the generated file.
 
 Default value is `cucumber-report.json`.
@@ -36,7 +36,7 @@ cucumberExporter:
 
 <br /><br />
 
-#### `cucumberExporter.multiLevelStrategy`
+### `cucumberExporter.multiLevelStrategy`
 Sets the mapping strategy used when the Wakamiti plan has more levels than the expected by Cucumber. Accepted values are:
 - `innerSteps`: Only the most inner steps would be included, discarding step aggregation levels
 - `outerSteps` : Inner steps for any step aggregation would be discarded. The reported step would be the step 

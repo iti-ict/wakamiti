@@ -15,7 +15,7 @@ A report generator in `HTML` format with the tests results.
 ## Configuration
 
 
-####  `htmlReport.output`
+###  `htmlReport.output`
 The (relative) path and name of the generated file.
 
 Default value is `wakamiti.html`.
@@ -29,7 +29,7 @@ htmlReport:
 
 <br /><br />
 
-####  `htmlReport.title`
+###  `htmlReport.title`
 Sets the indicated title in the report.
 
 Example:
@@ -41,7 +41,7 @@ htmlReport:
 
 <br /><br />
 
-####  `htmlReport.css`
+###  `htmlReport.css`
 Indicates the path of a css file that will establish the appearance of the html report.
 
 Example:

@@ -15,7 +15,7 @@ Un generador de informes en formato `HTML` con los resultados de las pruebas.
 ## Configuración
 
 
-####  `htmlReport.output`
+###  `htmlReport.output`
 La ruta (relativa) y el nombre del archivo generado.
 
 El valor por defecto es `wakamiti.html`.
@@ -29,7 +29,7 @@ htmlReport:
 
 <br /><br />
 
-####  `htmlReport.title`
+###  `htmlReport.title`
 Establece el título indicado en el informe.
 
 Ejemplo:
@@ -41,7 +41,7 @@ htmlReport:
 
 <br /><br />
 
-####  `htmlReport.css`
+###  `htmlReport.css`
 Indica la ruta de un fichero css que establecerá el aspecto del informe html.
 
 Ejemplo:

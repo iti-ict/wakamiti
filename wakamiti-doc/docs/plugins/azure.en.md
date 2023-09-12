@@ -82,7 +82,7 @@ wakamiti:
 ## Configuration
 
 
-####  `azure.host`
+###  `azure.host`
 The host address where the Azure server is located.
 
 Example:
@@ -95,7 +95,7 @@ azure:
 
 <br /><br />
 
-####  `azure.credentials.user`
+###  `azure.credentials.user`
 Username to be used with the Azure REST API, passed as a HTTP basic authentication.
 
 Example:
@@ -109,7 +109,7 @@ azure:
 
 <br /><br />
 
-####  `azure.credentials.password`
+###  `azure.credentials.password`
 Password to be used with the Azure REST API, passed as a HTTP basic authentication.
 
 Example:
@@ -123,7 +123,7 @@ azure:
 
 <br /><br />
 
-####  `azure.apiVersion`
+###  `azure.apiVersion`
 The Azure REST API version to be used to send the notifications.
 
 Default value is `5.0-preview`.
@@ -138,7 +138,7 @@ azure:
 
 <br /><br />
 
-####  `azure.organization`
+###  `azure.organization`
 The Azure organization owning the test plan.
 
 Example:
@@ -151,7 +151,7 @@ azure:
 
 <br /><br />
 
-####  `azure.project`
+###  `azure.project`
 The Azure project owning of the test plan.
 
 Example:
@@ -164,7 +164,7 @@ azure:
 
 <br /><br />
 
-####  `azure.tag`
+###  `azure.tag`
 The tag to be used to decide if the Azure integration should be applied.
 
 Default value is `Azure`.
@@ -179,7 +179,7 @@ azure:
 
 <br /><br />
 
-####  `azure.attachments`
+###  `azure.attachments`
 A list of files, o filename patterns in _glob_ format, that would be attached to the Azure run.
 
 
@@ -194,7 +194,7 @@ azure:
 
 <br /><br />
 
-#### `azure.testCasePerFeature`
+### `azure.testCasePerFeature`
 Set whether the mapping with the Azure test cases should be done by either by feature or by scenario.
 
 Example:

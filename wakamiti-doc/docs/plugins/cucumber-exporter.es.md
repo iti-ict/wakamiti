@@ -22,7 +22,7 @@ de Cucumber exportado podría no ser una representación fiel del plan de prueba
 ## Configuración
 
 
-####  `cucumberExporter.outputFile`
+###  `cucumberExporter.outputFile`
 La ruta (relativa) y el nombre del archivo generado.
 
 El valor por defecto es `cucumber-report.json`.
@@ -36,7 +36,7 @@ cucumberExporter:
 
 <br /><br />
 
-#### `cucumberExporter.multiLevelStrategy`
+### `cucumberExporter.multiLevelStrategy`
 Establece la estrategia de mapeo utilizada cuando el plan de Wakamiti tiene más niveles del esperado por Cucumber. Los 
 valores aceptados son:
 - `innerSteps`: Solo se incluirán los pasos de implementación, descartando los de definición.
