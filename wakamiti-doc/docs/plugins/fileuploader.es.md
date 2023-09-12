@@ -9,15 +9,19 @@ salida, e intenta subir dicho fichero a una ubicación remota usando el protocol
 Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT_FILE_WRITTEN`,
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
+---
+## toc
 
-Configuración
--------------
+---
+## Configuración
+
 
 ### `fileUploader.enable` : `true`|`false`
 Since: ```2.0.0```
 
 Activa - desactiva el observador de eventos. El valor por defecto es `false`
 
+<br /><br />
 
 ### `fileUploader.host`
 Since: ```2.0.0```
@@ -25,20 +29,28 @@ Since: ```2.0.0```
 El nombre o dirección IP de la máquina a la que se van a subir los ficheros. Opcionalmenbte,
 puede incluir un número de puerto, en la forma `hostname:port`
 
+<br /><br />
+
 ### `fileUploader.credentials.username`
 Since: ```2.0.0```
 
 El nombre de usuario usado para establecer la conexión FTP/FTPS
+
+<br /><br />
 
 ### `fileUploader.credentials.password`
 Since: ```2.0.0```
 
 La contraseña usada para establecer la conexión FTP/FTPS
 
+<br /><br />
+
 ### `fileUploader.protocol` : `ftp` | `ftps`
 Since: ```2.0.0```
 
 El protocolo específico a usar (se recomiendo `ftps`)
+
+<br /><br />
 
 ### `fileUploader.destinationDir`
 Since: ```2.0.0```

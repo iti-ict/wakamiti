@@ -46,6 +46,16 @@ export default {
   } */
 }
 
+#toc { padding-left: 0 }
+#toc {
+  list-style-type: disc;
+  font-weight: normal;
+}
+#toc > li {
+  list-style-type: none;
+  font-weight: bold;
+}
+
 /deep/ > p > img {
     max-width: 100%;
   }

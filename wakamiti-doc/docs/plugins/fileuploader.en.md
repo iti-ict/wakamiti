@@ -10,16 +10,19 @@ attempts to upload it to a remote location using the FTP/FTPS protocol. More spe
 it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPUT_FILE_WRITTEN`, and
 `REPORT_OUTPUT_FILE_WRITTEN`.
 
+---
+## toc
 
-Configuration
--------------
+---
+## Configuration
+
 
 ### `fileUploader.enable` : `true`|`false`
 Since: ```2.0.0```
 
 Enable / disable the event observer. Default value is `false`
 
-
+<br /><br />
 
 ### `fileUploader.host`
 Since: ```2.0.0```
@@ -27,20 +30,28 @@ Since: ```2.0.0```
 The host name or IP address to be used to upload the files. Optionally, it can include a specific
 port in the form `hostname:port`
 
+<br /><br />
+
 ### `fileUploader.credentials.username`
 Since: ```2.0.0```
 
 The username to be used to stablish the FTP/FTPS connection
+
+<br /><br />
 
 ### `fileUploader.credentials.password`
 Since: ```2.0.0```
 
 The password to be used to stablish the FTP/FTPS connection
 
+<br /><br />
+
 ### `fileUploader.protocol` : `ftp` | `ftps`
 Since: ```2.0.0```
 
 The specific protocol to be used (`ftps` is recommended)
+
+<br /><br />
 
 ### `fileUploader.destinationDir`
 Since: ```2.0.0```

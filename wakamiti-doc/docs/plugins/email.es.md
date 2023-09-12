@@ -13,10 +13,12 @@ Este plugin está diseñador para usarse conjuntamente con otros para formar esc
 Por ejemplo, para validar que una aplicación envía correos como consecuencia de alguna otra 
 operación como una petición REST.
 
+---
+## toc
 
+---
+## Coordenadas
 
-Coordenadas
-----------------------------------------------------------------------------------------------------
 
 ### Fichero de configuración Wakamiti
 
@@ -37,11 +39,8 @@ wakamiti:
   </dependency>
 ```
 
-
-
-
-Configuración
-----------------------------------------------------------------------------------------------------
+---
+## Configuración
 
 
 ### `email.store.address`
@@ -56,7 +55,7 @@ email:
 
 Desde: 1.0.0
 
----
+<br /><br />
 
 ### `email.password`
 
@@ -70,8 +69,7 @@ email:
 
 Desde: 1.0.0
 
-
----
+<br /><br />
 
 ### `email.store.host`
 
@@ -86,12 +84,11 @@ email:
 
 Desde: 1.0.0
 
-
----
+<br /><br />
 
 ### `email.store.port`
 
-Puerto para acceder al almacén del servidor de correo (suele variar en función del protocolo)
+Puerto para acceder al almacén del servidor de correo (suele variar en función del protocolo).
 
 Ejemplo:
 ```yaml
@@ -101,13 +98,11 @@ email:
 
 Desde: 1.0.0
 
-
----
-
+<br /><br />
 
 ### `email.store.protocol`
 
-Protocolo usado por el almacén del servidor de correo
+Protocolo usado por el almacén del servidor de correo.
 
 Ejemplo:
 ```yaml
@@ -131,17 +126,15 @@ email:
 Desde: 1.0.0
 
 
-
-
-Pasos
-----------------------------------------------------------------------------------------------------
-
-
 ---
+## Pasos
+
+
 ### Definir la ubicación del servidor de correo
 ```
 el servidor de correo ubicado en {host:text}:{port:int} usando el protocolo {protocol:word}
 ```
+
 #### Parámetros:
 | nombre      | tipo wakamiti | descripción                                    |
 |-------------|---------------|------------------------------------------------|
@@ -156,12 +149,13 @@ el servidor de correo ubicado en {host:text}:{port:int} usando el protocolo {pro
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Definir las credenciales de usuario
 ```
 el usuario de correo con dirección {address:text} y contraseña {password:text}
 ```
+
 #### Parámetros:
 | nombre     | tipo wakamiti | descripción               |
 |------------|---------------|---------------------------|
@@ -175,12 +169,13 @@ el usuario de correo con dirección {address:text} y contraseña {password:text}
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Definir la carpeta de correo usada para las pruebas
 ```
 la carpeta de correo {text}
 ```
+
 #### Parámetros:
 | tipo wakamiti  | descripción                       |
 |----------------|-----------------------------------|
@@ -193,16 +188,18 @@ la carpeta de correo {text}
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar el número de correos sin leer
 ```
 (que) el número de correos sin leer {integer-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti       | descripción                                           |
 |---------------------|-------------------------------------------------------|
 | `integer-assertion` | Comprobación a aplicar al número de mensajes sin leer |
+
 #### Ejemplos:
 ```gherkin
   Dado que el número de correos sin leer is mayor que 0
@@ -210,12 +207,13 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar que se recibe un nuevo correo en un intervalo de tiempo determinado
 ```
 (que) se recibe un nuevo correo en los próximos {sec:integer} segundos
 ```
+
 #### Parámetros:
 | nombre     | tipo wakamiti | descripción                                        |
 |------------|---------------|----------------------------------------------------|
@@ -228,16 +226,18 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar el asunto del último correo
 ```
 (que) el asunto del correo {text-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti    | descripción                                  |
 |------------------|----------------------------------------------|
 | `text-assertion` | Comprobación a aplicar al asunto del correo  |
+
 #### Ejemplos:
 ```gherkin
   Entonces el asunto del correo empieza por 'Nueva incidencia'
@@ -245,16 +245,18 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar el remitente del último correo
 ```
 (que) el remitente del correo {text-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti    | descripción                                    |
 |------------------|------------------------------------------------|
 | `text-assertion` | Comprobación a aplicar al remitente del correo |
+
 #### Ejemplos:
 ```gherkin
   Entonces el remitente del correo es 'support@company.com'
@@ -262,16 +264,18 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar el contenido del cuerpo del último correo
 ```
 (que) el cuerpo del correo es:
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción             |
 |---------------|-------------------------|
 | `document`    | El contenido a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el cuerpo del correo es:
@@ -284,16 +288,18 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar parcialmente el contenido del cuerpo del último correo
 ```
 (que) el cuerpo del correo contiene lo siguiente:
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción             |
 |---------------|-------------------------|
 | `document`    | El contenido a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el cuerpo del correo contiene lo siguiente:
@@ -304,125 +310,132 @@ Desde: 1.0.0
 
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comparar el contenido del cuerpo del último correo con un fichero
 ```
 (que) el cuerpo del correo es el contenido del fichero {file}
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción                 |
 |---------------|-----------------------------|
 | `file`        | Ruta del fichero a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el cuerpo del correo es el contenido del fichero 'email.txt'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comparar parcialmente el contenido del cuerpo del último correo con un fichero
 ```
 (que) el cuerpo del correo contiene el contenido del fichero {file}
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción                 |
 |---------------|-----------------------------|
 | `file`        | Ruta del fichero a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el cuerpo del correo contiene el contenido del fichero 'email.txt'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar el número de adjuntos en el último correo
 ```
 (que) el número de adjuntos en el correo {integer-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti       | descripción                                  |
 |---------------------|----------------------------------------------|
 | `integer-assertion` | Comprobación a aplicar al número de adjuntos |
+
 #### Ejemplos:
 ```gherkin
   Entonces el número de adjuntos en el correo es menor que 2
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comprobar que el último correo contiene un adjunto con determinado nombre de fichero
 ```
 (que) el correo tiene un fichero adjunto cuyo nombre {text-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti    | descripción                                               |
 |------------------|-----------------------------------------------------------|
 | `text-assertion` | Comprobación a aplicar al nombre de los ficheros adjuntos |
+
 #### Ejemplos:
 ```gherkin
   Entonces el correo tiene un fichero adjunto cuyo nombre es 'attach.txt'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comparar el contenido de un fichero adjunto en formato binario
 ```
 (que) el correo tiene un fichero adjunto con el contenido del fichero binario {file}
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción                 |
 |---------------|-----------------------------|
 | `file`        | Ruta del fichero a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el correo tiene un fichero adjunto con el contenido del fichero binario 'attach.dat'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
-
----
 ### Comparar el contenido de un fichero adjunto en formato de texto
 ```
 (que) el correo tiene un fichero adjunto con el contenido del fichero de texto {file}
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción                 |
 |---------------|-----------------------------|
 | `file`        | Ruta del fichero a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el correo tiene un fichero adjunto con el contenido del fichero de texto 'attach.txt'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Comparar el contenido de un adjunto con el texto indicado
 ```
 (que) el correo tiene un fichero adjunto con el siguiente contenido:
 ```
+
 #### Parámetros:
 | tipo wakamiti | descripción      |
 |---------------|------------------|
 | `document`    | Texto a comparar |
+
 #### Ejemplos:
 ```gherkin
   Entonces el correo tiene un fichero adjunto con el siguiente contenido:
@@ -431,43 +444,44 @@ Desde: 1.0.0
   """
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Eliminar todos los correos con un remitente determinado (operación de limpieza)
 ```
 Al finalizar, se borran todos los correos cuyo remitente {text-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti    | descripción                                        |
 |------------------|----------------------------------------------------|
 | `text-assertion` | Comprobación a aplicar al remitente de los correos |
+
 #### Ejemplos:
 ```gherkin
   Antecedentes:
     * Al finalizar, se borran todos los correos cuyo remitente es 'test@localhost'
 ```
 
-
 Desde: 1.0.0
 
+<br /><br />
 
----
 ### Eliminar todos los correos con un asunto determinado (operación de limpieza)
 ```
 Al finalizar, se borran todos los correos cuyo asunto {text-assertion}
 ```
+
 #### Parámetros:
 | tipo wakamiti    | descripción                                     |
 |------------------|-------------------------------------------------|
 | `text-assertion` | Comprobación a aplicar al asunto de los correos |
+
 #### Ejemplos:
 ```gherkin
   Antecedentes:
     * Al finalizar, se borran todos los correos cuyo asunto empieza por 'Testing'
 ```
-
 
 Desde: 1.0.0

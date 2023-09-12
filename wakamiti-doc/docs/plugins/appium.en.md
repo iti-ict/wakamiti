@@ -19,17 +19,18 @@ for this.
 > functional plugin, and the provided steps and configuration may vary in future 
 > versions.
 
+---
+## toc
 
-
-Configuration
-----------------------------------------------------------------------------------------------------
+---
+## Configuration
 
 > You can specify any capability to be passed to the Web Driver using the proper property key in
 > the form ```appium.capabilities.xxxxxx```. In this document, the most relevant options are described,
 > but for an exhaustive list of the available properties, please check the
 > [W3C WebDriver draft](https://w3c.github.io/webdriver/#capabilities).
 
----
+
 
 ### `appium.url` 
 The URL of the Appium server
@@ -40,7 +41,7 @@ appium:
   url: http://127.0.0.1:4723/wd/hub
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.app`
 The full path of the packaged app to test
@@ -52,7 +53,7 @@ appium:
     app: ApiDemos-debug.apk
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.platformName`
 The mobile platform that would be tested 
@@ -64,7 +65,7 @@ appium:
     platformName: Android
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.platformVersion`
 The version of the platform that would be tested
@@ -76,8 +77,7 @@ appium:
     platformVersion: 11
 ```
 
-
----
+<br /><br />
 
 ### `appium.capabilities.appPackage`
 The name of the package that contains the application to be tested
@@ -89,8 +89,7 @@ appium:
     appPackage: io.appium.android.apis
 ```
 
----
-
+<br /><br />
 
 ### `appium.capabilities.appActivity`
 The name of the activity to be tested
@@ -102,189 +101,200 @@ appium:
     appActivity: '.view.TextFields'
 ```
 
-
-Steps
-----------------------------------------------------------------------------------------------------
-
-
-
 ---
+## Steps
+
+
+
 ### Select a UI element by its ID
 ```
 the UI element with ID {text}
 ```
 Select an element that would be the subject of the following steps.
+
 #### Examples:
 ```gherkin
   Given the UI element with ID '3423423'
 ```
 
+<br /><br />
 
----
 ### Select a UI element by its type
 ```
 the UI element with type {text}
 ```
 Select an element that would be the subject of the following steps.
+
 #### Examples:
 ```gherkin
   Given the UI element with type 'android.widget.EditText'
 ```
 
+<br /><br />
 
----
 ### Select a UI element by its path
 ```
 the UI element with path {text}
 ```
 Select an element that would be the subject of the following steps.
+
 #### Examples:
 ```gherkin
   Given the UI element with path 'main.form.name'
 ```
 
+<br /><br />
 
----
 ### Type a text on an element
 ```
 the text {text} is typed on that element
 ```
-Emulate the action of typing a text when an element is selected
+Emulate the action of typing a text when an element is selected.
+
 #### Examples:
 ```gherkin
   When the text 'John' is typed on that element
 ```
 
+<br /><br />
 
----
 ### Tap on an element
 ```
 a tap is done over that element
 ```
-Emulate the action of tapping on the selected element
+Emulate the action of tapping on the selected element.
+
 #### Examples:
 ```gherkin
   When a tap is done over that element
 ```
 
+<br /><br />
 
-
----
 ### Double-tap on an element
 ```
 a double-tap is done over that element
 ```
-Emulate the action of double-tapping on the selected element
+Emulate the action of double-tapping on the selected element.
+
 #### Examples:
 ```gherkin
   When a double-tap is done over that element
 ```
 
+<br /><br />
 
-
----
 ### Validate the text of an element
 ```
 that element contains the value {text}
 ```
-Assert that the previously selected element contains a certain text
+Assert that the previously selected element contains a certain text.
+
 #### Examples:
 ```gherkin
   Then that element contains the value 'Accepted'
 ```
 
+<br /><br />
 
----
 ### Validate an element is enabled
 ```
 that element is enabled
 ```
-Assert that the previously selected element is currently enabled
+Assert that the previously selected element is currently enabled.
+
 #### Examples:
 ```gherkin
   Then that element is enabled
 ```
 
+<br /><br />
 
-
----
 ### Validate an element is disabled
 ```
 that element is disabled
 ```
-Assert that the previously selected element is currently disabled
+Assert that the previously selected element is currently disabled.
+
 #### Examples:
 ```gherkin
   Then that element is disabled
 ```
 
+<br /><br />
 
----
 ### Validate an element is displayed
 ```
 that element is displayed
 ```
-Assert that the previously selected element is displayed on screen
+Assert that the previously selected element is displayed on screen.
+
 #### Examples:
 ```gherkin
   Then that element is displayed
 ```
 
----
+<br /><br />
+
 ### Validate an element is not displayed
 ```
 that element is not displayed
 ```
-Assert that the previously selected element is not displayed on screen
+Assert that the previously selected element is not displayed on screen.
+
 #### Examples:
 ```gherkin
   Then that element is not displayed
 ```
 
+<br /><br />
 
----
 ### Emulate an incoming call
 ```
 an incoming call with number {text} is received
 ```
 Emulate an incoming call from a specific phone number. Only available if the tested application 
 runs on a emulated device.
+
 #### Examples:
 ```gherkin
   When an incoming call with number '555-4324-432' is received
 ```
 
+<br /><br />
 
----
 ### Accepts an incoming call
 ```
 the incoming call is accepted
 ```
 Accepts the current incoming call. 
+
 #### Examples:
 ```gherkin
   When the incoming call is accepted
 ```
 
+<br /><br />
 
----
 ### Rejects an incoming call
 ```
 the incoming call is rejected
 ```
 Rejects the current incoming call.
+
 #### Examples:
 ```gherkin
   When the incoming call is rejected
 ```
 
+<br /><br />
 
----
 ### Ends the current call
 ```
 the call is ended
 ```
-Ends (hangs up) the current call
+Ends (hangs up) the current call.
+
 #### Examples:
 ```gherkin
   When the call is ended
@@ -292,9 +302,9 @@ Ends (hangs up) the current call
 
 
 
+---
+## Setting up a test environment
 
-Setting up a test environment
-----------------------------------------------------------------------------------------------------
 
 1. Install Android SDK
 ```
@@ -309,7 +319,7 @@ Setting up a test environment
 
 3. Install cmdline-tools
 
-![](android-sdk.png)
+![android-sdk][android-sdk]
 
 5. Install Appium and Appium-doctor
 ```
@@ -348,4 +358,4 @@ cleared using
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
-
+[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png

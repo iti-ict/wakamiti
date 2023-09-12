@@ -11,28 +11,14 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 
 Actualmente, esta librería proporciona una funcionalidad muy limitada y existe como prueba de concepto.
 
-
-**Configuración**:
-- [`amqp.connection.url`](#amqpconnectionurl)
-- [`amqp.connection.username`](#amqpconnectionusername)
-- [`amqp.connection.password`](#amqpconnectionpassword)
-- [`amqp.queue.durable`](#amqpqueuedurable)
-- [`amqp.queue.exclusive`](#amqpqueueexclusive)
-- [`amqp.queue.autodelete`](#amqpqueueautodelete)
-
-**Pasos**:
-- [Definir conexión](#definir-conexi%C3%B3n)
-- [Definir cola destino](#definir-cola-destino)
-- [Enviar mensaje a cola](#enviar-mensaje-a-cola)
-- [Enviar mensaje a cola (fichero)](#enviar-mensaje-a-cola-fichero)
-- [Establecer pausa](#establecer-pausa)
-- [Validar mensaje](#validar-mensaje)
-- [Validar mensaje (fichero)](#validar-mensaje-fichero)
-
-
-## Configuración
+---
+## toc
 
 ---
+## Configuración
+
+
+
 ###  `amqp.connection.url`
 Establece la URL que utilizará el agente AMQP.
 
@@ -44,7 +30,8 @@ amqp:
     url: amqp://127.0.0.1:5671
 ```
 
----
+<br /><br />
+
 ###  `amqp.connection.username`
 Establece el nombre de usuario que utilizará el agente AMQP.
 
@@ -56,7 +43,8 @@ amqp:
     username: guest
 ```
 
----
+<br /><br />
+
 ###  `amqp.connection.password`
 Establece la contraseña de usuario que utilizará el agente AMQP.
 
@@ -68,7 +56,8 @@ amqp:
     password: guest
 ```
 
----
+<br /><br />
+
 ###  `amqp.queue.durable`
 Establece si la cola será duradera o no (la cola sobrevivirá a un reinicio del servidor).
 
@@ -82,7 +71,8 @@ amqp:
     durable: "true"
 ```
 
----
+<br /><br />
+
 ###  `amqp.queue.exclusive`
 Establece si la cola será exclusiva (restringida a la conexión actual).
 
@@ -96,7 +86,8 @@ amqp:
     exclusive: "true"
 ```
 
----
+<br /><br />
+
 ###  `amqp.queue.autodelete`
 Establece si la cola de eliminación automática (el servidor la eliminará cuando ya no esté en uso).
 
@@ -111,9 +102,11 @@ amqp:
 ```
 
 
+---
 ## Pasos
 
----
+
+
 ### Definir conexión
 
 ```
@@ -123,21 +116,20 @@ Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la fo
 propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername), 
 [`amqp.connection.password`](#amqpconnectionpassword).
 
-
 #### Parámetros:
 | Nombre     | Wakamiti type | Descripción           |
-|------------|-------------|-----------------------|
-| `url`      | `text`      | La URL del agente     |
-| `username` | `text`      | Nombre de usuario     |
-| `password` | `text`      | Contraseña de usuario |
+|------------|---------------|-----------------------|
+| `url`      | `text`        | La URL del agente     |
+| `username` | `text`        | Nombre de usuario     |
+| `password` | `text`        | Contraseña de usuario |
 
 #### Ejemplos:
 ```gherkin
   Dada la conexión AMQP con URL 'amqp://127.0.0.1:5671' usando el usuario 'guest' y la contraseña 'guest'
 ```
 
+<br /><br />
 
----
 ### Definir cola destino
 
 ```
@@ -147,16 +139,16 @@ Establece el nombre de la cola que se observará.
 
 #### Parámetros:
 | Nombre | Wakamiti type | Descripción       |
-|--------|-------------|-------------------|
-| `word` | `word`      | Nombre de la cola |
+|--------|---------------|-------------------|
+| `word` | `word`        | Nombre de la cola |
 
 #### Ejemplos:
 ```gherkin
   Dada la cola de destino TEST
 ```
 
+<br /><br />
 
----
 ### Enviar mensaje a cola
 
 ```
@@ -165,10 +157,10 @@ se envía a la cola {word} el siguiente mensaje JSON:
 Envía un mensaje JSON a la cola indicada.
 
 #### Parámetros:
-| Nombre | Wakamiti type  | Descripción       |
-|--------|--------------|-------------------|
-| `word` | `word`       | Nombre de la cola |
-|        | `document`   | Mensaje JSON      |
+| Nombre | Wakamiti type | Descripción       |
+|--------|---------------|-------------------|
+| `word` | `word`        | Nombre de la cola |
+|        | `document`    | Mensaje JSON      |
 
 #### Ejemplos:
 ```gherkin
@@ -182,8 +174,8 @@ Envía un mensaje JSON a la cola indicada.
     ```
 ```
 
+<br /><br />
 
----
 ### Enviar mensaje a cola (fichero)
 ```
 se envía a la cola {queue} el mensaje del fichero JSON {file}
@@ -192,17 +184,17 @@ Envía el contenido de un fichero JSON a la cola indicada.
 
 #### Parámetros:
 | Nombre  | Wakamiti type | Descripción       |
-|---------|-------------|-------------------|
-| `file`  | `file`      | Fichero JSON      |
-| `queue` | `word`      | Nombre de la cola |
+|---------|---------------|-------------------|
+| `file`  | `file`        | Fichero JSON      |
+| `queue` | `word`        | Nombre de la cola |
 
 #### Ejemplos:
 ```gherkin
   Cuando se envía a la cola TEST el mensaje del fichero JSON 'data/message.json'
 ```
 
+<br /><br />
 
----
 ### Establecer pausa
 
 ```
@@ -212,16 +204,16 @@ Se produce una espera de un número fijo de segundos (generalmente para asegurar
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción                      |
-|-----------|-------------|----------------------------------|
-| `integer` | `integer`   | Cantidad de tiempo (en segundos) |
+|-----------|---------------|----------------------------------|
+| `integer` | `integer`     | Cantidad de tiempo (en segundos) |
 
 #### Ejemplos:
 ```gherkin
   * se espera durante 2 segundos
 ```
 
+<br /><br />
 
----
 ### Validar mensaje
 
 ```
@@ -232,9 +224,9 @@ después del tiempo de espera indicado.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción                      |
-|-----------|-------------|----------------------------------|
-| `integer` | `integer`   | Cantidad de tiempo (en segundos) |
-|           | `document`  | Mensaje JSON                     |
+|-----------|---------------|----------------------------------|
+| `integer` | `integer`     | Cantidad de tiempo (en segundos) |
+|           | `document`    | Mensaje JSON                     |
 
 #### Ejemplos:
 ```gherkin
@@ -247,8 +239,8 @@ después del tiempo de espera indicado.
       }
 ```
 
+<br /><br />
 
----
 ### Validar mensaje (fichero)
 
 ```
@@ -258,10 +250,10 @@ Valida que se reciba el contenido de un fichero JSON específico en la [cola obs
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre | Wakamiti type  | Descripción                      |
-|--------|--------------|----------------------------------|
-| `file` | `file`       | Fichero JSON                     |
-|        | `integer`    | Cantidad de tiempo (en segundos) |
+| Nombre | Wakamiti type | Descripción                      |
+|--------|---------------|----------------------------------|
+| `file` | `file`        | Fichero JSON                     |
+|        | `integer`     | Cantidad de tiempo (en segundos) |
 
 #### Ejemplos:
 ```gherkin

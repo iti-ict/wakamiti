@@ -1,11 +1,11 @@
 
+
 This plugin provides a set of steps to interact with a RESTful API.
 
 ---
 ## Table of content
 
 ---
-
 ## Configuration
 
 ###  `rest.baseURL`
@@ -19,7 +19,8 @@ rest:
   baseURL: https://example.org/api/v2
 ```
 
----
+<br /><br />
+
 ### `rest.contentType`
 Set the content type that would be sent in the request header of subsequent API calls.
 Accepted values are:
@@ -44,7 +45,8 @@ rest:
   contentType: XML
 ```
 
----
+<br /><br />
+
 ### `rest.httpCodeThreshold`
 Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step
 would automatically fail regardless any other condition.
@@ -57,7 +59,8 @@ rest:
   httpCodeThreshold: 999
 ```
 
----
+<br /><br />
+
 ### `rest.timeout`
 
 Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the
@@ -71,7 +74,8 @@ rest:
   timeout: 10000
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.url`
 Set an [OAuth 2.0][oauth2] authentication service that would be used to generate a token in the request header
 `Authorization` of the API calls.
@@ -83,8 +87,8 @@ rest:
     url: https://accounts.google.com/o/oauth2/auth
 ```
 
+<br /><br />
 
----
 ### `rest.oauth2.clientId`
 Sets the parameter `clientId` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url` value.
 
@@ -95,7 +99,8 @@ rest:
     clientId: WEB_APP
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.clientSecret`
 Sets the parameter `clientSecret` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url`
 value.
@@ -107,7 +112,8 @@ rest:
     clientSecret: ABRACADABRAus1ZMGHvq9R
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.cached`
 Sets whether the retrieved token is cached to avoid recurring calls to the oauth service if the data is the same.
 
@@ -120,7 +126,8 @@ rest:
     cached: true
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.parameters`
 Sets the default parameters for OAuth authentication.
 
@@ -135,7 +142,8 @@ rest:
       scope: something
 ```
 
----
+<br /><br />
+
 ### `rest.config.multipart.subtype`
 Sets the subtype of multipart HTTP requests. The available values are:
 
@@ -162,7 +170,8 @@ rest:
       subtype: mixed
 ```
 
----
+<br /><br />
+
 ### `rest.config.multipart.filename`
 Sets the filename of multipart HTTP requests.
 
@@ -176,7 +185,8 @@ rest:
       filename: other_name
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.follow`
 Sets whether to allow following redirects in HTTP requests.
 
@@ -190,7 +200,8 @@ rest:
       follow: false
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.allowCircular`
 Sets whether circular redirects are allowed in HTTP requests.
 
@@ -204,7 +215,8 @@ rest:
       allowCircular: true
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.rejectRelative`
 Sets whether to reject relative redirects in HTTP requests.
 
@@ -218,7 +230,8 @@ rest:
       rejectRelative: true
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.max`
 Sets the maximum number of redirects in HTTP requests.
 
@@ -236,6 +249,7 @@ rest:
 ---
 ## Steps
 
+
 ### Define content type
 ```
 the REST content type {word}
@@ -252,7 +266,8 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
   Given the REST content type XML
 ```
 
----
+<br /><br />
+
 ### Define base URL
 ```
 the base URL {url}
@@ -269,7 +284,8 @@ Declarative-way for setting the configuration property [`rest.baseURL`](#restbas
   Given the base URL https://example.org/api
 ```
 
----
+<br /><br />
+
 ### Define service
 ```
 the REST service {text}
@@ -286,7 +302,8 @@ Sets the service path that would be tested. It would be appended to the `baseURL
   Given the REST service '/users`
 ```
 
----
+<br /><br />
+
 ### Define id
 ###### Deprecated
 ```
@@ -307,7 +324,8 @@ Sets an entity identifier to be used by the REST service. It would be appended t
   Given the borrowed book identified by '978-3-16-148410-0'
 ```
 
----
+<br /><br />
+
 ### Define parameters or headers
 ```
 the (request|query|path|form) parameter {name} with value {value}
@@ -347,7 +365,8 @@ content-type `application/x-www-form-urlencoded`.
   Given the header 'Keep-alive' with value '1200'
 ```
 
----
+<br /><br />
+
 ### Define parameters or headers (table)
 ```
 the following (request|query|path) parameters:
@@ -401,7 +420,8 @@ content-type `application/x-www-form-urlencoded`.
     | Keep-Alive | 1200  |
 ```
 
----
+<br /><br />
+
 ### Define timeout
 ```
 a timeout of {int} (milli)seconds
@@ -421,7 +441,8 @@ Sets a response timeout (in second or milliseconds) for the subsequent HTTP requ
   Given a timeout of 2 seconds
 ```
 
----
+<br /><br />
+
 ### Define HTTP code threshold
 ```
 any request will fail when response HTTP code {matcher}
@@ -439,7 +460,8 @@ assertion.
   * any request will fail when response HTTP code is greater than 500
 ```
 
----
+<br /><br />
+
 ### Define basic authentication
 ```
 the service use the basic authentication credentials {username}:{password}
@@ -457,7 +479,8 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
   Given the service use the basic authentication credentials 'us1532':'xxxxx'
 ```
 
----
+<br /><br />
+
 ### Define oauth2 authentication
 ```
 the service use the oauth authentication
@@ -472,7 +495,8 @@ configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid
   Given the service use the oauth authentication
 ```
 
----
+<br /><br />
+
 ### Define oauth2 authentication by token
 ```
 the service use the oauth authentication token {token}
@@ -489,7 +513,8 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
   Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
 ```
 
----
+<br /><br />
+
 ### Define oauth2 authentication by token (file)
 ```
 the service use the oauth authentication token from the file {file}
@@ -506,7 +531,8 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
   Given the service use the oauth authentication token from the file 'token.txt'
 ```
 
----
+<br /><br />
+
 ### Define oauth2 authentication by credentials
 ```
 the service use the oauth authentication credentials {username}:{password}
@@ -538,7 +564,8 @@ Additional parameters supported by `Oauth` can also be added using a table.
     | scope | something |
 ```
 
----
+<br /><br />
+
 ### Define oauth2 authentication by client
 ```
 the service use the oauth authentication
@@ -568,7 +595,8 @@ Additional parameters supported by `Oauth` can also be added using a table.
     | scope | something |
 ```
 
----
+<br /><br />
+
 ### Clear authentication
 ```
 the service does not use authentication
@@ -580,7 +608,8 @@ Deletes the authentication header.
   Given the service does not use authentication
 ```
 
----
+<br /><br />
+
 ### Define multipart subtype
 ```
 {type} as subtype multipart
@@ -613,7 +642,8 @@ Default value is `form-data`.
   Given 'mixed' as subtype multipart
 ```
 
----
+<br /><br />
+
 ### Definir nombre de fichero multiparte
 ```
 {name} as attached file name
@@ -631,7 +661,8 @@ Sets the default name for multipart files. This step is equivalent to setting th
   Given 'other_name' as attached file name
 ```
 
----
+<br /><br />
+
 ### Define attached file
 ```
 the attached file is included with the following data:
@@ -651,7 +682,8 @@ Sets a multipart form-data including an attachment from the given in-document co
     """
 ```
 
----
+<br /><br />
+
 ### Define attached file (file)
 ```
 the attached file {file} is included
@@ -668,7 +700,8 @@ Sets a multipart form-data including an attachment from the given in-document co
   Given the attached file 'data/data.txt' is included
 ```
 
----
+<br /><br />
+
 ### Execute GET request
 ```
 * (is|are) (queried|requested)
@@ -690,7 +723,8 @@ And a user identified by '123'
 When the user is requested
 ```
 
----
+<br /><br />
+
 ### Execute DELETE request
 ```
 * (is|are) deleted
@@ -704,7 +738,8 @@ And a user identified by '123'
 When the user is deleted
 ```
 
----
+<br /><br />
+
 ### Execute PUT request with body
 ```
 * (is|are) modified with following data:
@@ -732,7 +767,8 @@ When the user is modified with the following data:
     """
 ```
 
----
+<br /><br />
+
 ### Execute PUT request with body (file)
 ```
 * (is|are) modified with the data from the file {file}
@@ -752,7 +788,8 @@ And a user identified by '123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
 
----
+<br /><br />
+
 ### Execute PATCH request
 ```
 * (is|are) patched
@@ -770,7 +807,8 @@ And the following query parameters:
 When the user is patched
 ```
 
----
+<br /><br />
+
 ### Execute PATCH request with body
 ```
 * (is|are) patched with the following data:
@@ -795,7 +833,8 @@ When the user is patched with the following data:
     """
 ```
 
----
+<br /><br />
+
 ### Execute PATCH request with body (file)
 ```
 * (is|are) patched with the data from the file {file}
@@ -815,7 +854,8 @@ And a user identified by '123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
 
----
+<br /><br />
+
 ### Execute POST request
 ```
 * (is|are) created
@@ -836,7 +876,8 @@ And the following request parameters:
 When the data info is sent to the service
 ```
 
----
+<br /><br />
+
 ### Execute POST request with body
 ```
 * (is|are) created with the following data:
@@ -873,7 +914,8 @@ provided in-document.
     """
 ```
 
----
+<br /><br />
+
 ### Execute POST request with body (file)
 ```
 * (is|are) created with the data from the file {file}
@@ -897,7 +939,8 @@ provided by the given file.
   When the data from the file 'data/booking.json' is sent to the service
 ```
 
----
+<br /><br />
+
 ### Check response HTTP code
 ```
 the response HTTP code {matcher}
@@ -914,8 +957,8 @@ Validate that the HTTP code of the last response satisfies the given assertion.
   Then the response HTTP code is equals to 201
 ```
 
+<br /><br />
 
----
 ### Check response body
 ```
 the response is:
@@ -977,7 +1020,8 @@ Validates that the response body contains the given in-document content.
     """
 ```
 
----
+<br /><br />
+
 ### Check response body (file)
 ```
 the response is equal to the file {file}
@@ -1002,23 +1046,23 @@ Validates that the response body contains the content of the given file.
   Then the response contains the file 'data/response1.json'
 ```
 
+<br /><br />
 
----
 ### Check response body fragment
 ```
 the response fragment {fragment} is:
 ```
-Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of 
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of
 the in-document content.
 ```
 the response fragment {fragment} is \(in any order\):
 ```
-Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified 
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the in-document content, but in any order.
 ```
 the response fragment {fragment} contains:
 ```
-Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document 
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document
 content.
 
 ##### Parameters:
@@ -1055,12 +1099,13 @@ content.
     """
 ```
 
----
+<br /><br />
+
 ### Check response body fragment (file)
 ```
 the response is equal to the file {file}
 ```
-Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of the 
+Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of the
 given file.
 ```
 the response is equal to the file {file} \(in any order\)
@@ -1083,8 +1128,8 @@ Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response
   Then the response fragment 'users[1]' contains the file 'data/response1.json'
 ```
 
+<br /><br />
 
----
 ### Check response body fragment (value)
 ```
 the (text|integer|decimal) from response fragment {fragment} {matcher}
@@ -1107,8 +1152,8 @@ Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath
   Then the decimal from response fragment 'users[0].lastName' starts with 'J'
 ```
 
+<br /><br />
 
----
 ### Check response content type
 ```
 the response content type is {word}
@@ -1126,7 +1171,8 @@ Validate that the content type of the last response is the expected. This step w
   Then the response content type is JSON
 ```
 
----
+<br /><br />
+
 ### Check response size
 ```
 the response length {matcher}
@@ -1143,7 +1189,8 @@ Validate that the length in bytes of the last response satisfies the given asser
   Then the response length is less than 500
 ```
 
----
+<br /><br />
+
 ### Check response header
 ```
 the (texto|entero|decimal) response header {name} {matcher}
@@ -1165,7 +1212,8 @@ Validate that a header value from the last REST response satisfies the *text*, *
   Then the integer response header Age is greater than 10
 ```
 
----
+<br /><br />
+
 ### Check response schema
 ```
 the response satisfies the following schema:
@@ -1212,7 +1260,8 @@ responses (according the`Content-Type` response header).
     """
 ```
 
----
+<br /><br />
+
 ### Check response schema (file)
 ```
 the response satisfies the schema from the file {file}

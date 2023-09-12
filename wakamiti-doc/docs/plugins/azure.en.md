@@ -50,8 +50,12 @@ Test cases not satisfying this criteria will be ignored.
 In case the Wakamiti plan includes test cases from several Azure test plans, the plugin will create 
 a diferent run for each one of them.
 
-Coordinates
-----------------------------------------------------------------------------------------------------
+---
+## toc
+
+---
+## Coordinates
+
 
 ### Wakamiti configuration file
 
@@ -72,10 +76,10 @@ wakamiti:
   </dependency>
 ```
 
+---
 ## Configuration
 
 
----
 ####  `azure.host`
 The host address where the Azure server is located.
 
@@ -87,7 +91,8 @@ azure:
   
 ```
 
----
+<br /><br />
+
 ####  `azure.credentials.user`
 Username to be used with the Azure REST API, passed as a HTTP basic authentication.
 
@@ -100,8 +105,8 @@ azure:
 
 ```
 
+<br /><br />
 
----
 ####  `azure.credentials.password`
 Password to be used with the Azure REST API, passed as a HTTP basic authentication.
 
@@ -114,8 +119,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.apiVersion`
 The Azure REST API version to be used to send the notifications.
 
@@ -129,8 +134,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.organization`
 The Azure organization owning the test plan.
 
@@ -142,8 +147,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.project`
 The Azure project owning of the test plan.
 
@@ -155,8 +160,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.tag`
 The tag to be used to decide if the Azure integration should be applied.
 
@@ -170,9 +175,8 @@ azure:
   
 ```
 
+<br /><br />
 
-
----
 ####  `azure.attachments`
 A list of files, o filename patterns in _glob_ format, that would be attached to the Azure run.
 
@@ -186,8 +190,8 @@ azure:
     - '*.json'  
 ```
 
+<br /><br />
 
----
 #### `azure.testCasePerFeature`
 Set whether the mapping with the Azure test cases should be done by either by feature or by scenario.
 

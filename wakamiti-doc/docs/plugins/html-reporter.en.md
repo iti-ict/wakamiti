@@ -6,10 +6,13 @@ slug: /en/plugins/html-reporter
 
 A report generator in `HTML` format with the tests results.
 
-
-## Configuration
+---
+## Table of content
 
 ---
+## Configuration
+
+
 ####  `htmlReport.output`
 The (relative) path and name of the generated file.
 
@@ -22,7 +25,8 @@ htmlReport:
   output: my-cucumber-report.json
 ```
 
----
+<br /><br />
+
 ####  `htmlReport.title`
 Sets the indicated title in the report.
 
@@ -33,7 +37,8 @@ htmlReport:
   title: "Wakamiti v11"
 ```
 
----
+<br /><br />
+
 ####  `htmlReport.css`
 Indicates the path of a css file that will establish the appearance of the html report.
 

@@ -1,11 +1,11 @@
 
+
 Este plugin proporciona un conjunto de pasos para interactuar con una API RESTful.
 
 ---
 ## Tabla de contenido
 
 ---
-
 ## Configuración
 
 ###  `rest.baseURL`
@@ -18,7 +18,8 @@ rest:
   baseURL: https://example.org/api/v2
 ```
 
----
+<br /><br />
+
 ### `rest.contentType`
 Establece el tipo de contenido que se enviará en la cabecera de las llamadas REST.
 Los valores aceptados son:
@@ -43,7 +44,8 @@ rest:
   contentType: XML
 ```
 
----
+<br /><br />
+
 ### `rest.httpCodeThreshold`
 
 Establece un límite a los códigos de respuesta HTTP. Cada vez que una llamada REST retorne un código HTTP igual o
@@ -57,7 +59,8 @@ rest:
   httpCodeThreshold: 999
 ```
 
----
+<br /><br />
+
 ### `rest.timeout`
 
 Establece un tiempo máximo de respuesta (en milisegundos) para las siguientes peticiones HTTP. En el caso de exceder el
@@ -71,7 +74,8 @@ rest:
   timeout: 10000
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.url`
 
 Establece el servicio de autenticación [OAuth 2.0][oauth2] que se usará para generar el token que se enviará en la
@@ -84,7 +88,8 @@ rest:
     url: https://accounts.google.com/o/oauth2/auth
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.clientId`
 Establece el parámetro `clientId` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la
 propiedad de configuración `rest.oauth2.url`.
@@ -96,7 +101,8 @@ rest:
     clientId: WEB_APP
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.clientSecret`
 Establece el parámetro `clientSecret` para el servicio de autenticación [OAuth 2.0][oauth2] definido por el valor de la
 propiedad de configuración `rest.oauth2.url`.
@@ -108,7 +114,8 @@ rest:
     clientSecret: ABRACADABRAus1ZMGHvq9R
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.cached`
 Establece si el token recuperado se guarda en caché para evitar llamadas recurrentes al servicio oauth si los datos son
 los mismos.
@@ -122,7 +129,8 @@ rest:
     cached: true
 ```
 
----
+<br /><br />
+
 ### `rest.oauth2.parameters`
 Establece los parámetros por defecto de la autenticación oauth.
 
@@ -137,7 +145,8 @@ rest:
       scope: something
 ```
 
----
+<br /><br />
+
 ### `rest.config.multipart.subtype`
 Establece el subtipo de las llamadas multiparte. Los valores disponibles son:
 
@@ -164,7 +173,8 @@ rest:
       subtype: mixed
 ```
 
----
+<br /><br />
+
 ### `rest.config.multipart.filename`
 Establece el nombre fichero de las llamadas multiparte.
 
@@ -178,7 +188,8 @@ rest:
       filename: otro_nombre
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.follow`
 Establece si se permite seguir las redirecciones en las llamadas HTTP.
 
@@ -192,7 +203,8 @@ rest:
       follow: false
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.allowCircular`
 Establece si se permite las redirecciones circulares en las llamadas HTTP.
 
@@ -206,7 +218,8 @@ rest:
       allowCircular: true
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.rejectRelative`
 Establece si se rechazan las redirecciones relativas en las llamadas HTTP.
 
@@ -220,7 +233,8 @@ rest:
       rejectRelative: true
 ```
 
----
+<br /><br />
+
 ### `rest.config.redirect.max`
 Establece el número de redirecciones máximo en las llamadas HTTP.
 
@@ -235,7 +249,6 @@ rest:
 ```
 
 ---
-
 ## Pasos
 
 ### Definir tipo de contenido
@@ -255,7 +268,8 @@ propiedad [`rest.contentType`](#restcontenttype).
   Dado XML como el tipo de contenido REST
 ```
 
----
+<br /><br />
+
 ### Definir URL base
 ```
 la URL base {url}
@@ -272,7 +286,8 @@ Establece la ruta base de la API. Este paso es equivalente a configurar la propi
   Dada la URL base https//example.org/api
 ```
 
----
+<br /><br />
+
 ### Definir servicio
 ```
 el servicio REST {service}
@@ -289,7 +304,8 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
   Dado el servicio REST '/users`
 ```
 
----
+<br /><br />
+
 ### Definir identificador
 ###### Deprecated
 ```
@@ -311,7 +327,8 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
   Dado un libro identificado por '978-3-16-148410-0'
 ```
 
----
+<br /><br />
+
 ### Definir parámetros o cabeceras
 ```
 el parámetro de (solicitud|búsqueda|ruta|formulario) {name} con el valor {value}
@@ -351,7 +368,8 @@ indicados con llaves `{}` y los parámetros de formulario se enviarán con el co
   Dada la cabeceras 'Keep-alive' con el valor '1200'
 ```
 
----
+<br /><br />
+
 ### Definir parámetros o cabeceras (tabla)
 ```
 los siguientes parámetros de (solicitud|búsqueda|ruta|formulario):
@@ -407,7 +425,8 @@ ruta del servicio indicados con llaves `{}` y los parámetros de formulario se e
     | Keep-Alive   | 1200  |
 ```
 
----
+<br /><br />
+
 ### Definir timeout
 ```
 un timeout de {int} (mili)segundos
@@ -428,7 +447,8 @@ exceder el tiempo indicado se detendrá la llamada y se producirá un error.
   Dado un timeout de 10 segundos
 ```
 
----
+<br /><br />
+
 ### Definir umbral de códigos HTTP
 ```
 (que) toda petición se considera fallida si su código HTTP {matcher}
@@ -446,7 +466,8 @@ configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una va
   * toda petición se considera fallida si su código HTTP es igual o mayor que 500
 ```
 
----
+<br /><br />
+
 ### Definir autenticación básica
 ```
 (que) el servicio usa autenticación básica con las credenciales {username}:{password}
@@ -464,7 +485,8 @@ Establece las credenciales de autenticación básica que se enviarán en la cabe
   Dado que el servicio usa autenticación básica con las credenciales 'us1532':'xxxxx'
 ```
 
----
+<br /><br />
+
 ### Definir autenticación oauth2
 ```
 (que) el servicio usa autenticación oauth
@@ -478,7 +500,8 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
   Dado que el servicio usa autenticación oauth
 ```
 
----
+<br /><br />
+
 ### Definir autenticación oauth2 por token
 ```
 (que) el servicio usa autenticación oauth con el token {token}
@@ -496,7 +519,8 @@ peticiones.
   Dado que el servicio usa autenticación oauth con el token 'hudytw9834y9cqy32t94'
 ```
 
----
+<br /><br />
+
 ### Definir autenticación oauth2 por token (fichero)
 ```
 (que) el servicio usa autenticación oauth con el token del fichero {file}
@@ -514,7 +538,8 @@ obtenido desde un fichero.
   Dado que el servicio usa autenticación oauth con el token del fichero 'token.txt'
 ```
 
----
+<br /><br />
+
 ### Definir autenticación oauth2 por credenciales
 ```
 (que) el servicio usa autenticación oauth con las credenciales {username}:{password}
@@ -546,7 +571,8 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
     | scope | something |
 ```
 
----
+<br /><br />
+
 ### Definir autenticación oauth2 por cliente
 ```
 (que) el servicio usa autenticación oauth
@@ -577,7 +603,8 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
     | scope | something |
 ```
 
----
+<br /><br />
+
 ### Limpiar autenticación
 ```
 (que) el servicio no usa autenticación
@@ -589,7 +616,8 @@ Elimina la cabecera con la autenticación.
   Dado que el servicio no usa autenticación
 ```
 
----
+<br /><br />
+
 ### Definir subtipo multiparte
 ```
 {type} como subtipo multiparte
@@ -622,7 +650,8 @@ El valor por defecto es `form-data`.
   Dado 'mixed' como subtipo multiparte
 ```
 
----
+<br /><br />
+
 ### Definir nombre de fichero multiparte
 ```
 {name} como nombre de fichero adjunto
@@ -640,7 +669,8 @@ Establece el nombre por defecto de los ficheros multiparte. Este paso es equival
   Dado 'otro_nombre' como nombre de fichero adjunto
 ```
 
----
+<br /><br />
+
 ### Definir archivo adjunto
 ```
 (que) se incluye el fichero adjunto {name} con los siguientes datos:
@@ -661,7 +691,8 @@ Indica el texto que se incluirá como fichero adjunto en datos de formulario.
     """
 ```
 
----
+<br /><br />
+
 ### Definir archivo adjunto (fichero)
 ```
 (que) se incluye el fichero adjunto {name} con el contenido del fichero {file}
@@ -678,8 +709,8 @@ Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de f
   Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'data.txt'
 ```
 
+<br /><br />
 
----
 ### Realizar llamada GET
 ```
 se realiza la búsqueda *
@@ -704,7 +735,8 @@ Envía una petición `GET` al servicio con los parámetros definidos previamente
   Cuando se consulta el usuario
 ```
 
----
+<br /><br />
+
 ### Realizar llamada DELETE
 ```
 se elimina(n) *
@@ -718,7 +750,8 @@ Envía una petición `DELETE` al servicio y recurso REST definido previamente.
   Cuando se elimina el usuario
 ```
 
----
+<br /><br />
+
 ### Realizar llamada PUT con mensaje
 ```
 se reemplaza(n) * con los siguientes datos:
@@ -746,7 +779,8 @@ indicado a continuación.
     """
 ```
 
----
+<br /><br />
+
 ### Realizar llamada PUT con mensaje (fichero)
 ```
 se reemplaza(n) * con los datos del fichero {file}
@@ -766,7 +800,8 @@ fichero indicado.
   Cuando se reemplaza el usuario con los datos del fichero 'data/user123.json'
 ```
 
----
+<br /><br />
+
 ### Realizar llamada PATCH
 ```
 se modifica(n) * 
@@ -784,7 +819,8 @@ Envía una petición `PATCH` al servicio y recurso REST definido previamente.
   Cuando se modifica el usuario
 ```
 
----
+<br /><br />
+
 ### Realizar llamada PATCH con mensaje
 ```
 se modifica(n) * con los siguientes datos:
@@ -809,7 +845,8 @@ indicado a continuación.
     """
 ```
 
----
+<br /><br />
+
 ### Realizar llamada PATCH con mensaje (fichero)
 ```
 se modifica(n) * con los datos del fichero {file}
@@ -829,7 +866,8 @@ del fichero indicado.
   Cuando se modifica el usuario con los datos del fichero 'data/user123.json'
 ```
 
----
+<br /><br />
+
 ### Realizar llamada POST
 ```
 se crea(n) *
@@ -849,7 +887,8 @@ Envía una petición `POST` al servicio definido previamente.
   Cuando envía al servicio la información
 ```
 
----
+<br /><br />
+
 ### Realizar llamada POST con mensaje
 ```
 se crea(n) * con los siguientes datos:
@@ -886,7 +925,8 @@ indicado a continuación.
     """
 ```
 
----
+<br /><br />
+
 ### Realizar llamada POST con mensaje (fichero)
 ```
 se crea(n) * con los datos del fichero {file}
@@ -910,7 +950,8 @@ fichero indicado.
   Cuando se envía al servicio los datos del fichero 'booking.json'
 ```
 
----
+<br /><br />
+
 ### Comprobar código HTTP de respuesta
 ```
 el código de respuesta HTTP {matcher}
@@ -927,8 +968,8 @@ Comprueba que el código HTTP de la última respuesta satisface una validación 
   Entonces el código de respuesta HTTP es 201
 ```
 
+<br /><br />
 
----
 ### Comprobar mensaje de respuesta
 ```
 la respuesta es exactamente:
@@ -990,7 +1031,8 @@ Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados.
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar mensaje de respuesta (fichero)
 ```
 la respuesta es exactamente el contenido del fichero {file}
@@ -1015,25 +1057,25 @@ Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados 
   Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
 ```
 
+<br /><br />
 
----
 ### Comprobar fragmento de la respuesta
 ```
 el fragmento de la respuesta {fragment} es exactamente:
 ```
-Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
-[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, incluyendo el orden de los 
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, incluyendo el orden de los
 campos.
 ```
 el fragmento de la respuesta {fragment} es exactamente \(en cualquier orden\):
 ```
-Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
-[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, pero pueden llegar los campos 
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, pero pueden llegar los campos
 en diferente orden.
 ```
 el fragmento de la respuesta {fragment} es parcialmente:
 ```
-Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath], 
+Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) incluya, al menos, los campos indicados.
 
 ##### Parámetros:
@@ -1070,19 +1112,20 @@ Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar fragmento de la respuesta (fichero)
 ```
 la respuesta es exactamente el contenido del fichero {file}
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
-[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, incluyendo el 
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, incluyendo el
 orden de los campos.
 ```
 la respuesta es exactamente el contenido del fichero {file} \(en cualquier orden\)
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
-[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, pero pueden 
+[XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, pero pueden
 llegar los campos en diferente orden.
 ```
 la respuesta es parcialmente el contenido del fichero {file}
@@ -1101,13 +1144,13 @@ Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta
   Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
 ```
 
+<br /><br />
 
----
 ### Comprobar fragmento de la respuesta (valor)
 ```
 el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
 ```
-Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta 
+Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta
 dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido).
 
 ##### Parámetros:
@@ -1125,8 +1168,8 @@ dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo d
   Entonces el texto del fragmento de la respuesta 'users[1].name` no es 'John'
 ```
 
+<br /><br />
 
----
 ### Comprobar tipo de contenido de la respuesta
 ```
 el tipo de contenido de la respuesta es {word}
@@ -1144,7 +1187,8 @@ Este paso equivale a validar que el valor de la cabecera `Content-Type` de la re
   Entonces el tipo de contenido de la respuesta es JSON
 ```
 
----
+<br /><br />
+
 ### Comprobar tamaño de la respuesta
 ```
 el tamaño de la respuesta {matcher}
@@ -1161,7 +1205,8 @@ Comprueba que la longitud en bytes de la última respuesta satisface una validac
   Entonces el tamaño de la respuesta es menor que 500
 ```
 
----
+<br /><br />
+
 ### Comprobar cabecera
 ```
 el (texto|entero|decimal) de la cabecera de la respuesta {name} {matcher}
@@ -1184,7 +1229,8 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
   Entonces el entero de la cabecera de la respuesta Age es mayor que 10
 ```
 
----
+<br /><br />
+
 ### Comprobar esquema de la respuesta
 ```
 la respuesta cumple el siguiente esquema:
@@ -1231,7 +1277,8 @@ XML (en función de la cabecera de respuesta HTTP `Content-Type`).
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar esquema de la respuesta (fichero)
 ```
 la respuesta cumple el esquema del fichero {file}

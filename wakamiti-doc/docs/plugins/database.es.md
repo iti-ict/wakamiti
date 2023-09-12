@@ -15,53 +15,10 @@ validación de datos.
 > configuración de Wakamiti.
 
 
+---
+## toc
 
-**Configuración**:
-- [`database.connection.url`](#databaseconnectionurl)
-- [`database.connection.username`](#databaseconnectionusername)
-- [`database.connection.password`](#databaseconnectionpassword)
-- [`database.metadata.schema`](#databasemetadataschema)
-- [`database.metadata.catalog`](#databasemetadatacatalog)
-- [`database.metadata.caseSensitivity`](#databasemetadatacasesensititvy)
-- [`database.csv.format`](#databasecsvformat)
-- [`database.nullSymbol`](#databasenullsymbol)
-- [`database.enableCleanupUponCompletion`](#databaseenablecleanupuponcompletion)
-
-**Pasos**:
-- [Definir conexión](#definir-conexi%C3%B3n)
-- [Definir script post ejecución](#definir-script-post-ejecuci%C3%B3n)
-- [Definir script post ejecución (fichero)](#definir-script-post-ejecuci%C3%B3n-fichero)
-- [Ejecutar script](#ejecutar-script)
-- [Ejecutar script (fichero)](#ejecutar-script-fichero)
-- [Vaciar tabla](#vaciar-tabla)
-- [Eliminar datos](#eliminar-datos)
-- [Eliminar datos (tabla)](#eliminar-datos-tabla)
-- [Eliminar datos (xls)](#eliminar-datos-xls)
-- [Eliminar datos (csv)](#eliminar-datos-csv)
-- [Insertar datos (tabla)](#insertar-datos-tabla)
-- [Insertar datos (xls)](#insertar-datos-xls)
-- [Insertar datos (csv)](#insertar-datos-csv)
-- [Comprobar existencia de datos](#comprobar-existencia-de-datos)
-- [Comprobar inexistencia de datos](#comprobar-inexistencia-de-datos)
-- [Comprobar existencia de datos (id)](#comprobar-existencia-de-datos-id)
-- [Comprobar inexistencia de datos (id)](#comprobar-inexistencia-de-datos-id)
-- [Comprobar existencia de datos (tabla)](#comprobar-existencia-de-datos-tabla)
-- [Comprobar inexistencia de datos (tabla)](#comprobar-inexistencia-de-datos-tabla)
-- [Comprobar existencia de datos (XLS)](#comprobar-existencia-de-datos-xls)
-- [Comprobar inexistencia de datos (XLS)](#comprobar-inexistencia-de-datos-xls)
-- [Comprobar existencia de datos (CSV)](#comprobar-existencia-de-datos-csv)
-- [Comprobar inexistencia de datos (CSV)](#comprobar-inexistencia-de-datos-csv)
-- [Comprobar existencia de datos (documento)](#comprobar-existencia-de-datos-documento)
-- [Comprobar inexistencia de datos (documento)](#comprobar-inexistencia-de-datos-documento)
-- [Comprobar número de filas](#comprobar-n%C3%BAmero-de-filas)
-- [Comprobar número de filas (documento)](#comprobar-n%C3%BAmero-de-filas-documento)
-- [Comprobar número de filas (tabla)](#comprobar-n%C3%BAmero-de-filas-documento)
-- [Comprobar tabla vacía](#comprobar-tabla-vac%C3%ADa)
-- [Comprobar tabla no vacía](#comprobar-tabla-no-vac%C3%ADa)
-
-
-
-
+---
 ## Configuración
 
 ---
@@ -76,7 +33,8 @@ database:
     url: jdbc:h2:tcp://localhost:9092/~/test
 ```
 
----
+<br /><br />
+
 ### `database.connection.username`
 Establece el nombre de usuario requerido para conectar a la base de datos.
 
@@ -87,7 +45,8 @@ database:
     username: test
 ```
 
----
+<br /><br />
+
 ### `database.connection.password`
 Establece la contraseña requerida para conectar a la base de datos.
 
@@ -98,7 +57,8 @@ database:
     password: test
 ```
 
----
+<br /><br />
+
 ### `database.metadata.schema`
 Establece manualmente el esquema de base de datos que se usará para recuperar metadatos como claves privadas y/o
 nulabilidad. Si no se indica, se usará el esquema por defecto que retorne la conexión.
@@ -110,7 +70,8 @@ database:
     schema: TESTDB
 ```
 
----
+<br /><br />
+
 ### `database.metadata.catalog`
 Establece manualmente el catálogo de base de datos (si el motor soporta esta característica) que se usará para recuperar
 metadatos como claves privadas y/o nulabilidad. Si no se indica, se usará el esquema por defecto que retorne la conexión.
@@ -122,7 +83,8 @@ database:
     catalog: TESTCAT
 ```
 
----
+<br /><br />
+
 ### `database.metadata.caseSensititvy`
 Establece si se debería hacer alguna transformación de mayúsculas/minúsculas cuando se intente acceder a los metadatos.
 Algunos motores son estrictos con respecto a esto, y puede causar errores inesperados si no se configura correctamente.
@@ -138,11 +100,12 @@ database:
     caseSensitivity: UPPER_CASED
 ```
 
----
+<br /><br />
+
 ### `database.csv.format`
 
 Establece la variante de formato usado a la hora de leer ficheros CSV. Los valores aceptados son directamente los usados
-por el projecto [Commons CSV][1] (consultar el enlace para una explicación exhaustiva de cada variante). Los posibles
+por el proyecto [Commons CSV][1] (consultar el enlace para una explicación exhaustiva de cada variante). Los posibles
 valores son:
 - `DEFAULT`
 - `INFORMIX_UNLOAD`
@@ -162,7 +125,8 @@ database:
     format: ORACLE
 ```
 
----
+<br /><br />
+
 ### `database.xls.ignoreSheetPattern`
 Establece la expresión regular usada para determinar qué hojas se deberían ignorar cuando se cargan datos de un fichero
 XLSX.
@@ -176,10 +140,11 @@ database:
     ignoreSheetPattern: //.*
 ```
 
----
+<br /><br />
+
 ### `database.nullSymbol`
 Establece el literal usado para marcar una celda específica con el valor correspondiente al `NULL` de SQL. Se usa en
-cualquier orígen de datos (ficheros CSV, XLSX, y tablas embebidas en la definición del test).
+cualquier origen de datos (ficheros CSV, XLSX, y tablas embebidas en la definición del test).
 
 El valor por defecto es `<null>`.
 
@@ -189,7 +154,8 @@ database:
   nullSymbol: (null)
 ```
 
----
+<br /><br />
+
 ### `database.enableCleanupUponCompletion`
 El comportamiento por defecto del plugin no realiza ninguna operación de limpieza de la base de datos al acabar la
 ejecución de los tests. Esto es así para poder comprobar resultados manualmente y depurar errores. Los posibles valores
@@ -206,10 +172,10 @@ database:
 ```
 
 
-
+---
 ## Pasos
 
----
+
 ### Definir conexión
 ```
 la URL de conexión a BBDD {url} usando el usuario {username} y la contraseña {password}
@@ -231,7 +197,8 @@ configurar las propiedades [`database.connection.url`](#databaseconnectionurl),
   Dada la URL de conexión a BBDD 'jdbc:h2:tcp://localhost:9092/~/TESTDB' usando el usuario 'test' y la contraseña 'test'
 ```
 
----
+<br /><br />
+
 ### Definir script post ejecución
 ```
 Al finalizar, se ejecuta el siguiente script SQL:
@@ -253,7 +220,8 @@ ejecución.
     """
 ```
 
----
+<br /><br />
+
 ### Definir script post ejecución (fichero)
 ```
 Al finalizar, se ejecuta el script SQL del fichero {file}
@@ -271,7 +239,8 @@ del estado de la ejecución.
   * Al finalizar, se ejecuta el script SQL del fichero 'data/insert-users.sql'
 ```
 
----
+<br /><br />
+
 ### Ejecutar script
 ```
 se ejecuta el siguiente script SQL:
@@ -292,7 +261,8 @@ Ejecuta el script SQL escrito a continuación.
     """
 ```
 
----
+<br /><br />
+
 ### Ejecutar script (fichero)
 ```
 se ejecuta el script SQL del fichero {file}
@@ -309,7 +279,8 @@ Ejecuta el script SQL existente en el fichero indicado.
   Cuando se ejecuta el script SQL del fichero 'data/insert-users.sql'
 ```
 
----
+<br /><br />
+
 ### Vaciar tabla
 ```
 se limpia la tabla de BBDD {word}
@@ -327,7 +298,8 @@ fallar la primera.
   Cuando se limpia la tabla de BBDD USERS
 ```
 
----
+<br /><br />
+
 ### Eliminar datos
 ```
 se (ha) elimina(n|do) * con {column} = {value} de la tabla de BBDD {table}
@@ -349,7 +321,8 @@ Elimina de una tabla dada las filas que satisfagan la comparación indicada.
   Cuando se ha eliminado los usuarios con STATE = '2' de la tabla de BBDD USER 
 ```
 
----
+<br /><br />
+
 ### Eliminar datos (tabla)
 ```
 se (ha) elimina(n|do) (lo|el|la|los|las) siguiente(s) * de la tabla de BBDD {word}:
@@ -375,7 +348,8 @@ Elimina de una tabla dada las filas indicadas.
     | user1 | 2     | <null>        |
 ```
 
----
+<br /><br />
+
 ### Eliminar datos (XLS)
 ```
 se (ha) elimina(do) el contenido del fichero XLS {file} de la BBDD
@@ -395,7 +369,8 @@ Elimina las filas que concuerdan con los datos del fichero XLS indicado.
   Cuando se ha eliminado el contenido del fichero XLS 'data/users.xls' de la BBDD
 ```
 
----
+<br /><br />
+
 ### Eliminar datos (CSV)
 ```
 se (ha) elimina(do) el contenido del fichero CSV {csv} de la tabla de BBDD {table}
@@ -416,7 +391,8 @@ Elimina las filas de una tabla dada que concuerdan con los datos del fichero CSV
   Cuando se ha eliminado el contenido del fichero CSV 'data/users.csv' de la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Insertar datos (tabla)
 ```
 se (ha) inserta(do) (lo|el|la|los|las) siguiente(s) * en la tabla de BBDD {word}:
@@ -444,7 +420,8 @@ datos se rellenarán con datos aleatorios.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Insertar datos (XLS)
 ```
 se (ha) inserta(do) el contenido del fichero XLS {file} en la BBDD
@@ -465,7 +442,8 @@ proporcionen datos se rellenarán con datos aleatorios.
   Cuando se ha insertado el contenido del fichero XLS 'data/users.xls' en la BBDD
 ``` 
 
----
+<br /><br />
+
 ### Insertar datos (CSV)
 ```
 se (ha) inserta(do) el contenido del fichero CSV {csv} en la tabla de BBDD {table}
@@ -487,7 +465,8 @@ se proporcionen datos se rellenarán con datos aleatorios.
   Cuando se ha insertado el contenido del fichero CSV 'data/users.csv' en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos
 ```
 * con {column} = {value} existe(n) en la tabla de BBDD {table}
@@ -506,7 +485,8 @@ Comprueba que existe al menos una fila en la tabla indicada para la cual se cump
   Entonces varios usuarios con STATE = '1' existen en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos
 ```
 * con {column} = {value} no existe(n) en la tabla de BBDD {table}
@@ -525,7 +505,8 @@ Comprueba que no existe ninguna fila en la tabla indicada para la cual se cumpla
   Entonces usuarios con STATE = '1' no existen en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos (id)
 ```
 * identificad(o|a|os|as) por {id} existe(n) en la tabla de BBDD {table}
@@ -547,7 +528,8 @@ clave primaria formada por una sola columna.
   Entonces los usuarios identificados por 'algo' existen en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos (id)
 ```
 * identificad(o|a|os|as) por {id} no existe(n) en la tabla de BBDD {table}
@@ -569,7 +551,8 @@ clave primaria formada por una sola columna.
   Entonces los usuarios identificados por 'algo' no existen en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos (tabla)
 ```
 (el|los) siguiente(s) registro(s) existe(n) en la tabla de BBDD {table}:
@@ -590,7 +573,8 @@ Comprueba que todas las filas siguientes existen en una tabla dada.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos (tabla)
 ```
 (el|los) siguiente(s) registro(s) no existe(n) en la tabla de BBDD {table}:
@@ -611,7 +595,8 @@ Comprueba que ninguna de las filas siguientes existen en una tabla dada.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos (XLS)
 ```
 el contenido del fichero XLS {file} existe en la base de datos
@@ -629,7 +614,8 @@ tabla.
   Entonces el contenido del fichero XLS 'data/example.xls' existe en la base de datos
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos (XLS)
 ```
 el contenido del fichero XLS {file} no existe en la base de datos
@@ -647,7 +633,8 @@ a una tabla.
   Entonces el contenido del fichero XLS 'data/example.xls' no existe en la base de datos
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos (CSV)
 ```
 el contenido del fichero CSV {csv} existe en la tabla de BBDD {table}
@@ -665,7 +652,8 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado existen 
   Entonces el contenido del fichero CSV 'data/users.csv' existe en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos (CSV)
 ```
 el contenido del fichero CSV {csv} no existe en la tabla de BBDD {table}
@@ -683,7 +671,8 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado no exist
   Entonces el contenido del fichero CSV 'data/users.csv' no existe en la tabla de BBDD USER
 ```
 
----
+<br /><br />
+
 ### Comprobar existencia de datos (documento)
 ```
 * que satisface(n) la siguiente cláusula SQL existe(n) en la tabla de BBDD {table}:
@@ -704,7 +693,8 @@ Comprueba que al menos una fila de la tabla dada satisface la cláusula SQL indi
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar inexistencia de datos (documento)
 ```
 * que satisface(n) la siguiente cláusula SQL no existe(n) en la tabla de BBDD {table}:
@@ -725,7 +715,8 @@ Comprueba que ninguna fila de la tabla dada satisface la claúsula SQL indicada.
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar número de datos
 ```
 el número de * con {column} = {value} en la tabla de BBDD {table} {matcher}
@@ -746,7 +737,8 @@ numérica indicada.
   Entonces el número de usuarios con STATE = '1' en la tabla de BBDD USER es mayor que 5
 ```
 
----
+<br /><br />
+
 ### Comprobar número de datos (tabla)
 ```
 el número de * que satisfacen (lo|la) siguiente (información) en la tabla de BBDD {table} {matcher}:
@@ -774,7 +766,8 @@ numérica indicada.
     | user1 | 2     | <null>        |
 ```
 
----
+<br /><br />
+
 ### Comprobar número de datos (documento)
 ```
 el número de * que satisfacen la siguiente cláusula SQL en la tabla de BBDD {table} {matcher}:
@@ -797,7 +790,8 @@ numérica indicada.
     """
 ```
 
----
+<br /><br />
+
 ### Comprobar tabla vacía
 ```
 la tabla de BBDD {word} está vacía
@@ -814,7 +808,8 @@ Comprueba que no existe ninguna fila en la tabla indicada.
   Entonces la tabla de BBDD USER está vacía
 ```
 
----
+<br /><br />
+
 ### Comprobar tabla no vacía
 ```
 la tabla de BBDD {word} no está vacía

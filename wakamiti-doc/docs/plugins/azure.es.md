@@ -24,7 +24,7 @@ Ejemplos:
 # azureTest: MyTest
 Característica: Pruebas de alta de usuario
 
-Escenario: Alta de usuario inexiste
+Escenario: Alta de usuario inexistente
 ...
 
 Escenario: Alta de usuario existente
@@ -38,7 +38,7 @@ Escenario: Alta de usuario existente
 Característica: Pruebas de alta de usuario
 
 # azureTest: MyFirstTest
-Escenario: Alta de usuario inexiste
+Escenario: Alta de usuario inexistente
 ...
 
 # azureTest: MySecondTest
@@ -51,9 +51,12 @@ Los casos de test que no tengan esto definido se ignorarán a la hora de hacer l
 En caso de que la ejecución de Wakamiti incluya casos de tests de varios planes de Azure distintos,
 se creará una ejecución Azure distinta por cada uno de ellos.
 
+---
+## toc
 
-Coordenadas
-----------------------------------------------------------------------------------------------------
+---
+## Coordenadas
+
 
 ### Fichero de configuración Wakamiti
 
@@ -75,10 +78,10 @@ wakamiti:
 ```
 
 
+---
 ## Configuración
 
 
----
 ####  `azure.host`
 La dirección de la máquina donde está alojado el servidor Azure.
 
@@ -90,7 +93,8 @@ azure:
   
 ```
 
----
+<br /><br />
+
 ####  `azure.credentials.user`
 El nombre de usuario que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
 
@@ -103,8 +107,8 @@ azure:
 
 ```
 
+<br /><br />
 
----
 ####  `azure.credentials.password`
 El password que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
 
@@ -117,8 +121,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.apiVersion`
 El número de versión de la API REST de Azure que se va a usar para enviar las notificaciones.
 
@@ -132,8 +136,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.organization`
 El nombre de la organización en Azure al que pertenece el plan de test.
 
@@ -145,8 +149,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.project`
 El nombre del proyecto Azure al que pertenece el plan de test.
 
@@ -158,8 +162,8 @@ azure:
   
 ```
 
+<br /><br />
 
----
 ####  `azure.tag`
 La etiqueta que se buscará a la hora de determinar si se debe realizar o no la integración
 con Azure.
@@ -174,12 +178,11 @@ azure:
   
 ```
 
+<br /><br />
 
-
----
 ####  `azure.attachments`
 Una lista de ficheros, o de patrones de nombre de fichero en formato _glob_, que 
-se adjuntarán a la ejecucón Azure.
+se adjuntarán a la ejecución Azure.
 
 
 Ejemplo:
@@ -191,8 +194,8 @@ azure:
     - '*.json'  
 ```
 
+<br /><br />
 
----
 #### `azure.testCasePerFeature`
 Establece si el mapeo con los casos de test de Azure debe ser a nivel de feature o de escenario.
 

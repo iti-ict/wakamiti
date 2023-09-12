@@ -413,8 +413,7 @@ mavenFetcher:
 
 ## Configuración de features
 
-Adicionalmente a la configuración global, se pueden incluir propiedades específicas en cada
-fichero feature
+Adicionalmente, a la configuración global, se pueden incluir propiedades específicas en cada fichero feature
 
 - [`language`](#language)
 - [`dataFormatLanguage`](#language)

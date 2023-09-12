@@ -5,7 +5,7 @@ slug: /en/plugins
 ---
 
 Wakamiti does not have defined steps on its own, but they are provided by different plugins. Currently, the following 
-exist, but you can also develop your own plugins!:
+exist, but you can also develop your own plugins!
 
 - [REST steps](en/plugins/rest)
 - [Database steps](en/plugins/database)

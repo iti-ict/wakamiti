@@ -4,6 +4,8 @@
 // Changes here require a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
 const path = require('path')
+const toc = require('mdast-util-toc')
+
 
 function addStyleResource (rule) {
   rule.use('style-resource')
@@ -38,7 +40,22 @@ module.exports = {
         typeName: 'Doc',
         remark: {
           plugins: [
-            ['remark-toc', { heading: "Table of content|Tabla de contenido", maxDepth: 3}],
+            () => {
+              return (node) => {
+                const result = toc(node, Object.assign({},
+                    { heading: "Table of content|Tabla de contenido", maxDepth: 3}
+                ))
+                if (result.endIndex === null || result.index === null || result.index === -1 || !result.map) {
+                  return
+                }
+                result.map.data = { id: 'toc', htmlAttributes: {id: 'toc'}, hProperties: {id: 'toc'} }
+                node.children = [
+                  ...node.children.slice(0, result.index-1),
+                  result.map,
+                  ...node.children.slice(result.endIndex)
+                ]
+              }
+            },
             '@gridsome/remark-prismjs',
             ["@mgalbis/remark-prefix-links", { pathPrefix }]
           ]

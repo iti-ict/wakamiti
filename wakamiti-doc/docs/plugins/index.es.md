@@ -5,7 +5,7 @@ slug: /plugins
 ---
 
 Wakamiti, por si solo, no tiene pasos definidos, sino que se incluyen a través de diferentes plugins. Actualmente, existen 
-los siguientes, ¡pero también puedes desarrollar tus propios plugins!:
+los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 
 - [Pasos REST](plugins/rest)
 - [Pasos Base de Datos](plugins/database)

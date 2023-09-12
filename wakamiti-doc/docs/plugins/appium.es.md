@@ -17,20 +17,22 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 > En su estado actual, este plugin es principalmente una prueba de concepto más que un plugin 
 > plenamente funcional. Los pasos y la configuración indicada pueden variar en futuras versiones.
 
+---
+## toc
 
+---
+## Configuración
 
-Configuracion
-----------------------------------------------------------------------------------------------------
 
 > Se puede especificar cualquier capacidad a pasar al Web Driver usando la clave adecuada con
 > el formato ```appium.capabilities.xxxxxx```. En este document se describen las opciones mas relevantes,
 > pero para una lista exhaustiva de las propiedades disponibles, consultar el
 > [borrador W3C WebDriver](https://w3c.github.io/webdriver/#capabilities).
 
----
+
 
 ### `appium.url` 
-La URL del servidor Appium
+La URL del servidor Appium.
 
 Ejemplo:
 ```yaml
@@ -38,10 +40,10 @@ appium:
   url: http://127.0.0.1:4723/wd/hub
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.app`
-La ruta completa de la aplicación a testear
+La ruta completa de la aplicación a testear.
 
 Ejemplo:
 ```yaml
@@ -50,10 +52,10 @@ appium:
     app: ApiDemos-debug.apk
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.platformName`
-El tipo de plataforma móvil que se va a testear
+El tipo de plataforma móvil que se va a testear.
 
 Ejemplo:
 ```yaml
@@ -62,10 +64,10 @@ appium:
     platformName: Android
 ```
 
----
+<br /><br />
 
 ### `appium.capabilities.platformVersion`
-La versión de la plataforma que se va a testear
+La versión de la plataforma que se va a testear.
 
 Ejemplo:
 ```yaml
@@ -74,11 +76,10 @@ appium:
     platformVersion: 11
 ```
 
-
----
+<br /><br />
 
 ### `appium.capabilities.appPackage`
-El nombre del paquete que contiene la aplicación que se va a testear
+El nombre del paquete que contiene la aplicación que se va a testear.
 
 Ejemplo:
 ```yaml
@@ -87,11 +88,10 @@ appium:
     appPackage: io.appium.android.apis
 ```
 
----
-
+<br /><br />
 
 ### `appium.capabilities.appActivity`
-El nombre de la actividad a testear
+El nombre de la actividad a testear.
 
 Ejemplo:
 ```yaml
@@ -100,188 +100,199 @@ appium:
     appActivity: '.view.TextFields'
 ```
 
-
-Pasos
-----------------------------------------------------------------------------------------------------
-
-
 ---
+## Pasos
+
+
 ### Seleccionar un elemento de interfaz a partir de su ID
 ```
 el elemento de interfaz con el ID {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
+
 #### Ejemplos:
 ```gherkin
   Dado el elemento de interfaz con el ID '3423423'
 ```
 
+<br /><br />
 
----
 ### Seleccionar un elemento de interfaz a partir de su tipo
 ```
 el elemento de interfaz de tipo {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
+
 #### Ejemplos:
 ```gherkin
   Dado el elemento de interfaz de tipo 'android.widget.EditText'
 ```
 
+<br /><br />
 
----
 ### Seleccionar un elemento de interfaz a partir de su ruta
 ```
 el elemento de interfaz con ruta {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
+
 #### Ejemplos:
 ```gherkin
   Dado el elemento de interfaz con ruta  'main.form.name'
 ```
 
+<br /><br />
 
----
 ### Teclear un texto en un elemento
 ```
 se escribe el texto {text} en ese elemento
 ```
-Emula la acción de introducir un texto cuando un elemento se ha seleccionado
+Emula la acción de introducir un texto cuando un elemento se ha seleccionado.
+
 #### Ejemplos:
 ```gherkin
   Cuando se escribe el texto 'John' en ese elemento
 ```
 
+<br /><br />
 
----
 ### Se pulsa sobre un elemento
 ```
 se pulsa sobre ese elemento
 ```
-Emula la acción de pulsar sobre un elemento
+Emula la acción de pulsar sobre un elemento.
+
 #### Ejemplos:
 ```gherkin
   Cuando se pulsa sobre ese elemento
 ```
 
+<br /><br />
 
-
----
 ### Se pulsa dos veces sobre un elemento
 ```
 se pulsa dos veces ese elmento
 ```
-Emula la acción de pulsar dos veces sobre un elemento
+Emula la acción de pulsar dos veces sobre un elemento.
+
 #### Ejemplos:
 ```gherkin
   Cuando se pulsa dos veces sobre ese elemento
 ```
 
+<br /><br />
 
-
----
 ### Valida el texto de un elemento
 ```
 ese elemento contiene el valor {text}
 ```
-Comprueba que el elemento previamente seleccionado contiene un texto específico
+Comprueba que el elemento previamente seleccionado contiene un texto específico.
+
 #### Ejemplos:
 ```gherkin
   Entonces ese elemento contiene el valor 'Accepted'
 ```
 
+<br /><br />
 
----
 ### Valida que un elemento está habilitado
 ```
 ese elemento esta habilitado
 ```
-Comprueba que el elemento previamente seleccionado está habilitado
+Comprueba que el elemento previamente seleccionado está habilitado.
+
 #### Ejemplos:
 ```gherkin
   Entonces ese elemento esta habilitado
 ```
 
+<br /><br />
 
-
----
 ### Valida que un elemento está deshabilitado
 ```
 ese elemento esta deshabilitado
 ```
-Comprueba que el elemento previamente seleccionado está deshabilitado
+Comprueba que el elemento previamente seleccionado está deshabilitado.
+
 #### Ejemplos:
 ```gherkin
   Entonces ese elemento esta deshabilitado
 ```
 
+<br /><br />
 
----
 ### Validate an element is displayed
 ```
 ese elemento se muestra por pantalla
 ```
-Comprueba que el elemento previamente seleccionado está siendo mostrado por pantalla
+Comprueba que el elemento previamente seleccionado está siendo mostrado por pantalla.
+
 #### Ejemplos:
 ```gherkin
   Entonces ese elemento se muestra por pantalla
 ```
 
----
+<br /><br />
+
 ### Validate an element is not displayed
 ```
 ese elemento no se muestra por pantalla
 ```
-Comprueba que el elemento previamente seleccionado no está siendo mostrado por pantalla
+Comprueba que el elemento previamente seleccionado no está siendo mostrado por pantalla.
+
 #### Ejemplos:
 ```gherkin
    Entonces ese elemento no se muestra por pantalla
 ```
 
+<br /><br />
 
----
 ### Emular una llamada entrante
 ```
 se recibe una llamada entrante con el numero {text}
 ```
 Emula una llamada entrante de un número de teléfono específico. Solo disponible si la aplicación
 a testear está siendo ejecutada en un dispositivo emulado.
+
 #### Ejemplos:
 ```gherkin
   Cuando se recibe una llamada entrante con el numero '555-4324-432'
 ```
 
+<br /><br />
 
----
 ### Aceptar una llamada entrante
 ```
 se acepta la llamada entrante
 ```
-Acepta la llamada que está entrando en ese momento
+Acepta la llamada que está entrando en ese momento.
+
 #### Ejemplos:
 ```gherkin
   Cuando se acepta la llamada entrante
 ```
 
+<br /><br />
 
----
 ### Rechazar una llamada entrante
 ```
 se rechaza la llamada entrante
 ```
-Rechaza la llamada que está entrando en ese momento
+Rechaza la llamada que está entrando en ese momento.
+
 #### Ejemplos:
 ```gherkin
   Cuando se rechaza la llamada entrante
 ```
 
+<br /><br />
 
----
 ### Finaliza la llamada actual
 ```
 se finaliza la llamada
 ```
-Finaliza (cuelga) la llamada actual
+Finaliza (cuelga) la llamada actual.
+
 #### Ejemplos:
 ```gherkin
   Cuando se finaliza la llamada
@@ -289,9 +300,9 @@ Finaliza (cuelga) la llamada actual
 
 
 
+---
+## Preparación de un entorno de pruebas
 
-Preparación de un entorno de pruebas
-----------------------------------------------------------------------------------------------------
 
 1. Instalar Android SDK
 ```
@@ -306,7 +317,7 @@ Preparación de un entorno de pruebas
 
 3. Instalar cmdline-tools
 
-![](android-sdk.png)
+![android-sdk][android-sdk]
 
 5. Instalar Appium y Appium-doctor
 ```
@@ -318,7 +329,7 @@ Preparación de un entorno de pruebas
 ```
 appium-doctor --android
 ```
-Todo deberia salir como OK, en caso contrario revisar los checks en rojo
+Todo debería salir como OK, en caso contrario revisar los checks en rojo.
 
 5. Arrancar el servidor Appium
 ```
@@ -340,16 +351,18 @@ $ANDROID_HOME/emulator/emulator -avd Nexus6P
 ```
 
 
-Si en algun momento el emulador se queda pillado y dice que ya existe una emulacion en curso,
+Si en algún momento el emulador se queda pillado y dice que ya existe una emulación en curso,
 se puede limpiar el estado con
 ```
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
 
-Lo ideal seria poder lanzar todo esto de manera semiautomatica unicamente
+Lo ideal sería poder lanzar todo esto de manera semiautomática únicamente
 a partir del APK, pero de momento hay que:
 - Instalar Android Studio
 - Crear dispositivo virtual (AVD) Por ejemplo Pixel 2 API 30 con Android 11
-- Arrancar el AVD con el boton de play
+- Arrancar el AVD con el botón de play
 
+
+[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png

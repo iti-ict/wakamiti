@@ -13,9 +13,13 @@ hay partes específicas de información que no son intercambiables. Por ejemplo,
 profundidad ilimitada, mientras que Cucumber espera una estructura fija de tres niveles. Por lo tanto, el fichero JSON 
 de Cucumber exportado podría no ser una representación fiel del plan de prueba ejecutado.
 
-## Configuración
+---
+## toc
 
 ---
+## Configuración
+
+
 ####  `cucumberExporter.outputFile`
 La ruta (relativa) y el nombre del archivo generado.
 
@@ -28,12 +32,13 @@ cucumberExporter:
   outputFile: my-cucumber-report.json
 ```
 
----
+<br /><br />
+
 #### `cucumberExporter.multiLevelStrategy`
 Establece la estrategia de mapeo utilizada cuando el plan de Wakamiti tiene más niveles del esperado por Cucumber. Los 
 valores aceptados son:
-- `innerSteps`: Sólo se incluirán los pasos de implementación, descartando los de definición.
-- `outerSteps`: Sólo se incluirán los pasos de definición, descartando los de implementación.
+- `innerSteps`: Solo se incluirán los pasos de implementación, descartando los de definición.
+- `outerSteps`: Solo se incluirán los pasos de definición, descartando los de implementación.
 
 El valor por defecto es `innerSteps`.
 
