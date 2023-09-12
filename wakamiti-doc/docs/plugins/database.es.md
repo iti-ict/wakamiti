@@ -19,6 +19,8 @@ validación de datos.
 ## Tabla de contenido
 
 ---
+
+---
 ## Configuración
 
 ---
