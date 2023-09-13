@@ -12,25 +12,22 @@ import es.iti.wakamiti.rest.RestStepContributor;
 module es.iti.wakamiti.rest {
 
     exports es.iti.wakamiti.rest;
-//    exports es.iti.wakamiti.rest.oauth;
-//    exports es.iti.wakamiti.rest.helpers;
-//    exports es.iti.wakamiti.rest.log;
-//    exports es.iti.wakamiti.rest.matcher;
+    exports es.iti.wakamiti.rest.oauth;
+    exports es.iti.wakamiti.rest.helpers;
+    exports es.iti.wakamiti.rest.log;
+    exports es.iti.wakamiti.rest.matcher;
 
     requires es.iti.wakamiti.api;
-    requires rest.assured;
-//    requires xml.path;
-//    requires json.path;
-    requires com.fasterxml.jackson.databind;
-//    requires iti.commons.jext;
     requires junit;
-    requires com.fasterxml.jackson.dataformat.xml;
-//    requires org.apache.commons.lang3;
     requires org.hamcrest;
-    requires org.everit.json.schema;
-    requires java.xml;
+    requires rest.assured;
+    requires rest.assured.common;
+    requires plexus.utils;
+    requires json.schema.validator;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.xmlbeans;
-    requires json;
+    requires xml.path;
 
     uses ConfigContributor;
     uses StepContributor;

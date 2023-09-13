@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.rest;
 
 
@@ -23,6 +19,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 @ExtensionPoint
 public interface ContentTypeHelper {
 
@@ -34,6 +33,15 @@ public interface ContentTypeHelper {
     ContentType contentType();
 
     void assertContent(String expected, String actual, MatchMode matchMode);
+
+    default void assertContent(
+            String fragment,
+            String expected,
+            ExtractableResponse<Response> response,
+            MatchMode mode
+    ) {
+        throw new UnsupportedOperationException("Not implemented for content type " + contentType());
+    }
 
     default void assertContent(
             Document expected,

@@ -79,16 +79,19 @@ public class XmlUtils {
             } else if (value instanceof Map) {
                 processMap(doc, element, (Map<String, Object>) value);
             } else {
-                element.setTextContent(value.toString());
+                element.setTextContent(value == null ? null : value.toString());
             }
             current.appendChild(element);
         });
     }
 
     public static String readStringValue(XmlObject obj, String expression) {
-        List<String> result = new LinkedList<>();
+        List<String> results = new LinkedList<>();
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
+            if (!expression.contains("/")) {
+                throw new XPathExpressionException(expression);
+            }
             XPathExpression xPathExpression = xPath.compile(expression);
             XPathEvaluationResult<?> evaluationResult = xPathExpression.evaluateExpression(obj.getDomNode());
             if (List.of(NUMBER, STRING, BOOLEAN).contains(evaluationResult.type())) {
@@ -100,9 +103,9 @@ public class XmlUtils {
             for (int i = 0; i < nodes.getLength(); i++) {
                 Node node = nodes.item(i);
                 if (node.getNodeType() == Node.TEXT_NODE) {
-                    result.add(node.getNodeValue());
+                    results.add(node.getNodeValue());
                 } else {
-                    result.add(xml(node).xmlText());
+                    results.add(xml(node).xmlText());
                 }
             }
         } catch (XPathExpressionException e) {
@@ -110,9 +113,11 @@ public class XmlUtils {
             binding.setVariable("obj", obj.toString());
             binding.setVariable("exp", expression);
             GroovyShell shell = new GroovyShell(binding);
-            return shell.evaluate("Eval.x(new groovy.xml.XmlSlurper().parseText(obj), 'x.' + exp)").toString();
+            String exp = (obj.schemaType().finalList() && expression.matches("\\[\\d+].*") ? "'x'" : "'x.'") + " + exp";
+            Object result = shell.evaluate("Eval.x(new groovy.xml.XmlSlurper().parseText(obj), " + exp + ")");
+            return result == null || result.toString().isEmpty() ? null : result.toString();
         }
-        return result.size() > 1 ? result.toString() : result.stream().findFirst().orElse("");
+        return results.size() > 1 ? results.toString() : results.stream().findFirst().orElse(null);
 
     }
 

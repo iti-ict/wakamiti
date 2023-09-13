@@ -4,6 +4,7 @@ package es.iti.wakamiti.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
@@ -28,6 +29,8 @@ import org.mockserver.model.*;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -63,6 +66,7 @@ public class RestStepContributorTest {
 
     private static final ClientAndServer client = startClientAndServer(PORT);
 
+    private final RestConfigContributor configurator = new RestConfigContributor();
     @Spy
     private RestStepContributor contributor;
 
@@ -80,8 +84,9 @@ public class RestStepContributorTest {
 
     @Before
     public void beforeEach() throws NoSuchFieldException, IllegalAccessException {
-        RestAssured.reset();
-        RestAssured.useRelaxedHTTPSValidation();
+        configurator.configurer().configure(contributor, configurator.defaultConfiguration().appendFromPairs(
+                RestConfigContributor.BASE_URL, BASE_URL
+        ));
         RestAssured.config = RestAssured.config().multiPartConfig(
                 RestAssured.config().getMultiPartConfig().defaultBoundary("asdf1234")
         );
@@ -89,12 +94,81 @@ public class RestStepContributorTest {
         client.reset();
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithJsonResponseWithSuccess() throws MalformedURLException, JsonProcessingException {
+    public void testWhenDefaultsWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type", String.format("%s.*", MediaType.APPLICATION_JSON))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setContentType(String)}
+     */
+    @Test
+    public void testSetContentTypeWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type", String.format("%s.*", MediaType.APPLICATION_XML))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setContentType("XML");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setContentType(String)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetContentTypeWithError() {
+        // act
+        contributor.setContentType("AAA");
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testJsonResponseWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
                 ,
                 response()
                         .withStatusCode(200)
@@ -107,25 +181,48 @@ public class RestStepContributorTest {
                         )
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(JsonUtils.readStringValue(result, "body.name")).isEqualTo("Susan");
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} json response
+     */
+    @Test
+    public void testJsonResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
 
         // act
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
-        assertThat(JsonUtils.readStringValue(result, "$.body.name"))
-                .isEqualTo("Susan");
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(JsonUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} xml response
+     */
     @Test
-    public void testWithXmlResponseWithSuccess() throws MalformedURLException {
+    public void testXmlResponseWithSuccess() {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                 ,
                 response()
                         .withStatusCode(200)
@@ -138,30 +235,53 @@ public class RestStepContributorTest {
                         )
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
+        XmlObject result = (XmlObject) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(XmlUtils.readStringValue(result, "body.item.name")).isEqualTo("Susan");
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} xml null response
+     */
+    @Test
+    public void testXmlResponseWhenNullBodyWithSuccess() {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_XML)
+        );
 
         // act
         XmlObject result = (XmlObject) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
-        assertThat(XmlUtils.readStringValue(result, "//name/text()"))
-                .isEqualTo("Susan");
+        assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(XmlUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} text response
+     */
     @Test
-    public void testWithTextResponseWithSuccess() throws MalformedURLException, JsonProcessingException {
+    public void testTextResponseWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                 ,
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.TEXT_PLAIN)
-                        .withBody("\"5567\"")
+                        .withBody("5567")
                         .withHeaders(
                                 header("vary", "Origin"),
                                 header("vary", "Access-Control-Request-Method"),
@@ -169,25 +289,49 @@ public class RestStepContributorTest {
                         )
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(JsonUtils.readStringValue(result, "body")).isEqualTo("5567");
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} text null response
+     */
+    @Test
+    public void testTextResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.TEXT_PLAIN)
+        );
 
         // act
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
-        assertThat(JsonUtils.readStringValue(result, "$.body"))
-                .isEqualTo("5567");
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+        assertThat(JsonUtils.readStringValue(result, "body")).isNull();
     }
 
+    /**
+     * Test {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithRequestParametersWithSuccess() throws MalformedURLException {
+    public void testRequestParametersWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
@@ -197,25 +341,26 @@ public class RestStepContributorTest {
                         .withStatusCode(200)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
         contributor.setRequestParameter("param1", "value1");
         contributor.setRequestParameter("param2", "value2");
-
-        // act
-        Object result = contributor.executeGetSubject();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setRequestParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithRequestParameterListWithSuccess() throws MalformedURLException {
+    public void testRequestParameterListWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
@@ -226,24 +371,25 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
         contributor.setRequestParameters(dataTable("param1", "value1", "param2", "value2"));
-
-        // act
-        Object result = contributor.executeGetSubject();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setQueryParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithQueryParametersWithSuccess() throws MalformedURLException {
+    public void testQueryParametersWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
@@ -254,25 +400,26 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
         contributor.setQueryParameter("param1", "value1");
         contributor.setQueryParameter("param2", "value2");
-
-        // act
-        Object result = contributor.executeGetQuery();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setQueryParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithQueryParameterListWithSuccess() throws MalformedURLException {
+    public void testQueryParameterListWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
@@ -283,20 +430,22 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setQueryParameters(dataTable("param1", "value1", "param2", "value2"));
-
         // act
-        Object result = contributor.executeGetQuery();
+        contributor.setQueryParameters(dataTable("param1", "value1", "param2", "value2"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setPathParameter(String, String)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithPathParametersWithSuccess() throws MalformedURLException {
+    public void testPathParametersWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
@@ -307,21 +456,24 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users/{user}/list/{list}");
+        // act
+        contributor.setService("users/{user}/list/{list}");
         contributor.setPathParameter("user", "10");
         contributor.setPathParameter("list", "4");
-
-        // act
-        Object result = contributor.executeGetQuery();
+        JsonNode result = (JsonNode) contributor.executeGetQuery();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setPathParameters(DataTable)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithPathParameterListWithSuccess() throws MalformedURLException {
+    public void testPathParameterListWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
@@ -332,24 +484,54 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
+        // act
         contributor.setService("/users/{user}/list/{list}");
         contributor.setPathParameters(dataTable("user", "10", "list", "4"));
-
-        // act
-        Object result = contributor.executeGetQuery();
+        JsonNode result = (JsonNode) contributor.executeGetQuery();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
-    @Test
-    public void testWithHeadersWithSuccess() throws MalformedURLException {
+    /**
+     * Test {@link RestStepContributor#setPathParameters(DataTable)},
+     * {@link RestStepContributor#setService(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testPathParameterListWhenIncorrectColumnsWithError() {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/users/10/list/4")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setService("/users/{user}/list/{list}");
+        contributor.setPathParameters(new DataTable(new String[][]{
+                new String[] { "column1" }, new String[] { "value1" }
+        }));
+        contributor.executeGetQuery();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setHeader(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testHeadersWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
                         .withHeaders(
                                 header("param1", "value1"),
                                 header("param2", "value2")
@@ -360,25 +542,26 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
         contributor.setHeader("param1", "value1");
         contributor.setHeader("param2", "value2");
-
-        // act
-        Object result = contributor.executeGetSubject();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setHeaders(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWithHeaderListWithSuccess() throws MalformedURLException {
+    public void testHeaderListWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withHeaders(
                                 header("param1", "value1"),
                                 header("param2", "value2")
@@ -389,49 +572,68 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setHeaders(dataTable("param1", "value1", "param2", "value2"));
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setHeaders(dataTable("param1", "value1", "param2", "value2"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setHeaders(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testHeaderListWhenIncorrectColumnsWithError() {
+        // act
+        contributor.setHeaders(
+                new DataTable(new String[][]{
+                        new String[] { "column1" }, new String[] { "value1" }
+                })
+        );
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setTimeoutInSecs(Integer)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = SocketTimeoutException.class)
-    public void testSetTimeoutWithError() throws MalformedURLException {
+    public void testSetTimeoutWithError() {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                 ,
                 response()
                         .withDelay(new Delay(TimeUnit.SECONDS, 5))
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setTimeoutInSecs(1);
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setTimeoutInSecs(1);
+        contributor.executeGetSubject();
 
         // check
-        assertThat(result).isNotNull();
+        // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBasicAuth(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetBasicAuthWithSuccess() throws MalformedURLException {
+    public void testSetBasicAuthWithSuccess() {
         // prepare
         String token = Base64.getEncoder().encodeToString("username:password".getBytes());
 
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withHeader("Authorization", "Basic " + token)
                 ,
                 response()
@@ -439,20 +641,22 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_XML)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBasicAuth("username", "password");
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setBasicAuth("username", "password");
+        XmlObject result = (XmlObject) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetBearerAuthClientWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
+    public void testSetBearerAuthClientWithSuccess()
+            throws NoSuchFieldException, IllegalAccessException, JsonProcessingException, MalformedURLException {
         // prepare
         String token = "1234567890";
 
@@ -474,20 +678,23 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthClient();
-
         // act
-        contributor.executeGetSubject();
+        contributor.setBearerAuthClient();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(keys()).containsValue(token);
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetBearerAuthClientWhenScopeWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
+    public void testSetBearerAuthClientWhenScopeWithSuccess()
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
         // prepare
         String token = "1234567890";
 
@@ -510,18 +717,20 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthClient(dataTable("scope", "something"));
-
         // act
-        contributor.executeGetSubject();
+        contributor.setBearerAuthClient(dataTable("scope", "something"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(keys()).containsValue(token);
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthClient()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthClientWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
@@ -547,12 +756,8 @@ public class RestStepContributorTest {
 
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthClient();
-
         // act
+        contributor.setBearerAuthClient();
         // If it calls the service more than once, it will throw an error
         contributor.executeGetSubject();
         contributor.executeGetSubject();
@@ -561,8 +766,13 @@ public class RestStepContributorTest {
         verify(contributor, times(2)).retrieveOauthToken();
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetBearerAuthPasswordWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
+    public void testSetBearerAuthPasswordWithSuccess()
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
         // prepare
         String token = "1234567890";
 
@@ -586,20 +796,24 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthPassword("username", "password");
-
         // act
-        contributor.executeGetSubject();
+        contributor.setBearerAuthPassword("username", "password");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(keys()).containsValue(token);
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link
+     * RestStepContributor#setBearerAuthPassword(String, String, DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetBearerAuthPasswordWhenScopeWithSuccess() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
+    public void testSetBearerAuthPasswordWhenScopeWithSuccess()
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
         // prepare
         String token = "1234567890";
 
@@ -624,18 +838,20 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthPassword("username", "password", dataTable("scope", "something"));
-
         // act
-        contributor.executeGetSubject();
+        contributor.setBearerAuthPassword("username", "password", dataTable("scope", "something"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(keys()).containsValue(token);
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
     public void testSetBearerAuthPasswordWhenCachedWithSuccess() throws MalformedURLException {
         // prepare
@@ -662,12 +878,8 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthPassword("username", "password");
-
         // act
+        contributor.setBearerAuthPassword("username", "password");
         // If it calls the service more than once, it will throw an error
         contributor.executeGetSubject();
         contributor.executeGetSubject();
@@ -676,8 +888,13 @@ public class RestStepContributorTest {
         verify(contributor, times(2)).retrieveOauthToken();
     }
 
+    /**
+     * Test {@link RestStepContributor#setNoneAuth()},
+     * {@link RestStepContributor#setHeader(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetNoneAuthWithSuccess() throws MalformedURLException {
+    public void testSetNoneAuthWithSuccess() throws MalformedURLException, JsonProcessingException {
         // prepare
         String token = "1234567890";
 
@@ -687,7 +904,7 @@ public class RestStepContributorTest {
 
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withHeader(
                                 header(not("Authorization"))
                         )
@@ -700,97 +917,111 @@ public class RestStepContributorTest {
         //contributor.setBearerAuth(token);
         contributor.setHeader("Authorization", "loquesea");
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(401)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setNoneAuth(); // auth must be overridden
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setNoneAuth(); // auth must be overridden
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("401");
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerDefault()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoGrantTypeConfigWithError() throws MalformedURLException {
         // prepare
         contributor.oauth2ProviderConfig.clientId("WEB_APP");
         contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
         contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setBearerDefault();
 
         // act
+        contributor.setBearerDefault();
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
-    public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() throws MalformedURLException {
+    public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() {
         // prepare
         contributor.oauth2ProviderConfig.clientId("WEB_APP");
         contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
-        contributor.setBearerAuthPassword("username", "password");
-        contributor.setBaseURL(new URL(BASE_URL));
 
         // act
+        contributor.setBearerAuthPassword("username", "password");
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientIdConfigWithError() throws MalformedURLException {
         // prepare
         contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
         contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
-        contributor.setBearerAuthPassword("username", "password");
-        contributor.setBaseURL(new URL(BASE_URL));
 
         // act
+        contributor.setBearerAuthPassword("username", "password");
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientSecretConfigWithError() throws MalformedURLException {
         // prepare
         contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
         contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.setBearerAuthPassword("username", "password");
-        contributor.setBaseURL(new URL(BASE_URL));
 
         // act
+        contributor.setBearerAuthPassword("username", "password");
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerDefault()} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoRequiredParamConfigWithError() throws MalformedURLException {
         // prepare
         contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
         contributor.oauth2ProviderConfig.clientId("WEB_APP");
         contributor.oauth2ProviderConfig.type(GrantType.PASSWORD);
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(404)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setBearerDefault();
 
         // act
+        contributor.setBearerDefault();
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenCodeErrorWithError() throws MalformedURLException {
         // prepare
@@ -807,16 +1038,18 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setBearerAuthPassword("username", "password");
-
         // act
+        contributor.setBearerAuthPassword("username", "password");
         contributor.executeGetSubject();
 
         // check
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthPassword(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenTokenMissingWithError() throws MalformedURLException {
         // prepare
@@ -832,7 +1065,6 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setBaseURL(new URL(BASE_URL));
         contributor.setBearerAuthPassword("username", "password");
 
         // act
@@ -842,14 +1074,18 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    /**
+     * Test {@link RestStepContributor#setBearerAuthFile(File)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWhenAuthHeaderWithSuccess() throws MalformedURLException {
+    public void testWhenAuthHeaderWithSuccess() throws JsonProcessingException {
         // prepare
         String token = "1234567890";
 
         mockServer(
                 request()
-                        .withPath("/users/10")
+                        .withPath("/")
                         .withHeader("Authorization", "Bearer " + token)
                 ,
                 response()
@@ -857,25 +1093,25 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setBearerAuthFile(file(TOKEN_PATH));
-        contributor.setSubject("10");
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setBearerAuthFile(file(TOKEN_PATH));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetAttachedFileWithSuccess() throws MalformedURLException {
+    public void testSetAttachedFileWithSuccess() throws IOException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withHeader("Content-Type",
                                 MediaType.MULTIPART_FORM_DATA + "; boundary="
                                         + RestAssured.config().getMultiPartConfig().defaultBoundary())
@@ -895,31 +1131,35 @@ public class RestStepContributorTest {
                                         )
                                 )
                         )
+                        .withBody(
+                                regex(".*file\\.txt.*")
+                        )
                 ,
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
+        // act
         contributor.setAttachedFile("file", new Document("Test content"));
         contributor.setAttachedFile("file", new Document("Test content 2"));
-
-        // act
-        Object result = contributor.executeGetSubject();
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetAttachedFileWhenContentTypeWithSuccess() throws MalformedURLException {
+    public void testSetAttachedFileWhenContentTypeWithSuccess() throws IOException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
                         .withHeader("Content-Type",
                                 MediaType.MULTIPART_FORM_DATA + "; boundary="
                                         + RestAssured.config().getMultiPartConfig().defaultBoundary())
@@ -933,36 +1173,8 @@ public class RestStepContributorTest {
                                         )
                                 )
                         )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setAttachedFile("fichero",
-                new Document(json(map("user", "Pepe")), "json"));
-
-        // act
-        Object result = contributor.executeGetSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testSetAttachedFileWhenSubtypeWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withPath("/users")
-                        .withHeader("Content-Type",
-                                "multipart/mixed; boundary="
-                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
-                                regex(".+")
+                                regex(".*file\\.json.*")
                         )
                 ,
                 response()
@@ -970,25 +1182,92 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setMultipartSubtype("mixed");
-        contributor.setAttachedFile("file", new Document("Test content"));
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setAttachedFile("fichero",
+                new Document(json(map("user", "Pepe")), "json"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)},
+     * {@link RestStepContributor#setMultipartSubtype(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testSetAttachedFileWhenFileWithSuccess() throws MalformedURLException {
+    public void testSetAttachedFileWhenSubtypeWithSuccess() throws IOException {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users")
+                        .withPath("/")
+                        .withHeader("Content-Type",
+                                "multipart/mixed; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                        .withBody(
+                                regex(".*")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setMultipartSubtype("mixed");
+        contributor.setAttachedFile("file", new Document("Test content"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, Document)},
+     * {@link RestStepContributor#setFilename(String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testSetAttachedFileWhenFilenameWithSuccess() throws IOException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader("Content-Type",
+                                MediaType.MULTIPART_FORM_DATA + "; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                        .withBody(
+                                regex(".*fichero\\.txt.*")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setFilename("fichero");
+        contributor.setAttachedFile("file", new Document("Test content"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testSetAttachedFileWhenFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
                         .withHeader("Content-Type",
                                 MediaType.MULTIPART_FORM_DATA
                                         + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
@@ -1002,439 +1281,164 @@ public class RestStepContributorTest {
                                         )
                                 )
                         )
+                        .withBody(
+                                regex(".*token\\.txt.*")
+                        )
                 ,
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setAttachedFile("file", file(TOKEN_PATH));
-
         // act
-        Object result = contributor.executeGetSubject();
+        contributor.setAttachedFile("file", file(TOKEN_PATH));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetAttachedFileWhenFileNotFoundWithError() {
+        // act
+        contributor.setAttachedFile("file", new File("file.tmp"));
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFormParameter(String, String)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
     @Test
-    public void testWhenDeleteSubjectWithSuccess() throws MalformedURLException {
+    public void testWithFormParametersWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type",
+                                        String.format("%s.*", MediaType.APPLICATION_FORM_URLENCODED))
+                        )
+                        .withQueryStringParameters(
+                                param("param1", "value1"),
+                                param("param2", "value2")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setFormParameter("param1", "value1");
+        contributor.setFormParameter("param2", "value2");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFormParameters(DataTable)} and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testWithFormParametersListWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type",
+                                        String.format("%s.*", MediaType.APPLICATION_FORM_URLENCODED))
+                        )
+                        .withQueryStringParameters(
+                                param("param1", "value1"),
+                                param("param2", "value2")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setFormParameters(dataTable("param1", "value1", "param2", "value2"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executeDeleteSubject()}
+     */
+    @Test
+    public void testDeleteSubjectWithSuccess() {
         // prepare
         mockServer(
                 request()
                         .withMethod("DELETE")
-                        .withPath("/users/10")
+                        .withPath("/10")
                 ,
                 response()
                         .withStatusCode(204)
                         .withContentType(MediaType.APPLICATION_XML)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(204)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
         // act
-        Object result = contributor.executeDeleteSubject();
+        contributor.setSubject("/10");
+        XmlObject result = (XmlObject) contributor.executeDeleteSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("204");
     }
 
+    /**
+     * Test {@link RestStepContributor#executeDeleteDataUsingDocument(Document)}
+     */
     @Test
-    public void testWhenPutSubjectDocumentWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PUT")
-                        .withPath("/users/10")
-                        .withBody(json(map("user", "Pepe")))
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePutSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPutSubjectFileWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PUT")
-                        .withPath("/users/10")
-                        .withBody("1234567890")
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePutSubjectUsingFile(file(TOKEN_PATH));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPutSubjectAndParamsWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PUT")
-                        .withPath("/users/10")
-                        .withQueryStringParameter("param1", "value1")
-                        .withBody(
-                                Not.not(regex(".+"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-        contributor.setRequestParameter("param1", "value1");
-
-        // act
-        Object result = contributor.executePutSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPutSubjectWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PUT")
-                        .withPath("/users/10")
-                        .withBody(
-                                Not.not(regex(".+"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePutSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPatchSubjectDocumentWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PATCH")
-                        .withPath("/users/10")
-                        .withBody(json(map("user", "Pepe")))
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor
-                .executePatchSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPatchSubjectFileWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PATCH")
-                        .withPath("/users/10")
-                        .withBody("1234567890")
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePatchSubjectUsingFile(file(TOKEN_PATH));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPatchSubjectAndParamsWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PATCH")
-                        .withPath("/users/10")
-                        .withQueryStringParameter("param1", "value1")
-                        .withBody(
-                                Not.not(regex(".+"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-        contributor.setRequestParameter("param1", "value1");
-
-        // act
-        Object result = contributor.executePatchSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPatchSubjectWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("PATCH")
-                        .withPath("/users/10")
-                        .withBody(
-                                Not.not(regex(".+"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePatchSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostSubjectDocumentWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody(json(map("user", "Pepe")))
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor
-                .executePostSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostSubjectFileWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody("1234567890")
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePostSubjectUsingFile(file(TOKEN_PATH));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostSubjectAndParamWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody(
-                                params(param("param1", "value1"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-        contributor.setRequestParameter("param1", "value1");
-
-        // act
-        Object result = contributor.executePostSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostSubjectWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody(
-                                Not.not(regex(".+"))
-                        )
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePostSubject();
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostDataDocumentWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody(json(map("user", "Pepe")))
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePostDataUsingDocument(new Document(json(map("user", "Pepe"))));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenPostDataFileWithSuccess() throws MalformedURLException {
-        // prepare
-        mockServer(
-                request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody("1234567890")
-                ,
-                response()
-                        .withStatusCode(200)
-                        .withContentType(MediaType.APPLICATION_JSON)
-        );
-
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
-        // act
-        Object result = contributor.executePostDataUsingFile(file(TOKEN_PATH));
-
-        // check
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testWhenDeleteDataFileWithSuccess() throws MalformedURLException {
+    public void testDeleteDataWhenDocumentWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
                         .withMethod("DELETE")
-                        .withPath("/users/10")
+                        .withBody(json(map("user", "Pepe")))
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        JsonNode result = (JsonNode) contributor
+                .executeDeleteDataUsingDocument(new Document(json(map("user", "Pepe"))));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)} 
+     */
+    @Test
+    public void testDeleteDataWhenFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("DELETE")
                         .withBody("1234567890")
                 ,
                 response()
@@ -1442,54 +1446,83 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-
         // act
-        Object result = contributor.executeDeleteDataUsingFile(file(TOKEN_PATH));
+        JsonNode result = (JsonNode) contributor.executeDeleteDataUsingFile(file(TOKEN_PATH));
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingDocument(Document)} 
+     */
     @Test
-    public void testWhenPostDataAndParamWithSuccess() throws MalformedURLException {
+    public void testWhenPutSubjectDocumentWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
-                        .withBody(
-                                params(param("param1", "value1"))
-                        )
+                        .withMethod("PUT")
+                        .withPath("/10")
+                        .withBody(json(map("user", "Pepe")))
                 ,
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
-        contributor.setSubject("10");
-        contributor.setRequestParameter("param1", "value1");
-
         // act
-        Object result = contributor.executePostData();
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePutSubjectUsingDocument(
+                new Document(json(map("user", "Pepe"))));
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingFile(File)} 
+     */
     @Test
-    public void testWhenPostDataWithSuccess() throws MalformedURLException {
+    public void testWhenPutSubjectFileWithSuccess() throws JsonProcessingException {
         // prepare
         mockServer(
                 request()
-                        .withMethod("POST")
-                        .withPath("/users/10")
+                        .withMethod("PUT")
+                        .withPath("/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setSubject("10");
+
+        // act
+        JsonNode result = (JsonNode) contributor.executePutSubjectUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePutSubject()} 
+     */
+    @Test
+    public void testWhenPutSubjectAndParamsWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PUT")
+                        .withPath("/10")
+                        .withQueryStringParameter("param1", "value1")
                         .withBody(
                                 Not.not(regex(".+"))
                         )
@@ -1499,21 +1532,481 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        contributor.setFailureHttpCodeAssertion(new MatcherAssertion<>(equalTo(200)));
-        contributor.setBaseURL(new URL(BASE_URL));
-        contributor.setService("/users");
         contributor.setSubject("10");
+        contributor.setRequestParameter("param1", "value1");
 
         // act
-        Object result = contributor.executePostData();
+        JsonNode result = (JsonNode) contributor.executePutSubject();
 
         // check
         assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubject()}
+     */
+    @Test
+    public void testWhenPutSubjectWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PUT")
+                        .withPath("/10")
+                        .withBody(
+                                Not.not(regex(".+"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setSubject("10");
+
+        // act
+        JsonNode result = (JsonNode) contributor.executePutSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingDocument(Document)} 
+     */
+    @Test
+    public void testWhenPatchSubjectDocumentWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PATCH")
+                        .withPath("/10")
+                        .withBody(json(map("user", "Pepe")))
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor
+                .executePatchSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePutSubjectUsingFile(File)} 
+     */
+    @Test
+    public void testWhenPatchSubjectFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PATCH")
+                        .withPath("/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePatchSubjectUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePatchSubject()}
+     */
+    @Test
+    public void testWhenPatchSubjectAndParamsWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PATCH")
+                        .withPath("/10")
+                        .withQueryStringParameter("param1", "value1")
+                        .withBody(
+                                Not.not(regex(".+"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        contributor.setRequestParameter("param1", "value1");
+        JsonNode result = (JsonNode) contributor.executePatchSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubject()}
+     */
+    @Test
+    public void testWhenPatchSubjectWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("PATCH")
+                        .withPath("/10")
+                        .withBody(
+                                Not.not(regex(".+"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePatchSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubjectUsingDocument(Document)} 
+     */
+    @Test
+    public void testWhenPostSubjectDocumentWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(json(map("user", "Pepe")))
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor
+                .executePostSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePatchSubjectUsingFile(File)} 
+     */
+    @Test
+    public void testWhenPostSubjectFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setSubject("10");
+
+        // act
+        JsonNode result = (JsonNode) contributor.executePostSubjectUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePostSubject()} 
+     */
+    @Test
+    public void testWhenPostSubjectAndParamWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(
+                                params(param("param1", "value1"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        contributor.setRequestParameter("param1", "value1");
+        JsonNode result = (JsonNode) contributor.executePostSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubject()}
+     */
+    @Test
+    public void testWhenPostSubjectWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(
+                                Not.not(regex(".+"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePostSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubjectUsingDocument(Document)} 
+     */
+    @Test
+    public void testWhenPostDataDocumentWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(json(map("user", "Pepe")))
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor
+                .executePostDataUsingDocument(new Document(json(map("user", "Pepe"))));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostSubjectUsingFile(File)} 
+     */
+    @Test
+    public void testWhenPostDataFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePostDataUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executeDeleteDataUsingFile(File)} 
+     */
+    @Test
+    public void testWhenDeleteDataFileWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("DELETE")
+                        .withPath("/10")
+                        .withBody("1234567890")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executeDeleteDataUsingFile(file(TOKEN_PATH));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)},
+     * {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePostData()} 
+     */
+    @Test
+    public void testWhenPostDataAndParamWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(
+                                params(param("param1", "value1"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        contributor.setRequestParameter("param1", "value1");
+        JsonNode result = (JsonNode) contributor.executePostData();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setSubject(String)} and
+     * {@link RestStepContributor#executePostData()} 
+     */
+    @Test
+    public void testWhenPostDataWithSuccess() throws JsonProcessingException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/10")
+                        .withBody(
+                                Not.not(regex(".+"))
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setSubject("10");
+        JsonNode result = (JsonNode) contributor.executePostData();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#assertHttpCode(Assertion)} 
+     */
     @Test(expected = WakamitiException.class)
     public void testWhenResponseIsNullWithError() {
         contributor.assertHttpCode(new MatcherAssertion<>(equalTo(200)));
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} and
+     * {@link RestStepContributor#assertBodyStrictComparison(Document)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testWhenResponseHasInvalidContentTypeWithError() {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_BINARY)
+                        .withBody("test")
+        );
+
+        // act
+        contributor.executeGetSubject();
+        contributor.assertBodyStrictComparison(new Document("test"));
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#executeGetSubject()} and
+     * {@link RestStepContributor#assertBodyStrictComparison(Document)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testWhenResponseHasInvalidContentTypeHelperWithError() {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/")
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .withBody("test")
+        );
+
+        // act
+        contributor.executeGetSubject();
+        contributor.assertBodyStrictComparison(new Document("test"));
+
+        // check
+        // An error should be thrown
     }
 
 

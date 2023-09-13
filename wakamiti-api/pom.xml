@@ -50,6 +50,10 @@
             <artifactId>hamcrest</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
         </dependency>
@@ -77,7 +81,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.8.1</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

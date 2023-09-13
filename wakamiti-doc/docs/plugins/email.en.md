@@ -20,6 +20,7 @@ Coordinates
 
 ```yaml
 wakamiti:
+  launcher:
     modules:
         - es.iti.wakamiti:email-wakamiti-plugin:1.0.0
 ```

@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.rest.matcher;
+
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -12,14 +12,16 @@ import org.hamcrest.TypeSafeMatcher;
 
 import static org.hamcrest.Matchers.equalTo;
 
+
 /**
- * Tests if the argument is a {@link CharSequence} that matches a specified length.
+ * Tests if the argument is a {@link CharSequence} that matches a specified
+ * length.
  */
 public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
 
     /**
-     * Creates a matcher of {@link CharSequence} that matches when the examined {@link CharSequence} has the length
-     * determined by the specified matcher.
+     * Creates a matcher of {@link CharSequence} that matches when the examined
+     * {@link CharSequence} has the length determined by the specified matcher.
      * <p/>
      * For example:
      * <pre>assertThat("myStringOfNote", length(not(equalTo(10))))</pre>
@@ -32,13 +34,14 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
     }
 
     /**
-     * Creates a matcher of {@link CharSequence} that matches when the examined {@link CharSequence} has the specified
-     * length.
+     * Creates a matcher of {@link CharSequence} that matches when the examined
+     * {@link CharSequence} has the specified length.
      * <p/>
      * For example:
      * <pre>assertThat("myStringOfNote", length(10))</pre>
      *
-     * @param length the length that the returned matcher will expect any examined string to have
+     * @param length the length that the returned matcher will expect any
+     *               examined string to have
      */
     public static CharSequenceLengthMatcher length(int length) {
         return length(equalTo(length));

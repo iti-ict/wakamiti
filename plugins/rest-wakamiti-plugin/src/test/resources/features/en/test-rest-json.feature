@@ -113,6 +113,24 @@ Feature: REST Test Feature
       ]
       """
     And the response is equal to the file 'src/test/resources/data/users.json' (in any order)
+    And the response fragment 'find{ it.id == "user1" }.vegetables' is (in any order):
+      """json
+      [
+        { "id": 1, "description": "Cucumber" },
+        { "id": 2, "description": "Gherkin" }
+      ]
+      """
+    And the response fragment 'find{ it.id == "user1" }.vegetables' is equal to the file 'src/test/resources/data/vegetables_user1.json' (in any order)
+    And the response fragment 'find{ it.id == "user1" }' contains:
+      """json
+      {
+        "name": "User One",
+        "vegetables": [
+            { "id": 1, "description": "Cucumber" }
+        ]
+      }
+      """
+    And the response fragment 'find{ it.id == "user1" }.vegetables' contains the file 'src/test/resources/data/vegetables_user1.json'
 
 
   Scenario: URL with parameters
@@ -130,6 +148,11 @@ Feature: REST Test Feature
       ]
       """
     And the response is equal to the file 'src/test/resources/data/vegetables_user1.json'
+    And the response fragment '[1]' is:
+      """json
+      { "id": 2, "description": "Gherkin" }
+      """
+    And the response fragment '[1]' is equal to the file 'src/test/resources/data/vegetable.json'
 
 
     Scenario: Request with headers and parameters
