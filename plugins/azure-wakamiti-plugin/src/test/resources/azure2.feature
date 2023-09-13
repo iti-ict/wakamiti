@@ -8,7 +8,7 @@ Feature: Azure integration feature
 
 
   Scenario: Test Case B
-    * this step fails
+    * this step do nothing
 
 
   Scenario: Test Case C
