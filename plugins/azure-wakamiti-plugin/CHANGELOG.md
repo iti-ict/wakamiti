@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.0] - 2023-09-13
+
+### Added
+- Creation of test plans, suites, and test cases in the Azure instance when absent
+- Fill run data regarding start, finish, and execution time.
+
+
 
 ## [1.3.2] - 2023-09-11
 
