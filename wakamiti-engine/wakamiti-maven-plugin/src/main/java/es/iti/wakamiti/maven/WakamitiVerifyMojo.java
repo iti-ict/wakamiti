@@ -118,6 +118,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     @Override
     public void execute() {
 
+        System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.simple.SimpleLoggerContextFactory");
         System.setProperty("org.slf4j.simpleLogger.log.es.iti.wakamiti", logLevel);
 
         if (skipTests) {

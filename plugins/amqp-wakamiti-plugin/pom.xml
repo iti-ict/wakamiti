@@ -18,7 +18,7 @@
 
 
     <artifactId>amqp-wakamiti-plugin</artifactId>
-    <version>2.3.2</version>
+    <version>2.3.3</version>
 
     <!-- additional information -->
     <name>[Wakamiti Plugin] AMQP Steps</name>
@@ -53,20 +53,13 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.3.2</version>
+            <version>2.3.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.29</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.qpid</groupId>

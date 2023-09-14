@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.4.3] - 2023-09-14
+
+### Fixed
+- Add dependency `junit:juni:4.13.2` to `dependencyManagement`
+
+
 ## [2.4.2] - 2023-09-11
 
 ### Changed
