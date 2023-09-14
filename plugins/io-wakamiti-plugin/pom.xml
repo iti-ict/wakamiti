@@ -18,7 +18,7 @@
 
 
     <artifactId>io-wakamiti-plugin</artifactId>
-    <version>2.3.2</version>
+    <version>2.3.3</version>
 
     <name>[Wakamiti Plugin] Files Steps</name>
     <description>Files steps for Wakamiti</description>
@@ -30,8 +30,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -46,12 +44,6 @@
 
         <!-- test -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.29</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <version>2.2</version>
@@ -60,7 +52,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.3.2</version>
+            <version>2.3.3</version>
             <scope>test</scope>
         </dependency>
 

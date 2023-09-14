@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2023-09-14
+
+### Fixed
+- Add dependency `junit:juni:4.13.2` to `dependencyManagement` 
+
 
 ## [1.1.2] - 2023-09-11
 
