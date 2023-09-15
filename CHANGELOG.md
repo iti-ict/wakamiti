@@ -6,6 +6,7 @@ read the `CHANGELOG` in the corresponding folder.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
 [1.7.0] -- 2023-05-03
 ---------------------------------------------------------------------------------
 
