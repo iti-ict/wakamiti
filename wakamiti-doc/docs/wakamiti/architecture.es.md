@@ -6,48 +6,19 @@ slug: /wakamiti/architecture
 
 
 
-
-- [Configuración global](#configuracin-global)
-- [Configuración de features](#configuracin-de-features)
-- [Tipos de datos](#tipos-de-datos)
-- [Comparadores](#comparadores)
-- [Propiedades dinámicas](#propiedades-dinmicas)
-
-
+---
+## Tabla de contenido
 
 ---
 
-
+---
 ## Configuración global
 
 La configuración de Wakamiti se establece mediante un fichero `yaml` ubicado en el directorio de pruebas. Por defecto, 
 Wakamiti buscará el fichero con el nombre `wakamiti.yaml`.
 
+<br /><br />
 
-- [`wakamiti.resourceTypes`](#wakamitiresourcetypes)
-- [`wakamiti.resourcePath`](#wakamitiresourcepath)
-- [`wakamiti.outputFilePath`](#wakamitioutputfilepath)
-- [`wakamiti.outputFilePerTestCase`](#wakamitioutputfilepertestcase)
-- [`wakamiti.tagFilter`](#wakamititagfilter)
-- [`wakamiti.idTagPattern`](#wakamitiidtagpattern)
-- [`wakamiti.strictTestCaseID`](#wakamitistricttestcaseid)
-- [`wakamiti.launcher.modules`](#wakamitilaunchermodules)
-- [`wakamiti.report.generation`](#wakamitireportgeneration)
-- [`wakamiti.redefinition.definitionTag`](#wakamitiredefinitiondefinitiontag)
-- [`wakamiti.redefinition.implementationTag`](#wakamitiredefinitionimplementationtag)
-- [`wakamiti.log.path`](#wakamitilogpath)
-- [`wakamiti.log.level`](#wakamitiloglevel)
-- [`wakamiti.logs.ansi.enabled`](#wakamitilogsansienabled)
-- [`wakamiti.logs.showLogo`](#wakamitilogsshowlogo)
-- [`wakamiti.logs.showElapsedTime`](#wakamitilogsshowelapsedtime)
-- [`wakamiti.junit.treatStepsAsTests`](#wakamitijunittreatstepsastests)
-- [`wakamiti.nonRegisteredStepProviders`](#wakamitinonregisteredstepproviders)
-- [`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories)
-- [`mavenFetcher.localRepository`](#mavenfetcherlocalrepository)
-
-
-
----
 ### `wakamiti.resourceTypes`
 
 Establece el lenguaje de los escenarios de prueba. Actualmente solo está disponible `gherkin`.
@@ -58,8 +29,8 @@ Ejemplo:
 wakamiti:
   resourceTypes: gherkin
 ```
-&nbsp;
 
+<br /><br />
 
 ### `wakamiti.resourcePath`
 
@@ -74,7 +45,8 @@ wakamiti:
   resourcePath: /other/path
 ```
 
----
+<br /><br />
+
 ### `wakamiti.outputFilePath`
 
 Establece el directorio de salida del fichero con el resultado de las pruebas.
@@ -104,7 +76,8 @@ wakamiti:
   outputFilePath: result/wakamiti.json
 ```
 
----
+<br /><br />
+
 ### `wakamiti.outputFilePerTestCase`
 
 Establece si se debe generar un fichero de salida por cada caso de test. En caso de activarse, el 
@@ -122,7 +95,8 @@ wakamiti:
 
 **Desde** 1.7.0
 
----
+<br /><br />
+
 ### `wakamiti.tagFilter`
 
 Filtra los escenarios etiquetados con la [expresión](https://cucumber.io/docs/cucumber/api/#tag-expressions) indicada. 
@@ -134,7 +108,8 @@ wakamiti:
   tagFilter: not Ignore
 ```
 
----
+<br /><br />
+
 ### `wakamiti.idTagPattern`
 
 Establece el patrón de identificadores de los escenarios. Debe contener una expresión regular válida.
@@ -148,8 +123,8 @@ wakamiti:
   idTagPattern: ([0-9]+)
 ```
 
+<br /><br />
 
----
 ### `wakamiti.strictTestCaseID`
 
 Establece si se debe asegurar que cada caso de test esté debidamente etiquetado con un valor
@@ -167,13 +142,8 @@ wakamiti:
 
 **Desde** 1.7.0
 
+<br /><br />
 
-
-
-
-
-
----
 ### `wakamiti.launcher.modules`
 
 Establece los módulos que serán utilizados durante las pruebas. Estos módulos son artefactos maven ubicados en un 
@@ -191,7 +161,8 @@ wakamiti:
       - mysql:mysql-connector-java:8.0.28
 ```
 
----
+<br /><br />
+
 ### `wakamiti.report.generation`
 
 Indica si se generará el informe con el resultado de las pruebas al terminar la ejecución o no.
@@ -206,7 +177,8 @@ wakamiti:
     generation: "false"
 ```
 
----
+<br /><br />
+
 ### `wakamiti.redefinition.definitionTag`
 
 Establece la etiqueta para indicar que la **caracteristica** es una [definición]().
@@ -221,7 +193,8 @@ wakamiti:
     definitionTag: def
 ```
 
----
+<br /><br />
+
 ### `wakamiti.redefinition.implementationTag`
 
 Establece la etiqueta para indicar que la **caracteristica** es una [implementación]().
@@ -236,7 +209,8 @@ wakamiti:
     implementationTag: impl
 ```
 
----
+<br /><br />
+
 ### `wakamiti.properties.hidden`
 
 Establece las [propiedades](#propiedades-din%C3%A1micas) que permanecerán ocultas en el informe de pruebas.
@@ -251,7 +225,8 @@ wakamiti:
       - credentials.password
 ```
 
----
+<br /><br />
+
 ### `wakamiti.log.path`
 
 Establece el directorio donde se creará un fichero de log con nombre `wakamiti-${yyyyMMddhhmmss}.log`, donde 
@@ -265,8 +240,8 @@ wakamiti:
     path: results
 ```
 
+<br /><br />
 
----
 ### `wakamiti.log.level`
 
 Establece el nivel de los logs de wakamiti. Dependiendo del nivel indicado se mostrará u omitirá más o menos información.
@@ -283,10 +258,8 @@ wakamiti:
     level: debug
 ```
 
+<br /><br />
 
-
-
----
 ### `wakamiti.logs.ansi.enabled` 
 
 Establece si los logs por consola deben usar [códigos de control ANSI](https://en.wikipedia.org/wiki/ANSI_escape_code).
@@ -301,9 +274,8 @@ wakamiti:
     ansi.enabled: true
 ```
 
+<br /><br />
 
-
----
 ### `wakamiti.logs.showLogo`
 
 Establece si se debe mostrar el logo de Wakamiti en los logs por consola al inicio de la ejecución.
@@ -318,10 +290,8 @@ wakamiti:
     showLogo: true
 ```
 
+<br /><br />
 
-
-
----
 ### `wakamiti.logs.showElapsedTime` 
 
 Establece si se debe mostrar los tiempos transcurridos en los logs por consola.
@@ -336,10 +306,8 @@ wakamiti:
     showElapsedTime: true
 ```
 
+<br /><br />
 
-
-
----
 ### `wakamiti.junit.treatStepsAsTests`
 
 Establece si, al usar el runner JUnit de Wakamiti, se debe notificar cada paso como test (para que 
@@ -355,12 +323,8 @@ wakamiti:
     treatStepsAsTests: true
 ```
 
+<br /><br />
 
-
-
-
-
----
 ### `wakamiti.nonRegisteredStepProviders`
 
 Permite incluir proveedores de pasos de forma dinámica, sin de que formen parte de ningún 
@@ -376,12 +340,8 @@ wakamiti:
     - com.example.CustomSteps
 ```
 
+<br /><br />
 
-
-
-
-
----
 ### `mavenFetcher.remoteRepositories`
 
 Establece repositorios remotos.
@@ -393,7 +353,8 @@ mavenFetcher:
   remoteRepositories: https://repo.maven.apache.org/maven2;file:///home/user/.m2/repository
 ```
 
----
+<br /><br />
+
 ### `mavenFetcher.localRepository`
 
 Establece la ubicación del repositorio local.
@@ -407,10 +368,7 @@ mavenFetcher:
 
 
 
-
-
-
-
+---
 ## Configuración de features
 
 Adicionalmente, a la configuración global, se pueden incluir propiedades específicas en cada fichero feature
@@ -420,8 +378,8 @@ Adicionalmente, a la configuración global, se pueden incluir propiedades espec�
 - [`modules`](#modules)
 - [`redefinition.stepMap`](#redefinitionstepmap)
 
+<br /><br />
 
----
 ### `language`
 
 Establece el idioma (identificado mediante [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
@@ -436,8 +394,8 @@ Ejemplo:
 Feature: ...
 ```
 
+<br /><br />
 
----
 ### `dataFormatLanguage`
 
 Establece el idioma (identificado mediante [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
@@ -454,8 +412,8 @@ Ejemplo:
 Feature: ...
 ```
 
+<br /><br />
 
----
 ### `modules`
 
 Restringe los pasos que se van a usar en un fichero, para evitar posibles conflictos de expresiones 
@@ -469,8 +427,8 @@ Ejemplo:
 Feature: ...
 ```
 
+<br /><br />
 
----
 ### `redefinition.stepMap`
 
 Para los casos en los que un escenario esté representado a nivel de definición y de implementación, 
@@ -505,35 +463,36 @@ Scenario: ...
 
 
 
-
-
-
 ---
 ## Tipos de datos
 
----
+
 ### `text`
 Cualquier texto entrecomillado con `''`. 
 
 Ejemplo: `'texto de ejemplo'`.
 
----
+<br /><br />
+
 ### `word`
 Cualquier palabra (admite guiones). 
 
 Ejemplo: `AB_C-1D`.
 
----
+<br /><br />
+
 ### `file`
 Una ruta local (relativa o absoluta). 
 
 Ejemplo: `'dir/file.yaml'`.
 
----
+<br /><br />
+
 ### `url`
 Una dirección URL. 
 
----
+<br /><br />
+
 Ejemplo: `https://localhost/test`.
 
 ### `integer`
@@ -541,49 +500,57 @@ Un número entero.
 
 Ejemplo: `14`.
 
----
+<br /><br />
+
 ### `decimal`
 Un número con decimales. 
 
 Ejemplo: `14.5`.
 
----
+<br /><br />
+
 ### `date`
 Una fecha con formato `yyyy-MM-dd`. 
 
 Ejemplo: `'2022-02-22'`.
 
----
+<br /><br />
+
 ### `time`
 Una hora con formato `hh:mm`, `hh:mm:ss` o `hh:mm:ss.SSS`. 
 
 Ejemplo: `'12:05:06.468'`.
 
----
+<br /><br />
+
 ### `datetime`
 Una fecha y hora con formato `yyyy-MM-ddThh:mm`, `yyyy-MM-ddThh:mm:ss` o `yyyy-MM-ddThh:mm:ss.SSS`. 
 
 Ejemplo: `'2022-02-22T12:05:06.468'`.
 
----
+<br /><br />
+
 ### `text-assertion`
 Comparador de textos. [Ver más](#comparadores). 
 
 Ejemplo: `es igual a 'algo'`.
 
----
+<br /><br />
+
 ### `long-assertion`
 Comparador de números enteros. [Ver más](#comparadores). 
 
 Ejemplo: `es igual o mayor que 13`.
 
----
+<br /><br />
+
 ### `float-assertion`
 Comparador de números decimales. [Ver más](#comparadores). 
 
 Ejemplo: `es igual o menor que 10.02`.
 
----
+<br /><br />
+
 ### `document`
 Bloque de texto ubicado en la siguiente línea de la descripción del paso. 
 [Ver más](https://cucumber.io/docs/gherkin/reference/#doc-strings). 
@@ -596,7 +563,8 @@ multilínea
 """
 ```
 
----
+<br /><br />
+
 ### `table`
 Tabla de datos ubicada en la siguiente línea de la descipción del paso.
 [Ver más](https://cucumber.io/docs/gherkin/reference/#data-tables).
@@ -617,12 +585,13 @@ Los tipos de comparadores disponibles son:
 - `long-assertion`
 - `decimal-assertion`
 
----
+<br /><br />
+
 ### `(no) es (igual a) ~x~` 
 Tipo: numérico y texto. También admite las variantes `es (igual a) ~x~ \(sin distinguir mayúsculas\)` y 
 `es (igual a) ~x~ \(ignorando espacios\)` para las comparaciones de tipo texto, y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 es 14
 ```
@@ -645,11 +614,12 @@ es igual a ' algo ' (ignorando espacios)
 no es igual a 14
 ```
 
----
+<br /><br />
+
 ### `(no) es (mayor|menor) que ~x~`
 Tipo: numérico. También admite decimales y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 es mayor que 14
 ```
@@ -666,11 +636,12 @@ es menor que 14.3
 no es mayor que 14
 ```
 
----
+<br /><br />
+
 ### `(no) es (mayor|menor) o igual que ~x~`
 Tipo: numérico. También admite decimales y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 es mayor o igual que 14
 ```
@@ -687,11 +658,12 @@ es menor o igual que 14.3
 no es mayor o igual que 14
 ```
 
----
+<br /><br />
+
 ### `(no) empieza por ~x~`
 Tipo: texto. También admite la variante `empieza por ~x~ \(sin distinguir mayúsculas\)`, y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 empieza por 'algo'
 ```
@@ -702,11 +674,12 @@ empieza por 'aLgo' (sin distinguir mayúsculas)
 no empieza por 'algo'
 ```
 
----
+<br /><br />
+
 ### `(no) acaba en ~x~`
 Tipo: texto. También admite la variante `acaba en ~x~ \(sin distinguir mayúsculas\)`, y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 acaba en 'algo'
 ```
@@ -717,11 +690,12 @@ acaba en 'aLgo' (sin distinguir mayúsculas)
 no acaba en 'algo'
 ```
 
----
+<br /><br />
+
 ### `(no) contiene ~x~`
 Tipo: texto. También admite la variante `contiene ~x~ \(sin distinguir mayúsculas\)`, y la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 contiene 'algo'
 ```
@@ -732,11 +706,12 @@ contiene 'aLgo' (sin distinguir mayúsculas)
 no contiene 'algo'
 ```
 
----
+<br /><br />
+
 ### `(no) es nulo`
 Tipo: numérico y texto. También admite la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 es nulo
 ```
@@ -744,11 +719,12 @@ es nulo
 no es nulo
 ```
 
----
+<br /><br />
+
 ### `(no) está vacío`
 Tipo: numérico y texto. También admite la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 está vacío
 ```
@@ -756,11 +732,12 @@ está vacío
 no está vacío
 ```
 
----
+<br /><br />
+
 ### `(no) es nulo o está vacío`
 Tipo: numérico y texto. También admite la versión en negativo.
 
-Ejemplos:
+#### Ejemplos
 ```
 es nulo o está vacío
 ```
@@ -768,44 +745,57 @@ es nulo o está vacío
 no es nulo o está vacío
 ```
 
--------
+---
 ## Propiedades dinámicas
 
 Wakamiti permite el uso de propiedades dinámicas con las que facilitar el paso de información a la ejecución de los 
 escenarios mediante la sintaxis `${[descripción de la propiedad]}`.
 
-La `descripción de la propiedad` dependerá del tipo de propiedad que se desea aplicar. Por defecto, exsisten las 
-siguientes:
-- Obtener el valor de una propiedad global, mediante la sintaxis `${[name]}`. Por ejemplo: `${credential.password}`.
-- Obtener el resultado de un paso anterior, mediante la sintaxis `${[número del paso]#[expresión xpath/jsonpath]`. 
-Por ejemplo: `${2#$.body.items[0].id}`, en este ejemplo se recuperará el resultado del paso 2 (el cual se espera que sea 
-un json) y se recuperará el valor de la expresión jsonpath indicada. **Nota**: la expresión xpath/jsonpath es opcional.
+La `[descripción de la propiedad]` dependerá del tipo de propiedad que se desea aplicar. 
 
-Veamos un ejemplo práctico:
-- Tenemos la siguiente configuración yaml:
+<br /><br />
+
+### Propiedad global
+
+Obtener el valor de una propiedad global, mediante la sintaxis `${[name]}`, donde `[name]` es el nombre de una propiedad 
+que esté presente en la configuración de Wakamiti. 
+
+
+#### Ejemplos
+Tenemos la siguiente configuración en el fichero `wakamiti.yaml`:
+
 ```yml
 wakamiti:
+  resourceTypes:
+    - gherkin
+    
   credentials:
-    username: pepe
-    password: 1234asdf
-```
-- Tenemos el siguiente escenario:
-```cucumber
-Escenario: Escenario de prueba
-  Dado que el servicio usa autenticación oauth con las credenciales '${credentials.username}':'${credentials.password}'
-  Cuando se realiza la búsqueda de los usuarios
-  Entonces un usuario identificado por '${2#$.body.items[0].id}' existe en la tabla de BBDD USERS
+    username: user
+    password: s3cr3t
 ```
 
-Al lanzar, el escenario se resolvería de la siguiente manera:
-```cucumber
-Escenario: Escenario de prueba
-  Dado que el servicio usa autenticación oauth con las credenciales 'pepe':'1234asdf'
-  Cuando se realiza la búsqueda de los usuarios
-  Entonces un usuario identificado por '4' existe en la tabla de BBDD USERS
+Tenemos el siguiente paso:
+```gherkin
+Dado que el servicio usa autenticación oauth con las credenciales '${credentials.username}':'${credentials.password}'
 ```
 
-**Nota**: Supondremos que el paso `Cuando se realiza la búsqueda de los usuarios` nos devuelve el siguiente resultado:
+Al ejecutarse, se resolvería como:
+```gherkin
+Dado que el servicio usa autenticación oauth con las credenciales 'user':'s3cr3t'
+```
+
+<br /><br />
+
+### Propiedad de resultado
+Obtener el resultado de un paso anterior, mediante la sintaxis `${[número del paso]#[expresión xpath/jsonpath/gpath]}`,
+donde `[número de paso]` es la posición del paso del cuál se quiere recuperar el resultado, y 
+`[expresión xpath/jsonpath/gpath]` es la expresión para recuperar, de forma opcional, un dato concreto cuando el 
+resultado es un objeto complejo, como un xml, un json o incluso un texto. 
+
+Ver más sobre [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath].
+
+#### Ejemplos
+Supongamos que el paso `1` devuelve lo siguiente:
 ```json
 {
   "headers": {
@@ -828,3 +818,19 @@ Escenario: Escenario de prueba
   "statusLine": "HTTP/1.1 200 OK"
 }
 ```
+
+Tenemos el siguiente paso:
+```gherkin
+Entonces un usuario identificado por '${1#$.body.items[0].id}' existe en la tabla de BBDD USERS
+```
+
+Al ejecutarse, se resolvería como:
+```gherkin
+Entonces un usuario identificado por '4' existe en la tabla de BBDD USERS
+```
+
+
+
+[jsonpath]: https://goessner.net/articles/JsonPath/
+[xpath]: https://en.wikipedia.org/wiki/XPath (XPath)
+[gpath]: https://accenture.github.io/bdd-for-all/GPATH.html (GPath)

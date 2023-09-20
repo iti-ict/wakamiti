@@ -5,7 +5,6 @@
 // Changes here require a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
-
 module.exports = function (api) {
 
     api.loadSource(store => {
@@ -13,7 +12,7 @@ module.exports = function (api) {
 
        // store.addMetadata('prefix', api.config.pathPrefix)
 
-        const i18n = api.config.plugins.find(p => p.use == 'gridsome-plugin-i18n');
+        const i18n = api.config.plugins.find(p => p.use === 'gridsome-plugin-i18n');
         if (i18n) {
             store.addMetadata('defaultLocale', i18n.options.defaultLocale);
             store.addMetadata('locales', i18n.options.locales);
@@ -71,4 +70,5 @@ module.exports = function (api) {
             })
         })
     });
+
 }

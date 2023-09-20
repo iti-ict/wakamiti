@@ -17,8 +17,12 @@ Please be aware that this tutorial assumes that you have a:
 
 Before we begin, you will need the following:
 - Install and run [Docker](https://www.docker.com/get-started/).
-- Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/).
-- The source code of [this tutorial](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/iti-ict/wakamiti/tree/main/examples/tutorial).
+- The source code of [this tutorial](javascript:download()).
+
+Optionally:
+- Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
+  It's not necessary to have it, but it will make scenario development much easier.
+
 
 ### 1. Wakamiti configuration
 Wakamiti configuration is done by means of a `yaml` file that will be placed in the same directory where the tests are 
