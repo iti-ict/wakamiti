@@ -48,7 +48,7 @@ export default {
 
       });
 
-      zip.generateAsync({type:"blob"}).then(function(content) {
+      zip.generateAsync({type:"base64"}).then(function(content) {
         const a = document.createElement('a');
         a.href = "data:application/zip;base64," + content;
         a.download = 'tutorial.zip';
