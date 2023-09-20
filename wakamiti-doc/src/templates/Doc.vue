@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    download: () => {
+    download: async () => {
       const zip = new JSZip();
       const base = 'https://raw.githubusercontent.com/iti-ict/wakamiti/main/examples/tutorial';
       const files = ['application-wakamiti.properties', 'docker-compose.yml'];
@@ -50,11 +50,14 @@ export default {
         });
       });
 
-      while (count !== files.length) {
-        // wait
-      }
+      const until = (predFn) => {
+        const poll = (done) => (predFn() ? done() : setTimeout(() => poll(done), 500));
+        return new Promise(poll);
+      };
 
-      zip.generateAsync({type:"base64"}).then(function(content) {
+      await until(() => count === files.length);
+
+      zip.generateAsync({type: "base64"}).then(function (content) {
         const a = document.createElement('a');
         a.href = "data:application/zip;base64," + content;
         a.download = 'tutorial.zip';
