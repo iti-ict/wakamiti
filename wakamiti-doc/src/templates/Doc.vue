@@ -47,10 +47,13 @@ export default {
         });
 
       });
-      const a = document.createElement('a');
-      a.href = "data:application/zip;base64," + zip.generate();
-      a.download = 'tutorial.zip';
-      a.click();
+
+      zip.generateAsync({type:"blob"}).then(function(content) {
+        const a = document.createElement('a');
+        a.href = "data:application/zip;base64," + content;
+        a.download = 'tutorial.zip';
+        a.click();
+      });
       return false;
     }
   },
