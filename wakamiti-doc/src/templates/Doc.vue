@@ -35,18 +35,24 @@ export default {
     download: () => {
       const zip = new JSZip();
       const base = 'https://raw.githubusercontent.com/iti-ict/wakamiti/main/examples/tutorial';
-      ['application-wakamiti.properties', 'docker-compose.yml'].forEach(file => {
+      const files = ['application-wakamiti.properties', 'docker-compose.yml'];
+      let count = 0;
+      files.forEach(file => {
         https.get(`${base}/${file}`, (response) => {
           let data = '';
           response.on('data', (chunk) => data += chunk);
           response.on('end', function () {
             zip.file(file, data);
+            count++;
           });
         }).on('error', function (e) {
           console.log(e.message);
         });
-
       });
+
+      while (count !== files.length) {
+        // wait
+      }
 
       zip.generateAsync({type:"base64"}).then(function(content) {
         const a = document.createElement('a');
