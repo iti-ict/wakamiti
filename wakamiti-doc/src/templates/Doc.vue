@@ -20,6 +20,7 @@ query Doc ($path: String!) {
 
 <script>
 import https from "https";
+import JSZip from "jszip";
 
 export default {
   metaInfo() {
