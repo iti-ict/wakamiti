@@ -12,3 +12,4 @@
 .vscode/**
 .flattened-pom.xml
 .mvn/wrapper/maven-wrapper.jar
+/plugins/azure-wakamiti-plugin/src/test/java/es/iti/wakamiti/azure/ATest.java
