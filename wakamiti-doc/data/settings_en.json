@@ -68,6 +68,11 @@
               "value": "Email steps",
               "anchor": "/email",
               "depth": 2
+            },
+            {
+              "value": "Groovy",
+              "anchor": "/groovy",
+              "depth": 2
             }
           ]
         }

@@ -42,7 +42,6 @@ Los valores aceptados son:
 | `BINARY`    | `application/octet-stream`                                                                                                                                                                                               |
 | `MULTIPART` | `multipart/form-data`, `multipart/alternative`, `multipart/byteranges`, `multipart/digest`, `multipart/mixed`, `multipart/parallel`, `multipart/related`, `multipart/report`, `multipart/signed`, `multipart/encrypted`  |
 
-
 El valor por defecto es `JSON`.
 
 Ejemplo:
@@ -272,7 +271,7 @@ propiedad [`rest.contentType`](#restcontenttype).
 
 #### Ejemplos:
 ```gherkin
-  Dado XML como el tipo de contenido REST
+Dado XML como el tipo de contenido REST
 ```
 
 <br /><br />
@@ -290,7 +289,7 @@ Establece la ruta base de la API. Este paso es equivalente a configurar la propi
 
 #### Ejemplos:
 ```gherkin
-  Dada la URL base https//example.org/api
+Dada la URL base https//example.org/api
 ```
 
 <br /><br />
@@ -308,7 +307,7 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
 
 #### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users`
+Dado el servicio REST '/users`
 ```
 
 <br /><br />
@@ -328,10 +327,10 @@ Establece un identificador de recurso REST para ser usado por el servicio. Se co
 
 #### Ejemplos:
 ```gherkin
-  Dado un usuario identificado por 'john'
+Dado un usuario identificado por 'john'
 ```
 ```gherkin
-  Dado un libro identificado por '978-3-16-148410-0'
+Dado un libro identificado por '978-3-16-148410-0'
 ```
 
 <br /><br />
@@ -348,31 +347,31 @@ como datos de formulario en las llamadas POST, los parámetros de búsqueda se c
 la ruta (p.e. `/user?param1=abc&param2=123`), los parámetros de ruta reemplazarán los fragmentos de la ruta del servicio
 indicados con llaves `{}` y los parámetros de formulario se enviarán con el content-type `application/x-www-form-urlencoded`.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre  | Wakamiti type | Descripción                     |
 |---------|---------------|---------------------------------|
 | `name`  | `text`        | Nombre del parámetro o cabecera |
 | `value` | `text`        | Valor del parámetro o cabecera  |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el parámetro de solicitud 'age' con el valor '13'
-  Cuando se envía al servicio la información
+Dado el parámetro de solicitud 'age' con el valor '13'
+Cuando se envía al servicio la información
 ```
 ```gherkin
-  Dado el parámetro de búsqueda 'city' con el valor 'Valencia'
-  Cuando se realiza la búsqueda del usuario
+Dado el parámetro de búsqueda 'city' con el valor 'Valencia'
+Cuando se realiza la búsqueda del usuario
 ```
 ```gherkin
-  Dado el servicio 'user/{usuario}/items'
-  Y el parámetro de ruta 'usuario' con el valor '25'
+Dado el servicio 'user/{usuario}/items'
+Y el parámetro de ruta 'usuario' con el valor '25'
 ```
 ```gherkin
-  Dado el parámetro de formulario 'city' con el valor 'Valencia'
-  Cuando se envía al servicio la información
+Dado el parámetro de formulario 'city' con el valor 'Valencia'
+Cuando se envía al servicio la información
 ```
 ```gherkin
-  Dada la cabeceras 'Keep-alive' con el valor '1200'
+Dada la cabeceras 'Keep-alive' con el valor '1200'
 ```
 
 <br /><br />
@@ -391,45 +390,45 @@ ruta del servicio indicados con llaves `{}` y los parámetros de formulario se e
 `application/x-www-form-urlencoded`.
 
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                                   |
 |--------|---------------|-----------------------------------------------|
 |        | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dados los siguiente parámetros de solicitud:
-    | nombre | valor    |
-    | age    | 13       |
-    | city   | Valencia |
-  Cuando se envía al servicio la información
+Dados los siguiente parámetros de solicitud:
+  | nombre | valor    |
+  | age    | 13       |
+  | city   | Valencia |
+Cuando se envía al servicio la información
 ```
 ```gherkin
-  Dados los siguiente parámetros de búsqueda:
-    | nombre | valor    |
-    | age    | 13       |
-    | city   | Valencia |
-  Cuando se realiza la búsqueda del usuario
+Dados los siguiente parámetros de búsqueda:
+  | nombre | valor    |
+  | age    | 13       |
+  | city   | Valencia |
+Cuando se realiza la búsqueda del usuario
 ```
 ```gherkin
-  Dado el servicio 'user/{usuario}/items/{item}'
-  Y los siguientes parámetros de ruta:
-    | nombre  | valor    |
-    | usuario | 25       |
-    | item    | 7        |
+Dado el servicio 'user/{usuario}/items/{item}'
+Y los siguientes parámetros de ruta:
+  | nombre  | valor    |
+  | usuario | 25       |
+  | item    | 7        |
 ```
 ```gherkin
-  Dados los siguiente parámetros de formulario:
-    | nombre | valor    |
-    | age    | 13       |
-    | city   | Valencia |
-  Cuando se envía al servicio la información
+Dados los siguiente parámetros de formulario:
+  | nombre | valor    |
+  | age    | 13       |
+  | city   | Valencia |
+Cuando se envía al servicio la información
 ```
 ```gherkin
-  Dadas las siguientes cabeceras:
-    | nombre       | valor |
-    | Age          | 3600  |
-    | Keep-Alive   | 1200  |
+Dadas las siguientes cabeceras:
+  | nombre       | valor |
+  | Age          | 3600  |
+  | Keep-Alive   | 1200  |
 ```
 
 <br /><br />
@@ -441,17 +440,17 @@ un timeout de {int} (mili)segundos
 Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de
 exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción       |
 |--------|---------------|-------------------|
 | `int`  | `int`         | El tiempo máximo  |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado un timeout de 12000 milisegundos
+Dado un timeout de 12000 milisegundos
 ```
 ```gherkin
-  Dado un timeout de 10 segundos
+Dado un timeout de 10 segundos
 ```
 
 <br /><br />
@@ -463,14 +462,14 @@ exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 Establece una validación general para el código HTTP de todas las respuestas siguientes. Es similar a la propiedad de
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre    | Wakamiti type        | Descripción              |
 |-----------|----------------------|--------------------------|
 | `matcher` | `integer-assertion`  | [Comparador][1] numérico |
 
-##### Ejemplo:
+#### Ejemplo:
 ```gherkin
-  * toda petición se considera fallida si su código HTTP es igual o mayor que 500
+* toda petición se considera fallida si su código HTTP es igual o mayor que 500
 ```
 
 <br /><br />
@@ -481,15 +480,15 @@ configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una va
 ```
 Establece las credenciales de autenticación básica que se enviarán en la cabecera HTTP `Authorization`.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción       |
 |------------|---------------|-------------------|
 | `username` | `text`        | Nombre de usuario |
 | `password` | `text`        | Contraseña        |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que el servicio usa autenticación básica con las credenciales 'us1532':'xxxxx'
+Dado que el servicio usa autenticación básica con las credenciales 'us1532':'xxxxx'
 ```
 
 <br /><br />
@@ -502,9 +501,9 @@ Establece el token de autenticación "bearer" que se enviará en la cabecera `Au
 del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret), [parámetros](#restoauth2parameters)), para las siguientes peticiones.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que el servicio usa autenticación oauth
+Dado que el servicio usa autenticación oauth
 ```
 
 <br /><br />
@@ -516,14 +515,14 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes
 peticiones.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre  | Wakamiti type | Descripción            |
 |---------|---------------|------------------------|
 | `token` | `text`        | token de autenticación |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que el servicio usa autenticación oauth con el token 'hudytw9834y9cqy32t94'
+Dado que el servicio usa autenticación oauth con el token 'hudytw9834y9cqy32t94'
 ```
 
 <br /><br />
@@ -535,14 +534,14 @@ peticiones.
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes llamadas,
 obtenido desde un fichero.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                           |
 |--------|---------------|---------------------------------------|
 | `file` | `file`        | Fichero con el token de autenticación |
 
-##### Ejemplo:
+#### Ejemplo:
 ```gherkin
-  Dado que el servicio usa autenticación oauth con el token del fichero 'token.txt'
+Dado que el servicio usa autenticación oauth con el token del fichero 'token.txt'
 ```
 
 <br /><br />
@@ -560,7 +559,7 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 
 También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción                                   |
 |------------|---------------|-----------------------------------------------|
 | `username` | `text`        | Nombre de usuario                             |
@@ -569,13 +568,13 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
 
 ##### Ejemplos:
 ```gherkin
-  Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx'
+Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx'
 ```
 
 ```gherkin
-  Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx' y los siguientes parámetros:
-    | name  | value     |
-    | scope | something |
+Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxxxx' y los siguientes parámetros:
+  | name  | value     |
+  | scope | something |
 ```
 
 <br /><br />
@@ -593,21 +592,21 @@ del servicio oauth2 configurado ([url](#restoauth2url), [clientId](#restoauth2cl
 
 También se pueden añadir más parámetros adicionales admitidos por `Oauth` mediante una tabla.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción                                   |
 |------------|---------------|-----------------------------------------------|
 |            | `table`       | Una tabla con las columnas `nombre` y `valor` |
 
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que el servicio usa autenticación oauth
+Dado que el servicio usa autenticación oauth
 ```
 
 ```gherkin
-  Dado que el servicio usa autenticación oauth con los siguientes parámetros:
-    | name  | value     |
-    | scope | something |
+Dado que el servicio usa autenticación oauth con los siguientes parámetros:
+  | name  | value     |
+  | scope | something |
 ```
 
 <br /><br />
@@ -618,9 +617,9 @@ También se pueden añadir más parámetros adicionales admitidos por `Oauth` me
 ```
 Elimina la cabecera con la autenticación.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que el servicio no usa autenticación
+Dado que el servicio no usa autenticación
 ```
 
 <br /><br />
@@ -647,14 +646,14 @@ Establece el subtipo por defecto de las llamadas multiparte. Este paso es equiva
 
 El valor por defecto es `form-data`.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción        |
 |------------|---------------|--------------------|
 | `type`     | `text`        | Subtipo multiparte |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado 'mixed' como subtipo multiparte
+Dado 'mixed' como subtipo multiparte
 ```
 
 <br /><br />
@@ -666,14 +665,14 @@ El valor por defecto es `form-data`.
 Establece el nombre por defecto de los ficheros multiparte. Este paso es equivalente a configurar la propiedad
 [`rest.config.multipart.filename`](#restconfigmultipartfilename).
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                  |
 |--------|---------------|------------------------------|
 | `name` | `text`        | Nombre de fichero multiparte |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado 'otro_nombre' como nombre de fichero adjunto
+Dado 'otro_nombre' como nombre de fichero adjunto
 ```
 
 <br /><br />
@@ -684,18 +683,18 @@ Establece el nombre por defecto de los ficheros multiparte. Este paso es equival
 ```
 Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
 |--------|---------------|----------------------|
 | {name} | `text`        | Nombre de control    |
 |        | `document`    | Contenido a adjuntar |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que se incluye el fichero adjunto 'fichero' con los siguientes datos:
-    """
-    Contenido del fichero
-    """
+Dado que se incluye el fichero adjunto 'fichero' con los siguientes datos:
+  """
+  Contenido del fichero
+  """
 ```
 
 <br /><br />
@@ -706,14 +705,14 @@ Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 ```
 Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de formulario.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                         |
 |--------|---------------|-------------------------------------|
 | `file` | `file`        | Fichero con el contenido a adjuntar |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'data.txt'
+Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'data.txt'
 ```
 
 <br /><br />
@@ -727,19 +726,19 @@ se consulta(n) *
 ```
 Envía una petición `GET` al servicio con los parámetros definidos previamente.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y los siguientes parámetros de búsqueda:
-    | name | value    |
-    | age  | 13       |
-    | city | Valencia |
-  Cuando se realiza la búsqueda de usuarios
+Dado el servicio REST '/users'
+Y los siguientes parámetros de búsqueda:
+  | name | value    |
+  | age  | 13       |
+  | city | Valencia |
+Cuando se realiza la búsqueda de usuarios
 ```
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se consulta el usuario
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se consulta el usuario
 ```
 
 <br /><br />
@@ -750,11 +749,11 @@ se elimina(n) *
 ```
 Envía una petición `DELETE` al servicio y recurso REST definido previamente.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se elimina el usuario
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se elimina el usuario
 ```
 
 <br /><br />
@@ -766,24 +765,24 @@ se reemplaza(n) * con los siguientes datos:
 Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 indicado a continuación.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
 |--------|---------------|--------------------------|
 |        | `document`    | El cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se reemplaza el usuario con los siguientes datos:
-    """json
-    {
-        "firstName": "John",
-        "lastName": "Doe",
-        "birthDate": "1980-02-20",
-        "address": "221B, Baker Street"
-    }
-    """
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se reemplaza el usuario con los siguientes datos:
+  """json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1980-02-20",
+    "address": "221B, Baker Street"
+  }
+  """
 ```
 
 <br /><br />
@@ -795,16 +794,16 @@ se reemplaza(n) * con los datos del fichero {file}
 Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido del
 fichero indicado.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
 |--------|---------------|--------------------------------------|
 | `file` | `file`        | Fichero con el cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se reemplaza el usuario con los datos del fichero 'data/user123.json'
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se reemplaza el usuario con los datos del fichero 'data/user123.json'
 ```
 
 <br /><br />
@@ -815,15 +814,15 @@ se modifica(n) *
 ```
 Envía una petición `PATCH` al servicio y recurso REST definido previamente.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Y los siguientes parámetros de búsqueda:
-    | name | value    |
-    | age  | 13       |
-    | city | Valencia |
-  Cuando se modifica el usuario
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Y los siguientes parámetros de búsqueda:
+  | name | value    |
+  | age  | 13       |
+  | city | Valencia |
+Cuando se modifica el usuario
 ```
 
 <br /><br />
@@ -835,21 +834,21 @@ se modifica(n) * con los siguientes datos:
 Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 indicado a continuación.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
 |--------|---------------|--------------------------|
 |        | `document`    | El cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se modifica el usuario con los siguientes datos:
-    """json
-    {
-        "firstName": "Jim"
-    }
-    """
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se modifica el usuario con los siguientes datos:
+  """json
+  {
+    "firstName": "Jim"
+  }
+  """
 ```
 
 <br /><br />
@@ -861,16 +860,16 @@ se modifica(n) * con los datos del fichero {file}
 Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
 del fichero indicado.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
 |--------|---------------|--------------------------------------|
 | `file` | `file`        | Fichero con el cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
-  Cuando se modifica el usuario con los datos del fichero 'data/user123.json'
+Dado el servicio REST '/users'
+Y un usuario identificado por '123'
+Cuando se modifica el usuario con los datos del fichero 'data/user123.json'
 ```
 
 <br /><br />
@@ -884,14 +883,14 @@ se envía al servicio la información
 ```
 Envía una petición `POST` al servicio definido previamente.
 
-##### Ejemplo:
+#### Ejemplo:
 ```gherkin
-  Dado el servicio REST '/users'
-  Dados los siguiente parámetros de solicitud:
-    | nombre | valor    |
-    | age    | 13       |
-    | city   | Valencia |
-  Cuando envía al servicio la información
+Dado el servicio REST '/users'
+Dados los siguiente parámetros de solicitud:
+  | nombre | valor    |
+  | age    | 13       |
+  | city   | Valencia |
+Cuando envía al servicio la información
 ```
 
 <br /><br />
@@ -906,30 +905,30 @@ se envía al servicio los siguientes datos:
 Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido
 indicado a continuación.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción              |
 |--------|---------------|--------------------------|
 |        | `document`    | El cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Cuando se crea un usuario con los siguientes datos:
-    """json
-    {
-        "firstName": "John",
-        "lastName": "Doe",
-        "birthDate": "1980-02-20",
-        "address": "221B, Baker Street"
-    }
-    """
+Cuando se crea un usuario con los siguientes datos:
+  """json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1980-02-20",
+    "address": "221B, Baker Street"
+  }
+  """
 ```
 ```gherkin
-  Cuando se envía al servicio los siguientes datos:
-    """json
-    {
-        "date": "2021-10-30"
-    }
-    """
+Cuando se envía al servicio los siguientes datos:
+  """json
+  {
+    "date": "2021-10-30"
+  }
+  """
 ```
 
 <br /><br />
@@ -944,17 +943,17 @@ se envía al servicio los datos del fichero {file}
 Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido del
 fichero indicado.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción                          |
 |--------|---------------|--------------------------------------|
 | `file` | `file`        | Fichero con el cuerpo de la petición |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Cuando se crea un usuario con los datos del fichero 'data/user123.json'
+Cuando se crea un usuario con los datos del fichero 'data/user123.json'
 ```
 ```gherkin
-  Cuando se envía al servicio los datos del fichero 'booking.json'
+Cuando se envía al servicio los datos del fichero 'booking.json'
 ```
 
 <br /><br />
@@ -965,14 +964,14 @@ el código de respuesta HTTP {matcher}
 ```
 Comprueba que el código HTTP de la última respuesta satisface una validación de enteros.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre    | Wakamiti type        | Descripción               |
 |-----------|----------------------|---------------------------|
 | `matcher` | `integer-assertion`  | Una validación de enteros |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Entonces el código de respuesta HTTP es 201
+Entonces el código de respuesta HTTP es 201
 ```
 
 <br /><br />
@@ -991,51 +990,51 @@ la respuesta es parcialmente:
 ```
 Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción           |
 |--------|---------------|-----------------------|
 |        | `document`    | El contenido esperado |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Entonces la respuesta es exactamente:
-    """json
-    [
-        {
-            "age": 46,
-            "name": "Michael"
-        },
-        {
-            "age": 23,
-            "name": "John"
-        }
-    ]
-    """
+Entonces la respuesta es exactamente:
+  """json
+  [
+    {
+      "age": 46,
+      "name": "Michael"
+    },
+    {
+       "age": 23,
+       "name": "John"
+    }
+  ]
+  """
 ```
 ```gherkin
-  Entonces la respuesta es exactamente (en cualquier orden):
-    """json
-    [
-        {
-            "age": 23,
-            "name": "John"
-        },
-        {
-            "name": "Michael",
-            "age": 46
-        }
-    ]
-    """
+Entonces la respuesta es exactamente (en cualquier orden):
+  """json
+  [
+    {
+      "age": 23,
+      "name": "John"
+    },
+    {
+      "name": "Michael",
+      "age": 46
+    }
+  ]
+  """
 ```
 ```gherkin
-  Entonces la respuesta es parcialmente:
-    """json
-    [
-        {
-            "name": "John"
-        }
-    ]
-    """
+Entonces la respuesta es parcialmente:
+  """json
+  [
+    {
+      "name": "John"
+    }
+  ]
+  """
 ```
 
 <br /><br />
@@ -1054,14 +1053,14 @@ la respuesta es parcialmente el contenido del fichero {file}
 ```
 Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados en el fichero.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
 |--------|---------------|----------------------|
 | `file` | `file`        | Un fichero existente |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
+Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
 ```
 
 <br /><br />
@@ -1085,71 +1084,77 @@ el fragmento de la respuesta {fragment} es parcialmente:
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) incluya, al menos, los campos indicados.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción                      |
 |------------|---------------|----------------------------------|
 | `fragment` | `text`        | Una ruta JSONPath, XPath o GPath |
 |            | `document`    | El contenido esperado            |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Entonces el fragmento de la respuesta 'users[1]' es exactamente:
-    """json
-    {
-        "age": 23,
-        "name": "John"
-    }
-    """
+Entonces el fragmento de la respuesta 'users[1]' es exactamente:
+  """json
+  {
+    "age": 23,
+    "name": "John"
+  }
+  """
 ```
 ```gherkin
-  Entonces el fragmento de la respuesta 'users[1]' es exactamente \(en cualquier orden\):
-    """json
-    {
-        "name": "John",
-        "age": 23
-    }
-    """
+Entonces el fragmento de la respuesta 'users[1]' es exactamente \(en cualquier orden\):
+  """json
+  {
+    "name": "John",
+    "age": 23
+  }
+  """
 ```
 ```gherkin
-  Entonces el fragmento de la respuesta 'users[1]' es parcialmente:
-    """json
-    {
-        "name": "John"
-    }
-    """
+Entonces el fragmento de la respuesta 'users[1]' es parcialmente:
+  """json
+  {
+    "name": "John"
+  }
+  """
 ```
 
 <br /><br />
 
 ### Comprobar fragmento de la respuesta (fichero)
 ```
-la respuesta es exactamente el contenido del fichero {file}
+el fragmento de la respuesta {fragment} es exactamente el contenido del fichero {file}
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, incluyendo el
 orden de los campos.
 ```
-la respuesta es exactamente el contenido del fichero {file} \(en cualquier orden\)
+el fragmento de la respuesta {fragment} es exactamente el contenido del fichero {file} \(en cualquier orden\)
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, pero pueden
 llegar los campos en diferente orden.
 ```
-la respuesta es parcialmente el contenido del fichero {file}
+el fragmento de la respuesta {fragment} es parcialmente el contenido del fichero {file}
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) incluya, al menos, los campos indicados en el fichero.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type | Descripción                      |
 |------------|---------------|----------------------------------|
 | `fragment` | `text`        | Una ruta JSONPath, XPath o GPath |
 | `file`     | `file`        | Un fichero existente             |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
-  Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.json'
+Entonces el fragmento de la respuesta 'users[1]' es exactamente el contenido del fichero 'data/response1.json'
 ```
+```gherkin
+Entonces el fragmento de la respuesta 'users[1]' es exactamente el contenido del fichero 'data/response1.json' \(en cualquier orden\)
+```
+```gherkin
+Entonces el fragmento de la respuesta 'users[1]' es parcialmente el contenido del fichero 'data/response1.json'
+```  
 
 <br /><br />
 
@@ -1160,14 +1165,14 @@ el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
 Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta
 dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido).
 
-##### Parámetros:
+#### Parámetros:
 | Nombre     | Wakamiti type  | Descripción                      |
 |------------|----------------|----------------------------------|
 | `fragment` | `text`         | Una ruta JSONPath, XPath o GPath |
 | `matcher`  | `*-assertion`  | El comparador del fragmento      |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
   Entonces el decimal del fragmento de la respuesta 'users[1].account.availableMoney` es mayor que 23.57
 ```
@@ -1184,12 +1189,12 @@ el tipo de contenido de la respuesta es {word}
 Valida que el tipo de contenido de la última respuesta es el esperado.
 Este paso equivale a validar que el valor de la cabecera `Content-Type` de la respuesta es el tipo MIME correspondiente.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre  | Wakamiti type | Descripción                                        |
 |---------|---------------|----------------------------------------------------|
 | `word`  | `word`        | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
   Entonces el tipo de contenido de la respuesta es JSON
 ```
@@ -1202,12 +1207,12 @@ el tamaño de la respuesta {matcher}
 ```
 Comprueba que la longitud en bytes de la última respuesta satisface una validación.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre    | Wakamiti type        | Descripción               |
 |-----------|----------------------|---------------------------|
 | `matcher` | `integer-assertion`  | Una validación de enteros |
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
   Entonces el tamaño de la respuesta es menor que 500
 ```
@@ -1221,14 +1226,14 @@ el (texto|entero|decimal) de la cabecera de la respuesta {name} {matcher}
 Comprueba que una determinada cabecera HTTP en la última respuesta satisface una validación de *texto*, *entero* o
 *decimal*.
 
-##### Parámetros:
+#### Parámetros:
 | Nombre    | Wakamiti type  | Descripción                         |
 |-----------|----------------|-------------------------------------|
 | `name`    | `text`         | Nombre de la cabecera               |
 | `matcher` | `*-assertion`  | [Comparador][1] de texto o numérico |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
-##### Ejemplos:
+#### Ejemplos:
 ```gherkin
   Entonces el texto de la cabecera de la respuesta Content-Encoding contiene 'gzip'
 ```
@@ -1246,12 +1251,12 @@ Valida que la estructura del cuerpo de la respuesta REST satisface el esquema pr
 de esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas
 XML (en función de la cabecera de respuesta HTTP `Content-Type`).
 
-##### Parámetros:
+#### Parámetros:
 | nombre | Wakamiti type | descripción              |
 |--------|---------------|--------------------------|
 |        | `document`    | JSON Schema o XML Schema |
 
-##### Ejemplo:
+#### Ejemplo:
 ```gherkin
   Entonces la respuesta cumple el siguiente esquema:
 """json
@@ -1294,12 +1299,12 @@ Valida que la estructura del cuerpo de la respuesta REST satisface un esquema pr
 esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Schema][xmlschema] para las respuestas XML
 (en función de la cabecera de respuesta HTTP `Content-Type`).
 
-##### Parámetros:
+#### Parámetros:
 | nombre | Wakamiti type | descripción                                 |
 |--------|---------------|---------------------------------------------|
 |        | `file`        | Fichero con un JSON Schema o un XML Schema  |
 
-##### Ejemplo:
+#### Ejemplo:
 ```gherkin
   Entonces la respuesta cumple el esquema del fichero 'data/user-schema.json'
 ```
