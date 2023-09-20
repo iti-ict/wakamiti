@@ -2,23 +2,26 @@
 # azurePlan: Wakamiti Test Plan
 # azureArea: ACS
 # azureIteration: ACS\\Iteración 1
-
-# azureSuite: Wakamiti Test Suite 2
-
-# azureTest: Wakamiti Feature One - Fail
+# azureSuite: Wakamiti Test Suite AA
 Feature: Azure integration feature
 
 
-  Scenario: Test Case B
-    * this step fails
+  @ID-1
+  # azureTest: Wakamiti Scenario B - Fail
+  Scenario: Def Test Case B
+    * Def this step fails
 
 
-  Scenario: Test Case C
-    * this step fails
+  @ID-2
+  # azureTest: Wakamiti Scenario C - Fail
+  Scenario: Def Test Case C
+    * Def this step fails
 
 
-  Scenario: Test Case A
-    * this step do nothing
+  @ID-3
+  # azureTest: Wakamiti Scenario A - Fail
+  Scenario: Def Test Case A
+    * Def this step do nothing
 
 
 

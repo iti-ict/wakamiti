@@ -123,6 +123,8 @@ public class AzureReporter implements Reporter {
                 continue;
             }
 
+            Map<String,PlanNodeSnapshot> testPoints = new HashMap<>();
+
             for (var suiteEntry : testCaseEntry.getValue().entrySet()) {
 
                 String suiteName = suiteEntry.getKey().name();
@@ -133,19 +135,20 @@ public class AzureReporter implements Reporter {
 
                 List<PlanNodeSnapshot> nodes = suiteEntry.getValue();
 
-                Map<String,PlanNodeSnapshot> testPoints = getTestPointsStatus(azureSuite, nodes, api);
-
-                String runID = api.createRun(
-                    azurePlan.id(),
-                    testPoints.keySet(),
-                testPlan.name() + " - run by Wakamiti ",
-                    adjustTimeZone(result.getStartInstant()),
-                    adjustTimeZone(result.getFinishInstant())
-                );
-                api.updateRunResults(runID,testPoints);
-                attachFiles(runID, api);
+                testPoints.putAll( getTestPointsStatus(azureSuite, nodes, api) );
 
             }
+
+            String runID = api.createRun(
+                    azurePlan.id(),
+                    testPoints.keySet(),
+                    testPlan.name() + " - run by Wakamiti ",
+                    adjustTimeZone(result.getStartInstant()),
+                    adjustTimeZone(result.getFinishInstant())
+            );
+            api.updateRunResults(runID,testPoints);
+            attachFiles(runID, api);
+
         }
 
     }

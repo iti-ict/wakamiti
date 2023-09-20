@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.4.2] - 2023-09-20
+
+### Fixed
+- Fix issue regarding the escape of error messages (#144)
+
+### Changed
+- All test suites are notified as a single run instead of multiples
+
 
 ## [1.4.1] - 2023-09-14
 

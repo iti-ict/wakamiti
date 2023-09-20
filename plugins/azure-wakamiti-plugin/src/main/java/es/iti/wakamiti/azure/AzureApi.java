@@ -1,5 +1,7 @@
 package es.iti.wakamiti.azure;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
@@ -28,6 +30,9 @@ public class AzureApi {
     public static final String APIS_WIT_WORKITEMS = "/_apis/wit/workitems/";
     public static final String ID = "$.id";
     public static final String APPLICATION_JSON = "application/json";
+    public static final String JSON_OUTCOME = "outcome";
+    public static final String JSON_COMMENT = "comment";
+    public static final String JSON_ERROR_MESSAGE = "errorMessage";
 
     private final String urlBase;
     private final String credentials;
@@ -203,6 +208,7 @@ public class AzureApi {
 
     public void updateRunResults(String runID, Map<String,PlanNodeSnapshot> nodeByTestPoint) {
 
+
         String response = get(APIS_TEST_RUNS+runID+"/results");
 
         List<String> payloads = new LinkedList<>();
@@ -217,21 +223,32 @@ public class AzureApi {
                 LocalDateTime.parse(node.getStartInstant()),
                 LocalDateTime.parse(node.getFinishInstant())
             ).toMillis();
-            String template = "{ " +
-                    "\"id\": %s,  " +
-                    "\"outcome\": \"%s\" , " +
-                    "\"state\": \"Completed\",   " +
-                    "\"comment\": \"%s\"," +
-                    "\"durationInMs\": %s," +
-                    "\"errorMessage\": \"%s\" " +
-                    "  }";
 
-            if (status.equalsIgnoreCase("PASSED")) {
-                payloads.add(String.format(template, resultID, "Passed", "Execution Successful", duration,""));
-            } else if (status.equalsIgnoreCase("FAILED")) {
-                payloads.add(String.format(template, resultID, "Failed", "Execution Failed", duration, node.getErrorMessage()));
-            } else {
-                payloads.add(String.format(template, resultID, "Unspecified", "Execution Error", duration, node.getErrorMessage()));
+            ObjectMapper mapper = new ObjectMapper();
+
+            Map<String, Object> value = new HashMap<>();
+            value.put("id",resultID);
+            value.put("state","Completed");
+            value.put("duration",duration);
+
+            try {
+                if (status.equalsIgnoreCase("PASSED")) {
+                    value.put(JSON_OUTCOME,"Passed");
+                    value.put(JSON_COMMENT,"Execution Successful");
+                    payloads.add(mapper.writeValueAsString(value));
+                } else if (status.equalsIgnoreCase("FAILED")) {
+                    value.put(JSON_OUTCOME,"Failed");
+                    value.put(JSON_COMMENT,"Execution Failed");
+                    value.put(JSON_ERROR_MESSAGE,node.getErrorMessage());
+                    payloads.add(mapper.writeValueAsString(value));
+                } else {
+                    value.put(JSON_OUTCOME,"Unspecified");
+                    value.put(JSON_COMMENT,"Execution Error");
+                    value.put(JSON_ERROR_MESSAGE,node.getErrorMessage());
+                    payloads.add(mapper.writeValueAsString(value));
+                }
+            } catch (JsonProcessingException e) {
+                throw new WakamitiException(e);
             }
         });
 
