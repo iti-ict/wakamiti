@@ -13,6 +13,18 @@ pieces of information that are not interchangeable. For example, Wakamiti works 
 whereas Cucumber expects a fixed three-level structure. Thus, the exported Cucumber JSON file might not be a faithful 
 representation of the executed test plan.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:cucumber-exporter-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>cucumber-exporter-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
+
 ---
 ## Table of content
 

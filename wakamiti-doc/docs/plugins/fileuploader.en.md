@@ -10,6 +10,18 @@ attempts to upload it to a remote location using the FTP/FTPS protocol. More spe
 it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPUT_FILE_WRITTEN`, and
 `REPORT_OUTPUT_FILE_WRITTEN`.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>file-uploader-wakamiti-plugin</artifactId>
+  <version>2.4.3</version>
+</dependency>
+```
+
 ---
 ## Table of content
 
@@ -63,6 +75,7 @@ placeholders like `%DATE%`, `%TIME%`, or `%execID%`
 
 
 ---
+## Usage
 
 This configuration would be applied to every event type. However, they can be fine-tunned in case
 you require configuration variations according the even type. For example, the configuration

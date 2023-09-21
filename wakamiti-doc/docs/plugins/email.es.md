@@ -9,9 +9,21 @@ verificar el número de mensajes sin leer, e interceptar nuevos mensajes entrant
 También permite validar campos del último mensaje tales como asunto, remitente, cuerpo
 y adjuntos.
 
-Este plugin está diseñador para usarse conjuntamente con otros para formar escenarios completos.
+Este plugin está diseñado para usarse conjuntamente con otros para formar escenarios completos.
 Por ejemplo, para validar que una aplicación envía correos como consecuencia de alguna otra 
 operación como una petición REST.
+
+```text tabs=coord name=yaml
+es.iti.wakamiti:email-wakamiti-plugin:1.1.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>email-wakamiti-plugin</artifactId>
+  <version>1.1.3</version>
+</dependency>
+```
 
 ---
 ## Tabla de contenido

@@ -13,6 +13,18 @@ hay partes específicas de información que no son intercambiables. Por ejemplo,
 profundidad ilimitada, mientras que Cucumber espera una estructura fija de tres niveles. Por lo tanto, el fichero JSON 
 de Cucumber exportado podría no ser una representación fiel del plan de prueba ejecutado.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:cucumber-exporter-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>cucumber-exporter-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
+
 ---
 ## Tabla de contenido
 

@@ -7,6 +7,18 @@ slug: /plugins/rest
 
 Este plugin proporciona un conjunto de pasos para interactuar con una API RESTful.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>rest-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
+
 ---
 ## Tabla de contenido
 

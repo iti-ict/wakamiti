@@ -11,11 +11,22 @@ facilitar la automatización de tests UI en varias plataformas, incluyendo aplic
 El uso de este plugin requiere un servidor Appium en marcha, al igual que un dispositivo
 virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test adecuado.
 
-
 > **AVISO**
 > 
 > En su estado actual, este plugin es principalmente una prueba de concepto más que un plugin 
 > plenamente funcional. Los pasos y la configuración indicada pueden variar en futuras versiones.
+
+```text tabs=coord name=yaml
+es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>appium-wakamiti-plugin</artifactId>
+  <version>2.2.3</version>
+</dependency>
+```
 
 ---
 ## Tabla de contenido

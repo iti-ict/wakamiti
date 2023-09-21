@@ -109,23 +109,13 @@ table {
     cursor: pointer;
     white-space: nowrap;
     border-bottom: .1rem solid #0000;
-    border-radius: 5px 5px 0 0;
-    padding: 5px;
+    padding: 10px;
 
     & > [type=radio] {
       appearance: none;
       margin: 0;
     }
 
-    .bright & {
-      background: shade($sidebarBright, 10%);
-      border-color: shade($sidebarBright, 10%);
-    }
-
-    .dark & {
-      background: shade($sidebarDark, 40%);
-      border-color: shade($sidebarDark, 40%);
-    }
   }
 
   & > :not(label) {

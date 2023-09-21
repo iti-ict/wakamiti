@@ -9,11 +9,23 @@ slug: /plugins/database
 Este plugin proporciona una serie de pasos para interactuar con una base de datos vía JDBC, facilitando la carga y
 validación de datos.
 
-> **RECUERDA** <br />
+> **RECUERDA** 
+> 
 > Debido a los muchos motores existentes de bases de datos, este plugin no incluye ningún driver específico. Esto
 > significa que, para funcionar correctamente, es necesario inluir el módulo con el controlador JDBC adecuado en la
 > configuración de Wakamiti.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:db-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>db-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
 
 ---
 ## Tabla de contenido

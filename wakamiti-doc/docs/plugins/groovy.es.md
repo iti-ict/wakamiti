@@ -6,6 +6,18 @@ slug: /plugins/groovy
 
 Este plugin proporciona un compilador de clases `groovy` y pasos para la ejecución de código `groovy`.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:groovy-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>groovy-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
+
 ---
 ## Tabla de contenido
 

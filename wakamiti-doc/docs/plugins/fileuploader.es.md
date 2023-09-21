@@ -9,6 +9,18 @@ salida, e intenta subir dicho fichero a una ubicación remota usando el protocol
 Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT_FILE_WRITTEN`,
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>file-uploader-wakamiti-plugin</artifactId>
+  <version>2.4.3</version>
+</dependency>
+```
+
 ---
 ## Tabla de contenido
 
@@ -62,6 +74,7 @@ Puede incluir variables de ruta como `%DATE%`, `%TIME%`, or `%execID%`
 
 
 ---
+## Uso
 
 Esta configuración global se aplica a todos los tipos de evento recibidos. Sin embargo, existe la 
 posibilidad de ajustar una o más propiedades con valores especñificos según el tipo de evento. Por

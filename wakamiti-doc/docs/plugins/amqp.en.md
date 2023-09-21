@@ -8,7 +8,21 @@ slug: /en/plugins/amqp
 A set of steps to interact with an application via the [Advanced Message Queuing Protocol](https://amqp.org). 
 The underlying implementation is based on [RabbitMQ](https://rabbitmq.com), although it might change in further versions.
 
-Currently, this library provides very limited functionality and exists mostly as a proof of concept.
+> **DISCLAIMER**
+>
+> Currently, this library provides very limited functionality and exists mostly as a proof of concept.
+
+```text tabs=coord name=yaml
+es.iti.wakamiti:amqp-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>amqp-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
 
 ---
 ## Table of content

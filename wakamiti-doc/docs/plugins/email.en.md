@@ -11,6 +11,18 @@ attachments.
 This plugin should be used along others to form complete scenarios, e.g., for checking that the application sends emails 
 as a consequence of some other operation such a REST request.
 
+```text tabs=coord name=yaml
+es.iti.wakamiti:email-wakamiti-plugin:1.1.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>email-wakamiti-plugin</artifactId>
+  <version>1.1.3</version>
+</dependency>
+```
+
 ---
 ## Table of content
 

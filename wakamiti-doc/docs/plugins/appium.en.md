@@ -12,12 +12,23 @@ The usage of this plugin requires that an Appium server is up and running, as we
 emulated virtual device. Below, there is an example of how to set up a testing environment
 for this.
 
-
 > **DISCLAIMER**
 > 
 > In its current state, this plugin is mostly a proof of concept rather than a fully 
 > functional plugin, and the provided steps and configuration may vary in future 
 > versions.
+
+```text tabs=coord name=yaml
+es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>appium-wakamiti-plugin</artifactId>
+    <version>2.2.3</version>
+</dependency>
+```
 
 ---
 ## Table of content

@@ -9,10 +9,23 @@ slug: /en/plugins/database
 This plugin provides a set of steps that interact with a database via JDBC, easing the effort required to load and
 assert data.
 
-> **KEEP IN MIND** <br />
+> **KEEP IN MIND** 
+> 
 > Regarding the multiple database implementations existing, this plugin does not include any specific driver. In order
 > to work properly, do not forget to include the module with the JDBC driver(s) that your database connection would
 > require.
+
+```text tabs=coord name=yaml
+es.iti.wakamiti:db-wakamiti-plugin:2.3.3
+```
+
+```xml tabs=coord name=maven
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>db-wakamiti-plugin</artifactId>
+  <version>2.3.3</version>
+</dependency>
+```
 
 ---
 ## Table of content
