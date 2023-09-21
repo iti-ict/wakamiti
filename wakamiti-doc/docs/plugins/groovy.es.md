@@ -10,7 +10,7 @@ Este plugin proporciona un compilador de clases `groovy` y pasos para la ejecuci
 es.iti.wakamiti:groovy-wakamiti-plugin:2.3.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>groovy-wakamiti-plugin</artifactId>

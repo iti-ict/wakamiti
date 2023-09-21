@@ -10,7 +10,7 @@ Un generador de informes en formato `HTML` con los resultados de las pruebas.
 es.iti.wakamiti:html-reporter-wakamiti-plugin:2.3.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>html-reporter-wakamiti-plugin</artifactId>

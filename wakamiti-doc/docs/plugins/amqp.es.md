@@ -17,7 +17,7 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 es.iti.wakamiti:amqp-wakamiti-plugin:2.3.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>

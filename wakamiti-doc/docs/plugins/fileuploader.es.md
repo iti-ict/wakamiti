@@ -13,7 +13,7 @@ Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT
 es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>

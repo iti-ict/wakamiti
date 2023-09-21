@@ -17,7 +17,7 @@ representation of the executed test plan.
 es.iti.wakamiti:cucumber-exporter-wakamiti-plugin:2.3.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>cucumber-exporter-wakamiti-plugin</artifactId>

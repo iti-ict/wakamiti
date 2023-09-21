@@ -20,7 +20,7 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>appium-wakamiti-plugin</artifactId>

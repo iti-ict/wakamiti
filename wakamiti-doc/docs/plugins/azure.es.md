@@ -11,7 +11,7 @@ existente, al tiempo que permite adjuntar ficheros (como el generado por el plug
 es.iti.wakamiti:azure-wakamiti-plugin:1.4.2
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>

@@ -17,7 +17,7 @@ operación como una petición REST.
 es.iti.wakamiti:email-wakamiti-plugin:1.1.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>email-wakamiti-plugin</artifactId>

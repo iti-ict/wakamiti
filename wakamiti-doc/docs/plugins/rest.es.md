@@ -11,7 +11,7 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
 ```
 
-```xml tabs=coord name=maven
+```text tabs=coord name=maven
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
