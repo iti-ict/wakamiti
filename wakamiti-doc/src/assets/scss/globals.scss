@@ -103,28 +103,46 @@ table {
   grid-template-rows: min-content auto;
   width: 100%;
   min-height: 10px;
-}
 
-.remark-code-tabs > label {
-  display: flex;
-  cursor: pointer;
-  white-space: nowrap;
-}
+  & > label {
+    display: flex;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: .1rem solid #0000;
+    border-radius: 5px 5px 0 0;
+    padding: 5px;
 
-.remark-code-tabs > label > [type=radio] {
-  appearance: none;
-  margin: 0;
-}
+    & > [type=radio] {
+      appearance: none;
+      margin: 0;
+    }
 
-.remark-code-tabs > :not(label) {
-  grid-column-start: 1;
-  grid-column-end: -1;
-  grid-row-start: 2;
-  grid-row-end: 3;
-}
+    .bright & {
+      background: shade($sidebarBright, 10%);
+      border-color: shade($sidebarBright, 10%);
+    }
 
-.remark-code-tabs > label:not(:has(:checked)) + * {
-  visibility: hidden;
+    .dark & {
+      background: shade($sidebarDark, 40%);
+      border-color: shade($sidebarDark, 40%);
+    }
+  }
+
+  & > :not(label) {
+    grid-column-start: 1;
+    grid-column-end: -1;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  & > label:has(:checked) {
+    color: $brandPrimary;
+    border-bottom-color: $brandPrimary;
+  }
+
+  & > label:not(:has(:checked)) + * {
+    display: none;
+  }
 }
 
 .remark-code-tabs-x {
@@ -132,3 +150,4 @@ table {
   height: 0;
   visibility: hidden;
 }
+
