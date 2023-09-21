@@ -55,12 +55,13 @@ wakamiti:
   htmlReport:
     title: Test
   rest:
-    baseURL: https://localhost
+    baseURL: http://host.docker.internal:9966/petclinic/api
   database:
     connection:
-      url: jdbc:mysql://localhost:3306
-      username: user
-      password: p4ssw0rd
+      url: jdbc:mysql://host.docker.internal:3309/petclinic?useUnicode=true
+      username: root
+      password: petclinic
+      driver: com.mysql.cj.jdbc.Driver
 ```
 > **NOTA** <br />
 > Ten en cuenta que cada plugin tiene su propia configuración, la cual puedes consultar en [sus respectivos apartados](plugins).
@@ -122,7 +123,7 @@ docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 * Linux:
 ```Shell
-docker run --rm -v "$(pwd):/wakamiti" wakamiti/wakamiti
+docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 Con este comando, se lanzarán todos los tests que haya en el directorio, 
 utilizando la última versión de wakamiti. Para trabajar con una versión 

@@ -48,18 +48,19 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.2.1
-      - es.iti.wakamiti:db-wakamiti-plugin:2.2.2
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.2.1
+      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
   htmlReport:
     title: Test
   rest:
-    baseURL: https://localhost
+    baseURL: http://host.docker.internal:9966/petclinic/api
   database:
     connection:
-      url: jdbc:mysql://localhost:3306
-      username: user
-      password: p4ssw0rd
+      url: jdbc:mysql://host.docker.internal:3309/petclinic?useUnicode=true
+      username: root
+      password: petclinic
+      driver: com.mysql.cj.jdbc.Driver
 ```
 > **NOTE** <br />
 > Note that each plugin has its own configuration, which you can check in [their respective sections](en/plugins).
@@ -118,7 +119,7 @@ docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 * Linux:
 ```Shell
-docker run --rm -v "$(pwd):/wakamiti" wakamiti/wakamiti
+docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 With this command, you will download the latest version of Wakamiti. To work with a specific version, 
 you should specify it in the Docker command as follows: `wakamiti/wakamiti:version`, You can view the available 
