@@ -16,3 +16,4 @@ exist, but you can also develop your own plugins!
 - [Appium steps](en/plugins/appium)
 - [Azure Integration](en/plugins/azure)
 - [Email steps](en/plugins/email)
+- [Groovy](plugins/groovy)

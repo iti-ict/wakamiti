@@ -16,6 +16,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Pasos Appium](plugins/appium)
 - [Integración Azure](plugins/azure)
 - [Pasos Email](plugins/email)
+- [Groovy](plugins/groovy)
 
 
 

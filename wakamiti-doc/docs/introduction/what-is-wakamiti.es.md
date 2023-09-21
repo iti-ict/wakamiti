@@ -10,25 +10,25 @@ slug: /introduction/what-is-wakamiti
 > [Gherkin](https://cucumber.io/docs/gherkin/) y metodología [Behaviour-Driven Development](https://cucumber.io/docs/bdd/).
 
 
-**Wakamiti** es una herramienta de pruebas automáticas inspirada en Cucumber, escrita en Java y enfocada a las pruebas de 
+**Wakamiti** es una herramienta de pruebas automáticas inspirada en Cucumber, escrita en Java y enfocada a pruebas de 
 caja negra usando el lenguaje natural.
 
-Al igual que Cucumber, puede definir sus pruebas utilizando un lenguaje natural y legible por humanos adoptando, por 
+Al igual que Cucumber, se pueden definir pruebas utilizando un lenguaje natural y legible por humanos adoptando, por 
 ejemplo, la *gramática* Gherkin. Sin embargo, Wakamiti no vincula cada paso a su código de prueba, sino que los pasos 
 están vinculados a un código reutilizable de propósito común proporcionado por plugins externos. 
 
-Por lo tanto, Wakamiti resulta ser una herramienta conveniente si su objetivo es probar su sistema a través de accesos 
+Por lo tanto, Wakamiti resulta ser una herramienta conveniente si el objetivo es probar un sistema a través de accesos 
 estandarizados como servicios web REST o conexión JDBC, que tienden a ser un gran porcentaje de las pruebas escritas 
-para la mayoría de las aplicaciones. Además, no es necesario escribir ningún código de prueba, por lo que incluso los no 
-programadores pueden definir y ejecutar sus propias pruebas.
+para la mayoría de las aplicaciones. Además, no es necesario escribir ningún código de prueba, por lo que incluso los 
+no-programadores pueden definir y ejecutar sus propias pruebas.
 
 Otras características proporcionadas por Wakamiti son:
 
-- **Gherkin de dos capas**: puede hacer uso de la gramática Gherkin en dos niveles de abstracción. Uno dirigido a la 
+- **Gherkin de dos capas**: puedes hacer uso de la gramática Gherkin en dos niveles de abstracción. Uno dirigido a la 
 comunicación con el cliente y otro dirigido a los detalles del sistema.
-- **Totalmente localizable**: puede usar su propio idioma siempre que proporcione a Wakamiti un archivo de traducción.
-- **Fácilmente extensible**: escriba sus propios plugins para cualquier punto de extensión (pasos, generador de informes, 
-analizadores de idioma, etc) y compártalos con la comunidad.
+- **Totalmente localizable**: puedes usar tu propio idioma siempre que proporcione a Wakamiti un archivo de traducción.
+- **Fácilmente extensible**: escribe tus propios plugins para cualquier punto de extensión (pasos, generador de informes, 
+analizadores de idioma, etc) y compártelos con la comunidad.
 - **Lanzadores alternativos**: ejecute Wakamiti como un conjunto de pruebas de JUnit, como un objetivo de verificación de 
 Maven o directamente como un comando de consola.
 

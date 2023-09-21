@@ -23,15 +23,21 @@ Optionally:
 - Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
   It's not necessary to have it, but it will make scenario development much easier.
 
+### 0. Start the sample application
+Unzip the downloaded zip file with the tutorial source code, open a terminal in that directory and launch the 
+application with the following command:
+```shell
+docker compose up -d
+```
 
 ### 1. Wakamiti configuration
 Wakamiti configuration is done by means of a `yaml` file that will be placed in the same directory where the tests are 
-located, for example:
-```
-.
-├── features
-│   └── example.feature
-└── wakamiti.yaml
+located. For example, in the same with the source code of the tutorial:
+```diff
+  tutorial
+  ├── application-wakamiti.properties
+  ├── docker-compose.yml
++ └── wakamiti.yaml
 ```
 
 This is the basic configuration to be able to run the tests:
@@ -68,7 +74,7 @@ production code emerges, scenarios take on a role as living documentation and au
 A scenario belongs to a specific software feature. Each feature can contain many scenarios, and are defined in `.feature` 
 files that must be in our working directory (or subdirectory).
 
-A concrete example would be to get a pet owner.
+A specific example in this tutorial would be to consult a pet owner.
 
 Create an empty file named `example.feature` with the following content:
 ```gherkin
@@ -103,7 +109,8 @@ will execute.
 [See more](https://cucumber.io/docs/gherkin/) in detail the `gherkin` syntax.
 
 ### 3. Run Wakamiti
-The tests are run from the directory containing the Wakamiti features with the following command:
+The tests are executed with the terminal, from the working directory (the one containing the Wakamiti features and the 
+`.feature` file we have created), with the following command:
 
 * Windows:
 ```Shell

@@ -20,7 +20,7 @@ subdirectory). All libraries used in `.groovy` files must be included in the Wak
 
 These `groovy` files can be used as a provider of additional steps.
 
-#### Examples
+#### Examples:
 
 We create a file called `custom-steps.properties` where we define a new step:
 ```properties
@@ -97,12 +97,12 @@ Runs the given groovy script with the available variables:
   and any other variables you add.
 - `log`: Wakamiti logger to debug the script.
 
-#### Parameters
+#### Parameters:
 | Name | Wakamiti type | Description    |
 |------|---------------|----------------|
 |      | `document`    | Script content |
 
-#### Examples
+#### Examples:
 ```gherkin
 @ID-01
 Scenario: Example
@@ -127,7 +127,7 @@ Scenario: Example
 Get the result of executing a line of groovy code, using the syntax `${=[expression]}`, where `[expression]` is the 
 groovy code to be executed. This expression also includes the variable `ctx`.
 
-#### Examples
+#### Examples:
 We have the following scenario:
 ```gherkin
 @ID-01

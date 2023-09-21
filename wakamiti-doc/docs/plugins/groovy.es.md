@@ -20,7 +20,7 @@ Wakamiti, o en la configuración [`wakamiti.launcher.modules`](wakamiti/architec
 
 Estos ficheros `groovy` se podrán utilizar como proveedor de pasos adicionales.
 
-#### Ejemplos
+#### Ejemplos:
 
 Creamos un fichero llamado `custom-steps_es.properties` donde definimos un nuevo paso:
 ```properties
@@ -97,12 +97,12 @@ Ejecuta el script groovy indicado, incluyendo las siguentes variables:
   pasos, y cualquier otra variable que se añada.
 - `log`: Logger de Wakamiti para depurar el script.
 
-#### Parámetros
+#### Parámetros:
 | Nombre | Wakamiti type | Descripción          |
 |--------|---------------|----------------------|
 |        | `document`    | Contenido del script |
 
-#### Ejemplos
+#### Ejemplos:
 ```gherkin
 @ID-01
 Escenario: Ejemplo
@@ -127,7 +127,7 @@ Escenario: Ejemplo
 Obtener el resultado de la ejecución de una línea de código groovy, mediante la sintaxis `${=[expresión]}`, donde
 `[expresión]` es el código groovy que se quiere ejecutar. En esta expresión también se incluye la variable `ctx`.
 
-#### Ejemplos
+#### Ejemplos:
 Tenemos el siguiente escenario:
 ```gherkin
 @ID-01

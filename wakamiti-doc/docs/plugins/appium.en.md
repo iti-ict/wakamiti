@@ -32,7 +32,7 @@ for this.
 > but for an exhaustive list of the available properties, please check the
 > [W3C WebDriver draft](https://w3c.github.io/webdriver/#capabilities).
 
-
+<br /><br />
 
 ### `appium.url` 
 The URL of the Appium server
@@ -305,7 +305,7 @@ Ends (hangs up) the current call.
 
 
 ---
-## Setting up a test environment
+## Usage
 
 
 1. Install Android SDK

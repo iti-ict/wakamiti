@@ -31,7 +31,7 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 > pero para una lista exhaustiva de las propiedades disponibles, consultar el
 > [borrador W3C WebDriver](https://w3c.github.io/webdriver/#capabilities).
 
-
+<br /><br />
 
 ### `appium.url` 
 La URL del servidor Appium.
@@ -303,7 +303,7 @@ Finaliza (cuelga) la llamada actual.
 
 
 ---
-## Preparación de un entorno de pruebas
+## Uso
 
 
 1. Instalar Android SDK

@@ -95,3 +95,40 @@ table {
     font-weight: normal;
   }
 }
+
+/* tabs */
+.remark-code-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min-content, 1px));
+  grid-template-rows: min-content auto;
+  width: 100%;
+  min-height: 10px;
+}
+
+.remark-code-tabs > label {
+  display: flex;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.remark-code-tabs > label > [type=radio] {
+  appearance: none;
+  margin: 0;
+}
+
+.remark-code-tabs > :not(label) {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.remark-code-tabs > label:not(:has(:checked)) + * {
+  visibility: hidden;
+}
+
+.remark-code-tabs-x {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}

@@ -74,7 +74,6 @@ export default {
           e.preventDefault();
           eval('this.' + href.replace('javascript:', ''));
         })
-        el.setAttribute('href', '#')
         el.removeAttribute('target')
       }
     });

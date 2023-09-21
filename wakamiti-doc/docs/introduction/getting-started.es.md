@@ -23,14 +23,22 @@ De forma opcional:
 - Instalar un IDE, como [IntelliJ IDEA](https://www.jetbrains.com/idea/) o [VS Code](https://code.visualstudio.com/). No
   es necesario tenerlo pero facilitará mucho el desarrollo de escenarios.
 
+
+### 0. Poner en marcha la aplicación de ejemplo
+Descomprime el zip descargado con el código fuente del tutorial, abre un terminal en ese directorio y levanta la 
+aplicación con el siguiente comando:
+```shell
+docker compose up -d
+```
+
 ### 1. Configurar Wakamiti
 La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen los 
-tests, por ejemplo:
-```
-.
-├── features
-│   └── example.feature
-└── wakamiti.yaml
+tests. Por ejemplo, en el mismo con el código fuente del tutorial:
+```diff
+  tutorial
+  ├── application-wakamiti.properties
+  ├── docker-compose.yml
++ └── wakamiti.yaml
 ```
 
 Esta es la configuración básica para poder ejecutar los tests:
@@ -41,9 +49,9 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.2.1
-      - es.iti.wakamiti:db-wakamiti-plugin:2.2.2
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.2.1
+      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
   htmlReport:
     title: Test
   rest:
@@ -68,7 +76,7 @@ automatizadas.
 Un escenario pertenece a una característica concreta del software. Cada característica puede contener muchos escenarios, 
 y se definen en archivos `.feature` que deberán estar en nuestro directorio de trabajo (o subdirectorio).
 
-Un ejemplo concreto sería consultar un propietario de una mascota.
+Un ejemplo concreto en este tutorial sería consultar un propietario de una mascota.
 
 Crea un archivo vacío llamado `example.feature` con el siguiente contenido:
 ```gherkin
@@ -105,8 +113,8 @@ Wakamiti ejecutará.
 
 
 ### 3. Lanzar Wakamiti
-Los test se ejecutan con el terminal desde el directorio que contiene las características de Wakamiti con el siguiente 
-comando:
+Los test se ejecutan con el terminal, desde el directorio de trabajo (el que contiene las características de Wakamiti y
+el fichero `.feature` que hemos creado), con el siguiente comando:
 
 * Windows:
 ```Shell
