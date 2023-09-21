@@ -75,7 +75,7 @@ class CustomSteps implements StepContributor, Configurable {
 
 We include this new class in the configuration 
 [`wakamiti.nonRegisteredStepProviders`](en/wakamiti/architecture#wakamitinonRegisteredStepProviders) of Wakamiti, and add the 
-properties with the credentials:
+properties with the sample credentials:
 ```yml
   nonRegisteredStepProviders:
     - example.CustomSteps

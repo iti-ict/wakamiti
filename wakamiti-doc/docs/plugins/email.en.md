@@ -29,30 +29,6 @@ es.iti.wakamiti:email-wakamiti-plugin:1.1.3
 ---
 
 ---
-## Coordinates
-
-
-### Wakamiti configuration file
-
-```yaml
-wakamiti:
-  launcher:
-    modules:
-        - es.iti.wakamiti:email-wakamiti-plugin:1.0.0
-```
-
-### Maven
-
-```
-  <dependency>
-    <groupId>es.iti.wakamiti</groupId>
-    <artifactId>email-wakamiti-plugin</artifactId>
-    <version>1.0.0</version>
-  </dependency>
-```
-
-
----
 ## Configuration
 
 
