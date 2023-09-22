@@ -28,7 +28,7 @@ module.exports = (options) => {
             node,
             {
                 type: "html",
-                value: `<pre class="hidden">node.value</pre>`
+                value: `<pre class="hidden">${node.value}</pre>`
             }
         ];
     }
