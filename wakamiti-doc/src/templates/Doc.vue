@@ -78,18 +78,20 @@ export default {
       }
     });
     document.querySelectorAll('.remark-code-clipboard').forEach(el => {
-      const btn = el.querySelector('button')
-      const code = el.querySelector('pre.hidden').textContent
-      btn.addEventListener('click', () => {
-        navigator.clipboard.writeText(`${code}`)
-        btn.querySelector('.clipboard-copy-icon').addClass('hidden');
-        btn.querySelector('.clipboard-check-icon').removeClass('hidden');
+      el.querySelectorAll('button').forEach(btn => {
+        const code = el.querySelector('pre.hidden').textContent
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(code)
+          btn.querySelector('.clipboard-copy-icon').classList.add('hidden');
+          btn.querySelector('.clipboard-check-icon').classList.remove('hidden');
 
-        setTimeout(() => {
-          btn.querySelector('.clipboard-copy-icon').removeClass('hidden');
-          btn.querySelector('.clipboard-check-icon').addClass('hidden');
-        }, 3000);
-      })
+          setTimeout(() => {
+            btn.querySelector('.clipboard-copy-icon').classList.remove('hidden');
+            btn.querySelector('.clipboard-check-icon').classList.add('hidden');
+          }, 3000);
+        })
+      });
+
     })
   }
 }
