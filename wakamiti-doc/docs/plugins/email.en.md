@@ -119,7 +119,7 @@ Since: 1.0.0
 
 
 ### Define the mail store server to use
-``` copy=true
+```text copy=true
 the email server at {host:text}:{port:int} using the protocol {protocol:word}
 ```
 
@@ -140,7 +140,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Define the mail user credentials
-``` copy=true
+```text copy=true
 the email user with address {address:text} and password {password:text}
 ```
 
@@ -160,7 +160,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Define the mail store folder to use
-``` copy=true
+```text copy=true
 the email folder {text}
 ```
 
@@ -179,7 +179,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the number of unread emails
-``` copy=true
+```text copy=true
 (that) the number of unread emails {integer-assertion}
 ```
 #### Parameters:
@@ -197,7 +197,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify that a new mail is received in a given interval
-``` copy=true
+```text copy=true
 (that) a new email is received within {sec:integer} seconds
 ```
 
@@ -216,7 +216,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the subject of the last email
-``` copy=true
+```text copy=true
 (that) the subject of the email {text-assertion}
 ```
 
@@ -235,7 +235,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the sender of the last email
-``` copy=true
+```text copy=true
 (that) the sender of the email {text-assertion}
 ```
 
@@ -254,7 +254,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the body contents of the last email
-``` copy=true
+```text copy=true
 (that) the body of the email is:
 ```
 
@@ -278,7 +278,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify partially the body contents of the last email
-``` copy=true
+```text copy=true
 (that) the body of the email contains:
 ```
 
@@ -300,7 +300,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the body contents of the last email against an external file
-``` copy=true
+```text copy=true
 (that) the body of the email is the content of the file {file}
 ```
 
@@ -319,7 +319,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the body contents of the last email contains the content of an external file
-``` copy=true
+```text copy=true
 (that) the body of the email contains the content of the file {file}
 ```
 
@@ -338,7 +338,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the number of attachments of the last email
-``` copy=true
+```text copy=true
 (that) the number of attachments in the email {integer-assertion}
 ```
 
@@ -357,7 +357,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify that the email contains an attached file with certain name
-``` copy=true
+```text copy=true
 (that) the email has an attached file whose name {text-assertion}
 ```
 
@@ -376,7 +376,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the binary content of an attached file
-``` copy=true
+```text copy=true
 (that) the email has an attached file with the content of the binary file {file}
 ```
 
@@ -395,7 +395,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the text content of an attached file
-``` copy=true
+```text copy=true
 (that) the email has an attached file with the content of the text file {file}
 ```
 
@@ -414,7 +414,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Verify the text content of an attach file against the following text
-``` copy=true
+```text copy=true
 (that) the email has an attached file with the following content:
 ```
 
@@ -436,7 +436,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Delete all emails from a given sender (clean-up operation)
-``` copy=true
+```text copy=true
 At finish, delete all emails whose sender {text-assertion}
 ```
 
@@ -456,7 +456,7 @@ Since: 1.0.0
 <br /><br />
 
 ### Delete all emails with a given subject (clean-up operation)
-``` copy=true
+```text copy=true
 At finish, delete all emails whose subject {text-assertion}
 ```
 

@@ -101,7 +101,7 @@ When executed, it would be shown in the log:
 ## Steps
 
 ### Execute code
-``` copy=true
+```text copy=true
 (that) the following groovy code is executed:
 ```
 Runs the given groovy script with the available variables:

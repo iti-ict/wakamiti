@@ -124,7 +124,7 @@ amqp:
 
 ### Define connection
 
-``` copy=true
+```text copy=true
 the AMQP connection URL {url} using the user {username} and the password {password}
 ```
 Sets the URL and credentials to be used by the AMQP broker. This is the descriptive way of setting the configuration 
@@ -147,7 +147,7 @@ properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.userna
 
 ### Define destination queue
 
-``` copy=true
+```text copy=true
 the destination queue {word}
 ```
 Sets the name of the queue to watch.
@@ -166,7 +166,7 @@ Sets the name of the queue to watch.
 
 ### Send message to queue
 
-``` copy=true
+```text copy=true
 the following JSON message is sent to the queue {word}:
 ```
 Sends a JSON message to the given queue.
@@ -192,7 +192,7 @@ Sends a JSON message to the given queue.
 <br /><br />
 
 ### Send message to queue (file)
-``` copy=true
+```text copy=true
 the message from the JSON file {file} is sent to the queue {queue}
 ```
 Sends a JSON message extracted from a local file to the given queue.
@@ -211,7 +211,7 @@ Sends a JSON message extracted from a local file to the given queue.
 <br /><br />
 
 ### Set pause
-``` copy=true
+```text copy=true
 wait for {integer} second(s)
 ```
 Waits a fixed number of seconds (usually to ensure a message has been processed).
@@ -230,7 +230,7 @@ Waits a fixed number of seconds (usually to ensure a message has been processed)
 
 ### Validate message
 
-``` copy=true
+```text copy=true
 the following JSON message is received within {integer} seconds:
 ```
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.
@@ -255,7 +255,7 @@ Validates that a specific JSON message is received in the destination queue, fai
 <br /><br />
 
 ### Validate message (file)
-``` copy=true
+```text copy=true
 the message from the JSON file {file} is received within {seconds} seconds
 ```
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.

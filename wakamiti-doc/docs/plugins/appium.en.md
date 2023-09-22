@@ -120,7 +120,7 @@ appium:
 
 
 ### Select a UI element by its ID
-``` copy=true
+```text copy=true
 the UI element with ID {text}
 ```
 Select an element that would be the subject of the following steps.
@@ -133,7 +133,7 @@ Select an element that would be the subject of the following steps.
 <br /><br />
 
 ### Select a UI element by its type
-``` copy=true
+```text copy=true
 the UI element with type {text}
 ```
 Select an element that would be the subject of the following steps.
@@ -146,7 +146,7 @@ Select an element that would be the subject of the following steps.
 <br /><br />
 
 ### Select a UI element by its path
-``` copy=true
+```text copy=true
 the UI element with path {text}
 ```
 Select an element that would be the subject of the following steps.
@@ -159,7 +159,7 @@ Select an element that would be the subject of the following steps.
 <br /><br />
 
 ### Type a text on an element
-``` copy=true
+```text copy=true
 the text {text} is typed on that element
 ```
 Emulate the action of typing a text when an element is selected.
@@ -172,7 +172,7 @@ Emulate the action of typing a text when an element is selected.
 <br /><br />
 
 ### Tap on an element
-``` copy=true
+```text copy=true
 a tap is done over that element
 ```
 Emulate the action of tapping on the selected element.
@@ -185,7 +185,7 @@ Emulate the action of tapping on the selected element.
 <br /><br />
 
 ### Double-tap on an element
-``` copy=true
+```text copy=true
 a double-tap is done over that element
 ```
 Emulate the action of double-tapping on the selected element.
@@ -198,7 +198,7 @@ Emulate the action of double-tapping on the selected element.
 <br /><br />
 
 ### Validate the text of an element
-``` copy=true
+```text copy=true
 that element contains the value {text}
 ```
 Assert that the previously selected element contains a certain text.
@@ -211,7 +211,7 @@ Assert that the previously selected element contains a certain text.
 <br /><br />
 
 ### Validate an element is enabled
-``` copy=true
+```text copy=true
 that element is enabled
 ```
 Assert that the previously selected element is currently enabled.
@@ -224,7 +224,7 @@ Assert that the previously selected element is currently enabled.
 <br /><br />
 
 ### Validate an element is disabled
-``` copy=true
+```text copy=true
 that element is disabled
 ```
 Assert that the previously selected element is currently disabled.
@@ -237,7 +237,7 @@ Assert that the previously selected element is currently disabled.
 <br /><br />
 
 ### Validate an element is displayed
-``` copy=true
+```text copy=true
 that element is displayed
 ```
 Assert that the previously selected element is displayed on screen.
@@ -250,7 +250,7 @@ Assert that the previously selected element is displayed on screen.
 <br /><br />
 
 ### Validate an element is not displayed
-``` copy=true
+```text copy=true
 that element is not displayed
 ```
 Assert that the previously selected element is not displayed on screen.
@@ -263,7 +263,7 @@ Assert that the previously selected element is not displayed on screen.
 <br /><br />
 
 ### Emulate an incoming call
-``` copy=true
+```text copy=true
 an incoming call with number {text} is received
 ```
 Emulate an incoming call from a specific phone number. Only available if the tested application 
@@ -277,7 +277,7 @@ runs on a emulated device.
 <br /><br />
 
 ### Accepts an incoming call
-``` copy=true
+```text copy=true
 the incoming call is accepted
 ```
 Accepts the current incoming call. 
@@ -290,7 +290,7 @@ Accepts the current incoming call.
 <br /><br />
 
 ### Rejects an incoming call
-``` copy=true
+```text copy=true
 the incoming call is rejected
 ```
 Rejects the current incoming call.
@@ -303,7 +303,7 @@ Rejects the current incoming call.
 <br /><br />
 
 ### Ends the current call
-``` copy=true
+```text copy=true
 the call is ended
 ```
 Ends (hangs up) the current call.
@@ -320,7 +320,7 @@ Ends (hangs up) the current call.
 
 
 1. Install Android SDK
-``` copy=true
+```text copy=true
   sudo apt install android-sdk
 ```
 
@@ -335,19 +335,19 @@ Ends (hangs up) the current call.
 ![android-sdk][android-sdk]
 
 5. Install Appium and Appium-doctor
-``` copy=true
+```text copy=true
    npm install -g appium
    npm install @appium/doctor --location=global
 ```
 
 4. Check the installation
-``` copy=true
+```text copy=true
 appium-doctor --android
 ```
 All should be OK, otherwise check the red messages
 
 5. Start the Appium server
-``` copy=true
+```text copy=true
 appium
 ```
 Default port is 4723
@@ -356,18 +356,18 @@ Download a demo APK from:
 https://github.com/appium/appium/raw/1.x/sample-code/apps/ApiDemos-debug.apk
 
 6. Create an Android Virtual Device
-``` copy=true
+```text copy=true
 $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"```
 ```
 
 7. Start the emulator
-``` copy=true
+```text copy=true
 $ANDROID_HOME/emulator/emulator -avd Nexus6P
 ```
 
 In case the emulator fails due to a previous emulation process in a zombie state, it can be 
 cleared using
-``` copy=true
+```text copy=true
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 

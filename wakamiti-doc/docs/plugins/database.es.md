@@ -191,7 +191,7 @@ database:
 
 
 ### Definir conexión
-``` copy=true
+```text copy=true
 la URL de conexión a BBDD {url} usando el usuario {username} y la contraseña {password}
 ```
 Establece la URL, nombre de usuario y contraseña para conectarse a la base de datos. Este paso es equivalente a
@@ -214,7 +214,7 @@ configurar las propiedades [`database.connection.url`](#databaseconnectionurl),
 <br /><br />
 
 ### Definir script post ejecución
-``` copy=true
+```text copy=true
 Al finalizar, se ejecuta el siguiente script SQL:
 ```
 Establece las sentencias SQL que se ejecutarán una vez finalizado el escenario, independientemente del estado de la
@@ -237,7 +237,7 @@ ejecución.
 <br /><br />
 
 ### Definir script post ejecución (fichero)
-``` copy=true
+```text copy=true
 Al finalizar, se ejecuta el script SQL del fichero {file}
 ```
 Establece las sentencias SQL del fichero indicado que se ejecutarán una vez finalizado el escenario, independientemente
@@ -256,7 +256,7 @@ del estado de la ejecución.
 <br /><br />
 
 ### Ejecutar script
-``` copy=true
+```text copy=true
 se ejecuta el siguiente script SQL:
 ```
 Ejecuta el script SQL escrito a continuación.
@@ -278,7 +278,7 @@ Ejecuta el script SQL escrito a continuación.
 <br /><br />
 
 ### Ejecutar script (fichero)
-``` copy=true
+```text copy=true
 se ejecuta el script SQL del fichero {file}
 ```
 Ejecuta el script SQL existente en el fichero indicado.
@@ -296,7 +296,7 @@ Ejecuta el script SQL existente en el fichero indicado.
 <br /><br />
 
 ### Vaciar tabla
-``` copy=true
+```text copy=true
 se limpia la tabla de BBDD {word}
 ```
 Limpia la tabla indicada, intentando primero con la sentencia `TRUNCATE` , y con la sentencia `DELETE FROM` en caso de
@@ -315,7 +315,7 @@ fallar la primera.
 <br /><br />
 
 ### Eliminar datos
-``` copy=true
+```text copy=true
 se (ha) elimina(n|do) * con {column} = {value} de la tabla de BBDD {table}
 ```
 Elimina de una tabla dada las filas que satisfagan la comparación indicada.
@@ -338,7 +338,7 @@ Elimina de una tabla dada las filas que satisfagan la comparación indicada.
 <br /><br />
 
 ### Eliminar datos (tabla)
-``` copy=true
+```text copy=true
 se (ha) elimina(n|do) (lo|el|la|los|las) siguiente(s) * de la tabla de BBDD {word}:
 ```
 Elimina de una tabla dada las filas indicadas.
@@ -365,7 +365,7 @@ Elimina de una tabla dada las filas indicadas.
 <br /><br />
 
 ### Eliminar datos (XLS)
-``` copy=true
+```text copy=true
 se (ha) elimina(do) el contenido del fichero XLS {file} de la BBDD
 ```
 Elimina las filas que concuerdan con los datos del fichero XLS indicado.
@@ -386,7 +386,7 @@ Elimina las filas que concuerdan con los datos del fichero XLS indicado.
 <br /><br />
 
 ### Eliminar datos (CSV)
-``` copy=true
+```text copy=true
 se (ha) elimina(do) el contenido del fichero CSV {csv} de la tabla de BBDD {table}
 ```
 Elimina las filas de una tabla dada que concuerdan con los datos del fichero CSV proporcionado.
@@ -408,7 +408,7 @@ Elimina las filas de una tabla dada que concuerdan con los datos del fichero CSV
 <br /><br />
 
 ### Insertar datos (tabla)
-``` copy=true
+```text copy=true
 se (ha) inserta(do) (lo|el|la|los|las) siguiente(s) * en la tabla de BBDD {word}:
 ```
 Inserta las filas indicadas a continuación una tabla dada. Las columnas no-nulables para las que no se proporcionen
@@ -437,7 +437,7 @@ datos se rellenarán con datos aleatorios.
 <br /><br />
 
 ### Insertar datos (XLS)
-``` copy=true
+```text copy=true
 se (ha) inserta(do) el contenido del fichero XLS {file} en la BBDD
 ```
 Inserta las filas contenidas en el fichero XLS indicado, una hoja por tabla. Las columnas no-nulables para las que no se
@@ -459,7 +459,7 @@ proporcionen datos se rellenarán con datos aleatorios.
 <br /><br />
 
 ### Insertar datos (CSV)
-``` copy=true
+```text copy=true
 se (ha) inserta(do) el contenido del fichero CSV {csv} en la tabla de BBDD {table}
 ```
 Inserta en una tabla dada las files contenidas en el fichero CSV proporcionado. Las columnas no-nulables para las que no
@@ -482,7 +482,7 @@ se proporcionen datos se rellenarán con datos aleatorios.
 <br /><br />
 
 ### Comprobar existencia de datos
-``` copy=true
+```text copy=true
 * con {column} = {value} existe(n) en la tabla de BBDD {table}
 ```
 Comprueba que existe al menos una fila en la tabla indicada para la cual se cumple una comparación dada.
@@ -502,7 +502,7 @@ Comprueba que existe al menos una fila en la tabla indicada para la cual se cump
 <br /><br />
 
 ### Comprobar inexistencia de datos
-``` copy=true
+```text copy=true
 * con {column} = {value} no existe(n) en la tabla de BBDD {table}
 ```
 Comprueba que no existe ninguna fila en la tabla indicada para la cual se cumpla una comparación.
@@ -522,7 +522,7 @@ Comprueba que no existe ninguna fila en la tabla indicada para la cual se cumpla
 <br /><br />
 
 ### Comprobar existencia de datos (id)
-``` copy=true
+```text copy=true
 * identificad(o|a|os|as) por {id} existe(n) en la tabla de BBDD {table}
 ```
 Comprueba que existe una fila en la tabla dada cuya clave primaria coincide con la indicada. La tabla debe tener una
@@ -545,7 +545,7 @@ clave primaria formada por una sola columna.
 <br /><br />
 
 ### Comprobar inexistencia de datos (id)
-``` copy=true
+```text copy=true
 * identificad(o|a|os|as) por {id} no existe(n) en la tabla de BBDD {table}
 ```
 Comprueba que no existe una fila en la tabla dada cuya clave primaria coincide con la indicada. La tabla debe tener una
@@ -568,7 +568,7 @@ clave primaria formada por una sola columna.
 <br /><br />
 
 ### Comprobar existencia de datos (tabla)
-``` copy=true
+```text copy=true
 (el|los) siguiente(s) registro(s) existe(n) en la tabla de BBDD {table}:
 ```
 Comprueba que todas las filas siguientes existen en una tabla dada.
@@ -590,7 +590,7 @@ Comprueba que todas las filas siguientes existen en una tabla dada.
 <br /><br />
 
 ### Comprobar inexistencia de datos (tabla)
-``` copy=true
+```text copy=true
 (el|los) siguiente(s) registro(s) no existe(n) en la tabla de BBDD {table}:
 ```
 Comprueba que ninguna de las filas siguientes existen en una tabla dada.
@@ -612,7 +612,7 @@ Comprueba que ninguna de las filas siguientes existen en una tabla dada.
 <br /><br />
 
 ### Comprobar existencia de datos (XLS)
-``` copy=true
+```text copy=true
 el contenido del fichero XLS {file} existe en la base de datos
 ```
 Comprueba que todas las filas del fichero XLS proporcionado existen en la base de datos, correspondiendo cada hoja a una
@@ -631,7 +631,7 @@ tabla.
 <br /><br />
 
 ### Comprobar inexistencia de datos (XLS)
-``` copy=true
+```text copy=true
 el contenido del fichero XLS {file} no existe en la base de datos
 ```
 Comprueba que ninguna de las filas del fichero XLS proporcionado existen en la base de datos, correspondiendo cada hoja
@@ -650,7 +650,7 @@ a una tabla.
 <br /><br />
 
 ### Comprobar existencia de datos (CSV)
-``` copy=true
+```text copy=true
 el contenido del fichero CSV {csv} existe en la tabla de BBDD {table}
 ```
 Comprueba que todas las filas incluidas en el fichero CSV proporcionado existen en una tabla dada.
@@ -669,7 +669,7 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado existen 
 <br /><br />
 
 ### Comprobar inexistencia de datos (CSV)
-``` copy=true
+```text copy=true
 el contenido del fichero CSV {csv} no existe en la tabla de BBDD {table}
 ```
 Comprueba que todas las filas incluidas en el fichero CSV proporcionado no existen en una tabla dada.
@@ -688,7 +688,7 @@ Comprueba que todas las filas incluidas en el fichero CSV proporcionado no exist
 <br /><br />
 
 ### Comprobar existencia de datos (documento)
-``` copy=true
+```text copy=true
 * que satisface(n) la siguiente cláusula SQL existe(n) en la tabla de BBDD {table}:
 ```
 Comprueba que al menos una fila de la tabla dada satisface la cláusula SQL indicada.
@@ -710,7 +710,7 @@ Comprueba que al menos una fila de la tabla dada satisface la cláusula SQL indi
 <br /><br />
 
 ### Comprobar inexistencia de datos (documento)
-``` copy=true
+```text copy=true
 * que satisface(n) la siguiente cláusula SQL no existe(n) en la tabla de BBDD {table}:
 ```
 Comprueba que ninguna fila de la tabla dada satisface la claúsula SQL indicada.
@@ -732,7 +732,7 @@ Comprueba que ninguna fila de la tabla dada satisface la claúsula SQL indicada.
 <br /><br />
 
 ### Comprobar número de datos
-``` copy=true
+```text copy=true
 el número de * con {column} = {value} en la tabla de BBDD {table} {matcher}
 ```
 Comprueba que el número de filas que satisfacen la condición indicada en la tabla indicada cumple la comparación
@@ -754,7 +754,7 @@ numérica indicada.
 <br /><br />
 
 ### Comprobar número de datos (tabla)
-``` copy=true
+```text copy=true
 el número de * que satisfacen (lo|la) siguiente (información) en la tabla de BBDD {table} {matcher}:
 ```
 Comprueba que el número de filas que satisfacen los valores indicados en la tabla indicada cumple la comparación
@@ -783,7 +783,7 @@ numérica indicada.
 <br /><br />
 
 ### Comprobar número de datos (documento)
-``` copy=true
+```text copy=true
 el número de * que satisfacen la siguiente cláusula SQL en la tabla de BBDD {table} {matcher}:
 ```
 Comprueba que el número de filas que satisfacen la condición indicada en la tabla indicada cumple la comparación
@@ -807,7 +807,7 @@ numérica indicada.
 <br /><br />
 
 ### Comprobar tabla vacía
-``` copy=true
+```text copy=true
 la tabla de BBDD {word} está vacía
 ```
 Comprueba que no existe ninguna fila en la tabla indicada.
@@ -825,7 +825,7 @@ Comprueba que no existe ninguna fila en la tabla indicada.
 <br /><br />
 
 ### Comprobar tabla no vacía
-``` copy=true
+```text copy=true
 la tabla de BBDD {word} no está vacía
 ```
 Comprueba que existe al menos una fila en la tabla indicada.

@@ -270,7 +270,7 @@ rest:
 ## Pasos
 
 ### Definir tipo de contenido
-``` copy=true
+```text copy=true
 {type} como el tipo de contenido REST
 ```
 Establece el tipo de contenido de la API en la cabecera `content-type`. Este paso es equivalente a configurar la
@@ -289,7 +289,7 @@ Dado XML como el tipo de contenido REST
 <br /><br />
 
 ### Definir URL base
-``` copy=true
+```text copy=true
 la URL base {url}
 ```
 Establece la ruta base de la API. Este paso es equivalente a configurar la propiedad [`rest.baseURL`](#restbaseurl).
@@ -307,7 +307,7 @@ Dada la URL base https//example.org/api
 <br /><br />
 
 ### Definir servicio
-``` copy=true
+```text copy=true
 el servicio REST {service}
 ```
 Establece la ruta del servicio a probar. Se concatenará al valor de la [url base](#definir-url-base).
@@ -326,7 +326,7 @@ Dado el servicio REST '/users`
 
 ### Definir identificador
 ##### Deprecated
-``` copy=true
+```text copy=true
 * identificad(o|a|os|as) por {text}
 ```
 Establece un identificador de recurso REST para ser usado por el servicio. Se concatenará al valor de la
@@ -348,10 +348,10 @@ Dado un libro identificado por '978-3-16-148410-0'
 <br /><br />
 
 ### Definir parámetros o cabeceras
-``` copy=true
+```text copy=true
 el parámetro de (solicitud|búsqueda|ruta|formulario) {name} con el valor {value}
 ```
-``` copy=true
+```text copy=true
 las cabecera {name} con el valor {value}
 ```
 Establece una cabecera o parámetro de petición, búsqueda, ruta o formulario REST. Los parámetros de petición se enviarán
@@ -389,10 +389,10 @@ Dada la cabeceras 'Keep-alive' con el valor '1200'
 <br /><br />
 
 ### Definir parámetros o cabeceras (tabla)
-``` copy=true
+```text copy=true
 los siguientes parámetros de (solicitud|búsqueda|ruta|formulario):
 ```
-``` copy=true
+```text copy=true
 las siguientes cabeceras:
 ```
 Establece varias cabeceras o parámetros de petición, búsqueda, ruta o formulario REST. Los parámetros de petición se
@@ -446,7 +446,7 @@ Dadas las siguientes cabeceras:
 <br /><br />
 
 ### Definir timeout
-``` copy=true
+```text copy=true
 un timeout de {int} (mili)segundos
 ```
 Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de
@@ -468,7 +468,7 @@ Dado un timeout de 10 segundos
 <br /><br />
 
 ### Definir umbral de códigos HTTP
-``` copy=true
+```text copy=true
 (que) toda petición se considera fallida si su código HTTP {matcher}
 ```
 Establece una validación general para el código HTTP de todas las respuestas siguientes. Es similar a la propiedad de
@@ -487,7 +487,7 @@ configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una va
 <br /><br />
 
 ### Definir autenticación básica
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación básica con las credenciales {username}:{password}
 ```
 Establece las credenciales de autenticación básica que se enviarán en la cabecera HTTP `Authorization`.
@@ -506,7 +506,7 @@ Dado que el servicio usa autenticación básica con las credenciales 'us1532':'x
 <br /><br />
 
 ### Definir autenticación oauth2
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth
 ```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
@@ -521,7 +521,7 @@ Dado que el servicio usa autenticación oauth
 <br /><br />
 
 ### Definir autenticación oauth2 por token
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth con el token {token}
 ```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes
@@ -540,7 +540,7 @@ Dado que el servicio usa autenticación oauth con el token 'hudytw9834y9cqy32t94
 <br /><br />
 
 ### Definir autenticación oauth2 por token (fichero)
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth con el token del fichero {file}
 ```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization` para las siguientes llamadas,
@@ -559,10 +559,10 @@ Dado que el servicio usa autenticación oauth con el token del fichero 'token.tx
 <br /><br />
 
 ### Definir autenticación oauth2 por credenciales
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth con las credenciales {username}:{password}
 ```
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth con las credenciales {username}:{password} y los siguientes parámetros:
 ```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
@@ -592,10 +592,10 @@ Dado que el servicio usa autenticación oauth con las credenciales 'us1532':'xxx
 <br /><br />
 
 ### Definir autenticación oauth2 por cliente
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth
 ```
-``` copy=true
+```text copy=true
 (que) el servicio usa autenticación oauth con los siguientes parámetros:
 ```
 Establece el token de autenticación "bearer" que se enviará en la cabecera `Authorization`, que se recupera previamente
@@ -624,7 +624,7 @@ Dado que el servicio usa autenticación oauth con los siguientes parámetros:
 <br /><br />
 
 ### Limpiar autenticación
-``` copy=true
+```text copy=true
 (que) el servicio no usa autenticación
 ```
 Elimina la cabecera con la autenticación.
@@ -637,7 +637,7 @@ Dado que el servicio no usa autenticación
 <br /><br />
 
 ### Definir subtipo multiparte
-``` copy=true
+```text copy=true
 {type} como subtipo multiparte
 ```
 Establece el subtipo por defecto de las llamadas multiparte. Este paso es equivalente a configurar la propiedad
@@ -671,7 +671,7 @@ Dado 'mixed' como subtipo multiparte
 <br /><br />
 
 ### Definir nombre de fichero multiparte
-``` copy=true
+```text copy=true
 {name} como nombre de fichero adjunto
 ```
 Establece el nombre por defecto de los ficheros multiparte. Este paso es equivalente a configurar la propiedad
@@ -690,7 +690,7 @@ Dado 'otro_nombre' como nombre de fichero adjunto
 <br /><br />
 
 ### Definir archivo adjunto
-``` copy=true
+```text copy=true
 (que) se incluye el fichero adjunto {name} con los siguientes datos:
 ```
 Indica el texto que se incluirá como fichero adjunto en datos de formulario.
@@ -712,7 +712,7 @@ Dado que se incluye el fichero adjunto 'fichero' con los siguientes datos:
 <br /><br />
 
 ### Definir archivo adjunto (fichero)
-``` copy=true
+```text copy=true
 (que) se incluye el fichero adjunto {name} con el contenido del fichero {file}
 ```
 Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de formulario.
@@ -730,10 +730,10 @@ Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'd
 <br /><br />
 
 ### Realizar llamada GET
-``` copy=true
+```text copy=true
 se realiza la búsqueda *
 ```
-``` copy=true
+```text copy=true
 se consulta(n) *
 ```
 Envía una petición `GET` al servicio con los parámetros definidos previamente.
@@ -756,7 +756,7 @@ Cuando se consulta el usuario
 <br /><br />
 
 ### Realizar llamada DELETE
-``` copy=true
+```text copy=true
 se elimina(n) *
 ```
 Envía una petición `DELETE` al servicio y recurso REST definido previamente.
@@ -771,7 +771,7 @@ Cuando se elimina el usuario
 <br /><br />
 
 ### Realizar llamada PUT con mensaje
-``` copy=true
+```text copy=true
 se reemplaza(n) * con los siguientes datos:
 ```
 Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
@@ -800,7 +800,7 @@ Cuando se reemplaza el usuario con los siguientes datos:
 <br /><br />
 
 ### Realizar llamada PUT con mensaje (fichero)
-``` copy=true
+```text copy=true
 se reemplaza(n) * con los datos del fichero {file}
 ```
 Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido del
@@ -821,7 +821,7 @@ Cuando se reemplaza el usuario con los datos del fichero 'data/user123.json'
 <br /><br />
 
 ### Realizar llamada PATCH
-``` copy=true
+```text copy=true
 se modifica(n) * 
 ```
 Envía una petición `PATCH` al servicio y recurso REST definido previamente.
@@ -840,7 +840,7 @@ Cuando se modifica el usuario
 <br /><br />
 
 ### Realizar llamada PATCH con mensaje
-``` copy=true
+```text copy=true
 se modifica(n) * con los siguientes datos:
 ```
 Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
@@ -866,7 +866,7 @@ Cuando se modifica el usuario con los siguientes datos:
 <br /><br />
 
 ### Realizar llamada PATCH con mensaje (fichero)
-``` copy=true
+```text copy=true
 se modifica(n) * con los datos del fichero {file}
 ```
 Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
@@ -887,10 +887,10 @@ Cuando se modifica el usuario con los datos del fichero 'data/user123.json'
 <br /><br />
 
 ### Realizar llamada POST
-``` copy=true
+```text copy=true
 se crea(n) *
 ```
-``` copy=true
+```text copy=true
 se envía al servicio la información
 ```
 Envía una petición `POST` al servicio definido previamente.
@@ -908,10 +908,10 @@ Cuando envía al servicio la información
 <br /><br />
 
 ### Realizar llamada POST con mensaje
-``` copy=true
+```text copy=true
 se crea(n) * con los siguientes datos:
 ```
-``` copy=true
+```text copy=true
 se envía al servicio los siguientes datos:
 ```
 Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido
@@ -946,10 +946,10 @@ Cuando se envía al servicio los siguientes datos:
 <br /><br />
 
 ### Realizar llamada POST con mensaje (fichero)
-``` copy=true
+```text copy=true
 se crea(n) * con los datos del fichero {file}
 ```
-``` copy=true
+```text copy=true
 se envía al servicio los datos del fichero {file}
 ```
 Envía una petición `POST` al servicio definido previamente. El cuerpo de la petición se rellenará con el contenido del
@@ -971,7 +971,7 @@ Cuando se envía al servicio los datos del fichero 'booking.json'
 <br /><br />
 
 ### Comprobar código HTTP de respuesta
-``` copy=true
+```text copy=true
 el código de respuesta HTTP {matcher}
 ```
 Comprueba que el código HTTP de la última respuesta satisface una validación de enteros.
@@ -989,15 +989,15 @@ Entonces el código de respuesta HTTP es 201
 <br /><br />
 
 ### Comprobar mensaje de respuesta
-``` copy=true
+```text copy=true
 la respuesta es exactamente:
 ```
 Comprueba que el cuerpo de la respuesta sea exacto al indicado, incluyendo el orden de los campos.
-``` copy=true
+```text copy=true
 la respuesta es exactamente \(en cualquier orden\):
 ```
 Comprueba que el cuerpo de la respuesta sea exacto al indicado, pero pueden llegar los campos en diferente orden.
-``` copy=true
+```text copy=true
 la respuesta es parcialmente:
 ```
 Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados.
@@ -1052,15 +1052,15 @@ Entonces la respuesta es parcialmente:
 <br /><br />
 
 ### Comprobar mensaje de respuesta (fichero)
-``` copy=true
+```text copy=true
 la respuesta es exactamente el contenido del fichero {file}
 ```
 Comprueba que el cuerpo de la respuesta sea exacto al indicado en el fichero, incluyendo el orden de los campos.
-``` copy=true
+```text copy=true
 la respuesta es exactamente el contenido del fichero {file} \(en cualquier orden\)
 ```
 Comprueba que el cuerpo de la respuesta sea exacto al indicado en el fichero, pero pueden llegar los campos en diferente orden.
-``` copy=true
+```text copy=true
 la respuesta es parcialmente el contenido del fichero {file}
 ```
 Comprueba que el cuerpo de la respuesta incluya, al menos, los campos indicados en el fichero.
@@ -1078,19 +1078,19 @@ Entonces la respuesta es parcialmente el contenido del fichero 'data/response1.j
 <br /><br />
 
 ### Comprobar fragmento de la respuesta
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es exactamente:
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, incluyendo el orden de los
 campos.
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es exactamente \(en cualquier orden\):
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado, pero pueden llegar los campos
 en diferente orden.
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es parcialmente:
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
@@ -1133,19 +1133,19 @@ Entonces el fragmento de la respuesta 'users[1]' es parcialmente:
 <br /><br />
 
 ### Comprobar fragmento de la respuesta (fichero)
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es exactamente el contenido del fichero {file}
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, incluyendo el
 orden de los campos.
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es exactamente el contenido del fichero {file} \(en cualquier orden\)
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
 [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido) sea exacto al indicado en el fichero, pero pueden
 llegar los campos en diferente orden.
-``` copy=true
+```text copy=true
 el fragmento de la respuesta {fragment} es parcialmente el contenido del fichero {file}
 ```
 Comprueba que un fragmento del cuerpo de respuesta, localizado mediante una ruta dada (usando [JSONPath][jsonpath],
@@ -1171,7 +1171,7 @@ Entonces el fragmento de la respuesta 'users[1]' es parcialmente el contenido de
 <br /><br />
 
 ### Comprobar fragmento de la respuesta (valor)
-``` copy=true
+```text copy=true
 el (texto|entero|decimal) del fragmento de la respuesta {fragment} {matcher}
 ```
 Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de respuesta, localizado mediante una ruta
@@ -1195,7 +1195,7 @@ dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo d
 <br /><br />
 
 ### Comprobar tipo de contenido de la respuesta
-``` copy=true
+```text copy=true
 el tipo de contenido de la respuesta es {word}
 ```
 Valida que el tipo de contenido de la última respuesta es el esperado.
@@ -1214,7 +1214,7 @@ Este paso equivale a validar que el valor de la cabecera `Content-Type` de la re
 <br /><br />
 
 ### Comprobar tamaño de la respuesta
-``` copy=true
+```text copy=true
 el tamaño de la respuesta {matcher}
 ```
 Comprueba que la longitud en bytes de la última respuesta satisface una validación.
@@ -1232,7 +1232,7 @@ Comprueba que la longitud en bytes de la última respuesta satisface una validac
 <br /><br />
 
 ### Comprobar cabecera
-``` copy=true
+```text copy=true
 el (texto|entero|decimal) de la cabecera de la respuesta {name} {matcher}
 ```
 Comprueba que una determinada cabecera HTTP en la última respuesta satisface una validación de *texto*, *entero* o
@@ -1256,7 +1256,7 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 <br /><br />
 
 ### Comprobar esquema de la respuesta
-``` copy=true
+```text copy=true
 la respuesta cumple el siguiente esquema:
 ```
 Valida que la estructura del cuerpo de la respuesta REST satisface el esquema proporcionado a continuación. Los formatos
@@ -1304,7 +1304,7 @@ XML (en función de la cabecera de respuesta HTTP `Content-Type`).
 <br /><br />
 
 ### Comprobar esquema de la respuesta (fichero)
-``` copy=true
+```text copy=true
 la respuesta cumple el esquema del fichero {file}
 ```
 Valida que la estructura del cuerpo de la respuesta REST satisface un esquema proporcionado por fichero. Los formatos de

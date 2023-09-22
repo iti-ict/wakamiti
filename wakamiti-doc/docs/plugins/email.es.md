@@ -122,7 +122,7 @@ Desde: 1.0.0
 
 
 ### Definir la ubicación del servidor de correo
-``` copy=true
+```text copy=true
 el servidor de correo ubicado en {host:text}:{port:int} usando el protocolo {protocol:word}
 ```
 
@@ -143,7 +143,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Definir las credenciales de usuario
-``` copy=true
+```text copy=true
 el usuario de correo con dirección {address:text} y contraseña {password:text}
 ```
 
@@ -163,7 +163,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Definir la carpeta de correo usada para las pruebas
-``` copy=true
+```text copy=true
 la carpeta de correo {text}
 ```
 
@@ -182,7 +182,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar el número de correos sin leer
-``` copy=true
+```text copy=true
 (que) el número de correos sin leer {integer-assertion}
 ```
 
@@ -201,7 +201,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar que se recibe un nuevo correo en un intervalo de tiempo determinado
-``` copy=true
+```text copy=true
 (que) se recibe un nuevo correo en los próximos {sec:integer} segundos
 ```
 
@@ -220,7 +220,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar el asunto del último correo
-``` copy=true
+```text copy=true
 (que) el asunto del correo {text-assertion}
 ```
 
@@ -239,7 +239,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar el remitente del último correo
-``` copy=true
+```text copy=true
 (que) el remitente del correo {text-assertion}
 ```
 
@@ -258,7 +258,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar el contenido del cuerpo del último correo
-``` copy=true
+```text copy=true
 (que) el cuerpo del correo es:
 ```
 
@@ -282,7 +282,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar parcialmente el contenido del cuerpo del último correo
-``` copy=true
+```text copy=true
 (que) el cuerpo del correo contiene lo siguiente:
 ```
 
@@ -304,7 +304,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comparar el contenido del cuerpo del último correo con un fichero
-``` copy=true
+```text copy=true
 (que) el cuerpo del correo es el contenido del fichero {file}
 ```
 
@@ -323,7 +323,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comparar parcialmente el contenido del cuerpo del último correo con un fichero
-``` copy=true
+```text copy=true
 (que) el cuerpo del correo contiene el contenido del fichero {file}
 ```
 
@@ -342,7 +342,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar el número de adjuntos en el último correo
-``` copy=true
+```text copy=true
 (que) el número de adjuntos en el correo {integer-assertion}
 ```
 
@@ -361,7 +361,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comprobar que el último correo contiene un adjunto con determinado nombre de fichero
-``` copy=true
+```text copy=true
 (que) el correo tiene un fichero adjunto cuyo nombre {text-assertion}
 ```
 
@@ -380,7 +380,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comparar el contenido de un fichero adjunto en formato binario
-``` copy=true
+```text copy=true
 (que) el correo tiene un fichero adjunto con el contenido del fichero binario {file}
 ```
 
@@ -399,7 +399,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comparar el contenido de un fichero adjunto en formato de texto
-``` copy=true
+```text copy=true
 (que) el correo tiene un fichero adjunto con el contenido del fichero de texto {file}
 ```
 
@@ -418,7 +418,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Comparar el contenido de un adjunto con el texto indicado
-``` copy=true
+```text copy=true
 (que) el correo tiene un fichero adjunto con el siguiente contenido:
 ```
 
@@ -440,7 +440,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Eliminar todos los correos con un remitente determinado (operación de limpieza)
-``` copy=true
+```text copy=true
 Al finalizar, se borran todos los correos cuyo remitente {text-assertion}
 ```
 
@@ -460,7 +460,7 @@ Desde: 1.0.0
 <br /><br />
 
 ### Eliminar todos los correos con un asunto determinado (operación de limpieza)
-``` copy=true
+```text copy=true
 Al finalizar, se borran todos los correos cuyo asunto {text-assertion}
 ```
 

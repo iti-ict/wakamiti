@@ -270,7 +270,7 @@ rest:
 
 
 ### Define content type
-``` copy=true
+```text copy=true
 the REST content type {word}
 ```
 Declarative-way for setting the configuration property [`rest.contentType`](#restcontenttype).
@@ -282,13 +282,13 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 
 #### Examples:
 ```gherkin
-  Given the REST content type XML
+Given the REST content type XML
 ```
 
 <br /><br />
 
 ### Define base URL
-``` copy=true
+```text copy=true
 the base URL {url}
 ```
 Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl).
@@ -300,13 +300,13 @@ Declarative-way for setting the configuration property [`rest.baseURL`](#restbas
 
 #### Examples:
 ```gherkin
-  Given the base URL https://example.org/api
+Given the base URL https://example.org/api
 ```
 
 <br /><br />
 
 ### Define service
-``` copy=true
+```text copy=true
 the REST service {text}
 ```
 Sets the service path that would be tested. It would be appended to the `baseURL`.
@@ -318,14 +318,14 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 
 #### Examples:
 ```gherkin
-  Given the REST service '/users`
+Given the REST service '/users`
 ```
 
 <br /><br />
 
 ### Define id
 ###### Deprecated
-``` copy=true
+```text copy=true
 * identified by {text}
 ```
 Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
@@ -337,19 +337,19 @@ Sets an entity identifier to be used by the REST service. It would be appended t
 
 #### Examples:
 ```gherkin
-  Given a user identified by 'john'
+Given a user identified by 'john'
 ```
 ```gherkin
-  Given the borrowed book identified by '978-3-16-148410-0'
+Given the borrowed book identified by '978-3-16-148410-0'
 ```
 
 <br /><br />
 
 ### Define parameters or headers
-``` copy=true
+```text copy=true
 the (request|query|path|form) parameter {name} with value {value}
 ```
-``` copy=true
+```text copy=true
 the header {name} with value {value}
 ```
 Sets a header or request, query, path or form parameter. Request parameters will be sent as form data in POST requests,
@@ -365,32 +365,32 @@ content-type `application/x-www-form-urlencoded`.
 
 ##### Ejemplos:
 ```gherkin
-  Given the request parameter 'age' with value '13'
-  When the data info is sent to the service
+Given the request parameter 'age' with value '13'
+When the data info is sent to the service
 ```
 ```gherkin
-  Given the query parameter 'city' with value 'Valencia'
-  When the user is queried
+Given the query parameter 'city' with value 'Valencia'
+When the user is queried
 ```
 ```gherkin
-  Given the REST service 'user/{usuario}/items'
-  And the path parameter 'usuario' with value '25'
+Given the REST service 'user/{usuario}/items'
+And the path parameter 'usuario' with value '25'
 ```
 ```gherkin
-  Given the form parameter 'age' with value '13'
-  When the data info is sent to the service
+Given the form parameter 'age' with value '13'
+When the data info is sent to the service
 ```
 ```gherkin
-  Given the header 'Keep-alive' with value '1200'
+Given the header 'Keep-alive' with value '1200'
 ```
 
 <br /><br />
 
 ### Define parameters or headers (table)
-``` copy=true
+```text copy=true
 the following (request|query|path) parameters:
 ```
-``` copy=true
+```text copy=true
 the following headers:
 ```
 Sets multiple headers or request, query, path or form parameters. Request parameters will be sent as form data in POST
@@ -405,44 +405,44 @@ content-type `application/x-www-form-urlencoded`.
 
 ##### Examples:
 ```gherkin
-  Given the following request parameters:
-    | Name | Value    |
-    | age  | 13       |
-    | city | Valencia |
-  When the data info is sent to the service
+Given the following request parameters:
+  | Name | Value    |
+  | age  | 13       |
+  | city | Valencia |
+When the data info is sent to the service
 ```
 ```gherkin
-  Given the following query parameters:
-    | Name | Value    |
-    | age  | 13       |
-    | city | Valencia |
-  When the user is queried
+Given the following query parameters:
+  | Name | Value    |
+  | age  | 13       |
+  | city | Valencia |
+When the user is queried
 ```
 ```gherkin
-  Given the service 'user/{user}/items/{item}'
-  And the following path parameters:
-    | Name | Value |
-    | user | 25    |
-    | item | 7     |
+Given the service 'user/{user}/items/{item}'
+And the following path parameters:
+  | Name | Value |
+  | user | 25    |
+  | item | 7     |
 ```
 ```gherkin
-  Given the following form parameters:
-    | Name | Value    |
-    | age  | 13       |
-    | city | Valencia |
-  When the data info is sent to the service
+Given the following form parameters:
+  | Name | Value    |
+  | age  | 13       |
+  | city | Valencia |
+When the data info is sent to the service
 ```
 ```gherkin
-  Given the following headers:
-    | Name       | Value |
-    | Age        | 3600  |
-    | Keep-Alive | 1200  |
+Given the following headers:
+  | Name       | Value |
+  | Age        | 3600  |
+  | Keep-Alive | 1200  |
 ```
 
 <br /><br />
 
 ### Define timeout
-``` copy=true
+```text copy=true
 a timeout of {int} (milli)seconds
 ```
 Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.
@@ -454,16 +454,16 @@ Sets a response timeout (in second or milliseconds) for the subsequent HTTP requ
 
 ##### Examples:
 ```gherkin
-  Given a timeout of 12000 milliseconds
+Given a timeout of 12000 milliseconds
 ```
 ```gherkin
-  Given a timeout of 2 seconds
+Given a timeout of 2 seconds
 ```
 
 <br /><br />
 
 ### Define HTTP code threshold
-``` copy=true
+```text copy=true
 any request will fail when response HTTP code {matcher}
 ```
 Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer
@@ -476,13 +476,13 @@ assertion.
 
 ##### Example:
 ```gherkin
-  * any request will fail when response HTTP code is greater than 500
+* any request will fail when response HTTP code is greater than 500
 ```
 
 <br /><br />
 
 ### Define basic authentication
-``` copy=true
+```text copy=true
 the service use the basic authentication credentials {username}:{password}
 ```
 Sets the basic authentication credentials to be sent in the `Authorization` header for the subsequent requests.
@@ -495,13 +495,13 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 
 ##### Examples:
 ```gherkin
-  Given the service use the basic authentication credentials 'us1532':'xxxxx'
+Given the service use the basic authentication credentials 'us1532':'xxxxx'
 ```
 
 <br /><br />
 
 ### Define oauth2 authentication
-``` copy=true
+```text copy=true
 the service use the oauth authentication
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -511,13 +511,13 @@ configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid
 
 ##### Ejemplos:
 ```gherkin
-  Given the service use the oauth authentication
+Given the service use the oauth authentication
 ```
 
 <br /><br />
 
 ### Define oauth2 authentication by token
-``` copy=true
+```text copy=true
 the service use the oauth authentication token {token}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
@@ -529,13 +529,13 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 
 ##### Ejemplos:
 ```gherkin
-  Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
+Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
 ```
 
 <br /><br />
 
 ### Define oauth2 authentication by token (file)
-``` copy=true
+```text copy=true
 the service use the oauth authentication token from the file {file}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests, from file.
@@ -547,16 +547,16 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 
 ##### Ejemplos:
 ```gherkin
-  Given the service use the oauth authentication token from the file 'token.txt'
+Given the service use the oauth authentication token from the file 'token.txt'
 ```
 
 <br /><br />
 
 ### Define oauth2 authentication by credentials
-``` copy=true
+```text copy=true
 the service use the oauth authentication credentials {username}:{password}
 ```
-``` copy=true
+```text copy=true
 the service use the oauth authentication credentials {username}:{password} with the following parameters:
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -574,22 +574,22 @@ Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Examples:
 ```gherkin
-  Given the service use the oauth authentication credentials 'us1532':'xxxxx'
+Given the service use the oauth authentication credentials 'us1532':'xxxxx'
 ```
 
 ```gherkin
-  Given the service use the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
-    | name  | value     |
-    | scope | something |
+Given the service use the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
+  | name  | value     |
+  | scope | something |
 ```
 
 <br /><br />
 
 ### Define oauth2 authentication by client
-``` copy=true
+```text copy=true
 the service use the oauth authentication
 ```
-``` copy=true
+```text copy=true
 the service use the oauth authentication with the following parameters:
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -605,32 +605,32 @@ Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Examples:
 ```gherkin
-  Given the service use the oauth authentication
+Given the service use the oauth authentication
 ```
 
 ```gherkin
-  Given the service use the oauth authentication with the following parameters:
-    | name  | value     |
-    | scope | something |
+Given the service use the oauth authentication with the following parameters:
+  | name  | value     |
+  | scope | something |
 ```
 
 <br /><br />
 
 ### Clear authentication
-``` copy=true
+```text copy=true
 the service does not use authentication
 ```
 Deletes the authentication header.
 
 ##### Examples:
 ```gherkin
-  Given the service does not use authentication
+Given the service does not use authentication
 ```
 
 <br /><br />
 
 ### Define multipart subtype
-``` copy=true
+```text copy=true
 {type} as subtype multipart
 ```
 Sets the default subtype for multipart requests. This step is equivalent to setting the
@@ -658,13 +658,13 @@ Default value is `form-data`.
 
 ##### Examples:
 ```gherkin
-  Given 'mixed' as subtype multipart
+Given 'mixed' as subtype multipart
 ```
 
 <br /><br />
 
 ### Definir nombre de fichero multiparte
-``` copy=true
+```text copy=true
 {name} as attached file name
 ```
 Sets the default name for multipart files. This step is equivalent to setting the
@@ -677,13 +677,13 @@ Sets the default name for multipart files. This step is equivalent to setting th
 
 ##### Examples:
 ```gherkin
-  Given 'other_name' as attached file name
+Given 'other_name' as attached file name
 ```
 
 <br /><br />
 
 ### Define attached file
-``` copy=true
+```text copy=true
 the attached file is included with the following data:
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
@@ -695,16 +695,16 @@ Sets a multipart form-data including an attachment from the given in-document co
 
 ##### Examples:
 ```gherkin
-  Given the attached file is included with the following data:
-"""
-    File content
-    """
+Given the attached file is included with the following data:
+  """
+  File content
+  """
 ```
 
 <br /><br />
 
 ### Define attached file (file)
-``` copy=true
+```text copy=true
 the attached file {file} is included
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
@@ -716,13 +716,13 @@ Sets a multipart form-data including an attachment from the given in-document co
 
 ##### Examples:
 ```gherkin
-  Given the attached file 'data/data.txt' is included
+Given the attached file 'data/data.txt' is included
 ```
 
 <br /><br />
 
 ### Execute GET request
-``` copy=true
+```text copy=true
 * (is|are) (queried|requested)
 ```
 Sends a `GET` request to the previously defined parameters.
@@ -737,7 +737,7 @@ And the following query parameters:
 When the users are queried
 ```
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is requested
 ```
@@ -745,14 +745,14 @@ When the user is requested
 <br /><br />
 
 ### Execute DELETE request
-``` copy=true
+```text copy=true
 * (is|are) deleted
 ```
 Sends a `DELETE` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is deleted
 ```
@@ -760,7 +760,7 @@ When the user is deleted
 <br /><br />
 
 ### Execute PUT request with body
-``` copy=true
+```text copy=true
 * (is|are) modified with following data:
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -773,23 +773,23 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is modified with the following data:
-"""json
-    {
-        "firstName": "John",
-        "lastName": "Doe",
-        "birthDate": "1980-02-20",
-        "address": "221B, Baker Street"
-    }
-    """
+  """json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1980-02-20",
+    "address": "221B, Baker Street"
+  }
+  """
 ```
 
 <br /><br />
 
 ### Execute PUT request with body (file)
-``` copy=true
+```text copy=true
 * (is|are) modified with the data from the file {file}
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -802,7 +802,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
@@ -810,26 +810,26 @@ When the user is modified with the data from the file 'data/user123.json'
 <br /><br />
 
 ### Execute PATCH request
-``` copy=true
+```text copy=true
 * (is|are) patched
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 And the following query parameters:
-| Name | Value    |
-| age  | 13       |
-| city | Valencia |
+  | Name | Value    |
+  | age  | 13       |
+  | city | Valencia |
 When the user is patched
 ```
 
 <br /><br />
 
 ### Execute PATCH request with body
-``` copy=true
+```text copy=true
 * (is|are) patched with the following data:
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -842,20 +842,18 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is patched with the following data:
-"""json
-    {
-        "firstName": "Jim"
-    }
-    """
+  """json
+  { "firstName": "Jim" }
+  """
 ```
 
 <br /><br />
 
 ### Execute PATCH request with body (file)
-``` copy=true
+```text copy=true
 * (is|are) patched with the data from the file {file}
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -868,7 +866,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And a user identified by '123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
@@ -876,10 +874,10 @@ When the user is patched with the data from the file 'data/user123.json'
 <br /><br />
 
 ### Execute POST request
-``` copy=true
+```text copy=true
 * (is|are) created
 ```
-``` copy=true
+```text copy=true
 the data info is sent to the service
 ```
 Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -887,21 +885,21 @@ empty.
 
 ##### Example:
 ```gherkin
-  Given the REST service 'users'
+Given the REST service 'users'
 And the following request parameters:
-| nombre | valor    |
-| age    | 13       |
-| city   | Valencia |
+  | nombre | valor    |
+  | age    | 13       |
+  | city   | Valencia |
 When the data info is sent to the service
 ```
 
 <br /><br />
 
 ### Execute POST request with body
-``` copy=true
+```text copy=true
 * (is|are) created with the following data:
 ```
-``` copy=true
+```text copy=true
 the following data is sent to the service:
 ```
 Send a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -914,32 +912,30 @@ provided in-document.
 
 ##### Examples:
 ```gherkin
-  When the user is created with the following data:
-"""json
-    {
-        "firstName": "John",
-        "lastName": "Doe",
-        "birthDate": "1980-02-20",
-        "address": "221B, Baker Street"
-    }
-    """
+When the user is created with the following data:
+  """json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1980-02-20",
+    "address": "221B, Baker Street"
+  }
+  """
 ```
 ```gherkin
-  When the following data is sent to the service:
-"""json
-    {
-        "date": "2021-10-30"
-    }
-    """
+When the following data is sent to the service:
+  """json
+  { "date": "2021-10-30" }
+  """
 ```
 
 <br /><br />
 
 ### Execute POST request with body (file)
-``` copy=true
+```text copy=true
 * (is|are) created with the data from the file {file}
 ```
-``` copy=true
+```text copy=true
 the data from the file {file} is sent to the service
 ```
 Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -952,16 +948,16 @@ provided by the given file.
 
 ##### Examples:
 ```gherkin
-  When the user is created with the data from the file 'data/user123.json'
+When the user is created with the data from the file 'data/user123.json'
 ```
 ```gherkin
-  When the data from the file 'data/booking.json' is sent to the service
+When the data from the file 'data/booking.json' is sent to the service
 ```
 
 <br /><br />
 
 ### Check response HTTP code
-``` copy=true
+```text copy=true
 the response HTTP code {matcher}
 ```
 Validate that the HTTP code of the last response satisfies the given assertion.
@@ -973,21 +969,21 @@ Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Examples:
 ```gherkin
-  Then the response HTTP code is equals to 201
+Then the response HTTP code is equals to 201
 ```
 
 <br /><br />
 
 ### Check response body
-``` copy=true
+```text copy=true
 the response is:
 ```
 Validates that the response body is exactly the content of the in-document content.
-``` copy=true
+```text copy=true
 the response is \(in any order\):
 ```
 Validates that the response body has all the elements specified by the in-document content, but in any order.
-``` copy=true
+```text copy=true
 the response contains:
 ```
 Validates that the response body contains the given in-document content.
@@ -999,58 +995,54 @@ Validates that the response body contains the given in-document content.
 
 ##### Examples:
 ```gherkin
-  Then the response is:
-    """json
-    [
-        {
-            "age": 46,
-            "name": "Michael"
-        },
-        {
-            "age": 23,
-            "name": "John"
-        }
-    ]
-    """
+Then the response is:
+  """json
+  [
+    {
+      "age": 46,
+      "name": "Michael"
+    },
+    {
+      "age": 23,
+      "name": "John"
+    }
+  ]
+  """
 ```
 ```gherkin
-  Then the response is (in any order):
-    """json
-    [
-        {
-            "age": 23,
-            "name": "John"
-        },
-        {
-            "name": "Michael",
-            "age": 46
-        }
-    ]
-    """
+Then the response is (in any order):
+  """json
+  [
+    {
+      "age": 23,
+      "name": "John"
+    },
+    {
+      "name": "Michael",
+      "age": 46
+    }
+  ]
+  """
 ```
 ```gherkin
-  Then the response contains:
-    """json
-    [
-        {
-            "name": "John"
-        }
-    ]
-    """
+Then the response contains:
+  """json
+  [ { "name": "John" } ]
+  """
 ```
 
 <br /><br />
 
 ### Check response body (file)
-``` copy=true
+```text copy=true
 the response is equal to the file {file}
 ```
 Validates that the response body is exactly the content of the given file.
-``` copy=true
+```text copy=true
 the response is equal to the file {file} \(in any order\)
 ```
 Validates that the response body has all the elements provided by the given file, but in any order.
-``` copy=true
+```text copy=true
 the response contains the file {file}
 ```
 Validates that the response body contains the content of the given file.
@@ -1062,23 +1054,23 @@ Validates that the response body contains the content of the given file.
 
 ##### Examples:
 ```gherkin
-  Then the response contains the file 'data/response1.json'
+Then the response contains the file 'data/response1.json'
 ```
 
 <br /><br />
 
 ### Check response body fragment
-``` copy=true
+```text copy=true
 the response fragment {fragment} is:
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of
 the in-document content.
-``` copy=true
+```text copy=true
 the response fragment {fragment} is \(in any order\):
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the in-document content, but in any order.
-``` copy=true
+```text copy=true
 the response fragment {fragment} contains:
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document
@@ -1092,46 +1084,44 @@ content.
 
 ##### Examples:
 ```gherkin
-  Then the response fragment 'users[1]' is:
-    """json
-    {
-        "age": 23,
-        "name": "John"
-    }
-    """
+Then the response fragment 'users[1]' is:
+  """json
+  {
+    "age": 23,
+    "name": "John"
+  }
+  """
 ```
 ```gherkin
-  Then the response fragment 'users[1]' is (in any order):
-    """json
-    {
-        "name": "John",
-        "age": 23
-    }
-    """
+Then the response fragment 'users[1]' is (in any order):
+  """json
+  {
+    "name": "John",
+    "age": 23
+  }
+  """
 ```
 ```gherkin
-  Then the response fragment 'users[1]' contains:
-    """json
-    {
-        "name": "John"
-    }
-    """
+Then the response fragment 'users[1]' contains:
+  """json
+  { "name": "John" }
+  """
 ```
 
 <br /><br />
 
 ### Check response body fragment (file)
-``` copy=true
+```text copy=true
 the response is equal to the file {file}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of the
 given file.
-``` copy=true
+```text copy=true
 the response is equal to the file {file} \(in any order\)
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the given file, but in any order.
-``` copy=true
+```text copy=true
 the response contains the file {file}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given file.
@@ -1144,13 +1134,13 @@ Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response
 
 ##### Examples:
 ```gherkin
-  Then the response fragment 'users[1]' contains the file 'data/response1.json'
+Then the response fragment 'users[1]' contains the file 'data/response1.json'
 ```
 
 <br /><br />
 
 ### Check response body fragment (value)
-``` copy=true
+```text copy=true
 the (text|integer|decimal) from response fragment {fragment} {matcher}
 ```
 Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment according a
@@ -1165,16 +1155,16 @@ Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath
 
 ##### Examples:
 ```gherkin
-  Then the decimal from response fragment 'users[1].account.availableMoney' is greater than 23.57
+Then the decimal from response fragment 'users[1].account.availableMoney' is greater than 23.57
 ```
 ```gherkin
-  Then the decimal from response fragment 'users[0].lastName' starts with 'J'
+Then the decimal from response fragment 'users[0].lastName' starts with 'J'
 ```
 
 <br /><br />
 
 ### Check response content type
-``` copy=true
+```text copy=true
 the response content type is {word}
 ```
 Validate that the content type of the last response is the expected. This step would be equivalent to validate the
@@ -1187,13 +1177,13 @@ Validate that the content type of the last response is the expected. This step w
 
 ##### Examples:
 ```gherkin
-  Then the response content type is JSON
+Then the response content type is JSON
 ```
 
 <br /><br />
 
 ### Check response size
-``` copy=true
+```text copy=true
 the response length {matcher}
 ```
 Validate that the length in bytes of the last response satisfies the given assertion.
@@ -1205,13 +1195,13 @@ Validate that the length in bytes of the last response satisfies the given asser
 
 ##### Examples:
 ```gherkin
-  Then the response length is less than 500
+Then the response length is less than 500
 ```
 
 <br /><br />
 
 ### Check response header
-``` copy=true
+```text copy=true
 the (texto|entero|decimal) response header {name} {matcher}
 ```
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
@@ -1225,16 +1215,16 @@ Validate that a header value from the last REST response satisfies the *text*, *
 
 ##### Examples:
 ```gherkin
-  Then the text response header Content-Encoding contains 'gzip'
+Then the text response header Content-Encoding contains 'gzip'
 ```
 ```gherkin
-  Then the integer response header Age is greater than 10
+Then the integer response header Age is greater than 10
 ```
 
 <br /><br />
 
 ### Check response schema
-``` copy=true
+```text copy=true
 the response satisfies the following schema:
 ```
 Asserts that the response body structure satisfies a given schema. The accepted schema formats are
@@ -1248,41 +1238,41 @@ responses (according the`Content-Type` response header).
 
 #### Examples:
 ```gherkin
-  Then the response satisfies the following schema:
-"""json
-     {
-       "$schema": "http://json-schema.org/draft-04/schema#",
-       "type": "object",
-       "properties": {
-         "id":         { "type": "string", "pattern": "[a-zA-Z0-9]+" },
-         "name":       { "type": "string" },
-         "age":        { "type": "integer", "minimum": 5 },
-         "vegetables": {
-           "type": "array",
-           "items": [ {
-               "type": "object",
-               "properties": {
-                 "id":          { "type": "integer" },
-                 "description": { "type": "string"  }
-               },
-               "required": [ "id", "description" ]
-           } ]
-         },
-         "contact": {
-           "type": "object",
-           "properties": {
-             "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+$" }
-           }
-         }
-       }
-     }
-    """
+Then the response satisfies the following schema:
+  """json
+  {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "id":         { "type": "string", "pattern": "[a-zA-Z0-9]+" },
+      "name":       { "type": "string" },
+      "age":        { "type": "integer", "minimum": 5 },
+      "vegetables": {
+        "type": "array",
+        "items": [ {
+          "type": "object",
+          "properties": {
+            "id":          { "type": "integer" },
+            "description": { "type": "string"  }
+          },
+          "required": [ "id", "description" ]
+        } ]
+      },
+      "contact": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "pattern": "^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+$" }
+        }
+      }
+    }
+  }
+  """
 ```
 
 <br /><br />
 
 ### Check response schema (file)
-``` copy=true
+```text copy=true
 the response satisfies the schema from the file {file}
 ```
 Asserts that the response body structure satisfies a schema from a given file. The accepted schema formats are
@@ -1296,7 +1286,7 @@ response header).
 
 ##### Examples:
 ```gherkin
-  Then the response satisfies the schema from the file 'data/user-schema.json'
+Then the response satisfies the schema from the file 'data/user-schema.json'
 ```
 
 

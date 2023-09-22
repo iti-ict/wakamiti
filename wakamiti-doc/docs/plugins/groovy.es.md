@@ -101,7 +101,7 @@ Al ejecutarse, se mostraría en el log:
 ## Pasos
 
 ### Ejecutar código
-``` copy=true
+```text copy=true
 (que) se ejecuta el siguiente código groovy:
 ```
 Ejecuta el script groovy indicado, incluyendo las siguentes variables:

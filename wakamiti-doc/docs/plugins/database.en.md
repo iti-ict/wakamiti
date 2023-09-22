@@ -185,7 +185,7 @@ database:
 
 
 ### Define connection
-``` copy=true
+```text copy=true
 the database connection URL {url} using the user {username} and the password {password}
 ```
 Configure the database connection URL, username and password for following connections. This step is the declarative
@@ -208,7 +208,7 @@ equivalent to set the configuration properties [`database.connection.url`](#data
 <br /><br />
 
 ### Define script post execution
-``` copy=true
+```text copy=true
 At finish, the following SQL script is executed:
 ```
 Sets the SQL statements that will be executed one the scenario is finished, regardless execution status.
@@ -230,7 +230,7 @@ Sets the SQL statements that will be executed one the scenario is finished, rega
 <br /><br />
 
 ### Define script post execution (file)
-``` copy=true
+```text copy=true
 At finish, the SQL script file {file} is executed
 ```
 Sets the SQL statements from file that will be executed one the scenario is finished, regardless execution status.
@@ -248,7 +248,7 @@ Sets the SQL statements from file that will be executed one the scenario is fini
 <br /><br />
 
 ### Execute script
-``` copy=true
+```text copy=true
 the following SQL script is executed:
 ```
 Execute a in-line SQL script.
@@ -270,7 +270,7 @@ Execute a in-line SQL script.
 <br /><br />
 
 ### Execute script (file)
-``` copy=true
+```text copy=true
 the SQL script file {file} is executed
 ```
 Execute a SQL script file.
@@ -288,7 +288,7 @@ Execute a SQL script file.
 <br /><br />
 
 ### Clear table
-``` copy=true
+```text copy=true
 the database table {word} is cleared
 ```
 Clear the given table, first attempting to execute `TRUNCATE`, and then using `DELETE FROM` as fallback.
@@ -306,7 +306,7 @@ Clear the given table, first attempting to execute `TRUNCATE`, and then using `D
 <br /><br />
 
 ### Delete data
-``` copy=true
+```text copy=true
 * having {column} = {value} (is|are) deleted from the database table {table}
 ```
 Delete the rows in the given table that match the specified value.
@@ -329,7 +329,7 @@ Delete the rows in the given table that match the specified value.
 <br /><br />
 
 ### Delete data (table)
-``` copy=true
+```text copy=true
 the following * (is|are) deleted from the database table {word}:
 ```
 Delete the following in-line rows from the given table.
@@ -356,7 +356,7 @@ Delete the following in-line rows from the given table.
 <br /><br />
 
 ### Delete data (XLS)
-``` copy=true
+```text copy=true
 the content of the XLS file {file} is deleted from the database
 ```
 Delete the rows contained in the specified XLS file, one sheet per table.
@@ -374,7 +374,7 @@ Delete the rows contained in the specified XLS file, one sheet per table.
 <br /><br />
 
 ### Delete data (CSV)
-``` copy=true
+```text copy=true
 the content of the CSV file {csv} is deleted from the database table {table}
 ```
 Delete the rows contained in the specified CSV file from the given table.
@@ -393,7 +393,7 @@ Delete the rows contained in the specified CSV file from the given table.
 <br /><br />
 
 ### Insert data (table)
-``` copy=true
+```text copy=true
 the following * (is|are) inserted into the database table {word}:
 ```
 Insert the following in-line rows into the given table. Non-specified but required columns will be populated with random
@@ -421,7 +421,7 @@ values.
 <br /><br />
 
 ### Insert data (XLS)
-``` copy=true
+```text copy=true
 the content of the XLS file {file} is inserted into the database
 ```
 Insert the rows contained in the specified XLS file, one sheet per table. Non-specified but required columns will be
@@ -440,7 +440,7 @@ populated with random values.
 <br /><br />
 
 ### Insert data (CSV)
-``` copy=true
+```text copy=true
 the content of the CSV file {csv} is inserted into the database table {table}
 ```
 Insert the rows contained in the specified CSV file into the given table. Non-specified but required columns will be
@@ -460,7 +460,7 @@ populated with random values.
 <br /><br />
 
 ### Check data exists
-``` copy=true
+```text copy=true
 * having {column} = {value} exist(s) in the database table {table}
 ```
 Assert that at least one row in the given table matches the specified value for a column.
@@ -480,7 +480,7 @@ Assert that at least one row in the given table matches the specified value for 
 <br /><br />
 
 ### Check data not exists
-``` copy=true
+```text copy=true
 * having {column} = {value} do(es) not exist in the database table {table}
 ```
 Assert that no row in the given table matches the specified value for a column.
@@ -500,7 +500,7 @@ Assert that no row in the given table matches the specified value for a column.
 <br /><br />
 
 ### Check data exists (id)
-``` copy=true
+```text copy=true
 * identified by {id} exist(s) in the database table {table}
 ```
 Assert that a row in the given table has a primary key matching the specified value. The table must have a single-column
@@ -520,7 +520,7 @@ primary key accessible from the database metadata.
 <br /><br />
 
 ### Check data not exists (id)
-``` copy=true
+```text copy=true
 * identified by {id} do(es) not exist in the database table {table}
 ```
 Assert that no row in the given table has a primary key matching the specified value. The table must have a single-column
@@ -540,7 +540,7 @@ primary key accessible from the database metadata.
 <br /><br />
 
 ### Check data exists (table)
-``` copy=true
+```text copy=true
 the following record(s) exist(s) in the database table {table}:
 ```
 Assert that all the subsequent data rows exist in the given table.
@@ -562,7 +562,7 @@ Assert that all the subsequent data rows exist in the given table.
 <br /><br />
 
 ### Check data not exists (table)
-``` copy=true
+```text copy=true
 the following record(s) do(es) not exist in the database table {table}:
 ```
 Assert that none of the subsequent data rows exist in the given table.
@@ -584,7 +584,7 @@ Assert that none of the subsequent data rows exist in the given table.
 <br /><br />
 
 ### Check data exists (XLS)
-``` copy=true
+```text copy=true
 the content of the XLS file {file} exists in the database
 ```
 Assert that all the data rows included in the specified XLS file exist in the database, using one sheet per table.
@@ -602,7 +602,7 @@ Assert that all the data rows included in the specified XLS file exist in the da
 <br /><br />
 
 ### Check data not exists (XLS)
-``` copy=true
+```text copy=true
 the content of the XLS file {file} does not exist in the database
 ```
 Assert that none of the data rows included in the specified XLS file exist in the database, using one sheet per table.
@@ -620,7 +620,7 @@ Assert that none of the data rows included in the specified XLS file exist in th
 <br /><br />
 
 ### Check data exists (CSV)
-``` copy=true
+```text copy=true
 the content of the CSV file {csv} exists in the database table {table}
 ```
 Assert that all the data rows included in the specified CSV file exists in the given table.
@@ -639,7 +639,7 @@ Assert that all the data rows included in the specified CSV file exists in the g
 <br /><br />
 
 ### Check data not exists (CSV)
-``` copy=true
+```text copy=true
 the content of the CSV file {csv} does not exist in the database table {table}
 ```
 Assert that all the data rows included in the specified CSV file does not exist in the given table.
@@ -658,7 +658,7 @@ Assert that all the data rows included in the specified CSV file does not exist 
 <br /><br />
 
 ### Check data exists (document)
-``` copy=true
+```text copy=true
 * satisfying the following SQL clause exist(s) in the database table {table}:
 ```
 Assert that at least one row in the given table satisfies the specified SQL clause exist.
@@ -680,7 +680,7 @@ Assert that at least one row in the given table satisfies the specified SQL clau
 <br /><br />
 
 ### Check data not exists (document)
-``` copy=true
+```text copy=true
 * satisfying the following SQL clause do(es) not exist in the database table {table}:
 ```
 Assert that no row in the given table satisfies the specified SQL clause exist.
@@ -702,7 +702,7 @@ Assert that no row in the given table satisfies the specified SQL clause exist.
 <br /><br />
 
 ### Check row count
-``` copy=true
+```text copy=true
 the number of * having {column} = {value} in the database table {table} {matcher}
 ```
 Assert that the number of rows in the given table matching the specified values for two columns satisfies a numeric
@@ -724,7 +724,7 @@ assertion.
 <br /><br />
 
 ### Check row count (table)
-``` copy=true
+```text copy=true
 the number of * satisfying the following (info) in the database table {table} {matcher}:
 ```
 Assert that the number of rows in the given table matching the specified values for every column satisfies a numeric
@@ -753,7 +753,7 @@ expression. Only the first row of the given data is considered.
 <br /><br />
 
 ### Check row count (document)
-``` copy=true
+```text copy=true
 the number of * satisfying the following SQL clause in the database table {table} {matcher}:
 ```
 Assert that the number of rows in the given table matching the SQL clause satisfies a numeric assertion.
@@ -776,7 +776,7 @@ Assert that the number of rows in the given table matching the SQL clause satisf
 <br /><br />
 
 ### Check table is empty
-``` copy=true
+```text copy=true
 the database table {word} is empty
 ```
 Assert that the given table has no data.
@@ -794,7 +794,7 @@ Assert that the given table has no data.
 <br /><br />
 
 ### Check table is not empty
-``` copy=true
+```text copy=true
 the database table {word} is not empty
 ```
 Assert that the given tabla has some data.
