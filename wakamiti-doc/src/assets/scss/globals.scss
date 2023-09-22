@@ -174,26 +174,26 @@ table {
 
 
   .dark & button {
-    border: solid 1px $textBright+22
+    border: solid 1px #{$textDark}22
   }
 
   .bright & button {
-    border: solid 1px $textDark+22
+    border: solid 1px #{$textBright}22
   }
 
   .dark & button:hover {
-    border: solid 1px $textBright+55
+    border: solid 1px #{$textDark}55
   }
 
   .bright & button:hover {
-    border: solid 1px $textDark+55
+    border: solid 1px #{$textBright}55
   }
 
   .dark & button:active {
-    border: solid 1px $textBright
+    border: solid 1px #{$textDark}
   }
 
   .bright & button:active {
-    border: solid 1px $textDark
+    border: solid 1px #{$textBright}
   }
 }
