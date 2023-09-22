@@ -36,7 +36,6 @@ module.exports = (options) => {
     return (tree) => {
         visit(tree, "code", (node, index, parent) => {
             const meta = querystring.parse(node.meta == null ? "" : node.meta, " ");
-            console.log(JSON.stringify(node))
             parent.children[index] = {
                 type: "wrapper",
                 data: {

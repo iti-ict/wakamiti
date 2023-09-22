@@ -19,10 +19,10 @@ module.exports = (options) => {
         };
     }
 
-    function createTab(node, index) {
-        const tabGroup = node.meta.tabs;
+    function createTab(node, meta, index) {
+        const tabGroup = meta.tabs;
         const tabId = `${tabGroup}#${index}`;
-        const tabName = node.meta.name;
+        const tabName = meta.name;
 
         return [
             {
@@ -56,7 +56,6 @@ module.exports = (options) => {
 
         visit(tree, "code", function (node, index, parent) {
             const meta = querystring.parse(node.meta == null ? "" : node.meta, " ");
-
             if (!meta.tabs) return;
 
             const newNode = !queue[meta.tabs]
@@ -67,7 +66,7 @@ module.exports = (options) => {
             if (queue[meta.tabs] == null) queue[meta.tabs] = newNode;
 
             queue[meta.tabs].children.push(
-                ...createTab({ ...node, meta }, queue[meta.tabs].children.length)
+                ...createTab(node, meta, queue[meta.tabs].children.length)
             );
         });
     }
