@@ -9,11 +9,11 @@ salida, e intenta subir dicho fichero a una ubicación remota usando el protocol
 Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT_FILE_WRITTEN`,
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>
@@ -81,7 +81,7 @@ posibilidad de ajustar una o más propiedades con valores especñificos según e
 ejemplo, la siguiente configuración usaría los mismos parámetros de conexión pero subiendo los ficheros
 a diferentes directorios según el tipo de evento:
 
-```yaml
+```yaml copy=true
 fileUploader:
   host: 192.168.1.40
   protocol: ftps

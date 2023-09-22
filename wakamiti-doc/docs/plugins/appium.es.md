@@ -16,11 +16,11 @@ virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test a
 > En su estado actual, este plugin es principalmente una prueba de concepto más que un plugin 
 > plenamente funcional. Los pasos y la configuración indicada pueden variar en futuras versiones.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>appium-wakamiti-plugin</artifactId>
@@ -118,7 +118,7 @@ appium:
 
 
 ### Seleccionar un elemento de interfaz a partir de su ID
-```
+``` copy=true
 el elemento de interfaz con el ID {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
@@ -131,7 +131,7 @@ Selecciona un elmento que será el sujeto de los siguientes pasos.
 <br /><br />
 
 ### Seleccionar un elemento de interfaz a partir de su tipo
-```
+``` copy=true
 el elemento de interfaz de tipo {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
@@ -144,7 +144,7 @@ Selecciona un elmento que será el sujeto de los siguientes pasos.
 <br /><br />
 
 ### Seleccionar un elemento de interfaz a partir de su ruta
-```
+``` copy=true
 el elemento de interfaz con ruta {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
@@ -157,7 +157,7 @@ Selecciona un elmento que será el sujeto de los siguientes pasos.
 <br /><br />
 
 ### Teclear un texto en un elemento
-```
+``` copy=true
 se escribe el texto {text} en ese elemento
 ```
 Emula la acción de introducir un texto cuando un elemento se ha seleccionado.
@@ -170,7 +170,7 @@ Emula la acción de introducir un texto cuando un elemento se ha seleccionado.
 <br /><br />
 
 ### Se pulsa sobre un elemento
-```
+``` copy=true
 se pulsa sobre ese elemento
 ```
 Emula la acción de pulsar sobre un elemento.
@@ -183,7 +183,7 @@ Emula la acción de pulsar sobre un elemento.
 <br /><br />
 
 ### Se pulsa dos veces sobre un elemento
-```
+``` copy=true
 se pulsa dos veces ese elmento
 ```
 Emula la acción de pulsar dos veces sobre un elemento.
@@ -196,7 +196,7 @@ Emula la acción de pulsar dos veces sobre un elemento.
 <br /><br />
 
 ### Valida el texto de un elemento
-```
+``` copy=true
 ese elemento contiene el valor {text}
 ```
 Comprueba que el elemento previamente seleccionado contiene un texto específico.
@@ -209,7 +209,7 @@ Comprueba que el elemento previamente seleccionado contiene un texto específico
 <br /><br />
 
 ### Valida que un elemento está habilitado
-```
+``` copy=true
 ese elemento esta habilitado
 ```
 Comprueba que el elemento previamente seleccionado está habilitado.
@@ -222,7 +222,7 @@ Comprueba que el elemento previamente seleccionado está habilitado.
 <br /><br />
 
 ### Valida que un elemento está deshabilitado
-```
+``` copy=true
 ese elemento esta deshabilitado
 ```
 Comprueba que el elemento previamente seleccionado está deshabilitado.
@@ -235,7 +235,7 @@ Comprueba que el elemento previamente seleccionado está deshabilitado.
 <br /><br />
 
 ### Validate an element is displayed
-```
+``` copy=true
 ese elemento se muestra por pantalla
 ```
 Comprueba que el elemento previamente seleccionado está siendo mostrado por pantalla.
@@ -248,7 +248,7 @@ Comprueba que el elemento previamente seleccionado está siendo mostrado por pan
 <br /><br />
 
 ### Validate an element is not displayed
-```
+``` copy=true
 ese elemento no se muestra por pantalla
 ```
 Comprueba que el elemento previamente seleccionado no está siendo mostrado por pantalla.
@@ -261,7 +261,7 @@ Comprueba que el elemento previamente seleccionado no está siendo mostrado por 
 <br /><br />
 
 ### Emular una llamada entrante
-```
+``` copy=true
 se recibe una llamada entrante con el numero {text}
 ```
 Emula una llamada entrante de un número de teléfono específico. Solo disponible si la aplicación
@@ -275,7 +275,7 @@ a testear está siendo ejecutada en un dispositivo emulado.
 <br /><br />
 
 ### Aceptar una llamada entrante
-```
+``` copy=true
 se acepta la llamada entrante
 ```
 Acepta la llamada que está entrando en ese momento.
@@ -288,7 +288,7 @@ Acepta la llamada que está entrando en ese momento.
 <br /><br />
 
 ### Rechazar una llamada entrante
-```
+``` copy=true
 se rechaza la llamada entrante
 ```
 Rechaza la llamada que está entrando en ese momento.
@@ -301,7 +301,7 @@ Rechaza la llamada que está entrando en ese momento.
 <br /><br />
 
 ### Finaliza la llamada actual
-```
+``` copy=true
 se finaliza la llamada
 ```
 Finaliza (cuelga) la llamada actual.
@@ -318,7 +318,7 @@ Finaliza (cuelga) la llamada actual.
 
 
 1. Instalar Android SDK
-```
+``` copy=true
   sudo apt install android-sdk
 ```
 
@@ -333,19 +333,19 @@ Finaliza (cuelga) la llamada actual.
 ![android-sdk][android-sdk]
 
 5. Instalar Appium y Appium-doctor
-```
+``` copy=true
    npm install -g appium
    npm install @appium/doctor --location=global
 ```
 
 4. Comprobar la instalación
-```
+``` copy=true
 appium-doctor --android
 ```
 Todo debería salir como OK, en caso contrario revisar los checks en rojo.
 
 5. Arrancar el servidor Appium
-```
+``` copy=true
 appium
 ```
 El puerto por defecto es 4723
@@ -354,19 +354,19 @@ Descargar APK de prueba en:
 https://github.com/appium/appium/raw/1.x/sample-code/apps/ApiDemos-debug.apk
 
 6. Crear un dipositivo Virtual
-```
+``` copy=true
 $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"```
 ```
 
 7. Iniciar el emulador Android
-```
+``` copy=true
 $ANDROID_HOME/emulator/emulator -avd Nexus6P
 ```
 
 
 Si en algún momento el emulador se queda pillado y dice que ya existe una emulación en curso,
 se puede limpiar el estado con
-```
+``` copy=true
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 

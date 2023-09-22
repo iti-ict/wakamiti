@@ -6,11 +6,11 @@ slug: /en/plugins/groovy
 
 This plugin provides a `groovy` class compiler and steps for `groovy` code execution.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:groovy-wakamiti-plugin:2.3.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>groovy-wakamiti-plugin</artifactId>
@@ -35,12 +35,12 @@ These `groovy` files can be used as a provider of additional steps.
 #### Examples:
 
 We create a file called `custom-steps.properties` where we define a new step:
-```properties
+```properties copy=true
 custom.step=the user's password {name:text} is retrieved
 ```
 
 We create a file called `CustomSteps.goovy` where we develop the new step:
-```groovy
+```groovy copy=true
 package example
 
 import es.iti.wakamiti.api.annotations.I18nResource
@@ -101,7 +101,7 @@ When executed, it would be shown in the log:
 ## Steps
 
 ### Execute code
-```
+``` copy=true
 (that) the following groovy code is executed:
 ```
 Runs the given groovy script with the available variables:

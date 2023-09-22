@@ -13,11 +13,11 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 >
 > Actualmente, esta librería proporciona una funcionalidad muy limitada y existe como prueba de concepto.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:amqp-wakamiti-plugin:2.3.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
@@ -125,7 +125,7 @@ amqp:
 
 ### Definir conexión
 
-```
+``` copy=true
 la conexión AMQP con URL {url} usando el usuario {username} y la contraseña {password}
 ```
 Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las 
@@ -148,7 +148,7 @@ propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.usern
 
 ### Definir cola destino
 
-```
+``` copy=true
 la cola de destino {word}
 ```
 Establece el nombre de la cola que se observará.
@@ -167,7 +167,7 @@ Establece el nombre de la cola que se observará.
 
 ### Enviar mensaje a cola
 
-```
+``` copy=true
 se envía a la cola {word} el siguiente mensaje JSON:
 ```
 Envía un mensaje JSON a la cola indicada.
@@ -193,7 +193,7 @@ Envía un mensaje JSON a la cola indicada.
 <br /><br />
 
 ### Enviar mensaje a cola (fichero)
-```
+``` copy=true
 se envía a la cola {queue} el mensaje del fichero JSON {file}
 ```
 Envía el contenido de un fichero JSON a la cola indicada.
@@ -213,7 +213,7 @@ Envía el contenido de un fichero JSON a la cola indicada.
 
 ### Establecer pausa
 
-```
+``` copy=true
 se espera durante {integer} segundo(s)
 ```
 Se produce una espera de un número fijo de segundos (generalmente para asegurarse de que se haya procesado el mensaje).
@@ -232,7 +232,7 @@ Se produce una espera de un número fijo de segundos (generalmente para asegurar
 
 ### Validar mensaje
 
-```
+``` copy=true
 el siguiente mensaje JSON se recibe en {integer} segundos:
 ```
 Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo 
@@ -259,7 +259,7 @@ después del tiempo de espera indicado.
 
 ### Validar mensaje (fichero)
 
-```
+``` copy=true
 el mensaje del fichero JSON {file} se recibe en {seconds} segundos
 ```
 Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino), 

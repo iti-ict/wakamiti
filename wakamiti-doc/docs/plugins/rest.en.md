@@ -7,11 +7,11 @@ slug: /en/plugins/rest
 
 This plugin provides a set of steps to interact with a RESTful API.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
@@ -270,7 +270,7 @@ rest:
 
 
 ### Define content type
-```
+``` copy=true
 the REST content type {word}
 ```
 Declarative-way for setting the configuration property [`rest.contentType`](#restcontenttype).
@@ -288,7 +288,7 @@ Declarative-way for setting the configuration property [`rest.contentType`](#res
 <br /><br />
 
 ### Define base URL
-```
+``` copy=true
 the base URL {url}
 ```
 Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl).
@@ -306,7 +306,7 @@ Declarative-way for setting the configuration property [`rest.baseURL`](#restbas
 <br /><br />
 
 ### Define service
-```
+``` copy=true
 the REST service {text}
 ```
 Sets the service path that would be tested. It would be appended to the `baseURL`.
@@ -325,7 +325,7 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 
 ### Define id
 ###### Deprecated
-```
+``` copy=true
 * identified by {text}
 ```
 Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
@@ -346,10 +346,10 @@ Sets an entity identifier to be used by the REST service. It would be appended t
 <br /><br />
 
 ### Define parameters or headers
-```
+``` copy=true
 the (request|query|path|form) parameter {name} with value {value}
 ```
-```
+``` copy=true
 the header {name} with value {value}
 ```
 Sets a header or request, query, path or form parameter. Request parameters will be sent as form data in POST requests,
@@ -387,10 +387,10 @@ content-type `application/x-www-form-urlencoded`.
 <br /><br />
 
 ### Define parameters or headers (table)
-```
+``` copy=true
 the following (request|query|path) parameters:
 ```
-```
+``` copy=true
 the following headers:
 ```
 Sets multiple headers or request, query, path or form parameters. Request parameters will be sent as form data in POST
@@ -442,7 +442,7 @@ content-type `application/x-www-form-urlencoded`.
 <br /><br />
 
 ### Define timeout
-```
+``` copy=true
 a timeout of {int} (milli)seconds
 ```
 Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.
@@ -463,7 +463,7 @@ Sets a response timeout (in second or milliseconds) for the subsequent HTTP requ
 <br /><br />
 
 ### Define HTTP code threshold
-```
+``` copy=true
 any request will fail when response HTTP code {matcher}
 ```
 Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer
@@ -482,7 +482,7 @@ assertion.
 <br /><br />
 
 ### Define basic authentication
-```
+``` copy=true
 the service use the basic authentication credentials {username}:{password}
 ```
 Sets the basic authentication credentials to be sent in the `Authorization` header for the subsequent requests.
@@ -501,7 +501,7 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 <br /><br />
 
 ### Define oauth2 authentication
-```
+``` copy=true
 the service use the oauth authentication
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -517,7 +517,7 @@ configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid
 <br /><br />
 
 ### Define oauth2 authentication by token
-```
+``` copy=true
 the service use the oauth authentication token {token}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
@@ -535,7 +535,7 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 <br /><br />
 
 ### Define oauth2 authentication by token (file)
-```
+``` copy=true
 the service use the oauth authentication token from the file {file}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests, from file.
@@ -553,10 +553,10 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 <br /><br />
 
 ### Define oauth2 authentication by credentials
-```
+``` copy=true
 the service use the oauth authentication credentials {username}:{password}
 ```
-```
+``` copy=true
 the service use the oauth authentication credentials {username}:{password} with the following parameters:
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -586,10 +586,10 @@ Additional parameters supported by `Oauth` can also be added using a table.
 <br /><br />
 
 ### Define oauth2 authentication by client
-```
+``` copy=true
 the service use the oauth authentication
 ```
-```
+``` copy=true
 the service use the oauth authentication with the following parameters:
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -617,7 +617,7 @@ Additional parameters supported by `Oauth` can also be added using a table.
 <br /><br />
 
 ### Clear authentication
-```
+``` copy=true
 the service does not use authentication
 ```
 Deletes the authentication header.
@@ -630,7 +630,7 @@ Deletes the authentication header.
 <br /><br />
 
 ### Define multipart subtype
-```
+``` copy=true
 {type} as subtype multipart
 ```
 Sets the default subtype for multipart requests. This step is equivalent to setting the
@@ -664,7 +664,7 @@ Default value is `form-data`.
 <br /><br />
 
 ### Definir nombre de fichero multiparte
-```
+``` copy=true
 {name} as attached file name
 ```
 Sets the default name for multipart files. This step is equivalent to setting the
@@ -683,7 +683,7 @@ Sets the default name for multipart files. This step is equivalent to setting th
 <br /><br />
 
 ### Define attached file
-```
+``` copy=true
 the attached file is included with the following data:
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
@@ -704,7 +704,7 @@ Sets a multipart form-data including an attachment from the given in-document co
 <br /><br />
 
 ### Define attached file (file)
-```
+``` copy=true
 the attached file {file} is included
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
@@ -722,7 +722,7 @@ Sets a multipart form-data including an attachment from the given in-document co
 <br /><br />
 
 ### Execute GET request
-```
+``` copy=true
 * (is|are) (queried|requested)
 ```
 Sends a `GET` request to the previously defined parameters.
@@ -745,7 +745,7 @@ When the user is requested
 <br /><br />
 
 ### Execute DELETE request
-```
+``` copy=true
 * (is|are) deleted
 ```
 Sends a `DELETE` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -760,7 +760,7 @@ When the user is deleted
 <br /><br />
 
 ### Execute PUT request with body
-```
+``` copy=true
 * (is|are) modified with following data:
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -789,7 +789,7 @@ When the user is modified with the following data:
 <br /><br />
 
 ### Execute PUT request with body (file)
-```
+``` copy=true
 * (is|are) modified with the data from the file {file}
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -810,7 +810,7 @@ When the user is modified with the data from the file 'data/user123.json'
 <br /><br />
 
 ### Execute PATCH request
-```
+``` copy=true
 * (is|are) patched
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -829,7 +829,7 @@ When the user is patched
 <br /><br />
 
 ### Execute PATCH request with body
-```
+``` copy=true
 * (is|are) patched with the following data:
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -855,7 +855,7 @@ When the user is patched with the following data:
 <br /><br />
 
 ### Execute PATCH request with body (file)
-```
+``` copy=true
 * (is|are) patched with the data from the file {file}
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -876,10 +876,10 @@ When the user is patched with the data from the file 'data/user123.json'
 <br /><br />
 
 ### Execute POST request
-```
+``` copy=true
 * (is|are) created
 ```
-```
+``` copy=true
 the data info is sent to the service
 ```
 Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -898,10 +898,10 @@ When the data info is sent to the service
 <br /><br />
 
 ### Execute POST request with body
-```
+``` copy=true
 * (is|are) created with the following data:
 ```
-```
+``` copy=true
 the following data is sent to the service:
 ```
 Send a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -936,10 +936,10 @@ provided in-document.
 <br /><br />
 
 ### Execute POST request with body (file)
-```
+``` copy=true
 * (is|are) created with the data from the file {file}
 ```
-```
+``` copy=true
 the data from the file {file} is sent to the service
 ```
 Sends a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
@@ -961,7 +961,7 @@ provided by the given file.
 <br /><br />
 
 ### Check response HTTP code
-```
+``` copy=true
 the response HTTP code {matcher}
 ```
 Validate that the HTTP code of the last response satisfies the given assertion.
@@ -979,15 +979,15 @@ Validate that the HTTP code of the last response satisfies the given assertion.
 <br /><br />
 
 ### Check response body
-```
+``` copy=true
 the response is:
 ```
 Validates that the response body is exactly the content of the in-document content.
-```
+``` copy=true
 the response is \(in any order\):
 ```
 Validates that the response body has all the elements specified by the in-document content, but in any order.
-```
+``` copy=true
 the response contains:
 ```
 Validates that the response body contains the given in-document content.
@@ -1042,15 +1042,15 @@ Validates that the response body contains the given in-document content.
 <br /><br />
 
 ### Check response body (file)
-```
+``` copy=true
 the response is equal to the file {file}
 ```
 Validates that the response body is exactly the content of the given file.
-```
+``` copy=true
 the response is equal to the file {file} \(in any order\)
 ```
 Validates that the response body has all the elements provided by the given file, but in any order.
-```
+``` copy=true
 the response contains the file {file}
 ```
 Validates that the response body contains the content of the given file.
@@ -1068,17 +1068,17 @@ Validates that the response body contains the content of the given file.
 <br /><br />
 
 ### Check response body fragment
-```
+``` copy=true
 the response fragment {fragment} is:
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of
 the in-document content.
-```
+``` copy=true
 the response fragment {fragment} is \(in any order\):
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the in-document content, but in any order.
-```
+``` copy=true
 the response fragment {fragment} contains:
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document
@@ -1121,17 +1121,17 @@ content.
 <br /><br />
 
 ### Check response body fragment (file)
-```
+``` copy=true
 the response is equal to the file {file}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of the
 given file.
-```
+``` copy=true
 the response is equal to the file {file} \(in any order\)
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the given file, but in any order.
-```
+``` copy=true
 the response contains the file {file}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given file.
@@ -1150,7 +1150,7 @@ Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response
 <br /><br />
 
 ### Check response body fragment (value)
-```
+``` copy=true
 the (text|integer|decimal) from response fragment {fragment} {matcher}
 ```
 Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment according a
@@ -1174,7 +1174,7 @@ Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath
 <br /><br />
 
 ### Check response content type
-```
+``` copy=true
 the response content type is {word}
 ```
 Validate that the content type of the last response is the expected. This step would be equivalent to validate the
@@ -1193,7 +1193,7 @@ Validate that the content type of the last response is the expected. This step w
 <br /><br />
 
 ### Check response size
-```
+``` copy=true
 the response length {matcher}
 ```
 Validate that the length in bytes of the last response satisfies the given assertion.
@@ -1211,7 +1211,7 @@ Validate that the length in bytes of the last response satisfies the given asser
 <br /><br />
 
 ### Check response header
-```
+``` copy=true
 the (texto|entero|decimal) response header {name} {matcher}
 ```
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
@@ -1234,7 +1234,7 @@ Validate that a header value from the last REST response satisfies the *text*, *
 <br /><br />
 
 ### Check response schema
-```
+``` copy=true
 the response satisfies the following schema:
 ```
 Asserts that the response body structure satisfies a given schema. The accepted schema formats are
@@ -1282,7 +1282,7 @@ responses (according the`Content-Type` response header).
 <br /><br />
 
 ### Check response schema (file)
-```
+``` copy=true
 the response satisfies the schema from the file {file}
 ```
 Asserts that the response body structure satisfies a schema from a given file. The accepted schema formats are

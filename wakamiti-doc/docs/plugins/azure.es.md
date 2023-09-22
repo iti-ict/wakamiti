@@ -7,11 +7,11 @@ slug: /plugins/azure
 Este plugin integra los resultados de la ejecución de Wakamiti con un plan de test de [Azure](https://azure.microsoft.com/) 
 existente, al tiempo que permite adjuntar ficheros (como el generado por el plugin HTML Reporter) en la ejecución.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:azure-wakamiti-plugin:1.4.2
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>

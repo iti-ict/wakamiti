@@ -6,11 +6,11 @@ slug: /plugins/html-reporter
 
 Un generador de informes en formato `HTML` con los resultados de las pruebas.
 
-```text tabs=coord name=yaml
+```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:html-reporter-wakamiti-plugin:2.3.3
 ```
 
-```text tabs=coord name=maven
+```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>html-reporter-wakamiti-plugin</artifactId>
