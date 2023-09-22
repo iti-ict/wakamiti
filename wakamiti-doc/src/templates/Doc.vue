@@ -72,11 +72,25 @@ export default {
       if (href.startsWith('javascript:')) {
         el.addEventListener('click', e => {
           e.preventDefault();
-          eval('this.' + href.replace('javascript:', ''));
+          eval(href.replace('javascript:', ''));
         })
         el.removeAttribute('target')
       }
     });
+    document.querySelectorAll('.remark-code-clipboard').forEach(el => {
+      const btn = el.querySelector('button')
+      const code = el.querySelector('pre.hidden').textContent
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(`${code}`)
+        btn.querySelector('.clipboard-copy-icon').addClass('hidden');
+        btn.querySelector('.clipboard-check-icon').removeClass('hidden');
+
+        setTimeout(() => {
+          btn.querySelector('.clipboard-copy-icon').removeClass('hidden');
+          btn.querySelector('.clipboard-check-icon').addClass('hidden');
+        }, 3000);
+      })
+    })
   }
 }
 </script>
@@ -103,5 +117,102 @@ export default {
 .markdown {
   padding-bottom: 50px;
   text-align: justify;
+}
+
+
+/* tabs */
+.remark-code-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min-content, 1px));
+  grid-template-rows: min-content auto;
+  width: 100%;
+  min-height: 10px;
+
+  & > label {
+    display: flex;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: .1rem solid #0000;
+    padding: 10px;
+
+    & > [type=radio] {
+      appearance: none;
+      margin: 0;
+    }
+
+  }
+
+  & > :not(label) {
+    grid-column-start: 1;
+    grid-column-end: -1;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  & > label:has(:checked) {
+    color: $brandPrimary;
+    border-bottom-color: $brandPrimary;
+  }
+
+  & > label:not(:has(:checked)) + * {
+    display: none;
+  }
+}
+
+.remark-code-tabs-x {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+/* clipboard */
+.remark-code-clipboard {
+  position: relative;
+
+  &:hover button {
+    display: inline-grid;
+  }
+
+  & button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    padding: 5px;
+    background: transparent;
+    border-radius: 5px;
+    fill: currentColor;
+    opacity: .4;
+    cursor: pointer;
+    display: none;
+  }
+  & button:hover {
+    opacity: .8;
+  }
+
+
+  .dark & button {
+    border: solid 1px #{$textBright}22
+  }
+
+  .bright & button {
+    border: solid 1px #{$textDark}22
+  }
+
+  .dark & button:hover {
+    border: solid 1px #{$textBright}55
+  }
+
+  .bright & button:hover {
+    border: solid 1px #{$textDark}55
+  }
+
+  .dark & button:active {
+    border: solid 1px #{$textBright}
+  }
+
+  .bright & button:active {
+    border: solid 1px #{$textDark}
+  }
 }
 </style>

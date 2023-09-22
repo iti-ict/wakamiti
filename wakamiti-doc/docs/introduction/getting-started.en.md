@@ -26,7 +26,7 @@ Optionally:
 ### 0. Start the sample application
 Unzip the downloaded zip file with the tutorial source code, open a terminal in that directory and launch the 
 application with the following command:
-```shell
+```shell copy=true
 docker compose up -d
 ```
 
@@ -41,7 +41,7 @@ located. For example, in the same with the source code of the tutorial:
 ```
 
 This is the basic configuration to be able to run the tests:
-```yml
+```yml copy=true
 wakamiti:
   resourceTypes:
     - gherkin
@@ -78,7 +78,7 @@ files that must be in our working directory (or subdirectory).
 A specific example in this tutorial would be to consult a pet owner.
 
 Create an empty file named `example.feature` with the following content:
-```gherkin
+```gherkin copy=true
 Feature: Get the pets owners
 
   Scenario: An existing owner is consulted
@@ -114,11 +114,11 @@ The tests are executed with the terminal, from the working directory (the one co
 `.feature` file we have created), with the following command:
 
 * Windows:
-```Shell
+```Shell copy=true
 docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 * Linux:
-```Shell
+```Shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 With this command, you will download the latest version of Wakamiti. To work with a specific version, 

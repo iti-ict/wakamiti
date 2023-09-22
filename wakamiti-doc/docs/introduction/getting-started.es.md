@@ -27,7 +27,7 @@ De forma opcional:
 ### 0. Poner en marcha la aplicación de ejemplo
 Descomprime el zip descargado con el código fuente del tutorial, abre un terminal en ese directorio y levanta la 
 aplicación con el siguiente comando:
-```shell
+```shell copy=true
 docker compose up -d
 ```
 
@@ -42,7 +42,7 @@ tests. Por ejemplo, en el mismo con el código fuente del tutorial:
 ```
 
 Esta es la configuración básica para poder ejecutar los tests:
-```yml
+```yml copy=true
 wakamiti:
   resourceTypes:
     - gherkin
@@ -80,7 +80,7 @@ y se definen en archivos `.feature` que deberán estar en nuestro directorio de 
 Un ejemplo concreto en este tutorial sería consultar un propietario de una mascota.
 
 Crea un archivo vacío llamado `example.feature` con el siguiente contenido:
-```gherkin
+```gherkin copy=true
 # language: es
 Característica: Consultar propietarios
   
@@ -118,11 +118,11 @@ Los test se ejecutan con el terminal, desde el directorio de trabajo (el que con
 el fichero `.feature` que hemos creado), con el siguiente comando:
 
 * Windows:
-```Shell
+```Shell copy=true
 docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 * Linux:
-```Shell
+```Shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 Con este comando, se lanzarán todos los tests que haya en el directorio, 
