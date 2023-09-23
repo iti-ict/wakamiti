@@ -71,7 +71,7 @@ export default {
         if (href.startsWith('javascript:')) {
           el.addEventListener('click', e => {
             e.preventDefault();
-            eval('this.' + href.replace('javascript:', ''));
+            eval( href.replace('javascript:', ''));
           })
           el.removeAttribute('target')
         }
@@ -91,6 +91,7 @@ export default {
           })
         });
       })
+      this.$forceUpdate()
     }
   },
   mounted () {
