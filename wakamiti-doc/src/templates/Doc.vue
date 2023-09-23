@@ -3,7 +3,7 @@
     <h1>
       {{ $page.doc.title }}
     </h1>
-     <div class="markdown" v-html="$page.doc.content" @load="$mount" @change="$mount" />
+     <div class="markdown" v-html="$page.doc.content" @load="$mount" @change="" />
   </Layout>
 </template>
 
@@ -72,7 +72,7 @@ export default {
       if (href.startsWith('javascript:')) {
         el.addEventListener('click', e => {
           e.preventDefault();
-          eval(href.replace('javascript:', ''));
+          eval('this.' + href.replace('javascript:', ''));
         })
         el.removeAttribute('target')
       }
@@ -91,8 +91,8 @@ export default {
           }, 3000);
         })
       });
-
     })
+    this.$forceUpdate();
   }
 }
 </script>
