@@ -66,6 +66,7 @@ export default {
       return false;
     },
     mount: () => {
+      const download = this.download;
       document.querySelectorAll('a').forEach(el => {
         const href = el.getAttribute('href');
         if (href.startsWith('javascript:')) {
