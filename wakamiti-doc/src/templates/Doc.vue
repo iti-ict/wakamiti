@@ -3,7 +3,7 @@
     <h1>
       {{ $page.doc.title }}
     </h1>
-     <div class="markdown" v-html="$page.doc.content" @load="$mount" />
+     <div class="markdown" v-html="$page.doc.content" @load="$mount" @change="$mount" />
   </Layout>
 </template>
 
