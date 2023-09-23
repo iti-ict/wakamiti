@@ -17,7 +17,7 @@ Please be aware that this tutorial assumes that you have a:
 
 Before we begin, you will need the following:
 - Install and run [Docker](https://www.docker.com/get-started/).
-- The source code of [this tutorial](javascript:$download()).
+- The source code of [this tutorial](javascript:downloadTutorial()).
 
 Optionally:
 - Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
