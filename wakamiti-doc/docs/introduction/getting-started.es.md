@@ -17,7 +17,7 @@ Ten en cuenta que este tutorial asume que tienes:
 
 Antes de empezar, necesitarás lo siguiente:
 - Instalar y arrancar [Docker](https://www.docker.com/get-started/).
-- El código fuente de [este tutorial](javascript:$downloadTutorial()).
+- El código fuente de [este tutorial](javascript:$download()).
 
 De forma opcional:
 - Instalar un IDE, como [IntelliJ IDEA](https://www.jetbrains.com/idea/) o [VS Code](https://code.visualstudio.com/). No
