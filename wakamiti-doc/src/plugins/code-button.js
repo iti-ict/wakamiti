@@ -4,15 +4,16 @@ const visit = require('unist-util-visit')
 
 module.exports = (options) => {
 
-    function convertContentsToJavaScriptString(code) {
-        return code
-            .replace(/"/gm, "&quot;")
-            .replace(/`/gm, "\\`")
-            .replace(/\$/gm, "\\$");
+    function escape(htmlStr) {
+        return htmlStr.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
     }
 
     function addBtn(node) {
-        let code = convertContentsToJavaScriptString(node.value)
         return [
             {
                 type: "html",
@@ -28,7 +29,7 @@ module.exports = (options) => {
             node,
             {
                 type: "html",
-                value: `<pre class="hidden">${node.value}</pre>`
+                value: `<pre class="hidden">${escape(node.value)}</pre>`
             }
         ];
     }
