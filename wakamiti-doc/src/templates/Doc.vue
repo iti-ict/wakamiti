@@ -133,7 +133,7 @@ export default {
       return false;
     };
 
-    window.copyToClipboard = (e, btn) => {
+    window.copyToClipboard = (btn) => {
       const code = btn.parentElement.querySelector('pre.hidden').textContent
       navigator.clipboard.writeText(code)
       btn.querySelector('.clipboard-copy-icon').classList.add('hidden');

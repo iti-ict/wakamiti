@@ -41,7 +41,7 @@ module.exports = {
             require('./src/plugins/table-of-content.js'),
             require('./src/plugins/code-tabs.js'),
             require('./src/plugins/code-button.js'),
-            // require('./src/plugins/link-javascript'),
+            require('./src/plugins/link-javascript'),
             '@gridsome/remark-prismjs',
             ["@mgalbis/remark-prefix-links", { pathPrefix }]
           ]
