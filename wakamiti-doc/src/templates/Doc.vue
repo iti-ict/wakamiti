@@ -3,7 +3,7 @@
     <h1>
       {{ $page.doc.title }}
     </h1>
-     <div class="markdown" v-html="$page.doc.content" @load="$mount" @change="" />
+     <div class="markdown" v-html="$page.doc.content" @load="mount" />
   </Layout>
 </template>
 
@@ -64,35 +64,37 @@ export default {
         a.click();
       });
       return false;
+    },
+    mount: () => {
+      document.querySelectorAll('a').forEach(el => {
+        const href = el.getAttribute('href');
+        if (href.startsWith('javascript:')) {
+          el.addEventListener('click', e => {
+            e.preventDefault();
+            eval('this.' + href.replace('javascript:', ''));
+          })
+          el.removeAttribute('target')
+        }
+      });
+      document.querySelectorAll('.remark-code-clipboard').forEach(el => {
+        el.querySelectorAll('button').forEach(btn => {
+          const code = el.querySelector('pre.hidden').textContent
+          btn.addEventListener('click', () => {
+            navigator.clipboard.writeText(code)
+            btn.querySelector('.clipboard-copy-icon').classList.add('hidden');
+            btn.querySelector('.clipboard-check-icon').classList.remove('hidden');
+
+            setTimeout(() => {
+              btn.querySelector('.clipboard-copy-icon').classList.remove('hidden');
+              btn.querySelector('.clipboard-check-icon').classList.add('hidden');
+            }, 3000);
+          })
+        });
+      })
     }
   },
   mounted () {
-    document.querySelectorAll('a').forEach(el => {
-      const href = el.getAttribute('href');
-      if (href.startsWith('javascript:')) {
-        el.addEventListener('click', e => {
-          e.preventDefault();
-          eval('this.' + href.replace('javascript:', ''));
-        })
-        el.removeAttribute('target')
-      }
-    });
-    document.querySelectorAll('.remark-code-clipboard').forEach(el => {
-      el.querySelectorAll('button').forEach(btn => {
-        const code = el.querySelector('pre.hidden').textContent
-        btn.addEventListener('click', () => {
-          navigator.clipboard.writeText(code)
-          btn.querySelector('.clipboard-copy-icon').classList.add('hidden');
-          btn.querySelector('.clipboard-check-icon').classList.remove('hidden');
-
-          setTimeout(() => {
-            btn.querySelector('.clipboard-copy-icon').classList.remove('hidden');
-            btn.querySelector('.clipboard-check-icon').classList.add('hidden');
-          }, 3000);
-        })
-      });
-    })
-    this.$forceUpdate();
+    this.mount()
   }
 }
 </script>
