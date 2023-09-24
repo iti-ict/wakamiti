@@ -5,13 +5,9 @@ import DefaultLayout from '~/layouts/Default.vue'
 import '~/assets/scss/globals.scss'
 import '~/assets/scss/asciinema-player.css'
 import Vuex from 'vuex'
-import JSZip from "jszip";
-import https from "https";
 import {pathPrefix} from "../gridsome.config";
 require('typeface-source-sans-pro')
 
-// const absolutePath = process.env.CI_PAGES_URL
-// const pathPrefix = new URL(absolutePath).pathname
 export default function (Vue, { router, head, isClient, appOptions }) {
   Vue.use(Vuex)
 
