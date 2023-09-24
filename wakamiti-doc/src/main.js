@@ -5,7 +5,6 @@ import DefaultLayout from '~/layouts/Default.vue'
 import '~/assets/scss/globals.scss'
 import '~/assets/scss/asciinema-player.css'
 import Vuex from 'vuex'
-import {pathPrefix} from "../gridsome.config";
 require('typeface-source-sans-pro')
 
 export default function (Vue, { router, head, isClient, appOptions }) {
@@ -37,7 +36,9 @@ export default function (Vue, { router, head, isClient, appOptions }) {
     content: 'default'
   })
 
-  head.script.push({ src: pathPrefix + '/asciinema-player.min.js' })
+  if(!isClient) {
+    head.script.push({ src: require('../gridsome.config').pathPrefix + '/asciinema-player.min.js' })
+  }
 
   // State
   appOptions.store = new Vuex.Store({
