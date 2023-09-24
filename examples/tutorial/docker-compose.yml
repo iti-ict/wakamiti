@@ -24,6 +24,6 @@ services:
       - MYSQL_ROOT_PASSWORD=petclinic
       - MYSQL_DATABASE=petclinic
     healthcheck:
-      test: "/etc/init.d/mysql status"
+      test: ["CMD", "mysqladmin", "ping", "-p$$MYSQL_ROOT_PASSWORD","--protocol","tcp"]
       interval: 1s
-      retries: 120
+      retries: 30
