@@ -7,7 +7,7 @@ module.exports = (options) => {
     return (tree) => {
         visit(tree, "image", (node, index, parent) => {
             if (node.url == null || !node.url.startsWith('asciinema:')) return;
-            const parts = node.url.replace('asciiname:', '').split('?')
+            const parts = node.url.replace('asciinema:', '').split('?')
             const opts= querystring.parse(parts.length > 1 ? parts[1] : "", " ");
 
             const toString = obj => Object.entries(obj).map(([k, v]) => `${k}: '${v}'`).join(', ');
