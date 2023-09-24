@@ -26,7 +26,8 @@
     "vuex": "^3.1.1",
     "websocket-extensions": "^0.1.4",
     "mdast-util-toc": "^5.1.0",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "asciinema-player": "^3.6.1"
   },
   "devDependencies": {
     "node-sass": "^4.13.1",

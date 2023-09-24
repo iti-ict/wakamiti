@@ -37,6 +37,9 @@ export default function (Vue, { router, head, isClient, appOptions }) {
     content: 'default'
   })
 
+  head.script.push({ src: '/asciinema-player.min.js' })
+  head.link.push({ href: '/asciinema-player.css', rel: 'stylesheet' })
+
   // State
   appOptions.store = new Vuex.Store({
     state: {
