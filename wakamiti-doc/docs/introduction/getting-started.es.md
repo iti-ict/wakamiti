@@ -147,6 +147,6 @@ Los estados que existen actualmente en Wakamiti son:
 - <span style="color:#ff0000">**ERROR**</span>: hay un error no esperado en el sistema (error de conexión, error en base de 
   datos, error time out...).
 
-### ¡Aquí una demo!
+### ¡Aquí la demo!
 
 ![demo](asciinema:/wakamiti.cast)
