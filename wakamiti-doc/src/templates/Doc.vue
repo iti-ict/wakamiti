@@ -48,7 +48,8 @@ export default {
       document.querySelectorAll('.remark-asciinema').forEach(it => {
         const url = it.getAttribute('data-url')
         const opts = eval(it.getAttribute('data-opts'));
-        AsciinemaPlayer.create(`${this.$static.metadata.prefix}/${url}`, it, opts);
+        if (AsciinemaPlayer)
+          AsciinemaPlayer.create(`${this.$static.metadata.prefix}/${url}`, it, opts);
       })
     },
   },
