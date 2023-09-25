@@ -82,7 +82,7 @@ Create an empty file named `example.feature` with the following content:
 Feature: Get the pets owners
 
   Scenario: An existing owner is consulted
-    Given el servicio REST '/owners/{id}'
+    Given the REST service '/owners/{id}'
     And the path parameter 'id' with value '20'
     And the following user is inserted into the database table owners:
       | ID  | FIRST_NAME | LAST_NAME      |
@@ -143,4 +143,4 @@ The current states available in Wakamiti are:
 
 ### Here's the demo!
 
-![demo](asciinema:/wakamiti.cast)
+![demo](asciinema:/wakamiti_en.cast)

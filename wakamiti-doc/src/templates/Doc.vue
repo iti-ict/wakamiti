@@ -28,7 +28,6 @@ query {
 <script>
 import JSZip from "jszip";
 import https from "https";
-import querystring from "querystring";
 
 export default {
   metaInfo() {
