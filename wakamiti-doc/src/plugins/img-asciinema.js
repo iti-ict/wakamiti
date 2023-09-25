@@ -13,25 +13,25 @@ module.exports = (options) => {
             const toString = obj => Object.entries(obj).map(([k, v]) => `${k}: '${v}'`).join(', ');
 
             parent.children[index] = {
-                type: "wrapper",
-                data: {
-                    hName: "div",
-                    hProperties: {
-                        className: "remark-asciinema",
-                    },
-                },
-                children: [
-                    {
+                // type: "wrapper",
+                // data: {
+                //     hName: "div",
+                //     hProperties: {
+                //         className: "remark-asciinema",
+                //     },
+                // },
+                // children: [
+                //     {
                         type: "html",
-                        value: `<div id="${node.alt}"></div>`,
-                    },
-                    {
-                        type: "html",
-                        value: `
-<script async>AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
-`
-                    }
-                ],
+                        value: `<div class="remark-asciinema" id="${node.alt}" data-url="${parts[0]}" data-opts="{${toString(opts)}}"></div>`,
+                    // },
+//                     {
+//                         type: "html",
+//                         value: `
+// <script async>AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
+// `
+//                     }
+//                 ],
             };
         });
     }
