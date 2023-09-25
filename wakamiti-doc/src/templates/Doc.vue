@@ -109,9 +109,9 @@ export default {
     script.onload = this.changed
     document.head.appendChild(script);
 
-    document.querySelectorAll("#app").forEach(element => {
-      element.addEventListener('DOMSubtreeModified', this.changed, false)
-    })
+    // document.querySelectorAll("#app").forEach(element => {
+    //   element.addEventListener('DOMSubtreeModified', this.changed, false)
+    // })
   }
 }
 </script>
