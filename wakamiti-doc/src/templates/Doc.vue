@@ -43,6 +43,15 @@ export default {
       return this.$page.doc.content
     },
   },
+  methods: {
+    changed() {
+      document.querySelectorAll('.remark-asciinema').forEach(it => {
+        const url = it.getAttribute('data-url')
+        const opts = eval(it.getAttribute('data-opts'));
+        AsciinemaPlayer.create(`${this.$static.metadata.prefix}/${url}`, it, opts);
+      })
+    },
+  },
   mounted() {
 
     window.downloadTutorial = async () => {
@@ -92,21 +101,14 @@ export default {
     }
 
     const prefix = this.$static.metadata.prefix;
-    const changed = () => {
-      document.querySelectorAll('.remark-asciinema').forEach(it => {
-        const url = it.getAttribute('data-url')
-        const opts = eval(it.getAttribute('data-opts'));
-        AsciinemaPlayer.create(`${prefix}/${url}`, it, opts);
-      })
-    }
+
     const script = document.createElement('script')
     script.setAttribute('src', prefix + '/asciinema-player.min.js');
-    script.setAttribute('async', "true")
-    script.onload = changed
+    script.onload = this.changed
     document.head.appendChild(script);
 
     document.querySelectorAll("#app").forEach(element => {
-      element.addEventListener('DOMSubtreeModified', changed, false)
+      element.addEventListener('DOMSubtreeModified', this.changed, false)
     })
   }
 }
