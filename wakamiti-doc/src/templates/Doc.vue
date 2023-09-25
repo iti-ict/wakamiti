@@ -92,18 +92,22 @@ export default {
     }
 
     const prefix = this.$static.metadata.prefix;
-    const script = document.createElement('script')
-    script.setAttribute('src', prefix + '/asciinema-player.min.js');
-    script.setAttribute('async', "true")
-    script.onload = () => {
+    const changed = () => {
       document.querySelectorAll('.remark-asciinema').forEach(it => {
         const url = it.getAttribute('data-url')
         const opts = eval(it.getAttribute('data-opts'));
         AsciinemaPlayer.create(`${prefix}/${url}`, it, opts);
       })
-    }
+
+    const script = document.createElement('script')
+    script.setAttribute('src', prefix + '/asciinema-player.min.js');
+    script.setAttribute('async', "true")
+    script.onload = changed
     document.head.appendChild(script);
 
+    document.querySelectorAll("#app").forEach(element => {
+      element.addEventListener('DOMSubtreeModified', changed, false)
+    })
   }
 }
 </script>

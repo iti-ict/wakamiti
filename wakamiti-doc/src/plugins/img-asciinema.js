@@ -22,13 +22,13 @@ module.exports = (options) => {
                         type: "html",
                         value: `<div class="remark-asciinema" id="${node.alt}" data-url="${parts[0]}" data-opts="{${toString(opts)}}"></div>`,
                     },
-                    {
-                        type: "html",
-                        value: `
-<script async>if (AsciinemaPlayer) 
-    AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
-`
-                    }
+//                     {
+//                         type: "html",
+//                         value: `
+// <script async>if (AsciinemaPlayer)
+//     AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
+// `
+//                     }
                 ],
             };
         });
