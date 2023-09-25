@@ -28,7 +28,7 @@ module.exports = (options) => {
                     {
                         type: "html",
                         value: `
-<script async>AsciinemaPlayer.create('${options.pathPrefix}${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
+<script async>AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
 `
                     }
                 ],

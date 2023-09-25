@@ -26,6 +26,7 @@ query {
 </static-query>
 
 <script>
+import * as AsciinemaPlayer from 'asciinema-player';
 import JSZip from "jszip";
 import https from "https";
 
@@ -91,10 +92,10 @@ export default {
       }, 3000);
     }
 
-    const script = document.createElement('script')
-    script.setAttribute('src', this.$static.metadata.prefix + '/asciinema-player.min.js');
-    script.setAttribute('async', null)
-    document.head.appendChild(script);
+    // const script = document.createElement('script')
+    // script.setAttribute('src', this.$static.metadata.prefix + '/asciinema-player.min.js');
+    // script.setAttribute('async', "true")
+    // document.head.appendChild(script);
   }
 }
 </script>
