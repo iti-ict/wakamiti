@@ -98,7 +98,7 @@ export default {
         const opts = eval(it.getAttribute('data-opts'));
         AsciinemaPlayer.create(`${prefix}/${url}`, it, opts);
       })
-
+    }
     const script = document.createElement('script')
     script.setAttribute('src', prefix + '/asciinema-player.min.js');
     script.setAttribute('async', "true")
