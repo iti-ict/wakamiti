@@ -17,6 +17,13 @@ query Doc ($path: String!) {
   }
 }
 </page-query>
+<static-query>
+query {
+  metadata {
+    prefix
+  }
+}
+</static-query>
 
 <script>
 import JSZip from "jszip";
