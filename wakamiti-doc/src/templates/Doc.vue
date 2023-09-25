@@ -37,6 +37,7 @@ export default {
     },
   },
   mounted() {
+
     window.downloadTutorial = async () => {
       const zip = new JSZip();
       const base = 'https://raw.githubusercontent.com/iti-ict/wakamiti/main/examples/tutorial';
@@ -82,6 +83,10 @@ export default {
         btn.querySelector('.clipboard-check-icon').classList.add('hidden');
       }, 3000);
     }
+
+    const script = document.createElement('script')
+    script.setAttribute('src', this.$static.metadata.prefix + 'asciinema-player.min.js');
+    document.head.appendChild(script);
   }
 }
 </script>
