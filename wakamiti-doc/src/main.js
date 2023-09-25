@@ -36,9 +36,9 @@ export default function (Vue, { router, head, isClient, appOptions }) {
     content: 'default'
   })
 
-  if(!isClient) {
+  try {
     head.script.push({ src: require('../gridsome.config').pathPrefix + '/asciinema-player.min.js' })
-  }
+  } catch (e) { }
 
   // State
   appOptions.store = new Vuex.Store({
