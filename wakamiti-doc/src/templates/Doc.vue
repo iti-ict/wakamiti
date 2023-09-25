@@ -93,6 +93,7 @@ export default {
 
     const script = document.createElement('script')
     script.setAttribute('src', this.$static.metadata.prefix + '/asciinema-player.min.js');
+    script.setAttribute('async', null)
     document.head.appendChild(script);
   }
 }
