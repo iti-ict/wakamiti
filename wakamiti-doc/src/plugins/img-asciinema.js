@@ -20,7 +20,7 @@ module.exports = (options) => {
                 children: [
                     {
                         type: "html",
-                        value: `<div class="remark-asciinema" id="${node.alt}" data-url="${parts[0]}" data-opts="${JSON.stringify(opts)}"></div>`,
+                        value: `<div class="remark-asciinema" id="${node.alt}" data-url="${parts[0]}" data-opts='${JSON.stringify(opts)}'></div>`,
                     },
 //                     {
 //                         type: "html",
