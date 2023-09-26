@@ -47,7 +47,7 @@ export default {
     changed() {
       document.querySelectorAll('.remark-asciinema').forEach(it => {
         const url = it.getAttribute('data-url')
-        const opts = eval(it.getAttribute('data-opts'));
+        const opts = JSON.parse(it.getAttribute('data-opts'));
         try {
           if (it.querySelectorAll('.ap-wrapper').length === 0)
             AsciinemaPlayer.create(`${this.$static.metadata.prefix}/${url}`, it, opts);
