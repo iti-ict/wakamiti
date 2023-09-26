@@ -143,4 +143,4 @@ The current states available in Wakamiti are:
 
 ### Here's the demo!
 
-![demo](asciinema:/wakamiti_en.cast?poster=npt:140:76&cols=86)
+![demo](asciinema:/wakamiti_en.cast?poster=npt:2:25&cols=86&fit=width)

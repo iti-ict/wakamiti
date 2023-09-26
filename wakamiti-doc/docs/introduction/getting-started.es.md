@@ -149,4 +149,4 @@ Los estados que existen actualmente en Wakamiti son:
 
 ### ¡Aquí la demo!
 
-![demo](asciinema:/wakamiti.cast?poster=npt:140:76&cols=86)
+![demo](asciinema:/wakamiti.cast?poster=npt:2:25&cols=86&fit=width)
