@@ -13,6 +13,7 @@ import es.iti.wakamiti.database.ConnectionManager;
 
 
 module es.iti.wakamiti.db {
+
     exports es.iti.wakamiti.database;
     exports es.iti.wakamiti.database.dataset;
 
@@ -30,9 +31,14 @@ module es.iti.wakamiti.db {
     requires java.sql.rowset;
     requires slf4jansi;
 
+    uses ConnectionManager;
+
     provides StepContributor with DatabaseStepContributor;
     provides ConfigContributor with DatabaseConfigContributor;
     provides ConnectionManager with DriverConnectionManager;
+
+
+
 
 }
 

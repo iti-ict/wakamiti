@@ -18,7 +18,7 @@
 
 
     <artifactId>io-wakamiti-plugin</artifactId>
-    <version>2.3.3</version>
+    <version>2.4.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Files Steps</name>
     <description>Files steps for Wakamiti</description>
@@ -27,6 +27,11 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-api</artifactId>
+            <version>2.4.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -52,7 +57,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.3.3</version>
+            <version>2.4.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 

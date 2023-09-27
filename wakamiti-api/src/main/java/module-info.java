@@ -27,6 +27,8 @@ module es.iti.wakamiti.api {
     requires json.path;
     requires org.apache.groovy;
 
+    opens es.iti.wakamiti.api.plan to com.fasterxml.jackson.databind;
+
     uses PropertyEvaluator;
     uses WakamitiAPI;
     uses ResourceType;

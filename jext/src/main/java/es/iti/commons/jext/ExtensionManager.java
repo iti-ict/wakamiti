@@ -73,8 +73,8 @@ public class ExtensionManager {
      */
     public <T> Extension getExtensionMetadata(T extension) {
         return extensionMetadata.computeIfAbsent(
-            extension,
-            e -> e.getClass().getAnnotation(Extension.class)
+                extension,
+                e -> e.getClass().getAnnotation(Extension.class)
         );
     }
 
@@ -115,8 +115,8 @@ public class ExtensionManager {
      * @return An optional object either empty or wrapping the instance
      */
     public <T> Optional<T> getExtensionThatSatisfy(
-        Class<T> extensionPoint,
-        Predicate<T> condition
+            Class<T> extensionPoint,
+            Predicate<T> condition
     ) {
         return loadFirst(ExtensionLoadContext.satisfying(extensionPoint, condition));
     }
@@ -133,8 +133,8 @@ public class ExtensionManager {
      * @return An optional object either empty or wrapping the instance
      */
     public <T> Optional<T> getExtensionThatSatisfyMetadata(
-        Class<T> extensionPoint,
-        Predicate<Extension> condition
+            Class<T> extensionPoint,
+            Predicate<Extension> condition
     ) {
         return loadFirst(ExtensionLoadContext.satisfyingData(extensionPoint, condition));
     }
@@ -176,48 +176,40 @@ public class ExtensionManager {
      * @return A list with the extensions, empty if none was found
      */
     public <T> Stream<T> getExtensionsThatSatisfyMetadata(
-        Class<T> extensionPoint,
-        Predicate<Extension> condition
+            Class<T> extensionPoint,
+            Predicate<Extension> condition
     ) {
         return loadAll(ExtensionLoadContext.satisfyingData(extensionPoint, condition));
     }
 
 
-    protected <T> Stream<T> loadAll(ExtensionLoadContext<T> context) {
+    private <T> Stream<T> loadAll(ExtensionLoadContext<T> context) {
         return obtainCachedValidExtensions(context).stream()
-            .filter(context.condition())
-            .sorted(sortByPriority())
-            .map(extension -> resolveInstance(extension, context));
+                .filter(context.condition())
+                .sorted(sortByPriority())
+                .map(extension -> resolveInstance(extension, context));
     }
 
 
-    protected <T> Optional<T> loadFirst(ExtensionLoadContext<T> context) {
+    private <T> Optional<T> loadFirst(ExtensionLoadContext<T> context) {
         return obtainCachedValidExtensions(context).stream()
-            .filter(context.condition())
-            .sorted(sortByPriority())
-            .findFirst()
-            .map(extension -> resolveInstance(extension, context));
+                .filter(context.condition())
+                .min(sortByPriority())
+                .map(extension -> resolveInstance(extension, context));
     }
 
 
-    protected <T> T resolveInstance(T extension, ExtensionLoadContext<T> context) {
-        T instance = null;
-        switch (context.extensionPointData().loadStrategy()) {
-        case SINGLETON:
-            instance = singleton(extension);
-            break;
-        case FRESH:
-            instance = newInstance(extension);
-            break;
-        default:
-            instance = extension;
-        }
-        return instance;
+    private <T> T resolveInstance(T extension, ExtensionLoadContext<T> context) {
+        return switch (context.extensionPointData().loadStrategy()) {
+            case SINGLETON -> singleton(extension);
+            case FRESH -> newInstance(extension);
+            default -> extension;
+        };
     }
 
 
     @SuppressWarnings("unchecked")
-    protected <T> List<T> obtainCachedValidExtensions(ExtensionLoadContext<T> context) {
+    private <T> List<T> obtainCachedValidExtensions(ExtensionLoadContext<T> context) {
         List<Object> cache = cachedValidExtensionInstances.get(context.extensionPoint());
         if (cache != null) {
             LOGGER.trace("{} :: Retrieved from cache [{}]", context, cache);
@@ -229,7 +221,7 @@ public class ExtensionManager {
     }
 
 
-    protected <T> List<T> obtainValidExtensions(ExtensionLoadContext<T> context) {
+    private <T> List<T> obtainValidExtensions(ExtensionLoadContext<T> context) {
 
         this.validExtensions.putIfAbsent(context.extensionPoint(), new HashSet<>());
         this.invalidExtensions.putIfAbsent(context.extensionPoint(), new HashSet<>());
@@ -237,13 +229,13 @@ public class ExtensionManager {
         List<T> collectedExtensions = new ArrayList<>();
         for (ClassLoader classLoader : classLoaders) {
             collectValidExtensions(
-                context.withInternalLoader(classLoader, builtInExtensionLoader),
-                collectedExtensions
+                    context.withInternalLoader(classLoader, builtInExtensionLoader),
+                    collectedExtensions
             );
             for (ExtensionLoader extensionLoader : extensionLoaders) {
                 collectValidExtensions(
-                    context.withExternalLoader(classLoader, extensionLoader),
-                    collectedExtensions
+                        context.withExternalLoader(classLoader, extensionLoader),
+                        collectedExtensions
                 );
             }
         }
@@ -253,17 +245,17 @@ public class ExtensionManager {
 
 
     private <T> void collectValidExtensions(
-        ExtensionLoadContext<T> context,
-        List<T> collectedExtensions
+            ExtensionLoadContext<T> context,
+            List<T> collectedExtensions
     ) {
         Class<T> extensionPoint = context.extensionPoint();
         LOGGER.trace("{} :: Searching...", context);
         for (T extension : context.load()) {
             if (hasBeenInvalidated(extensionPoint, extension)) {
                 LOGGER.trace(
-                    "{} :: Found {} but ignored (it is marked as invalid)",
-                    context,
-                    extension
+                        "{} :: Found {} but ignored (it is marked as invalid)",
+                        context,
+                        extension
                 );
                 break;
             }
@@ -274,9 +266,9 @@ public class ExtensionManager {
                     collectedExtensions.add(extension);
                 } else {
                     LOGGER.trace(
-                        "{} :: Found {} but ignored (marked as invalid)",
-                        context,
-                        extension
+                            "{} :: Found {} but ignored (marked as invalid)",
+                            context,
+                            extension
                     );
                 }
             }
@@ -284,15 +276,15 @@ public class ExtensionManager {
     }
 
 
-    protected <T> boolean validateExtension(ExtensionLoadContext<T> context, T extension) {
+    private <T> boolean validateExtension(ExtensionLoadContext<T> context, T extension) {
         Class<T> extensionPoint = context.extensionPoint();
         ExtensionPoint extensionPointData = context.extensionPointData();
         Extension extensionData = getExtensionMetadata(extension);
 
         if (extensionData == null) {
             LOGGER.warn(
-                "Class {} is not annotated with @Extension and will be ignored",
-                extension.getClass()
+                    "Class {} is not annotated with @Extension and will be ignored",
+                    extension.getClass()
             );
             this.invalidExtensions.get(extensionPoint).add(extension.getClass());
             return false;
@@ -305,10 +297,10 @@ public class ExtensionManager {
 
         if (!areCompatible(extensionPointData, extensionData)) {
             LOGGER.warn(
-                "Extension point version of {} ({}) is not compatible with expected version {}",
-                id(extensionData),
-                extensionData.extensionPointVersion(),
-                extensionPointData.version()
+                    "Extension point version of {} ({}) is not compatible with expected version {}",
+                    id(extensionData),
+                    extensionData.extensionPointVersion(),
+                    extensionPointData.version()
             );
             this.invalidExtensions.get(extensionPoint).add(extension.getClass());
             return false;
@@ -322,16 +314,16 @@ public class ExtensionManager {
     private <T> void filterOverridenExtensions(List<T> extensions) {
 
         List<T> overridableExtensions = extensions.stream()
-            .filter(extension -> getExtensionMetadata(extension).overridable())
-            .collect(Collectors.toList());
+                .filter(extension -> getExtensionMetadata(extension).overridable())
+                .toList();
 
         Map<String, T> overridableExtensionClassNames = overridableExtensions.stream()
-            .collect(
-                Collectors.toMap(
-                    extension -> extension.getClass().getCanonicalName(),
-                    Function.identity()
-                )
-            );
+                .collect(
+                        Collectors.toMap(
+                                extension -> extension.getClass().getCanonicalName(),
+                                Function.identity()
+                        )
+                );
 
         for (T extension : new ArrayList<>(extensions)) {
             Extension metadata = getExtensionMetadata(extension);
@@ -340,9 +332,9 @@ public class ExtensionManager {
                 extensions.remove(overridable);
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.info(
-                        "Extension {} overrides extension {}",
-                        id(getExtensionMetadata(extension)),
-                        id(getExtensionMetadata(overridable))
+                            "Extension {} overrides extension {}",
+                            id(getExtensionMetadata(extension)),
+                            id(getExtensionMetadata(overridable))
                     );
                 }
             }
@@ -354,7 +346,7 @@ public class ExtensionManager {
         ExtensionVersion extensionPointVersion = new ExtensionVersion(extensionPointData.version());
         try {
             ExtensionVersion extensionDataPointVersion = new ExtensionVersion(
-                extensionData.extensionPointVersion()
+                    extensionData.extensionPointVersion()
             );
             return extensionDataPointVersion.isCompatibleWith(extensionPointVersion);
         } catch (IllegalArgumentException e) {
@@ -370,10 +362,10 @@ public class ExtensionManager {
             return (T) extension.getClass().getConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             LOGGER.error(
-                "Error loading new instance of {} : {}",
-                extension.getClass(),
-                e.getMessage(),
-                e
+                    "Error loading new instance of {} : {}",
+                    extension.getClass(),
+                    e.getMessage(),
+                    e
             );
             return null;
         }

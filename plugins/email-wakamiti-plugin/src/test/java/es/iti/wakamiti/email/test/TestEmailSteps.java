@@ -16,31 +16,25 @@ import imconfig.AnnotatedConfiguration;
 import imconfig.Configuration;
 import imconfig.Property;
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.mail.Flags;
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
+
 
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
-    @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
-    @Property(key = EmailConfigContributor.STORE_HOST, value = "localhost"),
-    @Property(key = EmailConfigContributor.STORE_PROTOCOL, value = "imap"),
-    @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
-    @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
-    @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
-    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
+        @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
+        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
+        @Property(key = EmailConfigContributor.STORE_HOST, value = "localhost"),
+        @Property(key = EmailConfigContributor.STORE_PROTOCOL, value = "imap"),
+        @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
+        @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
+        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
+        @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
 })
 @I18nResource("test-steps")
 public class TestEmailSteps implements StepContributor {
@@ -78,24 +72,24 @@ public class TestEmailSteps implements StepContributor {
                 "Test Body",
                 mailServer.getSmtp().getServerSetup()
         );
-        wait(Duration.ONE_SECOND);
+        wait(Duration.ofSeconds(1L));
     }
 
 
     @Step("email.test.send.attachment.mail")
     public void sendAttachmentMail() {
         GreenMailUtil.sendAttachmentEmail(
-            "test@localhost",
-            "sender@localhost",
-            "Test Subject",
-            "Test Body",
-            "Attachment".getBytes(),
-            "text/plain",
-            "attachment.txt",
-            "Test attachment",
-            mailServer.getSmtp().getServerSetup()
+                "test@localhost",
+                "sender@localhost",
+                "Test Subject",
+                "Test Body",
+                "Attachment".getBytes(),
+                "text/plain",
+                "attachment.txt",
+                "Test attachment",
+                mailServer.getSmtp().getServerSetup()
         );
-        wait(Duration.ONE_SECOND);
+        wait(Duration.ofSeconds(1L));
     }
 
 

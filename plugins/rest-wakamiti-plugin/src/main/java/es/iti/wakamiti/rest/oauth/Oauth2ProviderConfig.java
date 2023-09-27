@@ -20,7 +20,7 @@ public class Oauth2ProviderConfig {
 
     private static final String GRANT_TYPE = "grant_type";
 
-    private static final Map<List<Object>, String> cachedToken = new HashMap<>();
+    public static final Map<List<Object>, String> cachedToken = new HashMap<>();
     private final Map<String, String> parameters = new LinkedHashMap<>();
     private boolean cacheAuth;
     private GrantType type;

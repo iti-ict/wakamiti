@@ -56,7 +56,7 @@ public class RestSupport {
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
-    protected Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
+    public Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
     protected Optional<Consumer<RequestSpecification>> authSpecification = Optional.empty();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
@@ -107,7 +107,7 @@ public class RestSupport {
                 .statusCode(failureHttpCodeAssertion);
     }
 
-    protected String retrieveOauthToken() {
+    public String retrieveOauthToken() {
         final String ACCESS_TOKEN = "access_token";
         return oauth2ProviderConfig.findCachedToken()
                 .orElseGet(() -> {

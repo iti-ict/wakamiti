@@ -37,7 +37,7 @@ import javax.tools.StandardLocation;
 
 
 @SupportedAnnotationTypes( "es.iti.commons.jext.Extension")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class ExtensionProcessor extends AbstractProcessor {
 
     @Override

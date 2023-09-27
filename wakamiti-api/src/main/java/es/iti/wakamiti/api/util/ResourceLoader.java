@@ -361,6 +361,37 @@ public class ResourceLoader {
     }
 
 
+    public InputStream openClasspathResource(String resource, ClassLoader classLoader) {
+
+        try {
+            Iterator<Path> i = Path.of(resource).iterator();
+            StringBuilder uri = new StringBuilder();
+            while (i.hasNext()) {
+                String name = i.next().toString();
+                if (uri.isEmpty()) {
+                    URL url = classLoader.getResource(name);
+                    if (url == null) {
+                        throw new IOException();
+                    }
+                    uri.append(url);
+                } else {
+                    uri.append("/").append(name);
+                }
+            }
+            String finalUri = uri.toString();
+
+            if (finalUri.isBlank()) {
+                throw new WakamitiException("Cannot retrieve resource {}", resource);
+            }
+            return new URL(finalUri).openStream();
+
+        } catch (IOException e) {
+            throw new WakamitiException("Cannot retrieve resource {}", resource, e);
+        }
+    }
+
+
+
     protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
         try {
             return Collections.list(classLoader.getResources(classPath)).stream()

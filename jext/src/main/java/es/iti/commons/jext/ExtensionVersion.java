@@ -10,13 +10,13 @@
 package es.iti.commons.jext;
 
 
-class ExtensionVersion {
+public class ExtensionVersion {
 
     private final int major;
     private final int minor;
 
 
-    ExtensionVersion(String version) {
+    public ExtensionVersion(String version) {
         String[] str = version.split("\\.");
         if (str.length != 2) {
             throw new IllegalArgumentException("Not valid version number " + version);
@@ -26,7 +26,7 @@ class ExtensionVersion {
             this.minor = Integer.parseInt(str[1]);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                "Not valid version number " + version + " (" + e.getMessage() + ")"
+                    "Not valid version number " + version + " (" + e.getMessage() + ")"
             );
         }
     }

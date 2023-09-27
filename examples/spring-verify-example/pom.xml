@@ -16,7 +16,7 @@
     <version>2.0.1</version>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <wakamitiLog>debug</wakamitiLog>
         <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
@@ -263,7 +263,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                     <verbose>${verbose}</verbose>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>

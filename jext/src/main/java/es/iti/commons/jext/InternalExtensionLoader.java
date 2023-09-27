@@ -30,7 +30,7 @@ class InternalExtensionLoader implements ExtensionLoader {
             InternalExtensionLoader.class.getModule().addUses(type);
             return ServiceLoader.load(type, loader);
         } catch (ServiceConfigurationError e) {
-            LOGGER.debug(e.toString());
+            LOGGER.warn(e.toString());
             return List.of();
         }
     }

@@ -9,10 +9,12 @@ import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.report.html.factory.CountStepsMethod;
 import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
@@ -24,12 +26,14 @@ import freemarker.template.TemplateExceptionHandler;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.lang.module.ModuleFinder;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
@@ -63,7 +67,7 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     private static ClassLoader classLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        return HtmlReportGenerator.class.getModule().getClassLoader();
     }
 
     void setCssFile(String cssFile) {
@@ -163,9 +167,13 @@ public class HtmlReportGenerator implements Reporter {
         return templateConfiguration.getTemplate(resource);
     }
 
+
+
     private InputStream resource(String resource) {
-        return classLoader().getResourceAsStream(resource);
+        return WakamitiAPI.instance().resourceLoader().openClasspathResource(resource,classLoader());
     }
+
+
 
     private String version() {
         return getClass().getPackage().getImplementationVersion();

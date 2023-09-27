@@ -7,6 +7,8 @@ import es.iti.wakamiti.fileuploader.TestCaseOutputFilesUploader;
 
 module es.iti.wakamiti.file.uploader {
 
+    exports es.iti.wakamiti.fileuploader;
+
     requires es.iti.wakamiti.api;
     requires org.apache.commons.net;
     requires jsch;

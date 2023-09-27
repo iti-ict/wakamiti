@@ -9,7 +9,7 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.rest.RestConfigContributor;
 import es.iti.wakamiti.rest.RestStepContributor;
 
-module es.iti.wakamiti.rest {
+open module es.iti.wakamiti.rest {
 
     exports es.iti.wakamiti.rest;
     exports es.iti.wakamiti.rest.oauth;

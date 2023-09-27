@@ -18,7 +18,7 @@
 
 
     <artifactId>rest-wakamiti-plugin</artifactId>
-    <version>2.3.3</version>
+    <version>2.4.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] REST Steps</name>
     <description>REST steps for Wakamiti</description>
@@ -51,6 +51,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>jackson-coreutils</artifactId>
+            <version>1.8</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -67,17 +72,30 @@
             <artifactId>plexus-utils</artifactId>
             <version>4.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
 
 
         <!-- test -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.29</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.3.3</version>
+            <version>2.4.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -104,8 +122,33 @@
             <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>32.0.1-jre</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
