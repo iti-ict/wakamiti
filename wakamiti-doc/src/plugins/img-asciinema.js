@@ -10,8 +10,6 @@ module.exports = (options) => {
             const parts = node.url.replace('asciinema:', '').split('?')
             const opts= querystring.parse(parts.length > 1 ? parts[1] : "", "&");
 
-            const toString = obj => Object.entries(obj).map(([k, v]) => `${k}: '${v}'`).join(', ');
-
             parent.children[index] = {
                 type: "wrapper",
                 data: {
@@ -21,14 +19,7 @@ module.exports = (options) => {
                     {
                         type: "html",
                         value: `<div class="remark-asciinema" id="${node.alt}" data-url="${parts[0]}" data-opts='${JSON.stringify(opts)}'></div>`,
-                    },
-//                     {
-//                         type: "html",
-//                         value: `
-// <script async>if (AsciinemaPlayer)
-//     AsciinemaPlayer.create('${options.pathPrefix}/${parts[0]}', document.getElementById('${node.alt}'), {${toString(opts)}});</script>
-// `
-//                     }
+                    }
                 ],
             };
         });

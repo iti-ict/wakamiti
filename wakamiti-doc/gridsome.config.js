@@ -42,7 +42,7 @@ module.exports = {
             require('./src/plugins/code-tabs.js'),
             require('./src/plugins/code-button.js'),
             require('./src/plugins/link-javascript'),
-            [require('./src/plugins/img-asciinema'), { pathPrefix }],
+            require('./src/plugins/img-asciinema'),
             '@gridsome/remark-prismjs',
             ["@mgalbis/remark-prefix-links", { pathPrefix }]
           ]
