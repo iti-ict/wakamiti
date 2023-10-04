@@ -1,0 +1,77 @@
+<archetype-descriptor
+        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
+        name="quickstart">
+
+    <requiredProperties>
+        <requiredProperty key="pluginId"/>
+        <requiredProperty key="PluginId">
+            <defaultValue>${pluginId.toLowerCase().substring(0,1).toUpperCase()}${pluginId.toLowerCase().substring(1)}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="package">
+            <defaultValue>es.iti.wakamiti.plugins.${pluginId}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginName">
+            <defaultValue>${pluginId}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="pluginDescription">
+            <defaultValue>${pluginId}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="defaultWakamitiApiVersion">
+            <defaultValue>2.3.2</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="defaultWakamitiCoreVersion">
+            <defaultValue>2.3.2</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="wakamitiApiVersion">
+            <defaultValue>${defaultWakamitiApiVersion}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="wakamitiCoreVersion">
+            <defaultValue>${defaultWakamitiCoreVersion}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="groupId">
+            <defaultValue>es.iti.wakamiti</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="artifactId">
+            <defaultValue>${pluginId}-wakamiti-plugin</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
+
+
+    <fileSets>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>CHANGELOG.md</include>
+                <include>LICENSE.md</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/test/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/test/resources</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+
+
+</archetype-descriptor>
