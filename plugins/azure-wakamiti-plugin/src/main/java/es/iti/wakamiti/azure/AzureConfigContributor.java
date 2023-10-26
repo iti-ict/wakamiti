@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 public class AzureConfigContributor implements ConfigContributor<AzureReporter> {
 
 
+    public static final String AZURE_DISABLED = "azure.disabled";
     public static final String AZURE_HOST = "azure.host";
     public static final String AZURE_CREDENTIALS_USER = "azure.credentials.user";
     public static final String AZURE_CREDENTIALS_PASSWORD = "azure.credentials.password";
@@ -36,6 +37,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
+            AZURE_DISABLED, "false",
             AZURE_CREDENTIALS_USER, "",
             AZURE_CREDENTIALS_PASSWORD, "",
             AZURE_TAG, DEFAULT_AZURE_TAG,
@@ -56,6 +58,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureReporter> 
 
 
     private void configure(AzureReporter azureReporter, Configuration configuration) {
+        azureReporter.setDisabled(configuration.get(AZURE_DISABLED,Boolean.class).orElse(Boolean.FALSE));
         requiredProperty(configuration,azureReporter,AZURE_HOST, AzureReporter::setHost);
         requiredProperty(configuration,azureReporter,AZURE_ORGANIZATION,AzureReporter::setOrganization);
         requiredProperty(configuration,azureReporter,AZURE_PROJECT,AzureReporter::setProject);

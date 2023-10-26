@@ -84,7 +84,7 @@ Coordenadas
 wakamiti:
     launcher:
         modules:
-            - es.iti.wakamiti:azure-wakamiti-plugin:1.4.0
+            - es.iti.wakamiti:azure-wakamiti-plugin:1.5.0
 ```
 
 ### Maven
@@ -93,7 +93,7 @@ wakamiti:
   <dependency>
     <groupId>es.iti.wakamiti</groupId>
     <artifactId>azure-wakamiti-plugin</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
   </dependency>
 ```
 
