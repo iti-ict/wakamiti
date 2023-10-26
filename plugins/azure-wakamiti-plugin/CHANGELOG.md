@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning][2].
 ## [1.5.0] - 2023-10-26
 
 ### Added
+- Add configuration `azure.disabled` in order to disabled entirely the plugin
 - Add property `azureTestId` to bound a feature/scenario to an existing test case in Azure
 
 ### Modified
 - Test case names in Azure are updated if modified in Wakamamiti
+
 
 
 ## [1.4.1] - 2023-09-14

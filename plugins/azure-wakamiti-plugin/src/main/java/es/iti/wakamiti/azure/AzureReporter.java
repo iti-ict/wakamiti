@@ -35,6 +35,7 @@ public class AzureReporter implements Reporter {
     public static final String AZURE_ITERATION = "azureIteration";
     public static final String AZURE_TEST_ID = "azureTestId";
 
+    private boolean disabled;
     private String host;
     private String credentialsUser;
     private String credentialsPassword;
@@ -48,6 +49,10 @@ public class AzureReporter implements Reporter {
     private boolean createItemsIfAbsent;
     private int timeZoneAdjustment;
 
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public void setHost(String host) {
         this.host = host;
@@ -100,6 +105,10 @@ public class AzureReporter implements Reporter {
 
     @Override
     public void report(PlanNodeSnapshot result) {
+
+        if (disabled) {
+            return;
+        }
 
         AzureApi api = new AzureApi(
             "https://"+host+"/"+organization+"/"+project,
