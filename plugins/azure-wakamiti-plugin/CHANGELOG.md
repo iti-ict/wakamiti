@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [1.5.0] - 2023-10-26
+
+### Added
+- Add property `azureTestId` to bound a feature/scenario to an existing test case in Azure
+
+### Modified
+- Test case names in Azure are updated if modified in Wakamamiti
+
 
 ## [1.4.1] - 2023-09-14
 

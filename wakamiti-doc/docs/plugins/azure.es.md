@@ -17,7 +17,7 @@ Para que el plugin envíe los resultados, se deben cumplir dos condiciones:
     - `azureArea` : nombre del área al que pertenece el plan
     - `azureIteration` : ruta de la iteración del plan, separada por `\\`
     - `azureTest` : nombre del caso de test (si no se indica, se tomará el nombre de la carácterística/escenario de Wakamiti)
-
+    - `azureTestId` : identificador del elemento de trabajo correspondiente al caso de test en Azure
 
 Los casos de test que no tengan esto definido se ignorarán a la hora de hacer la integración.
 
@@ -52,6 +52,7 @@ Escenario: Alta de usuario existente
 Característica: Pruebas de alta de usuario
 
 # azureTest: MyFirstTest
+# azureTestId: 543543  
 Escenario: Alta de usuario inexiste
 ...
 
