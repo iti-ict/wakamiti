@@ -114,6 +114,8 @@ public class AzureApi {
 
 
 
+
+
     public String getTestPointID(String planID, String suiteID, String testCaseID) {
         String url = APIS_TEST_PLANS +planID+"/suites/"+suiteID+"/points?testCaseId="+testCaseID;
         String response = get(url);
@@ -152,6 +154,15 @@ public class AzureApi {
         appendTesCase(suite, workItemID);
         return workItemID;
     }
+
+
+
+    public void updateTestCaseName(String testCaseID, String testName) {
+        String url = APIS_WIT_WORKITEMS + testCaseID;
+        String payload = "[{ \"op\":\"replace\", \"path\":\"/fields/System.Title\", \"from\": null, \"value\": \""+testName+"\" }]";
+        patch(url, payload, "application/json-patch+json");
+    }
+
 
 
     private String createTestCaseWorkItem(String testName) {
@@ -266,15 +277,21 @@ public class AzureApi {
     private String extract(String json, String path, String errorMessage) {
         logger.debug("checking path {}",path);
         Object object = JsonPath.read(json, path);
+        if (object == null) {
+            throw new NoSuchElementException(errorMessage);
+        }
+        String extracted;
         if (object instanceof List<?>) {
             List<?> list = (List<?>) object;
             if (list.isEmpty()) {
                 throw new NoSuchElementException(errorMessage);
             }
-            return list.get(0).toString();
+            extracted = list.get(0).toString();
         } else {
-            return object.toString();
+            extracted = object.toString();
         }
+        logger.debug(extracted);
+        return extracted;
     }
 
 
