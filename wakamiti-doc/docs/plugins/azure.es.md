@@ -4,18 +4,18 @@ date: 2023-07-04
 slug: /plugins/azure
 ---
 
-Este plugin integra los resultados de la ejecución de Wakamiti con un plan de test de [Azure](https://azure.microsoft.com/) 
+Este plugin integra los resultados de la ejecución de Wakamiti con un plan de test de [Azure](https://azure.microsoft.com/)
 existente, al tiempo que permite adjuntar ficheros (como el generado por el plugin HTML Reporter) en la ejecución.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:azure-wakamiti-plugin:1.4.2
+es.iti.wakamiti:azure-wakamiti-plugin:1.5.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>
-  <version>1.4.2</version>
+  <version>1.5.0</version>
 </dependency>
 ```
 
@@ -26,6 +26,20 @@ es.iti.wakamiti:azure-wakamiti-plugin:1.4.2
 
 ---
 ## Configuración
+
+
+###  `azure.disabled`
+Desactiva por completo la funcionalidad de este plugin.
+
+El valor por defecto es `false`.
+
+Example:
+
+```yaml
+azure:
+  disabled: true
+  
+```
 
 
 ###  `azure.host`
@@ -199,6 +213,7 @@ Para que el plugin envíe los resultados, se deben cumplir dos condiciones:
   - `azureArea` : nombre del área al que pertenece el plan
   - `azureIteration` : ruta de la iteración del plan, separada por `\\`
   - `azureTest` : nombre del caso de test (si no se indica, se tomará el nombre de la carácterística/escenario de Wakamiti)
+  - `azureTestId` : identificador del elemento de trabajo correspondiente al caso de test en Azure
 
 
 Los casos de test que no tengan esto definido se ignorarán a la hora de hacer la integración.
@@ -234,6 +249,7 @@ Escenario: Alta de usuario existente
 Característica: Pruebas de alta de usuario
 
 # azureTest: MyFirstTest
+# azureTestId: 543543
 Escenario: Alta de usuario inexiste
 ...
 

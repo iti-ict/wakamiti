@@ -33,7 +33,9 @@ public class AzureReporter implements Reporter {
     public static final String AZURE_TEST = "azureTest";
     public static final String AZURE_AREA = "azureArea";
     public static final String AZURE_ITERATION = "azureIteration";
+    public static final String AZURE_TEST_ID = "azureTestId";
 
+    private boolean disabled;
     private String host;
     private String credentialsUser;
     private String credentialsPassword;
@@ -47,6 +49,10 @@ public class AzureReporter implements Reporter {
     private boolean createItemsIfAbsent;
     private int timeZoneAdjustment;
 
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public void setHost(String host) {
         this.host = host;
@@ -99,6 +105,10 @@ public class AzureReporter implements Reporter {
 
     @Override
     public void report(PlanNodeSnapshot result) {
+
+        if (disabled) {
+            return;
+        }
 
         AzureApi api = new AzureApi(
             "https://"+host+"/"+organization+"/"+project,
@@ -212,15 +222,22 @@ public class AzureReporter implements Reporter {
         Map<String,PlanNodeSnapshot> testPoints = new HashMap<>();
         for (PlanNodeSnapshot testCase : planTestCases) {
             String testName = property(testCase, AZURE_TEST, testCase.getName());
-            String planID = suite.plan().id();
-            String suiteID = suite.id();
-            String testCaseID = getTestCase(suite, testName, api);
+            String definedTestId = property(testCase, AZURE_TEST_ID, null);
+            String testCaseID;
+            if (definedTestId != null) {
+                if (!checkExistTestId(suite, definedTestId, testName, api)) {
+                    continue;
+                }
+                testCaseID = definedTestId;
+            } else {
+                testCaseID = getTestCase(suite, testName, api);
+            }
             if (testCaseID == null) {
                 continue;
             }
             testPoints.put(api.getTestPointID(
-                planID,
-                suiteID,
+                suite.plan().id(),
+                suite.id(),
                 testCaseID
             ), testCase);
         }
@@ -269,6 +286,18 @@ public class AzureReporter implements Reporter {
         });
     }
 
+
+
+
+    private boolean checkExistTestId(AzureSuite suite, String definedTestId, String testName, AzureApi api) {
+        try {
+            api.getTestPointID(suite.plan().id(), suite.id(), definedTestId);
+            api.updateTestCaseName(definedTestId, testName);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 
 
