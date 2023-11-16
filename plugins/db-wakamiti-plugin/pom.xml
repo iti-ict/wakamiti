@@ -29,8 +29,50 @@
         <h2.version>2.1.210</h2.version>
     </properties>
 
-
     <dependencies>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-lang3</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--            <version></version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>9.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queries</artifactId>
+            <version>9.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>9.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>rxjava3-jdbc</artifactId>
+            <version>0.1.4</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.lucene</groupId>-->
+<!--            <artifactId>lucene-analyzers-common</artifactId>-->
+<!--            <version>9.8.0</version>-->
+<!--        </dependency>-->
+
+
+        <dependency>
+            <groupId>com.rubiconproject.oss</groupId>
+            <artifactId>jchronic</artifactId>
+            <version>0.2.8</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -59,7 +101,7 @@
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>3.2</version>
+            <version>4.7</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -73,6 +115,7 @@
             <version>2.3.3</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -124,7 +167,18 @@
 
 
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
     <profiles>

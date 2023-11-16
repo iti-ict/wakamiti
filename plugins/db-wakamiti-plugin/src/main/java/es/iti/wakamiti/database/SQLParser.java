@@ -14,12 +14,12 @@ import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
+import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
-import net.sf.jsqlparser.statement.Statements;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.*;
@@ -29,6 +29,7 @@ import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,55 +45,56 @@ public class SQLParser {
     }
 
     public List<Statement> parseStatements(String sql) throws JSQLParserException {
-        Statements stmt = CCJSqlParserUtil.parseStatements(sql);
-        return stmt.getStatements();
+        return CCJSqlParserUtil.parseStatements(sql);
     }
 
-    public Optional<Select> toSelect(Statement statement) {
-        Select result = new Select();
+    public Optional<PlainSelect> toSelect(Statement statement) {
+        AtomicReference<Optional<PlainSelect>> result = new AtomicReference<>(Optional.empty());
+
         statement.accept(new StatementVisitorAdapter() {
             @Override
             public void visit(Delete delete) {
-                result.setSelectBody(createSelectBody(delete.getTable(), delete.getWhere()));
+                result.set(Optional.of(createSelect(delete.getTable(), delete.getWhere())));
             }
 
             @Override
             public void visit(Update update) {
-                result.setSelectBody(createSelectBody(update.getTable(), update.getWhere()));
+                result.set(Optional.of(createSelect(update.getTable(), update.getWhere())));
             }
 
             @Override
             public void visit(Insert insert) {
-                result.setSelectBody(createSelectBody(insert.getTable(),
-                        createWhere(insert.getColumns(), ((ExpressionList) insert.getItemsList()).getExpressions())));
+                if (insert.getSelect() != null && insert.getSelect() instanceof PlainSelect) {
+                    result.set(Optional.of(createSelect(insert.getTable(), ((PlainSelect) insert.getSelect()).getWhere())));
+                } else {
+                    result.set(Optional.of(createSelect(insert.getTable(), createWhere(insert.getColumns(), insert.getValues().getExpressions()))));
+                }
             }
         });
-        return result.getSelectBody() == null ? Optional.empty() : Optional.of(result);
+        return result.get();
     }
 
     public Select toSelect(DataSet dataSet) {
-        Select result = new Select();
-        PlainSelect body = new PlainSelect();
-        body.addSelectItems(new AllColumns());
-        body.setFromItem(new Table(dataSet.table()));
-        body.setWhere(createWhere(dataSet.columns()));
-        result.setSelectBody(body);
-        return result;
+        PlainSelect select = new PlainSelect();
+        select.addSelectItems(new AllColumns());
+        select.setFromItem(new Table(dataSet.table()));
+        select.setWhere(createWhere(dataSet.columns()));
+        return select;
     }
 
-    private SelectBody createSelectBody(FromItem table) {
-        return createSelectBody(table, (Expression) null);
+    private PlainSelect createSelect(FromItem table) {
+        return createSelect(table, (Expression) null);
     }
 
-    private SelectBody createSelectBody(FromItem table, SelectItem item) {
-        return createSelectBody(table, item, null);
+    private PlainSelect createSelect(FromItem table, SelectItem item) {
+        return createSelect(table, item, null);
     }
 
-    private SelectBody createSelectBody(FromItem table, Expression where) {
-        return createSelectBody(table, new AllColumns(), where);
+    private PlainSelect createSelect(FromItem table, Expression where) {
+        return createSelect(table, new SelectItem(new AllColumns()), where);
     }
 
-    private SelectBody createSelectBody(FromItem table, SelectItem item, Expression where) {
+    private PlainSelect createSelect(FromItem table, SelectItem item, Expression where) {
         PlainSelect body = new PlainSelect();
         body.addSelectItems(item);
         body.setFromItem(table);
@@ -100,7 +102,7 @@ public class SQLParser {
         return body;
     }
 
-    public Expression createWhere(List<Column> columns, List<Expression> values) {
+    public Expression createWhere(List<Column> columns, ExpressionList<?> values) {
         List<Expression> result = new LinkedList<>();
         for (int i = 0; i < values.size(); i++) {
             Expression expression = values.get(i);
@@ -128,69 +130,46 @@ public class SQLParser {
     }
 
     public Expression createWhere(String[] columns, boolean nullControl) {
-        List<Expression> expressions = Stream.of(columns)
-                .map(caseSensitivity::format)
-                .map(column -> {
-                    EqualsTo exp = new EqualsTo();
-                    Function f = new Function();
-                    f.setName(TRIM);
-                    f.setParameters(new ExpressionList(new Column(column)));
-                    exp.setLeftExpression(f);
-                    exp.setRightExpression(new JdbcParameter());
-                    return exp;
-                })
-                .map(exp -> {
-                    if (!nullControl) return exp;
-                    IsNullExpression cIsNull = new IsNullExpression();
-                    cIsNull.setLeftExpression(exp.getLeftExpression());
-                    IsNullExpression vIsNull = new IsNullExpression();
-                    vIsNull.setLeftExpression(exp.getRightExpression());
-                    return new Parenthesis(new OrExpression(exp, new Parenthesis(new AndExpression(cIsNull, vIsNull))));
-                })
-                .collect(Collectors.toCollection(LinkedList::new));
+        List<Expression> expressions = Stream.of(columns).map(caseSensitivity::format).map(column -> {
+            EqualsTo exp = new EqualsTo();
+            Function f = new Function();
+            f.setName(TRIM);
+            f.setParameters(new ExpressionList(new Column(column)));
+            exp.setLeftExpression(f);
+            exp.setRightExpression(new JdbcParameter());
+            return exp;
+        }).map(exp -> {
+            if (!nullControl) return exp;
+            IsNullExpression cIsNull = new IsNullExpression();
+            cIsNull.setLeftExpression(exp.getLeftExpression());
+            IsNullExpression vIsNull = new IsNullExpression();
+            vIsNull.setLeftExpression(exp.getRightExpression());
+            return new Parenthesis(new OrExpression(exp, new Parenthesis(new AndExpression(cIsNull, vIsNull))));
+        }).collect(Collectors.toCollection(LinkedList::new));
         return new MultiAndExpression(expressions);
     }
 
     public Select sqlSelectFrom(String table) {
-        Select select = new Select();
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table))));
-        return select;
+        return createSelect(new Table(caseSensitivity.format(table)));
     }
 
     public Select sqlSelectFrom(String table, String[] columns) {
-        Select select = new Select();
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), createWhere(columns)));
-        return select;
+        return createSelect(new Table(caseSensitivity.format(table)), createWhere(columns));
     }
 
     public Select sqlSelectCountFrom(String table) {
-        Select select = new Select();
-        Function count = new Function();
-        count.setName(COUNT);
-        count.setAllColumns(true);
-        SelectItem countAll = new SelectExpressionItem(count);
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll));
-        return select;
+        Function count = new Function().withName(COUNT).withParameters(new AllColumns());
+        return createSelect(new Table(caseSensitivity.format(table)), new SelectItem(count));
     }
 
     public Select sqlSelectCountFrom(String table, String where) throws JSQLParserException {
-        Select select = new Select();
-        Function count = new Function();
-        count.setName(COUNT);
-        count.setAllColumns(true);
-        SelectItem countAll = new SelectExpressionItem(count);
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, CCJSqlParserUtil.parseCondExpression(where)));
-        return select;
+        Function count = new Function().withName(COUNT).withParameters(new AllColumns());
+        return createSelect(new Table(caseSensitivity.format(table)), new SelectItem(count), CCJSqlParserUtil.parseCondExpression(where));
     }
 
     public Select sqlSelectCountFrom(String table, String[] columns) {
-        Select select = new Select();
-        Function count = new Function();
-        count.setName(COUNT);
-        count.setAllColumns(true);
-        SelectItem countAll = new SelectExpressionItem(count);
-        select.setSelectBody(createSelectBody(new Table(caseSensitivity.format(table)), countAll, createWhere(columns)));
-        return select;
+        Function count = new Function().withName(COUNT).withParameters(new AllColumns());
+        return createSelect(new Table(caseSensitivity.format(table)), new SelectItem(count), createWhere(columns));
     }
 
     public Delete sqlDeleteFrom(String table) {
@@ -207,26 +186,17 @@ public class SQLParser {
     public Insert sqlInsertIntoValues(DataSet dataSet) {
         Insert insert = new Insert();
         insert.setTable(new Table(caseSensitivity.format(dataSet.table())));
-        insert.setColumns(
-                Stream.of(dataSet.columns())
-                        .map(caseSensitivity::format).map(Column::new)
-                        .collect(Collectors.toCollection(LinkedList::new))
-        );
-        insert.setItemsList(new ExpressionList(
-                Stream.of(dataSet.columns()).map(column -> new JdbcParameter())
-                        .collect(Collectors.toCollection(LinkedList::new))
-        ));
+        insert.setColumns(new ExpressionList<>(Stream.of(dataSet.columns()).map(caseSensitivity::format).map(Column::new).collect(Collectors.toCollection(LinkedList::new))));
+        insert.setSelect(new Values(new ParenthesedExpressionList<>(new ExpressionList<>(Stream.of(dataSet.columns()).map(column -> new JdbcParameter()).collect(Collectors.toCollection(LinkedList::new))))));
         return insert;
     }
 
     public Update sqlUpdateSet(DataSet dataSet, String[] columns) {
         Update update = new Update();
         update.setTable(new Table(caseSensitivity.format(dataSet.table())));
-        List<String> setColumns = Stream.of(dataSet.columns())
-                .filter(column -> !columns[0].equals(column))
-                .collect(Collectors.toCollection(LinkedList::new));
-        update.setColumns(setColumns.stream().map(Column::new).collect(Collectors.toCollection(LinkedList::new)));
-        update.setExpressions(setColumns.stream().map(column -> new JdbcParameter()).collect(Collectors.toCollection(LinkedList::new)));
+        Stream.of(dataSet.columns()).filter(column -> !columns[0].equals(column)).forEach(column -> {
+            update.addUpdateSet(new Column(column), new JdbcParameter());
+        });
         update.setWhere(createWhere(columns, false));
         return update;
     }
@@ -281,4 +251,5 @@ public class SQLParser {
         });
         return builder.toString();
     }
+
 }

@@ -3,13 +3,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database;
 
 
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.dataset.*;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -38,6 +35,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
+
 public class DatabaseHelper {
 
     public interface ConnectionProvider {
@@ -45,8 +43,7 @@ public class DatabaseHelper {
         Connection obtainConnection() throws SQLException;
     }
 
-
-    private static final Logger LOGGER = AnsiLogger.of(LoggerFactory.getLogger( "es.iti.wakamiti.database"));
+    private static final Logger LOGGER = WakamitiLogger.forClass(DatabaseHelper.class);
 
     private final Map<String, String[]> primaryKeyCache = new HashMap<>();
     private final Map<String, Map<String, Integer>> nonNullabeColumnCache = new HashMap<>();
@@ -325,7 +322,8 @@ public class DatabaseHelper {
 
 
     private boolean extractPrimaryKeyFromInsert(Insert insert, String[] columns, String[] pkColumns, String[] pkValues) {
-        List<Expression> expressions = ((ExpressionList) insert.getItemsList()).getExpressions();
+
+        List<Expression> expressions = (List<Expression>) insert.getValues().getExpressions();
         // if any of the expressions is a parameter, it can't be sued
         if (expressions.stream().anyMatch(JdbcParameter.class::isInstance)) {
             return false;
@@ -547,7 +545,7 @@ public class DatabaseHelper {
         String[] columns = primaryKey.orElse(dataSet.columns());
         Delete sql = parser.sqlDeleteFrom(dataSet.table(), columns);
         if (addCleanUpOperation) {
-            Optional<Select> select = parser.toSelect(sql);
+            Optional<PlainSelect> select = parser.toSelect(sql);
             if (select.isPresent()) {
 
                 DataSet data = executeSelect(select.get(), dataSet, columns);

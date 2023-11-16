@@ -15,6 +15,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import org.junit.Test;
@@ -34,8 +35,8 @@ public class SQLParseTest {
 
     private static final String SQL_OK = "/*comment*/INSERT INTO T (A, B) VALUES (1, NOW());DELETE FROM T WHERE A = 1;";
     private static final String SQL_KO = "/*comment*/INSERT INTO T;";
-    private static Logger log = LoggerFactory.getLogger( "es.iti.wakamiti.test");
-    private SQLParser parser = new SQLParser(CaseSensitivity.INSENSITIVE);
+    private static final Logger log = LoggerFactory.getLogger("es.iti.wakamiti.test");
+    private final SQLParser parser = new SQLParser(CaseSensitivity.INSENSITIVE);
 
     @Test
     public void testParseStatementsWhenSqlIsOkWithSuccess() throws IOException, JSQLParserException {
@@ -59,7 +60,7 @@ public class SQLParseTest {
     @Test
     public void testToSelectWhenIsInsertWithSuccess() throws JSQLParserException {
         Statement insert = CCJSqlParserUtil.parse("INSERT INTO T (A, B) VALUES (1, NOW());");
-        Optional<Select> result = parser.toSelect(insert);
+        Optional<PlainSelect> result = parser.toSelect(insert);
         log.debug("Result insert: {}", result);
         assertTrue(result.isPresent());
     }
@@ -67,7 +68,7 @@ public class SQLParseTest {
     @Test
     public void testToSelectWhenIsUpdateWithSuccess() throws JSQLParserException {
         Statement update = CCJSqlParserUtil.parse("UPDATE T SET B = NOW(), C = 1 WHERE A = 1;");
-        Optional<Select> result = parser.toSelect(update);
+        Optional<PlainSelect> result = parser.toSelect(update);
         log.debug("Result update: {}", result);
         assertTrue(result.isPresent());
         assertEquals("SELECT * FROM T WHERE A = 1", result.get().toString());
@@ -76,7 +77,7 @@ public class SQLParseTest {
     @Test
     public void testToSelectWhenIsDeleteWithSuccess() throws JSQLParserException {
         Statement delete = CCJSqlParserUtil.parse("DELETE FROM T WHERE A = 1;");
-        Optional<Select> result = parser.toSelect(delete);
+        Optional<PlainSelect> result = parser.toSelect(delete);
         log.debug("Result delete: {}", result);
         assertTrue(result.isPresent());
         assertEquals("SELECT * FROM T WHERE A = 1", result.get().toString());
@@ -168,7 +169,7 @@ public class SQLParseTest {
         try (OoxmlDataSet multiDataSet = new OoxmlDataSet(file, "#.*", "<null>")) {
             Iterator<DataSet> iterator = multiDataSet.iterator();
             DataSet clients = iterator.next();
-            Update result = parser.sqlUpdateSet(clients, new String[] {"id"});
+            Update result = parser.sqlUpdateSet(clients, new String[]{"id"});
             log.debug("Result: {}", result);
             String expected = "UPDATE client SET first_name = ?, second_name = ?, active = ?, birth_date = ? " +
                     "WHERE (trim(id) = ?)";
@@ -177,6 +178,13 @@ public class SQLParseTest {
             log.error("Test error", e);
             throw e;
         }
+    }
+
+    @Test
+    public void testSqlDb2() throws JSQLParserException {
+        String sql = "SELECT TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') FROM table1 WHERE col2 = '9'";
+        Statement result = CCJSqlParserUtil.parse(sql);
+        log.debug("Result query: {}", result);
     }
 
 }

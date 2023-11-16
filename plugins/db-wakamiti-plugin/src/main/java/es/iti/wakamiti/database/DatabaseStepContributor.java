@@ -16,6 +16,7 @@ import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.dataset.*;
