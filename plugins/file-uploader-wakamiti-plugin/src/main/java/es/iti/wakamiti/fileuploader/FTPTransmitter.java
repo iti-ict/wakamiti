@@ -22,9 +22,7 @@ public interface FTPTransmitter {
 
     boolean isConnected();
 
-    void connect(String username, String password, String host, int port) throws IOException;
-
-    void connect(String username, String password, String host) throws IOException;
+    void connect(String username, String host, Integer port, String password, String identity) throws IOException;
 
     void disconnect() throws IOException;
 

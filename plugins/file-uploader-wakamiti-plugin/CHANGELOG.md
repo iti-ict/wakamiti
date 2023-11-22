@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.5.0] - 2023-11-22
+
+### Added
+- Support for using `ppk` identity files 
+
+### Changed
+- Replace dependency `com.jcraft:jsch:0.1.55` with `com.github.mwiede:jsch:0.2.13`
+
+
+
 ## [2.4.3] - 2023-09-14
 
 ### Fixed

@@ -9,7 +9,7 @@ module es.iti.wakamiti.file.uploader {
 
     requires es.iti.wakamiti.api;
     requires org.apache.commons.net;
-    requires jsch;
+    requires com.jcraft.jsch;
 
     provides ConfigContributor with FilesUploaderConfigurator;
     provides EventObserver with StandardOutputFilesUploader, TestCaseOutputFilesUploader, ReportOutputFilesUploader;
