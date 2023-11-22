@@ -58,7 +58,7 @@ public class AzureApi {
 
 
 
-    public Optional<AzurePlan> getPlan(String planName, String area, String iteration) {
+    public Optional<AzurePlan> getPlanByProperties(String planName, String area, String iteration) {
         try {
             String response = get(APIS_TESTPLAN_PLANS);
             String id = extract(
@@ -76,17 +76,71 @@ public class AzureApi {
 
 
 
-
-    public Optional<AzureSuite> getTestSuite(AzurePlan plan, String suiteName) {
+    public Optional<AzurePlan> getPlanById(String id) {
         try {
+            logger.debug("getPlanById id ='{}'",id);
+            String response = get(APIS_TESTPLAN_PLANS);
+            String planName = extract(response,valueBy("id",id)+".name");
+            String area = extract(response,valueBy("id",id)+".areaPath");
+            String iteration = extract(response, valueBy("id",id)+".iteration");
+            String rootSuiteID = extract(response, valueBy("id", id)+".rootSuite.id");
+            return Optional.of(new AzurePlan(id,planName,area,iteration,rootSuiteID));
+        } catch (NoSuchElementException e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+
+
+    public Optional<AzureSuite> getTestSuiteById(AzurePlan plan, String suiteID, AzureSuite parent) {
+        try {
+            logger.debug("getTestSuiteById suiteId='{}' parent='{}'", suiteID, parent);
             String url = APIS_TESTPLAN_PLANS + plan.id() + "/suites";
             String response = get(url);
-            String suiteID = extract(
-                response,
-                valueBy("name", suiteName) + ".id",
-                "Cannot find a test suite with name '" + suiteName + "'"
-            );
-            return Optional.of(new AzureSuite(suiteID,suiteName,plan));
+            String suiteName;
+            if (parent == null) {
+                suiteName = extract(
+                    response,
+                    valueBy("id", suiteID) + ".name",
+                    "Cannot find a test suite with id '" + suiteID + "'"
+                );
+            } else {
+                suiteName = extract(
+                    response,
+                    valueBy("id", suiteID, "parentSuite.id", parent.id()) + ".id",
+                    "Cannot find a test suite with id '" + suiteID + "'"
+                );
+            }
+            return Optional.of(new AzureSuite(suiteID,suiteName,plan,null));
+        } catch (NoSuchElementException e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+
+
+    public Optional<AzureSuite> getTestSuiteByName(AzurePlan plan, String suiteName, AzureSuite parent) {
+        try {
+            logger.debug("getTestSuiteByName suiteName='{}' parent='{}'", suiteName, parent);
+            String url = APIS_TESTPLAN_PLANS + plan.id() + "/suites";
+            String response = get(url);
+            String suiteID;
+            if (parent == null) {
+                suiteID = extract(
+                    response,
+                    valueBy("name", suiteName) + ".id",
+                    "Cannot find a test suite with name '" + suiteName + "'"
+                );
+            } else {
+                suiteID = extract(
+                    response,
+                    valueBy("name", suiteName, "parentSuite.id", parent.id()) + ".id",
+                    "Cannot find a test suite with name '" + suiteName + "'"
+                );
+            }
+            return Optional.of(new AzureSuite(suiteID,suiteName,plan,null));
         } catch (NoSuchElementException e) {
             logger.debug(e.getMessage());
             return Optional.empty();
@@ -96,16 +150,25 @@ public class AzureApi {
 
 
 
+    public void updateTestSuiteName(AzurePlan plan, String suiteId, String suiteName) {
+        logger.debug("updateTestSuiteName suiteId='{}' suiteName='{}'", suiteId, suiteName);
+        String payload = "{ \"name\": \""+ suiteName +"\"}";
+        patch(APIS_TEST_PLANS+plan.id()+"/suites/"+suiteId, payload);
+    }
 
-    public Optional<String> getTestCaseID(AzureSuite suite, String testCaseName) {
-        String url = APIS_TEST_PLANS + suite.plan().id() + "/suites/" + suite.id()+ "/points";
+
+
+
+    public Optional<AzureTestCase> getTestCaseByName(AzureSuite suite, String testCaseName) {
+        String url = APIS_TEST_PLANS + suite.plan().id() + "/suites" + suite.idPath()+ "/points";
         String response = get(url);
         try {
-            return Optional.of(extract(
+            String id = extract(
                 response,
                 "$..[?(@.name == '" + testCaseName + "')].id",
                 "Cannot find a test case with name '" + testCaseName + "'"
-            ));
+            );
+            return Optional.of(new AzureTestCase(id,testCaseName));
         } catch (NoSuchElementException e) {
             logger.debug(e.getMessage());
             return Optional.empty();
@@ -115,9 +178,8 @@ public class AzureApi {
 
 
 
-
-    public String getTestPointID(String planID, String suiteID, String testCaseID) {
-        String url = APIS_TEST_PLANS +planID+"/suites/"+suiteID+"/points?testCaseId="+testCaseID;
+    public String getTestPointID(String planID, String suiteIDPath, String testCaseID) {
+        String url = APIS_TEST_PLANS +planID+"/suites"+suiteIDPath+"/points?testCaseId="+testCaseID;
         String response = get(url);
         return extract(
             response,
@@ -128,8 +190,21 @@ public class AzureApi {
 
 
 
+    public boolean existsTestCaseID(AzureSuite suite, String testCaseID) {
+        try {
+            getTestPointID(suite.plan().id(), suite.idPath(), testCaseID);
+            return true;
+        } catch (Exception e) {
+            logger.trace(e.getMessage(),e);
+            return false;
+        }
+    }
+
+
+
 
     public AzurePlan createPlan(String name, String area, String iteration) {
+        logger.debug("createPlan name='{}' area='{}' iteration='{}'",name,area,iteration);
         String payload = "{ \"area\": { \"name\": \""+area+"\"}, \"iteration\": \""+iteration+"\", \"name\": \""+name+"\" }";
         String response = post(APIS_TESTPLAN_PLANS, payload);
         String planID = extract(response, ID, "Cannot find the id of the new plan");
@@ -139,9 +214,24 @@ public class AzureApi {
 
 
 
-    public AzureSuite createSuite(AzurePlan azurePlan, String suiteName) {
+    public void updatePlanName(String planId, String planName) {
+        logger.debug("updatePlanName planId='{}' planName='{}'", planId, planName);
+        String payload = "{ \"name\": \""+ planName +"\"}";
+        patch(APIS_TEST_PLANS+planId, payload);
+    }
+
+
+
+
+    public AzureSuite createSuite(AzurePlan azurePlan, String suiteName, AzureSuite parent) {
+        logger.debug("createSuite plan='{}' name='{}' parent='{}'", azurePlan, suiteName, parent);
         String url = APIS_TESTPLAN_PLANS + azurePlan.id() +"/suites";
-        String payload = "{ \"suiteType\": \"staticTestSuite\", \"name\": \""+suiteName+"\", \"parentSuite\": { \"id\": "+azurePlan.rootSuiteID()+", \"name\": \""+azurePlan.name()+"\" } }";
+        String parentSuiteId = (parent == null ? azurePlan.rootSuiteID() : parent.id());
+        String parentSuiteName = (parent == null ? azurePlan.name() : parent.name());
+        if (parent != null) {
+            url += "?suiteId="+parent.id();
+        }
+        String payload = "{ \"suiteType\": \"staticTestSuite\", \"name\": \""+suiteName+"\", \"parentSuite\": { \"id\": "+parentSuiteId+", \"name\": \""+parentSuiteName+"\" } }";
         String response = post(url, payload);
         String suiteID = extract(response, ID);
         return new AzureSuite(suiteID,suiteName,azurePlan);
@@ -149,10 +239,11 @@ public class AzureApi {
 
 
 
-    public String createTestCase(AzureSuite suite, String testName) {
+    public AzureTestCase createTestCase(AzureSuite suite, String testName) {
+        logger.debug("createTestCase suite='{}' name='{}'", suite, testName);
         String workItemID = createTestCaseWorkItem(testName);
         appendTesCase(suite, workItemID);
-        return workItemID;
+        return new AzureTestCase(workItemID,testName);
     }
 
 
@@ -371,12 +462,12 @@ public class AzureApi {
 
     private String send(HttpRequest request, String payload) {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Azure call => {} {} {} ", request.method(), request.uri(), payload);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Azure call => {} {} {} ", request.method(), request.uri(), payload);
             }
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Azure response => {} {}", response.statusCode(), response.body());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Azure response => {} {}", response.statusCode(), response.body());
             }
             if (response.statusCode() >= 400) {
                 throw new WakamitiException("The Azure API returned a non-OK response");

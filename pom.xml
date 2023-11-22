@@ -29,7 +29,7 @@
         <module>plugins</module>
         <module>jext</module>
         <module>jext-spring</module>
-        <module>wakamiti-server-quarkus</module>
+<!--        <module>wakamiti-server-quarkus</module>-->
 
     </modules>
 
