@@ -17,6 +17,7 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     private static final String PASSWORD = "credentials.password";
     private static final String DESTINATION_DIR = "destinationDir";
     private static final String PROTOCOL = "protocol";
+    private static final String IDENTITY = "identity";
 
 
     @Override
@@ -50,6 +51,7 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
             conf.get(PASSWORD, String.class).ifPresent(filesUploader::setPassword);
             conf.get(DESTINATION_DIR, String.class).ifPresent(filesUploader::setRemotePath);
             conf.get(PROTOCOL, String.class).ifPresent(filesUploader::setProtocol);
+            conf.get(IDENTITY, String.class).ifPresent(filesUploader::setIdentity);
         }
     }
 
