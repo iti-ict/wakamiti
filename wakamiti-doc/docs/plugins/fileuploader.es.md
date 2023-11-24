@@ -10,14 +10,14 @@ Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.5.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>
-  <version>2.4.3</version>
+  <version>2.5.0</version>
 </dependency>
 ```
 
@@ -71,6 +71,13 @@ Since: ```2.0.0```
 
 El directorio de destino al cual los ficheros deberían subirse, dentro de la ubicación remota. 
 Puede incluir variables de ruta como `%DATE%`, `%TIME%`, or `%execID%`
+
+<br /><br />
+
+### `fileUploader.identity`
+Since: ```2.5.0```
+
+Ruta del fichero de identidad (como por ejemplo un fichero `ppk`) usado para autenticarse.
 
 
 ---
