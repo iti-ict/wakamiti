@@ -23,6 +23,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
     private String password;
     private String remotePath;
     private String protocol;
+    private String identity;
 
     private FTPTransmitter transmitter;
 
@@ -57,6 +58,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
         this.protocol = protocol;
     }
 
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
 
     public String category() {
         return this.category;
@@ -72,7 +76,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
         try {
             if (Event.BEFORE_WRITE_OUTPUT_FILES.equals(event.type())) {
                 openFtpConnection();
-            } else if (this.eventType.equals(event.type())) {
+            } else if (this.eventType.equals(event.type()) && isConnected()) {
                 uploadFile((Path) event.data());
             } else if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
                 closeFtpConnection();
@@ -84,16 +88,21 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
 
+    public boolean isConnected() {
+        return transmitter != null && transmitter.isConnected();
+    }
+
+
     private void openFtpConnection() throws IOException {
-        if (transmitter != null && transmitter.isConnected()) {
+        if (isConnected()) {
             closeFtpConnection();
         }
         logger.info("Opening FTP connection to {}", host);
         transmitter = FTPTransmitter.of(protocol);
         if (host.contains(":")) {
-            transmitter.connect(username, password, host.split(":")[0], Integer.parseInt(host.split(":")[1]));
+            transmitter.connect(username, host.split(":")[0], Integer.parseInt(host.split(":")[1]), password, identity);
         } else {
-            transmitter.connect(username, password, host);
+            transmitter.connect(username, host, null, password, identity);
         }
 
     }

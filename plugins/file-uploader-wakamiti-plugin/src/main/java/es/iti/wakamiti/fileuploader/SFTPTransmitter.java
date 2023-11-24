@@ -3,6 +3,7 @@ package es.iti.wakamiti.fileuploader;
 import com.jcraft.jsch.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 
 
@@ -19,29 +20,24 @@ public class SFTPTransmitter implements FTPTransmitter {
     }
 
 
-    @Override
-    public void connect(String username, String password, String host, int port) throws IOException {
-        try {
-            JSch.setConfig("StrictHostKeyChecking", "no");
-            JSch ssh = new JSch();
-            this.session = ssh.getSession(username, host, port);
-            this.session.setPassword(password);
-            this.session.connect();
-            this.channel = (ChannelSftp) session.openChannel("sftp");
-            this.channel.connect();
-        } catch (JSchException e) {
-            throw new IOException(e);
-        }
-    }
 
 
     @Override
-    public void connect(String username, String password, String host) throws IOException {
+    public void connect(String username, String host, Integer port, String password, String identity) throws IOException {
         try {
             JSch.setConfig("StrictHostKeyChecking", "no");
             JSch ssh = new JSch();
-            this.session = ssh.getSession(username, host);
-            this.session.setPassword(password);
+            if (identity != null) {
+                ssh.addIdentity(identity);
+            }
+            if (port != null) {
+                this.session = ssh.getSession(username, host, port);
+            } else {
+                this.session = ssh.getSession(username, host);
+            }
+            if (password != null) {
+                this.session.setPassword(password);
+            }
             this.session.connect();
             this.channel = (ChannelSftp) session.openChannel("sftp");
             this.channel.connect();
@@ -65,6 +61,7 @@ public class SFTPTransmitter implements FTPTransmitter {
     @Override
     public void transferFile(Path localFile, Path destinationFolder) throws IOException {
         try {
+            createDestinationDirectory(destinationFolder);
             channel.put(
                 localFile.toAbsolutePath().toString(),
                 destinationFolder.resolve(localFile.getFileName()).toString()
@@ -74,5 +71,24 @@ public class SFTPTransmitter implements FTPTransmitter {
         }
     }
 
+
+
+    private void createDestinationDirectory(Path dirPath) throws SftpException {
+        if (dirPath.getParent() != null) {
+            createDestinationDirectory(dirPath.getParent());
+        }
+        if (!checkExists(dirPath.toString())) {
+            channel.mkdir(dirPath.toString());
+        }
+    }
+
+
+    private boolean checkExists(String path) {
+        try (InputStream stream = channel.get(path)) {
+            return true;
+        } catch (IOException | SftpException e) {
+            return false;
+        }
+    }
 
 }
