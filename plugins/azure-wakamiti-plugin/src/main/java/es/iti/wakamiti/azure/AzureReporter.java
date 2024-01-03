@@ -295,10 +295,12 @@ public class AzureReporter implements Reporter {
 
         for (Pair<String,String> nameAndId : suitePath) {
 
-            String suiteName = nameAndId.key();
+            LOGGER.debug("getOrCreateAzureSuite (path = [{}] {})", nameAndId.value(), nameAndId.key());
 
-            if (nameAndId.value() != null) {
-                String suiteId = nameAndId.value();
+            String suiteName = nameAndId.key();
+            String suiteId = nameAndId.value();
+
+            if (suiteId != null) {
                 azureSuite = api.getTestSuiteById(azurePlan,suiteId, parent).orElse(null);
                 if (azureSuite != null) {
                     api.updateTestSuiteName(azurePlan, suiteId, suiteName);
@@ -312,7 +314,7 @@ public class AzureReporter implements Reporter {
             if (azureSuite == null) {
                 if (createItemsIfAbsent) {
                     LOGGER.info("Creating new test suite '{}'", suiteName);
-                    return api.createSuite(azurePlan, suiteName, parent);
+                    azureSuite = api.createSuite(azurePlan, suiteName, parent);
                 } else {
                     LOGGER.warn("Test suite '{}' is not defined and will be ignored", suiteName);
                     return null;

@@ -204,12 +204,14 @@ public class AzureApi {
 
 
     public AzurePlan createPlan(String name, String area, String iteration) {
-        logger.debug("createPlan name='{}' area='{}' iteration='{}'",name,area,iteration);
+        logger.debug(" => createPlan (name='{}' area='{}' iteration='{}')",name,area,iteration);
         String payload = "{ \"area\": { \"name\": \""+area+"\"}, \"iteration\": \""+iteration+"\", \"name\": \""+name+"\" }";
         String response = post(APIS_TESTPLAN_PLANS, payload);
         String planID = extract(response, ID, "Cannot find the id of the new plan");
         String planRootSuiteID = extract(response, "$.rootSuite.id", "Cannot find the root suite id of the new plan");
-        return new AzurePlan(planID,name,area,iteration,planRootSuiteID);
+        AzurePlan result = new AzurePlan(planID,name,area,iteration,planRootSuiteID);
+        logger.debug(" <= createPlan (name='{}' area='{}' iteration='{}') === {}",name,area,iteration,result);
+        return result;
     }
 
 
@@ -224,7 +226,7 @@ public class AzureApi {
 
 
     public AzureSuite createSuite(AzurePlan azurePlan, String suiteName, AzureSuite parent) {
-        logger.debug("createSuite plan='{}' name='{}' parent='{}'", azurePlan, suiteName, parent);
+        logger.debug("=> createSuite (plan='{}' name='{}' parent='{}')", azurePlan, suiteName, parent);
         String url = APIS_TESTPLAN_PLANS + azurePlan.id() +"/suites";
         String parentSuiteId = (parent == null ? azurePlan.rootSuiteID() : parent.id());
         String parentSuiteName = (parent == null ? azurePlan.name() : parent.name());
@@ -234,16 +236,20 @@ public class AzureApi {
         String payload = "{ \"suiteType\": \"staticTestSuite\", \"name\": \""+suiteName+"\", \"parentSuite\": { \"id\": "+parentSuiteId+", \"name\": \""+parentSuiteName+"\" } }";
         String response = post(url, payload);
         String suiteID = extract(response, ID);
-        return new AzureSuite(suiteID,suiteName,azurePlan);
+        AzureSuite result = new AzureSuite(suiteID,suiteName,azurePlan);
+        logger.debug("<= createSuite (plan='{}' name='{}' parent='{}') === {}", azurePlan, suiteName, parent, result);
+        return result;
     }
 
 
 
     public AzureTestCase createTestCase(AzureSuite suite, String testName) {
-        logger.debug("createTestCase suite='{}' name='{}'", suite, testName);
+        logger.debug(" => createTestCase (suite='{}' name='{}')", suite, testName);
         String workItemID = createTestCaseWorkItem(testName);
         appendTesCase(suite, workItemID);
-        return new AzureTestCase(workItemID,testName);
+        AzureTestCase result = new AzureTestCase(workItemID,testName);
+        logger.debug("<=  createTestCase (suite='{}' name='{}') === {}", suite, testName, result);
+        return result;
     }
 
 

@@ -1,9 +1,6 @@
 #@Azure
+@implementation
 
-# azurePlan: Wakamiti Test Plan
-# azureArea: ACS
-# azureIteration: ACS\\Iteración 1
-# azureSuite: Wakamiti Test Suite A
 Feature: Azure integration feature
 
 

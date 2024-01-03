@@ -1,4 +1,5 @@
 @Azure
+@definition
 # azurePlan: Wakamiti Test Plan
 # azureArea: ACS
 # azureIteration: ACS\\Iteración 1
