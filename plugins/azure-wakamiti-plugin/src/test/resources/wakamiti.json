@@ -1,0 +1,296 @@
+{
+  "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+  "snapshotInstant" : "2024-01-03T13:14:26.098213",
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "startInstant" : "2024-01-03T13:14:26.047767",
+  "finishInstant" : "2024-01-03T13:14:26.083135",
+  "duration" : 0,
+  "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+  "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+  "errorClassifiers" : {
+    "test" : 2
+  },
+  "result" : "FAILED",
+  "testCaseResults" : {
+    "FAILED" : 2,
+    "PASSED" : 1
+  },
+  "childrenResults" : {
+    "FAILED" : 1
+  },
+  "children" : [ {
+    "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+    "snapshotInstant" : "2024-01-03T13:14:26.098213",
+    "nodeType" : "AGGREGATOR",
+    "id" : "#ke2b61",
+    "name" : "Azure integration feature",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "azure.feature[7,1]",
+    "displayName" : "Feature: Azure integration feature",
+    "tags" : [ "Azure", "definition" ],
+    "properties" : {
+      "azureArea" : "ACS",
+      "gherkinType" : "feature",
+      "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+      "azurePlan" : "Wakamiti Test Plan",
+      "azureIteration" : "ACS\\\\Iteración 1"
+    },
+    "startInstant" : "2024-01-03T13:14:26.047767",
+    "finishInstant" : "2024-01-03T13:14:26.083135",
+    "duration" : 0,
+    "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+    "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+    "errorClassifiers" : {
+      "test" : 2
+    },
+    "result" : "FAILED",
+    "testCaseResults" : {
+      "FAILED" : 2,
+      "PASSED" : 1
+    },
+    "childrenResults" : {
+      "PASSED" : 1,
+      "FAILED" : 2
+    },
+    "children" : [ {
+      "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+      "snapshotInstant" : "2024-01-03T13:14:26.098213",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-1",
+      "name" : "Wakamiti Scenario B - Fail cambio",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "azure.feature[12,3]",
+      "displayName" : "[ID-1] Scenario: Wakamiti Scenario B - Fail cambio",
+      "tags" : [ "ID-1", "Azure", "definition" ],
+      "properties" : {
+        "azureArea" : "ACS",
+        "gherkinType" : "scenario",
+        "azureTest" : "Wakamiti Scenario B - Fail",
+        "featureName" : "Azure integration feature",
+        "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+        "azurePlan" : "Wakamiti Test Plan",
+        "azureIteration" : "ACS\\\\Iteración 1"
+      },
+      "startInstant" : "2024-01-03T13:14:26.047767",
+      "finishInstant" : "2024-01-03T13:14:26.047767",
+      "duration" : 0,
+      "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+      "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+      "errorClassifier" : "test",
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "FAILED" : 1
+      },
+      "childrenResults" : {
+        "FAILED" : 1
+      },
+      "children" : [ {
+        "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+        "snapshotInstant" : "2024-01-03T13:14:26.098213",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "Def this step fails",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "azure.feature[13,5]",
+        "displayName" : "* Def this step fails",
+        "properties" : {
+          "azureArea" : "ACS",
+          "gherkinType" : "step",
+          "azureTest" : "Wakamiti Scenario B - Fail cambio",
+          "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+          "azurePlan" : "Wakamiti Test Plan",
+          "azureIteration" : "ACS\\\\Iteración 1"
+        },
+        "startInstant" : "2024-01-03T13:14:26.047767",
+        "finishInstant" : "2024-01-03T13:14:26.047767",
+        "duration" : 0,
+        "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+        "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+        "errorClassifier" : "test",
+        "result" : "FAILED",
+        "childrenResults" : {
+          "FAILED" : 1
+        },
+        "children" : [ {
+          "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+          "snapshotInstant" : "2024-01-03T13:14:26.098213",
+          "nodeType" : "STEP",
+          "name" : "this step fails",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "azure-imp.feature[10,5]",
+          "displayName" : "* this step fails",
+          "properties" : {
+            "azureTest" : "Wakamiti Scenario B - Fail",
+            "gherkinType" : "step"
+          },
+          "startInstant" : "2024-01-03T13:14:26.047767",
+          "finishInstant" : "2024-01-03T13:14:26.047767",
+          "duration" : 0,
+          "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+          "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+          "errorClassifier" : "test",
+          "result" : "FAILED"
+        } ]
+      } ]
+    }, {
+      "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+      "snapshotInstant" : "2024-01-03T13:14:26.098213",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-2",
+      "name" : "Def Test Case C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "azure.feature[18,3]",
+      "displayName" : "[ID-2] Scenario: Def Test Case C",
+      "tags" : [ "ID-2", "Azure", "definition" ],
+      "properties" : {
+        "azureArea" : "ACS",
+        "gherkinType" : "scenario",
+        "azureTest" : "Wakamiti Scenario C - Fail",
+        "featureName" : "Azure integration feature",
+        "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+        "azurePlan" : "Wakamiti Test Plan",
+        "azureIteration" : "ACS\\\\Iteración 1"
+      },
+      "startInstant" : "2024-01-03T13:14:26.071533",
+      "finishInstant" : "2024-01-03T13:14:26.071533",
+      "duration" : 0,
+      "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+      "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+      "errorClassifier" : "test",
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "FAILED" : 1
+      },
+      "childrenResults" : {
+        "FAILED" : 1
+      },
+      "children" : [ {
+        "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+        "snapshotInstant" : "2024-01-03T13:14:26.098213",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "Def this step fails",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "azure.feature[19,5]",
+        "displayName" : "* Def this step fails",
+        "properties" : {
+          "azureArea" : "ACS",
+          "gherkinType" : "step",
+          "azureTest" : "Wakamiti Scenario C - Fail",
+          "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+          "azurePlan" : "Wakamiti Test Plan",
+          "azureIteration" : "ACS\\\\Iteración 1"
+        },
+        "startInstant" : "2024-01-03T13:14:26.071533",
+        "finishInstant" : "2024-01-03T13:14:26.071533",
+        "duration" : 0,
+        "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+        "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+        "errorClassifier" : "test",
+        "result" : "FAILED",
+        "childrenResults" : {
+          "FAILED" : 1
+        },
+        "children" : [ {
+          "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+          "snapshotInstant" : "2024-01-03T13:14:26.098213",
+          "nodeType" : "STEP",
+          "name" : "this step fails",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "azure-imp.feature[16,5]",
+          "displayName" : "* this step fails",
+          "properties" : {
+            "azureTest" : "Wakamiti Scenario C - Fail",
+            "gherkinType" : "step"
+          },
+          "startInstant" : "2024-01-03T13:14:26.071533",
+          "finishInstant" : "2024-01-03T13:14:26.071533",
+          "duration" : 0,
+          "errorMessage" : "\"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"",
+          "errorTrace" : "java.lang.AssertionError: \"The expected and actual responses have differences:\n\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n expected:<{\n  \"[\n\t\t\tstatus\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"Entitywithidentifier-5cannotbefound.\n\t\t]\"\n}> but was:<{\n  \"[\n\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n  \"status\" : 404,\n  \"error\" : \"NotFound\",\n  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n  \"path\" : \"/api/configuracion-service/entornos/-5\n\t\t]\"\n}>\"\n\tat es.iti.wakamiti.azure.MockSteps.fail(MockSteps.java:29)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat es.iti.wakamiti.core.backend.DefaultBackendFactory.lambda$createRunnableStep$4(DefaultBackendFactory.java:398)\n\tat es.iti.wakamiti.core.backend.RunnableStep.run(RunnableStep.java:114)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:223)\n\tat es.iti.wakamiti.core.backend.RunnableBackend.runStep(RunnableBackend.java:92)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.lambda$runStep$2(PlanNodeRunner.java:132)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:183)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runStep(PlanNodeRunner.java:132)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:114)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runChildren(JUnitPlanNodeRunner.java:101)\n\tat es.iti.wakamiti.core.runner.PlanNodeRunner.runNode(PlanNodeRunner.java:109)\n\tat es.iti.wakamiti.core.junit.JUnitPlanNodeRunner.runNode(JUnitPlanNodeRunner.java:94)\n\tat es.iti.wakamiti.core.junit.WakamitiJUnitRunner.run(WakamitiJUnitRunner.java:96)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:283)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:173)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)\n\tat org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:128)\n\tat org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)\n",
+          "errorClassifier" : "test",
+          "result" : "FAILED"
+        } ]
+      } ]
+    }, {
+      "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+      "snapshotInstant" : "2024-01-03T13:14:26.098213",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-3",
+      "name" : "Def Test Case A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "azure.feature[24,3]",
+      "displayName" : "[ID-3] Scenario: Def Test Case A",
+      "tags" : [ "ID-3", "Azure", "definition" ],
+      "properties" : {
+        "azureArea" : "ACS",
+        "gherkinType" : "scenario",
+        "azureTest" : "Wakamiti Scenario A - Fail",
+        "featureName" : "Azure integration feature",
+        "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+        "azurePlan" : "Wakamiti Test Plan",
+        "azureIteration" : "ACS\\\\Iteración 1"
+      },
+      "startInstant" : "2024-01-03T13:14:26.082960",
+      "finishInstant" : "2024-01-03T13:14:26.083135",
+      "duration" : 0,
+      "result" : "PASSED",
+      "testCaseResults" : {
+        "PASSED" : 1
+      },
+      "childrenResults" : {
+        "PASSED" : 1
+      },
+      "children" : [ {
+        "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+        "snapshotInstant" : "2024-01-03T13:14:26.098213",
+        "nodeType" : "STEP_AGGREGATOR",
+        "name" : "Def this step do nothing",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "azure.feature[25,5]",
+        "displayName" : "* Def this step do nothing",
+        "properties" : {
+          "azureArea" : "ACS",
+          "gherkinType" : "step",
+          "azureTest" : "Wakamiti Scenario A - Fail",
+          "azureSuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11",
+          "azurePlan" : "Wakamiti Test Plan",
+          "azureIteration" : "ACS\\\\Iteración 1"
+        },
+        "startInstant" : "2024-01-03T13:14:26.082960",
+        "finishInstant" : "2024-01-03T13:14:26.083135",
+        "duration" : 0,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "c1c8fa7d-a13c-4ea0-9f04-b811c03c6e4c",
+          "snapshotInstant" : "2024-01-03T13:14:26.098213",
+          "nodeType" : "STEP",
+          "name" : "this step do nothing",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "azure-imp.feature[22,5]",
+          "displayName" : "* this step do nothing",
+          "properties" : {
+            "azureTest" : "Wakamiti Scenario A - Fail",
+            "gherkinType" : "step"
+          },
+          "startInstant" : "2024-01-03T13:14:26.082960",
+          "finishInstant" : "2024-01-03T13:14:26.083135",
+          "duration" : 0,
+          "result" : "PASSED"
+        } ]
+      } ]
+    } ]
+  } ]
+}
