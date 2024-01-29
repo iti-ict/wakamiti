@@ -1,5 +1,5 @@
 <template>
-  <div class="logoo">
+  <div>
     <transition>
       <div v-if="color == 'dark'">
         <g-image src="~/assets/img/generalitat-dark.svg" alt="Generalitat Valenciana"/>
