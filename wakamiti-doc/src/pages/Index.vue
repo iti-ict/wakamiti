@@ -9,7 +9,18 @@
         <Shortcut v-bind:link="$tp('wakamiti/architecture#configuración-global')" v-bind:text="$t('index3')" icon="sliders-icon" />
       </nav>
       <GitLink class="git" size="large" />
-      <Footer class="git" size="large" />
+      <div>
+        <div v-if="color == 'dark'">
+          <g-image src="~/assets/img/generalitat-dark.svg" alt="Generalitat Valenciana"/>
+          <g-image src="~/assets/img/ivace-dark.svg" alt="IVACE"/>
+          <g-image src="~/assets/img/ITI-logo-dark.svg" alt="ITI"/>
+        </div>
+        <div v-if="color == 'bright'">
+          <g-image src="~/assets/img/generalitat-bright.svg" alt="Generalitat Valenciana"/>
+          <g-image src="~/assets/img/ivace-bright.svg" alt="IVACE"/>
+          <g-image src="~/assets/img/ITI-logo-bright.svg" alt="ITI"/>
+        </div>
+      </div>
     </div>
   </Layout>
 </template>
@@ -25,13 +36,17 @@ query {
 <script>
 import GitLink from '~/components/GitLink.vue'
 import Shortcut from '~/components/Shortcut.vue'
-import Footer from '~/components/Footer.vue'
 
 export default {
+  props: {
+    color: {
+      type: String,
+      required: true
+    }
+  },
   components: {
     GitLink,
-    Shortcut,
-    Footer
+    Shortcut
   },
   metaInfo() {
     return {

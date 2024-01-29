@@ -1,9 +1,9 @@
 <template>
   <div class="site">
-    <Header :menuToggle="sidebar" />
+    <Header :menuToggle="sidebar" v-on:theme-change="updateLogo" />
     <Sidebar v-if="sidebar" />
     <main class="main" :class="{'main--no-sidebar': !sidebar, 'main--sidebar-is-open' : this.$store.state.sidebarOpen}">
-      <slot/>
+      <slot :color="logoColor"/>
     </main>
   </div>
 </template>
@@ -29,6 +29,17 @@ export default {
     sidebar: {
       type: Boolean,
       default: true
+    }
+  },
+  data() {
+    return {
+      logoColor: 'bright'
+    }
+  },
+  methods: {
+    updateLogo: function () {
+      this.logoColor = (this.logoColor == 'dark' ? 'bright' : 'dark')
+      console.log('Emitting... ' + this.logoColor)
     }
   },
   mounted() {
