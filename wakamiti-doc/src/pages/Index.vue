@@ -9,6 +9,7 @@
         <Shortcut v-bind:link="$tp('wakamiti/architecture#configuración-global')" v-bind:text="$t('index3')" icon="sliders-icon" />
       </nav>
       <GitLink class="git" size="large" />
+      <Footer class="git" size="large" />
     </div>
   </Layout>
 </template>
@@ -24,11 +25,13 @@ query {
 <script>
 import GitLink from '~/components/GitLink.vue'
 import Shortcut from '~/components/Shortcut.vue'
+import Footer from '~/components/Footer.vue'
 
 export default {
   components: {
     GitLink,
-    Shortcut
+    Shortcut,
+    Footer
   },
   metaInfo() {
     return {
