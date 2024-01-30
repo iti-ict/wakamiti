@@ -6,10 +6,10 @@
     <rect id="Rectángulo_1"  width="32.398" height="32.398" transform="translate(222.777 394.911)" fill="#ff8f00"/>
     <rect id="Rectángulo_2" width="32.398" height="32.398" transform="translate(259.198 394.911)" fill="#ff6a00"/>
     <rect id="Rectángulo_3" width="32.398" height="32.398" transform="translate(295.402 394.911)" fill="#e14a00"/>
-    <rect id="Rectángulo_4" width="6.918" height="21.074" transform="translate(271.938 399.776)" fill="#ddd"/>
-    <rect id="Rectángulo_5" width="6.918" height="21.073" transform="translate(308.145 400.101)" fill="#ddd"/>
-    <rect id="Rectángulo_6" width="6.918" height="21.074" transform="translate(236.005 399.776)" fill="#ddd"/>
-    <rect id="Rectángulo_7" width="21.073" height="6.918" transform="translate(264.861 407.179)" fill="#ddd"/>
+    <rect id="Rectángulo_4" width="6.918" height="21.074" transform="translate(271.938 399.776)" fill="#303236"/>
+    <rect id="Rectángulo_5" width="6.918" height="21.073" transform="translate(308.145 400.101)" fill="#303236"/>
+    <rect id="Rectángulo_6" width="6.918" height="21.074" transform="translate(236.005 399.776)" fill="#303236"/>
+    <rect id="Rectángulo_7" width="21.073" height="6.918" transform="translate(264.861 407.179)" fill="#303236"/>
     <path id="Trazado_3" d="M573.275,409.3h-3.9v.946h3.9a4.4,4.4,0,0,0,.041-.473,4.342,4.342,0,0,0-.041-.473" transform="translate(-132.989 -5.522)" fill="#ddd"/>
     <rect id="Rectángulo_12" width="0.944" height="9.045" transform="translate(380.592 399.73)" fill="#ddd"/>
     <path id="Trazado_4" d="M492.159,402.73v9.045h-.812l-5.905-7.328v7.328H484.5V402.73h.771l5.947,7.422V402.73Z" transform="translate(-100.421 -3)" fill="#ddd"/>
