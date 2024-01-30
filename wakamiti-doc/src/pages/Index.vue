@@ -95,7 +95,10 @@ article {
   }
 }
 .footer {
+  margin: 3em 0 0;
   height: 50px;
-
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
 }
 </style>
