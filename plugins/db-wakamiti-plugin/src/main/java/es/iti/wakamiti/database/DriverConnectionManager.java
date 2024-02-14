@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database;
 
 
@@ -17,6 +13,9 @@ import java.sql.SQLException;
 import es.iti.commons.jext.Extension;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 @Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "1.1")
 public class DriverConnectionManager implements ConnectionManager {
 
@@ -31,6 +30,8 @@ public class DriverConnectionManager implements ConnectionManager {
                     "JDBC Driver " + parameters.driver() + " not found in classpath"
                 );
             }
+        } else {
+            parameters.driver(DriverManager.getDriver(parameters.url()).getClass().getName());
         }
         return DriverManager
             .getConnection(parameters.url(), parameters.username(), parameters.password());
@@ -51,7 +52,7 @@ public class DriverConnectionManager implements ConnectionManager {
 
     private void validateParameters(ConnectionParameters parameters) {
         if (parameters == null) {
-            throw new IllegalArgumentException("Database connection paramaters have not been set");
+            throw new IllegalArgumentException("Database connection parameters have not been set");
         }
         if (parameters.url() == null) {
             throw new IllegalArgumentException("Database connection url has not been set");

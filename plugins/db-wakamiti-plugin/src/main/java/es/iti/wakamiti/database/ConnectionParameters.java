@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database;
 
 
@@ -19,50 +15,41 @@ public class ConnectionParameters {
     private String schema;
     private String catalog;
 
-
     public String url() {
         return url;
     }
-
 
     public ConnectionParameters url(String url) {
         this.url = url;
         return this;
     }
 
-
     public String username() {
         return username;
     }
-
 
     public ConnectionParameters username(String username) {
         this.username = username;
         return this;
     }
 
-
     public String password() {
         return password;
     }
-
 
     public ConnectionParameters password(String password) {
         this.password = password;
         return this;
     }
 
-
     public String driver() {
         return driver;
     }
-
 
     public ConnectionParameters driver(String driver) {
         this.driver = driver;
         return this;
     }
-
 
     public String schema() {
         return schema;
@@ -82,4 +69,21 @@ public class ConnectionParameters {
         return this;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+        builder.append("url").append("=").append(url).append(", ");
+        builder.append("username").append("=").append(username).append(", ");
+        builder.append("password").append("=").append(password).append(", ");
+        if (driver != null) {
+            builder.append("driver").append("=").append(driver).append(", ");
+        }
+        if (schema != null) {
+            builder.append("schema").append("=").append(schema).append(", ");
+        }
+        if (catalog != null) {
+            builder.append("catalog").append("=").append(catalog).append(", ");
+        }
+        return builder.toString().replaceAll(", $", "]");
+    }
 }
