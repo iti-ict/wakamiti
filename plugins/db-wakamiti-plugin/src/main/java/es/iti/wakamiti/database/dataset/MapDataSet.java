@@ -3,18 +3,23 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.database.dataset;
+
 
 public class MapDataSet extends DataSet {
 
-    private String[][] values;
+    private Object[][] values;
     private int rowNumber = -1;
 
-    public MapDataSet(String table, String[] columns, String[][] values, String nullSymbol) {
+    public MapDataSet(String table, String[] columns, Object[][] values, String nullSymbol) {
         super(table, "map", nullSymbol);
         this.columns = columns;
         this.values = values;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return values.length == 0;
     }
 
     @Override
@@ -40,6 +45,10 @@ public class MapDataSet extends DataSet {
     @Override
     public void close() {
         // nothing to do
+    }
+
+    public Object[][] allValues() {
+        return values;
     }
 
 }

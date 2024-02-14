@@ -3,31 +3,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database.dataset;
 
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
-
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.slf4j.Logger;
-
-
-import es.iti.wakamiti.api.WakamitiException;
-
 
 
 public class OoxmlDataSet extends MultiDataSet {
@@ -71,8 +61,12 @@ public class OoxmlDataSet extends MultiDataSet {
         }
     }
 
+    @Override
+    public MultiDataSet copy() throws IOException {
+        return new OoxmlDataSet(file, ignoreSheetRegex, nullSymbol);
+    }
 
-    private class OoxmlSheetDataSet extends DataSet {
+    private static class OoxmlSheetDataSet extends DataSet {
 
         private final Iterator<Row> rowIterator;
         private Row currentRow;
@@ -88,7 +82,7 @@ public class OoxmlDataSet extends MultiDataSet {
         private String[] sheetHeaders(Row row) {
             List<String> rawHeaders = new ArrayList<>();
             row.cellIterator().forEachRemaining(cell -> {
-                String header = cell.getStringCellValue().trim();
+                String header = Optional.ofNullable(cell.getStringCellValue()).map(String::trim).orElse(null);
                 if (header != null && !header.isEmpty()) {
                     rawHeaders.add(header);
                 }
@@ -96,6 +90,11 @@ public class OoxmlDataSet extends MultiDataSet {
             return rawHeaders.toArray(new String[0]);
         }
 
+
+        @Override
+        public boolean isEmpty() {
+            return !rowIterator.hasNext();
+        }
 
         @Override
         public boolean nextRow() {
@@ -114,21 +113,18 @@ public class OoxmlDataSet extends MultiDataSet {
             Object value = null;
             if (cell != null) {
                 switch (cell.getCellType()) {
-                case BOOLEAN:
-                    value = cell.getBooleanCellValue();
-                    break;
-                case NUMERIC:
-                    value = cell.getNumericCellValue();
-                    break;
-                case STRING:
-                    value = cell.getStringCellValue().trim();
-                    if (nullSymbol.equals(value)) {
-                        value = null;
-                    }
-                    break;
-                default:
-                    value = null;
-                    break;
+                    case BOOLEAN:
+                        value = cell.getBooleanCellValue();
+                        break;
+                    case NUMERIC:
+                        value = cell.getNumericCellValue();
+                        break;
+                    case STRING:
+                        value = cell.getStringCellValue().trim();
+                        if (nullSymbol.equals(value)) {
+                            value = null;
+                        }
+                        break;
                 }
             }
             return value;
@@ -144,15 +140,9 @@ public class OoxmlDataSet extends MultiDataSet {
         @Override
         public DataSet copy() throws IOException {
             throw new UnsupportedOperationException(
-                "Cannot copy data set outside the container multi data set"
+                    "Cannot copy data set outside the container multi data set"
             );
         }
-    }
-
-
-    @Override
-    public MultiDataSet copy() throws IOException {
-        return new OoxmlDataSet(file, ignoreSheetRegex, nullSymbol);
     }
 
 }

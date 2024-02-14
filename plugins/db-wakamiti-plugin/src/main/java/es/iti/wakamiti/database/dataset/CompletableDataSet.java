@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database.dataset;
 
 
@@ -37,20 +33,52 @@ public class CompletableDataSet extends DataSet {
         this.nonNullableColumnsWithType = nonNullableColumnsWithType;
         List<String> originalColumnList = Arrays.asList(wrapped.columns());
         for (Entry<String, Integer> nonNullableColumnWithType : nonNullableColumnsWithType
-            .entrySet()) {
+                .entrySet()) {
             if (!containsIgnoringCase(originalColumnList, nonNullableColumnWithType.getKey())) {
                 this.nonNullableColumns.put(
-                    nonNullableColumnWithType.getKey(),
-                    nonNullValueFor(nonNullableColumnWithType.getValue())
+                        nonNullableColumnWithType.getKey(),
+                        nonNullValueFor(nonNullableColumnWithType.getValue())
                 );
             }
         }
         this.columns = Stream.concat(
-            Stream.of(wrapped.columns()),
-            nonNullableColumns.keySet().stream()
+                Stream.of(wrapped.columns()),
+                nonNullableColumns.keySet().stream()
         ).toArray(String[]::new);
     }
 
+    private static Object nonNullValueFor(Integer sqlType) {
+        switch (sqlType) {
+            case Types.BIT:
+            case Types.BIGINT:
+            case Types.BOOLEAN:
+            case Types.INTEGER:
+            case Types.SMALLINT:
+            case Types.TINYINT:
+            case Types.FLOAT:
+            case Types.REAL:
+            case Types.DOUBLE:
+            case Types.DECIMAL:
+            case Types.NUMERIC:
+                return 1;
+            case Types.CHAR:
+            case Types.LONGNVARCHAR:
+            case Types.LONGVARCHAR:
+            case Types.NCHAR:
+            case Types.NVARCHAR:
+            case Types.VARCHAR:
+                return "A";
+            case Types.DATE:
+            case Types.TIMESTAMP:
+            case Types.TIMESTAMP_WITH_TIMEZONE:
+                return Date.valueOf(LocalDate.of(2000, 1, 1));
+            case Types.TIME:
+            case Types.TIME_WITH_TIMEZONE:
+                return Time.valueOf(LocalTime.of(12, 0));
+            default:
+                return 0;
+        }
+    }
 
     @Override
     public Object rowValue(int columnIndex) {
@@ -58,61 +86,28 @@ public class CompletableDataSet extends DataSet {
         return value == null ? wrapped.rowValue(columnIndex) : value;
     }
 
-
     private Object getIgnoringCase(Map<String, Object> map, String key) {
         return map.getOrDefault(key, map.get(key.toUpperCase()));
     }
 
+    @Override
+    public boolean isEmpty() {
+        return wrapped.isEmpty();
+    }
 
     @Override
     public boolean nextRow() {
         return wrapped.nextRow();
     }
 
-
     @Override
     public void close() throws IOException {
         wrapped.close();
     }
 
-
     @Override
     public DataSet copy() throws IOException {
         return new CompletableDataSet(wrapped.copy(), nonNullableColumnsWithType);
-    }
-
-
-    private static Object nonNullValueFor(Integer sqlType) {
-        switch (sqlType) {
-        case Types.BIT:
-        case Types.BIGINT:
-        case Types.BOOLEAN:
-        case Types.INTEGER:
-        case Types.SMALLINT:
-        case Types.TINYINT:
-        case Types.FLOAT:
-        case Types.REAL:
-        case Types.DOUBLE:
-        case Types.DECIMAL:
-        case Types.NUMERIC:
-            return 1;
-        case Types.CHAR:
-        case Types.LONGNVARCHAR:
-        case Types.LONGVARCHAR:
-        case Types.NCHAR:
-        case Types.NVARCHAR:
-        case Types.VARCHAR:
-            return "A";
-        case Types.DATE:
-        case Types.TIMESTAMP:
-        case Types.TIMESTAMP_WITH_TIMEZONE:
-            return Date.valueOf(LocalDate.of(2000, 1, 1));
-        case Types.TIME:
-        case Types.TIME_WITH_TIMEZONE:
-            return Time.valueOf(LocalTime.of(12, 0));
-        default:
-            return 0;
-        }
     }
 
 }

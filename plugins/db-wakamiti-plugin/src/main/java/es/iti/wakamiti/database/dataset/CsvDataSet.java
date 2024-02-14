@@ -3,23 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.database.dataset;
 
+
+import es.iti.wakamiti.api.WakamitiException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-
-import es.iti.wakamiti.api.WakamitiException;
 
 
 public class CsvDataSet extends DataSet {
@@ -32,7 +27,7 @@ public class CsvDataSet extends DataSet {
 
 
     public CsvDataSet(String table, File file, String csvFormat, String nullSymbol) throws IOException {
-        this(table, file, CSVFormat.valueOf(csvFormat), nullSymbol);
+        this(table, file, Delimiter.valueOf(csvFormat.toUpperCase()).getFormat(), nullSymbol);
     }
 
 
@@ -60,6 +55,10 @@ public class CsvDataSet extends DataSet {
         reader.close();
     }
 
+    @Override
+    public boolean isEmpty() {
+        return !iterator.hasNext();
+    }
 
     @Override
     public boolean nextRow() {
@@ -71,16 +70,38 @@ public class CsvDataSet extends DataSet {
         }
     }
 
-
     @Override
     public Object rowValue(int columnIndex) {
         return nullIfMatchNullSymbol(currentRecord.get(columnIndex));
     }
 
-
-
     @Override
     public DataSet copy() throws IOException {
         return new CsvDataSet(table, file, format, nullSymbol);
+    }
+
+    private enum Delimiter {
+        DEFAULT(CSVFormat.DEFAULT),
+        EXCEL(CSVFormat.EXCEL),
+        INFORMIX_UNLOAD(CSVFormat.INFORMIX_UNLOAD),
+        INFORMIX_UNLOAD_CSV(CSVFormat.INFORMIX_UNLOAD_CSV),
+        MONGODB_CSV(CSVFormat.MONGODB_CSV),
+        MONGODB_TSV(CSVFormat.MONGODB_TSV),
+        MYSQL(CSVFormat.MYSQL),
+        ORACLE(CSVFormat.ORACLE),
+        POSTGRESQL_CSV(CSVFormat.POSTGRESQL_CSV),
+        POSTGRESQL_TEXT(CSVFormat.POSTGRESQL_TEXT),
+        RFC4180(CSVFormat.RFC4180),
+        TDF(CSVFormat.TDF);
+
+        private final CSVFormat format;
+
+        Delimiter(CSVFormat format) {
+            this.format = format;
+        }
+
+        public CSVFormat getFormat() {
+            return this.format;
+        }
     }
 }
