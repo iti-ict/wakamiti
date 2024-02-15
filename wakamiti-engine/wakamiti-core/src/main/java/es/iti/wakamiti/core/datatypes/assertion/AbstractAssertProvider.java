@@ -86,7 +86,11 @@ public abstract class AbstractAssertProvider {
 
     }
 
+    protected abstract String[] expressions();
+
     protected abstract LinkedHashMap<String, Pattern> translatedExpressions(Locale locale);
+
+    protected abstract LinkedList<String> regex(Locale locale);
 
     protected abstract Matcher<?> createMatcher(
             Locale locale,

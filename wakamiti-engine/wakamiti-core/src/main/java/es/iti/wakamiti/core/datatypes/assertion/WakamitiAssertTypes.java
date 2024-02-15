@@ -11,9 +11,9 @@ package es.iti.wakamiti.core.datatypes.assertion;
 
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 
 import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
@@ -105,7 +105,13 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             super(
                 name,
                 Assertion.class,
-                locale -> ".*",
+                locale -> {
+                    String[] expressions = Arrays.stream(matcherProviders)
+                            .map(provider -> provider.regex(locale))
+                            .flatMap(Collection::stream)
+                            .toArray(String[]::new);
+                    return "(" + String.join("|", expressions) + ")";
+                },
                 locale -> AbstractAssertProvider.getAllExpressions(locale,prefix),
                 parseProvider(matcherProviders)
             );

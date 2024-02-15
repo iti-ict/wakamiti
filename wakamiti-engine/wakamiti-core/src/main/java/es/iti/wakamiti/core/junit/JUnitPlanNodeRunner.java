@@ -10,6 +10,7 @@
 package es.iti.wakamiti.core.junit;
 
 
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
 import imconfig.Configuration;
@@ -24,9 +25,11 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class JUnitPlanNodeRunner extends PlanNodeRunner {
@@ -96,10 +99,11 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
 
     @Override
-    protected void runChildren() {
+    protected Stream<Pair<Instant, Result>> runChildren() {
         for (PlanNodeRunner child : getChildren()) {
             ((JUnitPlanNodeRunner) child).runNode(notifier);
         }
+        return Stream.empty();
     }
 
 

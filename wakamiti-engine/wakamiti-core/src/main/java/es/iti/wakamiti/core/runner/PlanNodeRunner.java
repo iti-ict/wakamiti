@@ -5,6 +5,8 @@
  */
 package es.iti.wakamiti.core.runner;
 
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.Pair;
 import imconfig.Configuration;
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
@@ -19,6 +21,7 @@ import es.iti.wakamiti.core.Wakamiti;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
@@ -103,13 +106,25 @@ public class PlanNodeRunner {
                 && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
             doNotImplemented(node, Result.NOT_IMPLEMENTED);
         } else if (!getChildren().isEmpty()) {
+            Stream<Pair<Instant, Result>> results = Stream.empty();
             if (node.nodeType() == NodeType.TEST_CASE) {
-                testCasePreExecution(node);
+                try {
+                    testCasePreExecution(node);
+                } catch (WakamitiException e) {
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)));
+                }
             }
-            runChildren();
+            results = Stream.concat(results, runChildren());
             if (node.nodeType() == NodeType.TEST_CASE) {
-                testCasePostExecution(node);
+                try {
+                    testCasePostExecution(node);
+                } catch (WakamitiException e) {
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)));
+                }
             }
+
+            results.max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
+                    .ifPresent(p -> node.prepareExecution().markFinished(p.key(), p.value()));
         } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             result = runStep();
         }
@@ -119,12 +134,13 @@ public class PlanNodeRunner {
     }
 
 
-    protected void runChildren() {
-        children.stream()
+    protected Stream<Pair<Instant, Result>> runChildren() {
+        return children.stream()
                 .map(PlanNodeRunner::runNode)
                 .filter(Objects::nonNull)
-                .max(Comparator.naturalOrder())
-                .ifPresent(r -> node.prepareExecution().markFinished(Instant.now(), r));
+                .map(result -> new Pair<>(Instant.now(), result))
+                /*.max(Comparator.naturalOrder())
+                .ifPresent(r -> node.prepareExecution().markFinished(Instant.now(), r))*/;
     }
 
     protected Result runStep() {

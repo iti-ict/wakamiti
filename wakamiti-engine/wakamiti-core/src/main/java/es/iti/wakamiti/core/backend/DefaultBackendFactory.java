@@ -92,6 +92,11 @@ public class DefaultBackendFactory implements BackendFactory {
         .map(String::strip)
         .collect(Collectors.toList());
 
+        if (testCase != null) {
+            configuration = Configuration.factory()
+                    .merge(configuration, Configuration.factory().fromMap(testCase.properties()));
+        }
+
         List<StepContributor> stepContributors = createStepContributors(
             restrictedModules,
             configuration,

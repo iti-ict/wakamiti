@@ -13,11 +13,16 @@ package es.iti.wakamiti.core.datatypes.assertion;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
@@ -81,22 +86,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
 
     @Override
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
-        // binary numeric matchers
-        String[] expressions = {
-            EQUALS,
-            GREATER,
-            GREATER_EQUALS,
-            LESS,
-            LESS_EQUALS,
-            NOT_EQUALS,
-            NOT_GREATER,
-            NOT_GREATER_EQUALS,
-            NOT_LESS,
-            NOT_LESS_EQUALS,
-        };
-
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
-        for (String expression : expressions) {
+        for (String expression : expressions()) {
             translatedExpressions.put(
                 expression,
                 Pattern.compile(
@@ -105,6 +96,30 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
             );
         }
         return translatedExpressions;
+    }
+
+    @Override
+    protected String[] expressions() {
+        return new String[] {
+                EQUALS,
+                GREATER,
+                GREATER_EQUALS,
+                LESS,
+                LESS_EQUALS,
+                NOT_EQUALS,
+                NOT_GREATER,
+                NOT_GREATER_EQUALS,
+                NOT_LESS,
+                NOT_LESS_EQUALS,
+        };
+    }
+
+    @Override
+    protected LinkedList<String> regex(Locale locale) {
+        return Arrays.stream(expressions())
+                .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
+                .map(exp -> exp.replace(VALUE_WILDCARD, numberRegexProvider.apply(locale)))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
 

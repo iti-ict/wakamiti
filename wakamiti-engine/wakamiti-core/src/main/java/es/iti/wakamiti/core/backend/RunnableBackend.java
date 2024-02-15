@@ -21,6 +21,7 @@ import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
 import imconfig.Configuration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.time.Clock;
@@ -149,12 +150,19 @@ public class RunnableBackend extends AbstractBackend {
     private void runMethod(ThrowableRunnable operation, String type) {
         try {
             operation.run();
-        } catch (Exception e) {
-            if (e.getCause() != null && e.getCause() != e) {
-                e = (Exception) e.getCause();
+        } catch (Exception | Error e) {
+            Throwable tr = e;
+            while (StringUtils.isBlank(tr.getMessage())) {
+                tr = tr.getCause();
             }
-            LOGGER.error("Error running {} operation: {}", type, e.getMessage());
-            LOGGER.debug(e.getMessage(), e);
+            LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
+            LOGGER.debug(tr.getMessage(), e);
+
+            if (e instanceof WakamitiException) {
+                throw (WakamitiException) e;
+            } else {
+                throw new WakamitiException(e);
+            }
         }
     }
 

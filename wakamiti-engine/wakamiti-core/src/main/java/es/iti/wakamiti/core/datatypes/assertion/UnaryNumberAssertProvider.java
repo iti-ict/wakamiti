@@ -8,10 +8,14 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
@@ -23,17 +27,28 @@ public class UnaryNumberAssertProvider extends AbstractAssertProvider {
 
 
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
-        String[] expressions = {
+    protected String[] expressions() {
+        return new String[] {
             NULL,
-            NOT_NULL,
+                    NOT_NULL,
         };
+    }
+
+    @Override
+    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
-        for (String key : expressions) {
+        for (String key : expressions()) {
             translatedExpressions
                 .put(key, Pattern.compile(translateBundleExpression(locale, key, "")));
         }
         return translatedExpressions;
+    }
+
+    @Override
+    protected LinkedList<String> regex(Locale locale) {
+        return Arrays.stream(expressions())
+                .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
 

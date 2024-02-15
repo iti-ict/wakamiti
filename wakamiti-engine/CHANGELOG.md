@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unreleased]
+
+### Fixed
+- The `WakamitiAssertTypes` have a specific regex instead of `.*`.
+- Configure the step contributor with specific scenario configuration.
+- Errors in `setUp` and `tearDown` operations will cause the scenario to fail.
+
 
 ## [2.3.3] - 2023-09-14
 
@@ -33,7 +40,6 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - The filtered scenarios results appear as `SKIPPED`
 - Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
-- The `es.iti.commons` logger is included in wakamiti-launcher
 
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`
