@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 - Add dependency `junit:juni:4.13.2` to `dependencyManagement`
+- Suppress Log4j Error in wakamiti-maven-plugin log
 
 
 ## [2.3.2] - 2023-09-11
@@ -32,9 +33,16 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - The filtered scenarios results appear as `SKIPPED`
 - Tag filter is now case-insensitive and tag expressions can contain `@` at the beginning of tag
+- The `es.iti.commons` logger is included in wakamiti-launcher
 
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`
+
+### Removed
+- Unused dependencies: `org.slf4j:slf4j-api`, `org.apache.maven:maven-model`, `org.apache.maven:maven-artifact`,
+  `org.apache.maven:maven-builder-support`, `org.apache.maven:maven-resolver-provider`,
+  `org.apache.maven:maven-repository-metadata`, `org.apache.maven:maven-model-builder`,
+  `org.apache.maven.resolver:maven-resolver-api`
 
 
 ## [2.2.1] - 2023-07-27
