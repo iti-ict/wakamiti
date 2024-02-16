@@ -101,28 +101,38 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testConnectionWhenNoDatabasesFound() {
-        Configuration config = configContributor.defaultConfiguration();
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            contributor.connection();
-        } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("Bad jdbc url");
-            throw e;
+            Configuration config = configContributor.defaultConfiguration();
+            configContributor.configurer().configure(contributor, config);
+
+            try {
+                contributor.connection();
+            } catch (WakamitiException e) {
+                assertThat(e.getMessage()).isEqualTo("Bad jdbc url");
+                throw e;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testConnectionWhenNoHealthcheckAndNoDatabasesFound() {
-        Configuration config = configContributor.defaultConfiguration();
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            contributor.setHealthcheck(false);
-            contributor.connection();
-        } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("There is no default connection");
-            throw e;
+            Configuration config = configContributor.defaultConfiguration();
+            configContributor.configurer().configure(contributor, config);
+
+            try {
+                contributor.setHealthcheck(false);
+                contributor.connection();
+            } catch (WakamitiException e) {
+                assertThat(e.getMessage()).isEqualTo("There is no default connection");
+                throw e;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -175,13 +185,19 @@ public class DatabaseStepContributorTest {
         LOGGER.debug("Result: {}", result);
 
         // Check
+        Database db = Database.from(contributor.connection());
+        String table = db.table("client");
         assertThat(result).isInstanceOf(ArrayNode.class);
         assertThat((ArrayNode) result).isNotEmpty();
         assertThat((ArrayNode) result).hasSize(1);
-        assertThat(((ArrayNode) result).get(0).get("FIRST_NAME").asText()).isEqualTo("Rosa");
-        assertThat(((ArrayNode) result).get(0).get("SECOND_NAME").asText()).isEqualTo("Melano");
-        assertThat(((ArrayNode) result).get(0).get("ACTIVE").asText()).isEqualTo("1");
-        assertThat(((ArrayNode) result).get(0).get("BIRTH_DATE").asText()).isEqualTo("1980-12-25");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "first_name")).asText())
+                .isEqualTo("Rosa");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
+                .isEqualTo("Melano");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "active")).asText())
+                .isEqualTo("1");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "birth_date")).asText())
+                .isEqualTo("1980-12-25");
     }
 
     @Test
@@ -202,13 +218,19 @@ public class DatabaseStepContributorTest {
         LOGGER.debug("Result: {}", result);
 
         // Check
+        Database db = Database.from(contributor.connection());
+        String table = db.table("client");
         assertThat(result).isInstanceOf(ArrayNode.class);
         assertThat((ArrayNode) result).isNotEmpty();
         assertThat((ArrayNode) result).hasSize(1);
-        assertThat(((ArrayNode) result).get(0).get("FIRST_NAME").asText()).isEqualTo("Rosa");
-        assertThat(((ArrayNode) result).get(0).get("SECOND_NAME").asText()).isEqualTo("null");
-        assertThat(((ArrayNode) result).get(0).get("ACTIVE").asText()).isEqualTo("1");
-        assertThat(((ArrayNode) result).get(0).get("BIRTH_DATE").asText()).isEqualTo("1980-12-25");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "first_name")).asText())
+                .isEqualTo("Rosa");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
+                .isEqualTo("null");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "active")).asText())
+                .isEqualTo("1");
+        assertThat(((ArrayNode) result).get(0).get(db.column(table, "birth_date")).asText())
+                .isEqualTo("1980-12-25");
     }
 
     @Test
@@ -845,25 +867,36 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = PrimaryKeyNotFoundException.class)
     public void testExecuteSQLScriptWhenEnabledCleanupAndUpdateWithNoId() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
-        // Act
         try {
-            String script = "UPDATE other SET something = 37 WHERE something = 47";
-            contributor.executeSQLScript(new Document(script));
-            contributor.cleanUp();
-        } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("Cannot determine primary key for table 'other'. " +
-                    "Please, disable the 'database.enableCleanupUponCompletion' property");
-            throw e;
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+
+            // Act
+            try {
+                String script = "UPDATE other SET something = 37 WHERE something = 47";
+                contributor.executeSQLScript(new Document(script));
+                contributor.cleanUp();
+            } catch (WakamitiException e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "Cannot determine primary key for table '%s'. " +
+                                        "Please, disable the 'database.enableCleanupUponCompletion' property",
+                                db.table("client")));
+                assertThat(e.getMessage()).isEqualTo("Cannot determine primary key for table 'other'. " +
+                        "Please, disable the 'database.enableCleanupUponCompletion' property");
+                throw e;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -916,25 +949,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsBySingleIdWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsBySingleId("2", "client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {ID=2} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsBySingleId("2", "client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=2} exist in table %s, but it doesn't",
+                                db.column(table, "id"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -975,25 +1017,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsBySingleIdAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsBySingleIdAsync("2", "client", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {ID=2} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsBySingleIdAsync("2", "client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=2} exist in table %s, but it doesn't",
+                                db.column(table, "id"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1018,25 +1069,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsBySingleIdWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsBySingleId("1", "client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {ID=1} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsBySingleId("1", "client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=1} exist in table %s, but it does",
+                                db.column(table, "id"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1061,25 +1121,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsBySingleIdAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsBySingleIdAsync("1", "client", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {ID=1} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsBySingleIdAsync("1", "client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=1} exist in table %s, but it does",
+                                db.column(table, "id"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1104,25 +1173,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsByOneColumn("client", "second_name", "Otro");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {SECOND_NAME=Otro} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsByOneColumn("client", "second_name", "Otro");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
+                                db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1179,25 +1257,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsByOneColumnAsync("client", "second_name", "Otro", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {SECOND_NAME=Otro} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsByOneColumnAsync("client", "second_name", "Otro", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
+                                db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1222,25 +1309,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsByOneColumnWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsByOneColumn("client", "second_name", "Melano");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {SECOND_NAME=Melano} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsByOneColumn("client", "second_name", "Melano");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
+                                db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1297,25 +1393,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsByOneColumnAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsByOneColumnAsync("client", "second_name", "Melano", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {SECOND_NAME=Melano} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsByOneColumnAsync("client", "second_name", "Melano", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
+                                db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1341,27 +1446,35 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByOneColumnWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowCountByOneColumn("second_name", "Otro", "client",
-                    new MatcherAssertion<>(comparesEqualTo(1L)));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
+            try {
+                // Act
+                contributor.assertRowCountByOneColumn("second_name", "Otro", "client",
+                        new MatcherAssertion<>(comparesEqualTo(1L)));
 
-            assertThat(e.getLocalizedMessage())
-                    .isEqualTo("It was expected some record satisfying {SECOND_NAME=Otro} exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
+                                db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1421,26 +1534,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByOneColumnAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowCountByOneColumnAsync("second_name", "Otro", "client",
-                    new MatcherAssertion<>(comparesEqualTo(1L)), 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            try {
+                // Act
+                contributor.assertRowCountByOneColumnAsync("second_name", "Otro", "client",
+                        new MatcherAssertion<>(comparesEqualTo(1L)), 1);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {SECOND_NAME=Otro} exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
+                        db.column(table, "second_name"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1465,25 +1586,33 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByClauseWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsByClause("client", new Document("birth_date > '1980-12-30'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying the given WHERE clause exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsByClause("client", new Document("birth_date > '1980-12-30'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying the given WHERE clause exist in table %s, but it doesn't",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1540,25 +1669,33 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByClauseAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-30'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying the given WHERE clause exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-30'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying the given WHERE clause exist in table %s, but it doesn't",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1583,25 +1720,33 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsByClauseWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsByClause("client", new Document("birth_date > '1980-12-20'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying the given WHERE clause exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsByClause("client", new Document("birth_date > '1980-12-20'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying the given WHERE clause exist in table %s, but it does",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1658,25 +1803,33 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowNotExistsByClauseAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowNotExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-20'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying the given WHERE clause exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowNotExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-20'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying the given WHERE clause exist in table %s, but it does",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1702,26 +1855,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByClauseWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowCountByClause("client", new MatcherAssertion<>(comparesEqualTo(1L)),
-                    new Document("birth_date > '1980-12-30'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying the given WHERE clause exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowCountByClause("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                        new Document("birth_date > '1980-12-30'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying the given WHERE clause exist in table %s, but <0L> was less than <1L>",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1781,26 +1942,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByClauseAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                    new Document("birth_date > '1980-12-30'"));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying the given WHERE clause exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
+                        new Document("birth_date > '1980-12-30'"));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying the given WHERE clause exist in table %s, but <0L> was less than <1L>",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1828,65 +1997,88 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableExists("client", new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "0", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableExists("client", new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format("Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsWhenNotExistAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableExists("client", new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Eva", "Perez", "1", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableExists("client", new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Eva", "Perez", "1", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=1, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -1952,65 +2144,89 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "0", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format(
+                                "Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsAsyncWhenNotExistsAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Eva", "Perez", "1", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Eva", "Perez", "1", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=1, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2038,28 +2254,40 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableNotExistsWhenExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableNotExists("client", new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "1", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableNotExists("client", new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2087,28 +2315,40 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableNotExistsAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableNotExistsAsync("client", 1, new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "1", "1980-12-25"}
-            }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableNotExistsAsync("client", 1, new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+                }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2137,29 +2377,41 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableCountWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableCount("client", new MatcherAssertion<>(comparesEqualTo(1L)),
-                    new DataTable(new String[][]{
-                            new String[]{"first_name", "second_name", "active", "birth_date"},
-                            new String[]{"Rosa", "Melano", "0", "1980-12-25"}
-                    }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableCount("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                        new DataTable(new String[][]{
+                                new String[]{"first_name", "second_name", "active", "birth_date"},
+                                new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                        }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=0, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2188,29 +2440,41 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableCountAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                    new DataTable(new String[][]{
-                            new String[]{"first_name", "second_name", "active", "birth_date"},
-                            new String[]{"Rosa", "Melano", "0", "1980-12-25"}
-                    }));
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but <0L> was less than <1L>");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
+                        new DataTable(new String[][]{
+                                new String[]{"first_name", "second_name", "active", "birth_date"},
+                                new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                        }));
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=0, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2236,61 +2500,85 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data2.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileExists(file);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data2.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileExists(file);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format(
+                                "Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsWhenNotExistAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data3.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileExists(file);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data3.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileExists(file);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2316,61 +2604,85 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data2.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileExistsAsync(file, 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data2.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileExistsAsync(file, 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format(
+                                "Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsAsyncWhenNotExistsAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data3.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileExistsAsync(file, 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data3.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileExistsAsync(file, 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2396,26 +2708,38 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileNotExistsWhenExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data1.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileNotExists(file);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data1.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileNotExists(file);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2441,26 +2765,38 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileNotExistsAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data1.xlsx");
-
         try {
-            // Act
-            contributor.assertXLSFileNotExistsAsync(file, 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data1.xlsx");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertXLSFileNotExistsAsync(file, 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2486,61 +2822,85 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data2.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileExists(file, "client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data2.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileExists(file, "client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format(
+                                "Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsWhenNotExistAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data3.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileExists(file, "client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data3.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileExists(file, "client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2566,61 +2926,84 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data2.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileExistsAsync(file, "client",1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data2.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .contains("Expecting actual:" + System.lineSeparator() +
-                            "  {\"ACTIVE\"=\"1\", \"BIRTH_DATE\"=\"1980-12-25\", \"FIRST_NAME\"=\"Rosa\", \"SECOND_NAME\"=\"Melano\"}" + System.lineSeparator() +
-                            "to contain exactly (and in same order):" + System.lineSeparator() +
-                            "  [\"FIRST_NAME\"=\"Rosa\"," + System.lineSeparator() +
-                            "    \"SECOND_NAME\"=\"Melano\"," + System.lineSeparator() +
-                            "    \"ACTIVE\"=\"0\"," + System.lineSeparator() +
-                            "    \"BIRTH_DATE\"=\"1980-12-25\"]" + System.lineSeparator() +
-                            "but some elements were not found:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"0\"]" + System.lineSeparator() +
-                            "and others were not expected:" + System.lineSeparator() +
-                            "  [\"ACTIVE\"=\"1\"]");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileExistsAsync(file, "client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .contains(String.format("Expecting actual:" + System.lineSeparator() +
+                                "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                "to contain exactly (and in same order):" + System.lineSeparator() +
+                                "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
+                                "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
+                                "    \"%3$s\"=\"0\"," + System.lineSeparator() +
+                                "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                "but some elements were not found:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
+                                "and others were not expected:" + System.lineSeparator() +
+                                "  [\"%3$s\"=\"1\"]",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsAsyncWhenNotExistsAndNoSimilar() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data3.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileExistsAsync(file, "client", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data3.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record satisfying {FIRST_NAME=Eva, SECOND_NAME=Perez, ACTIVE=0, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileExistsAsync(file, "client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2646,26 +3029,38 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileNotExistsWhenExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data1.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileNotExists(file, "client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data1.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileNotExists(file, "client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2683,7 +3078,7 @@ public class DatabaseStepContributorTest {
         File file = resource("data2.csv");
 
         // Act
-        contributor.assertCSVFileNotExistsAsync(file, "client",1);
+        contributor.assertCSVFileNotExistsAsync(file, "client", 1);
 
         // Check
         // No exception is thrown
@@ -2691,26 +3086,38 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileNotExistsAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        File file = resource("data1.csv");
-
         try {
-            // Act
-            contributor.assertCSVFileNotExistsAsync(file, "client",1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            File file = resource("data1.csv");
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record satisfying {FIRST_NAME=Rosa, SECOND_NAME=Melano, ACTIVE=1, BIRTH_DATE=1980-12-25} exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertCSVFileNotExistsAsync(file, "client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                String table = db.table("client");
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                                db.column(table, "first_name"),
+                                db.column(table, "second_name"),
+                                db.column(table, "active"),
+                                db.column(table, "birth_date"), table));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2735,26 +3142,33 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertTableIsNotEmptyWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        contributor.truncateTable("client", false);
-
         try {
-            // Act
-            contributor.assertTableIsNotEmpty("client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            contributor.truncateTable("client", false);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertTableIsNotEmpty("client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format("It was expected some record exist in table %s, but it doesn't",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2795,26 +3209,34 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertTableIsNotEmptyAsyncWhenNotExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        contributor.truncateTable("client", false);
-
         try {
-            // Act
-            contributor.assertTableIsNotEmptyAsync("client", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
+            contributor.truncateTable("client", false);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected some record exist in table CLIENT, but it doesn't");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertTableIsNotEmptyAsync("client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format(
+                                "It was expected some record exist in table %s, but it doesn't",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2840,25 +3262,32 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertTableIsEmptyWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertTableIsEmpty("client");
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertTableIsEmpty("client");
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format("It was expected no record exist in table %s, but it does",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 
@@ -2900,25 +3329,32 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testAssertTableIsEmptyAsyncWhenExists() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-
         try {
-            // Act
-            contributor.assertTableIsEmptyAsync("client", 1);
+            // Prepare
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.connection.url", URL,
+                    "database.connection.username", USER,
+                    "database.connection.password", PASS,
+                    "database.metadata.healthcheck", "false",
+                    "database.enableCleanupUponCompletion", "true"
+            );
+            configContributor.configurer().configure(contributor, config);
 
-            // Check
-        } catch (AssertionError e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("It was expected no record exist in table CLIENT, but it does");
-            throw new WakamitiException();
+            try {
+                // Act
+                contributor.assertTableIsEmptyAsync("client", 1);
+
+                // Check
+            } catch (AssertionError e) {
+                Database db = Database.from(contributor.connection());
+                assertThat(e.getMessage())
+                        .isEqualTo(String.format("It was expected no record exist in table %s, but it does",
+                                db.table("client")));
+                throw new WakamitiException();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         }
     }
 

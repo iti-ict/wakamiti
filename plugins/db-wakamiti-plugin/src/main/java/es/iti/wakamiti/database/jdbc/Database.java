@@ -30,20 +30,19 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.*;
 public final class Database {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
-    private static final Map<String, Map<String, JDBCType>> CACHED_TYPES = new HashMap<>();
-    private static final Map<String, List<String>> CACHED_PK = new HashMap<>();
-    private static final Map<String, String> CACHED_TABLES = new HashMap<>();
-    private static final Map<String, Map<String, String>> CACHED_COLUMNS = new HashMap<>();
+    private static final Map<String, Schema> CACHED_SCHEMA = new HashMap<>();
 
     private final ConnectionProvider connection;
     private final DatabaseType type;
     private final SQLParser parser;
+    private final Schema schema;
 
 
     private Database(ConnectionProvider connection) {
         this.connection = connection;
         this.type = DatabaseType.fromUrl(connection.parameters().url());
         this.parser = new SQLParser(type);
+        this.schema = CACHED_SCHEMA.computeIfAbsent(connection.parameters().url(), k -> new Schema());
     }
 
     /**
@@ -92,7 +91,7 @@ public final class Database {
      * @return The stored format
      */
     public String table(String table) {
-        return CACHED_TABLES.computeIfAbsent(parser.unquote(table), k -> {
+        return schema.tables.computeIfAbsent(parser.unquote(table), k -> {
             LOGGER.debug("Retrieving the table {}", parser.unquote(table));
             try (ResultSet rs = connection().getMetaData()
                     .getTables(catalog(), schema(), "_".repeat(parser.unquote(table).length()), null)) {
@@ -144,15 +143,15 @@ public final class Database {
             }
         };
 
-        if (CACHED_COLUMNS.containsKey(table(table))) {
-            Map<String, String> columns = CACHED_COLUMNS.get(table(table));
+        if (schema.columns.containsKey(table(table))) {
+            Map<String, String> columns = schema.columns.get(table(table));
             return columns.computeIfAbsent(parser.unquote(column), retrieve);
         } else {
             LinkedHashMap<String, String> columns = new LinkedHashMap<>();
             columns.put(parser.unquote(column), retrieve.apply(parser.unquote(column)));
-            CACHED_COLUMNS.put(table(table), columns);
+            schema.columns.put(table(table), columns);
         }
-        return CACHED_COLUMNS.get(table(table)).get(parser.unquote(column));
+        return schema.columns.get(table(table)).get(parser.unquote(column));
     }
 
     /**
@@ -162,7 +161,7 @@ public final class Database {
      * @return the name of columns
      */
     public Stream<String> primaryKey(String table) {
-        return CACHED_PK.computeIfAbsent(table(parser.unquote(table)), k -> {
+        return schema.pk.computeIfAbsent(table(parser.unquote(table)), k -> {
             LOGGER.debug("Retrieving primary key of table {}", k);
             ArrayList<String> primaryKeys = new ArrayList<>();
             try (ResultSet rs = connection().getMetaData().getPrimaryKeys(catalog(), schema(), k)) {
@@ -184,7 +183,7 @@ public final class Database {
      * @return the column types
      */
     public Map<String, JDBCType> columnTypes(String table) {
-        return CACHED_TYPES.computeIfAbsent(table(parser.unquote(table)), k -> {
+        return schema.types.computeIfAbsent(table(parser.unquote(table)), k -> {
             LOGGER.debug("Retrieving column types of table {}", k);
             LinkedHashMap<String, JDBCType> types = new LinkedHashMap<>();
             try (ResultSet rs = connection().getMetaData()

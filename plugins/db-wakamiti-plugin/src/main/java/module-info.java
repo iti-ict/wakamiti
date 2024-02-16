@@ -26,7 +26,7 @@ module es.iti.wakamiti.db {
     requires commons.csv;
     requires org.assertj.core;
     requires org.hamcrest;
-    requires junit;
+   // requires junit;
     requires jsqlparser;
     requires org.apache.commons.io;
     requires java.sql.rowset;

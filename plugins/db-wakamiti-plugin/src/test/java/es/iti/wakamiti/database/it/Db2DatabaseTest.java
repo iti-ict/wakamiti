@@ -8,6 +8,7 @@ package es.iti.wakamiti.database.it;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.database.jdbc.Database;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Configuration;
 import imconfig.Property;

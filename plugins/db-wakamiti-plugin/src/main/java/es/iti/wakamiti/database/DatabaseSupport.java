@@ -21,7 +21,6 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
-import org.assertj.core.api.Assertions;
 import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
 import org.hamcrest.Matchers;
@@ -45,7 +44,9 @@ import java.util.stream.Stream;
 import static es.iti.wakamiti.database.DatabaseHelper.*;
 import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
+
 
 
 public class DatabaseSupport {
@@ -264,7 +265,7 @@ public class DatabaseSupport {
                 similarBy(dataSet.table(), row.key(), row.value()).ifPresentOrElse(result ->
                                 assertThat(result).containsExactlyEntriesOf(toMap(row.key(),
                                         Stream.of(row.value()).map(DatabaseHelper::toString).toArray(String[]::new))),
-                        () -> Assertions.fail(message(
+                        () -> fail(message(
                                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                                 toMap(row.key(), row.value()),
                                 Database.from(connection()).table(dataSet.table()), "it doesn't"
@@ -277,7 +278,7 @@ public class DatabaseSupport {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         for (Pair<String[], Object[]> row : rows) {
             if (!matcherEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
-                Assertions.fail(message(
+                fail(message(
                         ERROR_ASSERT_NO_RECORD_EXPECTED,
                         toMap(row.key(), row.value()),
                         Database.from(connection()).table(dataSet.table()), "it does"
@@ -293,7 +294,7 @@ public class DatabaseSupport {
                 .mapToLong(row -> countBy(dataSet.table(), row.key(), row.value()))
                 .sum();
         if (!matcher.test(count)) {
-            Assertions.fail(message(
+            fail(message(
                     ERROR_ASSERT_SOME_RECORD_EXPECTED,
                     rows.size() == 1 ? toMap(rows.get(0).key(), rows.get(0).value()) : "the given data",
                     Database.from(connection()).table(dataSet.table()), matcher.describeFailure(count)
@@ -309,7 +310,7 @@ public class DatabaseSupport {
                     .mapToLong(row -> countBy(dataSet.table(), row.key(), row.value()))
                     .sum());
             return matcher.test(count.get());
-        }, time, () -> Assertions.fail(message(
+        }, time, () -> fail(message(
                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                 rows.size() == 1 ? toMap(rows.get(0).key(), rows.get(0).value()) : "the given data",
                 Database.from(connection()).table(dataSet.table()), matcher.describeFailure(count.get())
@@ -369,14 +370,14 @@ public class DatabaseSupport {
     }
 
     protected Runnable failSomeRecordExpected(String table, AtomicReference<Pair<String[], Object[]>> row) {
-        return () -> Assertions.fail(message(
+        return () -> fail(message(
                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                 toMap(row.get().key(), row.get().value()), Database.from(connection()).table(table), "it doesn't"
         ));
     }
 
     protected Runnable failNoRecordExpected(String table, AtomicReference<Pair<String[], Object[]>> row) {
-        return () -> Assertions.fail(message(
+        return () -> fail(message(
                 ERROR_ASSERT_NO_RECORD_EXPECTED,
                 toMap(row.get().key(), row.get().value()), Database.from(connection()).table(table), "it does"
         ));
