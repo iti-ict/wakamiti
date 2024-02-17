@@ -20,6 +20,7 @@ import es.iti.wakamiti.core.gherkin.parser.*;
 import imconfig.Configurable;
 import imconfig.Configuration;
 
+import java.io.File;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Predicate;
@@ -101,7 +102,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     protected PlanNodeBuilder createFeature(Resource<GherkinDocument> gherkinResource) {
         Feature feature = gherkinResource.content().getFeature();
-        String location = gherkinResource.relativePath();
+        String location = gherkinResource.relativePath().replace(File.separator, "/");
         String language = feature.getLanguage();
         PlanNodeBuilder node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {

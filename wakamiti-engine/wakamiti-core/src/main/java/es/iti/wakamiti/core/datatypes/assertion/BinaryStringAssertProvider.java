@@ -92,7 +92,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     protected LinkedList<String> regex(Locale locale) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
-                .map(exp -> exp.replace(VALUE_WILDCARD, "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"))
+                .map(exp -> exp.replace(VALUE_WILDCARD, "(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)')"))
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
