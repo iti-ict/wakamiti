@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+- Version compatibility check when plugins are loaded.
+
 ### Fixed
-- The `WakamitiAssertTypes` have a specific regex instead of `.*`.
 - Configure the step contributor with specific scenario configuration.
 - Errors in `setUp` and `tearDown` operations will cause the scenario to fail.
+
+### Changed
+- Upgrade dependencies: `wakamiti-starter`
+- The `WakamitiAssertTypes` have a specific regex instead of `.*`.
 
 
 ## [2.3.3] - 2023-09-14

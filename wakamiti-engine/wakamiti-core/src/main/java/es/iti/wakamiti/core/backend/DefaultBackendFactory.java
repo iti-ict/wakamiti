@@ -222,11 +222,11 @@ public class DefaultBackendFactory implements BackendFactory {
         Class<A> annotation,
         ToIntFunction<A> orderGetter
     ) {
-        LinkedHashMap<ThrowableRunnable, A> runnables = new LinkedHashMap<>();
+        LinkedHashMap<ThrowableRunnable, A> runnable = new LinkedHashMap<>();
         for (StepContributor stepContributor : stepContributors) {
             for (Method method : stepContributor.getClass().getMethods()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    runnables.put(
+                    runnable.put(
                         args -> method.invoke(stepContributor),
                         method.getAnnotation(annotation)
                     );
@@ -237,7 +237,7 @@ public class DefaultBackendFactory implements BackendFactory {
         Comparator<? super Entry<ThrowableRunnable, A>> sorter = Comparator
             .comparingInt(e -> orderGetter.applyAsInt(e.getValue()));
 
-        return runnables.entrySet().stream()
+        return runnable.entrySet().stream()
             .sorted(sorter)
             .map(Entry::getKey)
             .collect(Collectors.toList());

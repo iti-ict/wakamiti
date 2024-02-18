@@ -11,6 +11,7 @@ package es.iti.wakamiti.api.extensions;
 
 import es.iti.commons.jext.Extension;
 
+import java.util.Optional;
 
 /** Base interface for all Wakamiti extensions */
 public interface Contributor {
@@ -18,12 +19,12 @@ public interface Contributor {
     default String info() {
         Extension extensionData = this.getClass().getAnnotation(Extension.class);
         if (extensionData != null) {
-            return String.format(
-                    "%s:%s:%s",
+            String info = String.format("%s:%s",
                     extensionData.provider(),
-                    extensionData.name(),
-                    extensionData.version()
-            );
+                    extensionData.name());
+            return Optional.ofNullable(version())
+                    .map(version -> String.format("%s:%s", info, version.replaceAll("\\.\\d+$", "")))
+                    .orElse(info);
         } else {
             return getClass().getCanonicalName();
         }
@@ -32,6 +33,10 @@ public interface Contributor {
 
     default Extension extensionMetadata() {
         return this.getClass().getAnnotation(Extension.class);
+    }
+
+    default String version() {
+        return getClass().getPackage().getImplementationVersion();
     }
 
 }

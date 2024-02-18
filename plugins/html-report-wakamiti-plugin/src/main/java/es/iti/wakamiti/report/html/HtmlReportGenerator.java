@@ -167,7 +167,4 @@ public class HtmlReportGenerator implements Reporter {
         return classLoader().getResourceAsStream(resource);
     }
 
-    private String version() {
-        return getClass().getPackage().getImplementationVersion();
-    }
 }

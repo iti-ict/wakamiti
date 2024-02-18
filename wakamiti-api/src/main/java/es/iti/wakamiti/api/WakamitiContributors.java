@@ -50,7 +50,11 @@ public class WakamitiContributors {
                 StepContributor.class
         } ;
         Map<Class<?>,List<Contributor>> map = Stream.of(contributorTypes)
-            .map(type -> new Pair<>(type,extensionManager.getExtensions(type).map(Contributor.class::cast).collect(Collectors.toList())))
+            .map(type -> new Pair<>(type, extensionManager.getExtensions(type)
+                    .map(Contributor.class::cast)
+                    .peek(this::checkVersion)
+                    .collect(Collectors.toList()))
+            )
             .collect(Collectors.toMap(Pair::key,Pair::value));
         map.get(StepContributor.class).addAll(stepContributors);
         return map;
@@ -69,7 +73,8 @@ public class WakamitiContributors {
     }
 
     public Stream<EventObserver> eventObservers() {
-        return extensionManager.getExtensions(EventObserver.class);
+        return extensionManager.getExtensions(EventObserver.class)
+                .peek(this::checkVersion);
     }
 
 
@@ -77,12 +82,10 @@ public class WakamitiContributors {
         ResourceType<?> resourceType,
         Configuration configuration
     ) {
-        Predicate<PlanBuilder> filter = planner -> planner.acceptResourceType(resourceType);
         Optional<PlanBuilder> planBuilder = extensionManager
-            .getExtensionThatSatisfy(PlanBuilder.class, filter);
-        if (planBuilder.isPresent()) {
-            configure(planBuilder.get(), configuration);
-        }
+            .getExtensionThatSatisfy(PlanBuilder.class, planner -> planner.acceptResourceType(resourceType));
+        planBuilder.ifPresent(this::checkVersion);
+        planBuilder.ifPresent(builder -> configure(builder, configuration));
         return planBuilder;
     }
 
@@ -91,7 +94,9 @@ public class WakamitiContributors {
      * @return A list of all available resource types provided by contributors
      */
     public Stream<ResourceType<?>> availableResourceTypes() {
-        return extensionManager.getExtensions(ResourceType.class).map(x -> (ResourceType<?>) x);
+        return extensionManager.getExtensions(ResourceType.class)
+                .peek(this::checkVersion)
+                .map(x -> (ResourceType<?>) x);
     }
 
 
@@ -105,16 +110,19 @@ public class WakamitiContributors {
     public Stream<DataTypeContributor> dataTypeContributors(List<String> modules) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
-            .getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition);
+            .getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition)
+                .peek(this::checkVersion);
     }
 
 
     public Stream<DataTypeContributor> allDataTypeContributors() {
-        return extensionManager.getExtensions(DataTypeContributor.class);
+        return extensionManager.getExtensions(DataTypeContributor.class)
+                .peek(this::checkVersion);
     }
 
     public Stream<LoaderContributor> allLoaderContributors() {
-        return extensionManager.getExtensions(LoaderContributor.class);
+        return extensionManager.getExtensions(LoaderContributor.class)
+                .peek(this::checkVersion);
     }
 
     public List<StepContributor> createStepContributors(
@@ -124,6 +132,7 @@ public class WakamitiContributors {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
             .getExtensionsThatSatisfyMetadata(StepContributor.class, condition)
+            .peek(this::checkVersion)
             .peek(c -> configure(c, configuration))
             .collect(Collectors.toList());
     }
@@ -132,6 +141,7 @@ public class WakamitiContributors {
     public List<StepContributor> createAllStepContributors(Configuration configuration) {
         return extensionManager
             .getExtensions(StepContributor.class)
+            .peek(this::checkVersion)
             .peek(c -> configure(c, configuration))
             .collect(Collectors.toList());
     }
@@ -146,6 +156,7 @@ public class WakamitiContributors {
     public <T> Stream<ConfigContributor<T>> configuratorsFor(T contributor) {
         return extensionManager
             .getExtensionsThatSatisfy(ConfigContributor.class, c -> c.accepts(contributor))
+            .peek(this::checkVersion)
             .map(c -> (ConfigContributor<T>) c);
     }
 
@@ -163,16 +174,19 @@ public class WakamitiContributors {
 
 
     public Stream<PlanTransformer> planTransformers() {
-        return extensionManager.getExtensions(PlanTransformer.class);
+        return extensionManager.getExtensions(PlanTransformer.class)
+                .peek(this::checkVersion);
     }
 
     public void propertyResolvers(Configuration configuration) {
         extensionManager.getExtensions(PropertyEvaluator.class)
+                .peek(this::checkVersion)
                 .forEach(c -> configure(c, configuration));
     }
 
     public Stream<Reporter> reporters() {
-        return extensionManager.getExtensions(Reporter.class);
+        return extensionManager.getExtensions(Reporter.class)
+                .peek(this::checkVersion);
     }
 
 
@@ -183,11 +197,28 @@ public class WakamitiContributors {
 
     public Configuration globalDefaultConfiguration() {
         return extensionManager.getExtensions(ConfigContributor.class)
+                .peek(this::checkVersion)
         .map(ConfigContributor::defaultConfiguration)
         .reduce(ConfigurationFactory.instance().empty(), Configuration::append);
     }
 
-
+    private void checkVersion(Contributor contributor) {
+        String regex = "^(\\d+\\.\\d+)(\\.\\d+)?$";
+        double coreVersion = Optional.of(WakamitiAPI.instance().version())
+                .map(version -> version.replaceAll(regex, "$1"))
+                .map(Double::valueOf)
+                .get();
+        Optional.ofNullable(contributor.extensionMetadata().version())
+                .map(version -> version.replaceAll(regex, "$1"))
+                .map(Double::valueOf)
+                .filter(version -> coreVersion < version)
+                .ifPresent(version -> {
+                    String message = String.format(
+                            "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
+                            contributor.extensionMetadata().name(), version, coreVersion);
+                    throw new UnsupportedClassVersionError(message);
+                });
+    }
 
     private <T> Stream<T> concat(Stream<? extends T>... streams) {
         Stream<T> concat = Stream.empty();

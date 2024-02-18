@@ -35,7 +35,7 @@ public @interface Extension {
 
 
     /**
-     * The version of the extension in form of
+     * Minimum supported core version in form of
      * {@code <majorVersion>.<minorVersion>}
      */
     String version() default "1.0";
