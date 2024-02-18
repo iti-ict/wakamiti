@@ -15,6 +15,7 @@ public class JarUtil {
     public static Path jarFolder() throws URISyntaxException {
         return Paths.get(
             WakamitiLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+                    .replaceAll("^/\\w:", "")
         ).getParent();
     }
 }

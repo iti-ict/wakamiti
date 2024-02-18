@@ -238,10 +238,6 @@ public class ResourceLoader {
         Predicate<String> filenameFilter,
         Parser<T> parser
     ) {
-        path = Path.of(path).normalize().toString();
-        if (path.endsWith("/") || path.endsWith("\\")) {
-            path = path.substring(0, path.length() - 1);
-        }
         List<Resource<?>> discovered = new ArrayList<>();
         try {
             if (path.startsWith(CLASSPATH_PROTOCOL)) {
@@ -258,6 +254,10 @@ public class ResourceLoader {
                     );
                 }
             } else {
+                path = Path.of(path).normalize().toString();
+                if (path.endsWith("/") || path.endsWith("\\")) {
+                    path = path.substring(0, path.length() - 1);
+                }
                 URI uri;
                 if (Paths.get(path).isAbsolute()) {
                     uri = Paths.get(path).toUri();
