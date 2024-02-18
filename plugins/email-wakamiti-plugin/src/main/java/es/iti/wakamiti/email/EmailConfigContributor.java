@@ -8,7 +8,7 @@ import imconfig.Configurer;
 @Extension(
     provider =  "es.iti.wakamiti",
     name = "email-step-config",
-    version = "1.1",
+        version = "2.4",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class EmailConfigContributor implements ConfigContributor<EmailStepContributor> {

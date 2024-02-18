@@ -203,7 +203,7 @@ public class WakamitiContributors {
     }
 
     private void checkVersion(Contributor contributor) {
-        String regex = "^(\\d+\\.\\d+)(\\.\\d+)?$";
+        String regex = "^(\\d+\\.\\d+)(\\.\\d+.*)?$";
         double coreVersion = Optional.of(WakamitiAPI.instance().version())
                 .map(version -> version.replaceAll(regex, "$1"))
                 .map(Double::valueOf)

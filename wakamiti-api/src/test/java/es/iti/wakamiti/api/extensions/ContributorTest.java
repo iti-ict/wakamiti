@@ -5,11 +5,13 @@
  */
 package es.iti.wakamiti.api.extensions;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.commons.jext.ExtensionPoint;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ContributorTest {
 
@@ -35,22 +37,44 @@ public class ContributorTest {
     interface MockContributor extends Contributor {}
 
 
-    class TestContributor implements MockContributor {}
+    static class TestContributor implements MockContributor {}
     @Extension(provider = "wakamiti-moreText", name = "test-contrib-moreText")
-    class TestContributorExt1 implements MockContributor {}
+    static
+    class TestContributorExt1 implements MockContributor {
+        @Override
+        public String version() {
+            return "1.0";
+        }
+    }
     @Extension(provider = "es.iti_somethingElse", name = "test_somethingElse")
-    class TestContributorExt2 implements MockContributor { }
+    static
+    class TestContributorExt2 implements MockContributor {
+        @Override
+        public String version() {
+            return "1.0";
+        }
+    }
     @Extension(provider = "es.iti_someText", name = "test_aCapText")
-    class TestContributorExt3 implements MockContributor {}
+    static
+    class TestContributorExt3 implements MockContributor {
+        @Override
+        public String version() {
+            return "1.0.2";
+        }
+    }
 
-    class TestStepContributor implements StepContributor {}
+    static class TestStepContributor implements StepContributor { }
     @Extension(provider = "wakamiti-moreText", name = "test-contrib-moreText")
+    static
     class TestStepContributorExt1 implements StepContributor {}
     @Extension(provider = "es.iti_somethingElse", name = "test_somethingElse")
+    static
     class TestStepContributorExt2 implements StepContributor {}
     @Extension(provider = "es.iti_someText", name = "test_aCapText")
+    static
     class TestStepContributorExt3 implements StepContributor {}
     @Extension(provider = "thisisthenameofprovider", name = "nameoftheextension")
+    static
     class TestStepContributorExt4 implements StepContributor {}
 
 }

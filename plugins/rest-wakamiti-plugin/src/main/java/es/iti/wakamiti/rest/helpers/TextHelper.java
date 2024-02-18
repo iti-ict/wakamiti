@@ -16,7 +16,12 @@ import org.junit.ComparisonFailure;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider =  "es.iti.wakamiti", name = "rest-text-helper", extensionPoint =  "es.iti.wakamiti.rest.ContentTypeHelper")
+@Extension(
+        provider =  "es.iti.wakamiti",
+        name = "rest-text-helper",
+        version = "2.4",
+        extensionPoint =  "es.iti.wakamiti.rest.ContentTypeHelper"
+)
 public class TextHelper implements ContentTypeHelper {
 
 

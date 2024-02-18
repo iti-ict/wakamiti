@@ -34,7 +34,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.4")
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 

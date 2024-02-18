@@ -28,7 +28,12 @@ import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-xml-helper", extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "rest-xml-helper",
+        version = "2.4",
+        extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
+)
 public class XMLHelper implements ContentTypeHelper {
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);

@@ -7,7 +7,12 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 
 import java.util.Arrays;
 
-@Extension(provider =  "es.iti.wakamiti", name = "file-uploader-configurator", extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider =  "es.iti.wakamiti",
+        name = "file-uploader-configurator",
+        version = "2.4",
+        extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
     private static final String PREFIX = "fileUploader";

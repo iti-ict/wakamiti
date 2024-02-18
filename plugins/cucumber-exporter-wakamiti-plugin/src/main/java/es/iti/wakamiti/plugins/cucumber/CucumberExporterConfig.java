@@ -9,7 +9,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 @Extension(
     provider =  "es.iti.wakamiti",
     name = "cucumber-exporter-config",
-    version = "1.0",
+    version = "2.4",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class CucumberExporterConfig implements ConfigContributor<CucumberExporter> {

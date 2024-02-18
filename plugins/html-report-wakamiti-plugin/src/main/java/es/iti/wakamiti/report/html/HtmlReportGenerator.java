@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.report.html;
 
+
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
 import es.iti.commons.jext.Extension;
@@ -38,7 +39,7 @@ import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "1.2")
+@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.4")
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);
@@ -87,7 +88,6 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void report(PlanNodeSnapshot rootNode) {
         try {
             var resourceLoader = WakamitiAPI.instance().resourceLoader();

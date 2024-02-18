@@ -16,7 +16,7 @@ import es.iti.commons.jext.Extension;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "1.1")
+@Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "2.4")
 public class DriverConnectionManager implements ConnectionManager {
 
     @Override
