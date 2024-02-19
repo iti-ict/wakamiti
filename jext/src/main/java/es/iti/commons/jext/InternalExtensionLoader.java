@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.commons.jext;
 
 
@@ -18,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 class InternalExtensionLoader implements ExtensionLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InternalExtensionLoader.class);
@@ -35,9 +33,9 @@ class InternalExtensionLoader implements ExtensionLoader {
         }
     }
 
-
     @Override
     public String toString() {
         return "Built-in extension loader";
     }
+
 }

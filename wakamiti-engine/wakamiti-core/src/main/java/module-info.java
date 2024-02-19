@@ -39,6 +39,7 @@ open module es.iti.wakamiti.core {
     requires net.harawata.appdirs;
     requires java.instrument;
     requires org.apache.xmlbeans;
+    requires org.apache.commons.lang3;
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 

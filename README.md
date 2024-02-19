@@ -281,8 +281,8 @@ License
 Authors
 ----------------------------------------------------------------------------------------------------
 
-- **Luis Iñesta Gelabert**   linesta@iti.es | luiinge@gmail.com
-- **María Galbis**  mgalbis@iti.es
+- **Luis Iñesta Gelabert**   linesta@iti.es 
+- **María Galbis Calomarde**  mgalbis@iti.es 
 - **Adrián Martínez Gil**  adrianmargil8@gmail.com
     
 

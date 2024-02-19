@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.api;
 
 
@@ -17,7 +13,6 @@ import es.iti.wakamiti.api.util.Pair;
 import imconfig.Configurable;
 import imconfig.Configuration;
 import imconfig.ConfigurationFactory;
-import es.iti.wakamiti.api.extensions.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +23,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 public class WakamitiContributors {
 
     private ExtensionManager extensionManager = new ExtensionManager();
@@ -218,14 +216,6 @@ public class WakamitiContributors {
                             contributor.extensionMetadata().name(), version, coreVersion);
                     throw new UnsupportedClassVersionError(message);
                 });
-    }
-
-    private <T> Stream<T> concat(Stream<? extends T>... streams) {
-        Stream<T> concat = Stream.empty();
-        for (Stream<? extends T> stream : streams) {
-            concat = Stream.concat(concat,stream);
-        }
-        return concat;
     }
 
 }

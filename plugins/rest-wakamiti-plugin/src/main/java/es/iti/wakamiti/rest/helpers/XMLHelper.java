@@ -26,7 +26,7 @@ import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",
@@ -39,8 +39,9 @@ public class XMLHelper implements ContentTypeHelper {
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
     private final XmlPathConfig config = XmlPathConfig.xmlPathConfig().defaultObjectDeserializer(new XmlPathObjectDeserializer() {
         @Override
-        public <T> T deserialize(ObjectDeserializationContext ctx) {
-            return (T) xml(ctx.getDataToDeserialize().asString());
+        @SuppressWarnings("unchecked")
+        public Object deserialize(ObjectDeserializationContext ctx) {
+            return xml(ctx.getDataToDeserialize().asString());
         }
     });
 

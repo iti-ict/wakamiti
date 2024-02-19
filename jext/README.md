@@ -10,18 +10,18 @@ The key concepts are:
 
 - **Extension points** (interfaces annotated with `@ExtensionPoint`) which define the contract
 - **Extensions** (classes annotated with `@Extension` and implementing the extension point class)
-- **Extension managers** that are responsible of retrieve extensions for an specific extension point
+- **Extension managers** that are responsible for retrieve extensions for a specific extension point
 
 What is the extra value then?
 
 - Annotation processing of `@Extension` and `@ExtensionPoint` so the classes are
 automatically registered as services by the compiler
 - Capability of using multiple class loaders at the same time
-- Explicitly declaring the extension point version that implement each extension, avoiding using wrong jar versions
+- Explicitly declaring the extension point version that implements each extension, avoiding using wrong jar versions
 - Custom control about creating new extension instances or reusing existing ones
-- Fine extension filtering using white lists and/or black lists
+- Fine extension filtering using whitelists and/or blacklists
 - When extending an extension via inheritance, you may either override the parent class or use both superclass and
-subclass independently
+  subclass independently
 
 ---
 
@@ -30,7 +30,7 @@ subclass independently
 ---
 
 ## Prerequisites
-- Java 8 or later
+- Java 11 or later
 
 
 ## Usage
@@ -43,7 +43,7 @@ Include the following within the `<dependencies>` section of your `pom.xml` file
 <dependency>
     <groupId>iti.commons</groupId>
     <artifactId>jext</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -62,4 +62,4 @@ Include the following within the `<dependencies>` section of your `pom.xml` file
 TODO
 
 ## Authors
-- Luis Iñesta Gelabert  |  :email: <linesta@iti.es> | :email: <luiinge@gmail.com>
+- Luis Iñesta Gelabert  |  :email: <linesta@iti.es> 

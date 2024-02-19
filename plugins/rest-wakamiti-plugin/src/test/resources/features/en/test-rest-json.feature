@@ -13,7 +13,7 @@ Feature: REST Test Feature
     Then the response HTTP code is 200
     And the response HTTP code is not 201
     And the response content type is JSON
-    And the response is equal to the file 'src/test/resources/server/users/user1.json'
+    And the response is equals to the file 'src/test/resources/server/users/user1.json'
     And the response contains:
       """
 { "name": "User One" }
@@ -112,7 +112,7 @@ Feature: REST Test Feature
         }
       ]
       """
-    And the response is equal to the file 'src/test/resources/data/users.json' (in any order)
+    And the response is equals to the file 'src/test/resources/data/users.json' (in any order)
     And the response fragment 'find{ it.id == "user1" }.vegetables' is (in any order):
       """json
       [
@@ -120,7 +120,7 @@ Feature: REST Test Feature
         { "id": 2, "description": "Gherkin" }
       ]
       """
-    And the response fragment 'find{ it.id == "user1" }.vegetables' is equal to the file 'src/test/resources/data/vegetables_user1.json' (in any order)
+    And the response fragment 'find{ it.id == "user1" }.vegetables' is equals to the file 'src/test/resources/data/vegetables_user1.json' (in any order)
     And the response fragment 'find{ it.id == "user1" }' contains:
       """json
       {
@@ -147,12 +147,12 @@ Feature: REST Test Feature
         { "id": 2, "description": "Gherkin" }
       ]
       """
-    And the response is equal to the file 'src/test/resources/data/vegetables_user1.json'
+    And the response is equals to the file 'src/test/resources/data/vegetables_user1.json'
     And the response fragment '[1]' is:
       """json
       { "id": 2, "description": "Gherkin" }
       """
-    And the response fragment '[1]' is equal to the file 'src/test/resources/data/vegetable.json'
+    And the response fragment '[1]' is equals to the file 'src/test/resources/data/vegetable.json'
 
 
     Scenario: Request with headers and parameters

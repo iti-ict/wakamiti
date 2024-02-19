@@ -11,7 +11,6 @@ import com.mdimension.jchronic.Options;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.SQLParser;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
-import net.sf.jsqlparser.JSQLParserException;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;

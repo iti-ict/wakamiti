@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ResourceLoader {
 
@@ -281,7 +281,7 @@ public class ResourceLoader {
         List<Resource<?>> discovered
     ) {
         if (FILE_PROTOCOL.equals(uri.getScheme())) {
-            discoverResouresInFile(
+            discoverResourcesInFile(
                 startPath,
                 new File(uri),
                 filenameFilter,
@@ -302,7 +302,7 @@ public class ResourceLoader {
     }
 
 
-    protected <T> void discoverResouresInFile(
+    protected <T> void discoverResourcesInFile(
         String startPath,
         File file,
         Predicate<String> filenameFilter,
@@ -310,8 +310,8 @@ public class ResourceLoader {
         List<Resource<?>> discovered
     ) {
         if (file.isDirectory() && file.listFiles() != null) {
-            for (File child : file.listFiles()) {
-                discoverResouresInFile(startPath, child, filenameFilter, parser, discovered);
+            for (File child : Objects.requireNonNull(file.listFiles())) {
+                discoverResourcesInFile(startPath, child, filenameFilter, parser, discovered);
             }
         } else if (filenameFilter.test(file.getName())) {
             try (InputStream stream = new FileInputStream(file)) {

@@ -16,8 +16,8 @@ module es.iti.wakamiti.api {
     requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive org.slf4j;
-    requires transitive org.apache.commons.lang3;
 
+    requires org.apache.commons.lang3;
     requires org.hamcrest;
     requires slf4jansi;
     requires java.instrument;

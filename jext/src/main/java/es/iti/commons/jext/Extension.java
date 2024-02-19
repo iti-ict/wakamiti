@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.commons.jext;
 
 
@@ -17,26 +13,39 @@ import java.lang.annotation.Target;
 import java.util.ServiceLoader;
 
 
-/** This annotation allows to mark a class as an extension managed by the * {@link ExtensionManager}. * <p> * Notice that any class not annotated with {@link Extension} will not be * managed in spite of implementing or extending the {@link ExtensionPoint} * class. * </p> *
+/**
+ * This annotation allows marking a class as an extension managed by the
+ * {@link ExtensionManager}.
+ * <p>
+ * Notice that any class not annotated with {@link Extension} will not be
+ * managed in spite of implementing or extending the {@link ExtensionPoint}
+ * class.
+ * </p>
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Extension {
 
-    static int NORMAL_PRORITY = 5;
+    int NORMAL_PRIORITY = 5;
 
 
-    /** The provider (organization, package, group, etc.) of the extension */
+    /**
+     * The provider (organization, package, group, etc.) of the extension
+     */
     String provider() default "none";
 
 
-    /** The name of the extension */
+    /**
+     * The name of the extension
+     */
     String name();
 
 
     /**
      * Minimum supported core version in form of
-     * {@code <majorVersion>.<minorVersion>}
+     * {@code <majorVersion>.<minorVersion>}.
      */
     String version() default "1.0";
 
@@ -44,9 +53,9 @@ public @interface Extension {
     /**
      * The class name of the extension point that is extended.
      * <p>
-     * If this field is not provided and the extension class implements directly
-     * the extension point class, it will automatically infer the value as the
-     * qualified name of the extension point class. Notice that, if the extension
+     * If this field is not provided and the extension class implements the
+     * extension point class directly, it will automatically infer the value as the
+     * qualified name of the extension point class. Notice that if the extension
      * point class uses generic parameters, the inference mechanism will not
      * work, so clients must provide the name of the class directly in those
      * cases.
@@ -68,7 +77,7 @@ public @interface Extension {
 
 
     /**
-     * Extensions marked as externally managed will not resolved using the
+     * Extensions marked as externally managed will not resolve to use the
      * {@link ServiceLoader} mechanism. Instead, custom {@link ExtensionLoader}
      * will be used to retrieve the instance of the extension.
      */
@@ -76,10 +85,10 @@ public @interface Extension {
 
 
     /**
-     * Priority used when extensions collide, the highest value have priority
+     * Priority used when extensions collide, the highest value has priority
      * over others.
      */
-    int priority() default NORMAL_PRORITY;
+    int priority() default NORMAL_PRIORITY;
 
 
     boolean overridable() default true;
@@ -89,7 +98,7 @@ public @interface Extension {
      * The qualified class name of another extension that should be replaced by
      * this extension in case both of them are valid alternatives. It only has
      * effect if the {@link #overridable()} property of the extension to override
-     * is set to <code>true</code>.
+     * is set to {@code true}.
      */
     String overrides() default "";
 

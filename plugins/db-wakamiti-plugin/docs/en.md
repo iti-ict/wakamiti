@@ -1,64 +1,19 @@
 
 
-This plugin provides a set of steps that interact with a database via JDBC, easing the effort required to load and 
+This plugin provides a set of steps that interact with a database via JDBC, easing the effort required to load and
 assert data.
 
-> **KEEP IN MIND** <br />
-> Regarding the multiple database implementations existing, this plugin does not include any specific driver. In order 
-> to work properly, do not forget to include the module with the JDBC driver(s) that your database connection would 
+> **KEEP IN MIND**
+>
+> Regarding the multiple database implementations existing, this plugin does not include any specific driver. In order
+> to work properly, do not forget to include the module with the JDBC driver(s) that your database connection would
 > require.
 
 
-
-**Configuration**:
-- [`database.connection.url`](#databaseconnectionurl)
-- [`database.connection.username`](#databaseconnectionusername)
-- [`database.connection.password`](#databaseconnectionpassword)
-- [`database.metadata.schema`](#databasemetadataschema)
-- [`database.metadata.catalog`](#databasemetadatacatalog)
-- [`database.metadata.caseSensitivity`](#databasemetadatacasesensititvy)
-- [`database.csv.format`](#databasecsvformat)
-- [`database.nullSymbol`](#databasenullsymbol)
-- [`database.enableCleanupUponCompletion`](#databaseenablecleanupuponcompletion)
-
-**Steps**:
-- [Define connection](#define-connection)
-- [Define script post execution](#define-script-post-execution)
-- [Define script post execution (file)](#define-script-post-execution-file)
-- [Execute script](#execute-script)
-- [Execute script (file)](#execute-script-file)
-- [Clear table](#clear-table)
-- [Delete data](#delete-data)
-- [Delete data (table)](#delete-data-table)
-- [Delete data (xls)](#delete-data-xls)
-- [Delete data (csv)](#delete-data-csv)
-- [Insert data (table)](#insert-data-table)
-- [Insert data (xls)](#insert-data-xls)
-- [Insert data (csv)](#insert-data-csv)
-- [Check data exists](#check-data-exists)
-- [Check data not exists](#check-data-not-exists)
-- [Check data exists (id)](#check-data-exists-id)
-- [Check data not exists (id)](#check-data-not-exists-id)
-- [Check data exists (table)](#check-data-exists-table)
-- [Check data not exists (table)](#check-data-not-exists-table)
-- [Check data exists (XLS)](#check-data-exists-xls)
-- [Check data not exists (XLS)](#check-data-not-exists-xls)
-- [Check data exists (CSV)](#check-data-exists-csv)
-- [Check data not exists (CSV)](#check-data-not-exists-csv)
-- [Check data exists (document)](#check-data-exists-document)
-- [Check data not exists (document)](#check-data-not-exists-document)
-- [Check row count](#check-row-count)
-- [Check row count (document)](#check-row-count-document)
-- [Check row count (table)](#check-row-count-document)
-- [Check table is empty](#check-table-is-empty)
-- [Check table is not empty](#check-table-is-not-empty)
-
-
-
-
-## Configuración
-
 ---
+## Configuration
+
+
 ### `database.connection.url`
 Sets the JDBC database connection URL. The driver used to access the database will be determined by the URL format.
 
@@ -69,7 +24,8 @@ database:
     url: jdbc:h2:tcp://localhost:9092/~/test
 ```
 
----
+<br /><br />
+
 ### `database.connection.username`
 Sets the connection username, required to connect.
 
@@ -80,7 +36,8 @@ database:
     username: test
 ```
 
----
+<br /><br />
+
 ### `database.connection.password`
 Sets the connection password, required to connect.
 
@@ -91,9 +48,10 @@ database:
     password: test
 ```
 
----
+<br /><br />
+
 ### `database.metadata.schema`
-Sets the schema that should be used in order to retrieve metadata as primary keys and nullability. If not specified, 
+Sets the schema that should be used in order to retrieve metadata as primary keys and nullability. If not specified,
 the default schema returned by the connection will be used.
 
 Example:
@@ -103,9 +61,10 @@ database:
     schema: TESTDB
 ```
 
----
+<br /><br />
+
 ### `database.metadata.catalog`
-Sets the catalog that should be used in order to retrieve meta-data as primary keys and nullability. If not specified, 
+Sets the catalog that should be used in order to retrieve meta-data as primary keys and nullability. If not specified,
 the default catalog returned by the connection will be used (in case the database system uses one).
 
 Example:
@@ -115,9 +74,10 @@ database:
     catalog: TESTCAT
 ```
 
----
+<br /><br />
+
 ### `database.metadata.caseSensititvy`
-Sets whether any upper/lower case transformation should be done when trying to access meta-data. Some engines are 
+Sets whether any upper/lower case transformation should be done when trying to access meta-data. Some engines are
 very strict regarding this issue, and can cause unexpected errors if this property is not properly configured.
 Possible values are:
 - `INSENSITIVE`: Identifiers will be kept as they are written.
@@ -131,9 +91,10 @@ database:
     caseSensitivity: UPPER_CASED
 ```
 
----
+<br /><br />
+
 ### `database.csv.format`
-Sets the format used to parse CSV files. The accepted values are directly imported from the [Commons CSV][1] project, 
+Sets the format used to parse CSV files. The accepted values are directly imported from the [Commons CSV][1] project,
 check it for detailed explanation of each format. Possible values are:
 - `DEFAULT`
 - `INFORMIX_UNLOAD`
@@ -153,7 +114,8 @@ database:
     format: ORACLE
 ```
 
----
+<br /><br />
+
 ### `database.xls.ignoreSheetPattern`
 Sets regex pattern used to determine what sheets to be ignored when loading XLSX files.
 
@@ -166,9 +128,10 @@ database:
     ignoreSheetPattern: //.*
 ```
 
----
+<br /><br />
+
 ### `database.nullSymbol`
-Sets literal used to handle a specific cell value as the SQL `NULL` element. It is used in any data source like CSV, XLS, 
+Sets literal used to handle a specific cell value as the SQL `NULL` element. It is used in any data source like CSV, XLS,
 and in-line tables.
 
 Default value is `<null>`.
@@ -179,10 +142,11 @@ database:
   nullSymbol: (null)
 ```
 
----
+<br /><br />
+
 ### `database.enableCleanupUponCompletion`
-The default behaviour does not perform any clean-up operation following the test plan execution so that you can check 
-the resulting data afterwards. Switching this parameter to `true` will force clean-up operations so no test data will 
+The default behaviour does not perform any clean-up operation following the test plan execution so that you can check
+the resulting data afterward. Switching this parameter to `true` will force clean-up operations so no test data will
 remain in the database after the execution of the tests.
 
 Default value is `false`.
@@ -194,15 +158,15 @@ database:
 ```
 
 
-
+---
 ## Steps
 
----
+
 ### Define connection
-```
+```text copy=true
 the database connection URL {url} using the user {username} and the password {password}
 ```
-Configure the database connection URL, username and password for following connections. This step is the declarative 
+Configure the database connection URL, username and password for following connections. This step is the declarative
 equivalent to set the configuration properties [`database.connection.url`](#databaseconnectionurl),
 [`database.connection.username`](#databaseconnectionusername),
 [`database.connection.password`](#databaseconnectionpassword).
@@ -219,9 +183,10 @@ equivalent to set the configuration properties [`database.connection.url`](#data
   Given the database connection URL 'jdbc:h2:tcp://localhost:9092/~/test' using the user 'test' and the password 'test'
 ```
 
----
+<br /><br />
+
 ### Define script post execution
-```
+```text copy=true
 At finish, the following SQL script is executed:
 ```
 Sets the SQL statements that will be executed one the scenario is finished, regardless execution status.
@@ -240,9 +205,10 @@ Sets the SQL statements that will be executed one the scenario is finished, rega
     """
 ```
 
----
+<br /><br />
+
 ### Define script post execution (file)
-```
+```text copy=true
 At finish, the SQL script file {file} is executed
 ```
 Sets the SQL statements from file that will be executed one the scenario is finished, regardless execution status.
@@ -257,9 +223,10 @@ Sets the SQL statements from file that will be executed one the scenario is fini
   * At finish, the SQL script file 'data/insert-users.sql' is executed
 ```
 
----
+<br /><br />
+
 ### Execute script
-```
+```text copy=true
 the following SQL script is executed:
 ```
 Execute a in-line SQL script.
@@ -278,9 +245,10 @@ Execute a in-line SQL script.
     """
 ```
 
----
+<br /><br />
+
 ### Execute script (file)
-```
+```text copy=true
 the SQL script file {file} is executed
 ```
 Execute a SQL script file.
@@ -295,9 +263,10 @@ Execute a SQL script file.
   When the SQL script file 'data/insert-users.sql' is executed
 ```
 
----
+<br /><br />
+
 ### Clear table
-```
+```text copy=true
 the database table {word} is cleared
 ```
 Clear the given table, first attempting to execute `TRUNCATE`, and then using `DELETE FROM` as fallback.
@@ -312,9 +281,10 @@ Clear the given table, first attempting to execute `TRUNCATE`, and then using `D
   Given that the database table USER is cleared
 ```
 
----
+<br /><br />
+
 ### Delete data
-```
+```text copy=true
 * having {column} = {value} (is|are) deleted from the database table {table}
 ```
 Delete the rows in the given table that match the specified value.
@@ -334,9 +304,10 @@ Delete the rows in the given table that match the specified value.
   When users having STATE = '2' are deleted from the database table USER 
 ```
 
----
+<br /><br />
+
 ### Delete data (table)
-```
+```text copy=true
 the following * (is|are) deleted from the database table {word}:
 ```
 Delete the following in-line rows from the given table.
@@ -360,9 +331,10 @@ Delete the following in-line rows from the given table.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Delete data (XLS)
-```
+```text copy=true
 the content of the XLS file {file} is deleted from the database
 ```
 Delete the rows contained in the specified XLS file, one sheet per table.
@@ -377,9 +349,10 @@ Delete the rows contained in the specified XLS file, one sheet per table.
   When the content of the XLS file 'data/users.xls' is deleted from the database
 ```
 
----
+<br /><br />
+
 ### Delete data (CSV)
-```
+```text copy=true
 the content of the CSV file {csv} is deleted from the database table {table}
 ```
 Delete the rows contained in the specified CSV file from the given table.
@@ -395,12 +368,13 @@ Delete the rows contained in the specified CSV file from the given table.
   When the content of the CSV file 'data/users.csv' is deleted from the database table USER
 ```
 
----
+<br /><br />
+
 ### Insert data (table)
-```
+```text copy=true
 the following * (is|are) inserted into the database table {word}:
 ```
-Insert the following in-line rows into the given table. Non-specified but required columns will be populated with random 
+Insert the following in-line rows into the given table. Non-specified but required columns will be populated with random
 values.
 
 #### Parameters:
@@ -422,12 +396,13 @@ values.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Insert data (XLS)
-```
+```text copy=true
 the content of the XLS file {file} is inserted into the database
 ```
-Insert the rows contained in the specified XLS file, one sheet per table. Non-specified but required columns will be 
+Insert the rows contained in the specified XLS file, one sheet per table. Non-specified but required columns will be
 populated with random values.
 
 #### Parameters:
@@ -440,12 +415,13 @@ populated with random values.
   Given that the content of the XLS file 'data/users.xls' is inserted into the database
 ``` 
 
----
+<br /><br />
+
 ### Insert data (CSV)
-```
+```text copy=true
 the content of the CSV file {csv} is inserted into the database table {table}
 ```
-Insert the rows contained in the specified CSV file into the given table. Non-specified but required columns will be 
+Insert the rows contained in the specified CSV file into the given table. Non-specified but required columns will be
 populated with random values.
 
 #### Parameters:
@@ -459,9 +435,10 @@ populated with random values.
   When the content of the CSV file 'data/users.csv' is inserted into the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data exists
-```
+```text copy=true
 * having {column} = {value} exist(s) in the database table {table}
 ```
 Assert that at least one row in the given table matches the specified value for a column.
@@ -478,9 +455,10 @@ Assert that at least one row in the given table matches the specified value for 
   Then several users having STATE = '1' exist in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data not exists
-```
+```text copy=true
 * having {column} = {value} do(es) not exist in the database table {table}
 ```
 Assert that no row in the given table matches the specified value for a column.
@@ -497,9 +475,10 @@ Assert that no row in the given table matches the specified value for a column.
   Given that users having STATE = '1' do no exist in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data exists (id)
-```
+```text copy=true
 * identified by {id} exist(s) in the database table {table}
 ```
 Assert that a row in the given table has a primary key matching the specified value. The table must have a single-column
@@ -516,9 +495,10 @@ primary key accessible from the database metadata.
   Then a user identified by 'user1' exists in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data not exists (id)
-```
+```text copy=true
 * identified by {id} do(es) not exist in the database table {table}
 ```
 Assert that no row in the given table has a primary key matching the specified value. The table must have a single-column
@@ -535,9 +515,10 @@ primary key accessible from the database metadata.
   Given that a user identified by 'user1' does not exist in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data exists (table)
-```
+```text copy=true
 the following record(s) exist(s) in the database table {table}:
 ```
 Assert that all the subsequent data rows exist in the given table.
@@ -556,9 +537,10 @@ Assert that all the subsequent data rows exist in the given table.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Check data not exists (table)
-```
+```text copy=true
 the following record(s) do(es) not exist in the database table {table}:
 ```
 Assert that none of the subsequent data rows exist in the given table.
@@ -577,9 +559,10 @@ Assert that none of the subsequent data rows exist in the given table.
     | user2 | 3     | 2020-02-13    |
 ```
 
----
+<br /><br />
+
 ### Check data exists (XLS)
-```
+```text copy=true
 the content of the XLS file {file} exists in the database
 ```
 Assert that all the data rows included in the specified XLS file exist in the database, using one sheet per table.
@@ -594,9 +577,10 @@ Assert that all the data rows included in the specified XLS file exist in the da
   Given that the content of the XLS file 'data/users.xls' exists in the database
 ```
 
----
+<br /><br />
+
 ### Check data not exists (XLS)
-```
+```text copy=true
 the content of the XLS file {file} does not exist in the database
 ```
 Assert that none of the data rows included in the specified XLS file exist in the database, using one sheet per table.
@@ -611,9 +595,10 @@ Assert that none of the data rows included in the specified XLS file exist in th
   Given that the content of the XLS file 'data/users.xls' does not exist in the database
 ```
 
----
+<br /><br />
+
 ### Check data exists (CSV)
-```
+```text copy=true
 the content of the CSV file {csv} exists in the database table {table}
 ```
 Assert that all the data rows included in the specified CSV file exists in the given table.
@@ -629,9 +614,10 @@ Assert that all the data rows included in the specified CSV file exists in the g
   Then the content of the CSV file 'data/users.csv' exists in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data not exists (CSV)
-```
+```text copy=true
 the content of the CSV file {csv} does not exist in the database table {table}
 ```
 Assert that all the data rows included in the specified CSV file does not exist in the given table.
@@ -647,9 +633,10 @@ Assert that all the data rows included in the specified CSV file does not exist 
   Given that the content of the CSV file 'data/users.csv' does not exists in the database table USER
 ```
 
----
+<br /><br />
+
 ### Check data exists (document)
-```
+```text copy=true
 * satisfying the following SQL clause exist(s) in the database table {table}:
 ```
 Assert that at least one row in the given table satisfies the specified SQL clause exist.
@@ -668,9 +655,10 @@ Assert that at least one row in the given table satisfies the specified SQL clau
     """
 ```
 
----
+<br /><br />
+
 ### Check data not exists (document)
-```
+```text copy=true
 * satisfying the following SQL clause do(es) not exist in the database table {table}:
 ```
 Assert that no row in the given table satisfies the specified SQL clause exist.
@@ -689,12 +677,13 @@ Assert that no row in the given table satisfies the specified SQL clause exist.
     """
 ```
 
----
+<br /><br />
+
 ### Check row count
-```
+```text copy=true
 the number of * having {column} = {value} in the database table {table} {matcher}
 ```
-Assert that the number of rows in the given table matching the specified values for two columns satisfies a numeric 
+Assert that the number of rows in the given table matching the specified values for two columns satisfies a numeric
 assertion.
 
 #### Parameters:
@@ -710,12 +699,13 @@ assertion.
   Given that the number of users having STATE = '1' in the database table USER is greater than 5
 ```
 
----
+<br /><br />
+
 ### Check row count (table)
-```
+```text copy=true
 the number of * satisfying the following (info) in the database table {table} {matcher}:
 ```
-Assert that the number of rows in the given table matching the specified values for every column satisfies a numeric 
+Assert that the number of rows in the given table matching the specified values for every column satisfies a numeric
 expression. Only the first row of the given data is considered.
 
 #### Parameters:
@@ -734,23 +724,24 @@ expression. Only the first row of the given data is considered.
 
 ```gherkin
   Then the number of records satisfying the following info in the database table USER is more than 0:
-    | USER  | STATE | BLOCKING_DATE |   
-    | user1 | 2     | <null>        |
+| USER  | STATE | BLOCKING_DATE |
+| user1 | 2     | <null>        |
 ```
 
----
+<br /><br />
+
 ### Check row count (document)
-```
+```text copy=true
 the number of * satisfying the following SQL clause in the database table {table} {matcher}:
 ```
 Assert that the number of rows in the given table matching the SQL clause satisfies a numeric assertion.
 
 #### Parameters:
-| Name      | Wakamiti type      | Description             |
-|-----------|------------------|-------------------------|
-| `table`   | `word`           | The table name          |
-| `matcher` | `long-assertion` | Numeric [comparator][2] |
-|           | `document`       | Where clause            |
+| Name      | Wakamiti type     | Description             |
+|-----------|-------------------|-------------------------|
+| `table`   | `word`            | The table name          |
+| `matcher` | `long-assertion`  | Numeric [comparator][2] |
+|           | `document`        | Where clause            |
 
 #### Examples:
 ```gherkin
@@ -760,34 +751,36 @@ Assert that the number of rows in the given table matching the SQL clause satisf
     """
 ```
 
----
+<br /><br />
+
 ### Check table is empty
-```
+```text copy=true
 the database table {word} is empty
 ```
 Assert that the given table has no data.
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `word` | `word`      | The table name |
+|--------|---------------|----------------|
+| `word` | `word`        | The table name |
 
 #### Examples:
 ```gherkin
   Then the database table USER is empty
 ```
 
----
+<br /><br />
+
 ### Check table is not empty
-```
+```text copy=true
 the database table {word} is not empty
 ```
 Assert that the given tabla has some data.
 
 #### Parameters:
 | Name   | Wakamiti type | Description    |
-|--------|-------------|----------------|
-| `word` | `word`      | The table name |
+|--------|---------------|----------------|
+| `word` | `word`        | The table name |
 
 #### Examples:
 ```gherkin

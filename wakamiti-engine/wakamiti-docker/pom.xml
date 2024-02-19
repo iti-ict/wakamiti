@@ -152,7 +152,6 @@
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                     </build>
-
                                 </image>
                             </images>
                         </configuration>

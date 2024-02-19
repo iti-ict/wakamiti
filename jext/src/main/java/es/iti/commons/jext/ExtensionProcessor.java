@@ -3,29 +3,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.commons.jext;
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -34,12 +15,36 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 
-@SupportedAnnotationTypes( "es.iti.commons.jext.Extension")
+/**
+ * This class is an annotation processor for handling the {@link Extension}
+ * and {@link ExtensionPoint} annotations. It validates annotated elements,
+ * generates service declaration files, and logs messages during processing.
+ * <p>
+ * This processor is responsible for generating service files under the
+ * {@code META-INF/services/} directory to facilitate the service loading
+ * mechanism.
+ * </p>
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
+@SupportedAnnotationTypes("es.iti.commons.jext.Extension")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class ExtensionProcessor extends AbstractProcessor {
 
+    /**
+     * Processes annotations and generates service declaration files.
+     *
+     * @param annotations Set of annotation types requested to be processed.
+     * @param roundEnv    Round environment providing information about the current round.
+     * @return {@code true} if the processor claims the annotations, {@code false} otherwise.
+     */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Map<String, List<String>> serviceImplementations = new LinkedHashMap<>();
@@ -53,14 +58,13 @@ public class ExtensionProcessor extends AbstractProcessor {
         return false;
     }
 
-
     private void validateExtensionPoint(Element element) {
         if (element.getKind() != ElementKind.CLASS && element.getKind() != ElementKind.INTERFACE) {
             log(
-                Kind.ERROR,
-                element,
-                "@ExtensionPoint not valid for {} (only processed for classes or interfaces)",
-                element.getSimpleName()
+                    Kind.ERROR,
+                    element,
+                    "@ExtensionPoint not valid for {} (only processed for classes or interfaces)",
+                    element.getSimpleName()
             );
         } else {
             var extensionPointAnnotation = element.getAnnotation(ExtensionPoint.class);
@@ -68,19 +72,17 @@ public class ExtensionProcessor extends AbstractProcessor {
         }
     }
 
-
-
     private void validateAndRegisterExtension(
-        Element element,
-        Map<String, List<String>> serviceImplementations
+            Element element,
+            Map<String, List<String>> serviceImplementations
     ) {
         boolean hasError = false;
         if (element.getKind() != ElementKind.CLASS) {
             log(
-                Kind.WARNING,
-                element,
-                "@Extension ignored for {} (only processed for classes)",
-                element.getSimpleName()
+                    Kind.WARNING,
+                    element,
+                    "@Extension ignored for {} (only processed for classes)",
+                    element.getSimpleName()
             );
             return;
         }
@@ -88,12 +90,12 @@ public class ExtensionProcessor extends AbstractProcessor {
         var extensionAnnotation = element.getAnnotation(Extension.class);
 
         if (extensionAnnotation.externallyManaged() || // not handling externally managed extensions
-           !validateVersionFormat(extensionAnnotation.version(), element, "version") ||
-           !validateVersionFormat(
-                extensionAnnotation.extensionPointVersion(),
-                element,
-                "extensionPointVersion"
-           )
+                !validateVersionFormat(extensionAnnotation.version(), element, "version") ||
+                !validateVersionFormat(
+                        extensionAnnotation.extensionPointVersion(),
+                        element,
+                        "extensionPointVersion"
+                )
         ) {
             return;
         }
@@ -103,74 +105,72 @@ public class ExtensionProcessor extends AbstractProcessor {
         if (extensionPoint.isEmpty()) {
             for (TypeMirror implementedInterface : extensionClassElement.getInterfaces()) {
                 extensionPoint = implementedInterface.toString();
-                // remove the <..> part in case it is a generic class
-                extensionPoint = extensionPoint.replaceAll("\\<[^\\>]*\\>", "");
+                // remove the <...> part in case it is a generic class
+                extensionPoint = extensionPoint.replaceAll("<[^>]*>", "");
             }
         }
 
         String extension = extensionClassElement.getQualifiedName().toString();
 
         TypeElement extensionPointClassElement = processingEnv.getElementUtils()
-            .getTypeElement(extensionPoint);
+                .getTypeElement(extensionPoint);
 
         if (extensionPointClassElement == null) {
             log(
-                Kind.ERROR,
-                element,
-                "Cannot find extension point class '{}'",
-                extensionPoint
+                    Kind.ERROR,
+                    element,
+                    "Cannot find extension point class '{}'",
+                    extensionPoint
             );
             hasError = true;
         }
 
         if (!hasError && extensionPointClassElement.getAnnotation(ExtensionPoint.class) == null) {
             log(
-                Kind.ERROR,
-                element,
-                "Expected extension point type '{}' is not annotated with @ExtensionPoint",
-                extensionPoint
+                    Kind.ERROR,
+                    element,
+                    "Expected extension point type '{}' is not annotated with @ExtensionPoint",
+                    extensionPoint
             );
             hasError = true;
         }
 
         if (!hasError &&
-                        !isAssignable(
-                            extensionClassElement.asType(),
-                            extensionPointClassElement.asType()
-                        )) {
+                !isAssignable(
+                        extensionClassElement.asType(),
+                        extensionPointClassElement.asType()
+                )) {
             log(
-                Kind.ERROR,
-                element,
-                "{} must implement or extend the extension point type {}",
-                extension,
-                extensionPoint
+                    Kind.ERROR,
+                    element,
+                    "{} must implement or extend the extension point type {}",
+                    extension,
+                    extensionPoint
             );
             hasError = true;
         }
 
         if (!hasError) {
             serviceImplementations
-                .computeIfAbsent(extensionPoint, x -> new ArrayList<>())
-                .add(extension);
+                    .computeIfAbsent(extensionPoint, x -> new ArrayList<>())
+                    .add(extension);
         }
 
     }
-
 
     private boolean validateVersionFormat(String version, Element element, String fieldName) {
         boolean valid = version.matches("\\d+\\.\\d+");
         if (!valid) {
             log(
-                Kind.ERROR,
-                element,
-                "Content of field {} ('{}') must be in form '<major>.<minor>'",
-                fieldName,
-                version
+                    Kind.ERROR,
+                    element,
+                    "Content of field {} ('{}') must be in form '<major>.<minor>'",
+                    fieldName,
+                    version
             );
         }
         return valid;
     }
-
 
     private boolean isAssignable(TypeMirror type, TypeMirror typeTo) {
         if (nameWithoutGeneric(type).equals(nameWithoutGeneric(typeTo))) {
@@ -184,13 +184,11 @@ public class ExtensionProcessor extends AbstractProcessor {
         return false;
     }
 
-
     private String nameWithoutGeneric(TypeMirror type) {
         int genericPosition = type.toString().indexOf('<');
         return genericPosition < 0 ? type.toString()
-                        : type.toString().substring(0, genericPosition);
+                : type.toString().substring(0, genericPosition);
     }
-
 
     private void writeOutputFiles(Map<String, List<String>> serviceImplementations) {
         Filer filer = this.processingEnv.getFiler();
@@ -205,14 +203,13 @@ public class ExtensionProcessor extends AbstractProcessor {
         }
     }
 
-
     private void writeFile(
-        Filer filer,
-        String resourcePath,
-        Entry<String, List<String>> entry
+            Filer filer,
+            String resourcePath,
+            Entry<String, List<String>> entry
     ) throws IOException {
         FileObject resourceFile = filer
-            .getResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
+                .getResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
         Set<String> oldExtensions = read(resourceFile);
         Set<String> allExtensions = new LinkedHashSet<>();
         allExtensions.addAll(oldExtensions);
@@ -220,9 +217,8 @@ public class ExtensionProcessor extends AbstractProcessor {
         resourceFile = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
         write(allExtensions, resourceFile);
         //log(Kind.WARNING, "Generated service declaration file {}", resourceFile);
-        System.out.println("[jext] :: Generated service declaration file "+resourceFile.getName());
+        System.out.println("[jext] :: Generated service declaration file " + resourceFile.getName());
     }
-
 
     private Set<String> read(FileObject resourceFile) {
         Set<String> lines = new LinkedHashSet<>();
@@ -239,7 +235,6 @@ public class ExtensionProcessor extends AbstractProcessor {
         return lines;
     }
 
-
     private void write(Set<String> lines, FileObject resourceFile) {
         try {
             try (BufferedWriter writer = new BufferedWriter(resourceFile.openWriter())) {
@@ -253,20 +248,18 @@ public class ExtensionProcessor extends AbstractProcessor {
         }
     }
 
-
     private void log(Kind kind, String message, Object... messageArgs) {
         processingEnv.getMessager().printMessage(
-            kind,
-            "[jext] :: " + String.format(message.replace("{}", "%s"), messageArgs)
+                kind,
+                "[jext] :: " + String.format(message.replace("{}", "%s"), messageArgs)
         );
     }
 
-
     private void log(Kind kind, Element element, String message, Object... messageArgs) {
         processingEnv.getMessager().printMessage(
-            kind,
-            "[jext] at " + element.asType().toString() + " :: " + String
-                .format(message.replace("{}", "%s"), messageArgs)
+                kind,
+                "[jext] at " + element.asType().toString() + " :: " + String
+                        .format(message.replace("{}", "%s"), messageArgs)
         );
     }
 

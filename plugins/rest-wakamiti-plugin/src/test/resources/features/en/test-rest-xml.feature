@@ -12,7 +12,7 @@ Feature: REST Test Feature
     Then the response HTTP code is greater than or equals to 200
     And the response HTTP code is less than 500
     And the response content type is XML
-    And the response is equal to the file 'src/test/resources/server/users/user1.xml'
+    And the response is equals to the file 'src/test/resources/server/users/user1.xml'
     And the response contains:
       """
 <item>

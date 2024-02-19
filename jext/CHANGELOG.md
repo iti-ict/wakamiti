@@ -33,8 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2023-09-08
 
 ### Added
-- Now clients can manage extensions without register them in the Java extension mechanism, implementing custom extension 
-loaders (e.g. using a bean manager). Those extension classes must be annotated with `externallyManaged = true`.  
+- Now clients can manage extensions without registering them in the Java extension mechanism, 
+  implementing custom extension loaders (e.g., using a bean manager). 
+  Those extension classes must be annotated with `externallyManaged = true`.  
 
 ### Changed
 - Upgrade dependencies: `org.slf4j:slf4j-api`
