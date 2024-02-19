@@ -1,5 +1,5 @@
 <template>
-  <Layout :sidebar="false">
+  <Layout :sidebar="false" v-slot="{color}">
     <div class="content">
       <h1>{{ $t('description') }}</h1>
       <nav>
@@ -9,6 +9,16 @@
         <Shortcut v-bind:link="$tp('wakamiti/architecture#configuración-global')" v-bind:text="$t('index3')" icon="sliders-icon" />
       </nav>
       <GitLink class="git" size="large" />
+      <div class="footer" v-if="color == 'dark'">
+        <g-image src="~/assets/img/generalitat-dark.svg" alt="Generalitat Valenciana"/>
+        <g-image src="~/assets/img/ivace-dark.svg" alt="IVACE"/>
+        <g-image src="~/assets/img/ITI-logo-dark.svg" alt="ITI"/>
+      </div>
+      <div class="footer" v-if="color == 'bright'">
+        <g-image src="~/assets/img/generalitat-bright.svg" alt="Generalitat Valenciana"/>
+        <g-image src="~/assets/img/ivace-bright.svg" alt="IVACE"/>
+        <g-image src="~/assets/img/ITI-logo-bright.svg" alt="ITI"/>
+      </div>
     </div>
   </Layout>
 </template>
@@ -83,5 +93,12 @@ article {
   @include respond-above(md) {
     margin: 5em 0 0;
   }
+}
+.footer {
+  margin: 3em 0 0;
+  height: 50px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
 }
 </style>

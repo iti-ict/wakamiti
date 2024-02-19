@@ -11,14 +11,14 @@ it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPU
 `REPORT_OUTPUT_FILE_WRITTEN`.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:file-uploader-wakamiti-plugin:2.4.3
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.5.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>
-  <version>2.4.3</version>
+  <version>2.5.0</version>
 </dependency>
 ```
 
@@ -72,6 +72,11 @@ Since: ```2.0.0```
 
 The destination directory where the files should be uploaded within the remote location. It can include
 placeholders like `%DATE%`, `%TIME%`, or `%execID%`
+
+### `fileUploader.identity`
+Since: ```2.5.0```
+
+Path of the identity file (such as a `ppk` file) used to authentication. 
 
 
 ---

@@ -71,4 +71,11 @@ public class AzurePlan {
         return Objects.hash(name, area, iteration);
     }
 
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s",id,name);
+    }
+
+
 }

@@ -41,4 +41,6 @@ module es.iti.wakamiti.api {
 
     provides ConfigContributor with WakamitiConfiguration;
 
+    opens es.iti.wakamiti.api.plan to com.fasterxml.jackson.databind;
+
 }

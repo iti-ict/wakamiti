@@ -1,9 +1,9 @@
 <template>
   <div class="site">
-    <Header :menuToggle="sidebar" />
+    <Header :menuToggle="sidebar" v-on:theme-change="updateLogo" />
     <Sidebar v-if="sidebar" />
     <main class="main" :class="{'main--no-sidebar': !sidebar, 'main--sidebar-is-open' : this.$store.state.sidebarOpen}">
-      <slot/>
+      <slot :color="color"/>
     </main>
   </div>
 </template>
@@ -29,6 +29,15 @@ export default {
     sidebar: {
       type: Boolean,
       default: true
+    },
+    color: {
+      type: String,
+      default: 'bright'
+    }
+  },
+  methods: {
+    updateLogo: function () {
+      this.color = (this.color == 'dark' ? 'bright' : 'dark')
     }
   },
   mounted() {
@@ -39,6 +48,7 @@ export default {
           .register(this.$url('/sw.js'))
           .then(function() { console.log("Service Worker Registered"); });
       }
+      this.color = localStorage.getItem('theme')
     }
   }
 }

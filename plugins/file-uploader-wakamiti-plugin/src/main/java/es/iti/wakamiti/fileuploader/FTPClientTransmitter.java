@@ -1,6 +1,7 @@
 package es.iti.wakamiti.fileuploader;
 
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPSClient;
@@ -12,7 +13,7 @@ import java.nio.file.Path;
 
 public class FTPClientTransmitter implements FTPTransmitter {
 
-    private FTPClient ftpClient;
+    private final FTPClient ftpClient;
 
     public FTPClientTransmitter(boolean secure) {
         this.ftpClient = (secure ? new FTPSClient() : new FTPClient());
@@ -26,17 +27,19 @@ public class FTPClientTransmitter implements FTPTransmitter {
 
 
     @Override
-    public void connect(String username, String password, String host, int port) throws IOException {
-        ftpClient.connect(host,port);
+    public void connect(String username, String host, Integer port, String password, String identity) throws IOException {
+        if (port != null) {
+            ftpClient.connect(host, port);
+        } else {
+            ftpClient.connect(host);
+        }
+        if (password == null) {
+            throw new WakamitiException("Password is required");
+        }
         ftpClient.login(username,password);
     }
 
 
-    @Override
-    public void connect(String username, String password, String host) throws IOException {
-        ftpClient.connect(host);
-        ftpClient.login(username,password);
-    }
 
 
     @Override
