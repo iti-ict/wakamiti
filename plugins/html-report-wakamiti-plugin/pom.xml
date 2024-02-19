@@ -28,7 +28,6 @@
         <xmlunit.version>2.9.0</xmlunit.version>
     </properties>
 
-
     <!-- dependencies -->
     <dependencies>
         <dependency>
@@ -44,7 +43,7 @@
         <dependency>
             <groupId>io.bit3</groupId>
             <artifactId>jsass</artifactId>
-            <version>5.3.0</version>
+            <version>5.11.0</version>
         </dependency>
 
         <!--test -->

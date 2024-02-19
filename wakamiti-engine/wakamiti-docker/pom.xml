@@ -34,6 +34,7 @@
     <properties>
         <wakamiti.launcher.path>${parent.basedir}/wakamiti-launcher</wakamiti.launcher.path>
         <docker.image.name>nexus-wakamiti.iti.upv.es/wakamiti</docker.image.name>
+        <io.fabric8.version>0.43.4</io.fabric8.version>
     </properties>
 
 
@@ -143,7 +144,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <images>
                                 <image>
@@ -223,7 +224,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <authConfig>
                                 <username>wakamiti</username>
@@ -294,7 +295,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <images>
                                 <image>

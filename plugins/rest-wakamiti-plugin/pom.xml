@@ -26,8 +26,8 @@
 
 
     <properties>
-        <mockserver.version>5.14.0</mockserver.version>
-        <rest-assured.version>5.3.1</rest-assured.version>
+        <mockserver.version>5.15.0</mockserver.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
     </properties>
 
@@ -89,7 +89,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
