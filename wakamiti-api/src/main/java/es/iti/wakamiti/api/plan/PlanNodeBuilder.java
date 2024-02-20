@@ -3,12 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.api.plan;
-
 
 
 import es.iti.wakamiti.api.model.TreeNodeBuilder;
@@ -17,6 +12,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+/**
+ * Builder class for creating instances of {@link PlanNode}.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 
     private final List<String> description = new ArrayList<>();
@@ -34,73 +34,58 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private Object underlyingModel;
     private boolean filtered;
 
-
     public PlanNodeBuilder(NodeType nodeType) {
         this.nodeType = nodeType;
     }
-
 
     public PlanNodeBuilder(NodeType nodeType, Collection<PlanNodeBuilder> children) {
         super(children);
         this.nodeType = nodeType;
     }
 
-
-
     public String name() {
         return name;
     }
-
 
     public String keyword() {
         return keyword;
     }
 
-
     public String id() {
         return id;
     }
-
 
     public String language() {
         return language;
     }
 
-
     public NodeType nodeType() {
         return nodeType;
     }
-
 
     public List<String> description() {
         return description;
     }
 
-
     public Set<String> tags() {
         return tags;
     }
-
 
     public String source() {
         return source;
     }
 
-
     public Map<String, String> properties() {
         return properties;
     }
-
 
     public String displayNamePattern() {
         return displayNamePattern;
     }
 
-
     public boolean filtered() {
         return filtered;
     }
-
 
     public String displayName() {
         String displayName = displayNamePattern;
@@ -110,94 +95,78 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return displayName;
     }
 
-
     public Optional<PlanNodeData> data() {
         return data;
     }
 
-
     public Object getUnderlyingModel() {
         return underlyingModel;
     }
-
-
-    public PlanNodeBuilder setId(String id) {
-        this.id = id;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setKeyword(String keyword) {
-        this.keyword = keyword;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setLanguage(String language) {
-        this.language = language;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setNodeType(NodeType nodeType) {
-        this.nodeType = nodeType;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setDisplayNamePattern(String displayNamePattern) {
-        this.displayNamePattern = displayNamePattern;
-        return this;
-    }
-
-
-    public PlanNodeBuilder setSource(String source) {
-        this.source = source;
-        return this;
-    }
-
-
-    public PlanNodeBuilder addTags(Collection<String> tags) {
-        this.tags.addAll(tags);
-        return this;
-    }
-
-
-    public PlanNodeBuilder addDescription(Collection<String> description) {
-        this.description.addAll(description);
-        return this;
-    }
-
-
-    public PlanNodeBuilder addProperties(Map<String, String> properties) {
-        this.properties.putAll(properties);
-        return this;
-    }
-
-
-    public PlanNodeBuilder addProperty(String key, String value) {
-        this.properties.put(key, value);
-        return this;
-    }
-
 
     public PlanNodeBuilder setUnderlyingModel(Object gherkinModel) {
         this.underlyingModel = gherkinModel;
         return this;
     }
 
+    public PlanNodeBuilder setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public PlanNodeBuilder setKeyword(String keyword) {
+        this.keyword = keyword;
+        return this;
+    }
+
+    public PlanNodeBuilder setLanguage(String language) {
+        this.language = language;
+        return this;
+    }
+
+    public PlanNodeBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public PlanNodeBuilder setNodeType(NodeType nodeType) {
+        this.nodeType = nodeType;
+        return this;
+    }
+
+    public PlanNodeBuilder setDisplayNamePattern(String displayNamePattern) {
+        this.displayNamePattern = displayNamePattern;
+        return this;
+    }
+
+    public PlanNodeBuilder setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public PlanNodeBuilder addTags(Collection<String> tags) {
+        this.tags.addAll(tags);
+        return this;
+    }
+
+    public PlanNodeBuilder addDescription(Collection<String> description) {
+        this.description.addAll(description);
+        return this;
+    }
+
+    public PlanNodeBuilder addProperties(Map<String, String> properties) {
+        this.properties.putAll(properties);
+        return this;
+    }
+
+    public PlanNodeBuilder addProperty(String key, String value) {
+        this.properties.put(key, value);
+        return this;
+    }
 
     public PlanNodeBuilder setData(PlanNodeData data) {
         this.data = Optional.ofNullable(data);
         return this;
     }
-
 
     public void filtered(boolean filtered) {
         this.filtered = filtered;
@@ -207,7 +176,6 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     public PlanNodeBuilder copy() {
         return copy(new PlanNodeBuilder(nodeType));
     }
-
 
     @Override
     protected PlanNodeBuilder copy(PlanNodeBuilder copy) {
@@ -226,13 +194,10 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return copy;
     }
 
-
-
     public PlanNode build() {
         PlanNode node = new PlanNode(
-            this.nodeType(),
-            this.children().map(PlanNodeBuilder::build).collect(Collectors.toList()))
-        ;
+                this.nodeType(),
+                this.children().map(PlanNodeBuilder::build).collect(Collectors.toList()));
         node.description = Collections.unmodifiableList(this.description());
         node.tags = Collections.unmodifiableSet(this.tags());
         node.properties = Collections.unmodifiableMap(this.properties());
@@ -246,4 +211,5 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         node.filtered = this.filtered;
         return node;
     }
+
 }

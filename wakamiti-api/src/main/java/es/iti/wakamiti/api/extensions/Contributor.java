@@ -8,33 +8,48 @@ package es.iti.wakamiti.api.extensions;
 
 import es.iti.commons.jext.Extension;
 
-import java.util.Optional;
-
 
 /**
- * Base interface for all Wakamiti extensions
+ * Base interface for all Wakamiti extensions.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public interface Contributor {
 
+    /**
+     * Provides information about the contributor, including provider, name, and version.
+     *
+     * @return A formatted string containing provider, name, and version information.
+     */
     default String info() {
-        Extension extensionData = this.getClass().getAnnotation(Extension.class);
+        Extension extensionData = extensionMetadata();
         if (extensionData != null) {
-            String info = String.format("%s:%s",
+            return String.format(
+                    "%s:%s:%s",
                     extensionData.provider(),
-                    extensionData.name());
-            return Optional.ofNullable(version())
-                    .map(version -> String.format("%s:%s", info,
-                            version.replaceAll("^(\\d+\\.\\d+)(\\.\\d+.*)?$", "$1")))
-                    .orElse(info);
+                    extensionData.name(),
+                    version()
+            );
         } else {
             return getClass().getCanonicalName();
         }
     }
 
+    /**
+     * Retrieves the metadata defined by the {@link Extension} annotation for the contributor.
+     *
+     * @return The extension metadata.
+     */
     default Extension extensionMetadata() {
-        return this.getClass().getAnnotation(Extension.class);
+        return getClass().getAnnotation(Extension.class);
     }
 
+    /**
+     * Retrieves the version information of the contributor.
+     *
+     * @return The version of the contributor.
+     */
     default String version() {
         return getClass().getPackage().getImplementationVersion();
     }

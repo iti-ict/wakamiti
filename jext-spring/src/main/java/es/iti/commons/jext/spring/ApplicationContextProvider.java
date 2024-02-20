@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * outside of the Spring container, for example, in non-Spring managed classes.
  * </p>
  *
- * @author Luis Iñesta Gelabert
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Component
 public class ApplicationContextProvider implements ApplicationContextAware {
@@ -42,7 +42,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
      * Checks if the ApplicationContext has been set.
      *
      * @return {@code true} if the ApplicationContext is set, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean hasContext() {
         return ApplicationContextProvider.applicationContext != null;

@@ -30,25 +30,21 @@ public @interface Extension {
 
     int NORMAL_PRIORITY = 5;
 
-
     /**
      * The provider (organization, package, group, etc.) of the extension
      */
     String provider() default "none";
-
 
     /**
      * The name of the extension
      */
     String name();
 
-
     /**
      * Minimum supported core version in form of
      * {@code <majorVersion>.<minorVersion>}.
      */
     String version() default "1.0";
-
 
     /**
      * The class name of the extension point that is extended.
@@ -63,10 +59,9 @@ public @interface Extension {
      */
     String extensionPoint() default "";
 
-
     /**
      * The minimum version of the extension point that is extended in form of
-     * {@code <majorVersion>.<minorVersion>} .
+     * {@code <majorVersion>.<minorVersion>}.
      * <p>
      * If an incompatible version is used (that is, the major part of the version
      * is different), the extension manager will emit a warning and prevent the
@@ -75,7 +70,6 @@ public @interface Extension {
      */
     String extensionPointVersion() default "1.0";
 
-
     /**
      * Extensions marked as externally managed will not resolve to use the
      * {@link ServiceLoader} mechanism. Instead, custom {@link ExtensionLoader}
@@ -83,16 +77,20 @@ public @interface Extension {
      */
     boolean externallyManaged() default false;
 
-
     /**
      * Priority used when extensions collide, the highest value has priority
      * over others.
      */
     int priority() default NORMAL_PRIORITY;
 
-
+    /**
+     * Indicates whether the extension is overridable or not. If set to {@code true},
+     * the extension can replace another extension if both are valid alternatives.
+     * If set to {@code false}, the extension cannot be replaced by another extension.
+     *
+     * @return {@code true} if the extension is overridable, {@code false} otherwise.
+     */
     boolean overridable() default true;
-
 
     /**
      * The qualified class name of another extension that should be replaced by
@@ -101,6 +99,5 @@ public @interface Extension {
      * is set to {@code true}.
      */
     String overrides() default "";
-
 
 }

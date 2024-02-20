@@ -25,10 +25,6 @@ automatically registered as services by the compiler
 
 ---
 
-[Prerequisites] | [Usage]
-
----
-
 ## Prerequisites
 - Java 11 or later
 
@@ -50,11 +46,11 @@ Include the following within the `<dependencies>` section of your `pom.xml` file
 
 ## License
 ```
-    Mozilla Public License 2.0
+Mozilla Public License 2.0
 
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
 
 

@@ -54,8 +54,8 @@ public class ExtensionLoadContext<T> {
      * extension data.
      *
      * @param extensionPoint the class of the extension point
-     * @param condition the condition used to select the extensions based
-     *                  on their extension data
+     * @param condition      the condition used to select the extensions based
+     *                       on their extension data
      * @return an extension load context for loading all extensions of the specified type
      */
     public static <T> ExtensionLoadContext<T> satisfying(
@@ -71,8 +71,8 @@ public class ExtensionLoadContext<T> {
      * extension data.
      *
      * @param extensionPoint the class of the extension point
-     * @param condition the condition used to select the extensions based
-     *                  on their extension data
+     * @param condition      the condition used to select the extensions based
+     *                       on their extension data
      * @return an extension load context for loading all extensions of the specified type
      */
     public static <T> ExtensionLoadContext<T> satisfyingData(
@@ -101,7 +101,7 @@ public class ExtensionLoadContext<T> {
      * @param extensionPoint the extension point class
      * @return the extension point annotation data
      * @throws IllegalArgumentException if the specified extension point class
-     * is not annotated with {@link ExtensionPoint}
+     *                                  is not annotated with {@link ExtensionPoint}
      */
     private static <T> ExtensionPoint dataOf(Class<T> extensionPoint) {
         ExtensionPoint extensionPointData = extensionPoint.getAnnotation(ExtensionPoint.class);
@@ -117,7 +117,7 @@ public class ExtensionLoadContext<T> {
      * Creates a new internal {@code ExtensionLoadContext} object with specified
      * ClassLoader and ExtensionLoader.
      *
-     * @param classLoader the class loader to use for loading the extensions
+     * @param classLoader     the class loader to use for loading the extensions
      * @param extensionLoader the extension loader to use for loading the extensions
      * @return an extension load context for loading all internal extensions of the
      * specified type
@@ -137,7 +137,7 @@ public class ExtensionLoadContext<T> {
      * Creates a new external {@code ExtensionLoadContext} object with specified
      * ClassLoader and ExtensionLoader.
      *
-     * @param classLoader the class loader to use for loading the extensions
+     * @param classLoader     the class loader to use for loading the extensions
      * @param extensionLoader the extension loader to use for loading the extensions
      * @return an extension load context for loading all internal extensions of the
      * specified type

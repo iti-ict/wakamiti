@@ -5,7 +5,7 @@
  */
 package es.iti.wakamiti.api;
 
-import es.iti.wakamiti.api.extensions.*;
+
 import es.iti.wakamiti.api.extensions.*;
 import org.junit.Test;
 
@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 
 public class WakamitiContributorsTest {
 
@@ -32,7 +33,6 @@ public class WakamitiContributorsTest {
         assertTrue(allContributors.containsKey(ResourceType.class));
         assertTrue(allContributors.containsKey(StepContributor.class));
     }
-
 
 
 }

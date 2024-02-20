@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -20,14 +19,15 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+
 public class ResourceLoaderTest {
 
     @Test
-    public void testDiscoverFromClasspath() throws IOException {
+    public void testDiscoverFromClasspath() {
 
         Predicate<String> txtFilter = filename -> filename.endsWith(".txt");
 
-        List<Resource> discoveredResources = new ResourceLoader()
+        List<Resource<?>> discoveredResources = new ResourceLoader()
                 .discoverResources("classpath:discovery", txtFilter, IOUtils::toString)
                 .stream().sorted(Comparator.comparing(Resource::absolutePath))
                 .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class ResourceLoaderTest {
         assertFile(discoveredResources.get(2), "subfolder/file4.txt");
 
 
-        for (Resource discoveredResource : discoveredResources) {
+        for (Resource<?> discoveredResource : discoveredResources) {
             System.out.println(
                     discoveredResource.relativePath() + " || " + discoveredResource.absolutePath()
             );

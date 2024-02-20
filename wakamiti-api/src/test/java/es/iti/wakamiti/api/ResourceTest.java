@@ -5,9 +5,11 @@
  */
 package es.iti.wakamiti.api;
 
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+
 
 public class ResourceTest {
 

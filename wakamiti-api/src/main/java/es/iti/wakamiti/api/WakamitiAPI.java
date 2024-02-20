@@ -1,4 +1,10 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.api;
+
 
 import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.plan.PlanSerializer;
@@ -8,6 +14,13 @@ import imconfig.Configuration;
 import java.nio.file.Path;
 import java.util.ServiceLoader;
 
+
+/**
+ * Provides access to various components and services within the
+ * Wakamiti application.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public interface WakamitiAPI {
 
     static WakamitiAPI instance() {
@@ -29,4 +42,5 @@ public interface WakamitiAPI {
     Path workingDir(Configuration configuration);
 
     Configuration defaultConfiguration();
+
 }

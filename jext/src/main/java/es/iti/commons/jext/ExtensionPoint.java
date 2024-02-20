@@ -34,7 +34,7 @@ public @interface ExtensionPoint {
 
     /**
      * The version of the extension point in form of
-     * {@code <majorVersion>.<minorVersion>}
+     * {@code <majorVersion>.<minorVersion>}.
      */
     String version() default "1.0";
 

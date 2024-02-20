@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog][1],
-and this project adheres to [Semantic Versioning][2].
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
 ## [Unreleased]
@@ -82,7 +82,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [1.5.1] - 2023-04-20
 
 ### Added
-- Include error classifiers in result
+- Include error classifiers in the result
 
 
 ## [1.5.0] - 2023-01-17
@@ -94,7 +94,3 @@ and this project adheres to [Semantic Versioning][2].
 ## [1.4.0] - 2022-05-09
 
 Initial release.  
-
-
-[1]: <https://keepachangelog.com/en/1.0.0/>
-[2]: <https://semver.org>

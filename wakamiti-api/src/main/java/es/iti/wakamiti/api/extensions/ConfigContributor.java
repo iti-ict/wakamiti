@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.api.extensions;
 
+
 import es.iti.commons.jext.ExtensionPoint;
 import imconfig.Configuration;
 import imconfig.Configurer;
@@ -12,13 +13,14 @@ import imconfig.Configurer;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+
 /**
  * This interface defines a contract for configuring any component with the
  * global configuration settings.
  *
  * @param <T> The class of the component to configure
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- * @author <a href="mailto:mgalbis@iti.es">Maria Galbis Calomarde</a>
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint
 public interface ConfigContributor<T> extends Contributor {
@@ -28,7 +30,7 @@ public interface ConfigContributor<T> extends Contributor {
      * is checked if the class of the given object is the same as the
      * {@code <T>} parameter of this interface.
      * <p>
-     * If the {@code <T>} parameter is {@link Void} then returns {@code true}.
+     * If the {@code <T>} parameter is {@code Void} then returns {@code true}.
      *
      * @param contributor The {@link Contributor} to configure
      * @return {@code true} if the configurator is capable of configuring the
