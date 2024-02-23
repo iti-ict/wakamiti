@@ -111,15 +111,18 @@ public class PlanNodeRunner {
                 try {
                     testCasePreExecution(node);
                 } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)));
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                            .collect(Collectors.toList()).stream(); // prevent lazy stream
                 }
             }
-            results = Stream.concat(results, runChildren());
+            results = Stream.concat(results, runChildren())
+                    .collect(Collectors.toList()).stream(); // prevent lazy stream
             if (node.nodeType() == NodeType.TEST_CASE) {
                 try {
                     testCasePostExecution(node);
                 } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)));
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                            .collect(Collectors.toList()).stream(); // prevent lazy stream
                 }
             }
 
