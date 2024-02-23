@@ -50,6 +50,7 @@ public class WakamitiJUnitRunner extends Runner {
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
     protected final Wakamiti wakamiti;
+    private final List<JUnitPlanNodeRunner> children;
     protected Configuration configuration;
     private PlanNode plan;
     private Description description;
@@ -67,6 +68,12 @@ public class WakamitiJUnitRunner extends Runner {
         validateNoAnnotatedMethod(configurationClass, Before.class);
         validateNoAnnotatedMethod(configurationClass, After.class);
         validateNoAnnotatedMethod(configurationClass, Test.class);
+        wakamiti.configureLogger(configuration);
+        wakamiti.configureEventObservers(configuration);
+        plan.assignExecutionID(
+                configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString())
+        );
+        children = createChildren();
     }
 
     private static Configuration retrieveConfiguration(
@@ -82,16 +89,12 @@ public class WakamitiJUnitRunner extends Runner {
 
     @Override
     public void run(RunNotifier notifier) {
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
-        plan.assignExecutionID(
-                configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString())
-        );
+        LOGGER.debug("{}", configuration);
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         executeAnnotatedMethod(configurationClass, BeforeClass.class);
 
-        for (JUnitPlanNodeRunner child : createChildren()) {
+        for (JUnitPlanNodeRunner child : children) {
             try {
                 child.runNode(notifier);
             } catch (Exception e) {
@@ -113,8 +116,8 @@ public class WakamitiJUnitRunner extends Runner {
     public Description getDescription() {
         if (description == null) {
             description = Description
-                    .createSuiteDescription("Wakamiti Test Plan", UUID.randomUUID().toString());
-            for (JUnitPlanNodeRunner child : createChildren()) {
+                    .createSuiteDescription(configurationClass.getSimpleName(), UUID.randomUUID().toString());
+            for (JUnitPlanNodeRunner child : children) {
                 description.addChild(child.getDescription());
             }
         }
@@ -194,23 +197,11 @@ public class WakamitiJUnitRunner extends Runner {
                 continue;
             }
 
-            // accepts a setUp method in form of Configuration setUp(Configuration)
-            if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class) {
-                try {
-                    this.configuration = (Configuration) method.invoke(null, this.configuration);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    throw new WakamitiException(e);
-                }
-            } else {
-
-                try {
-                    method.invoke(null);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    throw new WakamitiException(e);
-                }
-
+            try {
+                method.invoke(null);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new WakamitiException(e);
             }
-
         }
     }
 
