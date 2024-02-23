@@ -3,36 +3,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core.backend;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import imconfig.Configuration;
-import es.iti.wakamiti.core.util.LocaleLoader;
-import org.slf4j.Logger;
-
 import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.core.util.StringDistance;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.util.LocaleLoader;
+import imconfig.Configuration;
+import org.slf4j.Logger;
 
-/*
- * Partial implementation of Backend, without running capabilities
+import java.util.List;
+import java.util.Locale;
+
+
+/**
+ * Abstract implementation of the {@link Backend} interface, providing common functionality
+ * for backends without running capabilities.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class AbstractBackend implements Backend {
 
@@ -41,6 +32,8 @@ public abstract class AbstractBackend implements Backend {
     protected final Configuration configuration;
     protected final WakamitiDataTypeRegistry typeRegistry;
     protected final List<RunnableStep> runnableSteps;
+    protected final RunnableStepResolver resolver;
+    protected final StepHinter hinter;
 
 
     protected AbstractBackend(
@@ -51,6 +44,8 @@ public abstract class AbstractBackend implements Backend {
         this.configuration = configuration;
         this.typeRegistry = typeRegistry;
         this.runnableSteps = steps;
+        this.resolver = new RunnableStepResolver(typeRegistry, steps);
+        this.hinter = new StepHinter(runnableSteps, configuration, resolver, typeRegistry);
     }
 
 
@@ -76,21 +71,7 @@ public abstract class AbstractBackend implements Backend {
         int numberOfHints,
         boolean includeVariations
     ) {
-        Set<String> stepHints = new HashSet<>();
-        Map<? extends WakamitiDataType<?>, Pattern> types = typeRegistry.getTypes().stream()
-            .collect(Collectors.toMap(
-                x -> x,
-                type -> Pattern.compile("\\{[^:]*:?" + type.getName() + "\\}")
-            ));
-        for (RunnableStep runnableStep : runnableSteps) {
-            String stepHint = runnableStep.getTranslatedDefinition(locale);
-            if (includeVariations) {
-                stepHints.addAll(populateStepHintWithTypeHints(stepHint, locale, types));
-            } else {
-                stepHints.add(stepHint);
-            }
-        }
-        return StringDistance.closerStrings(invalidStep, stepHints, numberOfHints);
+        return hinter.getHintsForInvalidStep(invalidStep, locale, locale, numberOfHints, includeVariations);
     }
 
 

@@ -185,11 +185,7 @@ public class RunnableBackend extends AbstractBackend {
     private StepBackendData fetchStepBackendData(PlanNode step) {
         Locale stepLocale = LocaleLoader.forLanguage(step.language());
         Locale dataLocale = dataLocale(step, stepLocale);
-        Pair<RunnableStep, Matcher> runnableStepData = locateRunnableStep(
-                step,
-                stepLocale,
-                dataLocale
-        );
+        Pair<RunnableStep, Matcher> runnableStepData = resolver.locateRunnableStep(step, hinter);
         RunnableStep runnableStep = runnableStepData.key();
         Matcher stepMatcher = runnableStepData.value();
         Map<String, Argument> invokingArguments = buildInvokingArguments(
