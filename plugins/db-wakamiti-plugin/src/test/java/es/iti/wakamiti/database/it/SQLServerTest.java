@@ -6,10 +6,11 @@
 package es.iti.wakamiti.database.it;
 
 
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
-import imconfig.Configuration;
 import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
 @AnnotatedConfiguration({
@@ -31,6 +33,9 @@ import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/database-sqlserver.feature"),
         @Property(key = "data.dir", value = "src/test/resources"),
         @Property(key = "database.type", value = "sqlserver"),
+        @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
+        @Property(key = "database.connection.username", value = "sa"),
+        @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
 @RunWith(WakamitiJUnitRunner.class)
@@ -38,13 +43,22 @@ public class SQLServerTest {
 
     private static final MSSQLServerContainer<?> container = new MSSQLServerContainer<>()
             .acceptLicense()
-            .withInitScript("db/create-schema-sqlserver.sql");
+//            .withDatabaseName("test")
+//            .withUsername("user")
+            .withPassword("$3cr3Tp4s$")
+            .withInitScript("db/create-schema-sqlserver.sql")
+            .withCreateContainerCmdModifier(cmd ->
+                    cmd.getHostConfig().withPortBindings(
+                            new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
+            );
 
 
     @BeforeClass
-    public static Configuration setUp(Configuration config) throws IOException {
-        System.out.println("Creating container. Please, be patient...");
+    public static void setUp() throws IOException {
+        System.out.print("Creating container. Please, be patient... ");
         container.start();
+        System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
+                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
         String url = container.getJdbcUrl();
         String user = container.getUsername();
         String password = container.getPassword();
@@ -55,9 +69,6 @@ public class SQLServerTest {
         for (String sentence : createSchema.split(System.lineSeparator() + "GO" + System.lineSeparator())) {
             jdbcTemplate.execute(sentence);
         }
-        return config.appendProperty("database.connection.url", url)
-                .appendProperty("database.connection.username", user)
-                .appendProperty("database.connection.password", password);
     }
 
     @AfterClass

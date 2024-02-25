@@ -19,6 +19,7 @@ import es.iti.wakamiti.database.exception.PrimaryKeyNotFoundException;
 import es.iti.wakamiti.database.jdbc.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import org.awaitility.Durations;
@@ -525,6 +526,7 @@ public class DatabaseSupport {
             String table = db.table(update.getTable().getName());
             update.setTable(new Table(db.parser().format(table)));
             db.parser().formatColumns(update.getWhere(), column -> db.parser().format(db.column(table, column)));
+
             update.getUpdateSets().stream().flatMap(set -> set.getColumns().stream()).forEach(c ->
                     db.parser().formatColumns(c, column -> db.parser().format(db.column(table, column)))
             );

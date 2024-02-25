@@ -51,7 +51,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Configure the default database connection URL, username and
-     * password for following connections.
+     * password for the following connections.
      *
      * @param url      The URL connection
      * @param username The username
@@ -67,7 +67,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Configure a named database connection URL, username and
-     * password for following connections.
+     * password for the following connections.
      *
      * @param url      The URL connection
      * @param username The username

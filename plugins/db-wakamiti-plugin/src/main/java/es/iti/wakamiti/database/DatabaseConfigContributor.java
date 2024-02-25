@@ -63,7 +63,6 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     }
 
     private void configure(DatabaseStepContributor contributor, Configuration configuration) {
-
         Configuration databaseConfig = configuration.inner(PROPERTY_BASE);
 
         configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class).ifPresent(contributor::setXlsIgnoreSheetRegex);

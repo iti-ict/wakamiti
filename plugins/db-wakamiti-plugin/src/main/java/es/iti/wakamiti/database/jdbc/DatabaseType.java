@@ -36,7 +36,7 @@ public enum DatabaseType {
             throw new WakamitiException("Bad jdbc url");
         }
         try {
-            return DatabaseType.valueOf(url.split(":|-")[1].toUpperCase());
+            return DatabaseType.valueOf(url.split("[:\\-]")[1].toUpperCase());
         } catch (IllegalArgumentException e) {
             return DatabaseType.OTHER;
         }

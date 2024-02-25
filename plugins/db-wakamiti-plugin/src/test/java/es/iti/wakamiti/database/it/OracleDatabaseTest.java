@@ -6,10 +6,13 @@
 package es.iti.wakamiti.database.it;
 
 
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
-import imconfig.Configuration;
 import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.OracleContainer;
 
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
 @AnnotatedConfiguration({
@@ -24,21 +28,31 @@ import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/database-oracle.feature"),
         @Property(key = "data.dir", value = "src/test/resources"),
         @Property(key = "database.type", value = "oracle"),
+        @Property(key = "database.connection.url", value = "jdbc:oracle:thin:@localhost:1234/test"),
+        @Property(key = "database.connection.username", value = "tester"),
+        @Property(key = "database.connection.password", value = "pass"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class OracleDatabaseTest {
 
-    private static final OracleContainer container = new OracleContainer("gvenzl/oracle-xe:21-slim-faststart")
-            .withInitScript("db/create-schema-oracle.sql");
+    private static final OracleContainer container = new OracleContainer("gvenzl/oracle-xe:21.3.0-slim")
+            .withDatabaseName("test")
+            .withUsername("tester")
+            .withPassword("pass")
+            .withInitScript("db/create-schema-oracle.sql")
+            .withCreateContainerCmdModifier(cmd ->
+                    cmd.getHostConfig().withPortBindings(
+                            new PortBinding(Ports.Binding.bindPort(80800), new ExposedPort(8080, InternetProtocol.TCP)),
+                            new PortBinding(Ports.Binding.bindPort(1234), new ExposedPort(1521, InternetProtocol.TCP)))
+            );
 
     @BeforeClass
-    public static Configuration setUp(Configuration config) {
-        System.out.println("Creating container. Please, be patient...");
+    public static void setUp() {
+        System.out.print("Creating container. Please, be patient... ");
         container.start();
-        return config.appendProperty("database.connection.url", container.getJdbcUrl())
-                .appendProperty("database.connection.username", container.getUsername())
-                .appendProperty("database.connection.password", container.getPassword());
+        System.out.println(message("\rContainer [OracleContainer] started with [url={}, username={}, password={}]",
+                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
     }
 
     @AfterClass
