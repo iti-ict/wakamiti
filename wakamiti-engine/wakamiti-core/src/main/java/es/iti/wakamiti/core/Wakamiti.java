@@ -154,7 +154,7 @@ public class Wakamiti {
 
 
         if (configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(Boolean.FALSE)) {
-            validateUniqueTestCaseID(plan);
+            validateUniqueTestCaseID(plan, configuration);
         }
         publishEvent(Event.PLAN_CREATED, new PlanNodeSnapshot(plan));
         return plan;
@@ -522,17 +522,20 @@ public class Wakamiti {
     }
 
 
-    private void validateUniqueTestCaseID(PlanNode plan) {
+    private void validateUniqueTestCaseID(PlanNode plan, Configuration configuration) {
         if (plan == null) {
             return;
         }
         Map<String, AtomicInteger> ids = new HashMap<>();
+        String idTagPattern = configuration.get(ID_TAG_PATTERN, String.class)
+                .orElseThrow(() -> new WakamitiException("The '{}' property is required."));
         plan
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-                .forEach(node -> ids.computeIfAbsent(node.id(), x -> new AtomicInteger()).incrementAndGet());
+                .map(node -> node.id().matches(idTagPattern) ? node.id() : null)
+                .forEach(id -> ids.computeIfAbsent(id, x -> new AtomicInteger()).incrementAndGet());
         if (ids.get(null) != null) {
-            throw new WakamitiException("There is one or more test cases withouth a valid ID");
+            throw new WakamitiException("There is one or more test cases without a valid ID");
         }
         ids.forEach((id, count) -> {
             if (count.get() > 1) {
