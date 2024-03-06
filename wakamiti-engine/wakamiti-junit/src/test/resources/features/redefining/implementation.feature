@@ -1,6 +1,8 @@
 # language: es
+@implementation
 Característica: Test feature [Spanish]
-  Esto es una prueba que va a fallar
+  Esto es una prueba de definición de característica en Español.
+  Los casos son triviales.
 
 Antecedentes: Estos son los antecedentes
   Dado el conjunto de números reales ℝ
@@ -11,7 +13,8 @@ Escenario: Escenario de test en español
  Dado un número con valor 6,1 y otro número con valor 3
  Y un número con valor 6,1 y otro número con valor 3
  Cuando se multiplican ambos números
- Entonces el resultado es 99,99
+ Entonces el resultado es 18,3
+ Y el resultado es 18,3
 
 
 @ID-2
@@ -27,6 +30,7 @@ Esquema del escenario: Esquema de escenario de test en español
  # Then the result is <c>
  Entonces el resultado es <c>
  Y el resultado es <c>
+ # -- Implementation examples would be ignored, and use definition examples instead
  Ejemplos:
  | a    | b  | c     |
  | 99.0 | 99 | 99.0  |

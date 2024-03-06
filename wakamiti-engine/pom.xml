@@ -26,11 +26,12 @@
 
 
     <name>Wakamiti Engine</name>
-    <description>Aggregation of all Wakamiti core componentes</description>
+    <description>Aggregation of all Wakamiti core components</description>
 
 
     <modules>
         <module>wakamiti-core</module>
+        <module>wakamiti-junit</module>
         <module>wakamiti-lsp</module>
         <module>wakamiti-maven-plugin</module>
         <module>wakamiti-launcher</module>

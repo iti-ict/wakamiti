@@ -37,6 +37,7 @@ import java.util.stream.Stream;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
     private Description description;
@@ -138,7 +139,9 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
         } catch (Exception e) {
             result = Result.ERROR;
         }
-        notifyResult();
+        if (getNode().nodeType() == target()) {
+            notifyResult();
+        }
         return result;
     }
 
@@ -169,13 +172,13 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
 
     protected void notifyResult() {
         Exception notExecuted = new WakamitiException("Test case not executed due to unknown reasons");
-        Exception skipped = new WakamitiSkippedException("Test case skipped");
         Optional<Result> result = getNode().result();
-        if (result.isPresent() && getNode().nodeType() == target()) {
+        if (result.isPresent()) {
             if (result.get() == Result.PASSED) {
                 notifier.fireTestFinished(getDescription());
             } else if (result.get() == Result.SKIPPED) {
-                notifier.fireTestFailure(new Failure(getDescription(), skipped));
+                notifier.fireTestFailure(new Failure(getDescription(),
+                        new WakamitiSkippedException("Test case skipped")));
             } else {
                 Throwable error = getNode().errors().findFirst().orElse(notExecuted);
                 if (error instanceof WakamitiSkippedException) {
@@ -184,6 +187,9 @@ public class JUnitPlanNodeRunner extends PlanNodeRunner {
                     notifier.fireTestFailure(new Failure(getDescription(), error));
                 }
             }
+        } else {
+            notifier.fireTestFailure(new Failure(getDescription(), notExecuted));
         }
+
     }
 }

@@ -18,8 +18,8 @@
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name= "es.iti.wakamiti.logs" level="info"/>
-        <Logger name= "es.iti.wakamiti.test" level="trace"/>
+        <Logger name="es.iti.wakamiti.logs" level="info"/>
+        <Logger name="es.iti.wakamiti.test" level="trace"/>
         <Logger name="es.iti.wakamiti.core.backend.ExpressionMatcher" level="info"/>
         <Logger name="es.iti.wakamiti.core.backend.DefaultBackendFactory" level="info"/>
     </Loggers>

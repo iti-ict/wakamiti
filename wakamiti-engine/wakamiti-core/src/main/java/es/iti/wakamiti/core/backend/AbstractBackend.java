@@ -35,11 +35,18 @@ public abstract class AbstractBackend implements Backend {
     protected final RunnableStepResolver resolver;
     protected final StepHinter hinter;
 
-
+    /**
+     * Constructs an abstract backend with the provided configuration, type registry,
+     * and list of runnable steps.
+     *
+     * @param configuration The configuration for this backend.
+     * @param typeRegistry  The registry for Wakamiti data types.
+     * @param steps         The list of runnable steps associated with this backend.
+     */
     protected AbstractBackend(
-        Configuration configuration,
-        WakamitiDataTypeRegistry typeRegistry,
-        List<RunnableStep> steps
+            Configuration configuration,
+            WakamitiDataTypeRegistry typeRegistry,
+            List<RunnableStep> steps
     ) {
         this.configuration = configuration;
         this.typeRegistry = typeRegistry;
@@ -48,38 +55,43 @@ public abstract class AbstractBackend implements Backend {
         this.hinter = new StepHinter(runnableSteps, configuration, resolver, typeRegistry);
     }
 
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public WakamitiDataTypeRegistry getTypeRegistry() {
         return typeRegistry;
     }
 
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getAvailableSteps(Locale locale, boolean includeVariations) {
-        return getSuggestionsForInvalidStep("",locale,-1,includeVariations);
+        return getSuggestionsForInvalidStep("", locale, -1, includeVariations);
     }
 
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getSuggestionsForInvalidStep(
-        String invalidStep,
-        Locale locale,
-        int numberOfHints,
-        boolean includeVariations
+            String invalidStep,
+            Locale locale,
+            int numberOfHints,
+            boolean includeVariations
     ) {
         return hinter.getHintsForInvalidStep(invalidStep, locale, locale, numberOfHints, includeVariations);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHintFor(String invalidStep, Locale locale) {
         int maxSuggestions = 5;
         StringBuilder hint = new StringBuilder(
-            "Perhaps you mean one of the following:\n\t----------\n\t"
+                "Perhaps you mean one of the following:\n\t----------\n\t"
         );
         var allSuggestions = getSuggestionsForInvalidStep(invalidStep, locale, -1, true);
         if (allSuggestions.size() > maxSuggestions) {
@@ -91,39 +103,22 @@ public abstract class AbstractBackend implements Backend {
         return hint.toString();
     }
 
-
-
-    private List<String> populateStepHintWithTypeHints(
-        String stepHint,
-        Locale locale,
-        Map<? extends WakamitiDataType<?>, Pattern> types
-    ) {
-        List<String> variants = new ArrayList<>();
-        for (Map.Entry<? extends WakamitiDataType<?>, Pattern> type : types.entrySet()) {
-            if (type.getValue().matcher(stepHint).find()) {
-                for (String typeHint : type.getKey().getHints(locale)) {
-                    String variant = stepHint.replaceFirst(type.getValue().pattern(), typeHint);
-                    variants.addAll(populateStepHintWithTypeHints(variant, locale, types));
-                }
-            }
-        }
-        if (variants.isEmpty()) {
-            variants.add(stepHint);
-        }
-        return variants;
-    }
-
-
-
+    /**
+     * Retrieves the locale for data associated with the given model step.
+     *
+     * @param modelStep      The model step.
+     * @param fallbackLocale The fallback locale.
+     * @return The locale for data associated with the model step.
+     */
     protected Locale dataLocale(PlanNode modelStep, Locale fallbackLocale) {
         String dataFormatLocale = modelStep.properties().getOrDefault(
-            WakamitiConfiguration.DATA_FORMAT_LANGUAGE,
-            configuration.get(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, String.class).orElse(null)
+                WakamitiConfiguration.DATA_FORMAT_LANGUAGE,
+                configuration.get(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, String.class).orElse(null)
         );
         return dataFormatLocale == null ?
-            fallbackLocale :
-            LocaleLoader.forLanguage(dataFormatLocale)
-        ;
+                fallbackLocale :
+                LocaleLoader.forLanguage(dataFormatLocale)
+                ;
     }
 
 }

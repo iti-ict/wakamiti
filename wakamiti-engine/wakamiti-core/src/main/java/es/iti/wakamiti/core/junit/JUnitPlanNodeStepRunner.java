@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {
 
     /**

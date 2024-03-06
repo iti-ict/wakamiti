@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.test;
+package es.iti.wakamiti.rest;
 
 import es.iti.wakamiti.core.DefaultWakamitiAPI;
 
@@ -11,6 +11,7 @@ public class TestWakamitiAPI extends DefaultWakamitiAPI {
 
     @Override
     public String version() {
-        return System.getProperty("version");
+        return "2.4.0";
     }
+
 }

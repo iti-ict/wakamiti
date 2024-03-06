@@ -3,20 +3,23 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/** @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com */
 package es.iti.wakamiti.core.datatypes.assertion;
 
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+
+/**
+ * A provider for unary string assertions.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class UnaryStringAssertProvider extends AbstractAssertProvider {
 
     public static final String NULL = "matcher.generic.null";
@@ -27,10 +30,12 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_EMPTY = "matcher.generic.not.empty";
     public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String[] expressions() {
-        return new String[] {
+        return new String[]{
                 NULL,
                 EMPTY,
                 NULL_EMPTY,
@@ -40,16 +45,22 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String key : expressions()) {
             translatedExpressions
-                .put(key, Pattern.compile(translateBundleExpression(locale, key, "")));
+                    .put(key, Pattern.compile(translateBundleExpression(locale, key, "")));
         }
         return translatedExpressions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected LinkedList<String> regex(Locale locale) {
         return Arrays.stream(expressions())
@@ -57,7 +68,9 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
 
@@ -97,24 +110,35 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
         return matcher;
     }
 
-
-
-
-	@SuppressWarnings("unchecked")
+    /**
+     * Generates a matcher for the specified type.
+     *
+     * @param matcher      The matcher to use.
+     * @param expectedType The expected type for the matcher.
+     * @param <T>          The type of the matcher.
+     * @return The generated matcher.
+     */
+    @SuppressWarnings("unchecked")
     private <T> Matcher<? super Object> matcher(
-        Matcher<? super T> matcher,
-        Class<? super T> expectedType
+            Matcher<? super T> matcher,
+            Class<? super T> expectedType
     ) {
         return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
     }
 
-
+    /**
+     * Generates a matcher for collections.
+     *
+     * @param matcher      The matcher to use for collections.
+     * @param expectedType The expected type for the matcher.
+     * @return The generated matcher.
+     */
     @SuppressWarnings("unchecked")
-	private Matcher<? super Object> matcherCollection(
-    	Matcher<? super Collection<? extends Object>> matcher,
-		Class<? super Collection<?>> expectedType
-	) {
-    	return (Matcher<? super Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
-	}
+    private Matcher<? super Object> matcherCollection(
+            Matcher<? super Collection<Object>> matcher,
+            Class<? super Collection<?>> expectedType
+    ) {
+        return (Matcher<Object>) Matchers.allOf(Matchers.instanceOf(expectedType), matcher);
+    }
 
 }
