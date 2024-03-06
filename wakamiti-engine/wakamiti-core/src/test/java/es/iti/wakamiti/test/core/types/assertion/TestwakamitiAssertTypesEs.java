@@ -3,14 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.test.core.types.assertion;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -19,11 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Test;
-
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SuppressWarnings("rawtypes")
@@ -36,7 +31,7 @@ public class TestwakamitiAssertTypesEs {
     public void testInteger() throws ParseException {
 
         WakamitiDataType<Assertion> intAssertion = WakamitiAssertTypes
-            .binaryNumberAssert("int-assert", false, Number::intValue);
+                .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7", -7);
         exp.put("es igual a 8.000", 8000);
@@ -55,7 +50,7 @@ public class TestwakamitiAssertTypesEs {
             Assertion<?> matcher = intAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
             assertThat(matcher.test(e.getValue()))
-                .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
 
         intAssertion.parse(locale, "es nulo").test(null);
@@ -68,7 +63,7 @@ public class TestwakamitiAssertTypesEs {
     public void testLong() throws ParseException {
 
         WakamitiDataType<Assertion> longAssertion = WakamitiAssertTypes
-            .binaryNumberAssert("long-assert", false, Number::longValue);
+                .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7", -7L);
         exp.put("es igual a 8.000", 8000L);
@@ -87,7 +82,7 @@ public class TestwakamitiAssertTypesEs {
             Assertion<?> matcher = longAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
             assertThat(matcher.test(e.getValue()))
-                .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
 
         longAssertion.parse(locale, "es nulo").test(null);
@@ -100,7 +95,7 @@ public class TestwakamitiAssertTypesEs {
     public void testDouble() throws ParseException {
 
         WakamitiDataType<Assertion> doubleAssertion = WakamitiAssertTypes
-            .binaryNumberAssert("double-assert", true, Number::doubleValue);
+                .binaryNumberAssert("double-assert", true, Number::doubleValue);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7,0", -7.0);
         exp.put("es igual a 8,0", 8.0);
@@ -115,7 +110,7 @@ public class TestwakamitiAssertTypesEs {
             Assertion<?> matcher = doubleAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
             assertThat(matcher.test(e.getValue()))
-                .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
 
@@ -124,7 +119,7 @@ public class TestwakamitiAssertTypesEs {
     public void testBigDecimal() throws ParseException {
 
         WakamitiDataType<Assertion> bigDecimalAssertion = WakamitiAssertTypes
-            .binaryBigDecimalAssert("bigdecimal-assert", true, x -> x);
+                .binaryBigDecimalAssert("bigdecimal-assert", true, x -> x);
         Map<String, Object> exp = new LinkedHashMap<>();
         exp.put("es -7,0", BigDecimal.valueOf(7.0));
         exp.put("es igual a 8,0", BigDecimal.valueOf(7.0));
@@ -139,7 +134,7 @@ public class TestwakamitiAssertTypesEs {
             Assertion<?> matcher = bigDecimalAssertion.parse(locale, e.getKey());
             assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
             assertThat(matcher.test(e.getValue()))
-                .as("failed negative match for: " + e.getKey() + " with " + e.getValue()).isFalse();
+                    .as("failed negative match for: " + e.getKey() + " with " + e.getValue()).isFalse();
         }
     }
 

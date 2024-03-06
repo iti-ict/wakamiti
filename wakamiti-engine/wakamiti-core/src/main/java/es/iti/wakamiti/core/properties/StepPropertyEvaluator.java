@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.properties;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
@@ -22,8 +23,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
- * This {@link PropertyEvaluator} allows eval previous steps results.
+ * Allows eval previous steps results.
  *
  * <p> Pattern: {@code ${[step number]#[xpath/jsonpath expression]}}
  *
@@ -34,22 +36,38 @@ import java.util.regex.Pattern;
  * </pre></blockquote>
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
+ * @see PropertyEvaluator
  */
-@Extension(provider =  "es.iti.wakamiti", name = "step-property-resolver",
-        extensionPoint =  "es.iti.wakamiti.api.extensions.PropertyEvaluator", priority = 2)
+@Extension(provider = "es.iti.wakamiti", name = "step-property-resolver",
+        extensionPoint = "es.iti.wakamiti.api.extensions.PropertyEvaluator", priority = 2)
 public class StepPropertyEvaluator extends PropertyEvaluator {
 
+    /**
+     * Defines the pattern to identify property placeholders in a string.
+     *
+     * @return A {@link Pattern} object representing the property pattern.
+     */
     @Override
     public Pattern pattern() {
         return Pattern.compile("\\$\\{(?<name>((-?\\d+)#((?!\\$\\{|\\}).)*))\\}");
     }
 
+    /**
+     * Evaluates the property by extracting information from the results
+     * of previous steps.
+     *
+     * @param property The property to evaluate.
+     * @param matcher  The matcher containing the property information.
+     * @return The evaluated property value.
+     * @throws WakamitiException If the property cannot be resolved.
+     */
     @Override
     public String evalProperty(String property, Matcher matcher) {
         String name = matcher.group("name");
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
         int step = Integer.parseInt(matcher.group(3));
-        List<?> steps = Optional.ofNullable(context.backend().getExtraProperties().get(RunnableBackend.ContextMap.RESULTS_PROP))
+        List<?> steps = Optional.ofNullable(context.backend().getExtraProperties()
+                        .get(RunnableBackend.ContextMap.RESULTS_PROP))
                 .map(List.class::cast)
                 .orElse(new LinkedList<>());
         Object result = steps.get(step < 0 ? steps.size() + step : step - 1);
@@ -71,10 +89,22 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
         return evaluation;
     }
 
+    /**
+     * Checks if the given object is in JSON format.
+     *
+     * @param object The object to check.
+     * @return {@code true} if the object is in JSON format, {@code false} otherwise.
+     */
     private boolean isJson(Object object) {
         return object instanceof JsonNode || (object instanceof String && isJson((String) object));
     }
 
+    /**
+     * Checks if the given string is in JSON format.
+     *
+     * @param string The string to check.
+     * @return {@code true} if the string is in JSON format, {@code false} otherwise.
+     */
     private boolean isJson(String string) {
         try {
             JsonUtils.json(string);
@@ -84,10 +114,22 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
         }
     }
 
+    /**
+     * Checks if the given object is in XML format.
+     *
+     * @param object The object to check.
+     * @return {@code true} if the object is in XML format, {@code false} otherwise.
+     */
     private boolean isXml(Object object) {
         return object instanceof XmlObject || (object instanceof String && isXml((String) object));
     }
 
+    /**
+     * Checks if the given string is in XML format.
+     *
+     * @param string The string to check.
+     * @return {@code true} if the string is in XML format, {@code false} otherwise.
+     */
     private boolean isXml(String string) {
         try {
             XmlUtils.xml(string);

@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.backend;
 
+
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
@@ -15,7 +16,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeData;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.Argument;
-import es.iti.wakamiti.api.util.Either;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
@@ -27,12 +27,15 @@ import org.slf4j.Logger;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
+
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Implementation of the Backend interface that allows running tests.
+ * It provides the capability to execute individual test steps and
+ * handle the setup and teardown operations.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableBackend extends AbstractBackend {
 
@@ -40,12 +43,7 @@ public class RunnableBackend extends AbstractBackend {
     public static final String UNNAMED_ARG = "unnamed";
     public static final String DOCUMENT_ARG = "document";
     public static final String DATATABLE_ARG = "datatable";
-
-
-    private static final List<String> DATA_ARG_ALTERNATIVES = Arrays.asList(
-            DOCUMENT_ARG,
-            DATATABLE_ARG
-    );
+    private static final List<String> DATA_ARG_ALTERNATIVES = List.of(DOCUMENT_ARG, DATATABLE_ARG);
 
     private final PlanNode testCase;
     private final Clock clock;
@@ -55,7 +53,21 @@ public class RunnableBackend extends AbstractBackend {
     private final Map<String, Object> extraProperties;
     private final List<PlanNode> stepsWithErrors;
 
-
+    /**
+     * Constructs a {@code RunnableBackend} with the specified test case,
+     * configuration, type registry, list of runnable steps, setup operations,
+     * teardown operations, and clock.
+     *
+     * @param testCase           The test case associated with this backend.
+     * @param configuration      The configuration for the backend.
+     * @param typeRegistry       The WakamitiDataTypeRegistry for type information.
+     * @param steps              The list of runnable steps available in this backend.
+     * @param setUpOperations    The list of setup operations to be executed before
+     *                           running the test steps.
+     * @param tearDownOperations The list of teardown operations to be executed
+     *                           after running the test steps.
+     * @param clock              The clock used to record timestamps.
+     */
     public RunnableBackend(
             PlanNode testCase,
             Configuration configuration,
@@ -75,7 +87,12 @@ public class RunnableBackend extends AbstractBackend {
         this.stepsWithErrors = new ArrayList<>();
     }
 
-
+    /**
+     * {@inheritDoc}
+     * This implementation validates the given test step, fetches the associated backend data, and executes the step.
+     *
+     * @param step The plan node representing the step to run.
+     */
     @Override
     public void runStep(PlanNode step) {
         validateStepFromTestCase(step);
@@ -95,7 +112,14 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Validates that the given step is of type {@code STEP} or {@code VIRTUAL_STEP}
+     * and is a descendant of the test case.
+     *
+     * @param step The plan node representing the step to validate.
+     * @throws WakamitiException If the step is not of the expected type or not a
+     *                           descendant of the test case.
+     */
     private void validateStepFromTestCase(PlanNode step) {
         if (step.nodeType().isNoneOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             throw new WakamitiException(
@@ -112,25 +136,33 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Checks if there are other steps with errors that should cause the current
+     * step to be skipped.
+     *
+     * @param modelStep The plan node representing the step.
+     * @return {@code true} if other steps have errors, {@code false} otherwise.
+     */
     private boolean otherStepsHasErrors(PlanNode modelStep) {
         return (!stepsWithErrors.isEmpty() && !stepsWithErrors.contains(modelStep));
     }
 
-
+    /**
+     * Marks the given step as skipped.
+     *
+     * @param modelStep The plan node representing the step to be skipped.
+     * @param now       The timestamp when the skipping occurs.
+     */
     private void skipStep(PlanNode modelStep, Instant now) {
         ExecutionState<Result> execution = modelStep.prepareExecution();
         execution.markStarted(now);
         execution.markFinished(now, Result.SKIPPED);
     }
 
-
-    @Override
-    public WakamitiDataTypeRegistry getTypeRegistry() {
-        return typeRegistry;
-    }
-
-
+    /**
+     * {@inheritDoc}
+     * This implementation executes the setup operations associated with this backend.
+     */
     @Override
     public void setUp() {
         for (ThrowableRunnable setUpOperation : setUpOperations) {
@@ -138,7 +170,10 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     * This implementation executes the teardown operations associated with this backend.
+     */
     @Override
     public void tearDown() {
         for (ThrowableRunnable tearDownOperation : tearDownOperations) {
@@ -146,7 +181,13 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Runs the specified {@link ThrowableRunnable} operation and handles any exceptions or errors.
+     *
+     * @param operation The operation to be executed.
+     * @param type      The type of the operation for logging purposes.
+     * @throws WakamitiException If an exception or error occurs during the execution of the operation.
+     */
     private void runMethod(ThrowableRunnable operation, String type) {
         try {
             operation.run();
@@ -166,7 +207,9 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Fetches backend data associated with each step.
+     */
     private void fetchStepBackendData() {
         if (stepBackendData.isEmpty()) {
             testCase.descendants().filter(node -> node.nodeType() == NodeType.STEP)
@@ -181,7 +224,12 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Fetches backend data associated with each step.
+     *
+     * @param step The test step for which backend data is fetched.
+     * @return The backend data for the given step.
+     */
     private StepBackendData fetchStepBackendData(PlanNode step) {
         Locale stepLocale = LocaleLoader.forLanguage(step.language());
         Locale dataLocale = dataLocale(step, stepLocale);
@@ -205,7 +253,12 @@ public class RunnableBackend extends AbstractBackend {
         );
     }
 
-
+    /**
+     * Runs a test step.
+     *
+     * @param step    The test step to be executed.
+     * @param instant The current instant.
+     */
     @SuppressWarnings("unchecked")
     protected void runStep(PlanNode step, Instant instant) {
         step.prepareExecution().markStarted(instant);
@@ -234,13 +287,25 @@ public class RunnableBackend extends AbstractBackend {
         }
     }
 
-
+    /**
+     * Fills the error state for a test step.
+     *
+     * @param modelStep       The test step.
+     * @param instant         The instant when the error occurred.
+     * @param e               The thrown exception.
+     * @param errorClassifier The error classifier.
+     */
     protected void fillErrorState(PlanNode modelStep, Instant instant, Throwable e, String errorClassifier) {
         modelStep.prepareExecution().markFinished(instant, resultFromThrowable(e), e, errorClassifier);
         stepsWithErrors.add(modelStep);
     }
 
-
+    /**
+     * Gets the result type based on the thrown exception.
+     *
+     * @param e The thrown exception.
+     * @return The result type.
+     */
     protected Result resultFromThrowable(Throwable e) {
         Result result;
         if (e instanceof AssertionError) {
@@ -255,42 +320,57 @@ public class RunnableBackend extends AbstractBackend {
         return result;
     }
 
+//    /**
+//     * Locates a runnable step for the given test step.
+//     *
+//     * @param modelStep  The test step.
+//     * @param stepLocale The locale for the test step.
+//     * @param dataLocale The locale for the test data.
+//     * @return A pair containing the runnable step and the matcher.
+//     */
+//    protected Pair<RunnableStep, Matcher> locateRunnableStep(
+//            PlanNode modelStep,
+//            Locale stepLocale,
+//            Locale dataLocale
+//    ) {
+//        Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
+//                .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
+//
+//        List<Pair<RunnableStep, Matcher>> locatedSteps = runnableSteps.stream()
+//                .map(Pair.computeValue(matcher))
+//                .filter(pair -> pair.value().matches())
+//                .collect(Collectors.toList());
+//
+//        if (locatedSteps.isEmpty()) {
+//            throw new UndefinedStepException(
+//                    modelStep,
+//                    "Cannot match step with any defined step",
+//                    getHintFor(modelStep.name(), dataLocale)
+//            );
+//        }
+//        if (locatedSteps.size() > 1) {
+//            String locatedStepsInfo = locatedSteps.stream()
+//                    .map(Pair::key)
+//                    .map(step -> step.getTranslatedDefinition(stepLocale))
+//                    .collect(Collectors.joining("\n\t"));
+//            throw new UndefinedStepException(
+//                    modelStep,
+//                    "Step matches more than one defined step",
+//                    locatedStepsInfo
+//            );
+//        }
+//        return locatedSteps.get(0);
+//    }
 
-    protected Pair<RunnableStep, Matcher> locateRunnableStep(
-            PlanNode modelStep,
-            Locale stepLocale,
-            Locale dataLocale
-    ) {
-        Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
-                .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
-
-        List<Pair<RunnableStep, Matcher>> locatedSteps = runnableSteps.stream()
-                .map(Pair.computeValue(matcher))
-                .filter(pair -> pair.value().matches())
-                .collect(Collectors.toList());
-
-        if (locatedSteps.isEmpty()) {
-            throw new UndefinedStepException(
-                    modelStep,
-                    "Cannot match step with any defined step",
-                    getHintFor(modelStep.name(), dataLocale)
-            );
-        }
-        if (locatedSteps.size() > 1) {
-            String locatedStepsInfo = locatedSteps.stream()
-                    .map(Pair::key)
-                    .map(step -> step.getTranslatedDefinition(stepLocale))
-                    .collect(Collectors.joining("\n\t"));
-            throw new UndefinedStepException(
-                    modelStep,
-                    "Step matches more than one defined step",
-                    locatedStepsInfo
-            );
-        }
-        return locatedSteps.get(0);
-    }
-
-
+    /**
+     * Builds invoking arguments for a test step.
+     *
+     * @param modelStep    The test step.
+     * @param runnableStep The runnable step.
+     * @param stepMatcher  The step matcher.
+     * @param locale       The locale for the test data.
+     * @return A map of invoking arguments.
+     */
     protected Map<String, Argument> buildInvokingArguments(
             PlanNode modelStep,
             RunnableStep runnableStep,
@@ -323,11 +403,23 @@ public class RunnableBackend extends AbstractBackend {
         return invokingArguments;
     }
 
+    /**
+     * Gets the extra properties associated with this backend.
+     *
+     * @return The extra properties.
+     */
     @Override
     public Map<String, Object> getExtraProperties() {
         return extraProperties;
     }
 
+
+    /**
+     * The {@code ContextMap} class is a specialized map used to store
+     * extra properties associated with the backend.
+     * It prevents certain keys (like "results" and "id") from being
+     * used and allows cleaning them before putAll.
+     */
     public class ContextMap extends LinkedHashMap<String, Object> {
 
         public static final String RESULTS_PROP = "results";
@@ -349,9 +441,9 @@ public class RunnableBackend extends AbstractBackend {
 
         @Override
         public void putAll(Map<? extends String, ?> m) {
-            m.remove(ID_PROP);
-            m.remove(RESULTS_PROP);
-            super.putAll(m);
+            m.entrySet().stream()
+                    .filter(e -> !List.of(ID_PROP, RESULTS_PROP).contains(e.getKey()))
+                    .forEach(e -> put(e.getKey(), e.getValue()));
         }
     }
 }

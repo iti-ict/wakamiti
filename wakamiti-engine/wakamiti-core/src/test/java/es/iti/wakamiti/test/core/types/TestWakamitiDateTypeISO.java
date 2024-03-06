@@ -3,12 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.test.core.types;
 
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,27 +18,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
-
 
 public class TestWakamitiDateTypeISO {
 
     private static final WakamitiDataType<LocalDate> DATE_TYPE = new WakamitiDateDataType<>(
-        "date", LocalDate.class, true, false, LocalDate::from
+            "date", LocalDate.class, true, false, LocalDate::from
     );
     private static final WakamitiDataType<LocalTime> TIME_TYPE = new WakamitiDateDataType<>(
-        "time", LocalTime.class, false, true, LocalTime::from
+            "time", LocalTime.class, false, true, LocalTime::from
     );
     private static final WakamitiDataType<LocalDateTime> DATETIME_TYPE = new WakamitiDateDataType<>(
-        "datetime", LocalDateTime.class, true, true, LocalDateTime::from
+            "datetime", LocalDateTime.class, true, true, LocalDateTime::from
     );
 
-    private static List<Locale> testLocales = Arrays.asList(
-        Locale.CANADA, Locale.CHINESE, Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH, Locale.GERMAN
+    private static final List<Locale> testLocales = Arrays.asList(
+            Locale.CANADA, Locale.CHINESE, Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH, Locale.GERMAN
     );
 
     @Test
@@ -46,7 +41,7 @@ public class TestWakamitiDateTypeISO {
         for (Locale locale : testLocales) {
             Assertions.assertThat(DATE_TYPE.matcher(locale, "2018-05-30").matches()).isTrue();
             Assertions.assertThat(DATE_TYPE.parse(locale, "2018-05-30"))
-                .isEqualTo(LocalDate.of(2018, 5, 30));
+                    .isEqualTo(LocalDate.of(2018, 5, 30));
         }
     }
 
@@ -59,10 +54,10 @@ public class TestWakamitiDateTypeISO {
             Assertions.assertThat(TIME_TYPE.parse(locale, "17:35")).isEqualTo(LocalTime.of(17, 35));
             Assertions.assertThat(TIME_TYPE.matcher(locale, "17:35:29").matches()).isTrue();
             Assertions.assertThat(TIME_TYPE.parse(locale, "17:35:29"))
-                .isEqualTo(LocalTime.of(17, 35, 29));
+                    .isEqualTo(LocalTime.of(17, 35, 29));
             Assertions.assertThat(TIME_TYPE.matcher(locale, "17:35:29.743").matches()).isTrue();
             Assertions.assertThat(TIME_TYPE.parse(locale, "17:35:29.743"))
-                .isEqualTo(LocalTime.of(17, 35, 29, 743000000));
+                    .isEqualTo(LocalTime.of(17, 35, 29, 743000000));
         }
     }
 
@@ -72,18 +67,18 @@ public class TestWakamitiDateTypeISO {
         // ISO time should be accepted by any locale
         for (Locale locale : testLocales) {
             Assertions.assertThat(DATETIME_TYPE.matcher(locale, "2018-05-30T17:35").matches())
-                .isTrue();
+                    .isTrue();
             Assertions.assertThat(DATETIME_TYPE.parse(locale, "2018-05-30T17:35"))
-                .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35));
+                    .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35));
             Assertions.assertThat(DATETIME_TYPE.matcher(locale, "2018-05-30T17:35:29").matches())
-                .isTrue();
+                    .isTrue();
             Assertions.assertThat(DATETIME_TYPE.parse(locale, "2018-05-30T17:35:29"))
-                .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35, 29));
+                    .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35, 29));
             Assertions.assertThat(
-                DATETIME_TYPE.matcher(locale, "2018-05-30T17:35:29.743").matches()
+                    DATETIME_TYPE.matcher(locale, "2018-05-30T17:35:29.743").matches()
             ).isTrue();
             Assertions.assertThat(DATETIME_TYPE.parse(locale, "2018-05-30T17:35:29.743"))
-                .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35, 29, 743000000));
+                    .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35, 29, 743000000));
         }
     }
 

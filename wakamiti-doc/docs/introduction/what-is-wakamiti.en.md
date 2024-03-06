@@ -1,5 +1,5 @@
 ---
-title: ¿Qué es Wakamiti?
+title: What is Wakamiti?
 date: 2022-09-20
 slug: /en/introduction/what-is-wakamiti
 ---

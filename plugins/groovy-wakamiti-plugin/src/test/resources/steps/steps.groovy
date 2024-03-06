@@ -16,6 +16,7 @@ import es.iti.wakamiti.groovy.GroovyStepContributor
 @I18nResource("customs")
 class CustomSteps implements StepContributor {
 
+
     @Step(value = "number.addition", args = ["x:int", "y:int"])
     def whatever(Integer x, Integer y) {
         def result = x + y
@@ -35,4 +36,5 @@ class CustomSteps implements StepContributor {
     private def getContributor() {
         return Wakamiti.contributors().getContributor(GroovyStepContributor.class);
     }
+
 }

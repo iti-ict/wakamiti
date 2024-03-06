@@ -279,20 +279,21 @@ public class WakamitiContributors {
      */
     private void checkVersion(Contributor contributor) {
         String regex = "^(\\d+\\.\\d+)(\\.\\d+.*)?$";
-        double coreVersion = Optional.of(WakamitiAPI.instance().version())
+        Optional<Double> coreVersionOptional = Optional.ofNullable(WakamitiAPI.instance().version())
                 .map(version -> version.replaceAll(regex, "$1"))
-                .map(Double::valueOf)
-                .get();
-        Optional.ofNullable(contributor.extensionMetadata().version())
-                .map(version -> version.replaceAll(regex, "$1"))
-                .map(Double::valueOf)
-                .filter(version -> coreVersion < version)
-                .ifPresent(version -> {
-                    String message = String.format(
-                            "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
-                            contributor.extensionMetadata().name(), version, coreVersion);
-                    throw new UnsupportedClassVersionError(message);
-                });
+                .map(Double::valueOf);
+        coreVersionOptional.ifPresent(coreVersion ->
+                Optional.ofNullable(contributor.extensionMetadata().version())
+                        .map(version -> version.replaceAll(regex, "$1"))
+                        .map(Double::valueOf)
+                        .filter(version -> coreVersion < version)
+                        .ifPresent(version -> {
+                            String message = String.format(
+                                    "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
+                                    contributor.extensionMetadata().name(), version, coreVersion);
+                            throw new UnsupportedClassVersionError(message);
+                        })
+        );
     }
 
 }

@@ -1,6 +1,6 @@
 # language: es
 @definition
-Característica: Pruebas de propiedades dinámicas
+Característica: Pruebas de propiedades dinámicas 2
 
   @ID-1
   Escenario: Escenario tipo número

@@ -64,8 +64,7 @@ public class Argument {
      * @return The resolved value of the argument.
      */
     public final Object resolve() {
-        evaluated = doResolve();
-        return evaluated;
+        return (evaluated = doResolve());
     }
 
     /**

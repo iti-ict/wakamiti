@@ -3,12 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core.datatypes.assertion;
 
+
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.core.backend.ExpressionMatcher;
+import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -18,18 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 
-import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
-
-
-
+/**
+ * A provider for binary number assertions.
+ *
+ * @param <T> The type of numbers to compare.
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class BinaryNumberAssertProvider<T extends Comparable<T>> extends AbstractAssertProvider {
 
     public static final String EQUALS = "matcher.number.equals";
@@ -48,59 +47,84 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
     private final ThrowableFunction<Number, T> mapper;
     private final ThrowableFunction<Locale, NumberFormat> formatter;
 
-
-    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromNumber(
-        ThrowableFunction<Locale, String> numberRegexProvider,
-        ThrowableFunction<Number, T> converter
-    ) {
-        return new BinaryNumberAssertProvider<>(
-            numberRegexProvider,
-            converter,
-            locale -> WakamitiNumberDataType.decimalFormat(locale, false)
-        );
-    }
-
-
-    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromBigDecimal(
-        ThrowableFunction<Locale, String> numberRegexProvider,
-        ThrowableFunction<BigDecimal, T> converter
-    ) {
-        return new BinaryNumberAssertProvider<>(
-            numberRegexProvider,
-            WakamitiNumberDataType.castConverter(BigDecimal.class::cast, converter),
-            locale -> WakamitiNumberDataType.decimalFormat(locale, true)
-        );
-    }
-
-
+    /**
+     * Constructs a BinaryNumberAssertProvider.
+     *
+     * @param numberRegexProvider A function providing the number regex.
+     * @param mapper              A function to map the number.
+     * @param formatter           A function providing the number formatter.
+     */
     protected BinaryNumberAssertProvider(
-        ThrowableFunction<Locale, String> numberRegexProvider,
-        ThrowableFunction<Number, T> mapper,
-        ThrowableFunction<Locale, NumberFormat> formatter
+            ThrowableFunction<Locale, String> numberRegexProvider,
+            ThrowableFunction<Number, T> mapper,
+            ThrowableFunction<Locale, NumberFormat> formatter
     ) {
         this.numberRegexProvider = numberRegexProvider;
         this.mapper = mapper;
         this.formatter = formatter;
     }
 
+    /**
+     * Creates a BinaryNumberAssertProvider from a number.
+     *
+     * @param numberRegexProvider A function providing the number regex.
+     * @param converter           A function to convert the number to the desired type.
+     * @param <T>                 The type of numbers to compare.
+     * @return A BinaryNumberAssertProvider instance.
+     */
+    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromNumber(
+            ThrowableFunction<Locale, String> numberRegexProvider,
+            ThrowableFunction<Number, T> converter
+    ) {
+        return new BinaryNumberAssertProvider<>(
+                numberRegexProvider,
+                converter,
+                locale -> WakamitiNumberDataType.decimalFormat(locale, false)
+        );
+    }
 
+    /**
+     * Creates a BinaryNumberAssertProvider from a BigDecimal.
+     *
+     * @param numberRegexProvider A function providing the number regex.
+     * @param converter           A function to convert the BigDecimal to the desired type.
+     * @param <T>                 The type of numbers to compare.
+     * @return A BinaryNumberAssertProvider instance.
+     */
+    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromBigDecimal(
+            ThrowableFunction<Locale, String> numberRegexProvider,
+            ThrowableFunction<BigDecimal, T> converter
+    ) {
+        return new BinaryNumberAssertProvider<>(
+                numberRegexProvider,
+                WakamitiNumberDataType.castConverter(BigDecimal.class::cast, converter),
+                locale -> WakamitiNumberDataType.decimalFormat(locale, true)
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
-                expression,
-                Pattern.compile(
-                    translateBundleExpression(locale, expression, numberRegexProvider.apply(locale))
-                )
+                    expression,
+                    Pattern.compile(
+                            translateBundleExpression(locale, expression, numberRegexProvider.apply(locale))
+                    )
             );
         }
         return translatedExpressions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String[] expressions() {
-        return new String[] {
+        return new String[]{
                 EQUALS,
                 GREATER,
                 GREATER_EQUALS,
@@ -114,6 +138,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected LinkedList<String> regex(Locale locale) {
         return Arrays.stream(expressions())
@@ -122,12 +149,14 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Matcher<?> createMatcher(
-        Locale locale,
-        String key,
-        String value
+            Locale locale,
+            String key,
+            String value
     ) throws ParseException {
         Matcher<T> matcher = null;
         T numericValue = mapper.apply(formatter.apply(locale).parse(value));

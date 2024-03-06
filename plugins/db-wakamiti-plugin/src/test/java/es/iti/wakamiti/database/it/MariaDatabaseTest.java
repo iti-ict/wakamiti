@@ -9,7 +9,7 @@ package es.iti.wakamiti.database.it;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import org.junit.AfterClass;
@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.MariaDBContainer;
 
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
@@ -29,7 +30,9 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = "database.connection.url", value = "jdbc:mariadb://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),
         @Property(key = "database.connection.password", value = "pass"),
-        @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
+        @Property(key = DATABASE_HEALTHCHECK, value = "false"),
+        @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
+//        @Property(key = WakamitiConfiguration.TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class MariaDatabaseTest {
@@ -46,7 +49,7 @@ public class MariaDatabaseTest {
 
     @BeforeClass
     public static void setUp() {
-        System.out.print("Creating container. Please, be patient... ");
+        System.out.println("Creating container. Please, be patient... ");
         container.start();
         System.out.println(message("\rContainer [MariaDBContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));

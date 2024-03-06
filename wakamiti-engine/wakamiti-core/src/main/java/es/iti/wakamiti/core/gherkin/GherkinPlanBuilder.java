@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.gherkin;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.WakamitiConfiguration;
@@ -15,10 +16,12 @@ import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.parser.*;
 import imconfig.Configurable;
 import imconfig.Configuration;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.security.SecureRandom;
@@ -28,11 +31,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
+
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * GherkinPlanBuilder is a PlanBuilder extension for processing
+ * Gherkin documents and creating test plans.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin", extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin",
+        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
+
+    private static final Logger LOGGER = WakamitiLogger.forClass(GherkinPlanBuilder.class);
 
     public static final String GHERKIN_PROPERTY = "gherkinType";
     public static final String GHERKIN_TYPE_FEATURE = "feature";
@@ -47,20 +59,28 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     private Pattern idTagPattern = null;
     private boolean includeFiltered = false;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean acceptResourceType(ResourceType<?> resourceType) {
         return resourceType.contentType().equals(GherkinDocument.class);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(Configuration configuration) {
         configureFilterFromTagExpression(configuration);
         configureIdTagPattern(configuration);
     }
 
-
+    /**
+     * Configures the scenario filter based on the tag expression.
+     *
+     * @param configuration The configuration object.
+     */
     protected void configureFilterFromTagExpression(Configuration configuration) {
         String tagFilterExpression = configuration.get(WakamitiConfiguration.TAG_FILTER, String.class)
                 .orElse("");
@@ -72,7 +92,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .orElse(false);
     }
 
-
+    /**
+     * Configures the ID tag pattern.
+     *
+     * @param configuration The configuration object.
+     */
     protected void configureIdTagPattern(Configuration configuration) {
         this.idTagPattern = configuration.get(WakamitiConfiguration.ID_TAG_PATTERN, String.class)
                 .map(this::nullIfEmpty)
@@ -85,7 +109,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return string.isEmpty() ? null : string;
     }
 
-
+    /**
+     * Creates a test plan based on the provided resources.
+     *
+     * @param resources The list of resources.
+     * @return The root node of the test plan.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public PlanNodeBuilder createPlan(List<Resource<?>> resources) {
@@ -103,7 +132,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return plan;
     }
 
-
+    /**
+     * Creates a feature node for the given Gherkin document and its child scenarios.
+     *
+     * @param gherkinResource The Gherkin document resource.
+     * @return A feature node representing the feature and its scenarios in the test plan.
+     */
     protected PlanNodeBuilder createFeature(Resource<GherkinDocument> gherkinResource) {
         Feature feature = gherkinResource.content().getFeature();
         String location = gherkinResource.relativePath().replace(File.separator, "/");
@@ -135,7 +169,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return node;
     }
 
-
+    /**
+     * Creates a scenario node for the given Gherkin feature, scenario, and its steps.
+     *
+     * @param feature    The Gherkin feature.
+     * @param scenario   The Gherkin scenario.
+     * @param location   The location of the scenario in the source file.
+     * @param parentNode The parent node in the test plan hierarchy.
+     * @return A scenario node for the test plan.
+     */
     protected PlanNodeBuilder createScenario(
             Feature feature,
             Scenario scenario,
@@ -155,7 +197,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return node;
     }
 
-
+    /**
+     * Creates a scenario outline node for the given Gherkin feature, scenario outline, and its examples.
+     *
+     * @param feature         The Gherkin feature.
+     * @param scenarioOutline The Gherkin scenario outline.
+     * @param location        The location of the scenario outline in the source file.
+     * @param parentNode      The parent node in the test plan hierarchy.
+     * @return A scenario outline node for the test plan.
+     */
     protected PlanNodeBuilder createScenarioOutline(
             Feature feature,
             ScenarioOutline scenarioOutline,
@@ -178,7 +228,17 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return node;
     }
 
-
+    /**
+     * Creates a list of scenario nodes based on the examples of a scenario outline.
+     *
+     * @param scenarioOutline     The Gherkin scenario outline.
+     * @param examples            The examples associated with the scenario outline.
+     * @param scenarioOutlineNode The parent node representing the scenario outline in the test plan.
+     * @param backgroundSteps     Optional background steps to be included in each scenario.
+     * @param language            The language of the scenarios.
+     * @param location            The location of the scenario outline in the source file.
+     * @return A list of scenario nodes generated from the examples.
+     */
     protected List<PlanNodeBuilder> createScenariosFromExamples(
             ScenarioOutline scenarioOutline,
             Examples examples,
@@ -243,7 +303,14 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return output;
     }
 
-
+    /**
+     * Creates a new feature node for the given Gherkin feature.
+     *
+     * @param feature  The Gherkin feature.
+     * @param language The language of the feature.
+     * @param location The location of the feature in the source file.
+     * @return A new feature node for the test plan.
+     */
     protected PlanNodeBuilder newFeatureNode(
             Feature feature,
             String language,
@@ -263,7 +330,14 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_FEATURE);
     }
 
-
+    /**
+     * Creates a new scenario node for the given Gherkin scenario.
+     *
+     * @param scenario   The Gherkin scenario.
+     * @param location   The location of the scenario in the source file.
+     * @param parentNode The parent node in the test plan hierarchy.
+     * @return A new scenario node for the test plan.
+     */
     protected PlanNodeBuilder newScenarioNode(
             Scenario scenario,
             String location,
@@ -284,7 +358,14 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 ;
     }
 
-
+    /**
+     * Creates a new scenario outline node for the given Gherkin scenario outline.
+     *
+     * @param scenarioOutline The Gherkin scenario outline.
+     * @param location        The location of the scenario outline in the source file.
+     * @param parentNode      The parent node in the test plan hierarchy.
+     * @return A new scenario outline node for the test plan.
+     */
     protected PlanNodeBuilder newScenarioOutlineNode(
             ScenarioOutline scenarioOutline,
             String location,
@@ -305,7 +386,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO_OUTLINE);
     }
 
-
+    /**
+     * Creates a new step node for the given Gherkin step.
+     *
+     * @param step       The Gherkin step.
+     * @param location   The location of the step in the source file.
+     * @param language   The language of the step.
+     * @param parentNode The parent node in the test plan hierarchy.
+     * @return A new step node for the test plan.
+     */
     protected PlanNodeBuilder newStepNode(
             Step step,
             String location,
@@ -323,7 +412,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_STEP);
     }
 
-
+    /**
+     * Retrieves the background from the given Gherkin feature.
+     *
+     * @param feature The Gherkin feature.
+     * @return An optional containing the background if present, otherwise empty.
+     */
     protected Optional<Background> getBackground(Feature feature) {
         Background background = null;
         if (!feature.getChildren().isEmpty()
@@ -333,7 +427,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return Optional.ofNullable(background);
     }
 
-
+    /**
+     * Creates the plan node builder for the background steps of the given Gherkin feature.
+     *
+     * @param feature    The Gherkin feature.
+     * @param location   The location of the feature.
+     * @param parentNode The parent node builder.
+     * @return An optional containing the plan node builder for background steps if present,
+     * otherwise empty.
+     */
     protected Optional<PlanNodeBuilder> createBackgroundSteps(
             Feature feature,
             String location,
@@ -358,7 +460,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return Optional.empty();
     }
 
-
+    /**
+     * Creates a step node for the given Gherkin step.
+     *
+     * @param step       The Gherkin step.
+     * @param location   The location of the step in the source file.
+     * @param language   The language of the step.
+     * @param parentNode The parent node in the test plan hierarchy.
+     * @return A step node for the test plan.
+     */
     protected PlanNodeBuilder createStep(
             Step step,
             String location,
@@ -383,9 +493,14 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return node;
     }
 
-
-    /*
-     * Scenario outline variables follow the pattern: <name>
+    /**
+     * Replaces scenario outline variables (with pattern {@code <name>})
+     * in the given outline steps with the provided values.
+     *
+     * @param outlineSteps The list of outline steps.
+     * @param variables    The list of variables to replace.
+     * @param values       The list of values to use for replacement.
+     * @return A list of plan node builders with replaced variables.
      */
     private List<PlanNodeBuilder> replaceOutlineVariables(
             ArrayList<PlanNodeBuilder> outlineSteps,
@@ -405,6 +520,14 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return exampleSteps;
     }
 
+    /**
+     * Replaces scenario outline variables in the given string with the provided values.
+     *
+     * @param string    The string in which to replace variables.
+     * @param variables The list of variables to replace.
+     * @param values    The list of values to use for replacement.
+     * @return The string with replaced variables.
+     */
     private String replaceOutlineVariables(String string, List<String> variables, List<String> values) {
         String result = string;
         for (int i = 0; i < variables.size(); i++) {
@@ -415,7 +538,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return result;
     }
 
-
+    /**
+     * Converts a list of Examples into a DataTable.
+     *
+     * @param examplesList The list of Examples to convert.
+     * @return A DataTable representing the Examples, or null if the list is empty or null.
+     */
     private DataTable examplesAsDataTable(List<Examples> examplesList) {
         if (examplesList == null || examplesList.isEmpty()) {
             return null;
@@ -436,7 +564,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return new DataTable(dataTable);
     }
 
-
+    /**
+     * Converts a Gherkin DataTable to a two-dimensional array.
+     *
+     * @param table The Gherkin DataTable to convert.
+     * @return A two-dimensional array representing the Gherkin DataTable.
+     */
     private String[][] toArray(es.iti.wakamiti.core.gherkin.parser.DataTable table) {
         TableRow header = table.getRows().get(0);
         String[][] array = new String[table.getRows().size()][header.getCells().size()];
@@ -450,7 +583,12 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return array;
     }
 
-
+    /**
+     * Splits and trims a string into a list of lines.
+     *
+     * @param string The string to split and trim.
+     * @return A list of lines obtained by splitting and trimming the input string.
+     */
     private List<String> splitAndTrim(String string) {
         if (string == null) {
             return Collections.emptyList();
@@ -462,18 +600,35 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return lines;
     }
 
-
+    /**
+     * Null-safe trim string.
+     *
+     * @param string The string to trim.
+     * @return The trimmed string, or null if the input string is null.
+     */
     private String trim(String string) {
         return string == null ? null : string.trim();
     }
 
-
+    /**
+     * Extracts and returns a list of tag names from the provided list of tags.
+     *
+     * @param tags The list of tags.
+     * @return A list of tag names.
+     */
     private List<String> tags(List<Tag> tags) {
         return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct()
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-
+    /**
+     * Combines parent tags, provided tags, and excludes ignored tags to create a set of unique tags.
+     *
+     * @param parentTags  The set of parent tags.
+     * @param tags        The collection of tags to be included.
+     * @param ignoredTags The tags to be excluded.
+     * @return A set of unique tags.
+     */
     private Set<String> tags(Set<String> parentTags, Collection<Tag> tags, String... ignoredTags) {
         List<String> ignoredTagList = Arrays.asList(ignoredTags);
         Set<String> tagList = tags.stream()
@@ -485,13 +640,27 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return tagList;
     }
 
-
+    /**
+     * Generates a source string based on the file and location information.
+     *
+     * @param file     The file name or path.
+     * @param location The location information.
+     * @return A formatted source string.
+     */
     protected String source(String file, Location location) {
         return file.endsWith("]") ? file
                 : file + "[" + location.getLine() + "," + location.getColumn() + "]";
     }
 
-
+    /**
+     * Generates an ID based on tags, node name, and suffix.
+     *
+     * @param tags     The list of tags.
+     * @param nodeName The name of the node.
+     * @param suffix   The suffix to append.
+     * @return The generated ID.
+     * @throws WakamitiException If more than one ID tag is found in the element.
+     */
     protected String id(List<Tag> tags, String nodeName, String suffix) {
         String idTag = null;
         if (idTagPattern != null) {
@@ -511,12 +680,23 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return idTag + suffix;
     }
 
-
+    /**
+     * Extracts values from the cells of a table row.
+     *
+     * @param tableRow The table row.
+     * @return A list of cell values.
+     */
     private List<String> tableCells(TableRow tableRow) {
         return tableRow.getCells().stream().map(TableCell::getValue).collect(Collectors.toList());
     }
 
-
+    /**
+     * Extracts properties from the comments of a node.
+     *
+     * @param node                The node containing comments.
+     * @param inheritedProperties The properties inherited from the parent.
+     * @return A map of properties extracted from comments.
+     */
     private Map<String, String> propertiesFromComments(
             Object node,
             Map<String, String> inheritedProperties

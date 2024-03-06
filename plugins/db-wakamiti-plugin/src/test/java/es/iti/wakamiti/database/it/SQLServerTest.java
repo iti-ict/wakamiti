@@ -9,7 +9,7 @@ package es.iti.wakamiti.database.it;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import org.junit.AfterClass;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
@@ -36,6 +37,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
         @Property(key = "database.connection.username", value = "sa"),
         @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
+        @Property(key = DATABASE_HEALTHCHECK, value = "false"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
 })
 @RunWith(WakamitiJUnitRunner.class)
@@ -55,7 +57,7 @@ public class SQLServerTest {
 
     @BeforeClass
     public static void setUp() throws IOException {
-        System.out.print("Creating container. Please, be patient... ");
+        System.out.println("Creating container. Please, be patient... ");
         container.start();
         System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));

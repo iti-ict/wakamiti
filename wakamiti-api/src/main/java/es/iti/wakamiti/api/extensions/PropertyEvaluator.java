@@ -91,7 +91,7 @@ public abstract class PropertyEvaluator implements Contributor {
             String property = matcher.group();
             String evaluation = evalProperty(property, matcher);
             evaluations.putIfAbsent(property, evaluation);
-            value = value.replaceFirst(Pattern.quote(property), evaluation);
+            value = value.replaceFirst(Pattern.quote(property), evaluation.replace("$", "\\$"));
         }
         return Result.of(evaluations, value);
     }

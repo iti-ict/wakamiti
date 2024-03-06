@@ -3,15 +3,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+/**
+ * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ */
 package es.iti.wakamiti.core.junit;
 
 
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiSkippedException;
 import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import imconfig.Configuration;
@@ -20,6 +26,7 @@ import imconfig.ConfigurationFactory;
 import org.junit.*;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
@@ -28,21 +35,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
+
+@Deprecated(since = "2.4.0", forRemoval = true)
 public class WakamitiJUnitRunner extends Runner {
-
-    /**
-     * Configuration property to set if the steps are treated as tests. False by
-     * default
-     */
-    public static final String TREAT_STEPS_AS_TESTS = "junit.treatStepsAsTests";
 
     protected static final Logger LOGGER = Wakamiti.LOGGER;
     protected static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
@@ -96,7 +98,7 @@ public class WakamitiJUnitRunner extends Runner {
 
         for (JUnitPlanNodeRunner child : children) {
             try {
-                child.runNode(notifier);
+                Result result = child.runNode(notifier);
             } catch (Exception e) {
                 LOGGER.error(e.toString(), e);
             }
@@ -132,7 +134,6 @@ public class WakamitiJUnitRunner extends Runner {
     }
 
     protected List<JUnitPlanNodeRunner> createChildren() {
-
         BackendFactory backendFactory = wakamiti.newBackendFactory();
         return getPlan().children().map(node -> {
             Configuration featureConfiguration = configuration.append(
@@ -166,9 +167,9 @@ public class WakamitiJUnitRunner extends Runner {
                 if (!Modifier.isStatic(method.getModifiers())) {
                     throwInitializationError(method, annotation, "should be static");
                 }
-                boolean setUpConfig = (
-                        method.getParameterCount() == 1 && method.getParameterTypes()[0] == Configuration.class && method.getReturnType() == Configuration.class
-                );
+                boolean setUpConfig = method.getParameterCount() == 1
+                        && method.getParameterTypes()[0] == Configuration.class
+                        && method.getReturnType() == Configuration.class;
                 if (method.getParameterCount() > 0 && !setUpConfig) {
                     throwInitializationError(method, annotation, "should have no parameter");
                 }

@@ -38,24 +38,14 @@ public class ResourceLoaderTest {
         assertFile(discoveredResources.get(1), "file2.txt");
         assertFile(discoveredResources.get(2), "subfolder/file4.txt");
 
-
-        for (Resource<?> discoveredResource : discoveredResources) {
-            System.out.println(
-                    discoveredResource.relativePath() + " || " + discoveredResource.absolutePath()
-            );
-            System.out.println("------------------");
-            String content = (String) discoveredResource.content();
-            System.out.println(content);
-
-            System.out.println("------------------");
-        }
-
+        assertEquals(discoveredResources.get(0).content().toString(), "Content of File 1");
+        assertEquals(discoveredResources.get(1).content().toString(), "Content of File 2");
+        assertEquals(discoveredResources.get(2).content().toString(), "Content of File 4");
     }
 
     private void assertFile(Resource<?> resource, String relativePath) {
         assertEquals(resource.relativePath(), new File(relativePath).getPath());
         assertTrue(resource.absolutePath().endsWith(new File("discovery/" + relativePath).getPath()));
-
     }
 
 }

@@ -1,5 +1,5 @@
 # language: es
-Característica: Pruebas de propiedades dinámicas
+Característica: Pruebas de propiedades dinámicas 1
 
   @ID-1
   Escenario: Escenario tipo número

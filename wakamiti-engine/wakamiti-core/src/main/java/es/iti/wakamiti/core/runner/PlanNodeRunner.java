@@ -5,26 +5,33 @@
  */
 package es.iti.wakamiti.core.runner;
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.Pair;
-import imconfig.Configuration;
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
+import imconfig.Configuration;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * The PlanNodeRunner class is responsible for executing a given
+ * PlanNode and managing its lifecycle.
+ * It provides methods to run a node, handle pre- and post-execution
+ * actions, and create child runners for nested nodes.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeRunner {
 
@@ -36,6 +43,7 @@ public class PlanNodeRunner {
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
     private State state;
+
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -52,7 +60,6 @@ public class PlanNodeRunner {
         this.logger = logger;
     }
 
-
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -62,6 +69,11 @@ public class PlanNodeRunner {
         this(node, configuration, backendFactory, Optional.empty(), logger);
     }
 
+    /**
+     * Gets the list of child runners for this PlanNodeRunner.
+     *
+     * @return The list of child runners.
+     */
     public List<PlanNodeRunner> getChildren() {
         if (children == null) {
             children = createChildren();
@@ -69,6 +81,11 @@ public class PlanNodeRunner {
         return children;
     }
 
+    /**
+     * Gets the unique identifier of this PlanNodeRunner.
+     *
+     * @return The unique identifier.
+     */
     public String getUniqueId() {
         return uniqueId;
     }
@@ -92,6 +109,12 @@ public class PlanNodeRunner {
         return logger;
     }
 
+    /**
+     * Runs the associated PlanNode and returns the result.
+     *
+     * @return The result of the node execution.
+     * @throws IllegalStateException If the run() method is invoked more than once.
+     */
     protected Result runNode() {
         if (state != State.PREPARED) {
             throw new IllegalStateException("run() method can only be invoked once");
@@ -101,10 +124,12 @@ public class PlanNodeRunner {
         Wakamiti.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
         if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
+            result = Result.SKIPPED;
             markFilteredTestCase(node);
         } else if (node.nodeType() == NodeType.TEST_CASE
                 && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
-            doNotImplemented(node, Result.NOT_IMPLEMENTED);
+            result = Result.NOT_IMPLEMENTED;
+            doNotImplemented(node, result);
         } else if (!getChildren().isEmpty()) {
             Stream<Pair<Instant, Result>> results = Stream.empty();
             if (node.nodeType() == NodeType.TEST_CASE) {
@@ -126,8 +151,11 @@ public class PlanNodeRunner {
                 }
             }
 
-            results.max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
-                    .ifPresent(p -> node.prepareExecution().markFinished(p.key(), p.value()));
+            Pair<Instant, Result> aux = results
+                    .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
+                    .orElse(new Pair<>(Instant.now(), Result.FAILED));
+            result = aux.value();
+            node.prepareExecution().markFinished(aux.key(), result);
         } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             result = runStep();
         }
@@ -136,14 +164,11 @@ public class PlanNodeRunner {
         return result;
     }
 
-
     protected Stream<Pair<Instant, Result>> runChildren() {
         return children.stream()
                 .map(PlanNodeRunner::runNode)
                 .filter(Objects::nonNull)
-                .map(result -> new Pair<>(Instant.now(), result))
-                /*.max(Comparator.naturalOrder())
-                .ifPresent(r -> node.prepareExecution().markFinished(Instant.now(), r))*/;
+                .map(result -> new Pair<>(Instant.now(), result));
     }
 
     protected Result runStep() {
@@ -165,13 +190,11 @@ public class PlanNodeRunner {
         node.prepareExecution().markFinished(startInstant, result);
     }
 
-
     private void markFilteredTestCase(PlanNode node) {
         Instant startInstant = Instant.now();
         node.prepareExecution().markStarted(startInstant);
         node.prepareExecution().markFinished(startInstant, Result.SKIPPED);
     }
-
 
     protected List<PlanNodeRunner> createChildren() {
         return node.children()
@@ -203,7 +226,6 @@ public class PlanNodeRunner {
     protected void stepPostExecution(PlanNode step) {
         logger.logStepResult(step);
     }
-
 
     protected enum State {
         PREPARED, RUNNING, FINISHED

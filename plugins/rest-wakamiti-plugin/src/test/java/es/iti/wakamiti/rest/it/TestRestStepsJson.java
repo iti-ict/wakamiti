@@ -14,7 +14,7 @@ import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import es.iti.wakamiti.rest.RestConfigContributor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

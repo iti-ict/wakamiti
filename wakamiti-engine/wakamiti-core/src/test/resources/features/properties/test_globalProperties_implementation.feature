@@ -1,6 +1,6 @@
 # language: es
 @implementation
-Característica: Pruebas de propiedades dinámicas
+Característica: Pruebas de propiedades dinámicas 2
 
   # redefinition.stepMap: 30
   @ID-1

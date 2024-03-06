@@ -5,14 +5,17 @@
  */
 package es.iti.wakamiti.test.gherkin;
 
-import imconfig.Configuration;
-import imconfig.ConfigurationException;
+
 import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
+import imconfig.Configuration;
+import imconfig.ConfigurationException;
 import org.json.JSONException;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -21,20 +24,20 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 public class TestPlanFactory {
 
+    private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.test");
 
     private void assertFilePlan(
             String filename,
@@ -85,7 +88,9 @@ public class TestPlanFactory {
                 .appendFromProperties(properties);
         Wakamiti wakamiti = Wakamiti.instance();
         PlanNode testPlan = wakamiti.createPlanFromConfiguration(configuration);
-        System.out.println(printPlan(testPlan, new StringBuilder(), 0));
+        if (LOGGER.isDebugEnabled()) {
+            System.out.println(printPlan(testPlan, new StringBuilder(), 0));
+        }
         wakamiti.writeOutputFile(testPlan, configuration);
 
         assertThat(testPlan.numDescendants(NodeType.TEST_CASE)).isEqualTo(testCases);
@@ -105,16 +110,27 @@ public class TestPlanFactory {
             String path,
             String resultFilename
     ) throws ConfigurationException {
+        return runPlan(path, resultFilename, Configuration.factory().empty());
+    }
+
+    private PlanNode runPlan(
+            String path,
+            String resultFilename,
+            Configuration extraConfig
+    ) {
         Properties properties = new Properties();
         properties.put(WakamitiConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(WakamitiConfiguration.RESOURCE_PATH, path);
         properties.put(WakamitiConfiguration.OUTPUT_FILE_PATH, "target/" + Path.of(resultFilename).getFileName());
         Configuration configuration = Wakamiti.defaultConfiguration()
-                .appendFromProperties(properties);
+                .appendFromProperties(properties)
+                .append(extraConfig);
         Wakamiti wakamiti = Wakamiti.instance();
         PlanNode testPlan = wakamiti.createPlanFromConfiguration(configuration);
         testPlan = wakamiti.executePlan(testPlan, configuration);
-        System.out.println(printPlan(testPlan, new StringBuilder(), 0));
+        if (LOGGER.isDebugEnabled()) {
+            System.out.println(printPlan(testPlan, new StringBuilder(), 0));
+        }
         return testPlan;
     }
 
@@ -184,7 +200,7 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void testNotImplemented() throws IOException {
+    public void testNotImplemented() {
         PlanNode plan = runPlan(
                 "src/test/resources/features/notImplemented",
                 "notImplemented_plan.json"
@@ -215,6 +231,30 @@ public class TestPlanFactory {
         );
 
         assertThat(plan.result().isPresent()).isFalse();
+    }
+
+    @Test
+    public void testStrictID() {
+        PlanNode plan = runPlan(
+                "src/test/resources/features/notImplemented/definition.feature",
+                "strictID.json",
+                Configuration.factory().fromPairs(
+                        STRICT_TEST_CASE_ID, "true"
+                )
+        );
+
+        assertThat(plan.result().isPresent()).isTrue();
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testStrictIDWhenError() {
+        runPlan(
+                "src/test/resources/features/strictID.feature",
+                "strictID_error.json",
+                Configuration.factory().fromPairs(
+                        STRICT_TEST_CASE_ID, "true"
+                )
+        );
     }
 
     private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {

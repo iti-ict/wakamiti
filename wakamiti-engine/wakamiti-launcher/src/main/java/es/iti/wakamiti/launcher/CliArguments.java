@@ -69,7 +69,7 @@ public class CliArguments {
     }
 
 
-    public CliArguments parse(String[] args) throws ParseException {
+    public CliArguments parse(String... args) throws ParseException {
         CommandLineParser cliParser = new DefaultParser();
         this.cliCommand = cliParser.parse(cliOptions, args, false);
         return this;

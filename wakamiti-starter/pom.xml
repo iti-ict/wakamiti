@@ -144,12 +144,6 @@
                 <version>2.18.1</version>
                 <configuration>
                     <argLine>${surefireJacocoAgent} -Dfile.encoding=UTF-8</argLine>
-                    <systemProperties>
-                        <property>
-                            <name>version</name>
-                            <value>${project.version}</value>
-                        </property>
-                    </systemProperties>
                 </configuration>
             </plugin>
             <!-- Failsafe with JaCoCo agent -->
@@ -164,12 +158,6 @@
                         </goals>
                         <configuration>
                             <argLine>${failsafeJacocoAgent} -Dfile.encoding=UTF-8</argLine>
-                            <systemProperties>
-                                <property>
-                                    <name>version</name>
-                                    <value>${project.version}</value>
-                                </property>
-                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>

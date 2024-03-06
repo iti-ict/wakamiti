@@ -37,13 +37,8 @@ import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 public class XMLHelper implements ContentTypeHelper {
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
-    private final XmlPathConfig config = XmlPathConfig.xmlPathConfig().defaultObjectDeserializer(new XmlPathObjectDeserializer() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public Object deserialize(ObjectDeserializationContext ctx) {
-            return xml(ctx.getDataToDeserialize().asString());
-        }
-    });
+    private final XmlPathConfig config = XmlPathConfig.xmlPathConfig()
+            .defaultObjectDeserializer(new XmlPathXmlObjectDeserializer());
 
     @Override
     public ContentType contentType() {
@@ -80,4 +75,12 @@ public class XMLHelper implements ContentTypeHelper {
         MatcherAssert.assertThat(content, matchesXsd(expectedSchema));
     }
 
+    @SuppressWarnings("unchecked")
+    static class XmlPathXmlObjectDeserializer implements XmlPathObjectDeserializer {
+
+        @Override
+        public XmlObject deserialize(ObjectDeserializationContext ctx) {
+            return xml(ctx.getDataToDeserialize().asString());
+        }
+    }
 }
