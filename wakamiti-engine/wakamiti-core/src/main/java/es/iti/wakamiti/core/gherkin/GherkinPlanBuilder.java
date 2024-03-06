@@ -94,6 +94,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         List<Resource<GherkinDocument>> gherkinResources = resources.stream()
                 .map(x -> (Resource<GherkinDocument>) x).collect(Collectors.toList());
         for (Resource<GherkinDocument> gherkinResource : gherkinResources) {
+            if (isNull(gherkinResource.content().getFeature())) {
+                LOGGER.warn("File '{}' is empty. It will be ignored.", gherkinResource.absolutePath());
+                continue;
+            }
             plan.addChildIf(createFeature(gherkinResource), PlanNodeBuilder::hasChildren);
         }
         return plan;

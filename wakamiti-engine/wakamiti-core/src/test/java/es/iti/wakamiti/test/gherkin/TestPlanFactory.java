@@ -197,6 +197,26 @@ public class TestPlanFactory {
         assertThat(plan.finishInstant().isPresent()).isTrue();
     }
 
+    @Test
+    public void testEmpty() {
+        PlanNode plan = runPlan(
+                "src/test/resources/features/empty.feature",
+                "empty_plan.json"
+        );
+
+        assertThat(plan.result().isPresent()).isFalse();
+    }
+
+    @Test
+    public void testWithoutChildren() {
+        PlanNode plan = runPlan(
+                "src/test/resources/features/noChildren.feature",
+                "empty_plan.json"
+        );
+
+        assertThat(plan.result().isPresent()).isFalse();
+    }
+
     private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
         StringBuilder leading = new StringBuilder();
         for (int i = 0; i < level; i++) {
