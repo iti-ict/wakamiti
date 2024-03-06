@@ -1,5 +1,5 @@
 ---
-title: ¿Qué es Wakamiti?
+title: What is Wakamiti?
 date: 2022-09-20
 slug: /en/introduction/what-is-wakamiti
 ---
@@ -16,7 +16,7 @@ Just like Cucumber, you can define your tests using natural and human-readable l
 Gherkin *grammar*. However, with Wakamiti you do not bind each step to your test code; instead, steps are bound to 
 reusable, common-purpose code provided by external plugins.
 
-Thus, Wakamiti turns out to be a convenient tool if your aim is test your system via standardized protocols such as REST
+Thus, Wakamiti turns out to be a convenient tool if your aim is to test your system via standardized protocols such as REST
 web services or JDBC connection, which tend to be a great deal of percentage of the tests written for most applications.
 Also, no test code is required to be written, so even non-programmers can define and execute their own tests.
 
