@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
     private static final String PREFIX = "fileUploader";
-    private static final String ENABLE = "enable";
+    private static final String ENABLED = "enabled";
     private static final String HOST = "host";
     private static final String USERNAME = "credentials.username";
     private static final String PASSWORD = "credentials.password";
@@ -28,8 +28,8 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
-            ENABLE,"false",
-            PROTOCOL,"ftps"
+            ENABLED, "true",
+            PROTOCOL, "ftps"
         );
     }
 
@@ -49,8 +49,12 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     private void configure(AbstractFilesUploader filesUploader, Configuration configuration) {
         Configuration global = configuration.inner(PREFIX);
         Configuration spec = global.inner(filesUploader.category());
+        if (spec.isEmpty()) {
+            filesUploader.setEnabled(false);
+            return;
+        }
         for (Configuration conf : Arrays.asList(global,spec)) {
-            conf.get(ENABLE, Boolean.class).ifPresent(filesUploader::setEnable);
+            conf.get(ENABLED, Boolean.class).ifPresent(filesUploader::setEnabled);
             conf.get(HOST, String.class).ifPresent(filesUploader::setHost);
             conf.get(USERNAME, String.class).ifPresent(filesUploader::setUsername);
             conf.get(PASSWORD, String.class).ifPresent(filesUploader::setPassword);
@@ -59,7 +63,5 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
             conf.get(IDENTITY, String.class).ifPresent(filesUploader::setIdentity);
         }
     }
-
-
 
 }
