@@ -32,6 +32,7 @@
     <inceptionYear>2020</inceptionYear>
 
     <properties>
+        <wakamiti.launcher.path>${parent.basedir}/wakamiti-launcher</wakamiti.launcher.path>
         <io.fabric8.version>0.43.4</io.fabric8.version>
     </properties>
 
