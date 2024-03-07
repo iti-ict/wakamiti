@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 @AnnotatedConfiguration({
         @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/dummy.feature"),
-        @Property(key = "fileUploader.enabled", value = "true"),
         @Property(key = "fileUploader.host", value = "localhost:1234"),
         @Property(key = "fileUploader.protocol", value = "ftp"),
         @Property(key = "fileUploader.credentials.username", value = "test"),

@@ -1,17 +1,19 @@
 package es.iti.wakamiti.fileuploader;
 
-import imconfig.Configuration;
-import imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
+import imconfig.Configuration;
+import imconfig.Configurer;
 
 import java.util.Arrays;
 
+import static java.lang.String.format;
+
 @Extension(
-        provider =  "es.iti.wakamiti",
+        provider = "es.iti.wakamiti",
         name = "file-uploader-configurator",
         version = "2.4",
-        extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
@@ -28,8 +30,8 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
-            ENABLED, "true",
-            PROTOCOL, "ftps"
+                format("%s.%s", PREFIX, ENABLED), "true",
+                format("%s.%s", PREFIX, PROTOCOL), "ftps"
         );
     }
 
@@ -53,7 +55,7 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
             filesUploader.setEnabled(false);
             return;
         }
-        for (Configuration conf : Arrays.asList(global,spec)) {
+        for (Configuration conf : Arrays.asList(global, spec)) {
             conf.get(ENABLED, Boolean.class).ifPresent(filesUploader::setEnabled);
             conf.get(HOST, String.class).ifPresent(filesUploader::setHost);
             conf.get(USERNAME, String.class).ifPresent(filesUploader::setUsername);
