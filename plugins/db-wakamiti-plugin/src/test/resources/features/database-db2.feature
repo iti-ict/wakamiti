@@ -1,79 +1,80 @@
-Feature: Testing database steps
+# language: es
+Característica: Testing database steps
 
 
-  Scenario: Test 1
-    * At finish, the table client is cleared
-    * At finish, the table city is cleared
-    When the following users are inserted into the database table client:
+  Escenario: Test 1
+    * Al finalizar, se limpia la tabla client
+    * Al finalizar, se limpia la tabla city
+    Cuando se insertan los siguientes usuarios en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
-    Then the database table client is not empty
-    And the number of users having active = '1' in the database table client is 2
-    And the number of users satisfying the following SQL clause in the table client is 2:
+    Entonces la tabla client no está vacía
+    Y el número de usuarios con active = '1' en la tabla client es 2
+    Y el número de usuarios que satisfacen la siguiente cláusula SQL en la tabla client es 2:
       """
       BIRTH_DATE > date '2000-01-01'
       """
-    And the database table city is empty
-    And the following record exists in the table client:
+    Y la tabla city está vacía
+    Y el siguiente registro existe en la tabla client:
       | first_name | second_name | birth_date |
       | John       | Smith       | 2000-10-30 |
 
 
-  Scenario: Test 2
-    * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed
-    When the SQL script file '${data.dir}/db/dml.sql' is executed
-    And the SQL procedure file '${data.dir}/db/procedure-db2.sql' is executed
-    Then the following record does not exist in the table client:
+  Escenario: Test 2
+    * Al finalizar, se ejecuta el script SQL del fichero '${data.dir}/db/clean.sql'
+    Cuando se ejecuta el script SQL del fichero '${data.dir}/db/dml.sql'
+    Y se ejecuta el procedimiento del fichero '${data.dir}/db/procedure-db2.sql'
+    Entonces el siguiente registro no existe en la tabla client:
       | id | first_name | second_name | active  | birth_date |
       | 1  | Rosa       | Melano      | 1       | <null>     |
-    But the following records exist in the table client:
+    Pero los siguientes registros existen en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
       | 2  | Ester      | Colero      | 0      | 2000-01-02 |
-    And the following records exist in the table city:
+    Y los siguientes registros existen en la tabla city:
       | id | name     | latitude  | longitude |
       | 1  | Valencia | 39.469906 | -0.376288 |
       | 2  | Madrid   | 40.416775 | -3.703790 |
-    And the following records exist in the table client_city:
+    Y los siguientes registros existen en la tabla client_city:
       | CLIENTID | CITYID |
       | 1        | 1      |
       | 2        | 2      |
       | 2        | 1      |
-    And the user identified by '1' exists in the table client
+    Y el usuario identificado por '1' existe en la tabla client
 
 
-  Scenario: Test 3
-    * At finish, the table client is cleared using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database using 'db' connection
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client using 'db' connection
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client using 'db' connection
-    * At finish, the following users are inserted into the table client using 'db' connection:
+  Escenario: Test 3
+    * Al finalizar, se limpia la tabla client usando la conexión 'db'
+    * Al finalizar, se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos usando la conexión 'db'
+    * Al finalizar, se elimina el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos usando la conexión 'db'
+    * Al finalizar, se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client usando la conexión 'db'
+    * Al finalizar, se elimina el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client usando la conexión 'db'
+    * Al finalizar, se insertan los siguientes usuarios en la tabla client usando la conexión 'db':
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
-    * At finish, the following user is deleted from the table client using 'db' connection:
+    * Al finalizar, se elimina el siguiente usuario de la tabla client usando la conexión 'db':
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
-    * At finish, the user having first_name = 'Annie' is deleted from the table client using 'db' connection
-    * At finish, the user satisfying the following SQL clause is deleted from the table client using 'db' connection:
+    * Al finalizar, se elimina el usuario con first_name = 'Annie' de la tabla client usando la conexión 'db'
+    * Al finalizar, se eliminan los usuarios que satisfacen la siguiente cláusula SQL de la tabla client usando la conexión 'db':
       """
       BIRTH_DATE < date '2000-01-01'
       """
-    * At finish, the following SQL script is executed using 'db' connection:
+    * Al finalizar, se ejecuta el siguiente script SQL usando la conexión 'db':
       """
       DELETE FROM CLIENT_CITY;
       DELETE FROM CITY;
       DELETE FROM CLIENT;
       DELETE FROM OTHER;
       """
-    Given the database connection URL '${database.connection.url}' using the user '${database.connection.username}' and the password '${database.connection.password}' as 'db'
-    And the 'db' connection is used
-    When the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
-    And the following SQL procedure is executed:
+    Dada la URL de conexión a BBDD '${database.connection.url}' usando el usuario '${database.connection.username}' y la contraseña '${database.connection.password}' como 'db'
+    Y que se usa la conexión 'db'
+    Cuando se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client
+    Y se ejecuta el siguiente procedimiento:
       """
       declare l_c CURSOR;
       BEGIN
@@ -81,127 +82,127 @@ Feature: Testing database steps
           open l_c for SELECT * FROM CLIENT WHERE ID = 1;
       END;
       """
-    Then the user identified by '1' exists in the table client in 1 second
-    And the user having active = '0' exists in the table client in 1 second
-    And the user having active = '1' does not exist in the table client in 1 second
-    And the number of users having active = '0' in the table client is 1 in 1 second
-    And the user satisfying the following SQL clause exists in the table client in 1 second:
+    Entonces el usuario identificado por '1' existe en la tabla client en 1 segundo
+    Y usuarios con active = '0' existen en la tabla client en 1 segundo
+    Y usuarios con active = '1' no existen en la tabla client en 1 segundo
+    Y el número de usuarios con active = '0' en la tabla client es 1 en 1 segundo
+    Y el usuario que satisface la siguiente cláusula SQL existe en la tabla client en 1 segundo:
       """
       BIRTH_DATE = date '1980-12-25'
       """
-    And the user satisfying the following SQL clause does not exist in the table client in 1 second:
+    Y los usuarios que satisfacen la siguiente cláusula SQL no existen en la tabla client en 1 segundo:
       """
       BIRTH_DATE > date '2000-01-01'
       """
-    And the number of users satisfying the following SQL clause in the table client is 1 in 1 second:
+    Y el número de usuarios que satisfacen la siguiente cláusula SQL en la tabla client es 1 en 1 segundo:
       """
       BIRTH_DATE = date '1980-12-25'
       """
-    And the following record exists in the table client in 1 second:
+    Y el siguiente registro existe en la tabla client en 1 segundo:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
-    And the following record does not exist in the table client in 1 second:
+    Pero el siguiente registro no existe en la tabla client en 1 segundo:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 1      | 1980-12-25 |
-    And the number of records satisfying the following in the table client is 1 in 1 second:
+    Y el número de registros que satisfacen lo siguiente en la tabla client es 1 en 1 segundo:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
-    And the content of the CSV file '${data.dir}/data2.csv' exists in the table client in 1 second
-    And the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client in 1 second
-    And the table city is empty in 1 second
-    And the table client is not empty in 1 second
+    Y el contenido del fichero CSV '${data.dir}/data2.csv' existe en la tabla client en 1 segundo
+    Pero el contenido del fichero CSV '${data.dir}/data1.csv' no existe en la tabla client en 1 segundo
+    Y la tabla city está vacía en 1 segundo
+    Y la tabla client no está vacía en 1 segundo
 
 
-  Scenario: Test 4
-    * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
-    * At finish, the following users are inserted into the table client:
+  Escenario: Test 4
+    * Al finalizar, se ejecuta el script SQL del fichero '${data.dir}/db/clean.sql' usando la conexión 'db'
+    * Al finalizar, se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos
+    * Al finalizar, se elimina el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos
+    * Al finalizar, se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client
+    * Al finalizar, se elimina el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client
+    * Al finalizar, se insertan los siguientes usuarios en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
-    * At finish, the following user is deleted from the table client:
+    * Al finalizar, se elimina el siguiente usuario de la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
-    * At finish, the user having first_name = 'Annie' is deleted from the table client
-    * At finish, the user satisfying the following SQL clause is deleted from the table client:
+    * Al finalizar, se elimina el usuario con first_name = 'Annie' de la tabla client
+    * Al finalizar, se eliminan los usuarios que satisfacen la siguiente cláusula SQL de la tabla client:
       """
       BIRTH_DATE < date '2000-01-01'
       """
-    Given the database connection URL '${database.connection.url}' using the user '${database.connection.username}' and the password '${database.connection.password}' as 'db'
-    And the default connection is used
-    When the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
-    Then the content of the XLS file '${data.dir}/data1.xlsx' exists in the database
-    And the content of the XLS file '${data.dir}/data1.xlsx' exists in the database in 1 second
-    And the following SQL query value:
+    Dado la URL de conexión a BBDD '${database.connection.url}' usando el usuario '${database.connection.username}' y la contraseña '${database.connection.password}' como 'db'
+    Y que se usa la conexión por defecto
+    Cuando se ha insertado el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos
+    Entonces el contenido del fichero XLS '${data.dir}/data1.xlsx' existe en la base de datos
+    Y el contenido del fichero XLS '${data.dir}/data1.xlsx' existe en la base de datos en 1 segundo
+    Y se recupera el valor de la siguiente consulta SQL:
       """
       SELECT * FROM CLIENT WHERE FIRST_NAME = 'Rosa';
       """
-    And the number of records having id = '${-1#[0].ID}' in the table client is 1
-    And the following records do not exist in the table client:
+    Y el número de registros con id = '${-1#[0].ID}' en la tabla client es 1
+    Y el siguiente registro no existe en la tabla client:
       | first_name | second_name | active | birth_date |
       | Rosa       | Melano      | 0      | 1980-12-25 |
-    And the number of records satisfying the following in the table client is 1:
+    Y el número de registros que satisfacen lo siguiente en la tabla client es 1:
       | first_name | second_name | active | birth_date |
       | Rosa       | Melano      | 1      | 1980-12-25 |
 
 
-  Scenario: Test 5
-    * At finish, the following SQL script is executed:
+  Escenario: Test 5
+    * Al finalizar, se ejecuta el siguiente script SQL:
       """
       DELETE FROM CLIENT_CITY;
       DELETE FROM CITY;
       DELETE FROM CLIENT;
       DELETE FROM OTHER;
       """
-    Given the content of the XLS file '${data.dir}/data1.xlsx' inserted into the database
-    And the SQL query value from the file '${data.dir}/db/select.sql'
-    When the table client_city is cleared
-    And the users having name = 'Valencia' are deleted from the table city
-    Then the content of the CSV file '${data.dir}/data1.csv' exists in the table client
-    And the content of the CSV file '${data.dir}/data2.csv' does not exist in the table client
-    And the city identified by '1' does not exist in the table city
-    And the city having name = 'Valencia' does not exist in the table city
-    And the number of records satisfying the following SQL clause in the table client is 1:
+    Dado que se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos
+    Y el valor de la consulta SQL del fichero '${data.dir}/db/select.sql'
+    Cuando se ha limpiado la tabla client_city
+    Y se eliminan los usuarios con name = 'Valencia' de la tabla city
+    Entonces el contenido del fichero CSV '${data.dir}/data1.csv' existe en la tabla client
+    Y el contenido del fichero CSV '${data.dir}/data2.csv' no existe en la tabla client
+    Y la ciudad identificada por '1' no existe en la tabla city
+    Y la ciudad con name = 'Valencia' no existe en la tabla city
+    Y el número de registros que satisfacen la siguiente cláusula SQL en la tabla client es 1:
       """
       ACTIVE = 1
       """
-    And the users satisfying the following SQL clause do not exist in the table client:
+    Y los usuarios que satisfacen la siguiente cláusula SQL no existen en la tabla client:
       """
       ACTIVE = 0
       """
 
 
-    Scenario: Test 6
-      Given the content of the XLS file '${data.dir}/data1.xlsx' inserted into the database
-      When the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
-      Then the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database
-      And the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database in 1 second
+    Escenario: Test 6
+      Dado que se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos
+      Cuando se ha eliminado el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos
+      Entonces el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos
+      Y el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos en 1 segundo
 
 
 
   # database.enableCleanupUponCompletion: true
-  Scenario: Cleanup of data with foreign key
-    * At finish, the table client is empty
-    * At finish, the table city is empty
-    * At finish, the table client_city is empty
-    Given the following user inserted into the database table client:
+  Escenario: Cleanup of data with foreign key
+    * Al finalizar, la tabla client está vacía
+    * Al finalizar, la tabla city está vacía
+    * Al finalizar, la tabla client_city está vacía
+    Dado que se inserta el siguiente usuario en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 1      | 1980-12-25 |
-    And the following city is inserted into the database table city:
+    Y se inserta la siguiente ciudad en la tabla city:
       | id | name     |
       | 1  | Valencia |
-    And the following relationship is inserted into the database table client_city:
+    Y se inserta la siguiente relación en la tabla client_city:
       | clientid | cityid |
       | 1        | 1      |
-    When the table client_city is cleared
-    And the following SQL script is executed:
+    Cuando se ha limpiado la tabla client_city
+    Y se ha ejecutado el siguiente script SQL:
       """
       DELETE FROM CITY WHERE id = 1;
       INSERT INTO city (ID, name, latitude, longitude) VALUES (1, 'Valencia', 39.469906, -0.376288);
       UPDATE city SET latitude = 40.469906 WHERE id = 1;
       """
-    And the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+    Y se ha eliminado el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client
