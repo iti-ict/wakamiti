@@ -65,7 +65,7 @@
         <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
 
         <!-- plugin versions -->
-        <jacoco.version>0.8.2</jacoco.version>
+        <jacoco.version>0.8.11</jacoco.version>
         <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <surefire.report.version>2.6</surefire.report.version>
@@ -142,7 +142,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.18.1</version>
                     <configuration>
-                        <argLine>${surefireJacocoAgent} -Dfile.encoding=UTF-8</argLine>
+                        <argLine>@{surefireJacocoAgent} -XX:+EnableDynamicAgentLoading -Dfile.encoding=UTF-8</argLine>
                     </configuration>
                 </plugin>
                 <!-- Surefire with JaCoCo agent -->
@@ -156,7 +156,7 @@
                                 <goal>verify</goal>
                             </goals>
                             <configuration>
-                                <argLine>${failsafeJacocoAgent} -Dfile.encoding=UTF-8</argLine>
+                                <argLine>@{failsafeJacocoAgent} -XX:+EnableDynamicAgentLoading -Dfile.encoding=UTF-8</argLine>
                             </configuration>
                         </execution>
                     </executions>
@@ -546,6 +546,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.2</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.14.12</version>
             </dependency>
         </dependencies>
 
