@@ -8,7 +8,6 @@ package es.iti.wakamiti.database.it;
 
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
@@ -24,21 +23,22 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
 @AnnotatedConfiguration({
-        @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/database-sqlserver.feature"),
+        @Property(key = RESOURCE_TYPES, value = "gherkin"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-sqlserver.feature"),
         @Property(key = "data.dir", value = "src/test/resources"),
-        @Property(key = "database.type", value = "sqlserver"),
         @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
         @Property(key = "database.connection.username", value = "sa"),
         @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
-        @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false")
+        @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
+        @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {

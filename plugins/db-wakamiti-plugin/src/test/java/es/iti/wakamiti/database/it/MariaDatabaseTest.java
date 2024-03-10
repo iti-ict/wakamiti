@@ -8,7 +8,6 @@ package es.iti.wakamiti.database.it;
 
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
@@ -17,22 +16,22 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.MariaDBContainer;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
 @AnnotatedConfiguration({
-        @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/database-maria.feature"),
+        @Property(key = RESOURCE_TYPES, value = "gherkin"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-maria.feature"),
         @Property(key = "data.dir", value = "src/test/resources"),
-        @Property(key = "database.type", value = "maria"),
         @Property(key = "database.connection.url", value = "jdbc:mariadb://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),
         @Property(key = "database.connection.password", value = "pass"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
-//        @Property(key = WakamitiConfiguration.TREAT_STEPS_AS_TESTS, value = "true")
+        @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class MariaDatabaseTest {

@@ -1,3 +1,4 @@
+@launcher
 Feature: Testing database steps
 
 

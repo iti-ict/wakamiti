@@ -19,6 +19,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
+/**
+ * JUnit runner for executing Wakamiti test plans with step-level nodes.
+ *
+ * <p>This runner is specifically designed for handling step-level nodes in a Wakamiti test plan.
+ * It provides the ability to run such plans and handle their execution at the step level.</p>
+ *
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
+ */
 public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
 
     PlanNodeStepJUnitRunner(
@@ -40,11 +48,21 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
         super(node, configuration, backendFactory, logger);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return An array of target node types: [{@code STEP}, {@code VIRTUAL_STEP}].
+     */
     @Override
     public NodeType[] target() {
         return new NodeType[] {NodeType.STEP, NodeType.VIRTUAL_STEP};
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return A list of PlanNodeRunner instances representing the child runners.
+     */
     @Override
     protected List<PlanNodeRunner> createChildren() {
         return getNode().children()

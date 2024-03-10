@@ -6,6 +6,8 @@
 package es.iti.wakamiti.core.util;
 
 
+import es.iti.wakamiti.api.WakamitiException;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,6 +90,7 @@ public class TokenParser {
                 .filter(Matcher::matches)
                 .map(matcher -> matcher.group(1))
                 .reduce((match1, match2) -> match1.length() > match2.length() ? match1 : match2)
+               // .orElseThrow(() -> new WakamitiException("Unrecognized token [{}]", string));
                 .orElse(null);
     }
 

@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.junit;
 
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiException;
@@ -22,7 +23,22 @@ import org.junit.runner.notification.RunNotifier;
 
 import java.util.Optional;
 
-public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner<PlanNodeRunner> {
+
+/**
+ * JUnit Runner for executing Wakamiti plan nodes targeted as test cases.
+ *
+ * <p>This runner is responsible for executing Wakamiti plan nodes designed to act
+ * as individual test cases within a JUnit framework. It extends the functionality
+ * of PlanNodeRunner and implements WakamitiPlanNodeRunner interface to integrate
+ * with JUnit for test execution.</p>
+ *
+ * <p>It handles the execution of targeted plan nodes, managing the notifications
+ * and results using JUnit's RunNotifier and EachTestNotifier. Additionally, it
+ * provides descriptions for the tests to be displayed in the test report.</p>
+ *
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
+ */
+public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 
     private Description description;
 
@@ -36,15 +52,18 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         super(node, configuration, backendFactory, backend, logger);
     }
 
+    /**
+     * Notifies the result of the test execution to the EachTestNotifier.
+     *
+     * @param notifier The EachTestNotifier to notify the test result.
+     */
     protected void notifyResult(EachTestNotifier notifier) {
         Exception notExecuted = new WakamitiException("Test case not executed due to unknown reasons");
         Optional<Result> result = getNode().result();
         if (result.isPresent()) {
-            if (result.get() == Result.PASSED) {
-                //    notifier.fireTestFinished();
-            } else if (result.get() == Result.SKIPPED) {
+            if (result.get() == Result.SKIPPED) {
                 notifier.addFailure(new WakamitiSkippedException("Test case skipped"));
-            } else {
+            } else if (result.get() != Result.PASSED){
                 Throwable error = getNode().errors().findFirst().orElse(notExecuted);
                 if (error instanceof WakamitiSkippedException) {
                     notifier.fireTestIgnored();
@@ -58,6 +77,12 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
 
     }
 
+    /**
+     * Runs the plan node and notifies the result to the RunNotifier.
+     *
+     * @param notifier The RunNotifier to notify the test execution.
+     * @return The result of the test execution.
+     */
     public Result run(RunNotifier notifier) {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
         testNotifier.fireTestStarted();
@@ -74,6 +99,11 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         return result;
     }
 
+    /**
+     * Retrieves the description of the test case.
+     *
+     * @return The Description object representing the test case.
+     */
     @Override
     public Description getDescription() {
         if (description == null) {

@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.launcher;
 
 
@@ -23,15 +19,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 
+/**
+ * Main class for the WakamitiLauncher application.
+ *
+ * <p>This class contains the main method for launching Wakamiti. It parses command-line arguments,
+ * initializes the logger, fetches and updates classpath, and runs the WakamitiRunner.</p>
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class WakamitiLauncher {
-
 
     private static Logger logger;
 
+    /**
+     * Retrieves the logger instance.
+     *
+     * @return The logger instance.
+     */
     static Logger logger() {
         return logger;
     }
 
+    /**
+     * The main entry point for the WakamitiLauncher application.
+     *
+     * @param args The command-line arguments.
+     */
     public static void main(final String[] args) {
 
         CliArguments arguments = new CliArguments();
@@ -61,7 +74,7 @@ public class WakamitiLauncher {
             new WakamitiLauncherFetcher(arguments).fetchAndUpdateClasspath();
             WakamitiRunner runner = new WakamitiRunner(arguments);
 
-            if (arguments.isSshowContributionsEnabled()) {
+            if (arguments.isShowContributionsEnabled()) {
                 logger().info("The available contributions are the following:");
                 logger().info("------------------------------------");
                 logger().info(runner.getContributions());
@@ -81,7 +94,7 @@ public class WakamitiLauncher {
     }
 
     private static Logger createLogger(Configuration conf, boolean debug) {
-        String loggerName =  "es.iti.wakamiti";
+        String loggerName = "es.iti.wakamiti";
         Optional<Level> level = conf.get("level", String.class).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);
 
@@ -104,9 +117,10 @@ public class WakamitiLauncher {
 //            Configurator.setLevel("es.iti.commons", l);    //NOSONAR
         });
 
+        conf.inner("loggers").asProperties()
+                .forEach((k, v) -> Configurator.setLevel(k.toString(), Level.toLevel(v.toString())));
 
         return LoggerFactory.getLogger(loggerName);
     }
-
 
 }

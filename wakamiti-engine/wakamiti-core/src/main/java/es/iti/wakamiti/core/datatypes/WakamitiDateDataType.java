@@ -8,7 +8,9 @@ package es.iti.wakamiti.core.datatypes;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.core.util.TokenParser;
+import org.apache.commons.lang3.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -230,14 +232,14 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * @throws WakamitiException If a date/time format symbol in the input has no equivalent regex representation.
      */
     private static String patternToRegex(String formatPattern) {
+        String whitespaces = "[\\s\\h\\v]";
         List<String> tokens = new ArrayList<>(REGEX_SYMBOLS.keySet());
         tokens.addAll(REGEX_SPECIAL_SYMBOLS);
-        tokens.add(" ");
-        TokenParser parser = new TokenParser(formatPattern, tokens, List.of("'[^']*'"));
+        TokenParser parser = new TokenParser(formatPattern, tokens, List.of("'[^']*'", whitespaces));
         StringBuilder regex = new StringBuilder();
         while (parser.hasMoreTokens()) {
             String nextToken = parser.nextToken();
-            if (nextToken.equals(" ")) {
+            if (nextToken.matches(whitespaces)) {
                 regex.append(" ");
             } else if (REGEX_SPECIAL_SYMBOLS.contains(nextToken)) {
                 regex.append("\\").append(nextToken);
