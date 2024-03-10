@@ -61,7 +61,7 @@ import static org.mockserver.model.RegexBody.regex;
 @RunWith(MockitoJUnitRunner.class)
 public class RestStepContributorTest {
 
-    private static final Integer PORT = 1234;
+    private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
     private static final String TOKEN_PATH = "data/token.txt";
 

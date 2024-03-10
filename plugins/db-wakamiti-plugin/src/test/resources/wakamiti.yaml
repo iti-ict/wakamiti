@@ -7,9 +7,9 @@ wakamiti:
 
   database:
     connection:
-      url: jdbc:mysql://host.docker.internal:1234/test
-      username: test
+      url: jdbc:mysql://host.docker.internal:1234/testdb
+      username: tester
       password: pass
 
   data:
-    dir: test-classes
+    dir: /wakamiti/test-classes

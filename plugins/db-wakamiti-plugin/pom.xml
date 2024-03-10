@@ -231,16 +231,12 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.43.4</version>
+                <version>0.44.0</version>
                 <configuration>
                     <executeStopOnVMShutdown>true</executeStopOnVMShutdown>
-                    <showLogs>true</showLogs>
-                    <volumes>
-                        <volume>
-                            <name>data</name>
-                            <driver>local</driver>
-                        </volume>
-                    </volumes>
+<!--                    <showLogs>true</showLogs>-->
+<!--                    <verbose>true</verbose>-->
+                    <removeVolumes>true</removeVolumes>
                     <images>
                         <image>
                             <alias>database</alias>
@@ -261,12 +257,10 @@
                                 </ports>
                                 <volumes>
                                     <bind>
-                                        <volume>data:/var/lib/mysql</volume>
                                         <volume>${project.build.directory}/test-classes/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql</volume>
-                                        <volume>${project.build.directory}/test-classes/db/dml.sql:/docker-entrypoint-initdb.d/2.sql</volume>
                                     </bind>
                                 </volumes>
-                                <cmd>--default-authentication-plugin=mysql_native_password</cmd>
+                                <cmd>--default_authentication_plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</cmd>
                             </run>
                         </image>
                     </images>
@@ -276,7 +270,6 @@
                         <id>start</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>volume-create</goal>
                             <goal>start</goal>
                         </goals>
                     </execution>
@@ -285,7 +278,7 @@
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
-                            <goal>volume-remove</goal>
+                            <goal>remove</goal>
                         </goals>
                     </execution>
                 </executions>

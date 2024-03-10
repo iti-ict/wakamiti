@@ -68,7 +68,7 @@ public class SQLServerTest {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(new DriverManagerDataSource(url, user, password));
         File schemaFile = new File(SQLServerTest.class.getResource("/db/triggers.sql").getFile());
         String createSchema = FileUtils.readFileToString(schemaFile, StandardCharsets.UTF_8);
-        for (String sentence : createSchema.split(System.lineSeparator() + "GO" + System.lineSeparator())) {
+        for (String sentence : createSchema.split("\\sGO\\s")) {
             jdbcTemplate.execute(sentence);
         }
     }
