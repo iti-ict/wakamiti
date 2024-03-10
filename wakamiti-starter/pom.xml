@@ -69,7 +69,6 @@
         <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <surefire.report.version>2.6</surefire.report.version>
-        <maven.site.version>3.7.1</maven.site.version>
         <maven.ant.version>1.8</maven.ant.version>
         <maven.info.reports.version>3.0.0</maven.info.reports.version>
         <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>

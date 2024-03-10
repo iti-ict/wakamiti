@@ -164,13 +164,6 @@
                                 </goals>
                             </execution>
                             <execution>
-                                <id>remove-test</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>remove</goal>
-                                </goals>
-                            </execution>
-                            <execution>
                                 <phase>clean</phase>
                                 <goals>
                                     <goal>remove</goal>
