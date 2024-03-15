@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         @Property(key = EmailConfigContributor.STORE_PROTOCOL, value = "imap"),
         @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
         @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
-        @Property(key = EmailConfigContributor.STORE_PORT, value = "1234"),
+        @Property(key = EmailConfigContributor.STORE_PORT, value = "2345"),
         @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
         @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
 })
@@ -47,7 +47,7 @@ public class TestEmailSteps implements StepContributor {
     @BeforeClass
     public static void setUp() {
         ServerSetup smtpSetup = new ServerSetup(4321, null, "smtp");
-        ServerSetup imapSetup = new ServerSetup(1234, null, "imap");
+        ServerSetup imapSetup = new ServerSetup(2345, null, "imap");
         mailServer = new GreenMail(new ServerSetup[]{smtpSetup, imapSetup});
         mailUser = mailServer.setUser("test@localhost", "test");
         mailServer.start();

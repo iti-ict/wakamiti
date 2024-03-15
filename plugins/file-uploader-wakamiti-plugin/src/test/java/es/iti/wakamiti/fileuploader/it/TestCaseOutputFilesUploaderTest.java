@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/dummy.feature"),
-        @Property(key = "fileUploader.host", value = "localhost:1234"),
+        @Property(key = "fileUploader.host", value = "localhost:5432"),
         @Property(key = "fileUploader.protocol", value = "ftp"),
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(WakamitiJUnitRunner.class)
 public class TestCaseOutputFilesUploaderTest {
 
-    private static final MockFtpServer ftpServer = new MockFtpServer(1234);
+    private static final MockFtpServer ftpServer = new MockFtpServer(5432);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {

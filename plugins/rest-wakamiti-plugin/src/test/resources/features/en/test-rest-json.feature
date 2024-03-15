@@ -1,9 +1,9 @@
+@launcher
 Feature: REST Test Feature
 
 
   Background:
-    Given the base URL http://localhost:8888/
-    And the REST service '/users'
+    Given the REST service '/users'
     And the REST content type JSON
 
 
@@ -13,9 +13,9 @@ Feature: REST Test Feature
     Then the response HTTP code is 200
     And the response HTTP code is not 201
     And the response content type is JSON
-    And the response is equals to the file 'src/test/resources/server/users/user1.json'
+    And the response is equals to the file '${data.dir}/server/users/user1.json'
     And the response contains:
-      """
+      """json
 { "name": "User One" }
       """
     And the integer from response fragment 'age' is 11
@@ -112,7 +112,7 @@ Feature: REST Test Feature
         }
       ]
       """
-    And the response is equals to the file 'src/test/resources/data/users.json' (in any order)
+    And the response is equals to the file '${data.dir}/data/users.json' (in any order)
     And the response fragment 'find{ it.id == "user1" }.vegetables' is (in any order):
       """json
       [
@@ -120,7 +120,7 @@ Feature: REST Test Feature
         { "id": 2, "description": "Gherkin" }
       ]
       """
-    And the response fragment 'find{ it.id == "user1" }.vegetables' is equals to the file 'src/test/resources/data/vegetables_user1.json' (in any order)
+    And the response fragment 'find{ it.id == "user1" }.vegetables' is equals to the file '${data.dir}/data/vegetables_user1.json' (in any order)
     And the response fragment 'find{ it.id == "user1" }' contains:
       """json
       {
@@ -130,7 +130,7 @@ Feature: REST Test Feature
         ]
       }
       """
-    And the response fragment 'find{ it.id == "user1" }.vegetables' contains the file 'src/test/resources/data/vegetables_user1.json'
+    And the response fragment 'find{ it.id == "user1" }.vegetables' contains the file '${data.dir}/data/vegetables_user1.json'
 
 
   Scenario: URL with parameters
@@ -147,12 +147,12 @@ Feature: REST Test Feature
         { "id": 2, "description": "Gherkin" }
       ]
       """
-    And the response is equals to the file 'src/test/resources/data/vegetables_user1.json'
+    And the response is equals to the file '${data.dir}/data/vegetables_user1.json'
     And the response fragment '[1]' is:
       """json
       { "id": 2, "description": "Gherkin" }
       """
-    And the response fragment '[1]' is equals to the file 'src/test/resources/data/vegetable.json'
+    And the response fragment '[1]' is equals to the file '${data.dir}/data/vegetable.json'
 
 
     Scenario: Request with headers and parameters
@@ -163,7 +163,7 @@ Feature: REST Test Feature
         | subject   | example |
       When the subject is queried
       Then the response length is 100
-      And the response contains the file 'src/test/resources/data/vegetables_user1.json'
+      And the response contains the file '${data.dir}/data/vegetables_user1.json'
       And the text response header connection is 'keep-alive'
       And the integer response header content-length is less than 150
       And the decimal response header content-length is less than 150.1

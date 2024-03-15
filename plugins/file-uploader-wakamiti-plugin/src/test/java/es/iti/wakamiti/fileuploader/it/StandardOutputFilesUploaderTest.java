@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/dummy.feature"),
-        @Property(key = "fileUploader.host", value = "localhost:1234"),
+        @Property(key = "fileUploader.host", value = "localhost:4321"),
         @Property(key = "fileUploader.protocol", value = "ftp"),
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(WakamitiJUnitRunner.class)
 public class StandardOutputFilesUploaderTest {
 
-    private static final MockFtpServer ftpServer = new MockFtpServer(1234);
+    private static final MockFtpServer ftpServer = new MockFtpServer(4321);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {
@@ -54,6 +54,6 @@ public class StandardOutputFilesUploaderTest {
     }
 
     private static String today() {
-        return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.from(ZoneOffset.UTC)).format(Instant.now());
+        return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()).format(Instant.now());
     }
 }
