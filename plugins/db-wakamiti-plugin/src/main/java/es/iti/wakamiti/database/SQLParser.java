@@ -252,15 +252,15 @@ public class SQLParser {
         });
     }
 
-    private PlainSelect createSelect(Table table, SelectItem item) {
+    private PlainSelect createSelect(Table table, SelectItem<?> item) {
         return createSelect(table, item, null);
     }
 
     private PlainSelect createSelect(Table table, Expression where) {
-        return createSelect(table, new SelectItem(new AllColumns()), where);
+        return createSelect(table, new SelectItem<>(new AllColumns()), where);
     }
 
-    private PlainSelect createSelect(Table table, SelectItem item, Expression where) {
+    private PlainSelect createSelect(Table table, SelectItem<?> item, Expression where) {
         PlainSelect body = new PlainSelect();
         body.addSelectItems(item);
         body.setFromItem(table);
@@ -322,7 +322,7 @@ public class SQLParser {
 
     public Select sqlSelectFrom(String table, String[] columns) {
         List<Column> columnList = Stream.of(columns).map(Column::new).collect(Collectors.toCollection(LinkedList::new));
-        return createSelect(new Table(table), new SelectItem(new ExpressionList<>(columnList)));
+        return createSelect(new Table(table), new SelectItem<>(new ExpressionList<>(columnList)));
     }
 
     public Select sqlSelectCountFrom(String table) {

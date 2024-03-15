@@ -26,7 +26,7 @@ import java.util.*;
 
 
 /**
- *
+ * Maven plugin mojo for verifying tests using Wakamiti.
  */
 @Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST,
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
@@ -41,7 +41,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      *     <skipTests>true</skipTests>
      *   </configuration>
      * }</pre></blockquote>
-     *
+     * <p>
      * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
@@ -73,7 +73,6 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      *     </properties>
      *   </configuration>
      * }</pre></blockquote>
-     *
      */
     @Parameter
     public Map<String, String> properties = new LinkedHashMap<>();
@@ -87,7 +86,6 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      *     <configurationFiles>file1,file2</configurationFiles>
      *   </configuration>
      * }</pre></blockquote>
-     *
      */
     @Parameter
     public List<String> configurationFiles = new LinkedList<>();
@@ -101,8 +99,8 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      *     <logLevel>debug</logLevel>
      *   </configuration>
      * }</pre></blockquote>
-     *
-     *
+     * <p>
+     * <p>
      * Default value is {@code info}
      */
     @Parameter(defaultValue = "info")
@@ -118,7 +116,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      *     <testFailureIgnore>true</testFailureIgnore>
      *   </configuration>
      * }</pre></blockquote>
-     *
+     * <p>
      * Default value is {@code false}
      */
     @Parameter(property = "maven.test.failure.ignore", defaultValue = "false")
@@ -136,6 +134,13 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     @Parameter(defaultValue = "${project.compileClasspathElements}", required = true, readonly = true)
     private List<String> projectDependencies;
 
+
+    /**
+     * Executes the plugin.
+     *
+     * @throws MojoExecutionException If an unexpected problem occurs during execution.
+     * @throws MojoFailureException   If a failure is encountered during execution.
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 

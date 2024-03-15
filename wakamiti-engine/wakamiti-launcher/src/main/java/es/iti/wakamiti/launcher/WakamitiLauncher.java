@@ -95,7 +95,7 @@ public class WakamitiLauncher {
 
     private static Logger createLogger(Configuration conf, boolean debug) {
         String loggerName = "es.iti.wakamiti";
-        Optional<Level> level = conf.get("level", String.class).map(Level::toLevel);
+        Optional<Level> level = conf.get("level", String.class).map(String::toUpperCase).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);
 
         if (path.isPresent()) {
