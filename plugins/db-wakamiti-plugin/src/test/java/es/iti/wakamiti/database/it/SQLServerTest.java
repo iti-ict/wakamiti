@@ -32,6 +32,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-sqlserver.feature"),
+        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = "data.dir", value = "src/test/resources"),
         @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
         @Property(key = "database.connection.username", value = "sa"),
@@ -43,7 +44,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {
 
-    private static final MSSQLServerContainer<?> container = new MSSQLServerContainer<>()
+    private static final MSSQLServerContainer<?> container = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2017-CU12")
             .acceptLicense()
 //            .withDatabaseName("test")
 //            .withUsername("user")

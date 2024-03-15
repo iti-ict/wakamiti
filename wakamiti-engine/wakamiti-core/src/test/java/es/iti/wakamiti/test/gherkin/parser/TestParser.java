@@ -70,7 +70,6 @@ public class TestParser {
                 Objects.requireNonNull(classLoader.getResourceAsStream("features/empty.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
-            System.out.println(document);
             assertNotNull(document);
         }
     }

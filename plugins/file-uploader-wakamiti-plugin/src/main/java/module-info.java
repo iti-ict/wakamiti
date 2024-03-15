@@ -5,6 +5,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.fileuploader.TestCaseOutputFilesUploader;
 
+
 module es.iti.wakamiti.file.uploader {
 
     requires es.iti.wakamiti.api;

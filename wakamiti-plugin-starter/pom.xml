@@ -25,6 +25,9 @@
 
     <properties>
         <revision>2.4.0-SNAPSHOT</revision>
+
+        <wakamiti.api>2.4.0-SNAPSHOT</wakamiti.api>
+        <wakamiti.core>2.4.0-SNAPSHOT</wakamiti.core>
     </properties>
 
     <dependencies>
@@ -38,6 +41,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -69,8 +77,26 @@
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>es.iti.wakamiti</groupId>
+                    <artifactId>wakamiti-maven-plugin</artifactId>
+                    <version>${wakamiti.core}</version>
+                    <executions>
+                        <execution>
+                            <id>verify</id>
+                            <goals><goal>verify</goal></goals>
+                        </execution>
+                        <execution>
+                            <id>control</id>
+                            <goals><goal>control</goal></goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -153,7 +179,21 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <silent>true</silent>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
