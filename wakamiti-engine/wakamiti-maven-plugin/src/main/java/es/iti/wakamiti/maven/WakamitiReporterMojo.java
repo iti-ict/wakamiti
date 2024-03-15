@@ -52,7 +52,7 @@ public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfig
             Wakamiti.instance().generateReports(configuration);
         } catch (Exception e) {
             if (!testFailureIgnore)
-                session.getResult().addException(new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e));
+                throw new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
         }
     }
 

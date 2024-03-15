@@ -9,6 +9,7 @@ import es.iti.wakamiti.core.Wakamiti;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -30,6 +31,7 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         return wakamiti;
     }
 
+    @Override
     protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();
@@ -45,9 +47,17 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
     }
 
     protected Mojo executeMojo(MavenSession session, String goal) throws Exception {
-        Mojo mojo = lookupConfiguredMojo(session, newMojoExecution(goal));
+        MojoExecution execution = newMojoExecution(goal);
+        Plugin plugin = session.getCurrentProject().getPlugin(execution.getMojoDescriptor()
+                .getPluginDescriptor().getPluginLookupKey());
+        execution.getMojoDescriptor().getPluginDescriptor().setPlugin(plugin);
+        Mojo mojo = lookupConfiguredMojo(session, execution);
         assertThat(mojo).isNotNull();
-        mojo.execute();
+        try {
+            mojo.execute();
+        } catch (Throwable e) {
+            session.getResult().addException(e);
+        }
         return mojo;
     }
 

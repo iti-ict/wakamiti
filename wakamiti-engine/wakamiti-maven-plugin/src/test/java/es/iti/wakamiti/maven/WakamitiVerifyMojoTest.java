@@ -36,6 +36,7 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
     private PlanNode plan;
     private Configuration currentConfiguration;
 
+    @Override
     protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();
@@ -200,7 +201,7 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
         // Then
         assertThat(session.getResult().getExceptions()).hasSize(1);
         assertThat(session.getResult().getExceptions().get(0)).isOfAnyClassIn(MojoFailureException.class);
-        assertThat(session.getResult().getExceptions().get(0)).hasMessage("Wakamiti Test Plan not passed");
+        assertThat(session.getResult().getExceptions().get(0)).hasMessage("Wakamiti error: Wakamiti Test Plan not passed: FAILED");
         verify(plan, times(1)).result();
     }
 

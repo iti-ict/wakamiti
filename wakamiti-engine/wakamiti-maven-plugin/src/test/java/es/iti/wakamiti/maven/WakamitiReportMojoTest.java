@@ -29,6 +29,7 @@ public class WakamitiReportMojoTest extends WakamitiAbstractMojoTest {
     private Wakamiti wakamiti;
     private Configuration currentConfiguration;
 
+    @Override
     protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();

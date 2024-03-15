@@ -11,11 +11,13 @@ import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 import imconfig.Configuration;
 import imconfig.ConfigurationFactory;
 import org.slf4j.Logger;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -66,6 +68,8 @@ public class PlanRunner {
                 child.runNode();
             } catch (Exception e) {
                 LOGGER.error("{error}", e.getMessage(), e);
+                if (child.getNode().result().isEmpty())
+                    child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
             }
         }
         planNodeLogger.logTestPlanResult(plan);
