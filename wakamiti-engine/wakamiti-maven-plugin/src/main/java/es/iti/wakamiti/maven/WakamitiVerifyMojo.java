@@ -6,29 +6,30 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.Wakamiti;
+import imconfig.Configuration;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.*;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
 
 
 /**
  *
  */
-@Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Mojo(name = "verify", defaultPhase = LifecyclePhase.INTEGRATION_TEST,
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigurable {
 
     /**
@@ -45,6 +46,21 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      */
     @Parameter(defaultValue = "false")
     public boolean skipTests;
+
+    /**
+     * Use project dependencies.
+     * E.g.:
+     *
+     * <blockquote><pre>{@code
+     *   <configuration>
+     *     <useProjectDependencies>true</useProjectDependencies>
+     *   </configuration>
+     * }</pre></blockquote>
+     * <p>
+     * Default value is {@code false}
+     */
+    @Parameter(defaultValue = "false")
+    public boolean includeProjectDependencies;
 
     /**
      * Sets wakamiti properties as {@link Map}.
@@ -114,20 +130,29 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession session;
 
+    @Parameter(defaultValue = "${mojoExecution}", required = true, readonly = true)
+    private MojoExecution mojoExecution;
+
+    @Parameter(defaultValue = "${project.compileClasspathElements}", required = true, readonly = true)
+    private List<String> projectDependencies;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.simple.SimpleLoggerContextFactory");
         System.setProperty("org.slf4j.simpleLogger.log.es.iti.wakamiti", logLevel);
 
         if (skipTests) {
-            info("Wakamiti tests skipped");
+            getLog().info("Wakamiti tests skipped");
             return;
         }
 
         Configuration configuration;
         try {
+            if (includeProjectDependencies) {
+                resolvePluginDependencies();
+            }
+
             Wakamiti wakamiti = Wakamiti.instance();
             // replace null properties for empty values
             for (String key : properties.keySet()) {
@@ -138,22 +163,51 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
 
             PlanNode plan = wakamiti.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
-                warn("Test Plan is empty!");
+                getLog().warn("Test Plan is empty!");
             } else {
-                wakamiti.executePlan(plan, configuration).result()
+                Optional<Result> planResult = wakamiti.executePlan(plan, configuration).result()
                         .filter(result -> !testFailureIgnore)
-                        .filter(result -> result != Result.PASSED)
-                        .ifPresent(result ->
-                                session.getResult().addException(new MojoFailureException("Wakamiti Test Plan not passed")));
+                        .filter(result -> result != Result.PASSED);
+                if (planResult.isPresent()) {
+                    throw new WakamitiException("Wakamiti Test Plan not passed: " + planResult.get());
+                }
             }
         } catch (WakamitiException e) {
-            if (!testFailureIgnore)
-                session.getResult().addException(new MojoFailureException("Wakamiti error: " + e.getMessage(), e));
-        } catch (Exception e) {
-            if (!testFailureIgnore)
-                session.getResult().addException(new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e));
+            getLog().error(e);
+            if (testFailureIgnore) return;
+            MojoFailureException exception = new MojoFailureException("Wakamiti error: " + e.getMessage(), e);
+            if (mojoExecution.getPlugin().getExecutions().stream()
+                    .noneMatch(execution -> execution.getGoals().contains("control"))) {
+                throw exception;
+            }
+            MojoResult.setError(exception);
+        } catch (Throwable e) {
+            getLog().error(e);
+            if (testFailureIgnore) return;
+            MojoExecutionException exception = new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
+            if (mojoExecution.getPlugin().getExecutions().stream()
+                    .noneMatch(execution -> execution.getGoals().contains("control"))) {
+                throw exception;
+            }
+            MojoResult.setError(new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e));
         }
 
+    }
+
+    private void resolvePluginDependencies() {
+        try {
+            Set<URL> urls = new HashSet<>();
+            for (String element : projectDependencies) {
+                urls.add(new File(element).toURI().toURL());
+            }
+            ClassLoader contextClassLoader = URLClassLoader.newInstance(
+                    urls.toArray(new URL[0]),
+                    Thread.currentThread().getContextClassLoader());
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        getLog().info("Project dependencies included");
     }
 
 }
