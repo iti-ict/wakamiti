@@ -1,15 +1,5 @@
 wakamiti:
   resourceTypes: gherkin
-
-  launcher:
-    modules:
-      - mysql:mysql-connector-java:8.0.31
-
-  database:
-    connection:
-      url: jdbc:mysql://host.docker.internal:1234/testdb
-      username: tester
-      password: pass
-
-  data:
-    dir: /wakamiti/test-classes
+  outputFilePath: target/wakamiti.json
+  log:
+    level: off
