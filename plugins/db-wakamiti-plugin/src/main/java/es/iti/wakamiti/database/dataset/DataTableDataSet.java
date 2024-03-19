@@ -11,12 +11,21 @@ import es.iti.wakamiti.api.plan.DataTable;
 import java.io.IOException;
 
 
+/**
+ * Represents a data set loaded from a DataTable.
+ */
 public class DataTableDataSet extends DataSet {
 
     private final DataTable dataTable;
     private int rowNumber;
 
-
+    /**
+     * Constructs a DataTableDataSet object from a DataTable.
+     *
+     * @param table      The name of the table.
+     * @param dataTable  The DataTable object.
+     * @param nullSymbol The {@code null} symbol.
+     */
     public DataTableDataSet(String table, DataTable dataTable, String nullSymbol) {
         super(table, "data table", nullSymbol);
         this.dataTable = dataTable;
@@ -26,12 +35,21 @@ public class DataTableDataSet extends DataSet {
         }
     }
 
-
+    /**
+     * Checks if the DataTable data set is empty.
+     *
+     * @return {@code true} if the data set is empty, {@code false} otherwise.
+     */
     @Override
     public boolean isEmpty() {
         return dataTable.rows() == 0;
     }
 
+    /**
+     * Moves to the next row in the DataTable data set.
+     *
+     * @return {@code true} if there is a next row, {@code false} otherwise.
+     */
     @Override
     public boolean nextRow() {
         if (dataTable.rows() - 1 <= rowNumber) {
@@ -42,19 +60,33 @@ public class DataTableDataSet extends DataSet {
         }
     }
 
-
+    /**
+     * Retrieves the value of the specified column in the current row.
+     *
+     * @param columnIndex The index of the column.
+     * @return The value of the column.
+     */
     @Override
     public Object rowValue(int columnIndex) {
         return nullIfMatchNullSymbol(dataTable.value(rowNumber, columnIndex));
     }
 
-
+    /**
+     * Closes the DataTable data set.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         // nothing to do
     }
 
-
+    /**
+     * Creates a copy of the DataTable data set.
+     *
+     * @return A copy of the data set.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public DataSet copy() throws IOException {
         return new DataTableDataSet(table, dataTable, nullSymbol);

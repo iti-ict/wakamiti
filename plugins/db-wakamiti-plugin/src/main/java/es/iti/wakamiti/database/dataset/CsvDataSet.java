@@ -17,6 +17,9 @@ import java.io.Reader;
 import java.util.Iterator;
 
 
+/**
+ * Represents a data set loaded from a CSV file.
+ */
 public class CsvDataSet extends DataSet {
 
     private final File file;
@@ -25,11 +28,18 @@ public class CsvDataSet extends DataSet {
     private final Iterator<CSVRecord> iterator;
     private CSVRecord currentRecord;
 
-
+    /**
+     * Constructs a CsvDataSet object from a CSV file.
+     *
+     * @param table      The name of the table.
+     * @param file       The CSV file.
+     * @param csvFormat  The CSV format.
+     * @param nullSymbol The {@code null} symbol.
+     * @throws IOException If an I/O error occurs.
+     */
     public CsvDataSet(String table, File file, String csvFormat, String nullSymbol) throws IOException {
         this(table, file, Delimiter.valueOf(csvFormat.toUpperCase()).getFormat(), nullSymbol);
     }
-
 
     private CsvDataSet(String table, File file, CSVFormat format, String nullSymbol) throws IOException {
         super(table, "file '" + file + "'", nullSymbol);
@@ -49,17 +59,31 @@ public class CsvDataSet extends DataSet {
         }
     }
 
-
+    /**
+     * Closes the CSV data set.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         reader.close();
     }
 
+    /**
+     * Checks if the CSV data set is empty.
+     *
+     * @return {@code true} if the data set is empty, {@code false} otherwise.
+     */
     @Override
     public boolean isEmpty() {
         return !iterator.hasNext();
     }
 
+    /**
+     * Moves to the next row in the CSV data set.
+     *
+     * @return {@code true} if there is a next row, {@code false} otherwise.
+     */
     @Override
     public boolean nextRow() {
         if (!iterator.hasNext()) {
@@ -70,16 +94,31 @@ public class CsvDataSet extends DataSet {
         }
     }
 
+    /**
+     * Retrieves the value of the specified column in the current row.
+     *
+     * @param columnIndex The index of the column.
+     * @return The value of the column.
+     */
     @Override
     public Object rowValue(int columnIndex) {
         return nullIfMatchNullSymbol(currentRecord.get(columnIndex));
     }
 
+    /**
+     * Creates a copy of the CSV data set.
+     *
+     * @return A copy of the data set.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public DataSet copy() throws IOException {
         return new CsvDataSet(table, file, format, nullSymbol);
     }
 
+    /**
+     * Enum representing CSV delimiters.
+     */
     private enum Delimiter {
         DEFAULT(CSVFormat.DEFAULT),
         EXCEL(CSVFormat.EXCEL),

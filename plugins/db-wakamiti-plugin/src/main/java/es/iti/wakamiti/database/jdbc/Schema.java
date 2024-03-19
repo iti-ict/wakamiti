@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Represents a database schema containing information about tables, columns, and types.
+ */
 public class Schema {
 
     public final Map<String, Map<String, JDBCType>> types = new HashMap<>();

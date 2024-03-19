@@ -9,6 +9,9 @@ package es.iti.wakamiti.database.jdbc;
 import es.iti.wakamiti.api.WakamitiException;
 
 
+/**
+ * Enumeration representing various database types along with their respective health check SQL queries.
+ */
 public enum DatabaseType {
 
     ORACLE("select 1 from dual"),
@@ -27,10 +30,22 @@ public enum DatabaseType {
 
     private final String healthCheckSql;
 
+    /**
+     * Constructs a DatabaseType enum constant with the given health check SQL query.
+     *
+     * @param healthCheckSql the SQL query used for health check
+     */
     DatabaseType(String healthCheckSql) {
         this.healthCheckSql = healthCheckSql;
     }
 
+    /**
+     * Retrieves the DatabaseType enum constant based on the provided JDBC URL.
+     *
+     * @param url the JDBC URL
+     * @return the corresponding DatabaseType enum constant
+     * @throws WakamitiException if the JDBC URL is null or does not start with "jdbc:"
+     */
     public static DatabaseType fromUrl(String url) {
         if (url == null || !url.startsWith("jdbc:")) {
             throw new WakamitiException("Bad jdbc url");
@@ -42,6 +57,11 @@ public enum DatabaseType {
         }
     }
 
+    /**
+     * Retrieves the health check SQL query associated with this DatabaseType.
+     *
+     * @return the health check SQL query
+     */
     public String healthCheck() {
         return this.healthCheckSql;
     }

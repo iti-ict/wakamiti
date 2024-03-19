@@ -14,11 +14,18 @@ import es.iti.commons.jext.Extension;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Manages JDBC connections using a driver-based approach.
  */
 @Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "2.4")
 public class DriverConnectionManager implements ConnectionManager {
 
+    /**
+     * Obtains a JDBC connection based on the provided connection parameters.
+     *
+     * @param parameters The connection parameters
+     * @return A JDBC connection
+     * @throws SQLException If an SQL exception occurs
+     */
     @Override
     public Connection obtainConnection(ConnectionParameters parameters) throws SQLException {
         validateParameters(parameters);
@@ -26,18 +33,20 @@ public class DriverConnectionManager implements ConnectionManager {
             try {
                 Class.forName(parameters.driver());
             } catch (ClassNotFoundException e) {
-                throw new SQLException(
-                    "JDBC Driver " + parameters.driver() + " not found in classpath"
-                );
+                throw new SQLException("JDBC Driver " + parameters.driver() + " not found in classpath");
             }
         } else {
             parameters.driver(DriverManager.getDriver(parameters.url()).getClass().getName());
         }
-        return DriverManager
-            .getConnection(parameters.url(), parameters.username(), parameters.password());
+        return DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password());
     }
 
-
+    /**
+     * Releases the given JDBC connection.
+     *
+     * @param connection The JDBC connection to release
+     * @throws SQLException If an SQL exception occurs
+     */
     @Override
     public void releaseConnection(Connection connection) throws SQLException {
         try {
@@ -49,7 +58,12 @@ public class DriverConnectionManager implements ConnectionManager {
         }
     }
 
-
+    /**
+     * Validates the provided connection parameters.
+     *
+     * @param parameters The connection parameters to validate
+     * @throws IllegalArgumentException If any of the connection parameters are null
+     */
     private void validateParameters(ConnectionParameters parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("Database connection parameters have not been set");

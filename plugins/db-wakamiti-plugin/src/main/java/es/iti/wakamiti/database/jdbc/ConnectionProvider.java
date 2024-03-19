@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
+/**
+ * Provides JDBC connection management including obtaining, testing, and releasing connections.
+ */
 public class ConnectionProvider implements AutoCloseable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ConnectionProvider.class);
@@ -27,14 +30,30 @@ public class ConnectionProvider implements AutoCloseable {
     private final ConnectionParameters parameters;
     private Connection connection;
 
+    /**
+     * Constructs a ConnectionProvider with the given connection parameters.
+     *
+     * @param parameters The connection parameters.
+     */
     public ConnectionProvider(ConnectionParameters parameters) {
         this.parameters = parameters;
     }
 
+    /**
+     * Retrieves the connection parameters.
+     *
+     * @return The connection parameters.
+     */
     public ConnectionParameters parameters() {
         return parameters;
     }
 
+    /**
+     * Obtains a JDBC connection.
+     *
+     * @return The JDBC connection.
+     * @throws WakamitiException if obtaining the connection fails.
+     */
     public Connection get() {
         try {
             if (connection == null) {
@@ -55,6 +74,11 @@ public class ConnectionProvider implements AutoCloseable {
         }
     }
 
+    /**
+     * Tests the connection.
+     *
+     * @throws WakamitiException if the connection test fails.
+     */
     public void test() {
         String sql = DatabaseType.fromUrl(parameters.url()).healthCheck();
         LOGGER.trace("Testing connection | {sql}", sql);
@@ -65,6 +89,11 @@ public class ConnectionProvider implements AutoCloseable {
         }
     }
 
+    /**
+     * Closes the connection provider, releasing the associated database connection.
+     *
+     * @throws WakamitiException if an SQL exception occurs while closing the connection
+     */
     @Override
     public void close() {
         try {

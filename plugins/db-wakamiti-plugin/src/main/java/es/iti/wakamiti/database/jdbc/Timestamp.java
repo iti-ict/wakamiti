@@ -5,20 +5,67 @@
  */
 package es.iti.wakamiti.database.jdbc;
 
+
 import java.time.LocalDateTime;
 
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_FORMATTER;
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
 
+
+/**
+ * Represents a custom Timestamp class extending {@link java.sql.Timestamp},
+ * allowing formatting based on truncation preference.
+ *
+ * @see java.sql.Timestamp
+ */
 public class Timestamp extends java.sql.Timestamp {
 
     private final boolean trunc;
 
+    /**
+     * Constructs a Timestamp object with the specified time and truncation preference.
+     *
+     * @param time  The time value
+     * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
+     *              date-time
+     */
     public Timestamp(long time, boolean trunc) {
         super(time);
         this.trunc = trunc;
     }
 
+    /**
+     * Creates a Timestamp object from the specified LocalDateTime and truncation
+     * preference.
+     *
+     * @param time  The LocalDateTime value
+     * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
+     *              date-time
+     * @return The Timestamp object
+     */
+    public static Timestamp valueOf(LocalDateTime time, boolean trunc) {
+        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
+    }
+
+    /**
+     * Creates a Timestamp object from the specified string representation and truncation
+     * preference.
+     *
+     * @param time  The string representation of the timestamp
+     * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
+     *              date-time
+     * @return The Timestamp object
+     */
+    public static Timestamp valueOf(String time, boolean trunc) {
+        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
+    }
+
+    /**
+     * Returns a string representation of the Timestamp, formatted based on the
+     * truncation preference.
+     *
+     * @return The formatted timestamp string
+     */
     @Override
     public String toString() {
         if (trunc) {
@@ -28,11 +75,4 @@ public class Timestamp extends java.sql.Timestamp {
         }
     }
 
-    public static Timestamp valueOf(LocalDateTime time, boolean trunc) {
-        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
-    }
-
-    public static Timestamp valueOf(String time, boolean trunc) {
-        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
-    }
 }

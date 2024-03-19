@@ -20,13 +20,21 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 
+/**
+ * A data set that completes missing non-nullable columns with default values.
+ */
 public class CompletableDataSet extends DataSet {
 
     private final Map<String, Object> nonNullableColumns = new LinkedHashMap<>();
     private final Map<String, Integer> nonNullableColumnsWithType;
     private final DataSet wrapped;
 
-
+    /**
+     * Constructs a CompletableDataSet.
+     *
+     * @param wrapped                    The wrapped data set.
+     * @param nonNullableColumnsWithType A map of non-nullable columns with their SQL types.
+     */
     public CompletableDataSet(DataSet wrapped, Map<String, Integer> nonNullableColumnsWithType) {
         super(wrapped.table(), wrapped.origin(), wrapped.nullSymbol());
         this.wrapped = wrapped;
@@ -47,6 +55,12 @@ public class CompletableDataSet extends DataSet {
         ).toArray(String[]::new);
     }
 
+    /**
+     * Retrieves the non-nullable default value for a given SQL type.
+     *
+     * @param sqlType The SQL type.
+     * @return The default value.
+     */
     private static Object nonNullValueFor(Integer sqlType) {
         switch (sqlType) {
             case Types.BIT:
@@ -80,6 +94,12 @@ public class CompletableDataSet extends DataSet {
         }
     }
 
+    /**
+     * Retrieves the value of a specific column in the current row.
+     *
+     * @param columnIndex The index of the column.
+     * @return The value of the column.
+     */
     @Override
     public Object rowValue(int columnIndex) {
         Object value = getIgnoringCase(nonNullableColumns, columns[columnIndex]);
@@ -90,21 +110,42 @@ public class CompletableDataSet extends DataSet {
         return map.getOrDefault(key, map.get(key.toUpperCase()));
     }
 
+    /**
+     * Checks if the data set is empty.
+     *
+     * @return {@code true} if the data set is empty, {@code false} otherwise.
+     */
     @Override
     public boolean isEmpty() {
         return wrapped.isEmpty();
     }
 
+    /**
+     * Moves to the next row in the data set.
+     *
+     * @return {@code true} if there is a next row, {@code false} otherwise.
+     */
     @Override
     public boolean nextRow() {
         return wrapped.nextRow();
     }
 
+    /**
+     * Closes the data set.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         wrapped.close();
     }
 
+    /**
+     * Creates a copy of the data set.
+     *
+     * @return A copy of the data set.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public DataSet copy() throws IOException {
         return new CompletableDataSet(wrapped.copy(), nonNullableColumnsWithType);

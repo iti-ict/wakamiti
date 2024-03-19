@@ -23,6 +23,9 @@ import org.assertj.core.api.Assertions;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -32,17 +35,23 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * A contributor class for database-related steps in the test scenarios.
  */
 @Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.4")
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 
+    /**
+     * Cleans up operations after scenario execution.
+     */
     @TearDown(order = 1)
     public void cleanUp() {
         cleanUpOperations.forEach(Runnable::run);
     }
 
+    /**
+     * Releases database connections after scenario execution.
+     */
     @TearDown(order = 2)
     public void releaseConnection() {
         connections.values().forEach(ConnectionProvider::close);
@@ -50,8 +59,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Configure the default database connection URL, username and
-     * password for the following connections.
+     * Sets the default database connection parameters.
      *
      * @param url      The URL connection
      * @param username The username
@@ -66,8 +74,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Configure a named database connection URL, username and
-     * password for the following connections.
+     * Configures a named database connection URL, username, and password for
+     * the specified connection alias.
      *
      * @param url      The URL connection
      * @param username The username
@@ -84,9 +92,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Sets the SQL statements that will be executed by the default
-     * SQL connection after the scenario ends, regardless execution
-     * status.
+     * Sets the SQL statements that will be executed by the default SQL
+     * connection after the scenario ends, regardless of execution status.
      *
      * @param document The script content
      */
@@ -100,7 +107,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Sets the SQL statements that will be executed by a named SQL
-     * connection after the scenario ends, regardless execution status.
+     * connection after the scenario ends, regardless of execution status.
      *
      * @param alias    The SQL connection name
      * @param document The script content
@@ -115,7 +122,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Sets the SQL statements that will be executed by the default SQL
-     * connection after the scenario ends, regardless execution status.
+     * connection after the scenario ends, regardless of execution status.
      *
      * @param file The script content
      */
@@ -129,7 +136,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Sets the SQL statements that will be executed by a named SQL
-     * connection after the scenario ends, regardless execution status.
+     * connection after the scenario ends, regardless of execution status.
      *
      * @param file  The script content
      * @param alias The SQL connection name
@@ -143,12 +150,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Clear the given table, first attempting to execute
-     * {@code TRUNCATE}, and then using {@code DELETE FROM} as fallback,
-     * using the default SQL connection after the scenario ends,
-     * regardless execution status.
+     * Clears the specified table, first attempting to execute {@code TRUNCATE},
+     * and then using {@code DELETE FROM} as a fallback, using the default SQL
+     * connection after the scenario ends, regardless of execution status.
      *
-     * @param table The table name
+     * @param table The name of the table to clear
      */
     @Step(value = "db.define.cleanup.clear.all", args = {"table:word"})
     public void setCleanupClear(String table) {
@@ -159,12 +165,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Clear the given table, first attempting to execute
-     * {@code TRUNCATE}, and then using {@code DELETE FROM} as fallback,
-     * using a named SQL connection after the scenario ends, regardless
-     * execution status.
+     * Clears the specified table, first attempting to execute {@code TRUNCATE},
+     * and then using {@code DELETE FROM} as fallback, using a named SQL
+     * connection after the scenario ends, regardless execution status.
      *
-     * @param table The table name
+     * @param table The name of the table to clear
      * @param alias The SQL connection name
      */
     @Step(value = "db.define.cleanup.clear.all.alias", args = {"table:word", "alias:text"})
@@ -176,13 +181,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes rows from a given table that match the specified condition
-     * using the default SQL connection after the scenario ends,
-     * regardless execution status.
+     * Deletes rows from the specified table that match the given condition
+     * using the default SQL connection after the scenario ends, regardless
+     * of execution status.
      *
-     * @param column The column name
-     * @param value  The column value
-     * @param table  The table name
+     * @param column The name of the column to match
+     * @param value  The value to match in the specified column
+     * @param table  The name of the table from which to delete rows
      */
     @Step(value = "db.define.cleanup.clear.row", args = {"column:word", "value:text", "table:word"})
     public void setCleanupClear(String column, String value, String table) {
@@ -193,13 +198,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes rows from a given table that match the specified condition
-     * using a named SQL connection after the scenario ends, regardless
+     * Deletes rows from the specified table that match the given condition
+     * using a named SQL connection after the scenario ends, regardless of
      * execution status.
      *
-     * @param column The column name
-     * @param value  The column value
-     * @param table  The table name
+     * @param column The name of the column to match
+     * @param value  The value to match in the specified column
+     * @param table  The name of the table from which to delete rows
      * @param alias  The SQL connection name
      */
     @Step(value = "db.define.cleanup.clear.row.alias",
@@ -212,12 +217,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes rows from a given table that match the specified where
-     * clause using the default SQL connection after the scenario ends,
-     * regardless execution status.
+     * Deletes rows from the specified table that match the given WHERE clause
+     * using the default SQL connection after the scenario ends, regardless of
+     * execution status.
      *
-     * @param table    The table name
-     * @param document The where clause
+     * @param table    The name of the table from which to delete rows
+     * @param document The document representing the WHERE clause
      */
     @Step(value = "db.define.cleanup.clear.where", args = {"table:word"})
     public void setCleanupClear(String table, Document document) {
@@ -228,13 +233,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes rows from a given table that match the specified where
-     * clause using a named SQL connection after the scenario ends,
-     * regardless execution status.
+     * Deletes rows from the specified table that match the given WHERE clause
+     * using a named SQL connection after the scenario ends, regardless of
+     * execution status.
      *
-     * @param table    The table name
+     * @param table    The name of the table from which to delete rows
      * @param alias    The SQL connection name
-     * @param document The where clause
+     * @param document The document representing the WHERE clause
      */
     @Step(value = "db.define.cleanup.clear.where.alias", args = {"table:word", "alias:text"})
     public void setCleanupClear(String table, String alias, Document document) {
@@ -245,12 +250,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes the specified rows in a data table from a given table
-     * using the default SQL connection after the scenario ends,
-     * regardless execution status.
+     * Deletes the specified rows from a given table, as specified in the data table,
+     * using the default SQL connection after the scenario ends, regardless of
+     * execution status.
      *
-     * @param table The table name
-     * @param data  The rows
+     * @param table The name of the table from which to delete rows
+     * @param data  The data table containing the rows to delete
      */
     @Step(value = "db.define.cleanup.delete.from.data", args = {"table:word"})
     public void setCleanupDelete(String table, DataTable data) {
@@ -261,13 +266,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Deletes the specified rows in a data table from a given table
-     * using a named SQL connection after the scenario ends,
-     * regardless execution status.
+     * Deletes the specified rows from a given table, as specified in the data table,
+     * using a named SQL connection after the scenario ends, regardless of execution
+     * status.
      *
-     * @param table The table name
+     * @param table The name of the table from which to delete rows
      * @param alias The SQL connection name
-     * @param data  The rows
+     * @param data  The data table containing the rows to delete
      */
     @Step(value = "db.define.cleanup.delete.from.data.alias", args = {"table:word", "alias:text"})
     public void setCleanupDelete(String table, String alias, DataTable data) {
@@ -277,6 +282,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Deletes rows from tables based on the contents of an Excel file, where each
+     * sheet in the Excel file represents a table to delete rows from. This
+     * operation is performed using the default SQL connection after the scenario
+     * ends, regardless of execution status.
+     *
+     * @param xls The Excel file containing data to delete from tables
+     */
     @Step(value = "db.define.cleanup.delete.from.xls", args = {"xls:file"})
     public void setCleanupDeleteXLS(File xls) {
         cleanUpOperations.add(() -> {
@@ -285,6 +298,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Deletes rows from tables based on the contents of an Excel file, where each
+     * sheet in the Excel file represents a table to delete rows from. This
+     * operation is performed using a named SQL connection after the scenario
+     * ends, regardless of execution status.
+     *
+     * @param xls   The Excel file containing data to delete from tables
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.cleanup.delete.from.xls.alias", args = {"xls:file", "alias:text"})
     public void setCleanupDeleteXLS(File xls, String alias) {
         cleanUpOperations.add(() -> {
@@ -293,6 +315,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Deletes rows from a specified table based on the contents of a CSV file,
+     * using the default SQL connection after the scenario ends, regardless of
+     * execution status.
+     *
+     * @param csv   The CSV file containing the rows to delete
+     * @param table The name of the table from which to delete the rows
+     */
     @Step(value = "db.define.cleanup.delete.from.csv", args = {"csv:file", "table:word"})
     public void setCleanupDeleteCSV(File csv, String table) {
         cleanUpOperations.add(() -> {
@@ -301,6 +331,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Deletes rows from a specified table based on the contents of a CSV file,
+     * using a named SQL connection after the scenario ends, regardless of
+     * execution status.
+     *
+     * @param csv   The CSV file containing the rows to delete
+     * @param table The name of the table from which to delete the rows
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.cleanup.delete.from.csv.alias", args = {"csv:file", "table:word", "alias:text"})
     public void setCleanupDeleteCSV(File csv, String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -309,6 +348,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts data into the specified table based on the contents of a DataTable object.
+     * This operation is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The name of the table to insert data into
+     * @param data  The DataTable object containing the data to be inserted
+     */
     @Step(value = "db.define.cleanup.insert.from.data", args = {"table:word"})
     public void setCleanupInsert(String table, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -317,6 +364,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts data into the specified table based on the contents of a DataTable object.
+     * This operation is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The name of the table to insert data into
+     * @param alias The SQL connection name
+     * @param data  The DataTable object containing the data to be inserted
+     */
     @Step(value = "db.define.cleanup.insert.from.data.alias", args = {"table:word", "alias:text"})
     public void setCleanupInsert(String table, String alias, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -325,6 +381,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts rows into tables based on the contents of an Excel file, where each
+     * sheet in the Excel file represents a table to insert rows from. This
+     * operation is performed using the default SQL connection after the scenario
+     * ends, regardless of execution status.
+     *
+     * @param xls The Excel file containing data to insert from tables
+     */
     @Step(value = "db.define.cleanup.insert.from.xls", args = {"xls:file"})
     public void setCleanupInsertXLS(File xls) {
         cleanUpOperations.add(() -> {
@@ -333,6 +397,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts rows into tables based on the contents of an Excel file, where each
+     * sheet in the Excel file represents a table to insert rows from. This
+     * operation is performed using a named SQL connection after the scenario
+     * ends, regardless of execution status.
+     *
+     * @param xls   The Excel file containing data to insert from tables
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.cleanup.insert.from.xls.alias", args = {"xls:file", "alias:text"})
     public void setCleanupInsertXLS(File xls, String alias) {
         cleanUpOperations.add(() -> {
@@ -341,6 +414,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts rows into a specified table based on the contents of a CSV file,
+     * using the default SQL connection after the scenario ends, regardless of
+     * execution status.
+     *
+     * @param csv   The CSV file containing the rows to delete
+     * @param table The name of the table from which to delete the rows
+     */
     @Step(value = "db.define.cleanup.insert.from.csv", args = {"csv:file", "table:word"})
     public void setCleanupInsertCSV(File csv, String table) {
         cleanUpOperations.add(() -> {
@@ -349,6 +430,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Inserts rows into a specified table based on the contents of a CSV file,
+     * using a named SQL connection after the scenario ends, regardless of
+     * execution status.
+     *
+     * @param csv   The CSV file containing the rows to delete
+     * @param table The name of the table from which to delete the rows
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.cleanup.insert.from.csv.alias", args = {"csv:file", "table:word", "alias:text"})
     public void setCleanupInsertCSV(File csv, String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -357,6 +447,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified single ID exists in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param id    The single ID value to be checked
+     * @param table The table name
+     */
     @Step(value = "db.define.assert.table.exists.row.single.id", args = {"id:text", "table:word"})
     public void setCleanupAssertRowExistsBySingleId(String id, String table) {
         cleanUpOperations.add(() -> {
@@ -365,6 +463,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified single ID exists in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param id    The single ID value to be checked
+     * @param table The table name
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.exists.row.single.id.alias", args = {"id:text", "table:word", "alias:text"})
     public void setCleanupAssertRowExistsBySingleId(String id, String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -373,6 +480,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified single ID does not exist in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param id    The single ID value to be checked
+     * @param table The table name
+     */
     @Step(value = "db.define.assert.table.not.exists.row.single.id", args = {"id:text", "table:word"})
     public void setCleanupAssertRowNotExistsBySingleId(String id, String table) {
         cleanUpOperations.add(() -> {
@@ -381,6 +496,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified single ID does not exist in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param id    The single ID value to be checked
+     * @param table The table name
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.exists.row.single.id.alias",
             args = {"id:text", "table:word", "alias:text"})
     public void setCleanupAssertRowNotExistsBySingleId(String id, String table, String alias) {
@@ -390,6 +514,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column exists in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column The column name
+     * @param value  The column value to be checked
+     * @param table  The table name
+     */
     @Step(value = "db.define.assert.table.exists.row.one.column", args = {"column:word", "value:text", "table:word"})
     public void setCleanupAssertRowExistsByOneColumn(String column, String value, String table) {
         cleanUpOperations.add(() -> {
@@ -398,6 +531,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column exists in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column The column name
+     * @param value  The column value to be checked
+     * @param table  The table name
+     * @param alias  The SQL connection name
+     */
     @Step(value = "db.define.assert.table.exists.row.one.column.alias",
             args = {"column:word", "value:text", "table:word", "alias:text"})
     public void setCleanupAssertRowExistsByOneColumn(String column, String value, String table, String alias) {
@@ -407,6 +550,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column does not exist in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column The column name
+     * @param value  The column value to be checked
+     * @param table  The table name
+     */
     @Step(value = "db.define.assert.table.not.exists.row.one.column",
             args = {"column:word", "value:text", "table:word"})
     public void setCleanupAssertRowNotExistsByOneColumn(String column, String value, String table) {
@@ -416,6 +568,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column does not exist in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column The column name
+     * @param value  The column value to be checked
+     * @param table  The table name
+     * @param alias  The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.exists.row.one.column.alias",
             args = {"column:word", "value:text", "table:word", "alias:text"})
     public void setCleanupAssertRowNotExistsByOneColumn(String column, String value, String table, String alias) {
@@ -425,6 +587,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the count of rows with the specified value in the given column in the given table
+     * using the provided assertion matcher.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column  The column name
+     * @param value   The column value to be checked
+     * @param table   The table name
+     * @param matcher The assertion matcher for the row count
+     */
     @Step(value = "db.define.assert.table.count.row.one.column",
             args = {"column:word", "value:text", "table:word", "matcher:long-assertion"})
     public void setCleanupAssertRowCountByOneColumn(
@@ -435,6 +608,18 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the count of rows with the specified value in the given column in the given table
+     * using the provided assertion matcher.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param column  The column name
+     * @param value   The column value to be checked
+     * @param table   The table name
+     * @param matcher The assertion matcher for the row count
+     * @param alias   The SQL connection name
+     */
     @Step(value = "db.define.assert.table.count.row.one.column.alias",
             args = {"column:word", "value:text", "table:word", "matcher:long-assertion", "alias:text"})
     public void setCleanupAssertRowCountByOneColumn(
@@ -445,6 +630,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified SQL WHERE clause exists in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param document The SQL WHERE clause
+     */
     @Step(value = "db.define.assert.table.exists.sql.where", args = {"table:word"})
     public void setCleanupAssertRowExistsByClause(String table, Document document) {
         cleanUpOperations.add(() -> {
@@ -453,6 +646,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified SQL WHERE clause exists in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param document The SQL WHERE clause
+     * @param alias    The SQL connection name
+     */
     @Step(value = "db.define.assert.table.exists.sql.where.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertRowExistsByClause(String table, String alias, Document document) {
         cleanUpOperations.add(() -> {
@@ -461,6 +663,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified SQL WHERE clause do not exist in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param document The SQL WHERE clause
+     */
     @Step(value = "db.define.assert.table.not.exists.sql.where", args = {"table:word"})
     public void setCleanupAssertRowNotExistsByClause(String table, Document document) {
         cleanUpOperations.add(() -> {
@@ -469,6 +679,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified SQL WHERE clause do not exist in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param document The SQL WHERE clause
+     * @param alias    The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.exists.sql.where.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertRowNotExistsByClause(String table, String alias, Document document) {
         cleanUpOperations.add(() -> {
@@ -477,6 +696,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the row count in the given table based on the specified SQL WHERE clause.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param matcher  The assertion for the row count
+     * @param document The SQL WHERE clause
+     */
     @Step(value = "db.define.assert.table.count.sql.where", args = {"table:word", "matcher:long-assertion"})
     public void setCleanupAssertRowCountByClause(String table, Assertion<Long> matcher, Document document) {
         cleanUpOperations.add(() -> {
@@ -485,6 +713,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the row count in the given table based on the specified SQL WHERE clause.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table    The table name
+     * @param matcher  The assertion for the row count
+     * @param alias    The SQL connection name
+     * @param document The SQL WHERE clause
+     */
     @Step(value = "db.define.assert.table.count.sql.where.alias",
             args = {"table:word", "matcher:long-assertion", "alias:text"})
     public void setCleanupAssertRowCountByClause(
@@ -495,6 +733,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified data table exist in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name
+     * @param data  The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.exists.data", args = {"table:word"})
     public void setCleanupAssertDataTableExists(String table, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -503,6 +749,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified data table exist in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name
+     * @param alias The SQL connection name
+     * @param data  The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.exists.data.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertDataTableExists(String table, String alias, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -511,6 +766,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified data table do not exist in the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name
+     * @param data  The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.not.exists.data", args = {"table:word"})
     public void setCleanupAssertDataTableNotExists(String table, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -519,6 +782,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the rows based on the specified data table do not exist in the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name
+     * @param alias The SQL connection name
+     * @param data  The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.not.exists.data.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertDataTableNotExists(String table, String alias, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -527,6 +799,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the row count in the given table based on the specified data table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table   The table name
+     * @param matcher The assertion for the row count
+     * @param data    The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.count.data", args = {"table:word", "matcher:long-assertion"})
     public void setCleanupAssertDataTableCount(String table, Assertion<Long> matcher, DataTable data) {
         cleanUpOperations.add(() -> {
@@ -535,6 +816,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts the row count in the given table based on the specified data table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table   The table name
+     * @param matcher The assertion for the row count
+     * @param alias   The SQL connection name
+     * @param data    The data table to be asserted
+     */
     @Step(value = "db.define.assert.table.count.data.alias",
             args = {"table:word", "matcher:long-assertion", "alias:text"})
     public void setCleanupAssertDataTableCount(String table, Assertion<Long> matcher, String alias, DataTable data) {
@@ -544,6 +835,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file exist.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param xls The XLS file containing the data rows to be asserted
+     */
     @Step(value = "db.define.assert.table.exists.xls", args = {"xls:file"})
     public void setCleanupAssertXLSFileExists(File xls) {
         cleanUpOperations.add(() -> {
@@ -552,6 +850,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file exist.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param xls   The XLS file containing the data rows to be asserted
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.exists.xls.alias", args = {"xls:file", "alias:text"})
     public void setCleanupAssertXLSFileExists(File xls, String alias) {
         cleanUpOperations.add(() -> {
@@ -560,6 +866,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file do not exist.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param xls The XLS file containing the data rows to be asserted
+     */
     @Step(value = "db.define.assert.table.not.exists.xls", args = {"xls:file"})
     public void setCleanupAssertXLSFileNotExists(File xls) {
         cleanUpOperations.add(() -> {
@@ -568,6 +881,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file do not exist.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param xls   The XLS file containing the data rows to be asserted
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.exists.xls.alias", args = {"xls:file", "alias:text"})
     public void setCleanupAssertXLSFileNotExists(File xls, String alias) {
         cleanUpOperations.add(() -> {
@@ -576,7 +897,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
-    @Step(value = "db.define.assert.table.exists.csv", args = {"cav:file", "table:word"})
+    /**
+     * Asserts that the data rows included in the specified CSV file exist for the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param csv   The CSV file to be asserted
+     * @param table The table name corresponding to the data in the CSV file
+     */
+    @Step(value = "db.define.assert.table.exists.csv", args = {"csv:file", "table:word"})
     public void setCleanupAssertCSVFileExists(File csv, String table) {
         cleanUpOperations.add(() -> {
             this.switchConnection();
@@ -584,7 +913,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
-    @Step(value = "db.define.assert.table.exists.csv.alias", args = {"cav:file", "table:word", "alias:text"})
+    /**
+     * Asserts that the data rows included in the specified CSV file exist for the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param csv   The CSV file to be asserted
+     * @param table The table name corresponding to the data in the CSV file
+     * @param alias The SQL connection name
+     */
+    @Step(value = "db.define.assert.table.exists.csv.alias", args = {"csv:file", "table:word", "alias:text"})
     public void setCleanupAssertCSVFileExists(File csv, String table, String alias) {
         cleanUpOperations.add(() -> {
             this.switchConnection(alias);
@@ -592,6 +930,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified CSV file do not exist for the given table.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param csv   The CSV file to be asserted
+     * @param table The table name corresponding to the data in the CSV file
+     */
     @Step(value = "db.define.assert.table.not.exists.csv", args = {"csv:file", "table:word"})
     public void setCleanupAssertCSVFileNotExists(File csv, String table) {
         cleanUpOperations.add(() -> {
@@ -600,6 +946,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the data rows included in the specified CSV file do not exist for the given table.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param csv   The CSV file to be asserted
+     * @param table The table name corresponding to the data in the CSV file
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.exists.csv.alias", args = {"csv:file", "table:word", "alias:text"})
     public void setCleanupAssertCSVFileNotExists(File csv, String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -608,6 +963,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the specified table is empty.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name to be asserted
+     */
     @Step(value = "db.define.assert.table.empty", args = {"table:word"})
     public void setCleanupAssertTableIsEmpty(String table) {
         cleanUpOperations.add(() -> {
@@ -616,6 +978,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the specified table is empty.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name to be asserted
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.empty.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertTableIsEmpty(String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -624,6 +994,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the specified table is not empty.
+     * This assertion is performed using the default SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name to be asserted
+     */
     @Step(value = "db.define.assert.table.not.empty", args = {"table:word"})
     public void setCleanupAssertTableIsNotEmpty(String table) {
         cleanUpOperations.add(() -> {
@@ -632,6 +1009,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
+    /**
+     * Asserts that the specified table is not empty.
+     * This assertion is performed using a named SQL connection after the scenario ends,
+     * regardless of execution status.
+     *
+     * @param table The table name to be asserted
+     * @param alias The SQL connection name
+     */
     @Step(value = "db.define.assert.table.not.empty.alias", args = {"table:word", "alias:text"})
     public void setCleanupAssertTableIsNotEmpty(String table, String alias) {
         cleanUpOperations.add(() -> {
@@ -640,13 +1025,24 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         });
     }
 
-
+    /**
+     * Retrieves data from the specified SQL SELECT as a JSON object.
+     *
+     * @param document The SQL SELECT statement document
+     * @return The selected data as a JSON object
+     */
     @Step("db.select.data")
     public Object selectData(Document document) {
         return json(executeSelect(document.getContent()).stream()
                 .map(nullSymbolMapper).collect(Collectors.toList()));
     }
 
+    /**
+     * Retrieves data from the specified SQL SELECT as a JSON object.
+     *
+     * @param file The file containing the SQL SELECT statement
+     * @return The selected data as a JSON object
+     */
     @Step(value = "db.select.file", args = {"sql:file"})
     public Object selectData(File file) {
         file = resourceLoader().absolutePath(file);
@@ -655,6 +1051,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
                 .map(nullSymbolMapper).collect(Collectors.toList()));
     }
 
+    /**
+     * Switches the active database connection to the one specified by the given alias.
+     *
+     * @param alias The alias of the database connection to switch to
+     * @throws WakamitiException if the specified connection alias does not exist
+     */
     @Step(value = "db.switch.connection", args = {"alias:text"})
     public void switchConnection(String alias) {
         if (!connections.containsKey(alias)) {
@@ -664,6 +1066,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         LOGGER.trace("Switched to '{}' connection", alias);
     }
 
+    /**
+     * Switches the active database connection to the default one.
+     * If no default connection is set, it selects the first available connection.
+     *
+     * @throws WakamitiException if the specified connection alias does not exist
+     */
     @Step("db.switch.connection.default")
     public void switchConnection() {
         Set<String> aliases = connections.keySet();
@@ -673,12 +1081,23 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         currentConnection.set(alias);
     }
 
-
+    /**
+     * Executes the specified SQL statements.
+     *
+     * @param document The SQL statements document
+     * @return The rows inserted or updated as a json object
+     */
     @Step("db.action.script.document")
     public Object executeSQLScript(Document document) {
         return json(executeScript(document.getContent(), enableCleanupUponCompletion));
     }
 
+    /**
+     * Executes the specified SQL statements.
+     *
+     * @param file The file containing the SQL statements
+     * @return The rows inserted or updated as a json object
+     */
     @Step(value = "db.action.script.file", args = {"script:file"})
     public Object executeSQLScript(File file) {
         file = resourceLoader().absolutePath(file);
@@ -686,11 +1105,23 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         return json(executeScript(resourceLoader().readFileAsString(file), enableCleanupUponCompletion));
     }
 
+    /**
+     * Executes the specified procedure and returns the result sets as JSON objects.
+     *
+     * @param document The procedure
+     * @return The results of the procedure execution
+     */
     @Step("db.action.procedure.document")
     public Object executeProcedure(Document document) {
         return json(executeCall(document.getContent(), enableCleanupUponCompletion));
     }
 
+    /**
+     * Executes the specified procedure and returns the result sets as JSON objects.
+     *
+     * @param file The file containing the procedure
+     * @return The results of the procedure execution
+     */
     @Step(value = "db.action.procedure.file", args = {"proc:file"})
     public Object executeProcedure(File file) {
         file = resourceLoader().absolutePath(file);
@@ -698,7 +1129,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         return json(executeCall(resourceLoader().readFileAsString(file), enableCleanupUponCompletion));
     }
 
-
+    /**
+     * Inserts rows from the provided DataTable into the specified table.
+     *
+     * @param table     The table name
+     * @param dataTable The data table containing the rows to be inserted
+     * @return The rows inserted as a json object
+     */
     @Step(value = "db.action.insert.from.data", args = "table:word")
     public Object insertFromDataTable(String table, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -708,6 +1145,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Inserts rows of the sheets of the provided XLS file into the database.
+     *
+     * @param file The XLS file containing the rows to be inserted
+     * @return The rows inserted as a json object
+     */
     @Step(value = "db.action.insert.from.xls", args = {"xls:file"})
     public Object insertFromXLSFile(File file) {
         file = resourceLoader().absolutePath(file);
@@ -721,6 +1164,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Inserts rows of the provided CSV file into the given database table.
+     *
+     * @param file  The CSV file containing the rows to be inserted
+     * @param table The name of the table where the data will be inserted
+     * @return The rows inserted as a json object
+     */
     @Step(value = "db.action.insert.from.csv", args = {"csv:file", "table:word"})
     public Object insertFromCSVFile(File file, String table) {
         file = resourceLoader().absolutePath(file);
@@ -732,6 +1182,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Deletes rows from the specified database table using the data provided
+     * in the given DataTable.
+     *
+     * @param table     The name of the table from which rows will be deleted
+     * @param dataTable The DataTable containing the rows to be deleted
+     */
     @Step(value = "db.action.delete.from.data", args = "table:word")
     public void deleteFromDataTable(String table, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -741,6 +1198,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Deletes rows from the specified database table using the data provided
+     * in the sheets of the given XLS file.
+     *
+     * @param file The XLS file containing the data to be deleted
+     */
     @Step(value = "db.action.delete.from.xls", args = "xls:file")
     public void deleteFromXLSFile(File file) {
         file = resourceLoader().absolutePath(file);
@@ -752,6 +1215,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Deletes rows from the specified database table using the data provided
+     * in the given CSV file.
+     *
+     * @param file  The CSV file containing the data to be deleted
+     * @param table The name of the table from which rows will be deleted
+     */
     @Step(value = "db.action.delete.from.csv", args = {"csv:file", "table:word"})
     public void deleteFromCSVFile(File file, String table) {
         file = resourceLoader().absolutePath(file);
@@ -763,11 +1233,24 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Deletes all rows from the given database table.
+     *
+     * @param table The name of the table to be cleared
+     */
     @Step(value = "db.action.clear.table.all", args = "table:word")
     public void clearTable(String table) {
         truncateTable(table, enableCleanupUponCompletion);
     }
 
+    /**
+     * Deletes rows from the specified database table where the given column matches
+     * the provided value.
+     *
+     * @param table  The name of the table from which rows will be cleared
+     * @param column The column name to match
+     * @param value  The value to match in the specified column
+     */
     @Step(value = "db.action.clear.table.row", args = {"table:word", "column:word", "value:text"})
     public void clearTableByRow(String table, String column, String value) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new Object[]{value}, nullSymbol)) {
@@ -777,12 +1260,24 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Deletes rows from the specified database table based on the provided
+     * SQL WHERE clause.
+     *
+     * @param table  The name of the table from which rows will be cleared
+     * @param clause The SQL WHERE clause
+     */
     @Step(value = "db.action.clear.table.where", args = {"table:word"})
     public void clearTableByClause(String table, Document clause) {
         deleteTable(table, clause.getContent(), enableCleanupUponCompletion);
     }
 
-
+    /**
+     * Asserts that a row with the specified ID exists in the given table.
+     *
+     * @param id    The ID of the row to be checked for existence
+     * @param table The name of the table
+     */
     @Step(value = "db.assert.table.exists.row.single.id", args = {"id:text", "table:word"})
     public void assertRowExistsBySingleId(String id, String table) {
         String keyColumn = primaryKey(table);
@@ -793,6 +1288,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified ID exists in the given table
+     * asynchronously within the specified time.
+     *
+     * @param id    The ID of the row to be checked for existence
+     * @param table The name of the table
+     * @param time  The maximum time to wait for the assertion to complete (in
+     *              seconds)
+     */
     @Step(value = "db.assert.table.exists.row.single.id.async", args = {"id:text", "table:word", "time:int"})
     public void assertRowExistsBySingleIdAsync(String id, String table, Integer time) {
         String keyColumn = primaryKey(table);
@@ -803,6 +1307,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified ID does not exist in the given table.
+     *
+     * @param id    The ID of the row to be checked for non-existence
+     * @param table The name of the table
+     */
     @Step(value = "db.assert.table.not.exists.row.single.id", args = {"id:text", "table:word"})
     public void assertRowNotExistsBySingleId(String id, String table) {
         String keyColumn = primaryKey(table);
@@ -813,6 +1323,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified ID does not exist in the given table
+     * asynchronously within the specified time.
+     *
+     * @param id    The ID of the row to be checked for non-existence
+     * @param table The name of the table
+     * @param time  The maximum time to wait for the assertion to complete (in
+     *              seconds)
+     */
     @Step(value = "db.assert.table.not.exists.row.single.id.async", args = {"id:text", "table:word", "time:int"})
     public void assertRowNotExistsBySingleIdAsync(String id, String table, Integer time) {
         String keyColumn = primaryKey(table);
@@ -823,6 +1342,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column exists in
+     * the table.
+     *
+     * @param table  The name of the table
+     * @param column The name of the column
+     * @param value  The value to be checked for existence
+     */
     @Step(value = "db.assert.table.exists.row.one.column", args = {"table:word", "column:word", "value:text"})
     public void assertRowExistsByOneColumn(String table, String column, String value) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
@@ -832,6 +1359,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column exists in
+     * the table asynchronously within the specified time.
+     *
+     * @param table  The name of the table
+     * @param column The name of the column
+     * @param value  The value to be checked for existence
+     * @param time   The maximum time to wait for the assertion to complete (in
+     *               seconds)
+     */
     @Step(value = "db.assert.table.exists.row.one.column.async",
             args = {"table:word", "column:word", "value:text", "time:int"})
     public void assertRowExistsByOneColumnAsync(String table, String column, String value, Integer time) {
@@ -842,6 +1379,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column does not
+     * exist in the table.
+     *
+     * @param table  The name of the table
+     * @param column The name of the column
+     * @param value  The value to be checked for non-existence
+     */
     @Step(value = "db.assert.table.not.exists.row.one.column", args = {"table:word", "column:word", "value:text"})
     public void assertRowNotExistsByOneColumn(String table, String column, String value) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
@@ -851,6 +1396,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that a row with the specified value in the given column does not
+     * exist in the table asynchronously within the specified time.
+     *
+     * @param table  The name of the table
+     * @param column The name of the column
+     * @param value  The value to be checked for non-existence
+     * @param time   The maximum time to wait for the assertion to complete (in
+     *               seconds)
+     */
     @Step(value = "db.assert.table.not.exists.row.one.column.async",
             args = {"table:word", "column:word", "value:text", "time:int"})
     public void assertRowNotExistsByOneColumnAsync(String table, String column, String value, Integer time) {
@@ -861,6 +1416,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts the row count with the specified value in the given column in
+     * the table.
+     *
+     * @param column  The name of the column
+     * @param value   The value to be checked for row count
+     * @param table   The name of the table
+     * @param matcher The assertion to be applied to the row count
+     */
     @Step(value = "db.assert.table.count.row.one.column",
             args = {"column:word", "value:text", "table:word", "matcher:long-assertion"})
     public void assertRowCountByOneColumn(String column, String value, String table, Assertion<Long> matcher) {
@@ -871,6 +1435,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts the row count with the specified value in the given column in the
+     * table asynchronously within the specified time.
+     *
+     * @param column  The name of the column
+     * @param value   The value to be checked for row count
+     * @param table   The name of the table
+     * @param matcher The assertion to be applied to the row count
+     * @param time    The maximum time to wait for the assertion to complete (in
+     *                seconds)
+     */
     @Step(value = "db.assert.table.count.row.one.column.async",
             args = {"column:word", "value:text", "table:word", "matcher:long-assertion", "time:int"})
     public void assertRowCountByOneColumnAsync(
@@ -882,6 +1457,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that at least one row exists in the given table that matches the
+     * provided WHERE clause.
+     *
+     * @param table  The name of the table
+     * @param clause The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.exists.sql.where", args = {"table:word"})
     public void assertRowExistsByClause(String table, Document clause) {
         if (!matcherNonEmpty().test(countBy(table, clause.getContent()))) {
@@ -892,6 +1474,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that at least one row exists in the given table
+     * that matches the provided WHERE clause.
+     *
+     * @param table  The name of the table
+     * @param time   The maximum time to wait for the assertion to complete (in
+     *               seconds)
+     * @param clause The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.exists.sql.where.async", args = {"table:word", "time:int"})
     public void assertRowExistsByClauseAsync(String table, Integer time, Document clause) {
         assertAsync(
@@ -903,6 +1494,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
                 )));
     }
 
+    /**
+     * Asserts that no row exists in the given table that matches the provided
+     * WHERE clause.
+     *
+     * @param table  The name of the table
+     * @param clause The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.not.exists.sql.where", args = {"table:word"})
     public void assertRowNotExistsByClause(String table, Document clause) {
         if (!matcherEmpty().test(countBy(table, clause.getContent()))) {
@@ -913,6 +1511,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that no row exists in the given table that matches
+     * the provided WHERE clause.
+     *
+     * @param table  The name of the table
+     * @param time   The maximum time to wait for the assertion to complete (in
+     *               seconds)
+     * @param clause The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.not.exists.sql.where.async", args = {"table:word", "time:int"})
     public void assertRowNotExistsByClauseAsync(String table, Integer time, Document clause) {
         assertAsync(() -> matcherEmpty().test(countBy(table, clause.getContent())), time, () ->
@@ -922,6 +1529,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
                 )));
     }
 
+    /**
+     * Asserts the count of rows in the given table that match the provided WHERE
+     * clause.
+     *
+     * @param table   The name of the table
+     * @param matcher The assertion to be applied on the count of rows
+     * @param clause  The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.count.sql.where", args = {"table:word", "matcher:long-assertion"})
     public void assertRowCountByClause(String table, Assertion<Long> matcher, Document clause) {
         long count = countBy(table, clause.getContent());
@@ -935,6 +1550,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously the count of rows in the given table that match the
+     * provided WHERE clause.
+     *
+     * @param table   The name of the table
+     * @param matcher The assertion to be applied on the count of rows
+     * @param time    The maximum time to wait for the assertion to complete (in
+     *                seconds)
+     * @param clause  The SQL WHERE clause
+     */
     @Step(value = "db.assert.table.count.sql.where.async", args = {"table:word", "matcher:long-assertion", "time:int"})
     public void assertRowCountByClauseAsync(String table, Assertion<Long> matcher, Integer time, Document clause) {
         AtomicLong result = new AtomicLong(0);
@@ -947,6 +1572,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
                 )));
     }
 
+    /**
+     * Asserts that the data provided in the DataTable exists in the given table.
+     *
+     * @param table     The name of the table
+     * @param dataTable The DataTable containing the data to be checked for existence
+     */
     @Step(value = "db.assert.table.exists.data", args = "table:word")
     public void assertDataTableExists(String table, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -956,6 +1587,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+
+    /**
+     * Asserts asynchronously that the specified DataTable exists in the database
+     * table within the given time frame.
+     *
+     * @param table     The name of the database table
+     * @param time      The maximum time to wait for the assertion to complete (in
+     *                  seconds)
+     * @param dataTable The DataTable to check for existence in the database table
+     */
     @Step(value = "db.assert.table.exists.data.async", args = {"table:word", "time:int"})
     public void assertDataTableExistsAsync(String table, Integer time, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -965,6 +1606,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the specified DataTable does not exist in the database table.
+     *
+     * @param table     The name of the database table
+     * @param dataTable The DataTable to check for absence in the database table
+     */
     @Step(value = "db.assert.table.not.exists.data", args = "table:word")
     public void assertDataTableNotExists(String table, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -974,6 +1621,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the specified DataTable does not exist in the
+     * database table within a given time frame.
+     *
+     * @param table     The name of the database table
+     * @param time      The maximum time to wait for the assertion to complete (in
+     *                  seconds)
+     * @param dataTable The DataTable to check for absence in the database table
+     */
     @Step(value = "db.assert.table.not.exists.data.async", args = {"table:word", "time:int"})
     public void assertDataTableNotExistsAsync(String table, Integer time, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -983,6 +1639,14 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts the count of rows in the specified DataTable against the provided
+     * assertion matcher.
+     *
+     * @param table     The name of the database table
+     * @param matcher   The assertion matcher for the row count
+     * @param dataTable The DataTable containing the rows to be counted
+     */
     @Step(value = "db.assert.table.count.data", args = {"table:word", "matcher:long-assertion"})
     public void assertDataTableCount(String table, Assertion<Long> matcher, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -992,6 +1656,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously the count of rows in the specified DataTable against
+     * the provided assertion matcher.
+     *
+     * @param table     The name of the database table
+     * @param matcher   The assertion matcher for the row count
+     * @param time      The maximum time to wait for the assertion to complete (in
+     *                  seconds)
+     * @param dataTable The DataTable containing the rows to be counted
+     */
     @Step(value = "db.assert.table.count.data.async", args = {"table:word", "matcher:long-assertion", "time:int"})
     public void assertDataTableCountAsync(String table, Assertion<Long> matcher, Integer time, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
@@ -1001,6 +1675,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file exist.
+     *
+     * @param file The XLS file containing the data rows to be asserted
+     */
     @Step(value = "db.assert.table.exists.xls", args = "xls:file")
     public void assertXLSFileExists(File file) {
         file = resourceLoader().absolutePath(file);
@@ -1015,6 +1694,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the data rows included in the specified XLS file exist.
+     *
+     * @param file The XLS file containing the data rows to be asserted
+     * @param time The maximum time to wait for the assertion to complete (in
+     *             seconds)
+     */
     @Step(value = "db.assert.table.exists.xls.async", args = {"xls:file", "time:int"})
     public void assertXLSFileExistsAsync(File file, Integer time) {
         file = resourceLoader().absolutePath(file);
@@ -1030,6 +1716,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the data rows included in the specified XLS file do not exist.
+     *
+     * @param file The XLS file containing the data rows to be asserted
+     */
     @Step(value = "db.assert.table.not.exists.xls", args = "xls:file")
     public void assertXLSFileNotExists(File file) {
         file = resourceLoader().absolutePath(file);
@@ -1044,6 +1735,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the data rows included in the specified XLS file do not exist.
+     *
+     * @param file The XLS file containing the data rows to be asserted
+     * @param time The maximum time to wait for the assertion to complete (in seconds)
+     */
     @Step(value = "db.assert.table.not.exists.xls.async", args = {"xls:file", "time:int"})
     public void assertXLSFileNotExistsAsync(File file, Integer time) {
         file = resourceLoader().absolutePath(file);
@@ -1059,6 +1756,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the data rows included in the specified CSV file exist.
+     *
+     * @param file  The CSV file containing the data rows to be asserted
+     * @param table The name of the table where data is to be asserted
+     */
     @Step(value = "db.assert.table.exists.csv", args = {"csv:file", "table:word"})
     public void assertCSVFileExists(File file, String table) {
         file = resourceLoader().absolutePath(file);
@@ -1071,6 +1774,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the data rows included in the specified CSV file exist.
+     *
+     * @param file  The CSV file containing the data rows to be asserted
+     * @param table The name of the table where data is to be asserted
+     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     */
     @Step(value = "db.assert.table.exists.csv.async", args = {"csv:file", "table:word", "time:int"})
     public void assertCSVFileExistsAsync(File file, String table, Integer time) {
         file = resourceLoader().absolutePath(file);
@@ -1083,6 +1793,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the data rows included in the specified CSV file do not exist.
+     *
+     * @param file  The CSV file containing the data rows to be asserted
+     * @param table The name of the table where data is to be asserted
+     */
     @Step(value = "db.assert.table.not.exists.csv", args = {"csv:file", "table:word"})
     public void assertCSVFileNotExists(File file, String table) {
         file = resourceLoader().absolutePath(file);
@@ -1095,6 +1811,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the data rows included in the specified CSV file do not exist.
+     *
+     * @param file  The CSV file containing the data rows to be asserted
+     * @param table The name of the table where data is to be asserted
+     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     */
     @Step(value = "db.assert.table.not.exists.csv.async", args = {"csv:file", "table:word", "time:int"})
     public void assertCSVFileNotExistsAsync(File file, String table, Integer time) {
         file = resourceLoader().absolutePath(file);
@@ -1107,6 +1830,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts that the specified database table is not empty.
+     *
+     * @param table The name of the database table to be asserted
+     */
     @Step(value = "db.assert.table.not.empty", args = "table:word")
     public void assertTableIsNotEmpty(String table) {
         if (!matcherNonEmpty().test(countBy(table, "1=1"))) {
@@ -1117,6 +1845,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the specified database table is not empty.
+     *
+     * @param table The name of the database table to be asserted
+     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     */
     @Step(value = "db.assert.table.not.empty.async", args = {"table:word", "time:int"})
     public void assertTableIsNotEmptyAsync(String table, Integer time) {
         assertAsync(() -> matcherNonEmpty().test(countBy(table, "1=1")), time, () ->
@@ -1127,6 +1861,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         );
     }
 
+    /**
+     * Asserts that the specified database table is empty.
+     *
+     * @param table The name of the database table to be asserted
+     */
     @Step(value = "db.assert.table.empty", args = "table:word")
     public void assertTableIsEmpty(String table) {
         if (!matcherEmpty().test(countBy(table, "1=1"))) {
@@ -1137,6 +1876,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         }
     }
 
+    /**
+     * Asserts asynchronously that the specified database table is empty.
+     *
+     * @param table The name of the database table to be asserted
+     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     */
     @Step(value = "db.assert.table.empty.async", args = {"table:word", "time:int"})
     public void assertTableIsEmptyAsync(String table, Integer time) {
         assertAsync(() -> matcherEmpty().test(countBy(table, "1=1")), time, () ->

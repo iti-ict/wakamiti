@@ -15,23 +15,14 @@ import slf4jansi.AnsiLogger;
 import java.util.stream.Collectors;
 
 
-@Extension(
-        provider = "es.iti.wakamiti",
-        name = "database-step-config",
-        version = "2.4",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
+/**
+ * A contributor class for configuring database-related parameters.
+ *
+ * @see ConfigContributor
+ */
+@Extension(provider = "es.iti.wakamiti", name = "database-step-config", version = "2.4",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {
-
-    private static final String PROPERTY_BASE = "database";
-    private static final String DATASOURCE_BASE = "datasource";
-
-    private static final String CONNECTION_URL = "connection.url";
-    private static final String CONNECTION_USERNAME = "connection.username";
-    private static final String CONNECTION_PASSWORD = "connection.password";
-    private static final String CONNECTION_DRIVER = "connection.driver";
-    private static final String METADATA_SCHEMA = "metadata.schema";
-    private static final String METADATA_CATALOG = "metadata.catalog";
 
     public static final String DATABASE_NULL_SYMBOL = "database.nullSymbol";
     public static final String DATABASE_ENABLE_CLEANUP_UPON_COMPLETION = "database.enableCleanupUponCompletion";
@@ -39,6 +30,14 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     /* The CSV format name as specified at {@link CSVFormat} */
     public static final String DATABASE_CSV_FORMAT = "database.csv.format";
     public static final String DATABASE_HEALTHCHECK = "database.healthcheck";
+    private static final String PROPERTY_BASE = "database";
+    private static final String DATASOURCE_BASE = "datasource";
+    private static final String CONNECTION_URL = "connection.url";
+    private static final String CONNECTION_USERNAME = "connection.username";
+    private static final String CONNECTION_PASSWORD = "connection.password";
+    private static final String CONNECTION_DRIVER = "connection.driver";
+    private static final String METADATA_SCHEMA = "metadata.schema";
+    private static final String METADATA_CATALOG = "metadata.catalog";
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             DATABASE_XLS_IGNORE_SHEET_PATTERN, "#.*",
             DATABASE_NULL_SYMBOL, "<null>",
@@ -47,21 +46,43 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
             DATABASE_HEALTHCHECK, "true"
     );
 
-    @Override
-    public boolean accepts(Object contributor) {
-        return contributor instanceof DatabaseStepContributor;
-    }
+//    /**
+//     * Checks if the contributor accepts the specified object.
+//     *
+//     * @param contributor The object to check
+//     * @return {@code true} if the object is an instance of DatabaseStepContributor, {@code false} otherwise
+//     */
+//    @Override
+//    public boolean accepts(Object contributor) {
+//        return contributor instanceof DatabaseStepContributor;
+//    }
 
+    /**
+     * Retrieves the default configuration.
+     *
+     * @return The default configuration
+     */
     @Override
     public Configuration defaultConfiguration() {
         return DEFAULTS;
     }
 
+    /**
+     * Retrieves the configurer for the database step contributor.
+     *
+     * @return The configurer
+     */
     @Override
     public Configurer<DatabaseStepContributor> configurer() {
         return this::configure;
     }
 
+    /**
+     * Configures the database step contributor with the provided configuration.
+     *
+     * @param contributor  The database step contributor
+     * @param configuration The configuration to apply
+     */
     private void configure(DatabaseStepContributor contributor, Configuration configuration) {
         Configuration databaseConfig = configuration.inner(PROPERTY_BASE);
 
@@ -86,6 +107,12 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
         AnsiLogger.addStyle("sql", "yellow,bold");
     }
 
+    /**
+     * Retrieves connection parameters from the provided configuration.
+     *
+     * @param configuration The configuration to extract connection parameters from
+     * @return The connection parameters
+     */
     private ConnectionParameters parameters(Configuration configuration) {
         ConnectionParameters connectionParameters = new ConnectionParameters();
         configuration.get(CONNECTION_URL, String.class).ifPresent(connectionParameters::url);

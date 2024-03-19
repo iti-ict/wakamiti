@@ -26,6 +26,11 @@ import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
 import static es.iti.wakamiti.database.jdbc.LogUtils.*;
 
 
+/**
+ * Provides methods to interact with a database, including querying
+ * tables, retrieving column information, performing data transformations,
+ * and executing SQL statements.
+ */
 public final class Database {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
@@ -36,7 +41,11 @@ public final class Database {
     private final SQLParser parser;
     private final Schema schema;
 
-
+    /**
+     * Constructs a new Database instance with the provided connection provider.
+     *
+     * @param connection The connection provider
+     */
     private Database(ConnectionProvider connection) {
         this.connection = connection;
         this.type = DatabaseType.fromUrl(connection.parameters().url());
@@ -54,10 +63,20 @@ public final class Database {
         return new Database(connection);
     }
 
+    /**
+     * Gets the type of the database.
+     *
+     * @return The database type
+     */
     public DatabaseType type() {
         return type;
     }
 
+    /**
+     * Gets the SQL parser associated with this database instance.
+     *
+     * @return The SQL parser
+     */
     public SQLParser parser() {
         return parser;
     }

@@ -219,7 +219,12 @@ public class SQLParser {
 
             @Override
             public void visit(Update update) {
-                result.set(Optional.of(createSelect(update.getTable(), update.getWhere())));
+                SelectItem<?>[] columns = update.getUpdateSets().stream()
+                        .flatMap(set -> set.getColumns().stream())
+                        .map(SelectItem::new)
+                        .toArray(SelectItem[]::new);
+
+                result.set(Optional.of(createSelect(update.getTable(), update.getWhere()/*, columns*/)));
             }
 
             @Override
@@ -243,6 +248,14 @@ public class SQLParser {
         return result;
     }
 
+    public Expression toWhere(List<UpdateSet> us) {
+        return new MultiAndExpression(us.stream().map(this::toWhere).collect(Collectors.toList()));
+    }
+
+    public Expression toWhere(UpdateSet us) {
+        return createWhere( new ArrayList<>(us.getColumns()), us.getValues());
+    }
+
     public void formatColumns(Expression expression, java.util.function.Function<String, String> mapper) {
         if (Objects.isNull(expression)) return;
         expression.accept(new ExpressionVisitorAdapter() {
@@ -252,17 +265,17 @@ public class SQLParser {
         });
     }
 
-    private PlainSelect createSelect(Table table, SelectItem<?> item) {
-        return createSelect(table, item, null);
+    private PlainSelect createSelect(Table table, SelectItem<?>... items) {
+        return createSelect(table, null, items);
     }
 
     private PlainSelect createSelect(Table table, Expression where) {
-        return createSelect(table, new SelectItem<>(new AllColumns()), where);
+        return createSelect(table, where, new SelectItem<>(new AllColumns()));
     }
 
-    private PlainSelect createSelect(Table table, SelectItem<?> item, Expression where) {
+    private PlainSelect createSelect(Table table, Expression where, SelectItem<?>... items) {
         PlainSelect body = new PlainSelect();
-        body.addSelectItems(item);
+        body.addSelectItems(items);
         body.setFromItem(table);
         if (where != null) body.setWhere(where);
         return body;
@@ -335,8 +348,8 @@ public class SQLParser {
         List<Column> columnList = Stream.of(columns)//.map(this::format)
                 .map(Column::new).collect(Collectors.toCollection(LinkedList::new));
         Expression[] expressions = Stream.of(values).map(this::toExpression).toArray(Expression[]::new);
-        return createSelect(new Table(table), new SelectItem<>(count),
-                createWhere(columnList, new ExpressionList<>(expressions)));
+        return createSelect(new Table(table),
+                createWhere(columnList, new ExpressionList<>(expressions)), new SelectItem<>(count));
     }
 
     public Delete toDelete(String table) {
@@ -367,14 +380,18 @@ public class SQLParser {
         return insert;
     }
 
-    public Update toUpdate(String table, Map<String, Object> sets, Map<String, Object> where) {
+    public Update toUpdate(String table, Map<String, Object> sets, Expression where) {
         Update update = new Update();
         update.setTable(new Table(this.format(table)));
         sets.entrySet().stream()
                 .map(set -> new UpdateSet(new Column(set.getKey()), toExpression(set.getValue())))
                 .forEach(update::addUpdateSet);
-        update.setWhere(createWhere(where));
+        update.setWhere(where);
         return update;
+    }
+
+    public Update toUpdate(String table, Map<String, Object> sets, Map<String, Object> where) {
+        return toUpdate(table, sets, createWhere(where));
     }
 
     public Delete toDelete(String table, Map<String, Object> where) {
@@ -384,7 +401,7 @@ public class SQLParser {
         return delete;
     }
 
-    private Expression createWhere(Map<String, Object> where) {
+    public Expression createWhere(Map<String, Object> where) {
         List<Column> columns = where.keySet().stream()
                 .map(this::format).map(Column::new)
                 .collect(Collectors.toCollection(LinkedList::new));

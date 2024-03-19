@@ -17,17 +17,32 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
 import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
 
 
+/**
+ * Represents a database update operation, used to execute SQL statements
+ * that modify data in a database.
+ */
 public class Update extends Sentence<PreparedStatement> {
-
 
     private Update(String sql, Database db, PreparedStatement statement) {
         super(db, statement, sql);
     }
 
+    /**
+     * Executes the update operation without any additional action.
+     *
+     * @return The Update instance
+     */
     public Update execute() {
         return execute(null);
     }
 
+    /**
+     * Executes the update operation and performs the specified action with
+     * the result count.
+     *
+     * @param action The action to perform with the result count
+     * @return The Update instance
+     */
     public Update execute(Consumer<Integer> action) {
         try {
             traceSQL(sql);
@@ -40,6 +55,9 @@ public class Update extends Sentence<PreparedStatement> {
         }
     }
 
+    /**
+     * Builder class for constructing instances of Update.
+     */
     public static final class Builder {
 
         private final Database db;
@@ -50,6 +68,11 @@ public class Update extends Sentence<PreparedStatement> {
             this.sql = sql;
         }
 
+        /**
+         * Prepares the Update operation by creating a PreparedStatement.
+         *
+         * @return The prepared Update instance
+         */
         public Update prepare() {
             try {
                 return new Update(sql, db, db.connection().prepareStatement(sql, Statement.NO_GENERATED_KEYS));
@@ -58,14 +81,25 @@ public class Update extends Sentence<PreparedStatement> {
             }
         }
 
+        /**
+         * Executes the Update operation after preparation.
+         *
+         * @return The Update instance after execution
+         */
         public Update execute() {
             return prepare().execute();
         }
 
+        /**
+         * Executes the Update operation after preparation and performs the
+         * specified action with the result count.
+         *
+         * @param action The action to perform with the result count
+         * @return The Update instance after execution
+         */
         public Update execute(Consumer<Integer> action) {
             return prepare().execute(action);
         }
-
 
     }
 
