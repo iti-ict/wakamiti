@@ -28,36 +28,23 @@ public class AmqpConfigContributor implements ConfigContributor<AmqpStepContribu
     public static final String AMQP_CONNECTION_URL = "amqp.connection.url";
     public static final String AMQP_CONNECTION_USERNAME = "amqp.connection.username";
     public static final String AMQP_CONNECTION_PASSWORD = "amqp.connection.password";
-
     public static final String AMQP_QUEUE_DURABLE = "amqp.queue.durable";
     public static final String AMQP_QUEUE_EXCLUSIVE = "amqp.queue.exclusive";
     public static final String AMQP_QUEUE_AUTODELETE = "amqp.queue.autodelete";
 
-    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-            AMQP_QUEUE_DURABLE,  Boolean.FALSE.toString(),
-            AMQP_QUEUE_EXCLUSIVE,  Boolean.FALSE.toString(),
-            AMQP_QUEUE_AUTODELETE, Boolean.FALSE.toString()
-    );
-
-
-    @Override
-    public boolean accepts(Object contributor) {
-        return contributor instanceof AmqpStepContributor;
-    }
-
     @Override
     public Configuration defaultConfiguration() {
-        return DEFAULTS;
+        return Configuration.factory().fromPairs(
+                AMQP_QUEUE_DURABLE,  Boolean.FALSE.toString(),
+                AMQP_QUEUE_EXCLUSIVE,  Boolean.FALSE.toString(),
+                AMQP_QUEUE_AUTODELETE, Boolean.FALSE.toString()
+        );
     }
-
-
 
     @Override
     public Configurer<AmqpStepContributor> configurer() {
         return this::configure;
     }
-
-
 
     private void configure(AmqpStepContributor contributor, Configuration configuration) {
         contributor.setConnectionParams(new AmqpConnectionParams(

@@ -9,12 +9,8 @@ import java.util.Arrays;
 
 import static java.lang.String.format;
 
-@Extension(
-        provider = "es.iti.wakamiti",
-        name = "file-uploader-configurator",
-        version = "2.4",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
+@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.4",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
     private static final String PREFIX = "fileUploader";
@@ -36,10 +32,10 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     }
 
 
-    @Override
-    public boolean accepts(Object contributor) {
-        return contributor instanceof AbstractFilesUploader;
-    }
+//    @Override
+//    public boolean accepts(Object contributor) {
+//        return contributor instanceof AbstractFilesUploader;
+//    }
 
 
     @Override

@@ -8,29 +8,22 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.nio.file.Path;
 
-@Extension(
-    provider =  "es.iti.wakamiti",
-    name = "appium-config",
-    version = "2.4",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
+@Extension(provider =  "es.iti.wakamiti", name = "appium-config", version = "2.4",
+    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class AppiumConfigContributor implements ConfigContributor<AppiumStepContributor> {
 
     public static final String APPIUM_CAPABILITIES = "appium.capabilities";
     public static final String APPIUM_URL = "appium.url";
 
-    private static final Configuration DEFAULTS = Configuration.factory().empty();
 
-
-    @Override
-    public boolean accepts(Object contributor) {
-        return contributor instanceof AppiumStepContributor;
-    }
-
+//    @Override
+//    public boolean accepts(Object contributor) {
+//        return contributor instanceof AppiumStepContributor;
+//    }
 
     @Override
     public Configuration defaultConfiguration() {
-        return DEFAULTS;
+        return Configuration.factory().empty();
     }
 
 
