@@ -675,15 +675,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
 
     @Step("db.action.script.document")
-    public void executeSQLScript(Document document) {
-        executeScript(document.getContent(), enableCleanupUponCompletion);
+    public Object executeSQLScript(Document document) {
+        return json(executeScript(document.getContent(), enableCleanupUponCompletion));
     }
 
     @Step(value = "db.action.script.file", args = {"script:file"})
-    public void executeSQLScript(File file) {
+    public Object executeSQLScript(File file) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
-        executeScript(resourceLoader().readFileAsString(file), enableCleanupUponCompletion);
+        return json(executeScript(resourceLoader().readFileAsString(file), enableCleanupUponCompletion));
     }
 
     @Step("db.action.procedure.document")
@@ -700,31 +700,33 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
 
     @Step(value = "db.action.insert.from.data", args = "table:word")
-    public void insertFromDataTable(String table, DataTable dataTable) {
+    public Object insertFromDataTable(String table, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            insertDataSet(dataSet, enableCleanupUponCompletion);
+            return json(insertDataSet(dataSet, enableCleanupUponCompletion));
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
     }
 
     @Step(value = "db.action.insert.from.xls", args = {"xls:file"})
-    public void insertFromXLSFile(File file) {
+    public Object insertFromXLSFile(File file) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
-            multiDataSet.forEach(dataSet -> insertDataSet(dataSet, enableCleanupUponCompletion));
+            List<Map<String, String>> results = new LinkedList<>();
+            multiDataSet.forEach(dataSet -> results.addAll(insertDataSet(dataSet, enableCleanupUponCompletion)));
+            return json(results);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
     }
 
     @Step(value = "db.action.insert.from.csv", args = {"csv:file", "table:word"})
-    public void insertFromCSVFile(File file, String table) {
+    public Object insertFromCSVFile(File file, String table) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
-            insertDataSet(dataSet, enableCleanupUponCompletion);
+            return json(insertDataSet(dataSet, enableCleanupUponCompletion));
         } catch (IOException e) {
             throw new WakamitiException(e);
         }

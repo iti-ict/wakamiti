@@ -6,13 +6,13 @@
 package es.iti.wakamiti.database;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.database.exception.PrimaryKeyNotFoundException;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Select;
@@ -403,7 +403,7 @@ public class DatabaseStepContributorTest {
         Table client = Table.CLIENT;
 
         // Act
-        contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
+        JsonNode inserted = (JsonNode) contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
                 client.columns(),
                 new String[]{"2", "Ester", "Colero", "1", "2000-02-01"},
                 new String[]{"3", "Elca", "Puio", "1", "<null>"}
@@ -412,8 +412,34 @@ public class DatabaseStepContributorTest {
 
         // Check
         assertThat(contributor.cleanUpOperations.size()).isEqualTo(2);
-        try (Select<String[]> select = Database.from(contributor.connection())
-                .select("SELECT * FROM client").get(DatabaseHelper::format)) {
+
+        Database db = Database.from(contributor.connection());
+        String table = db.table("client");
+        assertThat(inserted).isInstanceOf(ArrayNode.class);
+        assertThat(inserted).isNotEmpty();
+        assertThat(inserted).hasSize(2);
+        assertThat(inserted.get(0).get(db.column(table, "id")).asText())
+                .isEqualTo("2");
+        assertThat(inserted.get(0).get(db.column(table, "first_name")).asText())
+                .isEqualTo("Ester");
+        assertThat(inserted.get(0).get(db.column(table, "second_name")).asText())
+                .isEqualTo("Colero");
+        assertThat(inserted.get(0).get(db.column(table, "active")).asText())
+                .isEqualTo("1");
+        assertThat(inserted.get(0).get(db.column(table, "birth_date")).asText())
+                .isEqualTo("2000-02-01");
+        assertThat(inserted.get(1).get(db.column(table, "id")).asText())
+                .isEqualTo("3");
+        assertThat(inserted.get(1).get(db.column(table, "first_name")).asText())
+                .isEqualTo("Elca");
+        assertThat(inserted.get(1).get(db.column(table, "second_name")).asText())
+                .isEqualTo("Puio");
+        assertThat(inserted.get(1).get(db.column(table, "active")).asText())
+                .isEqualTo("1");
+        assertThat(inserted.get(1).get(db.column(table, "birth_date")).asText())
+                .isEqualTo("null");
+
+        try (Select<String[]> select = db.select("SELECT * FROM client").get(DatabaseHelper::format)) {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).doesNotContain(
@@ -856,7 +882,7 @@ public class DatabaseStepContributorTest {
         contributor.cleanUp();
     }
 
-    @Test(expected = PrimaryKeyNotFoundException.class)
+    @Test
     public void testExecuteSQLScriptWhenEnabledCleanupAndUpdateWithNoId() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -869,21 +895,9 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        try {
-            String script = "UPDATE other SET something = 37 WHERE something = 47";
-            contributor.executeSQLScript(new Document(script));
-            contributor.cleanUp();
-        } catch (WakamitiException e) {
-            Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
-                            "Cannot determine primary key for table '%s'. " +
-                                    "Please, disable the 'database.enableCleanupUponCompletion' property",
-                            db.table("client")));
-            assertThat(e.getMessage()).isEqualTo("Cannot determine primary key for table 'other'. " +
-                    "Please, disable the 'database.enableCleanupUponCompletion' property");
-            throw e;
-        }
+        String script = "UPDATE other SET something = 37 WHERE something = 47";
+        contributor.executeSQLScript(new Document(script));
+        contributor.cleanUp();
     }
 
     @Test
