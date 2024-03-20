@@ -46,17 +46,6 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
             DATABASE_HEALTHCHECK, "true"
     );
 
-//    /**
-//     * Checks if the contributor accepts the specified object.
-//     *
-//     * @param contributor The object to check
-//     * @return {@code true} if the object is an instance of DatabaseStepContributor, {@code false} otherwise
-//     */
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return contributor instanceof DatabaseStepContributor;
-//    }
-
     /**
      * Retrieves the default configuration.
      *

@@ -36,12 +36,6 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
         return DEFAULTS;
     }
 
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return HtmlReportGenerator.class.equals(contributor.getClass());
-//    }
-
-
     @Override
     public Configurer<HtmlReportGenerator> configurer() {
         return this::configure;

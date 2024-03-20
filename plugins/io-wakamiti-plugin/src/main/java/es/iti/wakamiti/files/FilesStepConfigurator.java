@@ -25,11 +25,6 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
     public static String FILES_LINKS = "files.links";
     public static String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
 
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return contributor instanceof FilesStepContributor;
-//    }
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(

@@ -15,12 +15,6 @@ public class AppiumConfigContributor implements ConfigContributor<AppiumStepCont
     public static final String APPIUM_CAPABILITIES = "appium.capabilities";
     public static final String APPIUM_URL = "appium.url";
 
-
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return contributor instanceof AppiumStepContributor;
-//    }
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().empty();

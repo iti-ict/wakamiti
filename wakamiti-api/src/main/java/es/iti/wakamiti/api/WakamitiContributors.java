@@ -304,9 +304,9 @@ public class WakamitiContributors {
     }
 
     private Optional<Double> extractVersion(String version) {
-        Matcher matcher = Pattern.compile("^(\\d+\\.\\d+)(\\.\\d+.*)?$").matcher(version);
-        if (matcher.find()) {
-            return Optional.of(Double.valueOf(matcher.group(1)));
+        if (version.matches("^(\\d+\\.\\d+)(\\.\\d+.*)?$")) {
+            String[] parts = version.split("\\.");
+            return Optional.of(Double.valueOf(String.format("%s.%s", parts[0], parts[1])));
         }
         return Optional.empty();
     }

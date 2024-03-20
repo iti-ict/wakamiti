@@ -56,11 +56,6 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         RestAssured.config = config;
     }
 
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return RestStepContributor.class.isAssignableFrom(contributor.getClass());
-//    }
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(

@@ -31,13 +31,6 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
         );
     }
 
-
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return contributor instanceof AbstractFilesUploader;
-//    }
-
-
     @Override
     public Configurer<AbstractFilesUploader> configurer() {
         return this::configure;

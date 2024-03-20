@@ -10,12 +10,6 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class CucumberExporterConfig implements ConfigContributor<CucumberExporter> {
 
-//    @Override
-//    public boolean accepts(Object contributor) {
-//        return contributor instanceof CucumberExporter;
-//    }
-
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
