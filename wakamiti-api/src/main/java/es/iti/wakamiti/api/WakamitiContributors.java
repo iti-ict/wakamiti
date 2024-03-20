@@ -282,19 +282,12 @@ public class WakamitiContributors {
      * @param contributor The contributor to check.
      */
     private void checkVersion(Contributor contributor) {
-        Pattern regex = Pattern.compile("^(\\d+\\.\\d+)(\\.\\d+.*)?$");
         String coreVersion = WakamitiAPI.instance().version();
         Optional<Double> coreVersionOptional = Optional.ofNullable(coreVersion)
-                .map(regex::matcher)
-                .filter(Matcher::find)
-                .map(matcher -> matcher.group(1))
-                .map(Double::valueOf);
+                .flatMap(this::extractVersion);
         coreVersionOptional.ifPresentOrElse(v ->
                         Optional.ofNullable(contributor.extensionMetadata().version())
-                                .map(regex::matcher)
-                                .filter(Matcher::find)
-                                .map(matcher -> matcher.group(1))
-                                .map(Double::valueOf)
+                                .flatMap(this::extractVersion)
                                 .filter(version -> v < version)
                                 .ifPresent(version -> {
                                     String message = String.format(
@@ -308,5 +301,13 @@ public class WakamitiContributors {
                     }
                 }
         );
+    }
+
+    private Optional<Double> extractVersion(String version) {
+        Matcher matcher = Pattern.compile("^(\\d+\\.\\d+)(\\.\\d+.*)?$").matcher(version);
+        if (matcher.find()) {
+            return Optional.of(Double.valueOf(matcher.group(1)));
+        }
+        return Optional.empty();
     }
 }
