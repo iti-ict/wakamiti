@@ -252,6 +252,7 @@ public class SQLParser {
     public void formatColumns(Expression expression, java.util.function.Function<String, String> mapper) {
         if (Objects.isNull(expression)) return;
         expression.accept(new ExpressionVisitorAdapter() {
+            @Override
             public void visit(Column column) {
                 column.setColumnName(mapper.apply(column.getColumnName()));
             }
@@ -417,7 +418,7 @@ public class SQLParser {
      */
     public Select sqlSelectCountFrom(String table, String[] columns, Object[] values) {
         Function count = new Function().withName(COUNT).withParameters(new AllColumns());
-        List<Column> columnList = Stream.of(columns)//.map(this::format)
+        List<Column> columnList = Stream.of(columns)
                 .map(Column::new).collect(Collectors.toCollection(LinkedList::new));
         Expression[] expressions = Stream.of(values).map(this::toExpression).toArray(Expression[]::new);
         return createSelect(new Table(table),

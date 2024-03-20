@@ -113,7 +113,8 @@ public final class Database {
      */
     public String table(String table) {
         return schema.tables.computeIfAbsent(parser.unquote(table), k -> {
-            LOGGER.debug("Retrieving the table {}", parser.unquote(table));
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Retrieving the table {}", parser.unquote(table));
             try (ResultSet rs = connection().getMetaData()
                     .getTables(catalog(), schema(), "_".repeat(parser.unquote(table).length()), null)) {
                 String name = null;
@@ -143,7 +144,8 @@ public final class Database {
      */
     public String column(final String table, String column) {
         Function<String, String> retrieve = col -> {
-            LOGGER.trace("Retrieving column {} of table {}", col, table(table));
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Retrieving column {} of table {}", col, table(table));
             try (ResultSet rs = connection().getMetaData()
                     .getColumns(catalog(), schema(), table(table), "_".repeat(parser.unquote(column).length()))) {
                 String name = null;

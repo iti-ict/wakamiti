@@ -116,7 +116,7 @@ public class DatabaseSupport {
      */
     public void setEnableCleanupUponCompletion(boolean enableCleanupUponCompletion) {
         this.enableCleanupUponCompletion = enableCleanupUponCompletion;
-        LOGGER.trace("Cleanup " + (enableCleanupUponCompletion ? "enabled" : "disabled"));
+        LOGGER.trace("Cleanup {}", (enableCleanupUponCompletion ? "enabled" : "disabled"));
     }
 
     /**
@@ -384,7 +384,7 @@ public class DatabaseSupport {
                 Stream.of(columns).map(c -> db.parser().format(db.column(db.table(table), c)))
                         .toArray(String[]::new)).toString();
         try (Select<String[]> select = db.select(sql).get(DatabaseHelper::format)) {
-            return select.map(row -> new Record(row, IntStream.range(0, values.length)
+            Optional<Record> record = select.map(row -> new Record(row, IntStream.range(0, values.length)
                             .mapToDouble(i -> {
                                 String expectedValue = Optional.ofNullable(values[i])
                                         .map(DatabaseHelper::toString).orElse("");
@@ -396,9 +396,9 @@ public class DatabaseSupport {
                                 return (maxLength - distance) / (double) maxLength;
                             }).sum() / values.length))
                     .filter(rec -> rec.score() > 0.7)
-                    .reduce((rec1, rec2) -> rec1.score() > rec2.score() ? rec1 : rec2)
-                    .stream().peek(rec -> LOGGER.trace("Found {}", rec)).findFirst()
-                    .map(rec -> toMap(select.getColumnNames(), rec.data()));
+                    .reduce((rec1, rec2) -> rec1.score() > rec2.score() ? rec1 : rec2);
+            record.ifPresent(rec -> LOGGER.trace("Found {}", rec));
+            return record.map(rec -> toMap(select.getColumnNames(), rec.data()));
         }
     }
 
@@ -888,7 +888,7 @@ public class DatabaseSupport {
                     }).toArray(Object[][]::new);
                     columns = cols.get();
                 } catch (NoSuchElementException e) {
-                    LOGGER.warn("No results found in table " + table);
+                    LOGGER.warn("No results found in table {}", table);
                     result = new EmptyDataSet(table);
                     return;
                 }
@@ -900,7 +900,7 @@ public class DatabaseSupport {
                     columns = ds.columns();
                     values = ds.allValues();
                 } catch (NoSuchElementException e) {
-                    LOGGER.warn("No results found in table " + table);
+                    LOGGER.warn("No results found in table {}", table);
                     result = new EmptyDataSet(table);
                     return;
                 }
@@ -908,6 +908,7 @@ public class DatabaseSupport {
             result = new MapDataSet(table, columns, values, nullSymbol);
         }
 
+        @Override
         public void visit(net.sf.jsqlparser.statement.update.Update update) {
             Database db = Database.from(connection());
             String table = db.table(update.getTable().getName());

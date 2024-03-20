@@ -1346,12 +1346,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified value in the given column exists in
      * the table.
      *
-     * @param table  The name of the table
      * @param column The name of the column
      * @param value  The value to be checked for existence
+     * @param table  The name of the table
      */
-    @Step(value = "db.assert.table.exists.row.one.column", args = {"table:word", "column:word", "value:text"})
-    public void assertRowExistsByOneColumn(String table, String column, String value) {
+    @Step(value = "db.assert.table.exists.row.one.column", args = {"column:word", "value:text", "table:word"})
+    public void assertRowExistsByOneColumn(String column, String value, String table) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
             assertNonEmpty(dataSet);
         } catch (IOException e) {
@@ -1370,8 +1370,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      *               seconds)
      */
     @Step(value = "db.assert.table.exists.row.one.column.async",
-            args = {"table:word", "column:word", "value:text", "time:int"})
-    public void assertRowExistsByOneColumnAsync(String table, String column, String value, Integer time) {
+            args = {"column:word", "value:text", "table:word", "time:int"})
+    public void assertRowExistsByOneColumnAsync(String column, String value, String table, Integer time) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
             assertNonEmptyAsync(dataSet, time);
         } catch (IOException e) {
@@ -1383,12 +1383,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified value in the given column does not
      * exist in the table.
      *
-     * @param table  The name of the table
      * @param column The name of the column
      * @param value  The value to be checked for non-existence
+     * @param table  The name of the table
      */
-    @Step(value = "db.assert.table.not.exists.row.one.column", args = {"table:word", "column:word", "value:text"})
-    public void assertRowNotExistsByOneColumn(String table, String column, String value) {
+    @Step(value = "db.assert.table.not.exists.row.one.column", args = {"column:word", "value:text", "table:word"})
+    public void assertRowNotExistsByOneColumn(String column, String value, String table) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
             assertEmpty(dataSet);
         } catch (IOException e) {
@@ -1400,15 +1400,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified value in the given column does not
      * exist in the table asynchronously within the specified time.
      *
-     * @param table  The name of the table
      * @param column The name of the column
      * @param value  The value to be checked for non-existence
+     * @param table  The name of the table
      * @param time   The maximum time to wait for the assertion to complete (in
      *               seconds)
      */
     @Step(value = "db.assert.table.not.exists.row.one.column.async",
-            args = {"table:word", "column:word", "value:text", "time:int"})
-    public void assertRowNotExistsByOneColumnAsync(String table, String column, String value, Integer time) {
+            args = {"column:word", "value:text", "table:word", "time:int"})
+    public void assertRowNotExistsByOneColumnAsync(String column, String value, String table, Integer time) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
             assertEmptyAsync(dataSet, time);
         } catch (IOException e) {

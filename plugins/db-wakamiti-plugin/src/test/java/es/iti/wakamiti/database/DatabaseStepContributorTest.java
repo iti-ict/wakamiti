@@ -1215,7 +1215,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByOneColumn("client", "second_name", "Melano");
+        contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
 
         // Check
         assertThatNoException();
@@ -1235,7 +1235,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowExistsByOneColumn("client", "second_name", "Otro");
+            contributor.assertRowExistsByOneColumn("second_name", "Otro", "client");
 
             // Check
         } catch (AssertionError e) {
@@ -1262,7 +1262,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByOneColumn("xxxx", "second_name", "Melano");
+        contributor.assertRowExistsByOneColumn("second_name", "Melano", "xxxx");
 
         // Check
         // Exception is thrown
@@ -1281,7 +1281,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByOneColumn("client", "xxxx", "Melano");
+        contributor.assertRowExistsByOneColumn("xxxx", "Melano", "client");
 
         // Check
         // Exception is thrown
@@ -1300,7 +1300,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByOneColumnAsync("client", "second_name", "Melano", 1);
+        contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", 1);
 
         // Check
         assertThatNoException();
@@ -1320,7 +1320,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowExistsByOneColumnAsync("client", "second_name", "Otro", 1);
+            contributor.assertRowExistsByOneColumnAsync("second_name", "Otro", "client", 1);
 
             // Check
         } catch (AssertionError e) {
@@ -1347,7 +1347,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByOneColumn("client", "second_name", "Otro");
+        contributor.assertRowNotExistsByOneColumn("second_name", "Otro", "client");
 
         // Check
         assertThatNoException();
@@ -1367,7 +1367,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowNotExistsByOneColumn("client", "second_name", "Melano");
+            contributor.assertRowNotExistsByOneColumn("second_name", "Melano", "client");
 
             // Check
         } catch (AssertionError e) {
@@ -1394,7 +1394,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByOneColumn("xxxx", "second_name", "Otro");
+        contributor.assertRowNotExistsByOneColumn("second_name", "Otro", "xxxx");
 
         // Check
         // Exception is thrown
@@ -1413,7 +1413,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByOneColumn("client", "xxxx", "Otro");
+        contributor.assertRowNotExistsByOneColumn("xxxx", "Otro", "client");
 
         // Check
         // Exception is thrown
@@ -1432,7 +1432,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByOneColumnAsync("client", "second_name", "Otro", 1);
+        contributor.assertRowNotExistsByOneColumnAsync("second_name", "Otro", "client", 1);
 
         // Check
         assertThatNoException();
@@ -1452,7 +1452,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowNotExistsByOneColumnAsync("client", "second_name", "Melano", 1);
+            contributor.assertRowNotExistsByOneColumnAsync("second_name", "Melano", "client", 1);
 
             // Check
         } catch (AssertionError e) {

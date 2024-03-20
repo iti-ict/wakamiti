@@ -35,6 +35,10 @@ public final class DatabaseHelper {
      */
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private DatabaseHelper() {
+        // prevents instantiation
+    }
+
     /**
      * Checks if a string represents a date or date time.
      *
