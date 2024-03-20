@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.hamcrest.Matchers.comparesEqualTo;
 
 
@@ -86,7 +87,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test
@@ -942,7 +943,7 @@ public class DatabaseStepContributorTest {
         contributor.cleanUp();
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test
@@ -963,7 +964,7 @@ public class DatabaseStepContributorTest {
         contributor.cleanUp();
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test
@@ -1010,7 +1011,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsBySingleId("1", "client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1076,7 +1077,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsBySingleIdAsync("1", "client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1123,7 +1124,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsBySingleId("2", "client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1170,7 +1171,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsBySingleIdAsync("2", "client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1217,7 +1218,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsByOneColumn("client", "second_name", "Melano");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1302,7 +1303,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsByOneColumnAsync("client", "second_name", "Melano", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1349,7 +1350,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsByOneColumn("client", "second_name", "Otro");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1434,7 +1435,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsByOneColumnAsync("client", "second_name", "Otro", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1482,7 +1483,7 @@ public class DatabaseStepContributorTest {
                 new MatcherAssertion<>(comparesEqualTo(1L)));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1571,7 +1572,7 @@ public class DatabaseStepContributorTest {
                 new MatcherAssertion<>(comparesEqualTo(1L)), 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1618,7 +1619,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsByClause("client", new Document("birth_date > '1980-12-20'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1702,7 +1703,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-20'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1748,7 +1749,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsByClause("client", new Document("birth_date > '1980-12-30'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1832,7 +1833,7 @@ public class DatabaseStepContributorTest {
         contributor.assertRowNotExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-30'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1879,7 +1880,7 @@ public class DatabaseStepContributorTest {
                 new Document("birth_date > '1980-12-20'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -1967,7 +1968,7 @@ public class DatabaseStepContributorTest {
                 new Document("birth_date > '1980-12-20'"));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2017,7 +2018,7 @@ public class DatabaseStepContributorTest {
         }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2160,7 +2161,7 @@ public class DatabaseStepContributorTest {
         }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2260,7 +2261,7 @@ public class DatabaseStepContributorTest {
         }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2316,7 +2317,7 @@ public class DatabaseStepContributorTest {
         }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2373,7 +2374,7 @@ public class DatabaseStepContributorTest {
                 }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2431,7 +2432,7 @@ public class DatabaseStepContributorTest {
                 }));
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2486,7 +2487,7 @@ public class DatabaseStepContributorTest {
         contributor.assertXLSFileExists(file);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2580,7 +2581,7 @@ public class DatabaseStepContributorTest {
         contributor.assertXLSFileExistsAsync(file, 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2674,7 +2675,7 @@ public class DatabaseStepContributorTest {
         contributor.assertXLSFileNotExists(file);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2726,7 +2727,7 @@ public class DatabaseStepContributorTest {
         contributor.assertXLSFileNotExistsAsync(file, 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2778,7 +2779,7 @@ public class DatabaseStepContributorTest {
         contributor.assertCSVFileExists(file, "client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2872,7 +2873,7 @@ public class DatabaseStepContributorTest {
         contributor.assertCSVFileExistsAsync(file, "client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -2965,7 +2966,7 @@ public class DatabaseStepContributorTest {
         contributor.assertCSVFileNotExists(file, "client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -3017,7 +3018,7 @@ public class DatabaseStepContributorTest {
         contributor.assertCSVFileNotExistsAsync(file, "client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -3068,7 +3069,7 @@ public class DatabaseStepContributorTest {
         contributor.assertTableIsNotEmpty("client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -3133,7 +3134,7 @@ public class DatabaseStepContributorTest {
         contributor.assertTableIsNotEmptyAsync("client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -3181,7 +3182,7 @@ public class DatabaseStepContributorTest {
         contributor.assertTableIsEmpty("client");
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)
@@ -3226,7 +3227,7 @@ public class DatabaseStepContributorTest {
         contributor.assertTableIsEmpty("xxxx");
 
         // Check
-        // Exception is thrown
+        assertThatNoException();
     }
 
     @Test
@@ -3246,7 +3247,7 @@ public class DatabaseStepContributorTest {
         contributor.assertTableIsEmptyAsync("client", 1);
 
         // Check
-        // No exception is thrown
+        assertThatNoException();
     }
 
     @Test(expected = WakamitiException.class)

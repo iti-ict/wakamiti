@@ -1709,7 +1709,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
                 Duration duration = assertNonEmptyAsync(dataSet, time);
-                time -= Long.valueOf(duration.toSeconds()).intValue();
+                time -= (int) duration.toSeconds();
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -1749,7 +1749,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
                 Duration duration = assertEmptyAsync(dataSet, time);
-                time -= Long.valueOf(duration.toSeconds()).intValue();
+                time -= (int) duration.toSeconds();
             }
         } catch (IOException e) {
             throw new WakamitiException(e);

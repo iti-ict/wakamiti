@@ -34,6 +34,7 @@ import java.util.stream.Stream;
  */
 public class WakamitiContributors {
 
+    private static boolean VERSION_WARNED = false;
     private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
@@ -279,21 +280,29 @@ public class WakamitiContributors {
      */
     private void checkVersion(Contributor contributor) {
         String regex = "^(\\d+\\.\\d+)(\\.\\d+.*)?$";
-        Optional<Double> coreVersionOptional = Optional.ofNullable(WakamitiAPI.instance().version())
+        String coreVersion = WakamitiAPI.instance().version();
+        Optional<Double> coreVersionOptional = Optional.ofNullable(coreVersion)
+                .filter(version -> version.matches(regex))
                 .map(version -> version.replaceAll(regex, "$1"))
                 .map(Double::valueOf);
-        coreVersionOptional.ifPresent(coreVersion ->
-                Optional.ofNullable(contributor.extensionMetadata().version())
-                        .map(version -> version.replaceAll(regex, "$1"))
-                        .map(Double::valueOf)
-                        .filter(version -> coreVersion < version)
-                        .ifPresent(version -> {
-                            String message = String.format(
-                                    "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
-                                    contributor.extensionMetadata().name(), version, coreVersion);
-                            throw new UnsupportedClassVersionError(message);
-                        })
+        coreVersionOptional.ifPresentOrElse(v ->
+                        Optional.ofNullable(contributor.extensionMetadata().version())
+                                .filter(version -> version.matches(regex))
+                                .map(version -> version.replaceAll(regex, "$1"))
+                                .map(Double::valueOf)
+                                .filter(version -> v < version)
+                                .ifPresent(version -> {
+                                    String message = String.format(
+                                            "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
+                                            contributor.extensionMetadata().name(), version, v);
+                                    throw new UnsupportedClassVersionError(message);
+                                }),
+                () -> {
+                    if (!VERSION_WARNED) {
+                        System.err.println("WARNING: Core version is not in correct format: " + coreVersion);
+                        VERSION_WARNED = true;
+                    }
+                }
         );
     }
-
 }
