@@ -881,7 +881,7 @@ public class DatabaseSupport {
                         try (MapDataSet ds = db.parser()
                                 .toSelect(insert)
                                 .map(DatabaseSupport.this::doSelect)
-                                .get()) {
+                                .orElseThrow()) {
                             cols.set(ds.columns());
                             return Stream.of(ds.allValues());
                         }
@@ -896,7 +896,7 @@ public class DatabaseSupport {
                 try (MapDataSet ds = db.parser()
                         .toSelect(insert)
                         .map(DatabaseSupport.this::doSelect)
-                        .get()) {
+                        .orElseThrow()) {
                     columns = ds.columns();
                     values = ds.allValues();
                 } catch (NoSuchElementException e) {

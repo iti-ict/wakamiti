@@ -18,7 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,7 +37,7 @@ import java.util.stream.Stream;
  */
 public class WakamitiContributors {
 
-    private static boolean VERSION_WARNED = false;
+    private static AtomicBoolean VERSION_WARNED = new AtomicBoolean(false);
     private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
@@ -279,16 +282,18 @@ public class WakamitiContributors {
      * @param contributor The contributor to check.
      */
     private void checkVersion(Contributor contributor) {
-        String regex = "^(\\d+\\.\\d+)(\\.\\d+.*)?$";
+        Pattern regex = Pattern.compile("^(\\d+\\.\\d+)(\\.\\d+.*)?$");
         String coreVersion = WakamitiAPI.instance().version();
         Optional<Double> coreVersionOptional = Optional.ofNullable(coreVersion)
-                .filter(version -> version.matches(regex))
-                .map(version -> version.replaceAll(regex, "$1"))
+                .map(regex::matcher)
+                .filter(Matcher::find)
+                .map(matcher -> matcher.group(1))
                 .map(Double::valueOf);
         coreVersionOptional.ifPresentOrElse(v ->
                         Optional.ofNullable(contributor.extensionMetadata().version())
-                                .filter(version -> version.matches(regex))
-                                .map(version -> version.replaceAll(regex, "$1"))
+                                .map(regex::matcher)
+                                .filter(Matcher::find)
+                                .map(matcher -> matcher.group(1))
                                 .map(Double::valueOf)
                                 .filter(version -> v < version)
                                 .ifPresent(version -> {
@@ -298,9 +303,8 @@ public class WakamitiContributors {
                                     throw new UnsupportedClassVersionError(message);
                                 }),
                 () -> {
-                    if (!VERSION_WARNED) {
+                    if (!VERSION_WARNED.getAndSet(true)) {
                         System.err.println("WARNING: Core version is not in correct format: " + coreVersion);
-                        VERSION_WARNED = true;
                     }
                 }
         );

@@ -79,12 +79,6 @@
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
-        <sonar.issue.ignore.multicriteria.e1.ruleKey>squid:S2187</sonar.issue.ignore.multicriteria.e1.ruleKey>
-        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
-        <sonar.issue.ignore.multicriteria.e2.ruleKey>squid:S5960</sonar.issue.ignore.multicriteria.e2.ruleKey>
-        <sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
-
         <jext.version>1.2.0-SNAPSHOT</jext.version>
     </properties>
 
