@@ -15,7 +15,6 @@ import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.OracleContainer;
 

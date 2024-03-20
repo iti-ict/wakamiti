@@ -6,14 +6,13 @@
 package es.iti.wakamiti.rest.it;
 
 
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import es.iti.wakamiti.rest.RestConfigContributor;
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
@@ -38,7 +37,6 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @RunWith(WakamitiJUnitRunner.class)
 public class RestStepsTest {
 
-    @ClassRule
     public static final ClientAndServer client = startClientAndServer(8888);
 
 
