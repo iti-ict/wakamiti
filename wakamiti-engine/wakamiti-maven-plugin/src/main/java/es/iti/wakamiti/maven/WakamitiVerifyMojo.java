@@ -208,7 +208,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
                     Thread.currentThread().getContextClassLoader());
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new WakamitiException(e);
         }
         getLog().info("Project dependencies included");
     }

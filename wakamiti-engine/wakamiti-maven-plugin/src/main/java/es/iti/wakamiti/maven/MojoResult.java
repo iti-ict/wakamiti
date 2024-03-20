@@ -18,6 +18,10 @@ public class MojoResult {
 
     private static AbstractMojoExecutionException error;
 
+    private MojoResult() {
+        // prevents instantiation
+    }
+
     /**
      * Retrieves the error occurred during plugin execution.
      *

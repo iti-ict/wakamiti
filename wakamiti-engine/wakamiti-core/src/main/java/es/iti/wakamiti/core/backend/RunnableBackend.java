@@ -320,48 +320,6 @@ public class RunnableBackend extends AbstractBackend {
         return result;
     }
 
-//    /**
-//     * Locates a runnable step for the given test step.
-//     *
-//     * @param modelStep  The test step.
-//     * @param stepLocale The locale for the test step.
-//     * @param dataLocale The locale for the test data.
-//     * @return A pair containing the runnable step and the matcher.
-//     */
-//    protected Pair<RunnableStep, Matcher> locateRunnableStep(
-//            PlanNode modelStep,
-//            Locale stepLocale,
-//            Locale dataLocale
-//    ) {
-//        Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
-//                .matcher(Either.of(modelStep), stepLocale, dataLocale, typeRegistry);
-//
-//        List<Pair<RunnableStep, Matcher>> locatedSteps = runnableSteps.stream()
-//                .map(Pair.computeValue(matcher))
-//                .filter(pair -> pair.value().matches())
-//                .collect(Collectors.toList());
-//
-//        if (locatedSteps.isEmpty()) {
-//            throw new UndefinedStepException(
-//                    modelStep,
-//                    "Cannot match step with any defined step",
-//                    getHintFor(modelStep.name(), dataLocale)
-//            );
-//        }
-//        if (locatedSteps.size() > 1) {
-//            String locatedStepsInfo = locatedSteps.stream()
-//                    .map(Pair::key)
-//                    .map(step -> step.getTranslatedDefinition(stepLocale))
-//                    .collect(Collectors.joining("\n\t"));
-//            throw new UndefinedStepException(
-//                    modelStep,
-//                    "Step matches more than one defined step",
-//                    locatedStepsInfo
-//            );
-//        }
-//        return locatedSteps.get(0);
-//    }
-
     /**
      * Builds invoking arguments for a test step.
      *

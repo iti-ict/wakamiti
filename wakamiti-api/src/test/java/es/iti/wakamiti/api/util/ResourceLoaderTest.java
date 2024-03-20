@@ -38,9 +38,9 @@ public class ResourceLoaderTest {
         assertFile(discoveredResources.get(1), "file2.txt");
         assertFile(discoveredResources.get(2), "subfolder/file4.txt");
 
-        assertEquals(discoveredResources.get(0).content().toString(), "Content of File 1");
-        assertEquals(discoveredResources.get(1).content().toString(), "Content of File 2");
-        assertEquals(discoveredResources.get(2).content().toString(), "Content of File 4");
+        assertEquals("Content of File 1", discoveredResources.get(0).content().toString());
+        assertEquals("Content of File 2", discoveredResources.get(1).content().toString());
+        assertEquals("Content of File 4", discoveredResources.get(2).content().toString());
     }
 
     private void assertFile(Resource<?> resource, String relativePath) {

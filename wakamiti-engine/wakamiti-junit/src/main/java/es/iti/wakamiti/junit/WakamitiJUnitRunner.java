@@ -179,7 +179,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     /**
      * Initializes Wakamiti before the test plan execution.
      */
-    private void initWakamiti() {
+    public void initWakamiti() {
         LOGGER.debug("{}", configuration);
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
@@ -191,7 +191,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     /**
      * Finalizes Wakamiti after the test plan execution.
      */
-    private void finalizeWakamiti() {
+    public void finalizeWakamiti() {
         planNodeLogger.logTestPlanResult(plan);
         var snapshot = new PlanNodeSnapshot(plan);
         wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);

@@ -384,7 +384,7 @@ public class DatabaseSupport {
                 Stream.of(columns).map(c -> db.parser().format(db.column(db.table(table), c)))
                         .toArray(String[]::new)).toString();
         try (Select<String[]> select = db.select(sql).get(DatabaseHelper::format)) {
-            Optional<Record> record = select.map(row -> new Record(row, IntStream.range(0, values.length)
+            Optional<Record> result = select.map(row -> new Record(row, IntStream.range(0, values.length)
                             .mapToDouble(i -> {
                                 String expectedValue = Optional.ofNullable(values[i])
                                         .map(DatabaseHelper::toString).orElse("");
@@ -397,8 +397,8 @@ public class DatabaseSupport {
                             }).sum() / values.length))
                     .filter(rec -> rec.score() > 0.7)
                     .reduce((rec1, rec2) -> rec1.score() > rec2.score() ? rec1 : rec2);
-            record.ifPresent(rec -> LOGGER.trace("Found {}", rec));
-            return record.map(rec -> toMap(select.getColumnNames(), rec.data()));
+            result.ifPresent(rec -> LOGGER.trace("Found {}", rec));
+            return result.map(rec -> toMap(select.getColumnNames(), rec.data()));
         }
     }
 
