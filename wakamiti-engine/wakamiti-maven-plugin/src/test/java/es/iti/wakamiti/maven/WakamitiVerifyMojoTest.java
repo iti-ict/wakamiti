@@ -1,4 +1,10 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.maven;
+
 
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.maven.utils.ProjectStub;
@@ -22,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
 public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
 
     private static final String GOAL = "verify";
@@ -29,6 +36,7 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
     private PlanNode plan;
     private Configuration currentConfiguration;
 
+    @Override
     protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();
@@ -193,7 +201,7 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
         // Then
         assertThat(session.getResult().getExceptions()).hasSize(1);
         assertThat(session.getResult().getExceptions().get(0)).isOfAnyClassIn(MojoFailureException.class);
-        assertThat(session.getResult().getExceptions().get(0)).hasMessage("Wakamiti Test Plan not passed");
+        assertThat(session.getResult().getExceptions().get(0)).hasMessage("Wakamiti error: Wakamiti Test Plan not passed: FAILED");
         verify(plan, times(1)).result();
     }
 

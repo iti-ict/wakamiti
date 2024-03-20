@@ -3,8 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.launcher;
+
+
+import imconfig.Configuration;
+import org.apache.commons.cli.*;
 
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -16,18 +19,17 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import imconfig.Configuration;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
-
+/**
+ * Class representing command-line arguments for the WakamitiLauncher.
+ *
+ * <p>This class provides methods to parse and access command-line arguments related to the WakamitiLauncher.
+ * It uses Apache Commons CLI library for parsing command-line options and provides methods to retrieve
+ * Wakamiti-specific and MavenFetcher-specific configurations.</p>
+ */
 public class CliArguments {
 
+    public static final String ARG_LIST = "l";
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
     private static final String ARG_HELP = "h";
     private static final String ARG_DEBUG = "d";
@@ -36,11 +38,8 @@ public class CliArguments {
     private static final String ARG_MODULES = "m";
     private static final String ARG_WAKAMITI_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
-    public static final String  ARG_LIST = "l";
-
     private final Options cliOptions;
     private CommandLine cliCommand;
-
 
     public CliArguments() {
         this.cliOptions = new Options();
@@ -50,100 +49,140 @@ public class CliArguments {
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
         cliOptions.addOption(
-            Option.builder(ARG_WAKAMITI_PROPERTY)
-            .argName("wakamitiProperty=value")
-            .numberOfArgs(2)
-            .valueSeparator('=')
-            .desc("Set a Wakamiti-specific property")
-            .build()
+                Option.builder(ARG_WAKAMITI_PROPERTY)
+                        .argName("wakamitiProperty=value")
+                        .numberOfArgs(2)
+                        .valueSeparator('=')
+                        .desc("Set a Wakamiti-specific property")
+                        .build()
         );
         cliOptions.addOption(
-            Option.builder(ARG_MAVEN_PROPERTY)
-            .argName("mavenFetcherProperty=value")
-            .numberOfArgs(2)
-            .valueSeparator('=')
-            .desc("Set a MavenFetcher-specific property")
-            .build()
+                Option.builder(ARG_MAVEN_PROPERTY)
+                        .argName("mavenFetcherProperty=value")
+                        .numberOfArgs(2)
+                        .valueSeparator('=')
+                        .desc("Set a MavenFetcher-specific property")
+                        .build()
         );
-        cliOptions.addOption(ARG_LIST,"list", false, "Show all available modules");
+        cliOptions.addOption(ARG_LIST, "list", false, "Show all available modules");
     }
 
-
-    public CliArguments parse(String[] args) throws ParseException {
+    /**
+     * Parses the given command-line arguments.
+     *
+     * @param args The command-line arguments to parse.
+     * @return The CliArguments instance for method chaining.
+     * @throws ParseException If a parsing exception occurs.
+     */
+    public CliArguments parse(String... args) throws ParseException {
         CommandLineParser cliParser = new DefaultParser();
         this.cliCommand = cliParser.parse(cliOptions, args, false);
         return this;
     }
 
-
+    /**
+     * Prints the usage information for the command-line options.
+     */
     public void printUsage() {
         new HelpFormatter().printHelp("wakamiti [options]", cliOptions);
     }
 
-
+    /**
+     * Retrieves the Wakamiti-specific configuration based on the parsed command-line arguments.
+     *
+     * @return The Wakamiti-specific configuration.
+     * @throws URISyntaxException If a URI syntax exception occurs.
+     */
     public Configuration wakamitiConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_WAKAMITI_PROPERTY);
         String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile,properties,"wakamiti");
+        return buildConfiguration(confFile, properties, "wakamiti");
     }
 
-
+    /**
+     * Retrieves the MavenFetcher-specific configuration based on the parsed command-line arguments.
+     *
+     * @return The MavenFetcher-specific configuration.
+     * @throws URISyntaxException If a URI syntax exception occurs.
+     */
     public Configuration mavenFetcherConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
         String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile,properties,"mavenFetcher");
+        return buildConfiguration(confFile, properties, "mavenFetcher");
     }
 
+    /**
+     * Checks if the clean option is specified in the command-line arguments.
+     *
+     * @return {@code true} if the clean option is specified, {@code false} otherwise.
+     */
     public boolean mustClean() {
         return cliCommand.hasOption(ARG_CLEAN);
     }
 
+    /**
+     * Checks if the debug option is specified in the command-line arguments.
+     *
+     * @return {@code true} if the debug option is specified, {@code false} otherwise.
+     */
     public boolean isDebugActive() {
         return cliCommand.hasOption(ARG_DEBUG);
     }
 
+    /**
+     * Checks if the help option is specified in the command-line arguments.
+     *
+     * @return {@code true} if the help option is specified, {@code false} otherwise.
+     */
     public boolean isHelpActive() {
         return cliCommand.hasOption(ARG_HELP);
     }
 
-    public boolean isSshowContributionsEnabled() {
+    /**
+     * Checks if the showContributions option is specified in the command-line arguments.
+     *
+     * @return {@code true} if the showContributions option is specified, {@code false} otherwise.
+     */
+    public boolean isShowContributionsEnabled() {
         return cliCommand.hasOption(ARG_LIST);
     }
 
+    /**
+     * Retrieves the list of modules specified in the command-line arguments.
+     *
+     * @return The list of modules, or an empty list if not specified.
+     */
     public List<String> modules() {
         return cliCommand.hasOption(ARG_MODULES) ?
-            Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
-            List.of();
+                Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
+                List.of();
     }
 
     private Configuration buildConfiguration(
-        String confFileName,
-        Properties arguments,
-        String qualifier
+            String confFileName,
+            Properties arguments,
+            String qualifier
     ) throws URISyntaxException {
         Path launcherProperties = JarUtil.jarFolder().resolve("launcher.properties");
         Path projectProperties = Paths.get(confFileName);
         Configuration launcherConf = (Files.exists(launcherProperties))
-            ? Configuration.factory().fromPath(launcherProperties).inner(qualifier)
-            : Configuration.factory().empty();
+                ? Configuration.factory().fromPath(launcherProperties).inner(qualifier)
+                : Configuration.factory().empty();
         Configuration projectConf = (Files.exists(projectProperties))
-            ? Configuration.factory().fromPath(projectProperties).inner(qualifier)
-            : Configuration.factory().empty();
+                ? Configuration.factory().fromPath(projectProperties).inner(qualifier)
+                : Configuration.factory().empty();
         Configuration argumentConf = Configuration.factory().fromProperties(arguments);
         return launcherConf.append(projectConf).append(argumentConf);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return Stream.of(cliCommand.getOptions())
-            .map(opt->opt.getOpt()+"="+opt.getValuesList())
-            .collect(Collectors.joining(", ","arguments: {","}"));
+                .map(opt -> opt.getOpt() + "=" + opt.getValuesList())
+                .collect(Collectors.joining(", ", "arguments: {", "}"));
     }
-
-
-
-
-
 
 }

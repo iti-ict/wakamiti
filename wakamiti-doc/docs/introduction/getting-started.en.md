@@ -4,7 +4,7 @@ date: 2022-09-20
 slug: /en/introduction/getting-started
 ---
 
-In this quick tutorial you will learn how to:
+In this quick tutorial, you will learn how to:
 - Write the basic configuration.
 - Write a scenario.
 - Run wakamiti.
@@ -68,7 +68,7 @@ wakamiti:
 
 
 ### 2. Scenario definition
-When we do *Behaviour-Driven Development* we use concrete examples to specify what we want the software to do. 
+When we do *Behaviour-Driven Development*, we use concrete examples to specify what we want the software to do. 
 Scenarios are written before production code. They start their life as an executable specification. As the 
 production code emerges, scenarios take on a role as living documentation and automated tests.
 

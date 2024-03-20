@@ -1,5 +1,5 @@
 
-*       text=auto
+*       eol=lf
 
 *.sh    eol=lf
 wakamiti  eol=lf

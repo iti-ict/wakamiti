@@ -40,3 +40,14 @@ Feature: Groovy Test Feature
       assert ctx['a'] == null
       assert ctx.id == 'ID-03'
       """
+
+  @ID-04
+  Scenario: Execute script test 4
+    Given that the following groovy code is executed:
+      """groovy
+      ctx.sum = (num1, num2) -> { num1 + num2 }
+      """
+    When the following groovy code is executed:
+      """groovy
+      assert ctx.sum(1,1) == 2
+      """

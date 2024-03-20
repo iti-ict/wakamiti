@@ -33,7 +33,7 @@
 
     <properties>
         <wakamiti.launcher.path>${parent.basedir}/wakamiti-launcher</wakamiti.launcher.path>
-        <docker.image.name>nexus-wakamiti.iti.upv.es/wakamiti</docker.image.name>
+        <io.fabric8.version>0.43.4</io.fabric8.version>
     </properties>
 
 
@@ -66,6 +66,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -143,7 +144,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <images>
                                 <image>
@@ -151,7 +152,6 @@
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                     </build>
-
                                 </image>
                             </images>
                         </configuration>
@@ -161,13 +161,6 @@
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>remove-test</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>remove</goal>
                                 </goals>
                             </execution>
                             <execution>
@@ -223,10 +216,11 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <authConfig>
                                 <username>wakamiti</username>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <password>${docker.pwd}</password>
                             </authConfig>
                             <images>
@@ -294,7 +288,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.26.0</version>
+                        <version>${io.fabric8.version}</version>
                         <configuration>
                             <images>
                                 <image>

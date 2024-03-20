@@ -37,6 +37,7 @@ export default {
   methods: {
     updateLogo: function() {
       this.logoColor = (this.logoColor == 'dark' ? 'bright' : 'dark')
+      this.$emit('theme-change')
     },
     headerScroll: function() {
       let fromTop = window.scrollY

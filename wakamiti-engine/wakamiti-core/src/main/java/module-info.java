@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.extensions.*;
 import es.iti.wakamiti.core.DefaultWakamitiAPI;
@@ -21,7 +20,6 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core.util;
     exports es.iti.wakamiti.core.runner;
     exports es.iti.wakamiti.core;
-    exports es.iti.wakamiti.core.junit;
     exports es.iti.wakamiti.core.gherkin.parser;
 
     requires transitive es.iti.wakamiti.api;
@@ -39,6 +37,7 @@ open module es.iti.wakamiti.core {
     requires net.harawata.appdirs;
     requires java.instrument;
     requires org.apache.xmlbeans;
+    requires org.apache.commons.lang3;
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 
@@ -47,6 +46,5 @@ open module es.iti.wakamiti.core {
     provides PlanTransformer with GherkinRedefinitionPlanTransformer;
     provides DataTypeContributor with WakamitiCoreTypes, WakamitiAssertTypes;
     provides PropertyEvaluator with GlobalPropertyEvaluator, StepPropertyEvaluator;
-
 
 }

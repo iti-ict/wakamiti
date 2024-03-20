@@ -3,22 +3,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import java.text.ParseException;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
+import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+
+/**
+ * A provider for binary string assertions.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
     public static final String EQUALS = "matcher.string.equals";
@@ -41,11 +45,26 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
+    /**
+     * Remove leading and trailing {@code "} or {@code '} and replace escaped
+     * characters from the input string.
+     *
+     * @param input The input string.
+     * @return The prepared string.
+     */
+    private static String prepareString(String input) {
+        return input
+                .substring(1, input.length() - 1)
+                .replace("\\\"", "\"")
+                .replace("\\'", "'");
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
-        // binary numeric matchers
-        String[] expressions = {
+    protected String[] expressions() {
+        return new String[]{
                 EQUALS,
                 EQUALS_IGNORE_CASE,
                 EQUALS_IGNORE_WHITESPACE,
@@ -65,29 +84,49 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
                 NOT_CONTAINS,
                 NOT_CONTAINS_IGNORE_CASE
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
-        for (String expression : expressions) {
+        for (String expression : expressions()) {
             translatedExpressions.put(
-                expression,
-                Pattern.compile(
-                    translateBundleExpression(
-                        locale,
-                        expression,
-                        "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"
+                    expression,
+                    Pattern.compile(
+                            translateBundleExpression(
+                                    locale,
+                                    expression,
+                                    "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"
+                            )
                     )
-                )
             );
         }
         return translatedExpressions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected LinkedList<String> regex(Locale locale) {
+        return Arrays.stream(expressions())
+                .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
+                .map(exp -> exp.replace(VALUE_WILDCARD, "(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)')"))
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Matcher<?> createMatcher(
-        Locale locale,
-        String key,
-        String value
-    ) throws ParseException {
+            Locale locale,
+            String key,
+            String value
+    ) {
         value = prepareString(value);
         Matcher<String> matcher = null;
         if (EQUALS.equals(key)) {
@@ -129,14 +168,5 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
         }
 
         return matcher;
-    }
-
-
-    /* remove leading and tailing " or ' , and replace escaped characters */
-    private static String prepareString(String input) {
-        return input
-            .substring(1, input.length() - 1)
-            .replace("\\\"", "\"")
-            .replace("\\'", "'");
     }
 }

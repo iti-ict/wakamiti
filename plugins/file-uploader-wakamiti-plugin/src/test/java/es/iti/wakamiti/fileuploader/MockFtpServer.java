@@ -1,11 +1,10 @@
 package es.iti.wakamiti.fileuploader;
 
 
+import es.iti.wakamiti.api.WakamitiException;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.filesystem.nativefs.NativeFileSystemFactory;
 import org.apache.ftpserver.ftplet.Authority;
-import org.apache.ftpserver.ftplet.FileSystemFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.Listener;
@@ -15,7 +14,6 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -23,22 +21,27 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MockFtpServer {
 
-
     private FtpServer server;
-    private ListenerFactory factory;
-    private Listener listener;
-    private int port;
+    private final Listener listener;
+    private final int port;
     private Path tmpDir;
 
+    public MockFtpServer(int port) {
+        this.port = port;
+        ListenerFactory factory = new ListenerFactory();
+        factory.setPort(port);
+        this.listener = factory.createListener();
+    }
+
+    public MockFtpServer() {
+        this(findFreePort());
+    }
 
     public MockFtpServer start() throws FtpException, IOException {
         var serverFactory = new FtpServerFactory();
-        this.factory = new ListenerFactory();
-        this.port = findFreePort();
-        factory.setPort(port);
-        this.listener = factory.createListener();
         serverFactory.addListener("default", listener);
         var userManagerFactory = new PropertiesUserManagerFactory();
         userManagerFactory.setPasswordEncryptor(passwordEncryptor());
@@ -86,6 +89,7 @@ public class MockFtpServer {
             public String encrypt(String password) {
                 return password;
             }
+
             @Override
             public boolean matches(String passwordToCheck, String storedPassword) {
                 return passwordToCheck.equals(storedPassword);
@@ -94,9 +98,11 @@ public class MockFtpServer {
     }
 
 
-    private int findFreePort() throws IOException {
+    private static int findFreePort() {
         try (ServerSocket serverSocket = new ServerSocket(0)) {
             return serverSocket.getLocalPort();
+        } catch (IOException e) {
+            throw new WakamitiException(e);
         }
     }
 

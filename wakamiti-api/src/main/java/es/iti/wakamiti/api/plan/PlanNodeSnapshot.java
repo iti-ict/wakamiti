@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.api.plan;
 
+
 import es.iti.wakamiti.api.model.ExecutionState;
 
 import java.io.PrintWriter;
@@ -28,7 +29,7 @@ import static java.util.stream.Collectors.groupingBy;
  * {@link PlanNode} in a specific state. It is mainly used for
  * serialization/deserialization operations.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeSnapshot {
 
@@ -60,13 +61,11 @@ public class PlanNodeSnapshot {
     private List<PlanNodeSnapshot> children;
 
     public PlanNodeSnapshot() {
-
     }
 
     public PlanNodeSnapshot(PlanNode node) {
         this(node, LocalDateTime.now().toString());
     }
-
 
     public PlanNodeSnapshot(PlanNode node, String snapshotInstant) {
         this.executionID = node.executionID();
@@ -110,10 +109,10 @@ public class PlanNodeSnapshot {
     }
 
     /**
-     * Creates a new node descriptor as a parent of the specified nodes
+     * Creates a new node descriptor as a parent of the specified nodes.
      *
-     * @param nodes The nodes to be grouped
-     * @return A new parent node descriptor
+     * @param nodes The nodes to be grouped.
+     * @return A new parent node descriptor.
      */
     public static PlanNodeSnapshot group(PlanNodeSnapshot... nodes) {
         if (nodes.length == 1) {
@@ -124,12 +123,12 @@ public class PlanNodeSnapshot {
         root.startInstant = childLocalDateTime(
                 root,
                 PlanNodeSnapshot::getStartInstant,
-                (x, y) -> x.compareTo(y) < 0 ? x : y
+                (x, y) -> x.isBefore(y) ? x : y
         );
         root.finishInstant = childLocalDateTime(
                 root,
                 PlanNodeSnapshot::getFinishInstant,
-                (x, y) -> x.compareTo(y) > 0 ? x : y
+                (x, y) -> x.isAfter(y) ? x : y
         );
         root.duration = maxChild(root, PlanNodeSnapshot::getDuration);
         root.result = maxChild(root, PlanNodeSnapshot::getResult);
@@ -188,10 +187,10 @@ public class PlanNodeSnapshot {
     private static String childLocalDateTime(
             PlanNodeSnapshot node,
             Function<PlanNodeSnapshot, String> method,
-            BinaryOperator<LocalDateTime> reductor
+            BinaryOperator<LocalDateTime> reducer
     ) {
         return node.children.stream().map(method).filter(Objects::nonNull).map(LocalDateTime::parse)
-                .reduce(reductor)
+                .reduce(reducer)
                 .map(LocalDateTime::toString).orElse(null);
     }
 
@@ -203,6 +202,11 @@ public class PlanNodeSnapshot {
                 .max(Comparator.naturalOrder()).orElse(null);
     }
 
+    /**
+     * Creates a new PlanNodeSnapshot without children.
+     *
+     * @return A new PlanNodeSnapshot without children.
+     */
     public PlanNodeSnapshot withoutChildren() {
         PlanNodeSnapshot copy = new PlanNodeSnapshot();
         copy.executionID = this.executionID;

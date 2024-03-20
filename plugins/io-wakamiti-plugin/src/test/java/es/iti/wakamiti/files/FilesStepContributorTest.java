@@ -21,8 +21,10 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.sun.jna.Platform.isWindows;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class FilesStepContributorTest {
 
@@ -45,6 +47,8 @@ public class FilesStepContributorTest {
 
     @Test
     public void copyToDirWhenUsingLinkWithSuccess() throws IOException {
+        assumeTrue(!isWindows());
+
         // prepare
         File link = Path.of("testlink").toFile();
 

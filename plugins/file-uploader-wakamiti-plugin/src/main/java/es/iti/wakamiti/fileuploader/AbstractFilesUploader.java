@@ -34,7 +34,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
 
-    public void setEnable(boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -100,7 +100,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
         logger.info("Opening FTP connection to {}", host);
         transmitter = FTPTransmitter.of(protocol);
         if (host.contains(":")) {
-            transmitter.connect(username, host.split(":")[0], Integer.parseInt(host.split(":")[1]), password, identity);
+            String host = this.host.split(":")[0];
+            int port = Integer.parseInt(this.host.split(":")[1]);
+            transmitter.connect(username, host, port, password, identity);
         } else {
             transmitter.connect(username, host, null, password, identity);
         }

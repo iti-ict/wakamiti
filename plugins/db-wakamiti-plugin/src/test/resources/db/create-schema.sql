@@ -1,6 +1,6 @@
 
 CREATE TABLE client (
-  id int PRIMARY KEY,
+  id int PRIMARY KEY AUTO_INCREMENT,
   first_name varchar(255) DEFAULT NULL,
   second_name varchar(255) DEFAULT NULL,
   active int DEFAULT 0,
@@ -8,13 +8,19 @@ CREATE TABLE client (
 );
 
 CREATE TABLE city (
-  id int NOT NULL,
+  id int PRIMARY KEY AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id)
+  latitude numeric(10, 6),
+  longitude numeric(10, 6)
 );
 
 CREATE TABLE client_city (
-  client_id int NOT NULL,
-  city_id int NOT NULL,
-  PRIMARY KEY (client_id,city_id)
+  clientId int NOT NULL,
+  cityId int NOT NULL,
+  PRIMARY KEY (clientId,cityId)
 );
+
+CREATE TABLE other (
+  something int NOT NULL
+);
+

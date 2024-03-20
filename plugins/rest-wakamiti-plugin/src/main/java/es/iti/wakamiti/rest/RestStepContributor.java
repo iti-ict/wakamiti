@@ -37,7 +37,7 @@ import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 @I18nResource("iti_wakamiti_wakamiti-rest")
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps")
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.4")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";

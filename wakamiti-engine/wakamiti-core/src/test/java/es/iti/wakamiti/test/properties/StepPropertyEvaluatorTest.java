@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.test.properties;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
@@ -24,6 +25,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 public class StepPropertyEvaluatorTest {
 

@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.maven;
 
 
@@ -25,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Maven plugin mojo for generating Wakamiti reports.
+ */
 @Mojo(name = "report", defaultPhase = LifecyclePhase.VERIFY)
 public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfigurable {
 
@@ -43,16 +42,21 @@ public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfig
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession session;
 
-
+    /**
+     * Executes the plugin.
+     *
+     * @throws MojoExecutionException If an unexpected problem occurs during execution.
+     */
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException {
         try {
             Configuration configuration = readConfiguration(configurationFiles, properties);
-            info("invoking reports...");
+            getLog().info("invoking reports...");
             Wakamiti.instance().generateReports(configuration);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            getLog().error(e);
             if (!testFailureIgnore)
-                session.getResult().addException(new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e));
+                throw new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
         }
     }
 

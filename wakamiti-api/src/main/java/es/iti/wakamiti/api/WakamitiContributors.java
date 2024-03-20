@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.api;
 
 
@@ -17,28 +13,45 @@ import es.iti.wakamiti.api.util.Pair;
 import imconfig.Configurable;
 import imconfig.Configuration;
 import imconfig.ConfigurationFactory;
-import es.iti.wakamiti.api.extensions.*;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/**
+ * Manages contributors and extension points in Wakamiti API.
+ * It handles various types of contributors, such as StepContributors, PlanBuilders, etc.
+ * Provides methods to retrieve contributors, create instances, and perform configuration.
+ * Acts as a central manager for contributors in Wakamiti API.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
+ */
 public class WakamitiContributors {
 
+    private static AtomicBoolean VERSION_WARNED = new AtomicBoolean(false);
+    private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
     public void setClassLoaders(ClassLoader... loaders) {
         this.extensionManager = new ExtensionManager(loaders);
     }
 
-    private final List<StepContributor> stepContributors = new LinkedList<>();
-
-    public Map<Class<?>,List<Contributor>> allContributors() {
+    /**
+     * Retrieves all contributors of a specific type.
+     *
+     * @return A map containing contributor types and their
+     * corresponding contributors.
+     */
+    public Map<Class<?>, List<Contributor>> allContributors() {
         Class<?>[] contributorTypes = {
                 ConfigContributor.class,
                 DataTypeContributor.class,
@@ -48,14 +61,26 @@ public class WakamitiContributors {
                 Reporter.class,
                 ResourceType.class,
                 StepContributor.class
-        } ;
-        Map<Class<?>,List<Contributor>> map = Stream.of(contributorTypes)
-            .map(type -> new Pair<>(type,extensionManager.getExtensions(type).map(Contributor.class::cast).collect(Collectors.toList())))
-            .collect(Collectors.toMap(Pair::key,Pair::value));
+        };
+        Map<Class<?>, List<Contributor>> map = Stream.of(contributorTypes)
+                .map(type -> new Pair<>(type, extensionManager.getExtensions(type)
+                        .map(Contributor.class::cast)
+                        .peek(this::checkVersion)
+                        .collect(Collectors.toList()))
+                )
+                .collect(Collectors.toMap(Pair::key, Pair::value));
         map.get(StepContributor.class).addAll(stepContributors);
         return map;
     }
 
+    /**
+     * Retrieves a contributor of a specific type.
+     *
+     * @param contributorClass The class of the contributor to retrieve.
+     * @param <T>              The type of the contributor.
+     * @return The contributor of the specified type.
+     * @throws WakamitiException If the contributor is not found.
+     */
     public <T extends Contributor> T getContributor(Class<T> contributorClass) {
         return stepContributors.stream()
                 .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
@@ -64,93 +89,151 @@ public class WakamitiContributors {
                 .orElseThrow(() -> new WakamitiException(String.format("Contributor [%s] not found", contributorClass)));
     }
 
-    public void addStepContributors(List<StepContributor> contributor) {
-        stepContributors.addAll(contributor);
+    /**
+     * Adds StepContributors to the list.
+     *
+     * @param contributors List of StepContributors to add.
+     */
+    public void addStepContributors(List<StepContributor> contributors) {
+        stepContributors.addAll(contributors);
     }
 
     public Stream<EventObserver> eventObservers() {
-        return extensionManager.getExtensions(EventObserver.class);
+        return extensionManager.getExtensions(EventObserver.class)
+                .peek(this::checkVersion);
     }
 
-
+    /**
+     * Creates a PlanBuilder for the given ResourceType and configuration.
+     *
+     * @param resourceType  The ResourceType for which the PlanBuilder is created.
+     * @param configuration The Configuration to be used for configuration.
+     * @return Optional containing the PlanBuilder if available.
+     */
     public Optional<PlanBuilder> createPlanBuilderFor(
-        ResourceType<?> resourceType,
-        Configuration configuration
+            ResourceType<?> resourceType,
+            Configuration configuration
     ) {
-        Predicate<PlanBuilder> filter = planner -> planner.acceptResourceType(resourceType);
         Optional<PlanBuilder> planBuilder = extensionManager
-            .getExtensionThatSatisfy(PlanBuilder.class, filter);
-        if (planBuilder.isPresent()) {
-            configure(planBuilder.get(), configuration);
-        }
+                .getExtensionThatSatisfy(PlanBuilder.class, planner -> planner.acceptResourceType(resourceType));
+        planBuilder.ifPresent(this::checkVersion);
+        planBuilder.ifPresent(builder -> configure(builder, configuration));
         return planBuilder;
     }
 
-
     /**
-     * @return A list of all available resource types provided by contributors
+     * Retrieves a Stream of available ResourceType instances.
+     *
+     * @return Stream of available ResourceTypes.
      */
     public Stream<ResourceType<?>> availableResourceTypes() {
-        return extensionManager.getExtensions(ResourceType.class).map(x -> (ResourceType<?>) x);
+        return extensionManager.getExtensions(ResourceType.class)
+                .peek(this::checkVersion)
+                .map(x -> (ResourceType<?>) x);
     }
 
-
+    /**
+     * Retrieves an optional ResourceType instance by its name.
+     *
+     * @param name The name of the ResourceType to retrieve.
+     * @return Optional containing the ResourceType with the specified
+     * name, or empty if not found.
+     */
     public Optional<ResourceType<?>> resourceTypeByName(String name) {
         return availableResourceTypes().filter(
-            resourceType -> resourceType.extensionMetadata().name().equals(name)
+                resourceType -> resourceType.extensionMetadata().name().equals(name)
         ).findAny();
     }
 
-
+    /**
+     * Retrieves a stream of DataTypeContributor instances based on the
+     * specified modules.
+     *
+     * @param modules The list of module names.
+     * @return Stream of DataTypeContributor instances satisfying the
+     * specified modules.
+     */
     public Stream<DataTypeContributor> dataTypeContributors(List<String> modules) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
-            .getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition);
+                .getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition)
+                .peek(this::checkVersion);
     }
 
-
     public Stream<DataTypeContributor> allDataTypeContributors() {
-        return extensionManager.getExtensions(DataTypeContributor.class);
+        return extensionManager.getExtensions(DataTypeContributor.class)
+                .peek(this::checkVersion);
     }
 
     public Stream<LoaderContributor> allLoaderContributors() {
-        return extensionManager.getExtensions(LoaderContributor.class);
+        return extensionManager.getExtensions(LoaderContributor.class)
+                .peek(this::checkVersion);
     }
 
+    /**
+     * Creates a list of StepContributor instances based on the specified
+     * modules and configuration.
+     *
+     * @param modules       List of module names.
+     * @param configuration Configuration to be applied.
+     * @return List of StepContributor instances.
+     */
     public List<StepContributor> createStepContributors(
-        List<String> modules,
-        Configuration configuration
+            List<String> modules,
+            Configuration configuration
     ) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
-            .getExtensionsThatSatisfyMetadata(StepContributor.class, condition)
-            .peek(c -> configure(c, configuration))
-            .collect(Collectors.toList());
+                .getExtensionsThatSatisfyMetadata(StepContributor.class, condition)
+                .peek(this::checkVersion)
+                .peek(c -> configure(c, configuration))
+                .collect(Collectors.toList());
     }
 
-
+    /**
+     * Creates a list of all StepContributor instances with the specified
+     * configuration.
+     *
+     * @param configuration Configuration to be applied.
+     * @return List of StepContributor instances.
+     */
     public List<StepContributor> createAllStepContributors(Configuration configuration) {
         return extensionManager
-            .getExtensions(StepContributor.class)
-            .peek(c -> configure(c, configuration))
-            .collect(Collectors.toList());
+                .getExtensions(StepContributor.class)
+                .peek(this::checkVersion)
+                .peek(c -> configure(c, configuration))
+                .collect(Collectors.toList());
     }
-
 
     public Stream<Extension> allStepContributorMetadata() {
         return extensionManager.getExtensionMetadata(StepContributor.class);
     }
 
-
+    /**
+     * Retrieves the configuration contributors for a specific contributor
+     * type.
+     *
+     * @param <T>         The contributor type.
+     * @param contributor The contributor instance.
+     * @return Stream of ConfigContributor instances for the given
+     * contributor type.
+     */
     @SuppressWarnings("unchecked")
     public <T> Stream<ConfigContributor<T>> configuratorsFor(T contributor) {
         return extensionManager
-            .getExtensionsThatSatisfy(ConfigContributor.class, c -> c.accepts(contributor))
-            .map(c -> (ConfigContributor<T>) c);
+                .getExtensionsThatSatisfy(ConfigContributor.class, c -> c.accepts(contributor))
+                .peek(this::checkVersion)
+                .map(c -> (ConfigContributor<T>) c);
     }
 
-
-
+    /**
+     * Configures a contributor using the provided configuration.
+     *
+     * @param contributor   The contributor to configure.
+     * @param configuration The configuration to apply.
+     * @param <T>           The type of the contributor.
+     * @return The configured contributor.
+     */
     public <T> T configure(T contributor, Configuration configuration) {
         if (contributor instanceof Configurable) {
             ((Configurable) contributor).configure(configuration);
@@ -161,40 +244,70 @@ public class WakamitiContributors {
         return contributor;
     }
 
-
     public Stream<PlanTransformer> planTransformers() {
-        return extensionManager.getExtensions(PlanTransformer.class);
+        return extensionManager.getExtensions(PlanTransformer.class)
+                .peek(this::checkVersion);
     }
 
+    /**
+     * Configures property resolvers with the provided configuration.
+     *
+     * @param configuration The configuration to use for property resolvers.
+     */
     public void propertyResolvers(Configuration configuration) {
         extensionManager.getExtensions(PropertyEvaluator.class)
+                .peek(this::checkVersion)
                 .forEach(c -> configure(c, configuration));
     }
 
     public Stream<Reporter> reporters() {
-        return extensionManager.getExtensions(Reporter.class);
+        return extensionManager.getExtensions(Reporter.class)
+                .peek(this::checkVersion);
     }
-
 
     public ExtensionManager extensionManager() {
         return extensionManager;
     }
 
-
     public Configuration globalDefaultConfiguration() {
         return extensionManager.getExtensions(ConfigContributor.class)
-        .map(ConfigContributor::defaultConfiguration)
-        .reduce(ConfigurationFactory.instance().empty(), Configuration::append);
+                .peek(this::checkVersion)
+                .map(ConfigContributor::defaultConfiguration)
+                .reduce(ConfigurationFactory.instance().empty(), Configuration::append);
     }
 
+    /**
+     * Checks the compatibility of a contributor's version with the core version.
+     *
+     * @param contributor The contributor to check.
+     */
+    private void checkVersion(Contributor contributor) {
+        String coreVersion = WakamitiAPI.instance().version();
+        Optional<Double> coreVersionOptional = Optional.ofNullable(coreVersion)
+                .flatMap(this::extractVersion);
+        coreVersionOptional.ifPresentOrElse(v ->
+                        Optional.ofNullable(contributor.extensionMetadata().version())
+                                .flatMap(this::extractVersion)
+                                .filter(version -> v < version)
+                                .ifPresent(version -> {
+                                    String message = String.format(
+                                            "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
+                                            contributor.extensionMetadata().name(), version, v);
+                                    throw new UnsupportedClassVersionError(message);
+                                }),
+                () -> {
+                    if (!VERSION_WARNED.getAndSet(true)) {
+                        System.err.println("WARNING: Core version is not in correct format: " + coreVersion);
+                    }
+                }
+        );
+    }
 
-
-    private <T> Stream<T> concat(Stream<? extends T>... streams) {
-        Stream<T> concat = Stream.empty();
-        for (Stream<? extends T> stream : streams) {
-            concat = Stream.concat(concat,stream);
+    private Optional<Double> extractVersion(String version) {
+        Matcher matcher = Pattern.compile("^(\\d++\\.\\d++)(\\.\\d++.*+)?$").matcher(version);
+        if (matcher.find()) {
+            return Optional.of(Double.valueOf(matcher.group(1)));
         }
-        return concat;
+        return Optional.empty();
     }
-
 }

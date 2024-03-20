@@ -4,7 +4,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.slf4j.Logger;
 import javax.mail.*;
 import javax.mail.event.MessageCountAdapter;
@@ -139,7 +139,7 @@ public class EmailHelper {
         folder.addMessageCountListener(listener);
         try {
 
-            Awaitility.await().atMost(seconds, TimeUnit.SECONDS).pollDelay(Duration.ONE_SECOND).untilTrue(received);
+            Awaitility.await().atMost(seconds, TimeUnit.SECONDS).pollDelay(Durations.ONE_SECOND).untilTrue(received);
             if (!received.get()) {
                 throw new AssertionError("No new email messages received within " + seconds + " seconds");
             }

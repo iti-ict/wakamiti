@@ -1,9 +1,9 @@
 # language: en
+@launcher
 Feature: REST Test Feature
 
   Background:
-    Given the base URL http://localhost:8887
-    And the REST service '/users'
+    Given the REST service '/users'
     And the REST content type XML
 
   Scenario: Get a user from a service
@@ -12,7 +12,7 @@ Feature: REST Test Feature
     Then the response HTTP code is greater than or equals to 200
     And the response HTTP code is less than 500
     And the response content type is XML
-    And the response is equal to the file 'src/test/resources/server/users/user1.xml'
+    And the response is equals to the file '${data.dir}/server/users/user1.xml'
     And the response contains:
       """
 <item>
@@ -20,7 +20,7 @@ Feature: REST Test Feature
 </item>
       """
     And the text from response fragment 'item.contact.email' is 'user1@mail'
-    And the response satisfies the schema from the file 'src/test/resources/data/schema.xml'
+    And the response satisfies the schema from the file '${data.dir}/data/schema.xml'
 
   Scenario: URL with parameters
     Given the REST service '/users/{user}/{subject}'

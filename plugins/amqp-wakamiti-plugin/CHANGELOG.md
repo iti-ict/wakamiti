@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+[Unreleased]
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [2.3.3] - 2023-09-14
 
 ### Fixed

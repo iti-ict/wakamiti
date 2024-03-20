@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "appium-steps", version = "1.0")
+@Extension(provider =  "es.iti.wakamiti", name = "appium-steps", version = "2.4")
 @I18nResource("iti_wakamiti_wakamiti-appium")
 public class AppiumStepContributor implements StepContributor {
 

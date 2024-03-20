@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.properties;
 
+
 import imconfig.Configurable;
 import imconfig.Configuration;
 import es.iti.commons.jext.Extension;
@@ -14,9 +15,11 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
- * This {@link PropertyEvaluator} allows eval wakamiti configuration
- * properties.
+ * Allows eval wakamiti configuration properties using a
+ * regular expression pattern to match property
+ * placeholders in a string.
  *
  * <p> Pattern: {@code ${[property name]}}
  *
@@ -27,6 +30,7 @@ import java.util.regex.Pattern;
  * </pre></blockquote>
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
+ * @see PropertyEvaluator
  */
 @Extension(
         provider =  "es.iti.wakamiti", name = "global-property-resolver",
@@ -36,16 +40,34 @@ public class GlobalPropertyEvaluator extends PropertyEvaluator implements Config
 
     private Configuration configuration;
 
+    /**
+     * Configures the evaluator with the provided {@link Configuration}.
+     *
+     * @param configuration The configuration to use for property resolution.
+     */
     @Override
     public void configure(Configuration configuration) {
         this.configuration = configuration;
     }
 
+    /**
+     * Defines the pattern to identify property placeholders in a string.
+     *
+     * @return A {@link Pattern} object representing the property pattern.
+     */
     @Override
     public Pattern pattern() {
         return Pattern.compile("\\$\\{(?<name>[\\w\\d-]+(\\.[\\w\\d-]+)*)\\}"); //NOSONAR
     }
 
+    /**
+     * Evaluates a property using the configured {@link Configuration}.
+     *
+     * @param property The property to evaluate.
+     * @param matcher  The {@link Matcher} object containing the matched property name.
+     * @return The resolved value of the property.
+     * @throws WakamitiException If the property cannot be resolved.
+     */
     @Override
     public String evalProperty(String property, Matcher matcher) {
         return configuration.get(matcher.group("name"), String.class)

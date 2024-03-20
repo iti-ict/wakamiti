@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.test.gherkin.parser;
 
+
 import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
 import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
 import es.iti.wakamiti.core.gherkin.parser.ParserException;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 
 public class TestParser {
 
@@ -56,6 +58,16 @@ public class TestParser {
     public void testParserError2() throws IOException {
         try (var reader = new InputStreamReader(
                 Objects.requireNonNull(classLoader.getResourceAsStream("parser/gherkinDocument_tag_err2.feature"))
+        )) {
+            GherkinDocument document = new GherkinParser().parse(reader);
+            assertNotNull(document);
+        }
+    }
+
+    @Test
+    public void testParserError3() throws IOException {
+        try (var reader = new InputStreamReader(
+                Objects.requireNonNull(classLoader.getResourceAsStream("features/empty.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);

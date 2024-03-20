@@ -5,16 +5,18 @@
  */
 package es.iti.wakamiti.api.plan;
 
+
 import es.iti.wakamiti.api.model.ExecutableTreeNode;
 import es.iti.wakamiti.api.util.Argument;
 
 import java.util.*;
 import java.util.function.Predicate;
 
+
 /**
+ * Represents a node in a test plan.
  *
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
@@ -32,7 +34,6 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     List<Argument> arguments;
     boolean filtered;
 
-
     public PlanNode(NodeType nodeType, List<PlanNode> children) {
         super(children);
         description = null;
@@ -49,51 +50,41 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         arguments = new LinkedList<>();
     }
 
-
     public String name() {
         return name;
     }
-
 
     public String keyword() {
         return keyword;
     }
 
-
     public String id() {
         return id;
     }
-
 
     public String language() {
         return language;
     }
 
-
     public NodeType nodeType() {
         return nodeType;
     }
-
 
     public List<String> description() {
         return description;
     }
 
-
     public Set<String> tags() {
         return tags;
     }
-
 
     public String source() {
         return source;
     }
 
-
     public Map<String, String> properties() {
         return properties;
     }
-
 
     public Optional<PlanNodeData> data() {
         return data;
@@ -114,7 +105,6 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     public int numDescendants(NodeType nodeType) {
         return numDescendants(descendant -> descendant.nodeType() == nodeType);
     }
-
 
     public int numDescendants(NodeType nodeType, Result result) {
         return numDescendants(

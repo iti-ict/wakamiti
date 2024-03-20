@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.api.model;
 
 
@@ -18,8 +14,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 
+/**
+ * This class represents an executable tree node and
+ * provides functionality related to execution, such as
+ * assigning an execution ID, preparing for execution,
+ * and retrieving execution details.
+ *
+ * @param <S> The type of the executable tree node itself
+ * @param <R> The type of the result that can be obtained
+ *            after execution
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @see TreeNode
+ */
 public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R extends Comparable<R>>
-extends TreeNode<S> {
+        extends TreeNode<S> {
 
     private String executionID;
     private Optional<ExecutionState<R>> executionState = Optional.empty();
@@ -30,7 +38,13 @@ extends TreeNode<S> {
     }
 
 
-    /** Assign an execution ID */
+    /**
+     * Assigns an execution ID to this node.
+     *
+     * @param executionID The execution ID to be assigned
+     * @throws IllegalStateException If the execution ID
+     *                               has already been assigned
+     */
     public void assignExecutionID(String executionID) {
         if (this.executionID != null) {
             throw new IllegalStateException("ExecutionID already assigned");
@@ -39,33 +53,44 @@ extends TreeNode<S> {
         children().forEach(child -> child.assignExecutionID(executionID));
     }
 
-
+    /**
+     * Gets the assigned execution ID for this node.
+     *
+     * @return The execution ID
+     */
     public String executionID() {
         return executionID;
     }
 
-
     /**
-     * Prepare the node to be executed.
+     * Prepares the node to be executed.
      *
      * @return The node execution state
      */
     public ExecutionState<R> prepareExecution() {
-        if (!executionState.isPresent()) {
+        if (executionState.isEmpty()) {
             executionState = Optional.of(createExecutionState());
         }
         return executionState.get();
     }
 
-
+    /**
+     * Creates the execution state for this node.
+     * Subclasses can override this method to provide a
+     * custom execution state.
+     *
+     * @return The execution state
+     */
     protected ExecutionState<R> createExecutionState() {
         return new ExecutionState<>();
     }
 
 
     /**
-     * @return The execution details of the node. It will be empty until
-     *         {@link #prepareExecution()} is called.
+     * Gets the execution state of this node.
+     *
+     * @return The execution state, which will be empty
+     * until {@link #prepareExecution()} is called
      */
     public Optional<ExecutionState<R>> executionState() {
         return executionState;
@@ -73,47 +98,49 @@ extends TreeNode<S> {
 
 
     /**
-     * Get the start instant of this node, if executed. In the case of
-     * child-populated nodes, return the minimum start instant of its children.
+     * Gets the start instant of this node, if executed.
+     * In the case of child-populated nodes returns the
+     * minimum start instant of its children.
      *
      * @return The nullable optional start instant
      */
     public Optional<Instant> startInstant() {
         if (hasChildren()) {
             return children()
-                .map(S::startInstant)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .min(Comparator.naturalOrder());
+                    .map(S::startInstant)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .min(Comparator.naturalOrder());
         }
         return executionState().flatMap(ExecutionState::startInstant);
     }
 
 
     /**
-     * Get the start instant of this node, if executed. In the case of
-     * child-populated nodes, return the minimum start instant of its children.
+     * Gets the finish instant of this node, if executed.
+     * In the case of child-populated nodes returns the
+     * maximum finish instant of its children.
      *
      * @return The nullable optional finish instant
      */
     public Optional<Instant> finishInstant() {
         if (hasChildren()) {
             return children()
-                .map(S::finishInstant)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .max(Comparator.naturalOrder());
+                    .map(S::finishInstant)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .max(Comparator.naturalOrder());
         }
         return executionState().flatMap(ExecutionState::finishInstant);
     }
 
 
     /**
-     * Get the duration of the execution of this node, if executed. In the case
-     * of child-populated nodes, return the minimum start instant of its
-     * children.
+     * Gets the duration of the execution of this node, if executed.
+     * In the case of child-populated nodes returns the sum of
+     * durations of its children.
      *
-     * @return The nullable optional finish instant
+     * @return The nullable optional duration
      */
     public Optional<Duration> duration() {
         if (hasChildren()) {
@@ -127,10 +154,10 @@ extends TreeNode<S> {
     }
 
 
-
     /**
-     * Get the result of this node, if executed. In the case of child-populated
-     * nodes, return the result of max priority of its children.
+     * Gets the result of this node, if executed. In the case
+     * of child-populated nodes, returns the result of maximum
+     * priority among its children.
      *
      * @return The nullable optional result
      */
@@ -138,18 +165,19 @@ extends TreeNode<S> {
         Optional<R> result = executionState().flatMap(ExecutionState::result);
         if (result.isEmpty() && hasChildren()) {
             return children()
-                .map(S::result)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .max(Comparator.naturalOrder());
+                    .map(S::result)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .max(Comparator.naturalOrder());
         }
         return result;
     }
 
 
     /**
-     * Get a stream with the errors of this node, if executed and failed. In the
-     * case of child-populated nodes, return all the errors of its children.
+     * Gets a stream with the errors of this node, if executed
+     * and failed. In the case of child-populated nodes returns
+     * all the errors of its children.
      *
      * @return A stream of errors
      */
@@ -157,32 +185,32 @@ extends TreeNode<S> {
         if (hasChildren()) {
             return children().flatMap(S::errors);
         }
-        return executionState().flatMap(ExecutionState::error)
-            .map(Stream::of)
-            .orElse(Stream.empty());
+        return executionState().flatMap(ExecutionState::error).stream();
     }
 
 
     /**
-     * Get a stream with the error classifiers of this node, if executed and failed. In the
-     * case of child-populated nodes, return all the error classifiers of its children.
+     * Gets a stream with the error classifiers of this node, if
+     * executed and failed. In the case of child-populated nodes
+     * returns all the error classifiers of its children.
      *
-     * @return A stream of errors
+     * @return A stream of error classifiers
      */
     public Stream<String> errorClassifiers() {
         if (hasChildren()) {
             return children().flatMap(S::errorClassifiers);
         }
-        return executionState().flatMap(ExecutionState::errorClassifier)
-                .map(Stream::of)
-                .orElse(Stream.empty());
+        return executionState().flatMap(ExecutionState::errorClassifier).stream();
     }
 
 
     /**
-     * @return Check whether the execution of this node has been marked as
-     *         started. In the case of child-populated nodes, return if every
-     *         child has been started.
+     * Checks whether the execution of this node has been marked as
+     * started. In the case of child-populated nodes, returns true
+     * if every child has been started.
+     *
+     * @return {@code true} if the execution has started, {@code false}
+     * otherwise
      */
     public boolean hasStarted() {
         if (hasChildren()) {
@@ -193,9 +221,12 @@ extends TreeNode<S> {
 
 
     /**
-     * @return Check whether the execution of this node has been marked as
-     *         finished. In the case of child-populated nodes, return if every
-     *         child has been finished.
+     * Checks whether the execution of this node has been marked as
+     * finished. In the case of child-populated nodes, returns true
+     * if every child has been finished.
+     *
+     * @return {@code true} if the execution has finished, {@code false}
+     * otherwise
      */
     public boolean hasFinished() {
         if (hasChildren()) {

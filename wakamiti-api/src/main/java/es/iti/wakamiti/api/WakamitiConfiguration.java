@@ -5,11 +5,20 @@
  */
 package es.iti.wakamiti.api;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import imconfig.Configuration;
 import imconfig.Configurer;
 
+
+/**
+ * Configuration contributor for Wakamiti API.
+ * This class provides default configurations and accepts specific contributors.
+ * Configurations include various settings related to Wakamiti's behavior.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 @Extension(name = "core-properties", provider =  "es.iti.wakamiti")
 public class WakamitiConfiguration implements ConfigContributor<Void> {
 
@@ -55,7 +64,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     /** The path to be used when outputFilePerTestCase is enabled */
     public static final String OUTPUT_FILE_PER_TEST_CASE_PATH = "outputFilePerTestCasePath";
 
-    /** Ensure that every test case wihtin a plan has a unique ID */
+    /** Ensure that every test case within a plan has a unique ID */
     public static final String STRICT_TEST_CASE_ID = "strictTestCaseID";
 
     /** Report sources */
@@ -73,7 +82,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     /** Pattern for use specific tag as an identifier */
     public static final String ID_TAG_PATTERN = "idTagPattern";
 
-    /** Overriden locale for data formatting */
+    /** Override locale for data formatting */
     public static final String DATA_FORMAT_LANGUAGE = "dataFormatLanguage";
 
     /** Set if the redefinition feature is enabled */

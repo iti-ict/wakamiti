@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [Unreleased]
+
+### Fixed
+- Conflicts in regular step expressions.
+- SQL parser issues.
+- Data comparison issues.
+
+### Added
+- Multiple connections identified by aliases.
+- Data selection steps.
+- Procedure execution steps.
+- Similar row selection when not found.
+
+### Deleted
+- Removed enum `CaseSensitivity`. Entity names are now automatically obtained from database.
+
+
 
 ## [2.3.3] - 2023-09-14
 
