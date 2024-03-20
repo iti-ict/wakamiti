@@ -292,6 +292,7 @@
                                 <argument>--rm</argument>
                                 <argument>-w</argument>
                                 <argument>/wakamiti/test-classes</argument>
+                                <argument>--add-host=host.docker.internal:host-gateway</argument>
                                 <argument>wakamiti/wakamiti:test</argument>
                                 <argument>-m</argument>
                                 <argument>${database.driver}</argument>
