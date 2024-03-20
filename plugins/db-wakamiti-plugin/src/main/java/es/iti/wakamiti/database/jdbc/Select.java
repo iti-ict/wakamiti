@@ -246,7 +246,7 @@ public class Select<T> extends Sentence<Statement> {
         public <R> Select<R> get(Function<ResultSet, R> mapper) {
             try {
                 Statement statement = db.connection().createStatement();
-                return Select.create(sql, db, db.connection().createStatement(), statement.executeQuery(sql),
+                return Select.create(sql, db, statement, statement.executeQuery(sql),
                         rs -> Optional.ofNullable(mapper.apply(rs)));
             } catch (SQLException e) {
                 throw new SQLRuntimeException("Error executing statement", e);

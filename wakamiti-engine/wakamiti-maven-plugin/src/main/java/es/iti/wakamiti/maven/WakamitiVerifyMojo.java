@@ -12,11 +12,9 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 import imconfig.Configuration;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.*;
 import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -154,52 +152,52 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
 
         Configuration configuration;
         try {
-            if (includeProjectDependencies) {
-                resolvePluginDependencies();
-            }
+            resolvePluginDependencies();
 
             Wakamiti wakamiti = Wakamiti.instance();
             // replace null properties for empty values
             for (String key : properties.keySet()) {
                 properties.putIfAbsent(key, "");
             }
-
             configuration = readConfiguration(configurationFiles, properties);
 
             PlanNode plan = wakamiti.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 getLog().warn("Test Plan is empty!");
             } else {
-                Optional<Result> planResult = wakamiti.executePlan(plan, configuration).result()
+                wakamiti.executePlan(plan, configuration).result()
                         .filter(result -> !testFailureIgnore)
-                        .filter(result -> result != Result.PASSED);
-                if (planResult.isPresent()) {
-                    throw new WakamitiException("Wakamiti Test Plan not passed: " + planResult.get());
-                }
+                        .filter(result -> result != Result.PASSED)
+                        .ifPresent(result -> {
+                            throw new WakamitiException("Wakamiti Test Plan not passed: " + result);
+                        });
             }
         } catch (WakamitiException e) {
             getLog().error(e);
-            if (testFailureIgnore) return;
             MojoFailureException exception = new MojoFailureException("Wakamiti error: " + e.getMessage(), e);
-            if (mojoExecution.getPlugin().getExecutions().stream()
-                    .noneMatch(execution -> execution.getGoals().contains("control"))) {
-                throw exception;
-            }
-            MojoResult.setError(exception);
+            errorControl(exception);
         } catch (Throwable e) {
             getLog().error(e);
-            if (testFailureIgnore) return;
-            MojoExecutionException exception = new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
-            if (mojoExecution.getPlugin().getExecutions().stream()
-                    .noneMatch(execution -> execution.getGoals().contains("control"))) {
-                throw exception;
-            }
-            MojoResult.setError(new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e));
+            MojoExecutionException exception =
+                    new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
+            errorControl(exception);
         }
 
     }
 
+    private void errorControl(AbstractMojoExecutionException exception)
+            throws MojoExecutionException, MojoFailureException {
+        if (testFailureIgnore) return;
+        if (mojoExecution.getPlugin().getExecutions().stream()
+                .noneMatch(execution -> execution.getGoals().contains("control"))) {
+            if (exception instanceof MojoExecutionException) throw (MojoExecutionException) exception;
+            if (exception instanceof MojoFailureException) throw (MojoFailureException) exception;
+        }
+        MojoResult.setError(exception);
+    }
+
     private void resolvePluginDependencies() {
+        if (!includeProjectDependencies) return;
         try {
             Set<URL> urls = new HashSet<>();
             for (String element : projectDependencies) {

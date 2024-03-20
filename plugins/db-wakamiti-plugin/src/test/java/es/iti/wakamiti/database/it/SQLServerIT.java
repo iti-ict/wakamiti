@@ -42,7 +42,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class SQLServerTest {
+public class SQLServerIT {
 
     private static final MSSQLServerContainer<?> container = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2017-CU12")
             .acceptLicense()
@@ -67,7 +67,7 @@ public class SQLServerTest {
         String password = container.getPassword();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(new DriverManagerDataSource(url, user, password));
-        File schemaFile = new File(SQLServerTest.class.getResource("/db/triggers.sql").getFile());
+        File schemaFile = new File(SQLServerIT.class.getResource("/db/triggers.sql").getFile());
         String createSchema = FileUtils.readFileToString(schemaFile, StandardCharsets.UTF_8);
         for (String sentence : createSchema.split("\\sGO\\s")) {
             jdbcTemplate.execute(sentence);

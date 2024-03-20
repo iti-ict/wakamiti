@@ -40,7 +40,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class OracleDatabaseTest {
+public class OracleDatabaseIT {
 
     private static final OracleContainer container = new OracleContainer("gvenzl/oracle-xe:21.3.0-slim")
             .withDatabaseName("test")

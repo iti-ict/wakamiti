@@ -62,6 +62,8 @@ public class DatabaseSupport {
     public static final String DEFAULT = "default";
     protected static final String ERROR_ASSERT_NO_RECORD_EXPECTED = "It was expected no record satisfying {} exist in table {}, but {}";
     protected static final String ERROR_ASSERT_SOME_RECORD_EXPECTED = "It was expected some record satisfying {} exist in table {}, but {}";
+    protected static final String GIVEN_WHERE_CLAUSE = "the given WHERE clause";
+    protected static final String ERROR_CLOSING_DATASET = "Error closing dataset";
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     protected final Map<String, ConnectionProvider> connections = new HashMap<>();
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
@@ -226,7 +228,7 @@ public class DatabaseSupport {
                                     try (DataSet dataSet = result.get().copy()) {
                                         deleteDataSet(dataSet, false);
                                     } catch (IOException e) {
-                                        LOGGER.error("Error closing dataset", e);
+                                        LOGGER.error(ERROR_CLOSING_DATASET, e);
                                     }
                                 });
                             }
@@ -645,7 +647,7 @@ public class DatabaseSupport {
                         try (DataSet ds = result.get().copy()) {
                             deleteDataSet(ds, false);
                         } catch (IOException e) {
-                            LOGGER.error("Error closing dataset", e);
+                            LOGGER.error(ERROR_CLOSING_DATASET, e);
                         }
                     });
                 }
@@ -813,7 +815,7 @@ public class DatabaseSupport {
                     insertDataSet(dataSet, false);
                     dataSet.close();
                 } catch (IOException e) {
-                    LOGGER.error("Error closing dataset", e);
+                    LOGGER.error(ERROR_CLOSING_DATASET, e);
                 }
             });
         }
@@ -842,7 +844,7 @@ public class DatabaseSupport {
                     updateDataSet(dataSet, update.getUpdateSets());
                     dataSet.close();
                 } catch (IOException e) {
-                    LOGGER.error("Error closing dataset", e);
+                    LOGGER.error(ERROR_CLOSING_DATASET, e);
                 }
             });
         }

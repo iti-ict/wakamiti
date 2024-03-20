@@ -35,9 +35,9 @@ public final class LogUtils {
      *
      * @param sql The SQL query to log
      */
-    public static void traceSQL(String sql) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("[SQL] {sql} ", normalize(sql));
+    public static void traceSQL(Object sql) {
+        if (sql != null && LOGGER.isTraceEnabled()) {
+            LOGGER.trace("[SQL] {sql} ", normalize(sql.toString()));
         }
     }
 
@@ -47,9 +47,9 @@ public final class LogUtils {
      * @param sql    The SQL query string
      * @param values The parameter values
      */
-    public static void traceSQL(String sql, String... values) {
-        if (LOGGER.isTraceEnabled()) {
-            traceSQL(Stream.of(values).reduce(sql, (v1, v2) ->
+    public static void traceSQL(Object sql, String... values) {
+        if (sql != null && LOGGER.isTraceEnabled()) {
+            traceSQL(Stream.of(values).reduce(sql.toString(), (v1, v2) ->
                     v1.replaceFirst("\\?", v2 == null ? "null" : String.format("'%s'", v2))));
         }
     }

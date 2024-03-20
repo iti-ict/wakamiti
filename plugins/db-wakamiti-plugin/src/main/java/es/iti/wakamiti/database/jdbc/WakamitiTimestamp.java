@@ -18,7 +18,7 @@ import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
  *
  * @see java.sql.Timestamp
  */
-public class Timestamp extends java.sql.Timestamp {
+public class WakamitiTimestamp extends java.sql.Timestamp {
 
     private final boolean trunc;
 
@@ -29,7 +29,7 @@ public class Timestamp extends java.sql.Timestamp {
      * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
      *              date-time
      */
-    public Timestamp(long time, boolean trunc) {
+    public WakamitiTimestamp(long time, boolean trunc) {
         super(time);
         this.trunc = trunc;
     }
@@ -43,8 +43,8 @@ public class Timestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static Timestamp valueOf(LocalDateTime time, boolean trunc) {
-        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
+    public static WakamitiTimestamp valueOf(LocalDateTime time, boolean trunc) {
+        return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 
     /**
@@ -56,8 +56,8 @@ public class Timestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static Timestamp valueOf(String time, boolean trunc) {
-        return new Timestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
+    public static WakamitiTimestamp valueOf(String time, boolean trunc) {
+        return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 
     /**

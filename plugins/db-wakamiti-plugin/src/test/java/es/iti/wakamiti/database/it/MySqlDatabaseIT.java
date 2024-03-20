@@ -35,7 +35,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class MySqlDatabaseTest {
+public class MySqlDatabaseIT {
 
     private static final MySQLContainer<?> container = new MySQLContainer<>("mysql:5.7.34")
             .withDatabaseName("test")

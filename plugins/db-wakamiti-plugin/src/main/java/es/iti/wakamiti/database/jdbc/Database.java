@@ -23,7 +23,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
+import static es.iti.wakamiti.database.DatabaseHelper.collectToMap;
 import static es.iti.wakamiti.database.jdbc.LogUtils.*;
+import static java.util.Objects.isNull;
 
 
 /**
@@ -35,6 +37,7 @@ public final class Database {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     private static final Map<String, Schema> CACHED_SCHEMA = new HashMap<>();
+    private static final String COLUMN_NAME = "COLUMN_NAME";
 
     private final ConnectionProvider connection;
     private final DatabaseType type;
@@ -145,7 +148,7 @@ public final class Database {
                     .getColumns(catalog(), schema(), table(table), "_".repeat(parser.unquote(column).length()))) {
                 String name = null;
                 while (rs.next()) {
-                    String current = rs.getString("COLUMN_NAME");
+                    String current = rs.getString(COLUMN_NAME);
                     if (col.equalsIgnoreCase(current)) {
                         name = current;
                         break;
@@ -184,7 +187,7 @@ public final class Database {
             ArrayList<String> primaryKeys = new ArrayList<>();
             try (ResultSet rs = connection().getMetaData().getPrimaryKeys(catalog(), schema(), k)) {
                 while (rs.next()) {
-                    primaryKeys.add(rs.getString("COLUMN_NAME"));
+                    primaryKeys.add(rs.getString(COLUMN_NAME));
                 }
                 return primaryKeys;
             } catch (SQLException e) {
@@ -208,7 +211,7 @@ public final class Database {
                     .getColumns(catalog(), schema(), k, null)) {
                 while (rs.next()) {
                     types.put(
-                            rs.getString("COLUMN_NAME"),
+                            rs.getString(COLUMN_NAME),
                             JDBCType.valueOf(rs.getInt("DATA_TYPE"))
                     );
                 }
@@ -226,16 +229,17 @@ public final class Database {
      */
     public void truncate(String table) {
         try (Statement statement = connection().createStatement()) {
-            String truncate = "TRUNCATE TABLE " + parser().format(table);
-            String delete = "DELETE FROM " + parser().format(table);
             int count = 0;
             try {
-                count += count(table);
-                statement.executeUpdate(truncate);
-                traceSQL(truncate);
+                count += (int) count(table);
+
+                String query = message("TRUNCATE TABLE {}", parser.format(table));
+                traceSQL(query);
+                statement.executeUpdate(query);
             } catch (SQLException e) {
-                count = statement.executeUpdate(delete);
-                traceSQL(delete);
+                String query = message("DELETE FROM {}", parser.format(table));
+                traceSQL(query);
+                count = statement.executeUpdate(query);
             }
             debugRows(count);
         } catch (SQLException e) {
@@ -254,54 +258,50 @@ public final class Database {
     public Map<String, Object> processData(String table, Map<String, String> data) {
         Map<String, JDBCType> types = columnTypes(table(parser.unquote(table)));
         return data.entrySet().stream()
-                .collect(LinkedHashMap::new, (m, e) -> {
-                    String column = column(table(parser.unquote(table)), parser.unquote(e.getKey()));
-                    Object value = e.getValue();
-                    if (value != null) {
-                        if (!types.containsKey(column)) {
-                            throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), column);
-                        }
-                        switch (types.get(column)) {
-                            case BIT:
-                            case BOOLEAN:
-                                value = Boolean.parseBoolean(e.getValue());
-                                break;
-                            case TINYINT:
-                            case BIGINT:
-                            case INTEGER:
-                            case SMALLINT:
-                                if (e.getValue().contains(".")) value = new BigDecimal(e.getValue()).toBigInteger();
-                                else value = new BigInteger(e.getValue());
-                                break;
-                            case DECIMAL:
-                            case DOUBLE:
-                            case FLOAT:
-                            case NUMERIC:
-                            case REAL:
-                                if (!e.getValue().contains(".")) value = new BigInteger(e.getValue());
-                                else value = new BigDecimal(e.getValue());
-                                break;
-                            case DATE:
-                                Calendar calendar = Chronic.parse(e.getValue(), new Options(false))
-                                        .getBeginCalendar();
-                                value = Timestamp.valueOf(
-                                        LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId())
-                                                .truncatedTo(ChronoUnit.DAYS), true
-                                );
-                                break;
-                            case TIMESTAMP:
-                            case TIME:
-                            case TIME_WITH_TIMEZONE:
-                            case TIMESTAMP_WITH_TIMEZONE:
-                                Calendar calendar2 = Chronic.parse(e.getValue(), new Options(false))
-                                        .getBeginCalendar();
-                                value = DATE_TIME_FORMATTER.withZone(calendar2.getTimeZone().toZoneId())
-                                        .format(calendar2.toInstant());
-                                value = Timestamp.valueOf(value.toString(), false);
-                        }
-                    }
-                    m.put(column, value);
-                }, LinkedHashMap::putAll);
+                .map(e -> new AbstractMap.SimpleEntry<>(
+                        column(table(parser.unquote(table)), parser.unquote(e.getKey())), e.getValue()))
+                .peek(e -> {
+                    if (!types.containsKey(e.getKey()))
+                        throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), e.getKey());
+                })
+                .collect(collectToMap(Map.Entry::getKey, e -> formatValue(e.getValue(), types.get(e.getKey()))));
+    }
+
+    private Object formatValue(String value, JDBCType type) {
+        if (isNull(value)) return null;
+        switch (type) {
+            case BIT:
+            case BOOLEAN:
+                return Boolean.parseBoolean(value);
+            case TINYINT:
+            case BIGINT:
+            case INTEGER:
+            case SMALLINT:
+                if (value.contains(".")) return new BigDecimal(value).toBigInteger();
+                return new BigInteger(value);
+            case DECIMAL:
+            case DOUBLE:
+            case FLOAT:
+            case NUMERIC:
+            case REAL:
+                if (!value.contains(".")) return new BigInteger(value);
+                return new BigDecimal(value);
+            case DATE:
+                Calendar calendar = Chronic.parse(value, new Options(false)).getBeginCalendar();
+                return WakamitiTimestamp.valueOf(
+                        LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId())
+                                .truncatedTo(ChronoUnit.DAYS), true
+                );
+            case TIMESTAMP:
+            case TIME:
+            case TIME_WITH_TIMEZONE:
+            case TIMESTAMP_WITH_TIMEZONE:
+                Calendar calendar2 = Chronic.parse(value, new Options(false)).getBeginCalendar();
+                value = DATE_TIME_FORMATTER.withZone(calendar2.getTimeZone().toZoneId()).format(calendar2.toInstant());
+                return WakamitiTimestamp.valueOf(value, false);
+            default:
+                return value;
+        }
     }
 
     /**

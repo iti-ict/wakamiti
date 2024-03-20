@@ -74,17 +74,24 @@ public class DatabaseStepContributorTest {
 
     @Test
     public void testDefaultConnection() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
                 "database.metadata.healthcheck", "true"
         );
+
+        // Act
         configContributor.configurer().configure(contributor, config);
+
+        // Check
+        // No exception is thrown
     }
 
     @Test
     public void testConnectionWhenMultipleDataSources() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.datasource.db1.connection.url", URL,
                 "database.datasource.db1.connection.username", USER,
@@ -94,18 +101,25 @@ public class DatabaseStepContributorTest {
                 "database.datasource.db2.connection.password", PASS,
                 "database.datasource.db2.metadata.caseSensitivity", "lower_cased"
         );
+
+        // Act
         configContributor.configurer().configure(contributor, config);
 
+        // Check
         assertThat(contributor.connection().parameters().url()).isEqualTo(URL);
     }
 
     @Test(expected = WakamitiException.class)
     public void testConnectionWhenNoDatabasesFound() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration();
         configContributor.configurer().configure(contributor, config);
 
+        // Act
         try {
             contributor.connection();
+
+            // Check
         } catch (WakamitiException e) {
             assertThat(e.getMessage()).isEqualTo("Bad jdbc url");
             throw e;
@@ -114,12 +128,16 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = WakamitiException.class)
     public void testConnectionWhenNoHealthcheckAndNoDatabasesFound() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration();
         configContributor.configurer().configure(contributor, config);
 
+        // Act
         try {
             contributor.setHealthcheck(false);
             contributor.connection();
+
+            // Check
         } catch (WakamitiException e) {
             assertThat(e.getMessage()).isEqualTo("There is no default connection");
             throw e;
@@ -129,6 +147,7 @@ public class DatabaseStepContributorTest {
 
     @Test
     public void testAddDefaultConnectionWhenExists() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -136,13 +155,16 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
 
+        // Act
         contributor.setConnectionParameters("jdbc:h2:mem:test2", "sa", "");
 
+        // Check
         assertThat(contributor.connection().parameters().url()).isEqualTo("jdbc:h2:mem:test2");
     }
 
     @Test
     public void testAddConnectionWhenExists() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.datasource.db1.connection.url", URL,
                 "database.datasource.db1.connection.username", USER,
@@ -154,13 +176,16 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
 
+        // Act
         contributor.setConnectionParameters("jdbc:h2:mem:test2", "sa", "", "db1");
 
+        // Check
         assertThat(contributor.connection().parameters().url()).isEqualTo("jdbc:h2:mem:test2");
     }
 
     @Test
     public void testSelectData() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -193,6 +218,7 @@ public class DatabaseStepContributorTest {
 
     @Test
     public void testSelectDataWhenNull() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -226,6 +252,7 @@ public class DatabaseStepContributorTest {
 
     @Test
     public void testSelectDataWhenNotExist() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -247,6 +274,7 @@ public class DatabaseStepContributorTest {
 
     @Test(expected = SQLRuntimeException.class)
     public void testSelectDataWhenTableNotExist() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -259,10 +287,14 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.selectData(new Document(sql));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
     public void testSelectDataWhenColumnNotExist() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
@@ -275,10 +307,15 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.selectData(new Document(sql));
+
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
     public void testSwitchConnection() {
+        // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.datasource.db1.connection.url", URL,
                 "database.datasource.db1.connection.username", USER,
@@ -290,8 +327,10 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
 
+        // Act
         contributor.switchConnection("db2");
 
+        // Check
         assertThat(contributor.connection().parameters().url()).isEqualTo("jdbc:h2:mem:test2");
     }
 
@@ -466,6 +505,9 @@ public class DatabaseStepContributorTest {
                 client.columns(),
                 new String[]{"2", "Ester", "Colero", "1", "2000-02-01"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -486,6 +528,9 @@ public class DatabaseStepContributorTest {
                 new String[]{"xxx"},
                 new String[]{"2"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -591,6 +636,9 @@ public class DatabaseStepContributorTest {
                 new String[]{"first_name", "second_name", "active"},
                 new String[]{"Rosa", "Melano", "1"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -611,6 +659,9 @@ public class DatabaseStepContributorTest {
                 new String[]{"xxx"},
                 new String[]{"2"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -679,6 +730,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.clearTable("xxxxx");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -747,6 +801,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.clearTableByClause("xxxxx", new Document("first_name = 'Rosa' AND active = 1"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -762,6 +819,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.clearTableByClause("client", new Document("xxxx = 'Rosa'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -880,6 +940,9 @@ public class DatabaseStepContributorTest {
         String script = "INSERT INTO other (something) VALUES (37)";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
+
+        // Check
+        // No exception is thrown
     }
 
     @Test
@@ -898,6 +961,9 @@ public class DatabaseStepContributorTest {
         String script = "UPDATE other SET something = 37 WHERE something = 47";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
+
+        // Check
+        // No exception is thrown
     }
 
     @Test
@@ -989,6 +1055,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowExistsBySingleId("1", "xxxx");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1193,6 +1262,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowExistsByOneColumn("xxxx", "second_name", "Melano");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1209,6 +1281,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowExistsByOneColumn("client", "xxxx", "Melano");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1319,6 +1394,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowNotExistsByOneColumn("xxxx", "second_name", "Otro");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1335,6 +1413,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowNotExistsByOneColumn("client", "xxxx", "Otro");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1448,6 +1529,9 @@ public class DatabaseStepContributorTest {
         // Act
         contributor.assertRowCountByOneColumn("xxxx", "second_name", "Melano",
                 new MatcherAssertion<>(comparesEqualTo(1L)));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1465,6 +1549,9 @@ public class DatabaseStepContributorTest {
         // Act
         contributor.assertRowCountByOneColumn("client", "xxxx", "Melano",
                 new MatcherAssertion<>(comparesEqualTo(1L)));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1575,6 +1662,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowExistsByClause("xxxx", new Document("birth_date > '1980-12-20'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1591,6 +1681,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowExistsByClause("client", new Document("xxxx > '1980-12-20'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1699,6 +1792,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowNotExistsByClause("xxxx", new Document("birth_date > '1980-12-30'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1715,6 +1811,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowNotExistsByClause("client", new Document("xxxx > '1980-12-30'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -1826,6 +1925,9 @@ public class DatabaseStepContributorTest {
         // Act
         contributor.assertRowCountByClause("xxxx", new MatcherAssertion<>(comparesEqualTo(1L)),
                 new Document("birth_date > '1980-12-20'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -1843,6 +1945,9 @@ public class DatabaseStepContributorTest {
         // Act
         contributor.assertRowCountByClause("client", new MatcherAssertion<>(comparesEqualTo(1L)),
                 new Document("xxxx > '1980-12-20'"));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -2009,6 +2114,9 @@ public class DatabaseStepContributorTest {
                 new String[]{"first_name", "second_name", "active", "birth_date"},
                 new String[]{"Rosa", "Melano", "1", "1980-12-25"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test(expected = SQLRuntimeException.class)
@@ -2028,6 +2136,9 @@ public class DatabaseStepContributorTest {
                 new String[]{"xxxx", "second_name", "active", "birth_date"},
                 new String[]{"Rosa", "Melano", "1", "1980-12-25"}
         }));
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -3001,6 +3112,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertTableIsNotEmpty("xxxx");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test
@@ -3110,6 +3224,9 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertTableIsEmpty("xxxx");
+
+        // Check
+        // Exception is thrown
     }
 
     @Test

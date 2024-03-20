@@ -123,44 +123,91 @@ public class PlanNodeRunner {
         state = State.RUNNING;
         Wakamiti.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
-        if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
+        if (node.nodeType() == NodeType.TEST_CASE) {
+            result = runTestCaseNode();
+        } else if (!getChildren().isEmpty()) {
+            result = aggregatorFinish(runChildren());
+        } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
+            result = runStep();
+        }
+//
+//        if (node.nodeType() == NodeType.TEST_CASE && node.filtered()) {
+//            result = Result.SKIPPED;
+//            markFilteredTestCase(node);
+//        } else if (node.nodeType() == NodeType.TEST_CASE
+//                && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+//            result = Result.NOT_IMPLEMENTED;
+//            doNotImplemented(node, result);
+//        } else if (!getChildren().isEmpty()) {
+//            Stream<Pair<Instant, Result>> results = Stream.empty();
+//            if (node.nodeType() == NodeType.TEST_CASE) {
+//                try {
+//                    testCasePreExecution(node);
+//                } catch (WakamitiException e) {
+//                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+//                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+//                }
+//            }
+//            results = Stream.concat(results, runChildren())
+//                    .collect(Collectors.toList()).stream(); // prevent lazy stream
+//            if (node.nodeType() == NodeType.TEST_CASE) {
+//                try {
+//                    testCasePostExecution(node);
+//                } catch (WakamitiException e) {
+//                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+//                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+//                }
+//            }
+//
+//            Pair<Instant, Result> aux = results
+//                    .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
+//                    .orElse(new Pair<>(Instant.now(), Result.FAILED));
+//            result = aux.value();
+//            node.prepareExecution().markFinished(aux.key(), result);
+//        } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
+//            result = runStep();
+//        }
+        state = State.FINISHED;
+        Wakamiti.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
+        return result;
+    }
+
+    private Result runTestCaseNode() {
+        Result result = null;
+        if (node.filtered()) {
             result = Result.SKIPPED;
             markFilteredTestCase(node);
-        } else if (node.nodeType() == NodeType.TEST_CASE
-                && node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+        } else if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
             result = Result.NOT_IMPLEMENTED;
             doNotImplemented(node, result);
         } else if (!getChildren().isEmpty()) {
             Stream<Pair<Instant, Result>> results = Stream.empty();
-            if (node.nodeType() == NodeType.TEST_CASE) {
-                try {
-                    testCasePreExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
-                }
+            try {
+                testCasePreExecution(node);
+            } catch (WakamitiException e) {
+                results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                        .collect(Collectors.toList()).stream(); // prevent lazy stream
             }
             results = Stream.concat(results, runChildren())
                     .collect(Collectors.toList()).stream(); // prevent lazy stream
-            if (node.nodeType() == NodeType.TEST_CASE) {
-                try {
-                    testCasePostExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
-                }
+            try {
+                testCasePostExecution(node);
+            } catch (WakamitiException e) {
+                results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                        .collect(Collectors.toList()).stream(); // prevent lazy stream
             }
-
-            Pair<Instant, Result> aux = results
-                    .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
-                    .orElse(new Pair<>(Instant.now(), Result.FAILED));
-            result = aux.value();
-            node.prepareExecution().markFinished(aux.key(), result);
-        } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
-            result = runStep();
+            result = aggregatorFinish(results);
         }
-        state = State.FINISHED;
-        Wakamiti.instance().publishEvent(Event.NODE_RUN_FINISHED, new PlanNodeSnapshot(node));
+
+        return result;
+    }
+
+    private Result aggregatorFinish(Stream<Pair<Instant, Result>> results) {
+        Pair<Instant, Result> aux = results
+                .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
+                .orElse(new Pair<>(Instant.now(), Result.FAILED));
+        Result result = aux.value();
+        node.prepareExecution().markFinished(aux.key(), result);
         return result;
     }
 

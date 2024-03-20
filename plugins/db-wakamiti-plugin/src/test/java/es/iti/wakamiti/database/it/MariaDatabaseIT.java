@@ -8,14 +8,13 @@ package es.iti.wakamiti.database.it;
 
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import imconfig.AnnotatedConfiguration;
 import imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.Db2Container;
+import org.testcontainers.containers.MariaDBContainer;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
@@ -25,10 +24,10 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-db2.feature"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-maria.feature"),
         @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = "data.dir", value = "src/test/resources"),
-        @Property(key = "database.connection.url", value = "jdbc:db2://localhost:1234/test"),
+        @Property(key = "database.connection.url", value = "jdbc:mariadb://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),
         @Property(key = "database.connection.password", value = "pass"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
@@ -36,29 +35,23 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class Db2DatabaseTest {
+public class MariaDatabaseIT {
 
-    private static final Db2Container container = new Db2Container("ibmcom/db2:11.5.8.0")
-            .withPrivilegedMode(true)
-            .acceptLicense()
-            .withEnv("ENABLE_ORACLE_COMPATIBILITY", "true")
-            .withEnv("ARCHIVE_LOGS", "false")
-            .withEnv("PERSISTENT_HOME", "false")
+    private static final MariaDBContainer<?> container = new MariaDBContainer<>("mariadb:10.3.6")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
-            .withInitScript("db/create-schema-db2.sql")
+            .withInitScript("db/create-schema.sql")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
             );
 
-
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
         container.start();
-        System.out.println(message("\rContainer [Db2Container] started with [url={}, username={}, password={}]",
+        System.out.println(message("\rContainer [MariaDBContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));
     }
 
@@ -67,5 +60,4 @@ public class Db2DatabaseTest {
         container.stop();
         container.close();
     }
-
 }

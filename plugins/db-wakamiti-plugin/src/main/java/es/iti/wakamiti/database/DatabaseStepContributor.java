@@ -1469,7 +1469,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         if (!matcherNonEmpty().test(countBy(table, clause.getContent()))) {
             Assertions.fail(message(
                     ERROR_ASSERT_SOME_RECORD_EXPECTED,
-                    "the given WHERE clause", Database.from(connection()).table(table), "it doesn't"
+                    GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it doesn't"
             ));
         }
     }
@@ -1490,7 +1490,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
                 time,
                 () -> Assertions.fail(message(
                         ERROR_ASSERT_SOME_RECORD_EXPECTED,
-                        "the given WHERE clause", Database.from(connection()).table(table), "it doesn't"
+                        GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it doesn't"
                 )));
     }
 
@@ -1506,7 +1506,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         if (!matcherEmpty().test(countBy(table, clause.getContent()))) {
             Assertions.fail(message(
                     ERROR_ASSERT_NO_RECORD_EXPECTED,
-                    "the given WHERE clause", Database.from(connection()).table(table), "it does"
+                    GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it does"
             ));
         }
     }
@@ -1525,7 +1525,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         assertAsync(() -> matcherEmpty().test(countBy(table, clause.getContent())), time, () ->
                 Assertions.fail(message(
                         ERROR_ASSERT_NO_RECORD_EXPECTED,
-                        "the given WHERE clause", Database.from(connection()).table(table), "it does"
+                        GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it does"
                 )));
     }
 
@@ -1543,7 +1543,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         if (!matcher.test(count)) {
             Assertions.fail(message(
                     ERROR_ASSERT_SOME_RECORD_EXPECTED,
-                    "the given WHERE clause",
+                    GIVEN_WHERE_CLAUSE,
                     Database.from(connection()).table(table),
                     matcher.describeFailure(count)
             ));
@@ -1566,7 +1566,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         assertAsync(() -> matcher.test(result.addAndGet(countBy(table, clause.getContent()))), time, () ->
                 Assertions.fail(message(
                         ERROR_ASSERT_SOME_RECORD_EXPECTED,
-                        "the given WHERE clause",
+                        GIVEN_WHERE_CLAUSE,
                         Database.from(connection()).table(table),
                         matcher.describeFailure(result.get())
                 )));

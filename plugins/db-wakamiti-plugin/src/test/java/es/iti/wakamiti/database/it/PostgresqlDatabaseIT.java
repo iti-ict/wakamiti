@@ -35,7 +35,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class PostgresqlDatabaseTest {
+public class PostgresqlDatabaseIT {
 
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:9.6.12")
             .withDatabaseName("test")
