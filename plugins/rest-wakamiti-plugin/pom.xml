@@ -111,7 +111,9 @@
 
     </dependencies>
 
+
     <profiles>
+
         <profile>
             <id>integrationTests</id>
             <activation>
@@ -119,6 +121,14 @@
             </activation>
             <properties>
                 <rest.port>8888</rest.port>
+
+                <workdir>/wakamiti/test-classes</workdir>
+                <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
+                <volume>${project.build.directory}:/wakamiti</volume>
+                <arguments>-K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
+                <add.host />
+
+                <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
             </properties>
 
             <build>
@@ -173,24 +183,7 @@
                         <configuration>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <executable>docker</executable>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>-e</argument>
-                                <argument>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</argument>
-                                <argument>-v</argument>
-                                <argument>${project.build.directory}:/wakamiti</argument>
-                                <argument>--rm</argument>
-                                <argument>-w</argument>
-                                <argument>/wakamiti/test-classes</argument>
-                                <argument>--add-host=host.docker.internal:host-gateway</argument>
-                                <argument>wakamiti/wakamiti:test</argument>
-                                <argument>-K</argument>
-                                <argument>tagFilter=launcher</argument>
-                                <argument>-K</argument>
-                                <argument>rest.baseURL=http://host.docker.internal:${rest.port}</argument>
-                                <argument>-K</argument>
-                                <argument>data.dir=.</argument>
-                            </arguments>
+                            <commandlineArgs>${run.command}</commandlineArgs>
                             <quietLogs>false</quietLogs>
                         </configuration>
                     </plugin>
@@ -215,6 +208,16 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>properties-linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
+            </properties>
         </profile>
     </profiles>
 
