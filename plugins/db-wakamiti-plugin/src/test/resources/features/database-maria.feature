@@ -1,9 +1,29 @@
+
 Feature: Testing database steps
 
 
   Scenario: Test 1
+    * At finish, the table client is not empty
+    * At finish, the user identified by '1' exists in the table client
+    * At finish, the user identified by '4' does not exist in the table client
+    * At finish, the user having birth_date = '2000-10-30' exists in the table client
+    * At finish, the user having birth_date = '1982-12-30' does not exist in the table client
+    * At finish, the user satisfying the following SQL clause exists in the table client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * At finish, the following record exists in the table client:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     * At finish, the table client is cleared
     * At finish, the table city is cleared
+    * At finish, the user satisfying the following SQL clause does not exist in the table client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * At finish, the following record does not exist in the table client:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     When the following users are inserted into the database table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
@@ -23,11 +43,18 @@ Feature: Testing database steps
 
   Scenario: Test 2
     * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed
+    * At finish, the number of users satisfying the following SQL clause in the table client is 0:
+      """
+      1=1
+      """
+    * At finish, the number of users satisfying the following in the table client is 0:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     When the SQL script file '${data.dir}/db/dml.sql' is executed
     And the SQL procedure file '${data.dir}/db/procedure-maria.sql' is executed
     Then the following record does not exist in the table client:
-      | id             | first_name             | second_name             | active             | birth_date             |
-      | ${3#[0][0].id} | ${3#[0][0].first_name} | ${3#[0][0].second_name} | ${3#[0][0].active} | ${3#[0][0].birth_date} |
+      | id              | first_name              | second_name              | active              | birth_date              |
+      | ${-1#[0][0].id} | ${-1#[0][0].first_name} | ${-1#[0][0].second_name} | ${-1#[0][0].active} | ${-1#[0][0].birth_date} |
     But the following records exist in the table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
@@ -45,21 +72,45 @@ Feature: Testing database steps
 
 
   Scenario: Test 3
+    * At finish, the table client is not empty using 'db' connection
     * At finish, the table client is cleared using 'db' connection
+    * At finish, the table client is empty using 'db' connection
     * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database using 'db' connection
+    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' exists in the database using 'db' connection
     * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database using 'db' connection
+    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database using 'db' connection
     * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client using 'db' connection
+    * At finish, the content of the CSV file '${data.dir}/data1.csv' exists in the table client using 'db' connection
     * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client using 'db' connection
+    * At finish, the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client using 'db' connection
     * At finish, the following users are inserted into the table client using 'db' connection:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
+    * At finish, the following record exists in the table client using 'db' connection:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     * At finish, the following user is deleted from the table client using 'db' connection:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
+    * At finish, the following record does not exist in the table client using 'db' connection:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
+    * At finish, the user identified by '2' exists in the table client using 'db' connection
+    * At finish, the user identified by '1' does not exist in the table client using 'db' connection
     * At finish, the user having first_name = 'Annie' is deleted from the table client using 'db' connection
+    * At finish, the user having first_name = 'Annie' does not exist in the table client using 'db' connection
+    * At finish, the user having second_name = '<null>' exists in the table client using 'db' connection
+    * At finish, the user satisfying the following SQL clause exists in the table client using 'db' connection:
+      """
+      birth_date < date '2000-01-01'
+      """
     * At finish, the user satisfying the following SQL clause is deleted from the table client using 'db' connection:
+      """
+      birth_date < date '2000-01-01'
+      """
+    * At finish, the user satisfying the following SQL clause does not exist in the table client using 'db' connection:
       """
       birth_date < date '2000-01-01'
       """
@@ -70,11 +121,19 @@ Feature: Testing database steps
       DELETE FROM client;
       DELETE FROM other;
       """
+    * At finish, the number of users satisfying the following SQL clause in the table client is 0 using 'db' connection:
+      """
+      1=1
+      """
+    * At finish, the number of users satisfying the following in the table client is 0 using 'db' connection:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     Given the database connection URL '${database.connection.url}' using the user '${database.connection.username}' and the password '${database.connection.password}' as 'db'
     And the 'db' connection is used
     When the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
     And the following SQL procedure is executed:
       """
+
       BEGIN NOT ATOMIC
         UPDATE client SET active = 0 WHERE second_name = 'Melano';
         SELECT * FROM client WHERE second_name = 'Melano';
@@ -114,9 +173,13 @@ Feature: Testing database steps
   Scenario: Test 4
     * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed using 'db' connection
     * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
+    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' exists in the database
     * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
+    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database
     * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
+    * At finish, the content of the CSV file '${data.dir}/data1.csv' exists in the table client
     * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+    * At finish, the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client
     * At finish, the following users are inserted into the table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |

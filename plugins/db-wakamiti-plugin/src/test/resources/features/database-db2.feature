@@ -3,8 +3,27 @@ Característica: Testing database steps
 
 
   Escenario: Test 1
+    * Al finalizar, la tabla client no está vacía
+    * Al finalizar, el usuario identificado por '1' existe en la tabla client
+    * Al finalizar, el usuario identificado por '4' no existe en la tabla client
+    * Al finalizar, el usuario con birth_date = '2000-10-30' existe en la tabla client
+    * Al finalizar, el usuario con birth_date = '1982-12-30' no existe en la tabla client
+    * Al finalizar, el usuario que satisface la siguiente cláusula SQL existe en la tabla client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * Al finalizar, el siguiente registro existe en la tabla client:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     * Al finalizar, se limpia la tabla client
     * Al finalizar, se limpia la tabla city
+    * Al finalizar, el usuario que satisface la siguiente cláusula SQL no existe en la tabla client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * Al finalizar, el siguiente registro no existe en la tabla client:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     Cuando se insertan los siguientes usuarios en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
@@ -24,6 +43,13 @@ Característica: Testing database steps
 
   Escenario: Test 2
     * Al finalizar, se ejecuta el script SQL del fichero '${data.dir}/db/clean.sql'
+    * Al finalizar, el número de usuarios que satisfacen la siguiente cláusula SQL en la tabla client es 0:
+      """
+      1=1
+      """
+    * Al finalizar, el número de usuarios que satisfacen lo siguiente en la tabla client es 0:
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     Cuando se ejecuta el script SQL del fichero '${data.dir}/db/dml.sql'
     Y se ejecuta el procedimiento del fichero '${data.dir}/db/procedure-db2.sql'
     Entonces el siguiente registro no existe en la tabla client:
@@ -46,21 +72,45 @@ Característica: Testing database steps
 
 
   Escenario: Test 3
+    * Al finalizar, la tabla client no está vacía usando la conexión 'db'
     * Al finalizar, se limpia la tabla client usando la conexión 'db'
+    * Al finalizar, la tabla client está vacía usando la conexión 'db'
     * Al finalizar, se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos usando la conexión 'db'
+    * Al finalizar, el contenido del fichero XLS '${data.dir}/data1.xlsx' existe en la base de datos usando la conexión 'db'
     * Al finalizar, se elimina el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos usando la conexión 'db'
+    * Al finalizar, el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos usando la conexión 'db'
     * Al finalizar, se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client usando la conexión 'db'
+    * Al finalizar, el contenido del fichero CSV '${data.dir}/data1.csv' existe en la tabla client usando la conexión 'db'
     * Al finalizar, se elimina el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client usando la conexión 'db'
+    * Al finalizar, el contenido del fichero CSV '${data.dir}/data1.csv' no existe en la tabla client usando la conexión 'db'
     * Al finalizar, se insertan los siguientes usuarios en la tabla client usando la conexión 'db':
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
+    * Al finalizar, el siguiente registro existe en la tabla client usando la conexión 'db':
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     * Al finalizar, se elimina el siguiente usuario de la tabla client usando la conexión 'db':
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
+    * Al finalizar, el siguiente registro no existe en la tabla client usando la conexión 'db':
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
+    * Al finalizar, el usuario identificado por '2' existe en la tabla client usando la conexión 'db'
+    * Al finalizar, el usuario identificado por '1' no existe en la tabla client usando la conexión 'db'
     * Al finalizar, se elimina el usuario con first_name = 'Annie' de la tabla client usando la conexión 'db'
+    * Al finalizar, el usuario con first_name = 'Annie' no existe en la tabla client usando la conexión 'db'
+    * Al finalizar, el usuario con second_name = '<null>' existe en la tabla client usando la conexión 'db'
+    * Al finalizar, el usuario que satisface la siguiente cláusula SQL existe en la tabla client usando la conexión 'db':
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
     * Al finalizar, se eliminan los usuarios que satisfacen la siguiente cláusula SQL de la tabla client usando la conexión 'db':
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * Al finalizar, el usuario que satisface la siguiente cláusula SQL no existe en la tabla client usando la conexión 'db':
       """
       BIRTH_DATE < date '2000-01-01'
       """
@@ -71,6 +121,13 @@ Característica: Testing database steps
       DELETE FROM CLIENT;
       DELETE FROM OTHER;
       """
+    * Al finalizar, el número de usuarios que satisfacen la siguiente cláusula SQL en la tabla client es 0 usando la conexión 'db':
+      """
+      1=1
+      """
+    * Al finalizar, el número de usuarios que satisfacen lo siguiente en la tabla client es 0 usando la conexión 'db':
+      | id | first_name | second_name | active | birth_date |
+      | 1  | John       | Smith       | 1      | 2000-10-30 |
     Dada la URL de conexión a BBDD '${database.connection.url}' usando el usuario '${database.connection.username}' y la contraseña '${database.connection.password}' como 'db'
     Y que se usa la conexión 'db'
     Cuando se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client
@@ -116,9 +173,13 @@ Característica: Testing database steps
   Escenario: Test 4
     * Al finalizar, se ejecuta el script SQL del fichero '${data.dir}/db/clean.sql' usando la conexión 'db'
     * Al finalizar, se inserta el contenido del fichero XLS '${data.dir}/data1.xlsx' en la base de datos
+    * Al finalizar, el contenido del fichero XLS '${data.dir}/data1.xlsx' existe en la base de datos
     * Al finalizar, se elimina el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos
+    * Al finalizar, el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos
     * Al finalizar, se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client
+    * Al finalizar, el contenido del fichero CSV '${data.dir}/data1.csv' existe en la tabla client
     * Al finalizar, se elimina el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client
+    * Al finalizar, el contenido del fichero CSV '${data.dir}/data1.csv' no existe en la tabla client
     * Al finalizar, se insertan los siguientes usuarios en la tabla client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
@@ -181,7 +242,6 @@ Característica: Testing database steps
       Cuando se ha eliminado el contenido del fichero XLS '${data.dir}/data1.xlsx' de la base de datos
       Entonces el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos
       Y el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos en 1 segundo
-
 
 
   # database.enableCleanupUponCompletion: true
