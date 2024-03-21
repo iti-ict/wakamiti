@@ -11,7 +11,7 @@
 
 
     <artifactId>file-uploader-wakamiti-plugin</artifactId>
-    <version>2.6.0-SNAPSHOT</version>
+    <version>2.6.0</version>
 
     <name>[Wakamiti Plugin] File Uploader</name>
 
@@ -44,13 +44,13 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.4.0-SNAPSHOT</version>
+            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-junit</artifactId>
-            <version>2.4.0-SNAPSHOT</version>
+            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
 

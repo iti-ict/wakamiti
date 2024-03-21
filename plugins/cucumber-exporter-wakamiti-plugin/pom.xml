@@ -18,7 +18,7 @@
 
 
     <artifactId>cucumber-exporter-wakamiti-plugin</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
+    <version>2.4.0</version>
 
     <name>[Wakamiti Plugin] Cucumber Exporter</name>
     <description>Cucumber JSON generator for Wakamiti results</description>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.4.0-SNAPSHOT</version>
+            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

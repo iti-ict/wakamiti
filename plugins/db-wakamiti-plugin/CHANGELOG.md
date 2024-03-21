@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-## [Unreleased]
+## [3.0.0] - 2024-03-22
 
 ### Fixed
 - Conflicts in regular step expressions.
