@@ -52,6 +52,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
+        checkURL(url);
         this.baseURL = url;
     }
 

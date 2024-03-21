@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning][2].
 
 [Unreleased]
 
+### Added
+- Check that base URL does not contain query parameters.
+
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
 
