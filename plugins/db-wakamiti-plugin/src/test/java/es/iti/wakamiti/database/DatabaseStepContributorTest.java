@@ -205,8 +205,7 @@ public class DatabaseStepContributorTest {
         Database db = Database.from(contributor.connection());
         String table = db.table("client");
         assertThat(result).isInstanceOf(ArrayNode.class);
-        assertThat((ArrayNode) result).isNotEmpty();
-        assertThat((ArrayNode) result).hasSize(1);
+        assertThat((ArrayNode) result).isNotEmpty().hasSize(1);
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "first_name")).asText())
                 .isEqualTo("Rosa");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
@@ -239,8 +238,7 @@ public class DatabaseStepContributorTest {
         Database db = Database.from(contributor.connection());
         String table = db.table("client");
         assertThat(result).isInstanceOf(ArrayNode.class);
-        assertThat((ArrayNode) result).isNotEmpty();
-        assertThat((ArrayNode) result).hasSize(1);
+        assertThat((ArrayNode) result).isNotEmpty().hasSize(1);
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "first_name")).asText())
                 .isEqualTo("Rosa");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
@@ -451,13 +449,12 @@ public class DatabaseStepContributorTest {
         contributor.cleanUp();
 
         // Check
-        assertThat(contributor.cleanUpOperations.size()).isEqualTo(2);
+        assertThat(contributor.cleanUpOperations).hasSize(2);
 
         Database db = Database.from(contributor.connection());
         String table = db.table("client");
         assertThat(inserted).isInstanceOf(ArrayNode.class);
-        assertThat(inserted).isNotEmpty();
-        assertThat(inserted).hasSize(2);
+        assertThat(inserted).isNotEmpty().hasSize(2);
         assertThat(inserted.get(0).get(db.column(table, "id")).asText())
                 .isEqualTo("2");
         assertThat(inserted.get(0).get(db.column(table, "first_name")).asText())

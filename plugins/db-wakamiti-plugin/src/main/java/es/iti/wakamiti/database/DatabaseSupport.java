@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -73,7 +73,7 @@ public class DatabaseSupport {
     protected String csvFormat;
     protected boolean enableCleanupUponCompletion;
     protected boolean healthcheck;
-    protected Function<Map<String, String>, Map<String, String>> nullSymbolMapper = map ->
+    protected UnaryOperator<Map<String, String>> nullSymbolMapper = map ->
             map.entrySet().stream().collect(collectToMap(
                     Map.Entry::getKey,
                     e -> e.getValue().equals(nullSymbol) ? null : e.getValue()));
@@ -232,13 +232,12 @@ public class DatabaseSupport {
                                     }
                                 });
                             }
-                            result.map(DatabaseHelper::read).ifPresent(list -> {
-                                results.addAll(
-                                        list.stream().map(m -> m.entrySet().stream().collect(
-                                                        collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
-                                                .collect(Collectors.toList())
-                                );
-                            });
+                            result.map(DatabaseHelper::read).ifPresent(list ->
+                                    results.addAll(
+                                            list.stream().map(m -> m.entrySet().stream().collect(
+                                                            collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
+                                                    .collect(Collectors.toList())
+                                    ));
                         }
                     } catch (JSQLParserException e) {
                         if (enableCleanupUponCompletion) {
@@ -393,7 +392,7 @@ public class DatabaseSupport {
                                 double distance = new org.apache.commons.text.similarity.LevenshteinDistance()
                                         .apply(expectedValue, rowValue);
                                 if (maxLength == 0) return 1.0;
-                                return (maxLength - distance) / (double) maxLength;
+                                return (maxLength - distance) / maxLength;
                             }).sum() / values.length))
                     .filter(rec -> rec.score() > 0.7)
                     .reduce((rec1, rec2) -> rec1.score() > rec2.score() ? rec1 : rec2);
@@ -651,13 +650,12 @@ public class DatabaseSupport {
                         }
                     });
                 }
-                result.map(DatabaseHelper::read).ifPresent(list -> {
-                    results.addAll(
-                            list.stream().map(m -> m.entrySet().stream().collect(
-                                            collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
-                                    .collect(Collectors.toList())
-                    );
-                });
+                result.map(DatabaseHelper::read).ifPresent(list ->
+                        results.addAll(
+                                list.stream().map(m -> m.entrySet().stream().collect(
+                                                collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
+                                        .collect(Collectors.toList())
+                        ));
             }
         }
         return results;

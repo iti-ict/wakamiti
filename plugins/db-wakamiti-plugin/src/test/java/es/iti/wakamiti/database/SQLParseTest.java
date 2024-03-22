@@ -96,8 +96,8 @@ public class SQLParseTest {
         String sql = "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAYS, 'YYYYMMDD') FROM \"table1\" WHERE col2 = 'DAYS'";
         Statement result = SQLParser.parseStatement(sql);
         log.debug("Result query: {}", result);
-        assertThat(result.toString())
-                .isEqualTo("SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') " +
+        assertThat(result).hasToString(
+                "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') " +
                         "FROM \"table1\" WHERE col2 = 'DAYS'");
 
         sql = "SELECT * FROM table1 WHERE " +
@@ -107,8 +107,8 @@ public class SQLParseTest {
                 "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)";
         result = SQLParser.parseStatement(sql);
         log.debug("Result query: {}", result);
-        assertThat(result.toString())
-                .isEqualTo("SELECT * FROM table1 " +
+        assertThat(result)
+                .hasToString("SELECT * FROM table1 " +
                         "WHERE TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
                         "AND TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE) " +
                         "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
@@ -120,7 +120,7 @@ public class SQLParseTest {
         String sql = "ALTER TRIGGER TRIGNAME DISABLE";
         Statement result = SQLParser.parseStatement(sql);
         log.debug("Result query: {}", result);
-        assertThat(result.toString()).isEqualTo(sql);
+        assertThat(result).hasToString(sql);
     }
 
 }

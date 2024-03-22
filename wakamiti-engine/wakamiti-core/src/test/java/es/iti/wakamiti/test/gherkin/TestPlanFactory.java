@@ -220,7 +220,7 @@ public class TestPlanFactory {
                 "empty_plan.json"
         );
 
-        assertThat(plan.result().isPresent()).isFalse();
+        assertThat(plan.result()).isNotPresent();
     }
 
     @Test
@@ -230,7 +230,7 @@ public class TestPlanFactory {
                 "empty_plan.json"
         );
 
-        assertThat(plan.result().isPresent()).isFalse();
+        assertThat(plan.result()).isNotPresent();
     }
 
     @Test
@@ -243,7 +243,7 @@ public class TestPlanFactory {
                 )
         );
 
-        assertThat(plan.result().isPresent()).isTrue();
+        assertThat(plan.result()).isPresent();
     }
 
     @Test(expected = WakamitiException.class)

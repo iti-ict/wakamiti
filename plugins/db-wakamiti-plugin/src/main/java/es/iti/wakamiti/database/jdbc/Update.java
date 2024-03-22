@@ -11,7 +11,7 @@ import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
 import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
@@ -43,7 +43,7 @@ public class Update extends Sentence<PreparedStatement> {
      * @param action The action to perform with the result count
      * @return The Update instance
      */
-    public Update execute(Consumer<Integer> action) {
+    public Update execute(IntConsumer action) {
         try {
             traceSQL(sql);
             int result = statement.executeUpdate();
@@ -97,7 +97,7 @@ public class Update extends Sentence<PreparedStatement> {
          * @param action The action to perform with the result count
          * @return The Update instance after execution
          */
-        public Update execute(Consumer<Integer> action) {
+        public Update execute(IntConsumer action) {
             return prepare().execute(action);
         }
 

@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +41,10 @@ import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
 
 
 /**
+ * Provides methods for parsing SQL statements, constructing SQL queries, and generating
+ * WHERE clause expressions. It also handles conversions between different data types and
+ * formats SQL expressions.
+ *
  * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class SQLParser {
@@ -197,7 +202,7 @@ public class SQLParser {
 
             @Override
             public void visit(Insert insert) {
-                if (insert.getSelect() != null && insert.getSelect() instanceof PlainSelect) {
+                if (insert.getSelect() instanceof PlainSelect) {
                     result.set(Optional.of(createSelect(insert.getTable(),
                             ((PlainSelect) insert.getSelect()).getWhere())));
                 } else {
@@ -249,7 +254,7 @@ public class SQLParser {
      * @param expression The expression containing the columns to format
      * @param mapper     The function used to format the column names
      */
-    public void formatColumns(Expression expression, java.util.function.Function<String, String> mapper) {
+    public void formatColumns(Expression expression, UnaryOperator<String> mapper) {
         if (Objects.isNull(expression)) return;
         expression.accept(new ExpressionVisitorAdapter() {
             @Override

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -37,7 +37,7 @@ public class Select<T> extends Sentence<Statement> {
 
     private final ResultSet resultset;
     private final Function<ResultSet, Optional<T>> mapper;
-    private BiFunction<T, T, T> reducer;
+    private BinaryOperator<T> reducer;
 
     /**
      * Constructs a new Select object with the provided parameters.
@@ -138,7 +138,7 @@ public class Select<T> extends Sentence<Statement> {
      * @param reducer The reducer function
      * @return An Optional containing the result of applying the reducer, or empty if the result set is empty
      */
-    public Optional<T> reduce(BiFunction<T, T, T> reducer) {
+    public Optional<T> reduce(BinaryOperator<T> reducer) {
         this.reducer = reducer;
         return stream().findFirst();
     }

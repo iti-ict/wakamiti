@@ -100,9 +100,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
         logger.info("Opening FTP connection to {}", host);
         transmitter = FTPTransmitter.of(protocol);
         if (host.contains(":")) {
-            String host = this.host.split(":")[0];
-            int port = Integer.parseInt(this.host.split(":")[1]);
-            transmitter.connect(username, host, port, password, identity);
+            transmitter.connect(username,
+                    host.split(":")[0],
+                    Integer.parseInt(host.split(":")[1]), password, identity);
         } else {
             transmitter.connect(username, host, null, password, identity);
         }

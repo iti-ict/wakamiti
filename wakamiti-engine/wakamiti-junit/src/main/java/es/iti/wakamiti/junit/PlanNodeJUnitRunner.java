@@ -78,7 +78,7 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
     public Description getDescription() {
         if (description == null) {
             description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
-            getChildren().stream().map(child -> (WakamitiPlanNodeRunner) child)
+            getChildren().stream().map(WakamitiPlanNodeRunner.class::cast)
                     .forEach(child -> description.addChild(describeChild(child)));
 
         }
@@ -145,7 +145,7 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
     @Override
     protected Stream<Pair<Instant, Result>> runChildren() {
         return getChildren().stream()
-                .map(child -> (WakamitiPlanNodeRunner) child)
+                .map(WakamitiPlanNodeRunner.class::cast)
                 .map(child -> child.run(notifier))
                 .filter(Objects::nonNull)
                 .map(result -> new Pair<>(Instant.now(), result));

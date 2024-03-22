@@ -36,6 +36,7 @@ import java.util.stream.Stream;
  * notifying JUnit about test events.
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @deprecated
  */
 @Deprecated(since = "2.4.0", forRemoval = true)
 public class JUnitPlanNodeRunner extends PlanNodeRunner {

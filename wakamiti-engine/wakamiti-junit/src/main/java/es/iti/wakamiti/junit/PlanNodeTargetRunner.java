@@ -10,14 +10,12 @@ import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
-import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
 import imconfig.Configuration;
 import org.junit.internal.runners.model.EachTestNotifier;
-import org.junit.runner.Describable;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 
@@ -63,7 +61,7 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         if (result.isPresent()) {
             if (result.get() == Result.SKIPPED) {
                 notifier.addFailure(new WakamitiSkippedException("Test case skipped"));
-            } else if (result.get() != Result.PASSED){
+            } else if (result.get() != Result.PASSED) {
                 Throwable error = getNode().errors().findFirst().orElse(notExecuted);
                 if (error instanceof WakamitiSkippedException) {
                     notifier.fireTestIgnored();

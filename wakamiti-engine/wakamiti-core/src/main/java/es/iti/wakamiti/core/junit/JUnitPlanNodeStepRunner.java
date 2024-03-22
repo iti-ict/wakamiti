@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * JUnit about test events.
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @deprecated
  */
 @Deprecated(since = "2.4.0", forRemoval = true)
 public class JUnitPlanNodeStepRunner extends JUnitPlanNodeRunner {

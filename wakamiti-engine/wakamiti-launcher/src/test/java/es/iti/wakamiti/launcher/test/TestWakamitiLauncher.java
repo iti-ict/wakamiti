@@ -43,8 +43,8 @@ public class TestWakamitiLauncher {
         Configuration configuration = new CliArguments().parse("-f", "src/test/resources/wakamiti.yaml")
                 .wakamitiConfiguration();
         assertThat(configuration.get("something", String.class)).isPresent();
-        assertThat(configuration.get("something", String.class).get())
-                .isEqualTo("this_is_a_large_value_with_special_characters");
+        assertThat(configuration.get("something", String.class))
+                .contains("this_is_a_large_value_with_special_characters");
     }
 
 }

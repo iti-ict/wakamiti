@@ -12,15 +12,15 @@ import java.util.function.Supplier;
 public interface FTPTransmitter {
 
     static FTPTransmitter of(String protocol) {
-        Map<String, Supplier<FTPTransmitter>> FACTORY = Map.of(
+        Map<String, Supplier<FTPTransmitter>> factory = Map.of(
                 "ftp", () -> new FTPClientTransmitter(false),
                 "ftps", () -> new FTPClientTransmitter(true),
                 "sftp", SFTPTransmitter::new
         );
-        if (!FACTORY.containsKey(protocol)) {
+        if (!factory.containsKey(protocol)) {
             throw new WakamitiException("Protocol not supported: " + protocol);
         }
-        return FACTORY.get(protocol).get();
+        return factory.get(protocol).get();
     }
 
     boolean isConnected();

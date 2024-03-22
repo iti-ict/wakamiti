@@ -19,7 +19,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
@@ -143,7 +143,7 @@ public final class Database {
      * @return The stored format
      */
     public String column(final String table, String column) {
-        Function<String, String> retrieve = col -> {
+        UnaryOperator<String> retrieve = col -> {
             if (LOGGER.isTraceEnabled())
                 LOGGER.trace("Retrieving column {} of table {}", col, table(table));
             try (ResultSet rs = connection().getMetaData()

@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  */
 public class WakamitiContributors {
 
-    private static AtomicBoolean VERSION_WARNED = new AtomicBoolean(false);
+    private static final AtomicBoolean VERSION_WARNED = new AtomicBoolean(false);
     private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
