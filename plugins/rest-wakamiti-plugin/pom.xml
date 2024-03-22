@@ -29,8 +29,6 @@
         <mockserver.version>5.15.0</mockserver.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
-
-        <skipIntegrationTests>false</skipIntegrationTests>
     </properties>
 
 
@@ -119,9 +117,8 @@
         <profile>
             <id>integrationTests</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>!skipIntegrationTests</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <properties>

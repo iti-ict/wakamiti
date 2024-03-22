@@ -201,7 +201,9 @@
         <profile>
             <id>integrationTests</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skipTests</name>
+                </property>
             </activation>
             <properties>
                 <database.alias>database</database.alias>

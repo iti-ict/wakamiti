@@ -30,8 +30,8 @@ public class GherkinDocumentMap {
         WakamitiConfiguration.DATA_FORMAT_LANGUAGE,
         WakamitiConfiguration.MODULES
     );
-    private static final Pattern propertyPattern = Pattern.compile("\\s*#*\\s*([^\\s]+)\\s*:\\s*([^\\s]+)\\s*");
-    private static final Pattern tagPattern = Pattern.compile("(\\s*@\\w+\\s*)*");
+    private static final Pattern propertyPattern = Pattern.compile("\\s*+#*+\\s*+(\\S++)\\s*+:\\s*+(\\S++)\\s*+");
+    private static final Pattern tagPattern = Pattern.compile("(\\s*+@\\w++\\s*+)*+");
     private static final GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
 
     private Locale locale;

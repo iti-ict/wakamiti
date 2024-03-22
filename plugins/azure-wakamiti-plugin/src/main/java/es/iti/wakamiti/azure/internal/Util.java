@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public abstract class Util {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureReporter.class);
-    private static final Pattern ID_AND_NAME = Pattern.compile("\\[([^\\]]+)]\\s\\s*(..*)");
+    private static final Pattern ID_AND_NAME = Pattern.compile("\\[([^]]++)]\\s++(.++)");
     private static final String SEPARATOR = Pattern.quote("\\\\");
     private static final String PROPERTY_NOT_PRESENT_IN_TEST_CASE = "Property {} not present in test case {}";
 

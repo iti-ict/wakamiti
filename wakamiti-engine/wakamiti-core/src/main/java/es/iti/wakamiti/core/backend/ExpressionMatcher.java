@@ -35,8 +35,8 @@ public class ExpressionMatcher {
 
     private static final Logger LOGGER = Wakamiti.LOGGER;
 
-    private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w+):(\\w+-?\\w+)}";
-    private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+-?\\w+)}";
+    private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w++):(\\w+?-?+\\w++)\\}";
+    private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+?-?+\\w++)\\}";
 
     private static final Map<ExpressionMatcher, String> cache = new HashMap<>();
 
@@ -98,7 +98,7 @@ public class ExpressionMatcher {
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
-        regex = regex.replaceAll("[^ |(]*(\\|[^ |)]+)+", "\\($0\\)");
+        regex = regex.replaceAll("[^ |(]*+(\\|[^ |)]++)++", "\\($0\\)");
         // (( -> ( and )) -> (
         regex = regex.replace("((", "(").replace("))", ")");
         // * -> any value
