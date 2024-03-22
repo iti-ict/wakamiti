@@ -35,6 +35,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
@@ -84,6 +86,12 @@ public class RestSupport {
             request.expect().log().ifValidationFails();
         }
         return request;
+    }
+
+    protected void checkURL(URL url) {
+        if (!isBlank(url.getQuery())) {
+            throw new WakamitiException("Query parameters are not allowed here. Please, use steps for that purpose.");
+        }
     }
 
     protected String uri() {

@@ -8,8 +8,9 @@ import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import es.iti.wakamiti.email.EmailHelper;
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.junit.*;
+import java.time.Duration;
 
 import javax.mail.Flags;
 import javax.mail.Message;
@@ -68,7 +69,7 @@ public class TestEmailHelper {
             "Test Body 1",
             mailServer.getSmtp().getServerSetup()
         );
-        wait(Duration.ONE_SECOND);
+        wait(Durations.ONE_SECOND);
         printCurrentMessages();
         Message message = emailHelper.getLatestMessage("INBOX");
         Assert.assertNotNull(message);
@@ -95,7 +96,7 @@ public class TestEmailHelper {
             "Test attachment",
             mailServer.getSmtp().getServerSetup()
         );
-        wait(Duration.ONE_HUNDRED_MILLISECONDS);
+        wait(Durations.ONE_HUNDRED_MILLISECONDS);
         Message message = emailHelper.getLatestMessage("INBOX");
         Assert.assertNotNull(message);
         Assert.assertEquals("Test Subject 2",message.getSubject());
@@ -124,7 +125,7 @@ public class TestEmailHelper {
             "Test Body 4",
             mailServer.getSmtp().getServerSetup()
         );
-        wait(Duration.ONE_HUNDRED_MILLISECONDS);
+        wait(Durations.ONE_HUNDRED_MILLISECONDS);
         Assert.assertEquals(2, mailServer.getReceivedMessages().length);
         Assert.assertEquals(0L, Stream.of(mailServer.getReceivedMessages()).filter(this::hasFlagDeleted).count());
         emailHelper.deleteMessages("INBOX", message -> message.getSubject().startsWith("Test Subject 4"));

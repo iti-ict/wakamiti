@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Serves as the base for assertion providers.
+ * Provides functionality for retrieving and creating matchers from expressions.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class AbstractAssertProvider {
 
@@ -36,6 +39,13 @@ public abstract class AbstractAssertProvider {
 
     }
 
+    /**
+     * Retrieves all expressions with the given prefix for a specific locale.
+     *
+     * @param locale The locale for which expressions are retrieved.
+     * @param prefix The prefix used to filter expressions.
+     * @return A list of expressions with the specified prefix.
+     */
     public static List<String> getAllExpressions(Locale locale, String prefix) {
         ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
         return bundle.keySet().stream()
@@ -44,6 +54,12 @@ public abstract class AbstractAssertProvider {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves the resource bundle for a specific locale.
+     *
+     * @param locale The locale for which the resource bundle is retrieved.
+     * @return The resource bundle for the specified locale.
+     */
     protected ResourceBundle bundle(Locale locale) {
         return bundles.computeIfAbsent(
                 locale,
@@ -51,6 +67,13 @@ public abstract class AbstractAssertProvider {
         );
     }
 
+    /**
+     * Retrieves a matcher from the given expression for a specific locale.
+     *
+     * @param locale     The locale for which the matcher is retrieved.
+     * @param expression The expression used to create the matcher.
+     * @return An optional containing the matcher if one is created, or empty otherwise.
+     */
     public Optional<Matcher<?>> matcherFromExpression(Locale locale, String expression) {
 
         Map<String, Pattern> expressions = translatedExpressions
@@ -86,14 +109,52 @@ public abstract class AbstractAssertProvider {
 
     }
 
+    /**
+     * Retrieves an array of expressions.
+     *
+     * @return An array of expressions.
+     */
+    protected abstract String[] expressions();
+
+    /**
+     * Retrieves a map of translated expressions for a specific locale.
+     *
+     * @param locale The locale for which the expressions are translated.
+     * @return A linked hash map of translated expressions.
+     */
     protected abstract LinkedHashMap<String, Pattern> translatedExpressions(Locale locale);
 
+    /**
+     * Retrieves a linked list of regular expressions for a specific locale.
+     *
+     * @param locale The locale for which the regular expressions are retrieved.
+     * @return A linked list of regular expressions.
+     */
+    protected abstract LinkedList<String> regex(Locale locale);
+
+    /**
+     * Creates a matcher for a specific locale, key, and value.
+     *
+     * @param locale The locale for which the matcher is created.
+     * @param key    The key identifying the matcher.
+     * @param value  The value used in the matcher.
+     * @return The created matcher.
+     * @throws ParseException If an error occurs during matcher creation.
+     */
     protected abstract Matcher<?> createMatcher(
             Locale locale,
             String key,
             String value
     ) throws ParseException;
 
+    /**
+     * Translates a bundle expression for a specific locale, replacing the value group.
+     *
+     * @param locale              The locale for which the expression is translated.
+     * @param expression          The original expression.
+     * @param valueGroupReplacing The value group replacement.
+     * @return The translated bundle expression.
+     */
     protected String translateBundleExpression(
             Locale locale,
             String expression,

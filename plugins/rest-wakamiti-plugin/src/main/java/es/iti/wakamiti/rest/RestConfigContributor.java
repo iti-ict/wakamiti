@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-configurator",
+@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.4",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 
@@ -52,26 +52,19 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String REDIRECT_REJECT_RELATIVE = "rest.config.redirect.rejectRelative";
     public static final String REDIRECT_MAX = "rest.config.redirect.max";
 
-    private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-            BASE_URL, "http://localhost:8080",
-            CONTENT_TYPE, "JSON",
-            FAILURE_HTTP_CODE_THRESHOLD, "500",
-            OAUTH2_CACHED, "false",
-            TIMEOUT, "60000"
-    );
-
     private static void config(RestAssuredConfig config) {
         RestAssured.config = config;
     }
 
     @Override
-    public boolean accepts(Object contributor) {
-        return RestStepContributor.class.isAssignableFrom(contributor.getClass());
-    }
-
-    @Override
     public Configuration defaultConfiguration() {
-        return DEFAULTS;
+        return Configuration.factory().fromPairs(
+                BASE_URL, "http://localhost:8080",
+                CONTENT_TYPE, "JSON",
+                FAILURE_HTTP_CODE_THRESHOLD, "500",
+                OAUTH2_CACHED, "false",
+                TIMEOUT, "60000"
+        );
     }
 
     @Override

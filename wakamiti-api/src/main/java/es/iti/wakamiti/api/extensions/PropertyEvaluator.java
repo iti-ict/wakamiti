@@ -29,6 +29,13 @@ import java.util.regex.Pattern;
 @ExtensionPoint(loadStrategy = LoadStrategy.SINGLETON)
 public abstract class PropertyEvaluator implements Contributor {
 
+    /**
+     * Makes the evaluation based on the given value and action.
+     *
+     * @param value  The string to evaluate.
+     * @param action The evaluation action.
+     * @return The result with the evaluations and the given string evaluated.
+     */
     private static Result makeEval(String value, BiFunction<PropertyEvaluator, String, Result> action) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         AtomicReference<String> result = new AtomicReference<>(value);
@@ -42,40 +49,40 @@ public abstract class PropertyEvaluator implements Contributor {
     }
 
     /**
-     * Eval all properties in the given string using all available
+     * Evaluates all properties in the given string using all available
      * {@link PropertyEvaluator}.
      *
-     * @param value The string to evaluate
-     * @return The result with the evaluations and the given string evaluated
+     * @param value The string to evaluate.
+     * @return The result with the evaluations and the given string evaluated.
      */
     public static Result makeEval(String value) {
         return makeEval(value, PropertyEvaluator::eval);
     }
 
     /**
-     * Eval all properties in the given string using all available
-     * {@link PropertyEvaluator} and ignoring any issue that occur in the
+     * Evaluates all properties in the given string using all available
+     * {@link PropertyEvaluator} and ignoring any issue that occurs in the
      * process.
      *
-     * @param value The string to evaluate
-     * @return The result with the evaluations and the given string evaluated
+     * @param value The string to evaluate.
+     * @return The result with the evaluations and the given string evaluated.
      */
     public static Result makeEvalIfCan(String value) {
         return makeEval(value, (evaluator, currentValue) -> evaluator.evalOr(currentValue, p -> p));
     }
 
     /**
-     * The property pattern that this {@link PropertyEvaluator} will eval.
+     * The property pattern that this {@link PropertyEvaluator} will evaluate.
      *
-     * @return The property pattern
+     * @return The property pattern.
      */
     public abstract Pattern pattern();
 
     /**
-     * Eval all properties in the given string.
+     * Evaluates all properties in the given string.
      *
-     * @param value The string to evaluate
-     * @return The result with the evaluations and the given string evaluated
+     * @param value The string to evaluate.
+     * @return The result with the evaluations and the given string evaluated.
      */
     public final Result eval(String value) {
         Map<String, String> evaluations = new LinkedHashMap<>();
@@ -84,17 +91,18 @@ public abstract class PropertyEvaluator implements Contributor {
             String property = matcher.group();
             String evaluation = evalProperty(property, matcher);
             evaluations.putIfAbsent(property, evaluation);
-            value = value.replaceFirst(Pattern.quote(property), evaluation);
+            value = value.replaceFirst(Pattern.quote(property), evaluation.replace("$", "\\$"));
         }
         return Result.of(evaluations, value);
     }
 
     /**
-     * Eval all properties in the given string. If any issue occurs resolving a
+     * Evaluates all properties in the given string. If any issue occurs resolving a
      * property, the given alternative will be set.
      *
-     * @param value The string to evaluate
-     * @return The result with the evaluations and the given string evaluated
+     * @param value               The string to evaluate.
+     * @param propertyAlternative The alternative for handling unresolved properties.
+     * @return The result with the evaluations and the given string evaluated.
      */
     public final Result evalOr(String value, UnaryOperator<String> propertyAlternative) {
         Map<String, String> evaluations = new LinkedHashMap<>();
@@ -114,11 +122,11 @@ public abstract class PropertyEvaluator implements Contributor {
     }
 
     /**
-     * Eval a single property of the global string.
+     * Evaluates a single property of the global string.
      *
-     * @param property The unevaluated property
-     * @param matcher  The {@link Matcher} of the global string
-     * @return The evaluated property result
+     * @param property The unevaluated property.
+     * @param matcher  The {@link Matcher} of the global string.
+     * @return The evaluated property result.
      */
     protected abstract String evalProperty(String property, Matcher matcher);
 

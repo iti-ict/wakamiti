@@ -1,23 +1,26 @@
 package es.iti.wakamiti.fileuploader;
 
+
 import es.iti.wakamiti.api.WakamitiException;
+
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.function.Supplier;
 
 
 public interface FTPTransmitter {
 
-
     static FTPTransmitter of(String protocol) {
-        if ("ftp".equals(protocol)) {
-            return new FTPClientTransmitter(false);
-        } else if ("ftps".equals(protocol)) {
-            return new FTPClientTransmitter(true);
-        } else if ("sftp".equals(protocol)) {
-            return new SFTPTransmitter();
-        } else {
+        Map<String, Supplier<FTPTransmitter>> factory = Map.of(
+                "ftp", () -> new FTPClientTransmitter(false),
+                "ftps", () -> new FTPClientTransmitter(true),
+                "sftp", SFTPTransmitter::new
+        );
+        if (!factory.containsKey(protocol)) {
             throw new WakamitiException("Protocol not supported: " + protocol);
         }
+        return factory.get(protocol).get();
     }
 
     boolean isConnected();

@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.api.util;
 
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import org.apache.xmlbeans.XmlException;
@@ -27,12 +28,35 @@ import java.util.Map;
 
 import static javax.xml.xpath.XPathEvaluationResult.XPathResultType.*;
 
+
+/**
+ * Utility class for working with XML data.
+ *
+ * <p>This class provides methods for parsing XML from strings, InputStreams, Nodes, and Map representations.
+ * It also includes a method for reading string values from an XmlObject based on an XPath expression.</p>
+ *
+ * @author Maria Galbis Calomarde - mgalbis@iti.es
+ */
 public class XmlUtils {
 
+    /**
+     * Parses the given XML string into an XmlObject.
+     *
+     * @param input The XML string to parse.
+     * @return The parsed XmlObject.
+     * @throws XmlRuntimeException If there is an issue parsing the XML string.
+     */
     public static XmlObject xml(String input) {
         return xml(new ByteArrayInputStream(input.getBytes()));
     }
 
+    /**
+     * Parses the XML content from the given InputStream into an XmlObject.
+     *
+     * @param input The InputStream containing the XML content.
+     * @return The parsed XmlObject.
+     * @throws XmlRuntimeException If there is an issue reading or parsing the XML content.
+     */
     public static XmlObject xml(InputStream input) {
         try {
             return XmlObject.Factory.parse(input);
@@ -41,6 +65,13 @@ public class XmlUtils {
         }
     }
 
+    /**
+     * Parses the given Node into an XmlObject.
+     *
+     * @param input The Node to parse.
+     * @return The parsed XmlObject.
+     * @throws XmlRuntimeException If there is an issue parsing the Node.
+     */
     public static XmlObject xml(Node input) {
         try {
             return XmlObject.Factory.parse(input);
@@ -49,6 +80,14 @@ public class XmlUtils {
         }
     }
 
+    /**
+     * Creates an XmlObject from a Map representation of XML data.
+     *
+     * @param rootName The root element name.
+     * @param map      The Map representing the XML data.
+     * @return The created XmlObject.
+     * @throws XmlRuntimeException If there is an issue creating the XmlObject.
+     */
     public static XmlObject xml(String rootName, Map<String, Object> map) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -65,6 +104,7 @@ public class XmlUtils {
             throw new XmlRuntimeException(e);
         }
     }
+
 
     @SuppressWarnings("unchecked")
     private static void processMap(Document doc, Element current, Map<String, Object> map) {
@@ -85,6 +125,13 @@ public class XmlUtils {
         });
     }
 
+    /**
+     * Reads a string value from the given XmlObject based on the specified XPath expression.
+     *
+     * @param obj        The XmlObject from which to read the value.
+     * @param expression The XPath expression specifying the value to read.
+     * @return The string value read from the XmlObject.
+     */
     public static String readStringValue(XmlObject obj, String expression) {
         List<String> results = new LinkedList<>();
         XPath xPath = XPathFactory.newInstance().newXPath();

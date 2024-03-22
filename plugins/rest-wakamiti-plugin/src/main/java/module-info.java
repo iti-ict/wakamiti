@@ -28,6 +28,7 @@ module es.iti.wakamiti.rest {
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.xmlbeans;
     requires xml.path;
+    requires org.apache.commons.lang3;
 
     uses ConfigContributor;
     uses StepContributor;

@@ -16,12 +16,8 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 
 
-@Extension(
-    provider =  "es.iti.wakamiti",
-    name = "html-report-config",
-    version = "1.1",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
+@Extension(provider =  "es.iti.wakamiti", name = "html-report-config", version = "2.4",
+    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
 
     public static final String PREFIX = "htmlReport";
@@ -39,12 +35,6 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
     public Configuration defaultConfiguration() {
         return DEFAULTS;
     }
-
-    @Override
-    public boolean accepts(Object contributor) {
-        return HtmlReportGenerator.class.equals(contributor.getClass());
-    }
-
 
     @Override
     public Configurer<HtmlReportGenerator> configurer() {

@@ -3,16 +3,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.core;
 
 
+import es.iti.wakamiti.api.ClasspathAgent;
+import es.iti.wakamiti.api.WakamitiException;
+import imconfig.Configuration;
+import maven.fetcher.FetchedArtifact;
+import maven.fetcher.MavenFetchRequest;
+import maven.fetcher.MavenFetchResult;
+import maven.fetcher.MavenFetcher;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
+import org.slf4j.Logger;
+import org.slf4j.helpers.NOPLogger;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,22 +30,16 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import imconfig.Configuration;
-import es.iti.wakamiti.api.ClasspathAgent;
-import es.iti.wakamiti.api.WakamitiException;
-import maven.fetcher.*;
-import org.slf4j.Logger;
-import org.slf4j.helpers.NOPLogger;
 
-
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
-
-
+/**
+ * This class provides functionality for fetching Maven dependencies.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class WakamitiFetcher {
 
-    private Logger logger;
-    private Configuration conf;
+    private final Logger logger;
+    private final Configuration conf;
 
 
     public WakamitiFetcher() {
@@ -47,12 +51,24 @@ public class WakamitiFetcher {
         this.conf = mavenFetcherConfiguration;
     }
 
-
+    /**
+     * Creates a new instance of WakamitiFetcher with the specified configuration.
+     *
+     * @param mavenFetcherConfiguration The configuration to be used by the new fetcher.
+     * @return A new WakamitiFetcher instance with the specified configuration.
+     */
     public WakamitiFetcher withConfiguration(Configuration mavenFetcherConfiguration) {
-        return new WakamitiFetcher(logger,mavenFetcherConfiguration);
+        return new WakamitiFetcher(logger, mavenFetcherConfiguration);
     }
 
-
+    /**
+     * Fetches Maven dependencies for the specified modules.
+     *
+     * @param modules   The list of modules to fetch.
+     * @param mustClean Flag indicating whether to clean the local Maven repository before fetching.
+     * @return A list of paths to the fetched artifacts.
+     * @throws WakamitiException If an error occurs during the fetching process.
+     */
     public List<Path> fetch(List<String> modules, boolean mustClean) {
         try {
 
@@ -67,12 +83,12 @@ public class WakamitiFetcher {
                 cleanCache(mavenRepo);
             }
             Files.createDirectories(mavenRepo);
-            logger.debug("Using local Maven repository {}",mavenRepo);
+            logger.debug("Using local Maven repository {}", mavenRepo);
 
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                    "Modules requested to fetch are:{}",
-                    modules.stream().collect(Collectors.joining("\n -", "\n -",""))
+                        "Modules requested to fetch are:{}",
+                        modules.stream().collect(Collectors.joining("\n -", "\n -", ""))
                 );
                 logger.debug("Maven fetcher properties:");
                 logger.debug("{}", conf);
@@ -86,16 +102,16 @@ public class WakamitiFetcher {
             mavenFetcher.logger(logger);
 
             MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
-                .scopes("compile", "provided");
+                    .scopes("compile", "provided");
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("{}", fetchedArtifacts);
             }
             List<Path> paths = fetchedArtifacts
-                .allArtifacts()
-                .map(FetchedArtifact::path)
-                .collect(Collectors.toList());
+                    .allArtifacts()
+                    .map(FetchedArtifact::path)
+                    .collect(Collectors.toList());
 
             updateClasspath(paths);
             return paths;
@@ -106,22 +122,33 @@ public class WakamitiFetcher {
         }
     }
 
+    /**
+     * Cleans the local Maven repository cache.
+     *
+     * @param mavenRepo     The path to the local Maven repository.
+     * @throws IOException  If an I/O error occurs during the cache cleaning process.
+     */
     private void cleanCache(Path mavenRepo) throws IOException {
         try (Stream<Path> walker = Files.walk(mavenRepo)) {
             walker
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
         }
     }
 
+    /**
+     * Updates the classpath with the specified artifacts.
+     *
+     * @param artifacts     The list of paths to the fetched artifacts.
+     */
     private void updateClasspath(List<Path> artifacts) {
         for (Path artifact : artifacts) {
             if (artifact.toString().endsWith(".jar")) {
                 if (!artifact.toFile().exists()) {
                     logger.warn(
-                        "Cannot include JAR in the classpath (the file no exists): {}",
-                        artifact
+                            "Cannot include JAR in the classpath (the file no exists): {}",
+                            artifact
                     );
                     continue;
                 }

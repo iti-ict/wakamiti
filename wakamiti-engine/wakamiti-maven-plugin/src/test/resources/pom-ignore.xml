@@ -18,6 +18,13 @@
                 <groupId>es.iti.wakamiti</groupId>
                 <artifactId>wakamiti-maven-plugin</artifactId>
                 <version>0.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>

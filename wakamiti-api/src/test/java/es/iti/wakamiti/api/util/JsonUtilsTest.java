@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.api.util;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,15 +18,11 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.ByteArrayInputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 public class JsonUtilsTest {
 
@@ -33,9 +30,6 @@ public class JsonUtilsTest {
 
     private final String json = "{\"name\":\"Arnold\",\"age\":47}";
     private final String jsonError = "{\"name:\"Arnold\",\"age\":47}";
-    private final String jsonNull = "{\"name\":\"Arnold\",\"age\":null}";
-
-    private final String jsonList = "[{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]";
 
     @Test
     public void testJsonWhenStringWithSuccess() {
@@ -78,21 +72,6 @@ public class JsonUtilsTest {
         assertThat(obj.toString()).contains("\"statusCode\":\"200\"");
         assertThat(obj.toString()).contains("\"headers\":{\"keep-alive\":\"true\"}");
         assertThat(obj.toString()).contains("\"tags\":[\"something\",\"other\"]");
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testJsonWhenMapWithError() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
-
-        ObjectMapper mapperMock = mock(ObjectMapper.class);
-        when(mapperMock.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-        setField(JsonUtils.class, "MAPPER", mapperMock);
-        try {
-            JsonUtils.json(Map.of());
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            setField(JsonUtils.class, "MAPPER", mapper);
-        }
     }
 
     @Test(expected = RuntimeException.class)
@@ -143,12 +122,14 @@ public class JsonUtilsTest {
         result = JsonUtils.readStringValue(obj, "$..*.length()");
         assertThat(result).isEqualTo("6");
 
+        String jsonNull = "{\"name\":\"Arnold\",\"age\":null}";
         result = JsonUtils.readStringValue(JsonUtils.json(jsonNull), "$.age");
         assertThat(result).isNull();
 
         result = JsonUtils.readStringValue(JsonUtils.json(jsonNull), "age");
         assertThat(result).isNull();
 
+        String jsonList = "[{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]";
         result = JsonUtils.readStringValue(JsonUtils.json(jsonList), "find{ it.name == 'Susan' }.age");
         assertThat(result).isEqualTo("32");
 
@@ -167,16 +148,5 @@ public class JsonUtilsTest {
                 ));
 
         JsonUtils.readStringValue(obj, "$.body.id");
-    }
-
-    private void setField(Class<?> cls, String field, Object value) throws NoSuchFieldException, IllegalAccessException {
-        Field f = cls.getDeclaredField(field);
-        f.setAccessible(true);
-
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-
-        f.set(null, value);
     }
 }

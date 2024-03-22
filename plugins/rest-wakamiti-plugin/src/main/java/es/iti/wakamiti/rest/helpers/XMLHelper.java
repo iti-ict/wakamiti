@@ -26,18 +26,19 @@ import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-xml-helper", extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "rest-xml-helper",
+        version = "2.4",
+        extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
+)
 public class XMLHelper implements ContentTypeHelper {
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.XML);
-    private final XmlPathConfig config = XmlPathConfig.xmlPathConfig().defaultObjectDeserializer(new XmlPathObjectDeserializer() {
-        @Override
-        public <T> T deserialize(ObjectDeserializationContext ctx) {
-            return (T) xml(ctx.getDataToDeserialize().asString());
-        }
-    });
+    private final XmlPathConfig config = XmlPathConfig.xmlPathConfig()
+            .defaultObjectDeserializer(new XmlPathXmlObjectDeserializer());
 
     @Override
     public ContentType contentType() {
@@ -74,4 +75,12 @@ public class XMLHelper implements ContentTypeHelper {
         MatcherAssert.assertThat(content, matchesXsd(expectedSchema));
     }
 
+    @SuppressWarnings("unchecked")
+    static class XmlPathXmlObjectDeserializer implements XmlPathObjectDeserializer {
+
+        @Override
+        public XmlObject deserialize(ObjectDeserializationContext ctx) {
+            return xml(ctx.getDataToDeserialize().asString());
+        }
+    }
 }

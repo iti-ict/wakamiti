@@ -15,6 +15,8 @@ import es.iti.wakamiti.database.ConnectionManager;
 module es.iti.wakamiti.db {
     exports es.iti.wakamiti.database;
     exports es.iti.wakamiti.database.dataset;
+    exports es.iti.wakamiti.database.jdbc;
+    exports es.iti.wakamiti.database.exception;
 
     requires es.iti.wakamiti.api;
     requires java.sql;
@@ -24,11 +26,12 @@ module es.iti.wakamiti.db {
     requires commons.csv;
     requires org.assertj.core;
     requires org.hamcrest;
-    requires junit;
     requires jsqlparser;
     requires org.apache.commons.io;
-    requires java.sql.rowset;
     requires slf4jansi;
+    requires awaitility;
+    requires jchronic;
+    requires org.apache.commons.text;
 
     provides StepContributor with DatabaseStepContributor;
     provides ConfigContributor with DatabaseConfigContributor;

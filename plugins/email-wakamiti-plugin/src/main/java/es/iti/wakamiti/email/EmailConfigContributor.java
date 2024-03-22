@@ -1,16 +1,14 @@
 package es.iti.wakamiti.email;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import imconfig.Configuration;
 import imconfig.Configurer;
 
-@Extension(
-    provider =  "es.iti.wakamiti",
-    name = "email-step-config",
-    version = "1.1",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
+
+@Extension(provider =  "es.iti.wakamiti", name = "email-step-config", version = "2.4",
+    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class EmailConfigContributor implements ConfigContributor<EmailStepContributor> {
 
     public static final String STORE_HOST = "email.store.host";
@@ -20,10 +18,10 @@ public class EmailConfigContributor implements ConfigContributor<EmailStepContri
     public static final String PASSWORD = "email.password";
     public static final String STORE_FOLDER = "email.store.folder";
 
-    private static final Configuration DEFAULTS = Configuration.factory().empty();
-
     @Override
-    public Configuration defaultConfiguration() { return DEFAULTS; }
+    public Configuration defaultConfiguration() {
+        return Configuration.factory().empty();
+    }
 
     @Override
     public Configurer<EmailStepContributor> configurer() {

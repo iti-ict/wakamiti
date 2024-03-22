@@ -18,7 +18,7 @@
 
 
     <artifactId>rest-wakamiti-plugin</artifactId>
-    <version>2.3.3</version>
+    <version>2.4.0</version>
 
     <name>[Wakamiti Plugin] REST Steps</name>
     <description>REST steps for Wakamiti</description>
@@ -26,9 +26,11 @@
 
 
     <properties>
-        <mockserver.version>5.14.0</mockserver.version>
-        <rest-assured.version>5.3.1</rest-assured.version>
+        <mockserver.version>5.15.0</mockserver.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
+
+        <skipIntegrationTests>false</skipIntegrationTests>
     </properties>
 
 
@@ -51,6 +53,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.code.findbugs</groupId>-->
+<!--            <artifactId>jsr305</artifactId>-->
+<!--            <version>3.0.2</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -76,8 +83,8 @@
         <!-- test -->
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-core</artifactId>
-            <version>2.3.3</version>
+            <artifactId>wakamiti-junit</artifactId>
+            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,7 +96,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,5 +113,117 @@
 
     </dependencies>
 
+
+    <profiles>
+
+        <profile>
+            <id>integrationTests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skipIntegrationTests</name>
+                </property>
+            </activation>
+            <properties>
+                <rest.port>8888</rest.port>
+
+                <workdir>/wakamiti/test-classes</workdir>
+                <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
+                <volume>${project.build.directory}:/wakamiti</volume>
+                <arguments>-K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
+                <add.host />
+
+                <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mock-server</groupId>
+                        <artifactId>mockserver-maven-plugin</artifactId>
+                        <version>5.15.0</version>
+                        <configuration>
+                            <serverPort>${rest.port}</serverPort>
+                            <logLevel>OFF</logLevel>
+                            <initializationClass>es.iti.wakamiti.rest.mockserver.InitializationClass</initializationClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.fasterxml.jackson.core</groupId>
+                                <artifactId>jackson-core</artifactId>
+                                <version>${jackson.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>docker</executable>
+                            <commandlineArgs>${run.command}</commandlineArgs>
+                            <quietLogs>false</quietLogs>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>es.iti.wakamiti</groupId>
+                        <artifactId>wakamiti-maven-plugin</artifactId>
+                        <configuration>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml</configurationFiles>
+                            <logLevel>off</logLevel>
+                            <properties>
+                                <workingDir>${project.build.directory}/test-classes</workingDir>
+                                <resourcePath>${project.build.directory}/test-classes</resourcePath>
+                                <tagFilter>launcher</tagFilter>
+                                <rest.baseURL>http://localhost:${rest.port}</rest.baseURL>
+                                <data.dir>.</data.dir>
+                                <outputFilePath>${project.build.directory}/wakamiti.json</outputFilePath>
+                                <logs.showStepSource>false</logs.showStepSource>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>properties-linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

@@ -17,7 +17,7 @@ import es.iti.wakamiti.api.plan.Document;
  * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @I18nResource("iti_wakamiti_wakamiti-groovy")
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-steps")
+@Extension(provider =  "es.iti.wakamiti", name = "groovy-steps", version = "2.4")
 public class GroovyStepContributor implements StepContributor {
 
     /**

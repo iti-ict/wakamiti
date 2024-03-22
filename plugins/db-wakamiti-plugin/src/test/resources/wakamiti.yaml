@@ -1,0 +1,5 @@
+wakamiti:
+  resourceTypes: gherkin
+  outputFilePath: target/wakamiti.json
+  log:
+    level: off

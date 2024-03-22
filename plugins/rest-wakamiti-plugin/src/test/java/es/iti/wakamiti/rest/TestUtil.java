@@ -16,6 +16,7 @@ import io.restassured.http.ContentType;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.mockserver.client.MockServerClient;
+import org.mockserver.mock.Expectation;
 import org.mockserver.model.HttpStatusCode;
 import org.mockserver.model.MediaType;
 import org.mockserver.model.RegexBody;
@@ -152,8 +153,17 @@ public class TestUtil {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
+        Expectation[] expectations = prepare(rootPath, filter);
+        for (Expectation expectation : expectations) {
+            client.when(expectation.getHttpRequest()).respond(expectation.getHttpResponse());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Expectation[] prepare(String rootPath, Predicate<MediaType> filter) throws IOException {
+        List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
                 MediaType.APPLICATION_XML, TestUtil::xml
@@ -191,17 +201,19 @@ public class TestUtil {
                     }
 
                     for (MediaType mimeType : map.keySet().stream().filter(filter).collect(Collectors.toList())) {
-                        client.when(request()
-                                        .withPath("/" + p)
-                                        .withHeaders(
-                                                header("Content-type", ".*" + mimeType + ".*")
-                                        )
+                        expectations.add(new Expectation(
+                                        request()
+                                                .withPath("/" + p)
+                                                .withHeaders(
+                                                        header("Content-type", ".*" + mimeType + ".*")
+                                                )
+                                ).thenRespond(
+                                        response()
+                                                .withStatusCode(HttpStatusCode.OK_200.code())
+                                                .withContentType(mimeType)
+                                                .withBody(list_to_string.get(mimeType).apply(map.get(mimeType)))
                                 )
-                                .respond(response()
-                                        .withStatusCode(HttpStatusCode.OK_200.code())
-                                        .withContentType(mimeType)
-                                        .withBody(list_to_string.get(mimeType).apply(map.get(mimeType)))
-                                );
+                        );
                     }
                 });
 
@@ -221,41 +233,50 @@ public class TestUtil {
                     String body = read(file);
                     String path = "/" + FileUtils.removeExtension(p.toString()).replace("\\", "/");
 
-                    client.when(request()
-                                    .withPath(path)
-                                    .withHeaders(
-                                            header("Content-type", ".*" + mimeType + ".*")
-                                    )
+                    expectations.add(
+                            new Expectation(
+                                    request()
+                                            .withPath(path)
+                                            .withHeaders(
+                                                    header("Content-type", ".*" + mimeType + ".*")
+                                            )
+                            ).thenRespond(
+                                    response()
+                                            .withStatusCode(HttpStatusCode.OK_200.code())
+                                            .withContentType(mimeType)
+                                            .withBody(body)
                             )
-                            .respond(response()
-                                    .withStatusCode(HttpStatusCode.OK_200.code())
-                                    .withContentType(mimeType)
-                                    .withBody(body)
-                            );
+                    );
 
                     Map<String, Object> json = string_to_map.get(mimeType).apply(body);
 
                     for (String key : json.keySet()) {
                         Object current = json.get(key);
                         if (current instanceof List) {
-                            client.when(request()
-                                            .withPath(path + "/" + key)
-                                            .withHeaders(
-                                                    header("Content-type", ".*" + mimeType + ".*")
-                                            )
+                            expectations.add(
+                                    new Expectation(
+                                            request()
+                                                    .withPath(path + "/" + key)
+                                                    .withHeaders(
+                                                            header("Content-type", ".*" + mimeType + ".*")
+                                                    )
+                                    ).thenRespond(
+                                            response()
+                                                    .withStatusCode(HttpStatusCode.OK_200.code())
+                                                    .withContentType(mimeType)
+                                                    .withBody(list_to_string.get(mimeType).apply((List<Map<String, Object>>) current))
                                     )
-                                    .respond(response()
-                                            .withStatusCode(HttpStatusCode.OK_200.code())
-                                            .withContentType(mimeType)
-                                            .withBody(list_to_string.get(mimeType).apply((List<Map<String, Object>>) current))
-                                    );
+                            );
                         }
                     }
                 });
-
-        client.when(request().withPath("/bad"))
-                .respond(response().withStatusCode(HttpStatusCode.BAD_REQUEST_400.code()));
+        expectations.add(
+                new Expectation(request().withPath("/bad"))
+                        .thenRespond(response().withStatusCode(HttpStatusCode.BAD_REQUEST_400.code()))
+        );
+        return expectations.toArray(new Expectation[0]);
     }
+
 
     private static List<File> listFiles(final File folder) throws IOException {
         List<File> files = new ArrayList<>();

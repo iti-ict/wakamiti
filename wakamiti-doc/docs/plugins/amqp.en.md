@@ -24,14 +24,16 @@ es.iti.wakamiti:amqp-wakamiti-plugin:2.3.3
 </dependency>
 ```
 
----
+<br />
+
 ## Table of content
 
----
+<br />
 
----
+
 ## Configuration
 
+---
 
 
 ###  `amqp.connection.url`
@@ -45,7 +47,9 @@ amqp:
     url: amqp://127.0.0.1:5671
 ```
 
-<br /><br />
+<br />
+
+---
 
 ###  `amqp.connection.username`
 Sets the username to be used by the AMQP broker.
@@ -58,7 +62,9 @@ amqp:
     username: guest
 ```
 
-<br /><br />
+<br />
+
+---
 
 ###  `amqp.connection.password`
 Sets the password to be used by the AMQP broker.
@@ -71,7 +77,9 @@ amqp:
     password: guest
 ```
 
-<br /><br />
+<br />
+
+---
 
 ###  `amqp.queue.durable`
 Sets whether the queue will be durable or not (the queue will survive a server reboot).
@@ -86,7 +94,9 @@ amqp:
     durable: "true"
 ```
 
-<br /><br />
+<br />
+
+---
 
 ###  `amqp.queue.exclusive`
 Establece si la cola será exclusiva (restringida a la conexión actual).
@@ -101,7 +111,9 @@ amqp:
     exclusive: "true"
 ```
 
-<br /><br />
+<br />
+
+---
 
 ###  `amqp.queue.autodelete`
 Sets whether to auto delete queue (will be deleted by server when no longer in use).
@@ -116,10 +128,12 @@ amqp:
     autodelete: "true"
 ```
 
+<br />
 
----
+
 ## Steps
 
+---
 
 
 ### Define connection
@@ -143,7 +157,9 @@ properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.userna
   Given the AMQP connection URL 'amqp://127.0.0.1:5671' using the user 'guest' and the password 'guest'
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Define destination queue
 
@@ -162,7 +178,9 @@ Sets the name of the queue to watch.
   Given the destination queue TEST
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Send message to queue
 
@@ -189,7 +207,9 @@ Sends a JSON message to the given queue.
     ```
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Send message to queue (file)
 ```text copy=true
@@ -208,7 +228,9 @@ Sends a JSON message extracted from a local file to the given queue.
   When the message from the JSON file 'data/message.json' is sent to the queue TEST
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Set pause
 ```text copy=true
@@ -226,7 +248,9 @@ Waits a fixed number of seconds (usually to ensure a message has been processed)
   * Wait for 2 seconds
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Validate message
 
@@ -252,7 +276,9 @@ Validates that a specific JSON message is received in the destination queue, fai
       }
 ```
 
-<br /><br />
+<br />
+
+---
 
 ### Validate message (file)
 ```text copy=true

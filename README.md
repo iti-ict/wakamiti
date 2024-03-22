@@ -1,77 +1,40 @@
-> Please check the [site version](https://iti-ict.github.io/wakamiti/) in case you are 
-> reading this document directly from the repository
 
 
-[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo)
-
-
-### Latest versions
-
-| component | version |
-| --- | --- |
-| API  | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-api?label=%20) |
-| Core | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-core?label=%20) |
-| Quarkus Server | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-server-quarkus?label=%20) |
-| Plugin Rest | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/rest-wakamiti-plugin?label=%20) |
-| Plugin DB | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/db-wakamiti-plugin?label=%20) |
-| Plugin Html Report | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/html-report-wakamiti-plugin?label=%20) |
-| Plugin Cucumber Exporter | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin?label=%20) |
-| Plugin File Uploader | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/file-uploader-wakamiti-plugin?label=%20) |
-| Plugin AMQP | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/amqp-wakamiti-plugin?label=%20) |
-| Plugin Groovy | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/groovy-wakamiti-plugin?label=%20) |
-| Plugin I/O | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20) |
-| Plugin Azure | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/azure-wakamiti-plugin?label=%20) |
-| Plugin Appium | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/appium-wakamiti-plugin?label=%20) |
+![](images/logo_wakamiti_bright.svg)
 
 ---
 
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo) ![Docker Image Version](https://img.shields.io/docker/v/wakamiti/wakamiti?label=docker&logo=docker) ![Maven Central Version](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-engine?logo=circle&logoColor=re)
 
 
 
-Wakamiti is a Cucumber-inspired tool written in Java focused on **blackbox testing**
-using **natural language**.
-
-<br/>
-
-Just like Cucumber, you can define your tests using natural, human-readable language by adopting 
-(for example) the Gherkin _grammar_. However, with Wakamiti you  _do not_ bind each step to your 
-test code; instead, steps are bound to reusable, common-purpose code provided by external plugins. 
-
-<br/>
-
-Thus, Wakamiti turns out to be a convenient tool if your aim is test your system via standardized 
-protocols such as REST web services or JDBC connection, which tend to be a great deal of percentage
-of the tests written for most applications. This *blackbox-testing* approach allows using Wakamiti
-regardless the specific technology used by the target application.
-
-<br/>
-
-Also, **no test code is required to be written**, so even non-programmers can define and execute 
-their own tests.
-
-<br/>
-
-Other features provided by Wakamiti are:
-
-- **Two-layered Gherkin**: you can make use of the Gherkin grammar at two levels of abstraction, 
-one aimed to customer communication, and other aimed to system details
-- **Fully localizable**: you can use your own language as long as you provided Wakamiti with a 
-translation file  
-- **Easily extensible**: write your own plugins for any extension point (steps, reporters, 
-language parsers, etc.) and share them with the community
-- **Alternative launchers**: execute Wakamiti as a JUnit test suite, as a Maven verify goal, 
-or directly as a console command.
+> Please check the [site version](https://iti-ict.github.io/wakamiti/) in case you are
+> reading this document directly from the repository
 
 
-> **REMEMBER**  
-> Wakamiti is a _tool_, not a _testing framework_. Use it when fits the circumstances. Neither is it 
-a replacement for Cucumber: according your necessities, you might use _both_!    
+
+### Latest plugins version
+
+| artifact                                            | version                                                                                                                          |
+|-----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `es.iti.wakamiti:rest-wakamiti-plugin`              | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/rest-wakamiti-plugin?label=%20&color=white)              |
+| `es.iti.wakamiti:db-wakamiti-plugin`                | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/db-wakamiti-plugin?label=%20&color=white)                |
+| `es.iti.wakamiti:html-report-wakamiti-plugin`       | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/html-report-wakamiti-plugin?label=%20&color=white)       |
+| `es.iti.wakamiti:cucumber-exporter-wakamiti-plugin` | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin?label=%20&color=white) |
+| `es.iti.wakamiti:file-uploader-wakamiti-plugin`     | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/file-uploader-wakamiti-plugin?label=%20&color=white)     |
+| `es.iti.wakamiti:amqp-wakamiti-plugin`              | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/amqp-wakamiti-plugin?label=%20&color=white)              |
+| `es.iti.wakamiti:groovy-wakamiti-plugin`            | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/groovy-wakamiti-plugin?label=%20&color=white)            |
+| `es.iti.wakamiti:io-wakamiti-plugin`                | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20&color=white)                |
+| `es.iti.wakamiti:azure-wakamiti-plugin`             | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/azure-wakamiti-plugin?label=%20&color=white)             |
+| `es.iti.wakamiti:appium-wakamiti-plugin`            | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/appium-wakamiti-plugin?label=%20&color=white)            |
+
+---
 
 
 Usage
 ----------------------------------------------------------------------------------------------------
  
-Running tests with Wakamiti is very easy. Just write your test specification, 
+Running tests with Wakamiti is straightforward. Write your test specification, 
 define a basic configuration with the step providers (and any other plugin) that you require,
 and choose the launcher that fits better your project.
 
@@ -80,7 +43,7 @@ data about users. Internally, data is stored in a database table named `USER`. G
 that, we want to test that the name of the users is retrieved correctly when using the 
 REST service.
 
-The following Gherkin specification define a test that use steps from two different plugins, 
+The following Gherkin specification defines a test that uses steps from two different plugins, 
 `REST steps` and `Database steps` (further explanation about them can be found in the 
 documentation of each plugin).
 
@@ -106,7 +69,7 @@ Feature: Testing the user data retrieval service
         """
 ```
 
-Now we define the execution configuration, that is simply a set of properties that Wakamiti would take 
+Now we define the execution configuration that is simply a set of properties that Wakamiti would take 
 into account for several aspects. There are several ways to define them; in this example we will just 
 write them in the default configuration file `wakamiti.yaml`:
 
@@ -116,12 +79,12 @@ wakamiti:
     resourceTypes: 
       - gherkin
     modules:
-      - es.iti.wakamiti:wakamiti-rest:1.3.1
-      - es.iti.wakamiti:wakamiti-db:1.3.1
-      - es.iti.wakamiti:wakamiti-html-report:1.3.1
+      - es.iti.wakamiti:wakamiti-rest:2.3.3
+      - es.iti.wakamiti:wakamiti-db:2.3.3
+      - es.iti.wakamiti:wakamiti-html-report:2.3.3
       - com.h2database:h2:1.4.199
     htmlReport:
-        output: target/reports/wakamiti/html/wakamiti-report.html
+        output: target/wakamiti-report.html
 ``` 
 
 > In addition to the core functionality properties, each plugin can make use
@@ -130,7 +93,7 @@ documentation.
 
 Once you have configured the test execution, the only thing remaining is run the test plan. 
 There are several ways of launching it (see `Runners` below); in this example, we will use the 
-console command launcher. Assuming it is correctly installed, you just have to type:
+console command launcher. Assuming it is correctly installed, you have to type:
 
 ```shell
 wakamiti
@@ -145,7 +108,7 @@ and the test will be executed.
 <br/>
 
 
-The results of the test execution, besides the console output, are stored in an output file, 
+The results of the test execution, beside the console output, are stored in an output file, 
 named by default ```wakamiti.json```. Additional plugins can read this file and generate reports 
 or do any other post-execution tasks.
 
@@ -163,18 +126,19 @@ as a normal JUnit test and will be executed along any other JUnit test existing.
     _Suitable scenarios_   
    Java applications, if you require report integration with other JUnit tests, or using an IDE
    to launch tests 
-   
-    
+
+
 - **Using Maven**: If your project uses Maven, and you prefer to execute the Wakamiti test plan in a separate stage,
 you can execute Wakamiti attaching the ```wakamiti-maven-plugin``` plugin to the 
-Maven lifecycle.  Simply configure the Maven plugin and the desired additional Wakamiti plugins 
+Maven lifecycle.  Configure the Maven plugin and the desired additional Wakamiti plugins 
 in your POM `build` section.
 
    _Suitable scenarios_   
    Maven-built applications, if you want to include Wakamiti as a part of the verify phase
 
+
 - **Stand-alone launcher**: If your project does not use neither JUnit nor Maven, Wakamiti provides a 
-stand-alone command-line based launcher, that will manage the plugin dependencies internally.
+stand-alone command-line-based launcher that will manage the plugin dependencies internally.
 
    _Suitable scenarios_   
    Non-Java applications and/or your test plan is to be executed outside the building process
@@ -204,8 +168,8 @@ this plugin creates a static HTML report that shows the results of a test plan
 execution.
 
 
-> This set of plugins are provided as an initial stage and some of them are at an early state. 
-> The long-term goal is get an ecosystem with a wide range of plugins from third-party contributors 
+> This set of plugins is provided as an initial stage, and some of them are at an early state. 
+> The long-term goal is to get an ecosystem with a wide range of plugins from third-party contributors 
 > covering different needs. 
 
 
@@ -260,8 +224,8 @@ the results of conducted researches, and driving knowledge transfer among compan
 *Comunitat Valenciana*. 
 
 
-<img src="https://github.com/iti-ict/wakamiti/assets/22094564/94ebfe59-822e-4aad-9d54-4ee91ad92490" width="300">
-<img src="https://github.com/iti-ict/wakamiti/assets/22094564/588a2acb-fd35-4bf3-a642-30b7df5c41bb" width="300" align="right">
+<img src="images/gva-ivace.png" width="300" >
+<img src="images/iti.png" width="300" align="right">
 
 
 
@@ -269,11 +233,11 @@ License
 ----------------------------------------------------------------------------------------------------
 
 ```
-    Mozilla Public License 2.0
+Mozilla Public License 2.0
 
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
 
 
@@ -281,9 +245,9 @@ License
 Authors
 ----------------------------------------------------------------------------------------------------
 
-- **Luis Iñesta Gelabert**   linesta@iti.es
-- **María Galbis**  mgalbis@iti.es
-- **Adrián Martínez Gil**  amartinezgil@iti.es
+- **Luis Iñesta Gelabert** - linesta@iti.es 
+- **María Galbis Calomarde** - mgalbis@iti.es 
+- **Adrián Martínez Gil** - amartinezgil@iti.es
     
 
 

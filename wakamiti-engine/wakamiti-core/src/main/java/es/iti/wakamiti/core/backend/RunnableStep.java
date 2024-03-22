@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.backend;
 
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
@@ -17,8 +18,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 
+
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Represents a RunnableStep used in test execution.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableStep {
 
@@ -46,7 +50,13 @@ public class RunnableStep {
         this.stepProvider = stepProvider;
     }
 
-
+    /**
+     * Gets the translated definition for a specific locale.
+     *
+     * @param locale The locale for which the definition is required.
+     * @return The translated definition.
+     * @throws WakamitiException If the definition file or key is not found for the given locale.
+     */
     public String getTranslatedDefinition(Locale locale) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
@@ -74,7 +84,15 @@ public class RunnableStep {
         return translatedDefinition;
     }
 
-
+    /**
+     * Creates and returns a matcher for the step definition.
+     *
+     * @param modelStep    The model step.
+     * @param stepLocale   The locale for the step.
+     * @param dataLocale   The locale for the test data.
+     * @param typeRegistry The data type registry.
+     * @return The created matcher.
+     */
     public Matcher matcher(
             Either<PlanNode, String> modelStep,
             Locale stepLocale,
@@ -86,7 +104,13 @@ public class RunnableStep {
                 .matcherFor(translatedDefinition, typeRegistry, dataLocale, modelStep);
     }
 
-
+    /**
+     * Runs the step with the given invoking arguments.
+     *
+     * @param invokeArguments The arguments to be passed to the step.
+     * @return The result of running the step.
+     * @throws WakamitiException If there is an error while running the step.
+     */
     public Object run(Map<String, Argument> invokeArguments) {
 
         boolean error = invokeArguments.size() != this.arguments.size();
@@ -127,18 +151,31 @@ public class RunnableStep {
         }
     }
 
-
+    /**
+     * Gets the arguments associated with the step.
+     *
+     * @return The arguments. They represent the input parameters required by the step.
+     */
     public BackendArguments getArguments() {
         return arguments;
     }
 
-
+    /**
+     * Gets the definition key for the step.
+     *
+     * @return The definition key. It uniquely identifies the step's definition within the definition file.
+     */
     public String getDefinitionKey() {
         return definitionKey;
     }
 
-
+    /**
+     * Gets the step provider.
+     *
+     * @return The step provider. It indicates the source or origin of the step.
+     */
     public String getProvider() {
         return stepProvider;
     }
+
 }

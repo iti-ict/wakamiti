@@ -10,23 +10,21 @@ it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPU
 Configuration
 -------------
 
-### `fileUploader.enable` : `true`|`false`
-
-Enable / disable the event observer. Default value is `false`
-   
+### `fileUploader.enabled` : `true`|`false`
+Enable / disable the event observer. Default value is `true`.
 
 ### `fileUploader.host`
 The host name or IP address to be used to upload the files. Optionally, it can include a specific
 port in the form `hostname:port`
 
 ### `fileUploader.credentials.username`
-The username to be used to stablish the FTP/FTPS connection
+The username to be used to establish the FTP/FTPS connection
 
 ### `fileUploader.credentials.password`
-The password to be used to stablish the FTP/FTPS connection
+The password to be used to establish the FTP/FTPS connection
 
-### `fileUploader.protocol` : `ftp` | `ftps`
-The specific protocol to be used (`ftps` is recommended)
+### `fileUploader.protocol` : `ftp` | `ftps` | `sftp`
+The specific protocol to be used (`sftp` is recommended)
 
 ### `fileUploader.destinationDir`
 The destination directory where the files should be uploaded within the remote location. It can include
@@ -36,13 +34,13 @@ placeholders like `%DATE%`, `%TIME%`, or `%execID%`
 ---
 
 This configuration would be applied to every event type. However, they can be fine-tunned in case 
-you require configuration variations according the even type. For example, the configuration 
+you require configuration variations according to the even type. For example, the configuration 
 below would use the same connection parameters but upload files to different directories:
 
 ```yaml
 fileUploader:
   host: 192.168.1.40
-  protocol: ftps
+  protocol: sftp
   credentials:
     username: test
     password: testpwd

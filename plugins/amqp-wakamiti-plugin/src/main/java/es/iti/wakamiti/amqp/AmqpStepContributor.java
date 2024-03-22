@@ -15,7 +15,7 @@ import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
 import org.slf4j.Logger;
 
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 import static org.awaitility.Awaitility.await;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.4")
 @I18nResource("iti_wakamiti_wakamiti-amqp")
 public class AmqpStepContributor implements StepContributor {
 
@@ -164,7 +164,7 @@ public class AmqpStepContributor implements StepContributor {
         try {
             await()
                     .atMost(seconds, TimeUnit.SECONDS)
-                    .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)
+                    .pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS)
                     .until(() -> messageExistsInReceived(message));
         } catch (ConditionTimeoutException e) {
             throw new AssertionError("Message not received in " + seconds + " seconds");

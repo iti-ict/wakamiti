@@ -3,17 +3,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.api.event;
 
 
 import java.time.Instant;
 
 
-
+/**
+ * The {@code Event} class represents an event that occurs during the execution of a system.
+ * Events may have different types and carry associated data. Each event is timestamped with
+ * the moment it occurred.
+ *
+ * @author Luis Iñesta Gelabert - linesta@iti.es
+ */
 public class Event {
 
     public static final String PLAN_CREATED = "PLAN_CREATED";

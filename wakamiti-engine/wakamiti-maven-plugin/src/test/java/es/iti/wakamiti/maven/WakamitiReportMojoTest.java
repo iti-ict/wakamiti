@@ -1,4 +1,10 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.maven;
+
 
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.maven.utils.ProjectStub;
@@ -16,12 +22,14 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+
 public class WakamitiReportMojoTest extends WakamitiAbstractMojoTest {
 
     private static final String GOAL = "report";
     private Wakamiti wakamiti;
     private Configuration currentConfiguration;
 
+    @Override
     protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();

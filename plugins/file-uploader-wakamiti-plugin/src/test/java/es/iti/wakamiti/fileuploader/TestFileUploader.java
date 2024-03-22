@@ -43,7 +43,6 @@ public class TestFileUploader {
                 "fileUploader.protocol", "ftp",
                 "fileUploader.credentials.username", "test",
                 "fileUploader.credentials.password", "test",
-                "fileUploader.standardOutputs.enable", "true",
                 "fileUploader.standardOutputs.destinationDir", "dira/dirb/dirc"
 
         );
@@ -62,7 +61,6 @@ public class TestFileUploader {
                 "fileUploader.protocol", "ftp",
                 "fileUploader.credentials.username", "test",
                 "fileUploader.credentials.password", "test",
-                "fileUploader.testCaseOutputs.enable", "true",
                 "fileUploader.testCaseOutputs.destinationDir", "dira/dirb/dirc"
 
         );
@@ -81,7 +79,6 @@ public class TestFileUploader {
                 "fileUploader.protocol", "ftp",
                 "fileUploader.credentials.username", "test",
                 "fileUploader.credentials.password", "test",
-                "fileUploader.reportOutputs.enable", "true",
                 "fileUploader.reportOutputs.destinationDir", "dira/dirb/dirc"
 
         );
@@ -96,6 +93,7 @@ public class TestFileUploader {
     @Test
     public void testStandardOutputFileUploaderDisabledByDefault() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
+                "fileUploader.enabled", "false",
                 "fileUploader.host", "localhost:" + ftpServer.getPort(),
                 "fileUploader.protocol", "ftp",
                 "fileUploader.credentials.username", "test",
@@ -116,7 +114,7 @@ public class TestFileUploader {
             String eventType
     ) throws URISyntaxException {
         assertTrue(configurator.accepts(filesUploader));
-        configurator.configurer().configure(filesUploader, c);
+        configurator.configurer().configure(filesUploader, configurator.defaultConfiguration().append(c));
         Path path = Path.of(Thread.currentThread().getContextClassLoader().getResource("file.txt").toURI());
         filesUploader.eventReceived(new Event(Event.BEFORE_WRITE_OUTPUT_FILES, Instant.now(), null));
         filesUploader.eventReceived(new Event(eventType, Instant.now(), path));

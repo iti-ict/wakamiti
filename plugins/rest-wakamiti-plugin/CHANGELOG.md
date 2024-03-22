@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.4.0] - 2024-03-22
+
+### Added
+- Check that base URL does not contain query parameters.
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [2.3.3] - 2023-09-14
 
 ### Fixed

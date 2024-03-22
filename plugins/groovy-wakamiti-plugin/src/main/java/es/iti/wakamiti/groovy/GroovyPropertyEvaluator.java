@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
  */
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-property-resolver",
+@Extension(provider =  "es.iti.wakamiti", name = "groovy-property-resolver", version = "2.4",
         extensionPoint =  "es.iti.wakamiti.api.extensions.PropertyEvaluator")
 public class GroovyPropertyEvaluator extends PropertyEvaluator {
 
