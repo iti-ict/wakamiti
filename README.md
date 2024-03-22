@@ -224,8 +224,8 @@ the results of conducted researches, and driving knowledge transfer among compan
 *Comunitat Valenciana*. 
 
 
+<img src="images/iti.png" align="right">
 <img src="images/gva-ivace.png">
-<img src="images/iti.png" height="75" align="right">
 
 <br />
 <br />
