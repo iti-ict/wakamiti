@@ -42,9 +42,9 @@ jobs:
           MESSAGE: "Build: ({sha}) {msg}"
 
 
-      - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@master
-        if: ${{ success() }}
-        with:
-          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
-          overwrite: "{title: `Documentacion Wakamiti actualizada`}"
+#      - name: Microsoft Teams Notification
+#        uses: skitionek/notify-microsoft-teams@master
+#        if: ${{ success() }}
+#        with:
+#          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
+#          overwrite: "{title: `Documentacion Wakamiti actualizada`}"
