@@ -29,6 +29,8 @@
         <mockserver.version>5.15.0</mockserver.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
+
+        <rest.port>8888</rest.port>
     </properties>
 
 
@@ -113,23 +115,44 @@
 
 
     <profiles>
-
         <profile>
-            <id>integrationTests</id>
+            <id>properties-windows</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <os><family>windows</family></os>
             </activation>
             <properties>
-                <rest.port>8888</rest.port>
-
                 <workdir>/wakamiti/test-classes</workdir>
                 <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
                 <volume>${project.build.directory}:/wakamiti</volume>
                 <arguments>-K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
-                <add.host />
+
+                <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} wakamiti/wakamiti:test ${arguments}</run.command>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>properties-linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <workdir>/wakamiti/test-classes</workdir>
+                <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
+                <volume>${project.build.directory}:/wakamiti</volume>
+                <arguments>-K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
+                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
 
                 <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
             </properties>
+        </profile>
+
+        <profile>
+            <id>integrationTests</id>
+            <activation>
+                <property>
+                    <name>run.command</name>
+                </property>
+            </activation>
 
             <build>
                 <plugins>
@@ -208,16 +231,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <profile>
-            <id>properties-linux</id>
-            <activation>
-                <os><family>linux</family></os>
-            </activation>
-            <properties>
-                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
-            </properties>
         </profile>
     </profiles>
 
