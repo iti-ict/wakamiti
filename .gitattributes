@@ -7,3 +7,5 @@ mvnw    eol=lf
 
 *.bat   eol=crlf
 *.cmd   eol=crlf
+
+*.png binary
