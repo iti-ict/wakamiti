@@ -227,8 +227,6 @@ the results of conducted researches, and driving knowledge transfer among compan
 <img src="images/iti.png" align="right">
 <img src="images/gva-ivace.png">
 
-<br />
-<br />
 
 License
 ----------------------------------------------------------------------------------------------------
