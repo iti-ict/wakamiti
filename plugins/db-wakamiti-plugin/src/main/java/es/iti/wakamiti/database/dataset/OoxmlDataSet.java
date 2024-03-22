@@ -165,7 +165,7 @@ public class OoxmlDataSet extends MultiDataSet {
                     case NUMERIC:
                         value = cell.getNumericCellValue();
                         break;
-                    case STRING:
+                    default:
                         value = cell.getStringCellValue().trim();
                         if (nullSymbol.equals(value)) {
                             value = null;
