@@ -224,10 +224,11 @@ the results of conducted researches, and driving knowledge transfer among compan
 *Comunitat Valenciana*. 
 
 
-<img src="images/gva-ivace.png" width="300" >
-<img src="images/iti.png" width="300" align="right">
+<img src="images/gva-ivace.png">
+<img src="images/iti.png" align="right">
 
-
+<br />
+<br />
 
 License
 ----------------------------------------------------------------------------------------------------
