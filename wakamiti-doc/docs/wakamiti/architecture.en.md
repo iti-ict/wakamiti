@@ -20,7 +20,7 @@ file named `wakamiti.yaml`.
 
 ### `wakamiti.resourceTypes`
 
-Sets the language for test scenarios. Only `gherkin` is available for now.
+Set the type of resource for test scenarios. Only `gherkin` is available for now.
 
 Example:
 
@@ -29,7 +29,21 @@ wakamiti:
   resourceTypes: gherkin
 ```
 
-<br /><br />
+<br />
+
+---
+
+
+### `wakamiti.language`
+- Type: `locale` 
+- Default `en`
+
+Set the language for test scenarios. 
+
+<br />
+
+---
+
 
 ### `wakamiti.resourcePath`
 

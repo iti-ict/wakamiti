@@ -28,7 +28,7 @@ es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
 ## Configuration
 
 ###  `rest.baseURL`
-Set the base URL for subsequents API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you
+Sets the base URL for later API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you
 prefer the descriptive configuration.
 
 Example:
@@ -41,7 +41,7 @@ rest:
 <br /><br />
 
 ### `rest.contentType`
-Set the content type that would be sent in the request header of subsequent API calls.
+Sets the content type that would be sent in the request header of later API calls.
 Accepted values are:
 
 | literal     | `content-type` header value                                                                                                                                                                                             |
@@ -68,7 +68,7 @@ rest:
 
 ### `rest.httpCodeThreshold`
 Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step
-would automatically fail regardless any other condition.
+would automatically fail regardless of any other condition.
 
 Default value is `500`.
 
@@ -82,7 +82,7 @@ rest:
 
 ### `rest.timeout`
 
-Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the
+Sets a response timeout (in milliseconds) for the later HTTP requests. In case of exceeding the specified time, the
 request will be stopped and an error will occur.
 
 Default value is `60000`.

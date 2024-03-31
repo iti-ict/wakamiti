@@ -13,29 +13,43 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 >
 > Actualmente, esta librería proporciona una funcionalidad muy limitada y existe como prueba de concepto.
 
+
+---
+## Tabla de contenido
+
+---
+<br />
+
+
+## Instalación
+
+---
+
+Incluye el módulo en la sección correspondiente.
+
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.3.3
+es.iti.wakamiti:amqp-wakamiti-plugin:2.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.3.3</version>
+  <version>2.4.0</version>
 </dependency>
 ```
 
----
-## Tabla de contenido
+<br />
 
----
 
----
 ## Configuración
 
+---
 
 
 ###  `amqp.connection.url`
+- Tipo: `string` *obligatorio*
+
 Establece la URL que utilizará el agente AMQP.
 
 Ejemplo:
@@ -46,9 +60,14 @@ amqp:
     url: amqp://127.0.0.1:5671
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ###  `amqp.connection.username`
+- Tipo: `string` *obligatorio*
+
 Establece el nombre de usuario que utilizará el agente AMQP.
 
 Ejemplo:
@@ -59,9 +78,14 @@ amqp:
     username: guest
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ###  `amqp.connection.password`
+- Tipo: `string` *obligatorio*
+
 Establece la contraseña de usuario que utilizará el agente AMQP.
 
 Ejemplo:
@@ -72,12 +96,16 @@ amqp:
     password: guest
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ###  `amqp.queue.durable`
-Establece si la cola será duradera o no (la cola sobrevivirá a un reinicio del servidor).
+- Tipo: `boolean`
+- Por defecto `false`
 
-El valor por defecto es `false`.
+Establece si la cola será duradera o no (la cola sobrevivirá a un reinicio del servidor).
 
 Ejemplo:
 
@@ -87,12 +115,16 @@ amqp:
     durable: "true"
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ###  `amqp.queue.exclusive`
-Establece si la cola será exclusiva (restringida a la conexión actual).
+- Tipo: `boolean`
+- Por defecto `false`
 
-El valor por defecto es `false`.
+Establece si la cola será exclusiva (restringida a la conexión actual).
 
 Ejemplo:
 
@@ -102,12 +134,16 @@ amqp:
     exclusive: "true"
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ###  `amqp.queue.autodelete`
-Establece si la cola de eliminación automática (el servidor la eliminará cuando ya no esté en uso).
+- Tipo: `boolean`
+- Por defecto `false`
 
-El valor por defecto es `false`.
+Establece si la cola de eliminación automática (el servidor la eliminará cuando ya no esté en uso).
 
 Ejemplo:
 
@@ -117,163 +153,189 @@ amqp:
     autodelete: "true"
 ```
 
+<br />
+
+
+## Usos
 
 ---
-## Pasos
 
+Este plugin proporciona los siguientes pasos:
 
 
 ### Definir conexión
-
 ```text copy=true
 la conexión AMQP con URL {url} usando el usuario {username} y la contraseña {password}
 ```
+
 Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las 
 propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername), 
 [`amqp.connection.password`](#amqpconnectionpassword).
 
 #### Parámetros:
-| Nombre     | Wakamiti type | Descripción           |
-|------------|---------------|-----------------------|
-| `url`      | `text`        | La URL del agente     |
-| `username` | `text`        | Nombre de usuario     |
-| `password` | `text`        | Contraseña de usuario |
+| Nombre     | Wakamiti type        | Descripción           |
+|------------|----------------------|-----------------------|
+| `url`      | `text` *obligatorio* | La URL del agente     |
+| `username` | `text` *obligatorio* | Nombre de usuario     |
+| `password` | `text` *obligatorio* | Contraseña de usuario |
 
 #### Ejemplos:
 ```gherkin
-  Dada la conexión AMQP con URL 'amqp://127.0.0.1:5671' usando el usuario 'guest' y la contraseña 'guest'
+Dada la conexión AMQP con URL 'amqp://127.0.0.1:5671' usando el usuario 'guest' y la contraseña 'guest'
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Definir cola destino
-
 ```text copy=true
 la cola de destino {word}
 ```
+
 Establece el nombre de la cola que se observará.
 
 #### Parámetros:
-| Nombre | Wakamiti type | Descripción       |
-|--------|---------------|-------------------|
-| `word` | `word`        | Nombre de la cola |
+| Nombre | Wakamiti type        | Descripción       |
+|--------|----------------------|-------------------|
+| `word` | `word` *obligatorio* | Nombre de la cola |
 
 #### Ejemplos:
 ```gherkin
-  Dada la cola de destino TEST
+Dada la cola de destino TEST
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Enviar mensaje a cola
-
 ```text copy=true
 se envía a la cola {word} el siguiente mensaje JSON:
+    {data}
 ```
+
 Envía un mensaje JSON a la cola indicada.
 
 #### Parámetros:
-| Nombre | Wakamiti type | Descripción       |
-|--------|---------------|-------------------|
-| `word` | `word`        | Nombre de la cola |
-|        | `document`    | Mensaje JSON      |
+| Nombre | Wakamiti type            | Descripción       |
+|--------|--------------------------|-------------------|
+| `word` | `word` *obligatorio*     | Nombre de la cola |
+| `data` | `document` *obligatorio* | Mensaje JSON      |
 
 #### Ejemplos:
 ```gherkin
-  Cuando se envía a la cola TEST el siguiente mensaje JSON:
-    ```json
+Cuando se envía a la cola TEST el siguiente mensaje JSON:
+    """json
     {
         "data": {
             "message": "Test message sent"
         }
     }
-    ```
+    """
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Enviar mensaje a cola (fichero)
 ```text copy=true
 se envía a la cola {queue} el mensaje del fichero JSON {file}
 ```
+
 Envía el contenido de un fichero JSON a la cola indicada.
 
 #### Parámetros:
-| Nombre  | Wakamiti type | Descripción       |
-|---------|---------------|-------------------|
-| `file`  | `file`        | Fichero JSON      |
-| `queue` | `word`        | Nombre de la cola |
+| Nombre  | Wakamiti type        | Descripción       |
+|---------|----------------------|-------------------|
+| `file`  | `file` *obligatorio* | Fichero JSON      |
+| `queue` | `word` *obligatorio* | Nombre de la cola |
 
 #### Ejemplos:
 ```gherkin
-  Cuando se envía a la cola TEST el mensaje del fichero JSON 'data/message.json'
+Cuando se envía a la cola TEST el mensaje del fichero JSON 'data/message.json'
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Establecer pausa
-
 ```text copy=true
 se espera durante {integer} segundo(s)
 ```
+
 Se produce una espera de un número fijo de segundos (generalmente para asegurarse de que se haya procesado el mensaje).
 
 #### Parámetros:
-| Nombre    | Wakamiti type | Descripción                      |
-|-----------|---------------|----------------------------------|
-| `integer` | `integer`     | Cantidad de tiempo (en segundos) |
+| Nombre    | Wakamiti type           | Descripción                      |
+|-----------|-------------------------|----------------------------------|
+| `integer` | `integer` *obligatorio* | Cantidad de tiempo (en segundos) |
 
 #### Ejemplos:
 ```gherkin
-  * se espera durante 2 segundos
+* se espera durante 2 segundos
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Validar mensaje
-
 ```text copy=true
 el siguiente mensaje JSON se recibe en {integer} segundos:
+    {data}
 ```
+
 Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo 
 después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre    | Wakamiti type | Descripción                      |
-|-----------|---------------|----------------------------------|
-| `integer` | `integer`     | Cantidad de tiempo (en segundos) |
-|           | `document`    | Mensaje JSON                     |
+| Nombre    | Wakamiti type            | Descripción                      |
+|-----------|--------------------------|----------------------------------|
+| `integer` | `integer` *obligatorio*  | Cantidad de tiempo (en segundos) |
+| `data`    | `document` *obligatorio* | Mensaje JSON                     |
 
 #### Ejemplos:
 ```gherkin
-  Cuando el siguiente mensaje JSON se recibe en 5 segundos:
-    ```json
+Cuando el siguiente mensaje JSON se recibe en 5 segundos:
+    """json
       {
         "data": {
           "message": "Test message sent"
         }
       }
+    """
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### Validar mensaje (fichero)
-
 ```text copy=true
 el mensaje del fichero JSON {file} se recibe en {seconds} segundos
 ```
+
 Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino), 
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre | Wakamiti type | Descripción                      |
-|--------|---------------|----------------------------------|
-| `file` | `file`        | Fichero JSON                     |
-|        | `integer`     | Cantidad de tiempo (en segundos) |
+| Nombre    | Wakamiti type           | Descripción                      |
+|-----------|-------------------------|----------------------------------|
+| `file`    | `file` *obligatorio*    | Fichero JSON                     |
+| `seconds` | `integer` *obligatorio* | Cantidad de tiempo (en segundos) |
 
 #### Ejemplos:
 ```gherkin
-  Cuando el mensaje del fichero JSON 'data/message.json' se recibe en 5 segundos
+Cuando el mensaje del fichero JSON 'data/message.json' se recibe en 5 segundos
 ```
 
 

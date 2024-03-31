@@ -17,11 +17,14 @@ slug: /wakamiti/architecture
 La configuración de Wakamiti se establece mediante un fichero `yaml` ubicado en el directorio de pruebas. Por defecto, 
 Wakamiti buscará el fichero con el nombre `wakamiti.yaml`.
 
-<br /><br />
+<br />
+
+---
+
 
 ### `wakamiti.resourceTypes`
 
-Establece el lenguaje de los escenarios de prueba. Actualmente solo está disponible `gherkin`.
+Establece el tipo de recurso de los escenarios de prueba. Actualmente solo está disponible `gherkin`.
 
 Ejemplo:
 
@@ -30,7 +33,21 @@ wakamiti:
   resourceTypes: gherkin
 ```
 
-<br /><br />
+<br />
+
+---
+
+
+### `wakamiti.language`
+- Type: `locale`
+- Default `en`
+
+Establece el lenguaje de los escenarios de prueba.
+
+<br />
+
+---
+
 
 ### `wakamiti.resourcePath`
 
@@ -45,7 +62,10 @@ wakamiti:
   resourcePath: /other/path
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### `wakamiti.outputFilePath`
 
@@ -76,7 +96,10 @@ wakamiti:
   outputFilePath: result/wakamiti.json
 ```
 
-<br /><br />
+<br />
+
+---
+
 
 ### `wakamiti.outputFilePerTestCase`
 
@@ -95,7 +118,10 @@ wakamiti:
 
 **Desde** 1.7.0
 
-<br /><br />
+<br />
+
+---
+
 
 ### `wakamiti.tagFilter`
 

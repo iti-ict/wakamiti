@@ -4,29 +4,30 @@
 
 ---
 
-[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo) ![Docker Image Version](https://img.shields.io/docker/v/wakamiti/wakamiti?label=docker&logo=docker&link=https://hub.docker.com/r/wakamiti/wakamiti) ![Maven Central Version](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-engine?logo=circle&logoColor=red&link=https://mvnrepository.com/search?q=wakamiti)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=iti-ict_kukumo) [![Sonar Tests](https://img.shields.io/sonar/tests/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=iti-ict_kukumo) [![Sonar Coverage](https://img.shields.io/sonar/coverage/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=iti-ict_kukumo) [![Sonar Technical Debt](https://img.shields.io/sonar/tech_debt/iti-ict_kukumo?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=sqale_index&view=list&id=iti-ict_kukumo) [![Docker Image Version](https://img.shields.io/docker/v/wakamiti/wakamiti?label=docker&logo=docker)](https://hub.docker.com/r/wakamiti/wakamiti) [![Maven Central Version](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-engine?logo=circle&logoColor=red)](https://mvnrepository.com/search?q=wakamiti)
 
 
 
 > Please check the [site version](https://iti-ict.github.io/wakamiti/) in case you are
-> reading this document directly from the repository
+> reading this document directly from the repository.
 
 
 
 ### Latest plugins version
 
-| artifact                                            | version                                                                                                                          |
-|-----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `es.iti.wakamiti:rest-wakamiti-plugin`              | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/rest-wakamiti-plugin?label=%20&color=white)              |
-| `es.iti.wakamiti:db-wakamiti-plugin`                | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/db-wakamiti-plugin?label=%20&color=white)                |
-| `es.iti.wakamiti:html-report-wakamiti-plugin`       | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/html-report-wakamiti-plugin?label=%20&color=white)       |
-| `es.iti.wakamiti:cucumber-exporter-wakamiti-plugin` | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin?label=%20&color=white) |
-| `es.iti.wakamiti:file-uploader-wakamiti-plugin`     | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/file-uploader-wakamiti-plugin?label=%20&color=white)     |
-| `es.iti.wakamiti:amqp-wakamiti-plugin`              | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/amqp-wakamiti-plugin?label=%20&color=white)              |
-| `es.iti.wakamiti:groovy-wakamiti-plugin`            | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/groovy-wakamiti-plugin?label=%20&color=white)            |
-| `es.iti.wakamiti:io-wakamiti-plugin`                | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20&color=white)                |
-| `es.iti.wakamiti:azure-wakamiti-plugin`             | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/azure-wakamiti-plugin?label=%20&color=white)             |
-| `es.iti.wakamiti:appium-wakamiti-plugin`            | ![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/appium-wakamiti-plugin?label=%20&color=white)            |
+| artifact                                            | version                                                                                                                                                                                                                         |
+|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `es.iti.wakamiti:rest-wakamiti-plugin`              | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/rest-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/rest-wakamiti-plugin/latest)                           |
+| `es.iti.wakamiti:db-wakamiti-plugin`                | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/db-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/db-wakamiti-plugin/latest)                               |
+| `es.iti.wakamiti:html-report-wakamiti-plugin`       | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/html-report-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/html-report-wakamiti-plugin/latest)             |
+| `es.iti.wakamiti:cucumber-exporter-wakamiti-plugin` | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/cucumber-exporter-wakamiti-plugin/latest) |
+| `es.iti.wakamiti:file-uploader-wakamiti-plugin`     | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/file-uploader-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/file-uploader-wakamiti-plugin/latest)         |
+| `es.iti.wakamiti:amqp-wakamiti-plugin`              | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/amqp-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/amqp-wakamiti-plugin/latest)                           |
+| `es.iti.wakamiti:groovy-wakamiti-plugin`            | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/groovy-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/groovy-wakamiti-plugin/latest)                       |
+| `es.iti.wakamiti:io-wakamiti-plugin`                | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/io-wakamiti-plugin/latest)                               |
+| `es.iti.wakamiti:azure-wakamiti-plugin`             | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/azure-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/azure-wakamiti-plugin/latest)                         |
+| `es.iti.wakamiti:appium-wakamiti-plugin`            | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/appium-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/appium-wakamiti-plugin/latest)                       |
+| `es.iti.wakamiti:email-wakamiti-plugin`             | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/email-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/email-wakamiti-plugin/latest)                         |
 
 ---
 
@@ -103,7 +104,7 @@ and the test will be executed.
 
 <br/>
 
-![](images/wakamiti-run.png)
+<img src="images/wakamiti-run.png" width="600">
 
 <br/>
 
