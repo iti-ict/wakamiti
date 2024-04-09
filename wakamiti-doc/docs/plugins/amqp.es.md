@@ -18,12 +18,10 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 ## Tabla de contenido
 
 ---
-<br />
 
 
 ## Instalación
 
----
 
 Incluye el módulo en la sección correspondiente.
 
@@ -39,12 +37,8 @@ es.iti.wakamiti:amqp-wakamiti-plugin:2.4.0
 </dependency>
 ```
 
-<br />
-
 
 ## Configuración
-
----
 
 
 ###  `amqp.connection.url`
@@ -60,10 +54,6 @@ amqp:
     url: amqp://127.0.0.1:5671
 ```
 
-<br />
-
----
-
 
 ###  `amqp.connection.username`
 - Tipo: `string` *obligatorio*
@@ -77,10 +67,6 @@ amqp:
   connection:
     username: guest
 ```
-
-<br />
-
----
 
 
 ###  `amqp.connection.password`
@@ -96,14 +82,10 @@ amqp:
     password: guest
 ```
 
-<br />
-
----
-
 
 ###  `amqp.queue.durable`
 - Tipo: `boolean`
-- Por defecto `false`
+- Por defecto: `false`
 
 Establece si la cola será duradera o no (la cola sobrevivirá a un reinicio del servidor).
 
@@ -115,14 +97,10 @@ amqp:
     durable: "true"
 ```
 
-<br />
-
----
-
 
 ###  `amqp.queue.exclusive`
 - Tipo: `boolean`
-- Por defecto `false`
+- Por defecto: `false`
 
 Establece si la cola será exclusiva (restringida a la conexión actual).
 
@@ -134,14 +112,10 @@ amqp:
     exclusive: "true"
 ```
 
-<br />
-
----
-
 
 ###  `amqp.queue.autodelete`
 - Tipo: `boolean`
-- Por defecto `false`
+- Por defecto: `false`
 
 Establece si la cola de eliminación automática (el servidor la eliminará cuando ya no esté en uso).
 
@@ -153,14 +127,8 @@ amqp:
     autodelete: "true"
 ```
 
-<br />
 
-
-## Usos
-
----
-
-Este plugin proporciona los siguientes pasos:
+## Pasos
 
 
 ### Definir conexión
@@ -184,10 +152,6 @@ propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.usern
 Dada la conexión AMQP con URL 'amqp://127.0.0.1:5671' usando el usuario 'guest' y la contraseña 'guest'
 ```
 
-<br />
-
----
-
 
 ### Definir cola destino
 ```text copy=true
@@ -205,10 +169,6 @@ Establece el nombre de la cola que se observará.
 ```gherkin
 Dada la cola de destino TEST
 ```
-
-<br />
-
----
 
 
 ### Enviar mensaje a cola
@@ -237,10 +197,6 @@ Cuando se envía a la cola TEST el siguiente mensaje JSON:
     """
 ```
 
-<br />
-
----
-
 
 ### Enviar mensaje a cola (fichero)
 ```text copy=true
@@ -260,10 +216,6 @@ Envía el contenido de un fichero JSON a la cola indicada.
 Cuando se envía a la cola TEST el mensaje del fichero JSON 'data/message.json'
 ```
 
-<br />
-
----
-
 
 ### Establecer pausa
 ```text copy=true
@@ -281,10 +233,6 @@ Se produce una espera de un número fijo de segundos (generalmente para asegurar
 ```gherkin
 * se espera durante 2 segundos
 ```
-
-<br />
-
----
 
 
 ### Validar mensaje
@@ -313,10 +261,6 @@ Cuando el siguiente mensaje JSON se recibe en 5 segundos:
       }
     """
 ```
-
-<br />
-
----
 
 
 ### Validar mensaje (fichero)

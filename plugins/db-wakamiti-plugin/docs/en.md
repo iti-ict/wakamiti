@@ -1,20 +1,17 @@
 
 
-This plugin offers a set of steps for interacting with a JDBC database, simplifying the process of data loading and 
-validation.
 
-> **KEEP IN MIND**
+This plugin provides a set of steps to interact with a database via JDBC, making it easy to load and validate data.
+
+> **NOTE**
 >
-> Regarding the multiple database implementations existing, this plugin does not include any specific driver. In order
-> to work properly, remember to include the module with the JDBC driver(s) that your database connection would
-> require.
-
-<br />
+> Due to the large number of database engines available, this plugin does not include specific drivers. This means that 
+> in order to work correctly, it is necessary to include the module with the appropriate JDBC driver in the Wakamiti 
+> configuration.
 
 
 ## Install
 
----
 
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
@@ -30,12 +27,9 @@ es.iti.wakamiti:db-wakamiti-plugin:3.0.0
 </dependency>
 ```
 
-<br />
 
 
 ## Options
-
----
 
 
 ### `database.connection.url`
@@ -51,10 +45,6 @@ database:
     url: jdbc:h2:tcp://localhost:9092/~/test
 ```
 
-<br />
-
----
-
 
 ### `database.connection.username`
 - Type: `string` *required*
@@ -68,10 +58,6 @@ database:
     username: test
 ```
 
-<br />
-
----
-
 
 ### `database.connection.password`
 - Type: `string` *required*
@@ -84,10 +70,6 @@ database:
   connection:
     password: test
 ```
-
-<br />
-
----
 
 
 ### `database.metadata.schema`
@@ -103,10 +85,6 @@ database:
     schema: TESTDB
 ```
 
-<br />
-
----
-
 
 ### `database.metadata.catalog`
 - Type: `string`
@@ -120,10 +98,6 @@ database:
   metadata:
     catalog: TESTCAT
 ```
-
-<br />
-
----
 
 
 ### `database.{alias}...`
@@ -152,10 +126,6 @@ database:
       catalog: TESTCAT2
 ```
 
-<br />
-
----
-
 
 ### `database.csv.format`
 - Type: `string`
@@ -179,10 +149,6 @@ database:
     format: ORACLE
 ```
 
-<br />
-
----
-
 
 ### `database.xls.ignoreSheetPattern`
 - Type: `regex`
@@ -197,10 +163,6 @@ database:
     ignoreSheetPattern: //.*
 ```
 
-<br />
-
----
-
 
 ### `database.nullSymbol`
 - Type: `string`
@@ -214,10 +176,6 @@ Example:
 database:
   nullSymbol: (null)
 ```
-
-<br />
-
----
 
 
 ### `database.enableCleanupUponCompletion`
@@ -236,12 +194,9 @@ database:
   enableCleanupUponCompletion: "true"
 ```
 
-<br />
-
 
 ## Usage
 
----
 
 This plugin provides the following steps:
 
@@ -256,7 +211,6 @@ If not alias is included, it will be set as the default connection.
 This step is the declarative equivalent to set the configuration properties 
 [`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername),
 [`database.connection.password`](#databaseconnectionpassword) or [`database.{alias}...`](#databasealias).
-
 
 #### Parameters:
 | Name       | Wakamiti type     | Description          |
@@ -273,10 +227,6 @@ Given the database connection URL 'jdbc:h2:tcp://localhost:9092/~/test' using th
 ```gherkin
 Given the database connection URL 'jdbc:mysql://other.host:3306/test' using the user 'test' and the password 'test' as 'db1'
 ```
-
-<br />
-
----
 
 
 ### Switch connection
@@ -298,10 +248,6 @@ When the default connection is used
 ```gherkin
 When the 'db1' connection is used
 ```
-
-<br />
-
----
 
 
 ### Execute script
@@ -342,10 +288,6 @@ It could return the following result:
 ]
 ```
 
-<br />
-
----
-
 
 ### Execute script (file)
 ```text copy=true
@@ -364,10 +306,6 @@ Execute the specified SQL statements or procedure and retrieve the inserted, upd
 ```gherkin
 When the SQL script file 'data/script.sql' is executed
 ```
-
-<br />
-
----
 
 
 ### Select data
@@ -405,10 +343,6 @@ It could return the following result:
 ]
 ```
 
-<br />
-
----
-
 
 ### Select data (file)
 ```text copy=true
@@ -426,10 +360,6 @@ Retrieve data from the specified SQL SELECT as a JSON object.
 ```gherkin
 Given the SQL query values from the file 'data/select.sql'
 ```
-
-<br />
-
----
 
 
 ### Insert data
@@ -471,10 +401,6 @@ It could return the following result:
 ]
 ```
 
-<br />
-
----
-
 
 ### Insert data (file)
 ```text copy=true
@@ -503,10 +429,6 @@ When the content of the XLS file 'data/users.xls' is inserted into the database
 When the content of the CSV file 'data/users.csv' is inserted into the table USER
 ```
 
-<br />
-
----
-
 
 ### Delete data
 ```text copy=true
@@ -531,10 +453,6 @@ When the following users are deleted from the table USER:
     | user2 | 3     | 2020-02-13    |
 ```
 
-<br />
-
----
-
 
 ### Delete data (column)
 ```text copy=true
@@ -555,10 +473,6 @@ Delete the rows in the given table that match the specified value.
 ```gherkin
 When users having STATE = '2' are deleted from the table USER 
 ```
-
-<br />
-
----
 
 
 ### Delete data (where)
@@ -583,10 +497,6 @@ When the user satisfying the following SQL clause is deleted from the table clie
     birth_date < date '2000-01-01'
     """
 ```
-
-<br />
-
----
 
 
 ### Delete data (file)
@@ -616,10 +526,6 @@ When the content of the XLS file 'data/users.xls' is deleted from the database
 When the content of the CSV file 'data/users.csv' is deleted from the database table USER
 ```
 
-<br />
-
----
-
 
 ### Clear table
 ```text copy=true
@@ -638,10 +544,6 @@ Delete all rows from the given database table.
 ```gherkin
 When the table USER is cleared
 ```
-
-<br />
-
----
 
 
 ### Check data existence 
@@ -673,10 +575,6 @@ Then the following users not exist in the table USER:
     | user2 | 3     | 2020-02-13    |
 ```
 
-<br />
-
----
-
 
 ### Check data existence (id)
 ```text copy=true
@@ -702,10 +600,6 @@ Then a user identified by 'user1' exists in the table USER
 Then a user identified by 'user1' not exist in the table USER
 ```
 
-<br />
-
----
-
 
 ### Check data existence (column)
 ```text copy=true
@@ -730,10 +624,6 @@ Then a user having STATE = '1' exists in the table USER
 ```gherkin
 Then users having STATE = '1' not exist in the table USER
 ```
-
-<br />
-
----
 
 
 ### Check data existence (where)
@@ -766,10 +656,6 @@ Then users satisfying the following SQL clause not exist in the database table U
     """
 ```
 
-<br />
-
----
-
 
 ### Check data existence (file)
 ```text copy=true
@@ -798,10 +684,6 @@ Then the content of the XLS file 'data/users.xls' exists in the database
 ```gherkin
 Then the content of the CSV file 'data/users.csv' not exist in the table USERS
 ```
-
-<br />
-
----
 
 
 ### Check data count
@@ -834,10 +716,6 @@ Then the number of records satisfying the following info in the table USER is mo
     | user1 | 2     | <null>        |
 ```
 
-<br />
-
----
-
 
 ### Check data count (column)
 ```text copy=true
@@ -860,10 +738,6 @@ Assert that the number of rows satisfying the condition meets the given numerica
 ```gherkin
 Given that the number of users having STATE = '1' in the database table USER is greater than 5
 ```
-
-<br />
-
----
 
 
 ### Check data count (where)
@@ -891,10 +765,6 @@ Then the number of users satisfying the following SQL clause in the table USER i
     """
 ```
 
-<br />
-
----
-
 
 ### Check table content
 ```text copy=true
@@ -916,12 +786,9 @@ Then the table USER is empty
 Then the table USER is not empty
 ```
 
-<br />
-
 
 ## Special modes
 
----
 
 Some steps may be executed with a different behavior if they are defined in the following ways:
 
@@ -950,10 +817,6 @@ If the alias is not included, the default connection will be used.
   """
 ```
 
-<br />
-
----
-
 
 ### Async mode
 ```text copy=true
@@ -971,8 +834,6 @@ The step waits for a maximum of the indicated seconds until the condition indica
 ```gherkin
 Then a user identified by '1' exists in the table USERS in 10 seconds
 ```
-
-<br />
 
 
 [1]: https://commons.apache.org/proper/commons-csv/

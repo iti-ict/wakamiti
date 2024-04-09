@@ -8,12 +8,10 @@ validación de datos.
 > Debido a los muchos motores existentes de bases de datos, este plugin no incluye ningún driver específico. Esto
 > significa que, para funcionar correctamente, es necesario inluir el módulo con el controlador JDBC adecuado.
 
-<br />
 
 
 ## Instalación
 
----
 
 Incluye el módulo y el controlador(es) JDBC en la sección correspondiente.
 
@@ -29,12 +27,9 @@ es.iti.wakamiti:db-wakamiti-plugin:3.0.0
 </dependency>
 ```
 
-<br />
 
 
 ## Configuración
-
----
 
 
 ### `database.connection.url`
@@ -50,10 +45,6 @@ database:
     url: jdbc:h2:tcp://localhost:9092/~/test
 ```
 
-<br />
-
----
-
 
 ### `database.connection.username`
 - Tipo: `string` *requerido*
@@ -67,10 +58,6 @@ database:
     username: test
 ```
 
-<br />
-
----
-
 
 ### `database.connection.password`
 - Tipo: `string` *requerido*
@@ -83,10 +70,6 @@ database:
   connection:
     password: test
 ```
-
-<br />
-
----
 
 
 ### `database.metadata.schema`
@@ -102,10 +85,6 @@ database:
     schema: TESTDB
 ```
 
-<br />
-
----
-
 
 ### `database.metadata.catalog`
 - Tipo: `string`
@@ -119,10 +98,6 @@ database:
   metadata:
     catalog: TESTCAT
 ```
-
-<br />
-
----
 
 
 ### `database.{alias}...`
@@ -152,10 +127,6 @@ database:
       catalog: TESTCAT2
 ```
 
-<br />
-
----
-
 
 ### `database.csv.format`
 - Tipo: `string`
@@ -180,10 +151,6 @@ database:
     format: ORACLE
 ```
 
-<br />
-
----
-
 
 ### `database.xls.ignoreSheetPattern`
 - Tipo: `regex`
@@ -199,10 +166,6 @@ database:
     ignoreSheetPattern: //.*
 ```
 
-<br />
-
----
-
 
 ### `database.nullSymbol`
 - Tipo: `string`
@@ -216,10 +179,6 @@ Ejemplo:
 database:
   nullSymbol: (null)
 ```
-
-<br />
-
----
 
 
 ### `database.enableCleanupUponCompletion`
@@ -238,12 +197,9 @@ database:
   enableCleanupUponCompletion: "true"
 ```
 
-<br />
-
 
 ## Usos
 
----
 
 Este plugin proporciona los siguientes pasos:
 
@@ -276,10 +232,6 @@ Dada la URL de conexión a BBDD 'jdbc:h2:tcp://localhost:9092/~/TESTDB' usando e
 Dada la URL de conexión a BBDD 'jdbc:mysql://other.host:3306/test' usando el usuario 'test' y la contraseña 'test' como 'db1'
 ```
 
-<br />
-
----
-
 
 ### Cambiar conexión
 ```text copy=true
@@ -300,10 +252,6 @@ Cuando se usa la conexión por defecto
 ```gherkin
 Cuando se usa la conexión 'db1'
 ```
-
-<br />
-
----
 
 
 ### Ejecutar script
@@ -344,10 +292,6 @@ Podría devolver el siguiente resultado:
 ]
 ```
 
-<br />
-
----
-
 
 ## Ejecutar script (fichero)
 ```text copy=true
@@ -367,10 +311,6 @@ JSON.
 ```gherkin
 Cuando se ejecuta el script SQL del fichero 'data/script.sql'
 ```
-
-<br />
-
----
 
 
 ### Seleccionar datos
@@ -408,10 +348,6 @@ Podría devolver el siguiente resultado:
 ]
 ```
 
-<br />
-
----
-
 
 ### Seleccionar datos (fichero)
 ```text copy=true
@@ -429,10 +365,6 @@ Recupera los datos de la sentencia SQL especificada como un objeto JSON.
 ```gherkin
 Dado los valores de la consulta SQL del fichero 'data/select-users.sql'
 ```
-
-<br />
-
----
 
 
 ### Insertar datos 
@@ -473,9 +405,6 @@ Podría devolver el siguiente resultado:
 ]
 ```
 
-<br />
-
----
 
 ### Insertar datos (fichero)
 ```text copy=true
@@ -504,10 +433,6 @@ Cuando se inserta el contenido del fichero XLS 'data/users.xls' en la BBDD
 Cuando se ha insertado el contenido del fichero CSV 'data/users.csv' en la tabla USER
 ``` 
 
-<br />
-
----
-
 
 ### Eliminar datos 
 ```text copy=true
@@ -532,10 +457,6 @@ Cuando se eliminan los siguientes usuarios de la tabla USER:
     | user2 | 3     | 2020-02-13    |
 ```
 
-<br />
-
----
-
 
 ### Eliminar datos (columna)
 ```text copy=true
@@ -556,10 +477,6 @@ Elimina de la tabla las filas que satisfagan la comparación indicada.
 ```gherkin
   Cuando se eliminan los usuarios con STATE = '2' de la tabla USER 
 ```
-
-<br />
-
----
 
 
 ### Eliminar datos (where)
@@ -584,10 +501,6 @@ Cuando se eliminan los usuarios que satisfacen la siguiente cláusula SQL en la 
     birth_date < date '2000-01-01'
     """
 ```
-
-<br />
-
----
 
 
 ### Eliminar datos (fichero)
@@ -617,10 +530,6 @@ Cuando se elimina el contenido del fichero XLS 'data/users.xls' de la BBDD
 Cuando se ha eliminado el contenido del fichero CSV 'data/users.csv' de la tabla USER
 ```
 
-<br />
-
----
-
 
 ### Vaciar tabla
 ```text copy=true
@@ -639,10 +548,6 @@ Elimina todos los registros de la tabla.
 ```gherkin
 Cuando se limpia la tabla USERS
 ```
-
-<br />
-
----
 
 
 ### Comprobar existencia de datos 
@@ -674,10 +579,6 @@ Entonces los siguientes usuarios no existen en la tabla USER:
     | user2 | 3     | 2020-02-13    |
 ```
 
-<br />
-
----
-
 
 ### Comprobar existencia de datos (id)
 ```text copy=true
@@ -703,10 +604,6 @@ Entonces el usuario identificado por 'user1' existe en la tabla USER
 Entonces el usuario identificados por 'algo' no existe en la tabla USER
 ```
 
-<br />
-
----
-
 
 ### Comprobar existencia de datos (columna)
 ```text copy=true
@@ -731,10 +628,6 @@ Entonces varios usuarios con STATE = '1' existen en la tabla USER
 ```gherkin
 Entonces los usuarios con STATE = '1' no existen en la tabla USER
 ```
-
-<br />
-
----
 
 
 ### Comprobar existencia de datos (where)
@@ -767,10 +660,6 @@ Entonces el usuario que satisface la siguiente cláusula SQL no existe en la tab
     """
 ```
 
-<br />
-
----
-
 
 ### Comprobar existencia de datos (fichero)
 ```text copy=true
@@ -799,10 +688,6 @@ Entonces el contenido del fichero XLS 'data/example.xls' existe en la base de da
 ```gherkin
 Entonces el contenido del fichero CSV 'data/users.csv' no existe en la tabla USER
 ```
-
-<br />
-
----
 
 
 ### Comprobar número de datos (tabla)
@@ -835,10 +720,6 @@ Entonces el número de registros que satisfacen la siguiente información en la 
     | user1 | 2     | <null>        |
 ```
 
-<br />
-
----
-
 
 ### Comprobar número de datos (columna)
 ```text copy=true
@@ -861,10 +742,6 @@ Comprueba que el número de filas que satisfacen la condición cumple la compara
 ```gherkin
 Entonces el número de usuarios con STATE = '1' en la tabla USER es mayor que 5
 ```
-
-<br />
-
----
 
 
 ### Comprobar número de datos (where)
@@ -892,9 +769,6 @@ Entonces el número de usuarios que satisfacen la siguiente cláusula SQL en la 
     """
 ```
 
-<br />
-
----
 
 ### Comprobar contenido de tabla
 ```text copy=true
@@ -918,12 +792,9 @@ Entonces la tabla USER está vacía
 Entonces la tabla USER no está vacía
 ```
 
-<br />
-
 
 ## Modos especiales
 
----
 
 Algunos pasos pueden ejecutarse con un comportamiento diferente si se definen de las siguientes maneras:
 
@@ -952,9 +823,6 @@ Al finalizar, se ejecuta el siguiente script SQL usando la conexión 'db1':
   """
 ```
 
-<br />
-
----
 
 ### Modo async
 ```text copy=true
@@ -972,8 +840,6 @@ El paso espera un máximo de los segundos indicados hasta que se cumple la condi
 ```gherkin
 Entonces un usuario identificado por '1' existe en la tabla USERS en 10 segundos
 ```
-
-<br />
 
 
 [1]: https://commons.apache.org/proper/commons-csv/
