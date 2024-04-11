@@ -44,7 +44,7 @@ public class JMeterTest {
         client.when(HttpRequest.request().withPath("/")).respond(HttpResponse.response().withStatusCode(200));
         // Configuración para el endpoint GET '/inicio'
         client.when(HttpRequest.request().withMethod("GET").withPath("/inicio"))
-                .respond(HttpResponse.response().withStatusCode(200).withBody("Página de Inicio"));
+                .respond(HttpResponse.response().withStatusCode(200).withBody("{\"mensaje\": \"Funciono o no funciono\"}"));
 
         // Configuración para el endpoint POST '/login'
         client.when(HttpRequest.request().withMethod("POST").withPath("/login"))

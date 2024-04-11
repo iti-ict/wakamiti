@@ -46,6 +46,7 @@ public class JMeterStepContributor implements StepContributor {
     private Boolean escenarioBasico = true;
     protected String baseUrl;
     public TestPlanStats lastTestStats;
+    private boolean resultsTreeEnabled;
     private boolean influxDBEnabled;
     private boolean csvEnabled;
     private boolean htmlEnabled;
@@ -54,8 +55,10 @@ public class JMeterStepContributor implements StepContributor {
     private String htmlPath;
     private String username;
     private String password;
+    private String variableName;
 
-    public void configureOutputOptions(boolean influxDBEnabled, boolean csvEnabled, boolean htmlEnabled, String influxDBUrl, String csvPath, String htmlPath) {
+    public void configureOutputOptions(boolean resultsTreeEnabled, boolean influxDBEnabled, boolean csvEnabled, boolean htmlEnabled, String influxDBUrl, String csvPath, String htmlPath) {
+        this.resultsTreeEnabled = resultsTreeEnabled;
         this.influxDBEnabled = influxDBEnabled;
         this.csvEnabled = csvEnabled;
         this.htmlEnabled = htmlEnabled;
@@ -84,12 +87,16 @@ public class JMeterStepContributor implements StepContributor {
     }
     private void configurarListeners(){
 
+        if (resultsTreeEnabled) {
+            threadGroup.children(resultsTreeVisualizer());
+        }
+
         if (influxDBEnabled) {
             threadGroup.children(influxDbListener("http://localhost:8086/write?db=jmeter"));
         }
 
         if (csvEnabled) {
-            threadGroup.children(jtlWriter(csvPath));
+            threadGroup.children(jtlWriter(csvPath).withAllFields());
         }
 
         if (htmlEnabled) {
@@ -198,6 +205,49 @@ public class JMeterStepContributor implements StepContributor {
         );
         escenarioBasico = false;
     }
+    @Step(value = "jmeter.extract.regex.get", args = { "service:text", "variableName:text", "regex:text"})
+    public void getExtractRegex(String service, String variableName, String regex){
+        threadGroup.children(httpSampler(baseUrl+service),(regexExtractor(variableName,regex)));
+        this.variableName = variableName;
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.boundaries.get", args = { "service:text", "variableName:text", "leftBoundarie:text"," rightBoundarie:text"})
+    public void getExtractBoundaries(String service, String variableName, String leftBoundarie, String rightBoundarie){
+        threadGroup.children(httpSampler(baseUrl+service)).children(boundaryExtractor(variableName,leftBoundarie,rightBoundarie));
+        this.variableName = variableName;
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.json.get", args = { "service:text", "variableName:text", "jsonPath:text"})
+    public void getExtractJson(String service, String variableName, String jsonPath){
+        threadGroup.children(httpSampler(baseUrl+service).children(jsonExtractor(variableName,jsonPath).queryLanguage(DslJsonExtractor.JsonQueryLanguage.JSON_PATH)));
+        this.variableName = variableName;
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.put", args = { "service:text", "variableName:text"})
+    public void putWithVariable(String service, String variableName) {
+        threadGroup.children(
+                httpSampler(baseUrl + service)
+                        .method(HTTPConstants.PUT)
+                        .contentType(ContentType.APPLICATION_JSON)
+                        // Aquí es donde utilizas la variable extraída anteriormente.
+                        // Asegúrate de que el nombre de la variable coincida con el que extrajiste.
+                        .body("${" + variableName + "}")
+        );
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.post", args = { "service:text", "variableName:text"})
+    public void postWithVariable(String service, String variableName) {
+        threadGroup.children(
+                httpSampler(baseUrl + service)
+                        .method(HTTPConstants.POST)
+                        .contentType(ContentType.APPLICATION_JSON)
+                        // Aquí es donde utilizas la variable extraída anteriormente.
+                        // Asegúrate de que el nombre de la variable coincida con el que extrajiste.
+                        .body("${" + variableName + "}")
+        );
+        escenarioBasico = false;
+    }
+
     @Step(value = "jmeter.define.connectiontimeout", args = { "duracion:int" })
     public void setConnectionTimeout(Integer duracion) {
 
@@ -231,23 +281,7 @@ public class JMeterStepContributor implements StepContributor {
         lastTestStats = DslTestPlan.fromJmx(archivo).run();
 
     }
-    /*
-    @Step(value = "jmeter.extract.regex", args = {"variableName:text", "regex:text"})
-    public void extractRegex(String variableName, String regex){
-        threadGroup.children(regexExtractor(variableName,regex));
-        escenarioBasico = false;
-    }
-    @Step(value = "jmeter.extract.boundaries", args = {"variableName:text", "leftBoundarie:text"," rightBoundarie:text"})
-    public void extractBoundaries(String variableName, String leftBoundarie, String rightBoundarie){
-        threadGroup.children(boundaryExtractor(variableName,leftBoundarie,rightBoundarie));
-        escenarioBasico = false;
-    }
-    @Step(value = "jmeter.extract.json", args = {"variableName:text", "jsonPath:text"})
-    public void extractJson(String variableName, String jsonPath){
-        threadGroup.children(jsonExtractor(variableName,jsonPath).queryLanguage(DslJsonExtractor.JsonQueryLanguage.JSON_PATH));
-        escenarioBasico = false;
-    }
-    */
+
     @Step(value = "jmeter.test.foamtest")
     public void ejecutarPruebaHumo() throws IOException {
 

@@ -1,23 +1,23 @@
 {
-  "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-  "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+  "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+  "snapshotInstant" : "2024-04-11T12:19:20.509738600",
   "nodeType" : "AGGREGATOR",
   "displayName" : "Test Plan",
-  "startInstant" : "2024-04-10T20:10:42.398446",
-  "finishInstant" : "2024-04-10T20:26:43.750438100",
-  "duration" : 961227,
+  "startInstant" : "2024-04-11T12:11:59.930672400",
+  "finishInstant" : "2024-04-11T12:19:20.483241500",
+  "duration" : 440545,
   "result" : "PASSED",
   "testCaseResults" : {
-    "PASSED" : 3
+    "PASSED" : 1
   },
   "childrenResults" : {
     "PASSED" : 1
   },
   "children" : [ {
-    "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-    "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+    "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+    "snapshotInstant" : "2024-04-11T12:19:20.509738600",
     "nodeType" : "AGGREGATOR",
-    "id" : "#u75e7e",
+    "id" : "#jf1be1",
     "name" : ": jmeter demo",
     "keyword" : "Característica",
     "language" : "es",
@@ -26,43 +26,43 @@
     "properties" : {
       "gherkinType" : "feature"
     },
-    "startInstant" : "2024-04-10T20:10:42.398446",
-    "finishInstant" : "2024-04-10T20:26:43.750438100",
-    "duration" : 961227,
+    "startInstant" : "2024-04-11T12:11:59.930672400",
+    "finishInstant" : "2024-04-11T12:19:20.483241500",
+    "duration" : 440545,
     "result" : "PASSED",
     "testCaseResults" : {
-      "PASSED" : 3
+      "PASSED" : 1
     },
     "childrenResults" : {
-      "PASSED" : 3
+      "PASSED" : 1
     },
     "children" : [ {
-      "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-      "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+      "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+      "snapshotInstant" : "2024-04-11T12:19:20.509738600",
       "nodeType" : "TEST_CASE",
-      "id" : "#mbdb69",
+      "id" : "#vaab64",
       "name" : "Prueba de carga",
       "keyword" : "Escenario",
       "language" : "es",
       "source" : "demo.feature[4,6]",
-      "displayName" : "[#mbdb69] Escenario: Prueba de carga",
+      "displayName" : "[#vaab64] Escenario: Prueba de carga",
       "properties" : {
         "gherkinType" : "scenario",
         "featureName" : ": jmeter demo"
       },
-      "startInstant" : "2024-04-10T20:10:42.398446",
-      "finishInstant" : "2024-04-10T20:13:16.514060600",
-      "duration" : 154111,
+      "startInstant" : "2024-04-11T12:11:59.930672400",
+      "finishInstant" : "2024-04-11T12:19:20.483241500",
+      "duration" : 440545,
       "result" : "PASSED",
       "testCaseResults" : {
         "PASSED" : 1
       },
       "childrenResults" : {
-        "PASSED" : 3
+        "PASSED" : 5
       },
       "children" : [ {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+        "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+        "snapshotInstant" : "2024-04-11T12:19:20.509738600",
         "nodeType" : "STEP",
         "name" : "la URL base 'http://localhost:8888'",
         "keyword" : "Dada",
@@ -72,187 +72,73 @@
         "properties" : {
           "gherkinType" : "step"
         },
-        "startInstant" : "2024-04-10T20:10:42.398446",
-        "finishInstant" : "2024-04-10T20:10:42.413440500",
-        "duration" : 14,
+        "startInstant" : "2024-04-11T12:11:59.930672400",
+        "finishInstant" : "2024-04-11T12:11:59.941672200",
+        "duration" : 10,
         "result" : "PASSED"
       }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+        "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+        "snapshotInstant" : "2024-04-11T12:19:20.509738600",
         "nodeType" : "STEP",
-        "name" : "ejecuto una prueba de carga con 400 usuarios durante 2 minutos",
-        "keyword" : "Cuando",
+        "name" : "hago un GET al endpoint '/inicio' y extraigo el valor en el Json Path '$.mensaje' y lo almaceno en 'prueba'",
+        "keyword" : "Y",
         "language" : "es",
         "source" : "demo.feature[6,8]",
-        "displayName" : "Cuando ejecuto una prueba de carga con 400 usuarios durante 2 minutos",
+        "displayName" : "Y hago un GET al endpoint '/inicio' y extraigo el valor en el Json Path '$.mensaje' y lo almaceno en 'prueba'",
         "properties" : {
           "gherkinType" : "step"
         },
-        "startInstant" : "2024-04-10T20:10:42.416442400",
-        "finishInstant" : "2024-04-10T20:13:16.338054400",
-        "duration" : 153921,
+        "startInstant" : "2024-04-11T12:11:59.945668100",
+        "finishInstant" : "2024-04-11T12:11:59.996669",
+        "duration" : 51,
         "result" : "PASSED"
       }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+        "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+        "snapshotInstant" : "2024-04-11T12:19:20.509738600",
         "nodeType" : "STEP",
-        "name" : "comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
-        "keyword" : "Entonces",
+        "name" : "hago un PUT al endpoint '/actualizar' con la variable almacenada 'prueba' como cuerpo del mensaje",
+        "keyword" : "Y",
         "language" : "es",
         "source" : "demo.feature[7,8]",
-        "displayName" : "Entonces comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
+        "displayName" : "Y hago un PUT al endpoint '/actualizar' con la variable almacenada 'prueba' como cuerpo del mensaje",
         "properties" : {
           "gherkinType" : "step"
         },
-        "startInstant" : "2024-04-10T20:13:16.339058500",
-        "finishInstant" : "2024-04-10T20:13:16.514060600",
-        "duration" : 175,
-        "result" : "PASSED"
-      } ]
-    }, {
-      "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-      "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-      "nodeType" : "TEST_CASE",
-      "id" : "#o9bbf6",
-      "name" : "Prueba de estres",
-      "keyword" : "Escenario",
-      "language" : "es",
-      "source" : "demo.feature[11,6]",
-      "displayName" : "[#o9bbf6] Escenario: Prueba de estres",
-      "properties" : {
-        "gherkinType" : "scenario",
-        "featureName" : ": jmeter demo"
-      },
-      "startInstant" : "2024-04-10T20:13:16.570055900",
-      "finishInstant" : "2024-04-10T20:20:13.247308900",
-      "duration" : 416677,
-      "result" : "PASSED",
-      "testCaseResults" : {
-        "PASSED" : 1
-      },
-      "childrenResults" : {
-        "PASSED" : 3
-      },
-      "children" : [ {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-        "nodeType" : "STEP",
-        "name" : "la URL base 'http://localhost:8888'",
-        "keyword" : "Dada",
-        "language" : "es",
-        "source" : "demo.feature[12,8]",
-        "displayName" : "Dada la URL base 'http://localhost:8888'",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2024-04-10T20:13:16.570055900",
-        "finishInstant" : "2024-04-10T20:13:16.571060500",
-        "duration" : 1,
+        "startInstant" : "2024-04-11T12:11:59.997671",
+        "finishInstant" : "2024-04-11T12:12:00.009667400",
+        "duration" : 11,
         "result" : "PASSED"
       }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+        "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+        "snapshotInstant" : "2024-04-11T12:19:20.509738600",
         "nodeType" : "STEP",
-        "name" : "ejecuto una prueba de estrés comenzando con 100 usuarios, incrementando en 100 hasta 400 usuarios durante 1 minutos",
+        "name" : "ejecuto una prueba de carga con 40 usuarios durante 1 minutos",
         "keyword" : "Cuando",
         "language" : "es",
-        "source" : "demo.feature[13,8]",
-        "displayName" : "Cuando ejecuto una prueba de estrés comenzando con 100 usuarios, incrementando en 100 hasta 400 usuarios durante 1 minutos",
+        "source" : "demo.feature[8,8]",
+        "displayName" : "Cuando ejecuto una prueba de carga con 40 usuarios durante 1 minutos",
         "properties" : {
           "gherkinType" : "step"
         },
-        "startInstant" : "2024-04-10T20:13:16.571060500",
-        "finishInstant" : "2024-04-10T20:20:13.244303400",
-        "duration" : 416673,
+        "startInstant" : "2024-04-11T12:12:00.009667400",
+        "finishInstant" : "2024-04-11T12:18:21.220810800",
+        "duration" : 381211,
         "result" : "PASSED"
       }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
+        "executionID" : "b8e746ca-f1ea-4c60-8483-95deb5a9d783",
+        "snapshotInstant" : "2024-04-11T12:19:20.509738600",
         "nodeType" : "STEP",
         "name" : "comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
         "keyword" : "Entonces",
         "language" : "es",
-        "source" : "demo.feature[14,8]",
+        "source" : "demo.feature[9,8]",
         "displayName" : "Entonces comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
         "properties" : {
           "gherkinType" : "step"
         },
-        "startInstant" : "2024-04-10T20:20:13.244303400",
-        "finishInstant" : "2024-04-10T20:20:13.247308900",
-        "duration" : 3,
-        "result" : "PASSED"
-      } ]
-    }, {
-      "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-      "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-      "nodeType" : "TEST_CASE",
-      "id" : "#feb79c",
-      "name" : "Prueba de picos",
-      "keyword" : "Escenario",
-      "language" : "es",
-      "source" : "demo.feature[17,6]",
-      "displayName" : "[#feb79c] Escenario: Prueba de picos",
-      "properties" : {
-        "gherkinType" : "scenario",
-        "featureName" : ": jmeter demo"
-      },
-      "startInstant" : "2024-04-10T20:20:13.311712100",
-      "finishInstant" : "2024-04-10T20:26:43.750438100",
-      "duration" : 390438,
-      "result" : "PASSED",
-      "testCaseResults" : {
-        "PASSED" : 1
-      },
-      "childrenResults" : {
-        "PASSED" : 3
-      },
-      "children" : [ {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-        "nodeType" : "STEP",
-        "name" : "la URL base 'http://localhost:8888'",
-        "keyword" : "Dada",
-        "language" : "es",
-        "source" : "demo.feature[18,8]",
-        "displayName" : "Dada la URL base 'http://localhost:8888'",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2024-04-10T20:20:13.311712100",
-        "finishInstant" : "2024-04-10T20:20:13.313718500",
-        "duration" : 2,
-        "result" : "PASSED"
-      }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-        "nodeType" : "STEP",
-        "name" : "ejecuto una prueba de picos con 2 picos de 100 usuarios, bajando a 20 usuarios durante 1 minutos",
-        "keyword" : "Cuando",
-        "language" : "es",
-        "source" : "demo.feature[19,8]",
-        "displayName" : "Cuando ejecuto una prueba de picos con 2 picos de 100 usuarios, bajando a 20 usuarios durante 1 minutos",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2024-04-10T20:20:13.313718500",
-        "finishInstant" : "2024-04-10T20:26:43.748438300",
-        "duration" : 390434,
-        "result" : "PASSED"
-      }, {
-        "executionID" : "92850dd0-d180-4b90-8dd3-89b729bcf97c",
-        "snapshotInstant" : "2024-04-10T20:26:43.762436400",
-        "nodeType" : "STEP",
-        "name" : "comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
-        "keyword" : "Entonces",
-        "language" : "es",
-        "source" : "demo.feature[20,8]",
-        "displayName" : "Entonces comprueba que el percentil 99 de tiempo de respuesta es menor que 5 segundos",
-        "properties" : {
-          "gherkinType" : "step"
-        },
-        "startInstant" : "2024-04-10T20:26:43.748438300",
-        "finishInstant" : "2024-04-10T20:26:43.750438100",
-        "duration" : 1,
+        "startInstant" : "2024-04-11T12:18:21.222846300",
+        "finishInstant" : "2024-04-11T12:19:20.483241500",
+        "duration" : 59260,
         "result" : "PASSED"
       } ]
     } ]

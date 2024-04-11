@@ -12,6 +12,7 @@ import imconfig.Configuration;
 import imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
+import org.apache.regexp.RE;
 
 
 @Extension(
@@ -21,7 +22,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
         extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class JMeterConfigContributor implements ConfigContributor<JMeterStepContributor> {
-
+    private static final String RESULTSTREE_ENABLED = "jmeter.output.resultstree.enabled";
     private static final String INFLUXDB_ENABLED = "jmeter.output.influxdb.enabled";
     private static final String CSV_ENABLED = "jmeter.output.csv.enabled";
     private static final String INFLUXDB_URL = "jmeter.output.influxdb.url";
@@ -34,9 +35,10 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             BASE_URL, "http://localhost:8080",
-            INFLUXDB_ENABLED, "true",
-            CSV_ENABLED, "true",
-            HTML_ENABLED, "true",
+            RESULTSTREE_ENABLED, "true",
+            INFLUXDB_ENABLED, "false",
+            CSV_ENABLED, "false",
+            HTML_ENABLED, "false",
             INFLUXDB_URL, "http://localhost:8086/write?db=jmeter",
             CSV_PATH, "./test-results.csv",
             HTML_PATH, "./test-results.html"
@@ -65,7 +67,7 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
     private void configure(JMeterStepContributor contributor, Configuration configuration) {
 
         configuration.get(BASE_URL, String.class).ifPresent(contributor::setBaseURL);
-
+        boolean treeEnabled = configuration.get(RESULTSTREE_ENABLED, Boolean.class).orElse(true);
         boolean influxEnabled = configuration.get(INFLUXDB_ENABLED, Boolean.class).orElse(true);
         boolean csvEnabled = configuration.get(CSV_ENABLED, Boolean.class).orElse(false);
         boolean htmlEnabled = configuration.get(HTML_ENABLED, Boolean.class).orElse(false);
@@ -77,7 +79,7 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
 
 
 
-        contributor.configureOutputOptions(influxEnabled, csvEnabled, htmlEnabled, influxUrl, csvPath, htmlPath);
+        contributor.configureOutputOptions(treeEnabled, influxEnabled, csvEnabled, htmlEnabled, influxUrl, csvPath, htmlPath);
         contributor.setAuthCredentials(username,password);
 
     }
