@@ -26,6 +26,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.MediaType;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
@@ -44,10 +45,10 @@ public class JMeterTest {
         client.when(HttpRequest.request().withPath("/")).respond(HttpResponse.response().withStatusCode(200));
         // Configuración para el endpoint GET '/inicio'
         client.when(HttpRequest.request().withMethod("GET").withPath("/inicio"))
-                .respond(HttpResponse.response().withStatusCode(200).withBody("{\"mensaje\": \"Funciono o no funciono\"}"));
+                .respond(HttpResponse.response().withStatusCode(200).withBody("{\"mensaje\": \"123\"}"));
 
         // Configuración para el endpoint POST '/login'
-        client.when(HttpRequest.request().withMethod("POST").withPath("/login"))
+        client.when(HttpRequest.request().withMethod("POST").withPath("/login/123"))
                 .respond(HttpResponse.response().withStatusCode(200).withBody("{\"mensaje\": \"Usuario autenticado\"}"));
 
         // Configuración para el endpoint PUT '/actualizar'

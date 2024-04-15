@@ -2,7 +2,8 @@ This plugin provides a set of steps for conducting performance testing using JMe
 
 ---
 ## Table of Contents
-   1. [Configuration](#configuration)
+   1. [Test Execution](#test-execution)
+   2. [Configuration](#configuration)
       - [jmeter.baseURL](#jmeterbaseurl)
       - [Plugin Outputs](#plugin-outputs)
         - [jmeter.output.influxdb.enabled](#jmeteroutputinfluxdbenabled)
@@ -11,6 +12,7 @@ This plugin provides a set of steps for conducting performance testing using JMe
         - [jmeter.output.csv.path](#jmeteroutputcsvpath)
         - [jmeter.output.html.enabled](#jmeteroutputhtmlenabled)
         - [jmeter.output.html.path](#jmeteroutputhtmlpath)
+        - [jmeter.output.resultstree.enabled](#jmeteroutputresultstreeenabled)
    2. [Steps](#steps)
       - [Set Base URL](#set-base-url)
       - [Define CSV Input](#define-csv-input)
@@ -18,6 +20,14 @@ This plugin provides a set of steps for conducting performance testing using JMe
       - [Perform GET Request](#perform-get-request)
       - [Perform PUT Request](#perform-put-request)
       - [Perform POST Request](#perform-post-request)
+      - [Perform GET Request and Extract Variable with Regular Expression](#perform-get-request-and-extract-variable-with-regular-expression)
+      - [Perform GET Request and Extract Variable with Delimiters](#perform-get-request-and-extract-variable-with-delimiters)
+      - [Perform GET Request and Extract Variable with JSON Path](#perform-get-request-and-extract-variable-with-json-path)
+      - [Perform PUT Request with Extracted Variable](#perform-put-request-with-extracted-variable)
+      - [Perform POST Request with Extracted Variable](#perform-post-request-with-extracted-variable)
+      - [Perform GET Request to an Endpoint with Extracted Variable](#perform-get-request-to-an-endpoint-with-extracted-variable)
+      - [Perform PUT Request to an Endpoint with Extracted Variable](#perform-put-request-to-an-endpoint-with-extracted-variable)
+      - [Perform POST Request to an Endpoint with Extracted Variable](#perform-post-request-to-an-endpoint-with-extracted-variable)
       - [Define Basic Authentication with Credentials](#define-basic-authentication-with-credentials)
       - [Define Basic Authentication](#define-basic-authentication)
       - [Disable Cookies](#disable-cookies)
@@ -37,7 +47,32 @@ This plugin provides a set of steps for conducting performance testing using JMe
       - [Check for Request Errors](#check-for-request-errors)
 
 ---
+## Test Execution
+
+To use the Wakamiti JMeter DSL plugin, you currently need to:
+
+1. Create a `.feature` file inside the `test/resources/features` folder and write the scenarios you want to execute.
+2. For JUnit execution: Run tests by right-clicking on the `JMeterTest` class located in `test/java/es.iti.wakamiti.plugins.jmeter.test` and selecting `Run`.
+3. For Maven execution: Run `mvn clean install` from the console to start the tests.
+
+
 ## Configuration
+
+To configure the outputs and different options of the plugin, you currently need to modify the JMeterConfigContributor.java file located in `src/main/java/es.iti.wakamiti.plugin.jmeter`. There you can adjust the properties as needed by modifying the Configuration DEFAULTS:
+
+```
+private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
+   BASE_URL, "http://localhost:8080",
+   RESULTSTREE_ENABLED, "true",
+   INFLUXDB_ENABLED, "false",
+   CSV_ENABLED, "false",
+   HTML_ENABLED, "false",
+   INFLUXDB_URL, "http://localhost:8086/write?db=jmeter",
+   CSV_PATH, "./test-results.csv",
+   HTML_PATH, "./test-results.html"
+);
+```
+In this case, the only output would be the JMeter Results Tree.
 
 ###  `jmeter.baseURL`
 Sets the base URL for JMeter tests, which will define the starting point for all HTTP calls that are made.
@@ -168,6 +203,24 @@ jmeter:
       path: ./resultadosDePruebas/pruebas-html
 ```
 
+<br /><br />
+
+### `jmeter.output.resultstree.enabled`
+Enables the JMeter Results Tree, which allows you to review all HTTP requests and responses in detail.
+
+Default value:
+```
+ `false`
+```
+
+Example:
+```yaml
+jmeter:
+  output:
+    resultstree:
+      enabled: true
+```
+
 ---
 ## Steps
 
@@ -296,6 +349,178 @@ Sends a POST request to the previously defined parameters.
 
 <br /><br />
 
+### Perform GET Request and Extract Variable with Regular Expression
+```
+(I) perform a GET to the endpoint {service:text} and extract the value using regular expression {regex:text} and store it in {variableName:text}
+```
+Performs a GET request to the specified endpoint and extracts a value using a regular expression, storing the result in a variable.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                              |
+|----------------|---------------|----------------------------------------------------------|
+| `service`      | `text`        | URL segment                                              |
+| `variableName` | `text`        | Name of the variable where the extracted value is stored |
+| `regex`        | `text`        | Regular expression for extraction                        |
+
+#### Example:
+```gherkin
+  (I) perform a GET to the endpoint '/api/users' and extract the value using regular expression '\d+' and store it in 'userID'
+```
+
+<br /><br />
+
+### Perform GET Request and Extract Variable with Delimiters
+```
+(I) perform a GET to the endpoint {service:text} and extract the value between {leftBoundary:text} and {rightBoundary:text} and store it in {variableName:text}
+```
+Performs a GET request and extracts a value delimited by specific texts.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                              |
+|----------------|---------------|----------------------------------------------------------|
+| `service`      | `text`        | URL segment                                              |
+| `variableName` | `text`        | Name of the variable where the extracted value is stored |
+| `leftBoundary` | `text`        | Left delimiter                                           |
+| `rightBoundary`| `text`        | Right delimiter                                          |
+
+#### Example:
+```gherkin
+    (I) perform a GET to the endpoint '/api/users/details' and extract the value between 'id:' and ',' and store it in 'userID'
+```
+
+<br /><br />
+
+### Perform GET Request and Extract Variable with JSON Path
+```
+(I) perform a GET to the endpoint {service:text} and extract the value at the Json Path {jsonPath:text} and store it in {variableName:text}
+```
+Performs a GET request and extracts a value specified by a JSON Path.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                              |
+|----------------|---------------|----------------------------------------------------------|
+| `service`      | `text`        | URL segment                                              |
+| `variableName` | `text`        | Name of the variable where the extracted value is stored |
+| `jsonPath`     | `text`        | JSON Path for extraction                                 |
+
+#### Example:
+```gherkin
+   (I) perform a GET to the endpoint '/api/users/details' and extract the value at the Json Path '$.id' and store it in 'userID'
+```
+
+<br /><br />
+
+
+### Perform PUT Request with Extracted Variable
+```
+(I) perform a PUT to the endpoint {service:text} with the stored variable {variableName:text} as the message body
+```
+Sends a PUT request using the value of a previously extracted variable as the message body.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                              |
+|----------------|---------------|----------------------------------------------------------|
+| `service`      | `text`        | URL segment                                              |
+| `variableName` | `text`        | Name of the variable where the extracted value is stored |
+
+#### Example:
+```gherkin
+ (I) perform a PUT to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
+```
+
+<br /><br />
+
+### Perform POST Request with Extracted Variable
+```
+(I) perform a POST to the endpoint {service:text} with the stored variable {variableName:text} as the message body
+```
+Sends a POST request using the value of a previously extracted variable as the message body.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                              |
+|----------------|---------------|----------------------------------------------------------|
+| `service`      | `text`        | URL segment                                              |
+| `variableName` | `text`        | Name of the variable where the extracted value is stored |
+
+#### Example:
+```gherkin
+ (I) perform a POST to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
+```
+
+<br /><br />
+
+### Perform GET Request to an Endpoint with Extracted Variable
+```
+(I) perform a GET to the endpoint {service:text} / and the previously extracted variable {variableName:text}
+```
+Performs a GET request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                                    |
+|----------------|---------------|----------------------------------------------------------------|
+| `service`      | `text`        | Base URL segment                                               |
+| `variableName` | `text`        | Name of the variable containing the value to append to the URL |
+
+#### Example:
+```gherkin
+   (I) perform a GET to the endpoint '/api/user' / and the previously extracted variable 'userId'
+```
+
+<br /><br />
+
+### Perform PUT Request to an Endpoint with Extracted Variable
+```
+(I) perform a PUT to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
+```
+Sends a PUT request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable, with a specific message body.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                                    |
+|----------------|---------------|----------------------------------------------------------------|
+| `service`      | `text`        | Base URL segment                                               |
+| `variableName` | `text`        | Name of the variable containing the value to append to the URL |
+| `body`         | `Document`    | Message body                                                   |
+
+
+#### Example:
+```gherkin
+   (I) perform a PUT to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
+    """
+    {
+        "firstName": "Updated",
+        "lastName": "User"
+    }
+    """
+```
+
+<br /><br />
+
+### Perform POST Request to an Endpoint with Extracted Variable
+```
+(I) perform a POST to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
+```
+Sends a POST request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable, with a specific message body.
+
+#### Parameters: 
+| Name           | Wakamiti type | Description                                                    |
+|----------------|---------------|----------------------------------------------------------------|
+| `service`      | `text`        | Base URL segment                                               |
+| `variableName` | `text`        | Name of the variable containing the value to append to the URL |
+| `body`         | `Document`    | Message body                                                   |
+
+
+#### Example:
+```gherkin
+   (I) perform a POST to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
+    """
+    {
+        "firstName": "Updated",
+        "lastName": "User"
+    }
+    """
+```
+
+<br /><br />
 
 ### Define Basic Authentication with Credentials
 ```

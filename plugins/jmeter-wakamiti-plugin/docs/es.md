@@ -13,6 +13,7 @@ Este plugin proporciona un conjunto de pasos para realizar pruebas de rendimient
        - [jmeter.output.csv.path](#jmeteroutputcsvpath)
        - [jmeter.output.html.enabled](#jmeteroutputhtmlenabled)
        - [jmeter.output.html.path](#jmeteroutputhtmlpath)
+       - [jmeter.output.resultstree.enabled](#jmeteroutputresultstreeenabled)
   2. [Pasos](#pasos)
      - [Definir URL base](#definir-url-base)
      - [Definir entrada CSV](#definir-entrada-csv)
@@ -25,6 +26,9 @@ Este plugin proporciona un conjunto de pasos para realizar pruebas de rendimient
      - [Realizar petición GET y extraer variable con JSON Path](#realizar-petición-get-y-extraer-variable-con-json-path)
      - [Realizar petición PUT con variable extraida](#realizar-petición-put-con-variable-extraida)
      - [Realizar petición POST con variable extraida](#realizar-petición-post-con-variable-extraida)
+     - [Realizar petición GET a un endpoint con variable extraida](#realizar-petición-get-a-un-endpoint-con-variable-extraida)
+     - [Realizar petición PUT a un endpoint con variable extraida](#realizar-petición-put-a-un-endpoint-con-variable-extraida)
+     - [Realizar petición POST a un endpoint con variable extraida](#realizar-petición-post-a-un-endpoint-con-variable-extraida)
      - [Definir Autenticación Básica con credenciales](#definir-autenticación-básica-con-credenciales)
      - [Definir Autenticación Básica](#definir-autenticación-básica)
      - [Deshabilitar cookies](#deshabilitar-cookies)
@@ -432,7 +436,7 @@ Envía una petición PUT utilizando como cuerpo del mensaje el valor de una vari
 
 <br /><br />
 
-### Realizar petición POST con variable extraida
+### Realizar petición POST con variable extraida   (#realizar-petición-get-a-un-endpoint-con-variable-extraida)
 ```
 (que) hago un POST al endpoint {service:text} con la variable almacenada {variableName:text} como cuerpo del mensaje
 ```
@@ -447,6 +451,77 @@ Envía una petición PUT utilizando como cuerpo del mensaje el valor de una vari
 #### Ejemplos:
 ```gherkin
    (que) hago un POST al endpoint '/api/usuarios/123' con la variable almacenada 'datosUsuario' como cuerpo del mensaje
+```
+
+<br /><br />
+
+### Realizar petición GET a un endpoint con variable extraida  
+```
+(que) hago un GET al endpoint {service:text} / y la variable {variableName:text} extraida previamente
+```
+Realiza una petición GET al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente.
+
+#### Parámetros:
+| Nombre         | Wakamiti type | Descripción                                                     |
+|----------------|---------------|-----------------------------------------------------------------|
+| `service`      | `text`        | Segmento URL base                                               |
+| `variableName` | `text`        | Nombre de la variable que contiene el valor a ser anexado al URL|
+
+#### Ejemplos:
+```gherkin
+  (que) hago un GET al endpoint '/api/usuario' / y la variable 'userId' extraida previamente
+```
+
+<br /><br />
+
+### Realizar petición PUT a un endpoint con variable extraida  
+```
+(que) hago un PUT al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
+```
+Envía una petición PUT al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente, con un cuerpo de mensaje específico
+
+#### Parámetros:
+| Nombre         | Wakamiti type | Descripción                                                     |
+|----------------|---------------|-----------------------------------------------------------------|
+| `service`      | `text`        | Segmento URL base                                               |
+| `variableName` | `text`        | Nombre de la variable que contiene el valor a ser anexado al URL|
+| `body`         | `Document`    | Cuerpo del mensaje                                              |
+
+#### Ejemplos:
+```gherkin
+ (que) hago un PUT al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
+    """
+    {
+        "nombre": "Actualizado",
+        "apellido": "Usuario"
+    }
+    """
+```
+
+<br /><br />
+
+### Realizar petición POST a un endpoint con variable extraida  
+```
+(que) hago un POST al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
+```
+Envía una petición POST al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente, con un cuerpo de mensaje específico
+
+#### Parámetros:
+| Nombre         | Wakamiti type | Descripción                                                     |
+|----------------|---------------|-----------------------------------------------------------------|
+| `service`      | `text`        | Segmento URL base                                               |
+| `variableName` | `text`        | Nombre de la variable que contiene el valor a ser anexado al URL|
+| `body`         | `Document`    | Cuerpo del mensaje                                              |
+
+#### Ejemplos:
+```gherkin
+ (que) hago un POST al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
+    """
+    {
+        "nombre": "Nuevo",
+        "apellido": "Usuario"
+    }
+    """
 ```
 
 <br /><br />

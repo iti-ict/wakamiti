@@ -128,7 +128,7 @@ public class JMeterStepContributor implements StepContributor {
         List<String> columnNames = getCSVHeaders(fichero);
         String requestBody = buildRequestBody(columnNames);
 
-        threadGroup.children(csvDataSet(testResource(fichero)));
+        threadGroup.children(csvDataSet(fichero));
         threadGroup.children(
                 httpSampler(baseUrl+"/login")
                         .post(requestBody,
@@ -147,7 +147,7 @@ public class JMeterStepContributor implements StepContributor {
                 .collect(Collectors.toList());
         String requestBody = buildRequestBody(filtroVariables);
 
-        threadGroup.children(csvDataSet(testResource(fichero)));
+        threadGroup.children(csvDataSet(fichero));
         threadGroup.children(
                 httpSampler(baseUrl+"/login")
                         .post(requestBody,
@@ -247,7 +247,36 @@ public class JMeterStepContributor implements StepContributor {
         );
         escenarioBasico = false;
     }
-
+    @Step(value = "jmeter.extract.endpoint.get", args = { "service:text", "variableName:text"})
+    public void getWithEndpointExtracted(String service, String variableName) {
+        String endpointExtracted = service + "/${" + variableName + "}";
+        threadGroup.children(httpSampler(baseUrl+endpointExtracted));
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.endpoint.put", args = { "service:text", "variableName:text"})
+    public void putWithEndpointExtracted(String service, String variableName, Document body) {
+        String endpointExtracted = service + "/${" + variableName + "}";
+        String requestBody = body.getContent();
+        threadGroup.children(
+                httpSampler(baseUrl+endpointExtracted)
+                        .method(HTTPConstants.PUT)
+                        .contentType(ContentType.APPLICATION_JSON)
+                        .body(requestBody)
+        );
+        escenarioBasico = false;
+    }
+    @Step(value = "jmeter.extract.endpoint.post", args = { "service:text", "variableName:text"})
+    public void postWithEndpointExtracted(String service, String variableName, Document body) {
+        String endpointExtracted = service + "/${" + variableName + "}";
+        String requestBody = body.getContent();
+        threadGroup.children(
+                httpSampler(baseUrl+endpointExtracted)
+                        .method(HTTPConstants.POST)
+                        .contentType(ContentType.APPLICATION_JSON)
+                        .body(requestBody)
+        );
+        escenarioBasico = false;
+    }
     @Step(value = "jmeter.define.connectiontimeout", args = { "duracion:int" })
     public void setConnectionTimeout(Integer duracion) {
 
