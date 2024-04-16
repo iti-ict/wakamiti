@@ -97,7 +97,7 @@ public class ExpressionMatcher {
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
-        regex = regex.replaceAll("[^ |(]*(\\|[^ |)]+)+", "($0)");
+        regex = regex.replaceAll("[^ |(]*\\|[^ |)]+", "($0)");
         // (( -> ( and )) -> (
         regex = regex.replaceAll("\\(\\(([^()]*)\\)\\)", "($1)");
         // * -> any value
