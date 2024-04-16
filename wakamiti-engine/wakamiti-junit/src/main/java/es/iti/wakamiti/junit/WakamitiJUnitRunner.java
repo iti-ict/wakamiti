@@ -11,6 +11,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import imconfig.Configuration;
 import imconfig.ConfigurationException;
@@ -59,8 +60,8 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
     protected final es.iti.wakamiti.core.Wakamiti wakamiti;
+    protected final Configuration configuration;
     private final PlanNode plan;
-    protected Configuration configuration;
     private List<PlanNodeJUnitRunner> children;
 
     /**
@@ -93,7 +94,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return The Wakamiti configuration for the specified test class.
      * @throws InitializationError If an error occurs during configuration retrieval.
      */
-    private static Configuration retrieveConfiguration(Class<?> testedClass) throws InitializationError {
+    private Configuration retrieveConfiguration(Class<?> testedClass) throws InitializationError {
         try {
             return es.iti.wakamiti.core.Wakamiti.defaultConfiguration().appendFromAnnotation(testedClass);
         } catch (ConfigurationException e) {
@@ -181,6 +182,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      */
     public void initWakamiti() {
         LOGGER.debug("{}", configuration);
+        Wakamiti.contributors().propertyResolvers(configuration);
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(configuration.get(EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString()));

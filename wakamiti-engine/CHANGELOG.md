@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Matcher translations.
-- Reconfigure the GlobalPropertyEvaluator when starting junit tests execution.
+- Reconfigure property resolvers when starting junit tests execution.
 
 
 ## [2.4.0] - 2024-03-22
