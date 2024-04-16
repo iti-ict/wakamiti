@@ -19,7 +19,7 @@ import org.junit.ComparisonFailure;
 @Extension(
         provider =  "es.iti.wakamiti",
         name = "rest-text-helper",
-        version = "2.4",
+        version = "2.5",
         extensionPoint =  "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class TextHelper implements ContentTypeHelper {
