@@ -36,7 +36,7 @@ public class JsonUtilsTest {
         JsonNode obj = JsonUtils.json(json);
 
         assertThat(obj).isNotNull();
-        assertThat(obj.toString()).isEqualTo(json);
+        assertThat(obj).hasToString(json);
     }
 
     @Test(expected = RuntimeException.class)
@@ -49,7 +49,7 @@ public class JsonUtilsTest {
         JsonNode obj = JsonUtils.json(new ByteArrayInputStream(json.getBytes()));
 
         assertThat(obj).isNotNull();
-        assertThat(obj.toString()).isEqualTo(json);
+        assertThat(obj).hasToString(json);
     }
 
     @Test(expected = RuntimeException.class)

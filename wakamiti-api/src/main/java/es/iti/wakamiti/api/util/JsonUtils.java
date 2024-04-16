@@ -32,10 +32,14 @@ import java.util.List;
  */
 public class JsonUtils {
 
-    private final static Configuration CONFIG = Configuration.builder()
+    private static final Configuration CONFIG = Configuration.builder()
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
-    private final static ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private JsonUtils() {
+
+    }
 
     /**
      * Parses the given JSON string into a JsonNode.

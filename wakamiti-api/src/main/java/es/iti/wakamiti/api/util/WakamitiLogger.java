@@ -39,6 +39,10 @@ public class WakamitiLogger {
                 " ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  " + WakamitiAPI.instance().version() + "\n";
     }
 
+    private WakamitiLogger() {
+        
+    }
+
     /**
      * Retrieves a logger based on the given name.
      *
