@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning][2].
 ## [unreleased]
 
 ### Fixed
-- Step definitions and translations
+- Step definitions and translations.
+
+### Added
+- Procedure post-execution.
 
 
 ## [3.0.0] - 2024-03-22

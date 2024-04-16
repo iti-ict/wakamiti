@@ -114,9 +114,9 @@ public final class Database {
     public String table(String table) {
         return schema.tables.computeIfAbsent(parser.unquote(table), k -> {
             if (LOGGER.isDebugEnabled())
-                LOGGER.debug("Retrieving the table {}", parser.unquote(table));
+                LOGGER.debug("Retrieving the table {}", k);
             try (ResultSet rs = connection().getMetaData()
-                    .getTables(catalog(), schema(), "_".repeat(parser.unquote(table).length()), null)) {
+                    .getTables(catalog(), schema(), "_".repeat(k.length()), null)) {
                 String name = null;
                 while (rs.next()) {
                     String current = rs.getString("TABLE_NAME");
