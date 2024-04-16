@@ -18,7 +18,7 @@
 
 
     <artifactId>rest-wakamiti-plugin</artifactId>
-    <version>2.4.0</version>
+    <version>2.5.0</version>
 
     <name>[Wakamiti Plugin] REST Steps</name>
     <description>REST steps for Wakamiti</description>
@@ -29,6 +29,8 @@
         <mockserver.version>5.15.0</mockserver.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
+
+        <wakamiti-engine.version>2.5.0</wakamiti-engine.version>
     </properties>
 
 
@@ -51,11 +53,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.google.code.findbugs</groupId>-->
-<!--            <artifactId>jsr305</artifactId>-->
-<!--            <version>3.0.2</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -82,7 +79,7 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-junit</artifactId>
-            <version>2.4.0</version>
+            <version>${wakamiti-engine.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -108,7 +105,16 @@
             <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
@@ -193,6 +199,17 @@
                     <plugin>
                         <groupId>es.iti.wakamiti</groupId>
                         <artifactId>wakamiti-maven-plugin</artifactId>
+                        <version>${wakamiti-engine.version}</version>
+                        <executions>
+                            <execution>
+                                <id>verify</id>
+                                <goals><goal>verify</goal></goals>
+                            </execution>
+                            <execution>
+                                <id>control</id>
+                                <goals><goal>control</goal></goals>
+                            </execution>
+                        </executions>
                         <configuration>
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml</configurationFiles>

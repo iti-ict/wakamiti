@@ -16,7 +16,7 @@
     <groupId>es.iti.wakamiti</groupId>
     <artifactId>wakamiti-plugin-starter</artifactId>
     <packaging>pom</packaging>
-    <!-- This version number must be the same as wakamiti-api -->
+
     <version>${revision}</version>
 
 
@@ -24,10 +24,9 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.4.0</revision>
+        <revision>2.4.1</revision>
 
-        <wakamiti.api>2.4.0</wakamiti.api>
-        <wakamiti.core>2.4.0</wakamiti.core>
+        <wakamiti.api>2.4.1</wakamiti.api>
     </properties>
 
     <dependencies>
@@ -41,16 +40,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -76,22 +65,6 @@
                             </annotationProcessorPath>
                         </annotationProcessorPaths>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>es.iti.wakamiti</groupId>
-                    <artifactId>wakamiti-maven-plugin</artifactId>
-                    <version>${wakamiti.core}</version>
-                    <executions>
-                        <execution>
-                            <id>verify</id>
-                            <goals><goal>verify</goal></goals>
-                        </execution>
-                        <execution>
-                            <id>control</id>
-                            <goals><goal>control</goal></goals>
-                        </execution>
-                    </executions>
                 </plugin>
 
             </plugins>
@@ -189,6 +162,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <includeScope>runtime</includeScope>
                             <silent>true</silent>
                         </configuration>
                     </execution>

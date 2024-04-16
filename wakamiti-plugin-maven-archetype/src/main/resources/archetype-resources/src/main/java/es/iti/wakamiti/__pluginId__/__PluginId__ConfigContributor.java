@@ -17,7 +17,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 @Extension(
         provider =  "es.iti.wakamiti",
         name = "${pluginId}-config",
-        version = "1.1",
+        version = "2.5",
         extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class ${PluginId}ConfigContributor implements ConfigContributor<${PluginId}StepContributor> {
