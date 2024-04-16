@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -97,7 +96,7 @@ public class ExpressionMatcher {
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
-        regex = regex.replaceAll("[^ |(]*+(\\|[^ |)]+)+", "($0)");
+        regex = regex.replaceAll("[^ |(]*?(\\|[^ |)]+)++", "($0)");
         // (( -> ( and )) -> (
         regex = regex.replaceAll("\\(\\(([^()]*)\\)\\)", "($1)");
         // * -> any value
