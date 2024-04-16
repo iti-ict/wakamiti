@@ -1,7 +1,7 @@
 ---
 title: DB steps
 date: 2022-09-20
-slug: /en/plugins/database
+slug: /en/plugins/database/2.3.3
 ---
 
 

@@ -300,7 +300,7 @@ Podría devolver el siguiente resultado:
 ```
 
 
-## Ejecutar script (fichero)
+### Ejecutar script (fichero)
 ```text copy=true
 (que) se (ha) ejecuta(do) el (script|procedimiento) SQL del fichero {script}
 ```
@@ -851,5 +851,5 @@ Entonces un usuario identificado por '1' existe en la tabla USERS en 10 segundos
 
 [1]: https://commons.apache.org/proper/commons-csv/
 [2]: wakamiti/architecture#comparador
-[3]: #modopostejecución
-[4]: #modoasync
+[3]: #modo-post-ejecución
+[4]: #modo-async

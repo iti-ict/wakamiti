@@ -1,7 +1,7 @@
 ---
 title: Pasos BD
 date: 2022-09-20
-slug: /plugins/database
+slug: /plugins/database/2.3.3
 ---
 
 
