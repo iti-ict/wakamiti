@@ -16,14 +16,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.0.0
+es.iti.wakamiti:db-wakamiti-plugin:3.1.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
@@ -231,7 +231,7 @@ Given the database connection URL 'jdbc:mysql://other.host:3306/test' using the 
 
 ### Switch connection
 ```text copy=true
-the (default|{alias}) connection is used
+(that) the (default|{alias}) connection is used
 ```
 
 Switch the active database connection to the one specified, or to the default.
@@ -252,7 +252,7 @@ When the 'db1' connection is used
 
 ### Execute script
 ```text copy=true
-the following SQL (script|procedure) is executed:
+(that) the following SQL (script|procedure) is executed:
    {script}
 ```
 - [Post-execution mode][3]
@@ -291,7 +291,7 @@ It could return the following result:
 
 ### Execute script (file)
 ```text copy=true
-the SQL (script|procedure) file {script} is executed
+(that) the SQL (script|procedure) file {script} is executed
 ```
 - [Post-execution mode][3]
 
@@ -310,7 +310,7 @@ When the SQL script file 'data/script.sql' is executed
 
 ### Select data
 ```text copy=true
-the following SQL query value(s):
+the following SQL query value(s) ((is|are) retrieved):
    {script}
 ```
 
@@ -346,7 +346,7 @@ It could return the following result:
 
 ### Select data (file)
 ```text copy=true
-the SQL query value(s) from the file {sql}
+the SQL query value(s) from the file {sql} ((is|are) retrieved)
 ```
 
 Retrieve data from the specified SQL SELECT as a JSON object.
@@ -364,7 +364,7 @@ Given the SQL query values from the file 'data/select.sql'
 
 ### Insert data
 ```text copy=true
-the following * (is|are) inserted into the (database) table {table}:
+(that) the following * (is|are) inserted into the (database) table {table}:
     {data}
 ```
 - [Post-execution mode][3]
@@ -404,10 +404,10 @@ It could return the following result:
 
 ### Insert data (file)
 ```text copy=true
-the content of the XLS file {file} (is) inserted into the database
+(that) the content of the XLS file {file} (is) inserted into the database
 ```
 ```text copy=true
-the content of the CSV file {file} (is) inserted into the (database) table {table}
+(that) the content of the CSV file {file} (is) inserted into the (database) table {table}
 ```
 - [Post-execution mode][3]
 
@@ -432,7 +432,7 @@ When the content of the CSV file 'data/users.csv' is inserted into the table USE
 
 ### Delete data
 ```text copy=true
-the following * (is|are) deleted from the (database) table {table}:
+(that) the following * (is|are) deleted from the (database) table {table}:
     {data}
 ```
 - [Post-execution mode][3]
@@ -501,10 +501,10 @@ When the user satisfying the following SQL clause is deleted from the table clie
 
 ### Delete data (file)
 ```text copy=true
-the content of the XLS file {file} is deleted from the database
+(that) the content of the XLS file {file} is deleted from the database
 ```
 ```text copy=true
-the content of the CSV file {file} is deleted from the database table {table}
+(that) the content of the CSV file {file} is deleted from the database table {table}
 ```
 - [Post-execution mode][3]
 
@@ -529,7 +529,7 @@ When the content of the CSV file 'data/users.csv' is deleted from the database t
 
 ### Clear table
 ```text copy=true
-the (database) table {word} is cleared
+(that) the (database) table {word} is cleared
 ```
 - [Post-execution mode][3]
 
@@ -548,7 +548,7 @@ When the table USER is cleared
 
 ### Check data existence 
 ```text copy=true
-the following record(s) (not) exist(s) in the (database) table {table}:
+(that) the following record(s) (not) exist(s) in the (database) table {table}:
     {data}
 ```
 - [Post-execution mode][3]
@@ -659,10 +659,10 @@ Then users satisfying the following SQL clause not exist in the database table U
 
 ### Check data existence (file)
 ```text copy=true
-the content of the XLS file {file} (not) exist(s) in the database
+(that) the content of the XLS file {file} (not) exist(s) in the database
 ```
 ```text copy=true
-the content of the CSV file {file} (not) exist(s) in the (database) table {table}
+(that) the content of the CSV file {file} (not) exist(s) in the (database) table {table}
 ```
 - [Post-execution mode][3]
 - [Async mode][4]
@@ -688,7 +688,7 @@ Then the content of the CSV file 'data/users.csv' not exist in the table USERS
 
 ### Check data count
 ```text copy=true
-the number of * satisfying the following (info) in the (database) table {table} {matcher}:
+(that) the number of * satisfying the following (info) in the (database) table {table} {matcher}:
     {data}
 ```
 - [Post-execution mode][3]
@@ -719,7 +719,7 @@ Then the number of records satisfying the following info in the table USER is mo
 
 ### Check data count (column)
 ```text copy=true
-the number of * having {column} = {value} in the (database) table {table} {matcher}
+(that) the number of * having {column} = {value} in the (database) table {table} {matcher}
 ```
 - [Post-execution mode][3]
 - [Async mode][4]
@@ -768,7 +768,7 @@ Then the number of users satisfying the following SQL clause in the table USER i
 
 ### Check table content
 ```text copy=true
-the (database) table {table} is (not) empty
+(that) the (database) table {table} is (not) empty
 ```
 
 Assert that the given table is empty or not.
@@ -794,7 +794,7 @@ Some steps may be executed with a different behavior if they are defined in the 
 
 ### Post-execution mode
 ```text copy=true
-At finish, * (using {alias} connection)
+On completion, * (using {alias} connection)
 ```
 
 The step shall be executed once the scenario has finished, regardless of the outcome of the execution.
@@ -807,10 +807,10 @@ If the alias is not included, the default connection will be used.
 
 #### Examples:
 ```gherkin
-* At finish, the SQL script file 'data/insert-users.sql' is executed
+* On completion, the SQL script file 'data/insert-users.sql' is executed
 ```
 ```gherkin
-* At finish, the following SQL script is executed using 'db1' connection:
+* On completion, the following SQL script is executed using 'db1' connection:
   """
   UPDATE AAAA SET STATE = 2 WHERE ID = 1;
   DELETE FROM BBBB WHERE ID = 2;

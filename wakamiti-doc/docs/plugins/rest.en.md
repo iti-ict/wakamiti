@@ -486,7 +486,7 @@ assertion.
 
 ### Define basic authentication
 ```text copy=true
-the service use the basic authentication credentials {username}:{password}
+the service uses the basic authentication credentials {username}:{password}
 ```
 Sets the basic authentication credentials to be sent in the `Authorization` header for the subsequent requests.
 
@@ -498,13 +498,13 @@ Sets the basic authentication credentials to be sent in the `Authorization` head
 
 ##### Examples:
 ```gherkin
-Given the service use the basic authentication credentials 'us1532':'xxxxx'
+Given the service uses the basic authentication credentials 'us1532':'xxxxx'
 ```
 
 
 ### Define oauth2 authentication
 ```text copy=true
-the service use the oauth authentication
+the service uses the oauth authentication
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid),
@@ -513,13 +513,13 @@ configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication
+Given the service uses the oauth authentication
 ```
 
 
 ### Define oauth2 authentication by token
 ```text copy=true
-the service use the oauth authentication token {token}
+the service uses the oauth authentication token {token}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
 
@@ -530,13 +530,13 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
+Given the service uses the oauth authentication token 'hudytw9834y9cqy32t94'
 ```
 
 
 ### Define oauth2 authentication by token (file)
 ```text copy=true
-the service use the oauth authentication token from the file {file}
+the service uses the oauth authentication token from the file {file}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests, from file.
 
@@ -547,16 +547,16 @@ Sets the bearer authentication token to be sent in the `Authorization` header fo
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication token from the file 'token.txt'
+Given the service uses the oauth authentication token from the file 'token.txt'
 ```
 
 
 ### Define oauth2 authentication by credentials
 ```text copy=true
-the service use the oauth authentication credentials {username}:{password}
+the service uses the oauth authentication credentials {username}:{password}
 ```
 ```text copy=true
-the service use the oauth authentication credentials {username}:{password} with the following parameters:
+the service uses the oauth authentication credentials {username}:{password} with the following parameters:
     {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -574,11 +574,11 @@ Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication credentials 'us1532':'xxxxx'
+Given the service uses the oauth authentication credentials 'us1532':'xxxxx'
 ```
 
 ```gherkin
-Given the service use the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
+Given the service uses the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
   | name  | value     |
   | scope | something |
 ```
@@ -586,10 +586,10 @@ Given the service use the oauth authentication credentials 'us1532':'xxxxx' with
 
 ### Define oauth2 authentication by client
 ```text copy=true
-the service use the oauth authentication
+the service uses the oauth authentication
 ```
 ```text copy=true
-the service use the oauth authentication with the following parameters:
+the service uses the oauth authentication with the following parameters:
     {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
@@ -605,11 +605,11 @@ Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication
+Given the service uses the oauth authentication
 ```
 
 ```gherkin
-Given the service use the oauth authentication with the following parameters:
+Given the service uses the oauth authentication with the following parameters:
   | name  | value     |
   | scope | something |
 ```
@@ -754,7 +754,7 @@ When the user is deleted
 
 ### Execute PUT request with body
 ```text copy=true
-* (is|are) modified with following data:
+* (is|are) modified with the following data:
     {data}
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
@@ -958,7 +958,7 @@ Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Examples:
 ```gherkin
-Then the response HTTP code is equals to 201
+Then the response HTTP code is equal to 201
 ```
 
 
