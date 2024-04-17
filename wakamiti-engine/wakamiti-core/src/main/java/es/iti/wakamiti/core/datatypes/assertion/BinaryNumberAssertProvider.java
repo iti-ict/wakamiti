@@ -20,6 +20,9 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.hamcrest.Matchers.*;
+
 
 /**
  * A provider for binary number assertions.
@@ -41,20 +44,18 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
     public static final String NOT_GREATER_EQUALS = "matcher.number.not.greater.equals";
     public static final String NOT_LESS_EQUALS = "matcher.number.not.less.equals";
 
-    private final Map<String, Function<T, Matcher<T>>> matchers = new LinkedHashMap<>();
-
-     {
-        matchers.put(EQUALS, Matchers::comparesEqualTo);
-        matchers.put(GREATER, Matchers::greaterThan);
-        matchers.put(LESS, Matchers::lessThan);
-        matchers.put(GREATER_EQUALS, Matchers::greaterThanOrEqualTo);
-        matchers.put(LESS_EQUALS, Matchers::lessThanOrEqualTo);
-        matchers.put(NOT_EQUALS, (value) -> Matchers.not(Matchers.comparesEqualTo(value)));
-        matchers.put(NOT_GREATER, (value) -> Matchers.not(Matchers.greaterThan(value)));
-        matchers.put(NOT_LESS, (value) -> Matchers.not(Matchers.lessThan(value)));
-        matchers.put(NOT_GREATER_EQUALS, (value) -> Matchers.not(Matchers.greaterThanOrEqualTo(value)));
-        matchers.put(NOT_LESS_EQUALS, (value) -> Matchers.not(Matchers.lessThanOrEqualTo(value)));
-    }
+    private final Map<String, Function<T, Matcher<T>>> matchers = map(
+            EQUALS, Matchers::comparesEqualTo,
+            GREATER, Matchers::greaterThan,
+            LESS, Matchers::lessThan,
+            GREATER_EQUALS, Matchers::greaterThanOrEqualTo,
+            LESS_EQUALS, Matchers::lessThanOrEqualTo,
+            NOT_EQUALS, value -> not(comparesEqualTo(value)),
+            NOT_GREATER, value -> not(greaterThan(value)),
+            NOT_LESS, value -> not(lessThan(value)),
+            NOT_GREATER_EQUALS, value -> not(greaterThanOrEqualTo(value)),
+            NOT_LESS_EQUALS, value -> not(lessThanOrEqualTo(value))
+    );
 
     private final ThrowableFunction<Locale, String> numberRegexProvider;
     private final ThrowableFunction<Number, T> mapper;

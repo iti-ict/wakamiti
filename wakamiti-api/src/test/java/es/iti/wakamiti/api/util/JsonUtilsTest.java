@@ -34,8 +34,6 @@ public class JsonUtilsTest {
     @Test
     public void testJsonWhenStringWithSuccess() {
         JsonNode obj = JsonUtils.json(json);
-
-        assertThat(obj).isNotNull();
         assertThat(obj).hasToString(json);
     }
 
@@ -47,8 +45,6 @@ public class JsonUtilsTest {
     @Test
     public void testJsonWhenStreamWithSuccess() {
         JsonNode obj = JsonUtils.json(new ByteArrayInputStream(json.getBytes()));
-
-        assertThat(obj).isNotNull();
         assertThat(obj).hasToString(json);
     }
 
