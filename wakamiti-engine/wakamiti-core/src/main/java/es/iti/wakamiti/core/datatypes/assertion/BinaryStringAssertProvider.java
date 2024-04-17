@@ -15,6 +15,9 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.util.MapUtils.*;
+import static org.hamcrest.Matchers.*;
+
 
 /**
  * A provider for binary string assertions.
@@ -43,28 +46,26 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
-    private final Map<String, Function<String, Matcher<String>>> matchers = new LinkedHashMap<>();
-
-    {
-        matchers.put(EQUALS, Matchers::equalTo);
-        matchers.put(EQUALS_IGNORE_CASE, Matchers::equalToIgnoringCase);
-        matchers.put(EQUALS_IGNORE_WHITESPACE, Matchers::equalToCompressingWhiteSpace);
-        matchers.put(STARTS_WITH, Matchers::startsWith);
-        matchers.put(STARTS_WITH_IGNORE_CASE, Matchers::startsWithIgnoringCase);
-        matchers.put(ENDS_WITH, Matchers::endsWith);
-        matchers.put(ENDS_WITH_IGNORE_CASE, Matchers::endsWithIgnoringCase);
-        matchers.put(CONTAINS, Matchers::containsString);
-        matchers.put(CONTAINS_IGNORE_CASE, Matchers::containsStringIgnoringCase);
-        matchers.put(NOT_EQUALS, (value) -> Matchers.not(Matchers.equalTo(value)));
-        matchers.put(NOT_EQUALS_IGNORE_CASE, (value) -> Matchers.not(Matchers.equalToIgnoringCase(value)));
-        matchers.put(NOT_EQUALS_IGNORE_WHITESPACE, (value) -> Matchers.not(Matchers.equalToCompressingWhiteSpace(value)));
-        matchers.put(NOT_STARTS_WITH, (value) -> Matchers.not(Matchers.startsWith(value)));
-        matchers.put(NOT_STARTS_WITH_IGNORE_CASE, (value) -> Matchers.not(Matchers.startsWithIgnoringCase(value)));
-        matchers.put(NOT_ENDS_WITH, (value) -> Matchers.not(Matchers.endsWith(value)));
-        matchers.put(NOT_ENDS_WITH_IGNORE_CASE, (value) -> Matchers.not(Matchers.endsWithIgnoringCase(value)));
-        matchers.put(NOT_CONTAINS, (value) -> Matchers.not(Matchers.containsString(value)));
-        matchers.put(NOT_CONTAINS_IGNORE_CASE, (value) -> Matchers.not(Matchers.containsStringIgnoringCase(value)));
-    }
+    private final Map<String, Function<String, Matcher<String>>> matchers = mapEntries(
+            entry(EQUALS, Matchers::equalTo),
+            entry(EQUALS_IGNORE_CASE, Matchers::equalToIgnoringCase),
+            entry(EQUALS_IGNORE_WHITESPACE, Matchers::equalToCompressingWhiteSpace),
+            entry(STARTS_WITH, Matchers::startsWith),
+            entry(STARTS_WITH_IGNORE_CASE, Matchers::startsWithIgnoringCase),
+            entry(ENDS_WITH, Matchers::endsWith),
+            entry(ENDS_WITH_IGNORE_CASE, Matchers::endsWithIgnoringCase),
+            entry(CONTAINS, Matchers::containsString),
+            entry(CONTAINS_IGNORE_CASE, Matchers::containsStringIgnoringCase),
+            entry(NOT_EQUALS, value -> not(equalTo(value))),
+            entry(NOT_EQUALS_IGNORE_CASE, value -> not(equalToIgnoringCase(value))),
+            entry(NOT_EQUALS_IGNORE_WHITESPACE, value -> not(equalToCompressingWhiteSpace(value))),
+            entry(NOT_STARTS_WITH, value -> not(startsWith(value))),
+            entry(NOT_STARTS_WITH_IGNORE_CASE, value -> not(startsWithIgnoringCase(value))),
+            entry(NOT_ENDS_WITH, value -> not(endsWith(value))),
+            entry(NOT_ENDS_WITH_IGNORE_CASE, value -> not(endsWithIgnoringCase(value))),
+            entry(NOT_CONTAINS, value -> not(containsString(value))),
+            entry(NOT_CONTAINS_IGNORE_CASE, value -> not(containsStringIgnoringCase(value)))
+    );
 
     /**
      * Remove leading and trailing {@code "} or {@code '} and replace escaped

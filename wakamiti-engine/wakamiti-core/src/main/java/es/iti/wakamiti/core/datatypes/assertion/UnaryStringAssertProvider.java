@@ -33,7 +33,7 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
 
     private final Map<String, Supplier<Matcher<?>>> matchers = new LinkedHashMap<>();
 
-    {
+    public UnaryStringAssertProvider() {
         matchers.put(NULL, Matchers::nullValue);
         matchers.put(EMPTY, () -> Matchers.anyOf(
                 matcher(Matchers.emptyString(), String.class),

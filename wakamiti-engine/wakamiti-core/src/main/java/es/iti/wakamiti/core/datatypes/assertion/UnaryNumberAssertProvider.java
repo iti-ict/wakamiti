@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
+
 
 /**
  * A provider for unary number assertions.
@@ -26,7 +28,7 @@ public class UnaryNumberAssertProvider extends AbstractAssertProvider {
     public static final String NULL = "matcher.generic.null";
     public static final String NOT_NULL = "matcher.generic.not.null";
 
-    private final Map<String, Supplier<Matcher<?>>> matchers = Map.of(
+    private final Map<String, Supplier<Matcher<?>>> matchers = map(
             NULL, Matchers::nullValue,
             NOT_NULL, Matchers::notNullValue
     );
