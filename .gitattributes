@@ -10,3 +10,4 @@ mvnw    eol=lf
 
 *.png binary
 *.gif binary
+*.apk binary
