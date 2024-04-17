@@ -7,42 +7,51 @@ slug: /en/plugins/rest
 
 This plugin provides a set of steps to interact with a RESTful API.
 
+
+---
+## Tabla de contenido
+
+---
+
+
+## Install
+
+
+Include the module in the corresponding section.
+
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
+es.iti.wakamiti:rest-wakamiti-plugin:2.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
-  <version>2.3.3</version>
+  <version>2.4.0</version>
 </dependency>
 ```
 
----
-## Table of content
 
----
+## Options
 
----
-## Configuration
+### `rest.baseURL`
+- Type: `URL`
 
-###  `rest.baseURL`
-Set the base URL for subsequents API calls. This is equivalent to the step "[Define base URL](#define-base-url)" in you
-prefer the descriptive configuration.
+Defines the base URL for REST calls. This setting is equivalent to the [Define base URL](#define-base-url) step if a 
+more descriptive statement is preferred.
 
 Example:
-
 ```yaml
 rest:
   baseURL: https://example.org/api/v2
 ```
 
-<br /><br />
 
 ### `rest.contentType`
-Set the content type that would be sent in the request header of subsequent API calls.
-Accepted values are:
+- Type: `string`
+- Default: `JSON`
+
+Specifies the type of content to send in the header of REST calls. Accepted values are:
 
 | literal     | `content-type` header value                                                                                                                                                                                             |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -55,22 +64,19 @@ Accepted values are:
 | `BINARY`    | `application/octet-stream`                                                                                                                                                                                              |
 | `MULTIPART` | `multipart/form-data`, `multipart/alternative`, `multipart/byteranges`, `multipart/digest`, `multipart/mixed`, `multipart/parallel`, `multipart/related`, `multipart/report`, `multipart/signed`, `multipart/encrypted` |
 
-
-Default value is `JSON`.
-
 Example:
 ```yaml
 rest:
   contentType: XML
 ```
 
-<br /><br />
 
 ### `rest.httpCodeThreshold`
-Sets a global HTTP response code threshold. Every time an API call returns an HTTP code equals or greater, the step
-would automatically fail regardless any other condition.
+- Type: `integer`
+- Default: `500`
 
-Default value is `500`.
+Sets a limit on HTTP response codes. Whenever a REST call returns an HTTP code equal to or greater than this value, the 
+step is automatically marked as failed without checking any other conditions.
 
 Example:
 ```yaml
@@ -78,14 +84,13 @@ rest:
   httpCodeThreshold: 999
 ```
 
-<br /><br />
 
 ### `rest.timeout`
+- Type: `integer`
+- Default: `60000`
 
-Sets a response timeout (in milliseconds) for the subsequent HTTP requests. In case of exceeding the specified time, the
-request will be stopped and an error will occur.
-
-Default value is `60000`.
+Sets a maximum response time (in milliseconds) for subsequent HTTP requests. If this time is exceeded, the request is 
+aborted and an error is raised.
 
 Example:
 ```yaml
@@ -93,11 +98,12 @@ rest:
   timeout: 10000
 ```
 
-<br /><br />
 
 ### `rest.oauth2.url`
-Set an [OAuth 2.0][oauth2] authentication service that would be used to generate a token in the request header
-`Authorization` of the API calls.
+- Type: `URL`
+
+Specifies the [OAuth 2.0][oauth2] authentication service to use to generate the token to be sent in the `Authorization` 
+HTTP header of REST calls.
 
 Example:
 ```yaml
@@ -106,10 +112,12 @@ rest:
     url: https://accounts.google.com/o/oauth2/auth
 ```
 
-<br /><br />
 
 ### `rest.oauth2.clientId`
-Sets the parameter `clientId` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url` value.
+- Type: `string`
+
+Sets the `clientId` parameter for the [OAuth 2.0][oauth2] authentication service defined by the value of the 
+`rest.oauth2.url` configuration property.
 
 Example:
 ```yaml
@@ -118,11 +126,12 @@ rest:
     clientId: WEB_APP
 ```
 
-<br /><br />
 
 ### `rest.oauth2.clientSecret`
-Sets the parameter `clientSecret` of the [OAuth 2.0][oauth2] authentication service defined by the `rest.oauth2.url`
-value.
+- Type: `string`
+
+Sets the `clientSecret` parameter for the [OAuth 2.0][oauth2] authentication service defined by the value of the 
+`rest.oauth2.url` configuration property.
 
 Example:
 ```yaml
@@ -131,12 +140,12 @@ rest:
     clientSecret: ABRACADABRAus1ZMGHvq9R
 ```
 
-<br /><br />
 
 ### `rest.oauth2.cached`
-Sets whether the retrieved token is cached to avoid recurring calls to the oauth service if the data is the same.
+- Type: `boolean`
+- Default: `false`
 
-Default value is `false`.
+Specifies whether to cache the retrieved token to avoid repeated calls to the oauth service for the same data.
 
 Example:
 ```yaml
@@ -145,9 +154,10 @@ rest:
     cached: true
 ```
 
-<br /><br />
 
 ### `rest.oauth2.parameters`
+- Type: `property[]`
+
 Sets the default parameters for OAuth authentication.
 
 Example:
@@ -161,9 +171,11 @@ rest:
       scope: something
 ```
 
-<br /><br />
 
 ### `rest.config.multipart.subtype`
+- Type: `string`
+- Default: `form-data`
+
 Sets the subtype of multipart HTTP requests. The available values are:
 
 | literal       |
@@ -179,8 +191,6 @@ Sets the subtype of multipart HTTP requests. The available values are:
 | `signed`      |
 | `encrypted`   |
 
-Default value is `form-data`.
-
 Example:
 ```yaml
 rest:
@@ -189,12 +199,12 @@ rest:
       subtype: mixed
 ```
 
-<br /><br />
 
 ### `rest.config.multipart.filename`
-Sets the filename of multipart HTTP requests.
+- Type: `string`
+- Default: `file`
 
-Default value is `file`.
+Sets the filename of multipart HTTP requests.
 
 Example:
 ```yaml
@@ -204,12 +214,12 @@ rest:
       filename: other_name
 ```
 
-<br /><br />
 
 ### `rest.config.redirect.follow`
-Sets whether to allow following redirects in HTTP requests.
+- Type: `boolean`
+- Default: `true`
 
-Default value is `true`.
+Specifies whether to allow redirects in HTTP calls.
 
 Example:
 ```yaml
@@ -219,12 +229,12 @@ rest:
       follow: false
 ```
 
-<br /><br />
 
 ### `rest.config.redirect.allowCircular`
-Sets whether circular redirects are allowed in HTTP requests.
+- Type: `boolean`
+- Default: `false`
 
-Default value is `false`.
+Specifies whether to allow circular redirects in HTTP calls.
 
 Example:
 ```yaml
@@ -234,12 +244,12 @@ rest:
       allowCircular: true
 ```
 
-<br /><br />
 
 ### `rest.config.redirect.rejectRelative`
-Sets whether to reject relative redirects in HTTP requests.
+- Type: `boolean`
+- Default: `false`
 
-Default value is `false`.
+Specifies whether to reject relative redirects in HTTP calls.
 
 Example:
 ```yaml
@@ -249,12 +259,12 @@ rest:
       rejectRelative: true
 ```
 
-<br /><br />
 
 ### `rest.config.redirect.max`
-Sets the maximum number of redirects in HTTP requests.
+- Type: `integer`
+- Default: `100`
 
-Default value is `100`.
+Sets the maximum number of redirects for HTTP calls.
 
 Example:
 ```yaml
@@ -265,7 +275,6 @@ rest:
 ```
 
 
----
 ## Steps
 
 
@@ -276,16 +285,15 @@ the REST content type {word}
 Declarative-way for setting the configuration property [`rest.contentType`](#restcontenttype).
 
 #### Parameters:
-| Name   | Wakamiti type | Description    |
-|--------|---------------|----------------|
-| `type` | `word`        | Connection URL |
+| Name   | Wakamiti type     | Description    |
+|--------|-------------------|----------------|
+| `type` | `word` *required* | Connection URL |
 
 #### Examples:
 ```gherkin
 Given the REST content type XML
 ```
 
-<br /><br />
 
 ### Define base URL
 ```text copy=true
@@ -294,16 +302,15 @@ the base URL {url}
 Declarative-way for setting the configuration property [`rest.baseURL`](#restbaseurl).
 
 #### Parameters:
-| Name  | Wakamiti type | Description |
-|-------|---------------|-------------|
-| `url` | `url`         | Base URL    |
+| Name  | Wakamiti type    | Description |
+|-------|------------------|-------------|
+| `url` | `url` *required* | Base URL    |
 
 #### Examples:
 ```gherkin
 Given the base URL https://example.org/api
 ```
 
-<br /><br />
 
 ### Define service
 ```text copy=true
@@ -312,16 +319,15 @@ the REST service {text}
 Sets the service path that would be tested. It would be appended to the `baseURL`.
 
 #### Parameters:
-| Name      | Wakamiti type | Description      |
-|-----------|---------------|------------------|
-| `service` | `text`        | URL segment path |
+| Name      | Wakamiti type     | Description      |
+|-----------|-------------------|------------------|
+| `service` | `text` *required* | URL segment path |
 
 #### Examples:
 ```gherkin
 Given the REST service '/users`
 ```
 
-<br /><br />
 
 ### Define id
 ###### Deprecated
@@ -331,9 +337,9 @@ Given the REST service '/users`
 Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
 
 #### Parameters:
-| Name   | Wakamiti type | Description          |
-|--------|---------------|----------------------|
-| `text` | `text`        | An entity identifier |
+| Name   | Wakamiti type     | Description          |
+|--------|-------------------|----------------------|
+| `text` | `text` *required* | An entity identifier |
 
 #### Examples:
 ```gherkin
@@ -343,7 +349,6 @@ Given a user identified by 'john'
 Given the borrowed book identified by '978-3-16-148410-0'
 ```
 
-<br /><br />
 
 ### Define parameters or headers
 ```text copy=true
@@ -357,13 +362,13 @@ query parameters will be concatenated to the request URL after the path (e.g. `/
 parameters will replace the service path fragments indicate with `{}`, and form parameters will be sent with
 content-type `application/x-www-form-urlencoded`.
 
-##### Parámetros:
-| Nombre  | Wakamiti type | Descripción               |
-|---------|---------------|---------------------------|
-| `name`  | `text`        | Header or parameter name  |
-| `value` | `text`        | Header or parameter value |
+##### Parameters:
+| Nombre  | Wakamiti type     | Descripción               |
+|---------|-------------------|---------------------------|
+| `name`  | `text` *required* | Header or parameter name  |
+| `value` | `text` *required* | Header or parameter value |
 
-##### Ejemplos:
+##### Examples:
 ```gherkin
 Given the request parameter 'age' with value '13'
 When the data info is sent to the service
@@ -384,14 +389,15 @@ When the data info is sent to the service
 Given the header 'Keep-alive' with value '1200'
 ```
 
-<br /><br />
 
 ### Define parameters or headers (table)
 ```text copy=true
 the following (request|query|path) parameters:
+    {table}
 ```
 ```text copy=true
 the following headers:
+    {table}
 ```
 Sets multiple headers or request, query, path or form parameters. Request parameters will be sent as form data in POST
 requests, query parameters will be concatenated to the request URL after the path (e.g. `/user?param1=abc&param2=123`),
@@ -399,9 +405,9 @@ path parameters will replace the service path fragments indicate with `{}`, and 
 content-type `application/x-www-form-urlencoded`.
 
 ##### Parameters:
-| Name | Wakamiti type | Description                             |
-|------|---------------|-----------------------------------------|
-|      | `table`       | A table with `name` and `value` columns |
+| Name    | Wakamiti type      | Description                             |
+|---------|--------------------|-----------------------------------------|
+| `table` | `table` *required* | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
@@ -439,7 +445,6 @@ Given the following headers:
   | Keep-Alive | 1200  |
 ```
 
-<br /><br />
 
 ### Define timeout
 ```text copy=true
@@ -448,9 +453,9 @@ a timeout of {int} (milli)seconds
 Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                 |
-|--------|---------------|-----------------------------|
-| `int`  | `int`         | The timeout in milliseconds |
+| Name   | Wakamiti type    | Description                 |
+|--------|------------------|-----------------------------|
+| `int`  | `int` *required* | The timeout in milliseconds |
 
 ##### Examples:
 ```gherkin
@@ -460,7 +465,6 @@ Given a timeout of 12000 milliseconds
 Given a timeout of 2 seconds
 ```
 
-<br /><br />
 
 ### Define HTTP code threshold
 ```text copy=true
@@ -470,94 +474,90 @@ Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthtt
 assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type       | Description             |
-|-----------|---------------------|-------------------------|
-| `matcher` | `integer-assertion` | Numeric [comparator][1] |
+| Name      | Wakamiti type                  | Description             |
+|-----------|--------------------------------|-------------------------|
+| `matcher` | `integer-assertion` *required* | Numeric [comparator][1] |
 
 ##### Example:
 ```gherkin
 * any request will fail when response HTTP code is greater than 500
 ```
 
-<br /><br />
 
 ### Define basic authentication
 ```text copy=true
-the service use the basic authentication credentials {username}:{password}
+the service uses the basic authentication credentials {username}:{password}
 ```
 Sets the basic authentication credentials to be sent in the `Authorization` header for the subsequent requests.
 
 ##### Parameters:
-| Name       | Wakamiti type | Description  |
-|------------|---------------|--------------|
-| `username` | `text`        | The username |
-| `password` | `text`        | The password |
+| Name       | Wakamiti type     | Description  |
+|------------|-------------------|--------------|
+| `username` | `text` *required* | The username |
+| `password` | `text` *required* | The password |
 
 ##### Examples:
 ```gherkin
-Given the service use the basic authentication credentials 'us1532':'xxxxx'
+Given the service uses the basic authentication credentials 'us1532':'xxxxx'
 ```
 
-<br /><br />
 
 ### Define oauth2 authentication
 ```text copy=true
-the service use the oauth authentication
+the service uses the oauth authentication
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid),
 [clientSecret](#restoauth2clientsecret), [parameters](#restoauth2parameters)), for the following requests.
 
 
-##### Ejemplos:
+##### Examples:
 ```gherkin
-Given the service use the oauth authentication
+Given the service uses the oauth authentication
 ```
 
-<br /><br />
 
 ### Define oauth2 authentication by token
 ```text copy=true
-the service use the oauth authentication token {token}
+the service uses the oauth authentication token {token}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests.
 
 ##### Parameters:
-| Name    | Wakamiti type | Description          |
-|---------|---------------|----------------------|
-| `token` | `text`        | Authentication token |
+| Name    | Wakamiti type     | Description          |
+|---------|-------------------|----------------------|
+| `token` | `text` *required* | Authentication token |
 
-##### Ejemplos:
+##### Examples:
 ```gherkin
-Given the service use the oauth authentication token 'hudytw9834y9cqy32t94'
+Given the service uses the oauth authentication token 'hudytw9834y9cqy32t94'
 ```
 
-<br /><br />
 
 ### Define oauth2 authentication by token (file)
 ```text copy=true
-the service use the oauth authentication token from the file {file}
+the service uses the oauth authentication token from the file {file}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header for subsequent requests, from file.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                        |
-|--------|---------------|------------------------------------|
-| `file` | `file`        | File with the authentication token |
+| Name   | Wakamiti type     | Description                        |
+|--------|-------------------|------------------------------------|
+| `file` | `file` *required* | File with the authentication token |
 
-##### Ejemplos:
+##### Examples:
 ```gherkin
-Given the service use the oauth authentication token from the file 'token.txt'
+Given the service uses the oauth authentication token from the file 'token.txt'
 ```
 
-<br /><br />
 
 ### Define oauth2 authentication by credentials
 ```text copy=true
-the service use the oauth authentication credentials {username}:{password}
+the service uses the oauth authentication credentials {username}:{password}
 ```
 ```text copy=true
-the service use the oauth authentication credentials {username}:{password} with the following parameters:
+the service uses the oauth authentication credentials {username}:{password} with the following parameters:
+    {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
@@ -566,31 +566,31 @@ using the indicated credentials, for the following requests.
 Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Parameters:
-| Name       | Wakamiti type | Description                             |
-|------------|---------------|-----------------------------------------|
-| `username` | `text`        | The username                            |
-| `password` | `text`        | The password                            |
-|            | `table`       | A table with `name` and `value` columns |
+| Name       | Wakamiti type     | Description                             |
+|------------|-------------------|-----------------------------------------|
+| `username` | `text` *required* | The username                            |
+| `password` | `text` *required* | The password                            |
+| `table`    | `table`           | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication credentials 'us1532':'xxxxx'
+Given the service uses the oauth authentication credentials 'us1532':'xxxxx'
 ```
 
 ```gherkin
-Given the service use the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
+Given the service uses the oauth authentication credentials 'us1532':'xxxxx' with the following parameters:
   | name  | value     |
   | scope | something |
 ```
 
-<br /><br />
 
 ### Define oauth2 authentication by client
 ```text copy=true
-the service use the oauth authentication
+the service uses the oauth authentication
 ```
 ```text copy=true
-the service use the oauth authentication with the following parameters:
+the service uses the oauth authentication with the following parameters:
+    {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
 configured oauth2 service ([url](#restoauth2url), [clientId](#restoauth2clientid), [clientSecret](#restoauth2clientsecret)),
@@ -599,22 +599,21 @@ using client data, for the following requests.
 Additional parameters supported by `Oauth` can also be added using a table.
 
 ##### Parameters:
-| Name       | Wakamiti type | Description                             |
-|------------|---------------|-----------------------------------------|
-|            | `table`       | A table with `name` and `value` columns |
+| Name    | Wakamiti type | Description                             |
+|---------|---------------|-----------------------------------------|
+| `table` | `table`       | A table with `name` and `value` columns |
 
 ##### Examples:
 ```gherkin
-Given the service use the oauth authentication
+Given the service uses the oauth authentication
 ```
 
 ```gherkin
-Given the service use the oauth authentication with the following parameters:
+Given the service uses the oauth authentication with the following parameters:
   | name  | value     |
   | scope | something |
 ```
 
-<br /><br />
 
 ### Clear authentication
 ```text copy=true
@@ -627,7 +626,6 @@ Deletes the authentication header.
 Given the service does not use authentication
 ```
 
-<br /><br />
 
 ### Define multipart subtype
 ```text copy=true
@@ -652,16 +650,15 @@ Sets the default subtype for multipart requests. This step is equivalent to sett
 Default value is `form-data`.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description       |
-|--------|---------------|-------------------|
-| `type` | `text`        | Multipart subtype |
+| Name   | Wakamiti type     | Description       |
+|--------|-------------------|-------------------|
+| `type` | `text` *required* | Multipart subtype |
 
 ##### Examples:
 ```gherkin
 Given 'mixed' as subtype multipart
 ```
 
-<br /><br />
 
 ### Definir nombre de fichero multiparte
 ```text copy=true
@@ -671,27 +668,27 @@ Sets the default name for multipart files. This step is equivalent to setting th
 [`rest.config.multipart.filename`](#restconfigmultipartfilename).
 
 ##### Parameters:
-| Nombre | Wakamiti type | Description         |
-|--------|---------------|---------------------|
-| `name` | `text`        | Multipart file name |
+| Nombre | Wakamiti type     | Description         |
+|--------|-------------------|---------------------|
+| `name` | `text` *required* | Multipart file name |
 
 ##### Examples:
 ```gherkin
 Given 'other_name' as attached file name
 ```
 
-<br /><br />
 
 ### Define attached file
 ```text copy=true
 the attached file is included with the following data:
+    {data}
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name | Wakamiti type | Description          |
-|------|---------------|----------------------|
-|      | `document`    | Content to be attach |
+| Name   | Wakamiti type         | Description          |
+|--------|-----------------------|----------------------|
+| `data` | `document` *required* | Content to be attach |
 
 ##### Examples:
 ```gherkin
@@ -701,7 +698,6 @@ Given the attached file is included with the following data:
   """
 ```
 
-<br /><br />
 
 ### Define attached file (file)
 ```text copy=true
@@ -710,16 +706,15 @@ the attached file {file} is included
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description       |
-|--------|---------------|-------------------|
-| `file` | `file`        | File to be attach |
+| Name   | Wakamiti type     | Description       |
+|--------|-------------------|-------------------|
+| `file` | `file` *required* | File to be attach |
 
 ##### Examples:
 ```gherkin
 Given the attached file 'data/data.txt' is included
 ```
 
-<br /><br />
 
 ### Execute GET request
 ```text copy=true
@@ -742,7 +737,6 @@ And a user identified by '123'
 When the user is requested
 ```
 
-<br /><br />
 
 ### Execute DELETE request
 ```text copy=true
@@ -757,19 +751,19 @@ And a user identified by '123'
 When the user is deleted
 ```
 
-<br /><br />
 
 ### Execute PUT request with body
 ```text copy=true
-* (is|are) modified with following data:
+* (is|are) modified with the following data:
+    {data}
 ```
 Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided in-document.
 
 ##### Parameters:
-| Name | Wakamiti type | Description              |
-|------|---------------|--------------------------|
-|      | `document`    | The request payload body |
+| Name   | Wakamiti type         | Description              |
+|--------|-----------------------|--------------------------|
+| `data` | `document` *required* | The request payload body |
 
 ##### Examples:
 ```gherkin
@@ -786,7 +780,6 @@ When the user is modified with the following data:
   """
 ```
 
-<br /><br />
 
 ### Execute PUT request with body (file)
 ```text copy=true
@@ -796,9 +789,9 @@ Sends a `PUT` request to the previously defined endpoint formed with the base UR
 The payload is provided by the given file.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                                |
-|--------|---------------|--------------------------------------------|
-| `file` | `file`        | A file containing the request payload body |
+| Name   | Wakamiti type     | Description                                |
+|--------|-------------------|--------------------------------------------|
+| `file` | `file` *required* | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -807,7 +800,6 @@ And a user identified by '123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
 
-<br /><br />
 
 ### Execute PATCH request
 ```text copy=true
@@ -826,19 +818,19 @@ And the following query parameters:
 When the user is patched
 ```
 
-<br /><br />
 
 ### Execute PATCH request with body
 ```text copy=true
 * (is|are) patched with the following data:
+    {data}
 ```
 Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
 The payload is provided in-document.
 
 ##### Parameters:
-| Name | Wakamiti type | Description              |
-|------|---------------|--------------------------|
-|      | `document`    | The request payload body |
+| Name   | Wakamiti type         | Description              |
+|--------|-----------------------|--------------------------|
+| `data` | `document` *required* | The request payload body |
 
 ##### Examples:
 ```gherkin
@@ -850,7 +842,6 @@ When the user is patched with the following data:
   """
 ```
 
-<br /><br />
 
 ### Execute PATCH request with body (file)
 ```text copy=true
@@ -860,9 +851,9 @@ Sends a `PATCH` request to the previously defined endpoint formed with the base 
 The payload is provided by the given file.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                                |
-|--------|---------------|--------------------------------------------|
-| `file` | `file`        | A file containing the request payload body |
+| Name   | Wakamiti type     | Description                                |
+|--------|-------------------|--------------------------------------------|
+| `file` | `file` *required* | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -871,7 +862,6 @@ And a user identified by '123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
 
-<br /><br />
 
 ### Execute POST request
 ```text copy=true
@@ -893,22 +883,23 @@ And the following request parameters:
 When the data info is sent to the service
 ```
 
-<br /><br />
 
 ### Execute POST request with body
 ```text copy=true
 * (is|are) created with the following data:
+    {data}
 ```
 ```text copy=true
 the following data is sent to the service:
+    {data}
 ```
 Send a `POST` request to the previously defined endpoint formed with the base URL and the REST service. The payload is
 provided in-document.
 
 ##### Parameters:
-| Name | Wakamiti type | Description     |
-|------|---------------|-----------------|
-|      | `document`    | Request payload |
+| Name   | Wakamiti type         | Description     |
+|--------|-----------------------|-----------------|
+| `data` | `document` *required* | Request payload |
 
 ##### Examples:
 ```gherkin
@@ -929,7 +920,6 @@ When the following data is sent to the service:
   """
 ```
 
-<br /><br />
 
 ### Execute POST request with body (file)
 ```text copy=true
@@ -942,9 +932,9 @@ Sends a `POST` request to the previously defined endpoint formed with the base U
 provided by the given file.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                                |
-|--------|---------------|--------------------------------------------|
-| `file` | `file`        | A file containing the request payload body |
+| Name   | Wakamiti type     | Description                                |
+|--------|-------------------|--------------------------------------------|
+| `file` | `file` *required* | A file containing the request payload body |
 
 ##### Examples:
 ```gherkin
@@ -954,7 +944,6 @@ When the user is created with the data from the file 'data/user123.json'
 When the data from the file 'data/booking.json' is sent to the service
 ```
 
-<br /><br />
 
 ### Check response HTTP code
 ```text copy=true
@@ -963,35 +952,37 @@ the response HTTP code {matcher}
 Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type        | Description            |
-|-----------|----------------------|------------------------|
-| `matcher` | `integer-assertion`  | Number [comparator][1] |
+| Name      | Wakamiti type                  | Description            |
+|-----------|--------------------------------|------------------------|
+| `matcher` | `integer-assertion` *required* | Number [comparator][1] |
 
 ##### Examples:
 ```gherkin
-Then the response HTTP code is equals to 201
+Then the response HTTP code is equal to 201
 ```
 
-<br /><br />
 
 ### Check response body
 ```text copy=true
 the response is:
+    {data}
 ```
 Validates that the response body is exactly the content of the in-document content.
 ```text copy=true
 the response is \(in any order\):
+    {data}
 ```
 Validates that the response body has all the elements specified by the in-document content, but in any order.
 ```text copy=true
 the response contains:
+    {data}
 ```
 Validates that the response body contains the given in-document content.
 
 ##### Parameters:
-| Name | Wakamiti type | Description                  |
-|------|---------------|------------------------------|
-|      | `document`    | The expected partial content |
+| Name   | Wakamiti type         | Description                  |
+|--------|-----------------------|------------------------------|
+| `data` | `document` *required* | The expected partial content |
 
 ##### Examples:
 ```gherkin
@@ -1031,7 +1022,6 @@ Then the response contains:
   """
 ```
 
-<br /><br />
 
 ### Check response body (file)
 ```text copy=true
@@ -1048,39 +1038,41 @@ the response contains the file {file}
 Validates that the response body contains the content of the given file.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description      |
-|--------|---------------|------------------|
-| `file` | `file`        | An existing file |
+| Name   | Wakamiti type     | Description      |
+|--------|-------------------|------------------|
+| `file` | `file` *required* | An existing file |
 
 ##### Examples:
 ```gherkin
 Then the response contains the file 'data/response1.json'
 ```
 
-<br /><br />
 
 ### Check response body fragment
 ```text copy=true
 the response fragment {fragment} is:
+    {data}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment is exactly the content of
 the in-document content.
 ```text copy=true
 the response fragment {fragment} is \(in any order\):
+    {data}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment has all the elements specified
 by the in-document content, but in any order.
 ```text copy=true
 the response fragment {fragment} contains:
+    {data}
 ```
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given in-document
 content.
 
 ##### Parameters:
-| Name       | Wakamiti type | Description                      |
-|------------|---------------|----------------------------------|
-| `fragment` | `text`        | A JSONPath, XPath or GPath query |
-|            | `document`    | The expected partial content     |
+| Name       | Wakamiti type         | Description                      |
+|------------|-----------------------|----------------------------------|
+| `fragment` | `text`                | A JSONPath, XPath or GPath query |
+| `data`     | `document` *required* | The expected partial content     |
 
 ##### Examples:
 ```gherkin
@@ -1108,7 +1100,6 @@ Then the response fragment 'users[1]' contains:
   """
 ```
 
-<br /><br />
 
 ### Check response body fragment (file)
 ```text copy=true
@@ -1127,17 +1118,16 @@ the response contains the file {file}
 Validates that a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath] response fragment contains the given file.
 
 ##### Parameters:
-| Name       | Wakamiti type | Description                      |
-|------------|---------------|----------------------------------|
-| `fragment` | `text`        | A JSONPath, XPath or GPath query |
-| `file`     | `file`        | An existing file                 |
+| Name       | Wakamiti type     | Description                      |
+|------------|-------------------|----------------------------------|
+| `fragment` | `text`            | A JSONPath, XPath or GPath query |
+| `file`     | `file` *required* | An existing file                 |
 
 ##### Examples:
 ```gherkin
 Then the response fragment 'users[1]' contains the file 'data/response1.json'
 ```
 
-<br /><br />
 
 ### Check response body fragment (value)
 ```text copy=true
@@ -1147,10 +1137,10 @@ Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name       | Wakamiti type  | Description                      |
-|------------|----------------|----------------------------------|
-| `fragment` | `text`         | A JSONPath, XPath or GPath query |
-| `matcher`  | `*-assertion`  | [Comparator][1]                  |
+| Name       | Wakamiti type            | Description                      |
+|------------|--------------------------|----------------------------------|
+| `fragment` | `text` *required*        | A JSONPath, XPath or GPath query |
+| `matcher`  | `*-assertion` *required* | [Comparator][1]                  |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -1161,7 +1151,6 @@ Then the decimal from response fragment 'users[1].account.availableMoney' is gre
 Then the decimal from response fragment 'users[0].lastName' starts with 'J'
 ```
 
-<br /><br />
 
 ### Check response content type
 ```text copy=true
@@ -1171,16 +1160,15 @@ Validate that the content type of the last response is the expected. This step w
 `Content-Type` response header against the corresponding MIME type.
 
 ##### Parameters:
-| Name   | Wakamiti type | Description                                        |
-|--------|---------------|----------------------------------------------------|
-| `word` | `word`        | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
+| Name   | Wakamiti type     | Description                                        |
+|--------|-------------------|----------------------------------------------------|
+| `word` | `word` *required* | `ANY`,`TEXT`,`JSON`,`XML`,`HTML`,`URLENC`,`BINARY` |
 
 ##### Examples:
 ```gherkin
 Then the response content type is JSON
 ```
 
-<br /><br />
 
 ### Check response size
 ```text copy=true
@@ -1189,16 +1177,15 @@ the response length {matcher}
 Validate that the length in bytes of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type       | Description            |
-|-----------|---------------------|------------------------|
-| `matcher` | `integer-assertion` | Number [comparator][1] |
+| Name      | Wakamiti type                  | Description            |
+|-----------|--------------------------------|------------------------|
+| `matcher` | `integer-assertion` *required* | Number [comparator][1] |
 
 ##### Examples:
 ```gherkin
 Then the response length is less than 500
 ```
 
-<br /><br />
 
 ### Check response header
 ```text copy=true
@@ -1207,10 +1194,10 @@ the (texto|entero|decimal) response header {name} {matcher}
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type | Description          |
-|-----------|---------------|----------------------|
-| `name`    | `text`        | The HTTP header name |
-| `matcher` | `*-assertion` | [Comparator][1]      |
+| Name      | Wakamiti type            | Description          |
+|-----------|--------------------------|----------------------|
+| `name`    | `text` *required*        | The HTTP header name |
+| `matcher` | `*-assertion` *required* | [Comparator][1]      |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -1221,20 +1208,20 @@ Then the text response header Content-Encoding contains 'gzip'
 Then the integer response header Age is greater than 10
 ```
 
-<br /><br />
 
 ### Check response schema
 ```text copy=true
 the response satisfies the following schema:
+    {data}
 ```
 Asserts that the response body structure satisfies a given schema. The accepted schema formats are
 [JSON Schema](https://json-schema.org/) for JSON responses and [XML Schema](https://www.w3.org/2001/XMLSchema) for XML
 responses (according the`Content-Type` response header).
 
 #### Parameters:
-| name | Wakamiti type | description               |
-|------|---------------|---------------------------|
-|      | `document`    | JSON Schema or XML Schema |
+| name   | Wakamiti type         | description               |
+|--------|-----------------------|---------------------------|
+| `data` | `document` *required* | JSON Schema or XML Schema |
 
 #### Examples:
 ```gherkin
@@ -1269,7 +1256,6 @@ Then the response satisfies the following schema:
   """
 ```
 
-<br /><br />
 
 ### Check response schema (file)
 ```text copy=true
@@ -1280,9 +1266,9 @@ Asserts that the response body structure satisfies a schema from a given file. T
 response header).
 
 ##### Parameters:
-| name | Wakamiti type | description                    |
-|------|---------------|--------------------------------|
-|      | `file`        | JSON Schema or XML Schema file |
+| name   | Wakamiti type     | description                    |
+|--------|-------------------|--------------------------------|
+| `file` | `file` *required* | JSON Schema or XML Schema file |
 
 ##### Examples:
 ```gherkin

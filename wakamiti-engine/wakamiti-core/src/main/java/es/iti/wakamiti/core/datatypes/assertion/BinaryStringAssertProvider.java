@@ -10,12 +10,13 @@ import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static es.iti.wakamiti.api.util.MapUtils.*;
+import static org.hamcrest.Matchers.*;
 
 
 /**
@@ -45,6 +46,27 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
+    private final Map<String, Function<String, Matcher<String>>> matchers = mapEntries(
+            entry(EQUALS, Matchers::equalTo),
+            entry(EQUALS_IGNORE_CASE, Matchers::equalToIgnoringCase),
+            entry(EQUALS_IGNORE_WHITESPACE, Matchers::equalToCompressingWhiteSpace),
+            entry(STARTS_WITH, Matchers::startsWith),
+            entry(STARTS_WITH_IGNORE_CASE, Matchers::startsWithIgnoringCase),
+            entry(ENDS_WITH, Matchers::endsWith),
+            entry(ENDS_WITH_IGNORE_CASE, Matchers::endsWithIgnoringCase),
+            entry(CONTAINS, Matchers::containsString),
+            entry(CONTAINS_IGNORE_CASE, Matchers::containsStringIgnoringCase),
+            entry(NOT_EQUALS, value -> not(equalTo(value))),
+            entry(NOT_EQUALS_IGNORE_CASE, value -> not(equalToIgnoringCase(value))),
+            entry(NOT_EQUALS_IGNORE_WHITESPACE, value -> not(equalToCompressingWhiteSpace(value))),
+            entry(NOT_STARTS_WITH, value -> not(startsWith(value))),
+            entry(NOT_STARTS_WITH_IGNORE_CASE, value -> not(startsWithIgnoringCase(value))),
+            entry(NOT_ENDS_WITH, value -> not(endsWith(value))),
+            entry(NOT_ENDS_WITH_IGNORE_CASE, value -> not(endsWithIgnoringCase(value))),
+            entry(NOT_CONTAINS, value -> not(containsString(value))),
+            entry(NOT_CONTAINS_IGNORE_CASE, value -> not(containsStringIgnoringCase(value)))
+    );
+
     /**
      * Remove leading and trailing {@code "} or {@code '} and replace escaped
      * characters from the input string.
@@ -64,26 +86,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
      */
     @Override
     protected String[] expressions() {
-        return new String[]{
-                EQUALS,
-                EQUALS_IGNORE_CASE,
-                EQUALS_IGNORE_WHITESPACE,
-                STARTS_WITH,
-                STARTS_WITH_IGNORE_CASE,
-                ENDS_WITH,
-                ENDS_WITH_IGNORE_CASE,
-                CONTAINS,
-                CONTAINS_IGNORE_CASE,
-                NOT_EQUALS,
-                NOT_EQUALS_IGNORE_CASE,
-                NOT_EQUALS_IGNORE_WHITESPACE,
-                NOT_STARTS_WITH,
-                NOT_STARTS_WITH_IGNORE_CASE,
-                NOT_ENDS_WITH,
-                NOT_ENDS_WITH_IGNORE_CASE,
-                NOT_CONTAINS,
-                NOT_CONTAINS_IGNORE_CASE
-        };
+        return matchers.keySet().toArray(new String[0]);
     }
 
     /**
@@ -128,45 +131,6 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
             String value
     ) {
         value = prepareString(value);
-        Matcher<String> matcher = null;
-        if (EQUALS.equals(key)) {
-            matcher = Matchers.equalTo(value);
-        } else if (EQUALS_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.equalToIgnoringCase(value);
-        } else if (EQUALS_IGNORE_WHITESPACE.equals(key)) {
-            matcher = Matchers.equalToCompressingWhiteSpace(value);
-        } else if (STARTS_WITH.equals(key)) {
-            matcher = Matchers.startsWith(value);
-        } else if (STARTS_WITH_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.startsWithIgnoringCase(value);
-        } else if (ENDS_WITH.equals(key)) {
-            matcher = Matchers.endsWith(value);
-        } else if (ENDS_WITH_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.endsWithIgnoringCase(value);
-        } else if (CONTAINS.equals(key)) {
-            matcher = Matchers.containsString(value);
-        } else if (CONTAINS_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.containsStringIgnoringCase(value);
-        } else if (NOT_EQUALS.equals(key)) {
-            matcher = Matchers.not(Matchers.equalTo(value));
-        } else if (NOT_EQUALS_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.not(Matchers.equalToIgnoringCase(value));
-        } else if (NOT_EQUALS_IGNORE_WHITESPACE.equals(key)) {
-            matcher = Matchers.not(Matchers.equalToCompressingWhiteSpace(value));
-        } else if (NOT_STARTS_WITH.equals(key)) {
-            matcher = Matchers.not(Matchers.startsWith(value));
-        } else if (NOT_STARTS_WITH_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.not(Matchers.startsWithIgnoringCase(value));
-        } else if (NOT_ENDS_WITH.equals(key)) {
-            matcher = Matchers.not(Matchers.endsWith(value));
-        } else if (NOT_ENDS_WITH_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.not(Matchers.endsWithIgnoringCase(value));
-        } else if (NOT_CONTAINS.equals(key)) {
-            matcher = Matchers.not(Matchers.containsString(value));
-        } else if (NOT_CONTAINS_IGNORE_CASE.equals(key)) {
-            matcher = Matchers.not(Matchers.containsStringIgnoringCase(value));
-        }
-
-        return matcher;
+        return matchers.get(key).apply(value);
     }
 }

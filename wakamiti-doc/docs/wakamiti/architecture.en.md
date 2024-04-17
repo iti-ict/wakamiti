@@ -10,47 +10,52 @@ slug: /en/wakamiti/architecture
 
 ---
 
----
-## Global configuration
 
-Wakamiti's configuration is defined via `yaml` file located in the test directory. By default, Wakamiti will look for the 
+## Global options
+
+Wakamiti's configuration is set up via `yaml` file located in the test directory. By default, Wakamiti searches for the 
 file named `wakamiti.yaml`.
 
-<br /><br />
 
 ### `wakamiti.resourceTypes`
+- Type: `string` *required*
 
-Sets the language for test scenarios. Only `gherkin` is available for now.
+Sets the resource type of the test scenarios. Currently only `gherkin` is available.
 
 Example:
-
 ```yaml
 wakamiti:
   resourceTypes: gherkin
 ```
 
-<br /><br />
+
+### `wakamiti.language`
+- Type: `locale` 
+- Default: `en`
+
+Sets the language of the test scenarios.
+
 
 ### `wakamiti.resourcePath`
+- Type: `file`
+- Default: `.` (path where the configuration file is located)
 
 Sets the path where the test files are located.
 
-Default value is `.` (path where the configuration file is located).
-
 Example:
-
 ```yaml
 wakamiti:
   resourcePath: /other/path
 ```
 
-<br /><br />
 
 ### `wakamiti.outputFilePath`
+- Type: `file`
+- Default: `wakamiti.json` (in the current directory)
 
-Set the results file directory.
+Sets the results file directory.
 
-Output path may contain the following replacement placeholders (**since** 1.7.0):
+The output path may contain the following replacement placeholders:
 
 | placeholder | replacement            |
 |-------------|------------------------|
@@ -66,23 +71,19 @@ Output path may contain the following replacement placeholders (**since** 1.7.0)
 | `%TIME%`    | `%hh%%mm%%ss%%ssss%`   |
 | `%execID%`  | unique execution       |
 
-Default value is `wakamiti.json` (in the current directory).
-
 Example:
-
 ```yaml
 wakamiti:
   outputFilePath: result/wakamiti.json
 ```
 
-<br /><br />
 
 ### `wakamiti.outputFilePerTestCase`
+- Type: `boolean`
+- Default: `false`
 
-Set whether each test case should produce an output file. If enabled, the output files would be produce in the 
-folder set in `wakamiti.outputFilePath`, and the file name would be directly the ID of the test case.
-
-Default value is `false`
+Specifies whether an output file should be created for each test case. If enabled, the value of `wakamiti.outputFilePath` 
+is the destination directory and the filename is the test case ID itself.
 
 Example:
 ```yaml
@@ -91,65 +92,55 @@ wakamiti:
 
 ```
 
-**Since** 1.7.0
-
-<br /><br />
 
 ### `wakamiti.tagFilter`
+- Type: `string`
 
-Filter scenarios tagged with the indicated [expression](https://cucumber.io/docs/cucumber/api/#tag-expressions).
+Filter out scenarios tagged with the specified [expression](https://cucumber.io/docs/cucumber/api/#tag-expressions).
 
 Example:
-
 ```yaml
 wakamiti:
   tagFilter: not Ignore
 ```
 
-<br /><br />
 
 ### `wakamiti.idTagPattern`
+- Type: `regex`
+- Default: `ID-(\w*)`
 
-Sets the indicated scenario id tag pattern. It must contains a valid regular expression.
-
-Default value is `ID-(\w*)`.
+Specifies the tag pattern of scenario identifiers. Must be a valid regular expression.
 
 Example:
-
 ```yaml
 wakamiti:
   idTagPattern: ([0-9]+)
 ```
 
-<br /><br />
 
 ### `wakamiti.strictTestCaseID`
+- Type: `boolean`
+- Default: `false`
 
-Set whether the plan executor should assert that each test case is properly annotated with a tag 
+Sets whether the plan executor should assert that each test case is properly annotated with a tag 
 matching the pattern from  `idTagPattern`. If enabled and some test case does not satisfiy this requisite, the 
 executor will stop resulting in an error.
 
-Default value is `false`
-
 Example:
-
 ```yaml
 wakamiti:
   strictTestCaseID: true
 ```
 
-**Since** 1.7.0
-
-<br /><br />
 
 ### `wakamiti.launcher.modules`
+- Type: `string[]`
 
-Sets the modules that will be used during the tests. These modules are maven artifacts located in a 
-[repository indicated in the configuration](#mavenfetcher-remoterepositories). It must be specified with the pattern 
+Sets the modules to be used during tests. These modules are Maven artifacts located in a 
+[repository indicated in the configuration](#mavenfetcher-remoterepositories). They must be specified using the pattern 
 `<groupId>:<artifactId>:<version>`.
 
 Example:
-
 ```yaml
 wakamiti:
   launcher:
@@ -159,254 +150,240 @@ wakamiti:
       - mysql:mysql-connector-java:8.0.28
 ```
 
-<br /><br />
 
 ### `wakamiti.report.generation`
+- Type: `boolean`
+- Default: `true`
 
-Sets if the test result report will be generated at the end of execution or not.
-
-Default value is `true`.
+Specifies whether the test result report is generated when the test is finished running.
 
 Example:
-
 ```yaml
 wakamiti:
   report: 
     generation: "false"
 ```
 
-<br /><br />
-
 ### `wakamiti.redefinition.definitionTag`
+- Type: `string`
+- Default: `definition`
 
 Sets the tag to indicated that the **feature** is a [definition]().
 
-Default value is `definition`.
-
 Example:
-
 ```yaml
 wakamiti:
   redefinition:
     definitionTag: def
 ```
 
-<br /><br />
 
 ### `wakamiti.redefinition.implementationTag`
+- Type: `string`
+- Default: `implementation`
 
 Sets the tag to indicated that the **feature** is a [implementation]().
 
-Default value is `implementation`.
-
 Example:
-
 ```yaml
 wakamiti:
   redefinition:
     implementationTag: impl
 ```
 
-<br /><br />
 
-### `wakamiti.log.path`
+### `wakamiti.properties.hidden`
+- Type: `string[]`
 
-Sets the directory where a log file named `wakamiti-${yyyyMMddhhmmss}.log` will be created, where
-`${yyyyMMddhhmmss}` is the system date pattern. By default the log will not be created.
+Specifies which [properties](#dynamic-properties) should be hidden in the test report.
 
 Example:
+```yaml
+wakamiti:
+  properties:
+    hidden: 
+      - token
+      - credentials.password
+```
 
+
+### `wakamiti.log.path`
+- Type: `file`
+
+Specify the directory where a log file named `wakamiti-${yyyyMMddhhmmss}.log` will be created, where `${yyyyMMddhhmmss}` 
+is the system date pattern. By default, the log is not created.
+
+Example:
 ```yaml
 wakamiti:
   log:
     path: results
 ```
 
-<br /><br />
 
 ### `wakamiti.log.level`
+- Type: `string`
+- Default: `info`
 
 Sets the log level. Depending on the level indicated, more or less information will be displayed or omitted.
 Possible values are: `info`, `error`, `fatal`, `warning`, `debug`, `trace`.
 [See more](https://unpocodejava.com/2011/01/17/niveles-log4j/)
 
-Default value is `info`.
-
 Example:
-
 ```yaml
 wakamiti:
   log:
     level: debug
 ```
 
-<br /><br />
 
 ### `wakamiti.logs.ansi.enabled`
+- Type: `boolean`
+- Default: `true`
 
-Set whether the console logs should use [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)).
-
-Default value is `true`.
+Sets whether the console logs should use [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code).
 
 Example:
-
 ```yaml
 wakamiti:
   logs:
-    ansi.enabled: true
+    ansi:
+      enabled: true
 ```
 
-<br /><br />
 
 ### `wakamiti.logs.showLogo`
+- Type: `boolean`
+- Default: `true`
 
-Set whether the Wakamiti logo should be printed in the console logs.
-
-Default value is `true`.
+Determines whether the Wakamiti logo is displayed in the console logs at the start of execution.
 
 Example:
-
 ```yaml
 wakamiti:
   logs:
     showLogo: true
 ```
 
-<br /><br />
 
 ### `wakamiti.logs.showElapsedTime`
+- Type: `boolean`
+- Default: `true`
 
-
-Set whether the console logs should include the ellapsed time of each test case.
-
-Default value is `true`.
+Sets whether elapsed times are displayed in the console logs.
 
 Example:
-
 ```yaml
 wakamiti:
   logs:
     showElapsedTime: true
 ```
 
-<br /><br />
 
 ### `wakamiti.junit.treatStepsAsTests`
+- Type: `boolean`
+- Default: `false`
 
-When using the Wakamiti JUnit runner, set whether each step should be notified as a test, so that
-reports and other integration tools that use JUnit show more relevant info.
-
-Default value is `false`.
+Specifies whether each step should be reported as a test when using Wakamiti's JUnit runner (to make JUnit derived 
+reports and results more relevant).
 
 Example:
-
 ```yaml
 wakamiti:
   junit:
     treatStepsAsTests: true
 ```
 
-<br /><br />
 
 ### `wakamiti.nonRegisteredStepProviders`
+- Type: `string[]`
 
-Allows the use of dynamically-included step contributors, instead of require them to be provided as part of a plugin.
-This way, project-specific steps can be tailored on the fly.
-
+It allows you to dynamically include step providers without them being part of a plugin. This allows ad hoc steps to be 
+created for the needs of the specific project being tested.
 
 Example:
-
 ```yaml
 wakamiti:
   nonRegisteredStepProviders:
     - com.example.CustomSteps
 ```
 
-<br /><br />
 
 ### `mavenFetcher.remoteRepositories`
+- Type: `URL[]`
 
-Sets remote reporitories.
+Sets remote repositories.
 
 Example:
-
 ```yaml
 mavenFetcher:
   remoteRepositories: https://repo.maven.apache.org/maven2;file:///home/user/.m2/repository
 ```
 
-<br /><br />
 
 ### `mavenFetcher.localRepository`
+- Type: `file`
 
 Sets the local repository directory.
 
 Example:
-
 ```yaml
 mavenFetcher:
   localRepository: /usr/mvn-repo
 ```
 
 
----
-## Feature configuration
 
-In addition to the global configuration, feature-specific properties can be set within each file.
+## Feature options
 
-<br /><br />
+In addition to the global configuration, specific properties can be included in each feature file.
+
 
 ### `language`
+- Type: `locale`
+- Default: `en`
 
-Set the language (identified by means of the standard [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
-which be used to write the test steps.
-
-Default value is `en`.
+Sets the language (identified by means of the standard 
+[ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) which be used to write the test steps.
 
 Example:
-
 ```gherkin
 # language: es
 Feature: ...
 ```
 
-<br /><br />
 
 ### `dataFormatLanguage`
+- Type: `locale`
+- Default: `en`
 
-
-Set the language (identified by means of the standard [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
-which be used to write the parameter values within a step, in case the value type accepts localized formats, such as dates 
-and numbers using separation symbols.
-
-Default value is inherited from `language`.
+Specifies the language (identified by [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) in which the 
+step parameter values are to be written, in cases where localised formats are accepted, such as dates and numbers with 
+separators.
 
 Example:
-
 ```gherkin
 # language: es
 # dataFormatLanguage: en  
 Feature: ...
 ```
 
-<br /><br />
 
 ### `modules`
+- Type: `string[]`
 
-Restrict what steps can be used in a feature file, in order to avoid potential expression conflicts
-among several plugins that were not desgined to work together.
-
+Restricts the steps to be used in a file to avoid possible expression conflicts between multiple plugins that are not 
+designed to work together.
 
 Example:
-
 ```gherkin
 #modules: database-steps, rest-steps
 Feature: ...
 ```
 
-<br /><br />
 
 ### `redefinition.stepMap`
+- Type: `integer[]`
 
 When a test case is represented both at definition and implementation levels, this property
 declares the correspondence between definition steps and implementation steps. Otherwise, a default 
@@ -422,11 +399,10 @@ value `1-2-1` implies the following correspondence:
 | 2           | 2,3            |
 | 3           | 4              |
 
-Notice that this property must be defined in the implementation side, above the proper scenario.
-In addition, the scenario must have a unique identifier.
+Note that this property must be defined in the implementation section, above the proper scenario. In addition to this, 
+the scenario must have a unique identifier.
 
 Example:
-
 ```gherkin
 @implementation
 Feature: ...
@@ -437,89 +413,77 @@ Feature: ...
 Scenario: ...
 ```
 
-<br /><br />
+
 
 ## Data types
 
 
 ### `text`
-Any text enclosed in quotes with `''`. 
+Any text enclosed in quotes with `''`.
 
 Example: `'texto de ejemplo'`.
 
-<br /><br />
 
 ### `word`
-Any word (supports hyphens). 
+Any word (supports hyphens).
 
 Example: `AB_C-1D`.
 
-<br /><br />
 
 ### `file`
 A local file path (relative or absolute).
 
 Example: `'dir/file.yaml'`.
 
-<br /><br />
 
 ### `url`
 Example: `https://localhost/test`.
 
-<br /><br />
 
 ### `integer`
 Example: `14`.
 
-<br /><br />
 
 ### `decimal`
 Example: `14.5`.
 
-<br /><br />
 
 ### `date`
 A date in format `yyyy-MM-dd`. 
 
 Example: `'2022-02-22'`.
 
-<br /><br />
 
 ### `time`
-A time in format `hh:mm`, `hh:mm:ss` o `hh:mm:ss.SSS`. 
+A time in format `hh:mm`, `hh:mm:ss` or `hh:mm:ss.SSS`. 
 
 Example: `'12:05:06.468'`.
 
-<br /><br />
 
 ### `datetime`
-A datetime in format `yyyy-MM-ddThh:mm`, `yyyy-MM-ddThh:mm:ss` o `yyyy-MM-ddThh:mm:ss.SSS`. 
+A datetime in format `yyyy-MM-ddThh:mm`, `yyyy-MM-ddThh:mm:ss` or `yyyy-MM-ddThh:mm:ss.SSS`. 
 
 Example: 
 `'2022-02-22T12:05:06.468'`.
 
-<br /><br />
 
 ### `text-assertion`
 Text comparator. [See more](#comparators). 
 
-Example: `is equals to 'something'`.
+Example: `is equal to 'something'`.
 
-<br /><br />
 
 ### `long-assertion`
 Integer comparator. [See more](#comparators). 
 
-Example: `is greater than or equals to 13`.
+Example: `is greater than or equal to 13`.
 
-<br /><br />
 
 ### `float-assertion`
 Decimal comparator. [See more](#comparators). 
 
-Example: `is less than or equals to 10.02`.
+Example: `is less than or equal to 10.02`.
 
-<br /><br />
 
 ### `document`
 Text block located on the next line of the step description.
@@ -533,7 +497,6 @@ text
 """
 ```
 
-<br /><br />
 
 ### `table`
 Data table located on the next line of the step description.
@@ -546,7 +509,7 @@ Example:
 ```
 
 
----
+
 ## Comparators
 
 Text snippets that translate into matchers for different data types, reusable at any step. The available comparator 
@@ -556,46 +519,44 @@ types are:
 - `long-assertion`
 - `decimal-assertion`
 
-<br /><br />
 
-### `is (not) (equals to) ~x~` 
-Type: numeric and text. It also supports the variants `is (equals to) ~x~ \(ignoring case\)` and
-`is (equals to) ~x~ \(ignoring whitespace\)` for text type comparators and the negative version.
+### `is (not) (equal to) ~x~` 
+Type: numeric and text. It also supports the variants `is (equal to) ~x~ \(ignoring case\)` and
+`is (equal to) ~x~ \(ignoring whitespace\)` for text type comparators and the negative version.
 
 #### Examples
 ```
 is 14
 ```
 ```
-is equals to 22
+is equal to 22
 ```
 ```
-is equals to 'algo'
+is equal to 'algo'
 ```
 ```
 is 'something'
 ```
 ```
-is equals to 'somEthing' (ignoring case)
+is equal to 'somEthing' (ignoring case)
 ```
 ```
-is equals to ' something ' (ignoring whitespace)
+is equal to ' something ' (ignoring whitespace)
 ```
 ```
-is not equals to 14
+is not equal to 14
 ```
 
-<br /><br />
 
-### `is (not) (greather|less) than ~x~`
+### `is (not) (greater|less) than ~x~`
 Type: numeric. It also supports decimals and the negative version.
 
 #### Examples
 ```
-is greather than 14
+is greater than 14
 ```
 ```
-is greather than 14.3
+is greater than 14.3
 ```
 ```
 is less than 14
@@ -604,35 +565,33 @@ is less than 14
 is less thane 14.3
 ```
 ```
-is not greather than 14
+is not greater than 14
 ```
 
-<br /><br />
 
-### `is (not) (greather|less) or equals to ~x~`
+### `is (not) (greater|less) or equal to ~x~`
 Type: numeric. It also supports decimals and the negative version.
 
 #### Examples
 ```
-is greather or equals to 14
+is greater or equal to 14
 ```
 ```
-is greather or equals to 14.3
+is greater or equal to 14.3
 ```
 ```
-is less or equals to 14
+is less or equal to 14
 ```
 ```
-is less or equals to 14.3
+is less or equal to 14.3
 ```
 ```
-is not greather or equals to 14
+is not greater or equal to 14
 ```
 
-<br /><br />
 
-### `(does not) starts with ~x~`
-Type: text. It also supports the variants `is (equals to) ~x~ \(ignoring case\)` and the negative version.
+### `(does not) start(s) with ~x~`
+Type: text. It also supports the variants `starts with ~x~ \(ignoring case\)` and the negative version.
 
 #### Examples
 ```
@@ -642,29 +601,27 @@ starts with 'something'
 starts with 'somEthing' (ignoring case)
 ```
 ```
-does not starts with 'something'
+does not start with 'something'
 ```
 
-<br /><br />
 
-### `(does not) end with ~x~`
-Type: text. It also supports the variants `is (equals to) ~x~ \(ignoring case\)` and the negative version.
+### `(does not) end(s) with ~x~`
+Type: text. It also supports the variants `ends with ~x~ \(ignoring case\)` and the negative version.
 
 #### Examples
 ```
-end with 'something'
+ends with 'something'
 ```
 ```
-end with 'somEthing' (ignoring case)
+ends with 'somEthing' (ignoring case)
 ```
 ```
 does not end with 'something'
 ```
 
-<br /><br />
 
-### `(does not) contains ~x~`
-Type: text. It also supports the variants `is (equals to) ~x~ \(ignoring case\)` and the negative version.
+### `(does not) contain(s) ~x~`
+Type: text. It also supports the variants `contains ~x~ \(ignoring case\)` and the negative version.
 
 #### Examples
 ```
@@ -674,10 +631,9 @@ contains 'something'
 contains 'somEthing' (ignoring case)
 ```
 ```
-does not contains 'something'
+does not contain 'something'
 ```
 
-<br /><br />
 
 ### `is (not) null`
 Type: numeric and text. It also supports the negative version.
@@ -690,7 +646,6 @@ is null
 is not null
 ```
 
-<br /><br />
 
 ### `is (not) empty`
 Type: numeric and text. It also supports the negative version.
@@ -703,7 +658,6 @@ is empty
 is not empty
 ```
 
-<br /><br />
 
 ### `is (not) null or empty`
 Type: numeric and text. It also supports the negative version.
@@ -717,22 +671,22 @@ is not null or empty
 ```
 
 
--------
+
 ## Dynamic properties
 
-Wakamiti allows using dynamic properties to make easier the passing of information to the execution 
-though `${[property description]}` syntax.
+Wakamiti allows the use of dynamic properties to easily pass information to scenario execution using the syntax 
+`${[property description]}`.
 
-The `[property description]` will depend on the type of property you want to apply. 
+The `[property description]` depends on the type of property to be applied.
 
-<br /><br />
 
 ### Global property
-Gets the value of a global property, using the syntax `${[name]}`, where `[name]` is the name of a property that is 
-present in the Wakamiti configuration.
+
+Get the value of a global property using the syntax `${[name]}`, where `[name]` is the name of a property present in the 
+Wakamiti configuration.
 
 #### Examples
-We have the following configuration in the `wakamiti.yaml` file:
+Having the following configuration in the `wakamiti.yaml` file:
 ```yml
 wakamiti:
   resourceTypes:
@@ -743,24 +697,24 @@ wakamiti:
     password: s3cr3t
 ```
 
-We have the following step:
+And having the following step:
 ```gherkin
-Given the service use the oauth authentication credentials '${credentials.username}':'${credentials.password}'
+Given the service uses the oauth authentication credentials '${credentials.username}':'${credentials.password}'
 ```
 
 When executed, it would resolve as:
 ```gherkin
-Given the service use the oauth authentication credentials 'user':'s3cr3t'
+Given the service uses the oauth authentication credentials 'user':'s3cr3t'
 ```
 
-<br /><br />
 
 ### Step Result property
 
-Get the result of a previous step, using the syntax `${[step number]#[xpath/jsonpath/gpath expression]}`, where 
+Get the result of a previous step using the syntax `${[step number]#[xpath/jsonpath/gpath expression]}`, where 
 `[step number]` is the position of the step from which you want to retrieve the result, and 
-`[expression xpath/jsonpath/gpath]` is the expression to optionally retrieve a specific data when the result is a 
-complex object, such as a xml, a json or even a text.
+`[xpath/jsonpath/gpath expression]` is the expression to optionally retrieve specific data if the result is a complex 
+object, such as a xml, json or even text.
+
 
 See more about [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath].
 
@@ -791,12 +745,12 @@ Assume that step `1` returns the following:
 
 We have the following step:
 ```gherkin
-Then a user identified by '${1#$.body.items[0].id}' exist in the database table USERS
+Then a user identified by '${1#$.body.items[0].id}' exists in the database table USERS
 ```
 
 When executed, it would resolve as:
 ```gherkin
-Then a user identified by '4' exist in the database table USERS
+Then a user identified by '4' exists in the database table USERS
 ```
 
 

@@ -19,10 +19,10 @@
             <defaultValue>${pluginId}</defaultValue>
         </requiredProperty>
         <requiredProperty key="defaultWakamitiApiVersion">
-            <defaultValue>2.4.0-SNAPSHOT</defaultValue>
+            <defaultValue>2.4.1</defaultValue>
         </requiredProperty>
         <requiredProperty key="defaultWakamitiCoreVersion">
-            <defaultValue>2.4.0-SNAPSHOT</defaultValue>
+            <defaultValue>2.5.0</defaultValue>
         </requiredProperty>
         <requiredProperty key="wakamitiApiVersion">
             <defaultValue>${defaultWakamitiApiVersion}</defaultValue>

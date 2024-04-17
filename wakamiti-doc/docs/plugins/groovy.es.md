@@ -4,26 +4,34 @@ date: 2023-01-20
 slug: /plugins/groovy
 ---
 
+
 Este plugin proporciona un compilador de clases `groovy` y pasos para la ejecución de código `groovy`.
 
-```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:groovy-wakamiti-plugin:2.3.3
-```
-
-```text tabs=coord name=maven copy=true
-<dependency>
-  <groupId>es.iti.wakamiti</groupId>
-  <artifactId>groovy-wakamiti-plugin</artifactId>
-  <version>2.3.3</version>
-</dependency>
-```
 
 ---
 ## Tabla de contenido
 
 ---
 
----
+
+## Instalación
+
+
+Incluye el módulo en la sección correspondiente.
+
+```text tabs=coord name=yaml copy=true
+es.iti.wakamiti:groovy-wakamiti-plugin:2.4.0
+```
+
+```text tabs=coord name=maven copy=true
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>groovy-wakamiti-plugin</artifactId>
+  <version>2.4.0</version>
+</dependency>
+```
+
+
 ## Compilador
 
 El compilador groovy intentará compilar cualquier fichero con extensión `.groovy` presente en el directorio (o 
@@ -74,8 +82,8 @@ class CustomSteps implements StepContributor, Configurable {
 ```
 
 Incluímos esta nueva clase en la configuración 
-[`wakamiti.nonRegisteredStepProviders`](wakamiti/architecture#wakamitinonRegisteredStepProviders) de Wakamiti, y añadimos las 
-propiedades con las credenciales de ejemplo:
+[`wakamiti.nonRegisteredStepProviders`](wakamiti/architecture#wakamitinonRegisteredStepProviders) de Wakamiti, y 
+añadimos las propiedades con las credenciales de ejemplo:
 ```yml
   nonRegisteredStepProviders:
     - example.CustomSteps
@@ -97,12 +105,13 @@ Al ejecutarse, se mostraría en el log:
 [e.i.w.example.CustomSteps.customStep]   INFO - Hello, user! Your password is s3cr3t
 ```
 
----
+
 ## Pasos
 
 ### Ejecutar código
 ```text copy=true
 (que) se ejecuta el siguiente código groovy:
+    {data}
 ```
 Ejecuta el script groovy indicado, incluyendo las siguentes variables:
 - `ctx`: Contexto del escenario. Se trata de un contenedor con el `id` del escenario, los resultados de los diferentes 
@@ -110,9 +119,9 @@ Ejecuta el script groovy indicado, incluyendo las siguentes variables:
 - `log`: Logger de Wakamiti para depurar el script.
 
 #### Parámetros:
-| Nombre | Wakamiti type | Descripción          |
-|--------|---------------|----------------------|
-|        | `document`    | Contenido del script |
+| Nombre | Wakamiti type            | Descripción          |
+|--------|--------------------------|----------------------|
+| `data` | `document` *obligatorio* | Contenido del script |
 
 #### Ejemplos:
 ```gherkin
@@ -132,7 +141,7 @@ Escenario: Ejemplo
     """
 ```
 
----
+
 ## Propiedades dinámicas
 
 ### Propiedad groovy

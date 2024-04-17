@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+
 
 /**
  * This class represents an executable tree node and
@@ -30,10 +32,10 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         extends TreeNode<S> {
 
     private String executionID;
-    private Optional<ExecutionState<R>> executionState = Optional.empty();
+    private ExecutionState<R> executionState;
 
 
-    public ExecutableTreeNode(List<S> children) {
+    protected ExecutableTreeNode(List<S> children) {
         super(children);
     }
 
@@ -68,10 +70,10 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
      * @return The node execution state
      */
     public ExecutionState<R> prepareExecution() {
-        if (executionState.isEmpty()) {
-            executionState = Optional.of(createExecutionState());
+        if (isNull(executionState)) {
+            executionState = createExecutionState();
         }
-        return executionState.get();
+        return executionState;
     }
 
     /**
@@ -93,7 +95,7 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
      * until {@link #prepareExecution()} is called
      */
     public Optional<ExecutionState<R>> executionState() {
-        return executionState;
+        return Optional.ofNullable(executionState);
     }
 
 

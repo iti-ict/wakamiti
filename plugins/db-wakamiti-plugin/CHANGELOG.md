@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [3.1.0] - 2024-04-16
+
+### Fixed
+- Step definitions and translations.
+
+### Added
+- Procedure post-execution.
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [3.0.0] - 2024-03-22
 
 ### Fixed
@@ -13,14 +25,13 @@ and this project adheres to [Semantic Versioning][2].
 - Data comparison issues.
 
 ### Added
-- Multiple connections identified by aliases.
+- Aliases identify multiple connections.
 - Data selection steps.
 - Procedure execution steps.
 - Similar row selection when not found.
 
 ### Deleted
-- Removed enum `CaseSensitivity`. Entity names are now automatically obtained from database.
-
+- Removed enum `CaseSensitivity`. Entity names are now automatically obtained from the database.
 
 
 ## [2.3.3] - 2023-09-14

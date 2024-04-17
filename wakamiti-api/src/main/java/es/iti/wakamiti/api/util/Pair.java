@@ -104,9 +104,9 @@ public class Pair<T, U> {
      * @return A new Pair with mapped key and value.
      */
     public <R> Pair<R, R> mapEach(Function<Object, R> map) {
-        R key = map.apply(this.key);
-        R value = map.apply(this.value);
-        return new Pair<>(key, value);
+        R k = map.apply(this.key);
+        R v = map.apply(this.value);
+        return new Pair<>(k, v);
     }
 
     /**

@@ -9,84 +9,132 @@ salida, e intenta subir dicho fichero a una ubicación remota usando el protocol
 Más específicamente, se dispara ante cualquier evento de tipo `STANDARD_OUTPUT_FILE_WRITTEN`,
 `TEST_CASE_OUTPUT_FILE_WRITTEN` o `REPORT_OUTPUT_FILE_WRITTEN`.
 
-```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:file-uploader-wakamiti-plugin:2.5.0
-```
-
-```text tabs=coord name=maven copy=true
-<dependency>
-  <groupId>es.iti.wakamiti</groupId>
-  <artifactId>file-uploader-wakamiti-plugin</artifactId>
-  <version>2.5.0</version>
-</dependency>
-```
 
 ---
 ## Tabla de contenido
 
 ---
 
----
+
+## Instalación
+
+
+Incluye el módulo en la sección correspondiente.
+
+```text tabs=coord name=yaml copy=true
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.6.0
+```
+
+```text tabs=coord name=maven copy=true
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>file-uploader-wakamiti-plugin</artifactId>
+  <version>2.6.0</version>
+</dependency>
+```
+
+
 ## Configuración
 
 
-### `fileUploader.enable` : `true`|`false`
-Since: ```2.0.0```
+### `fileUploader.enabled`
+- Tipo: `boolean`
+- Por defecto: `true`
 
-Activa - desactiva el observador de eventos. El valor por defecto es `false`
+Indica si el plugin está activado.
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  enabled: "false"
+```
+
 
 ### `fileUploader.host`
-Since: ```2.0.0```
+- Tipo: `string` *obligatorio*
+
 
 El nombre o dirección IP de la máquina a la que se van a subir los ficheros. Opcionalmenbte,
-puede incluir un número de puerto, en la forma `hostname:port`
+puede incluir un número de puerto, en la forma `hostname:port`.
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  host: 172.0.0.1:22
+```
+
 
 ### `fileUploader.credentials.username`
-Since: ```2.0.0```
+- Tipo: `string` *obligatorio*
 
-El nombre de usuario usado para establecer la conexión FTP/FTPS
+El nombre de usuario usado para establecer la conexión.
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  credentials: 
+    username: test
+```
+
 
 ### `fileUploader.credentials.password`
-Since: ```2.0.0```
+- Tipo: `string` *obligatorio*
 
-La contraseña usada para establecer la conexión FTP/FTPS
+La contraseña usada para establecer la conexión.
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  credentials:
+    password: test
+```
 
-### `fileUploader.protocol` : `ftp` | `ftps`
-Since: ```2.0.0```
+### `fileUploader.protocol`
+- Tipo: `string` *obligatorio*
+- Por defecto: `ftps`
 
-El protocolo específico a usar (se recomiendo `ftps`)
+El protocolo específico a usar. Posibles valores:
+- `ftp`
+- `ftps`
+- `sftp`
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  protocol: sftp
+```
+
 
 ### `fileUploader.destinationDir`
-Since: ```2.0.0```
+- Tipo: `file` *obligatorio*
 
 El directorio de destino al cual los ficheros deberían subirse, dentro de la ubicación remota. 
 Puede incluir variables de ruta como `%DATE%`, `%TIME%`, or `%execID%`
 
-<br /><br />
+Ejemplo:
+```yaml
+fileUploader:
+  destinationDir: /home/test/file-%DATE%.txt
+```
+
 
 ### `fileUploader.identity`
-Since: ```2.5.0```
+- Type: `file` 
 
-Ruta del fichero de identidad (como por ejemplo un fichero `ppk`) usado para autenticarse.
+Ruta del fichero de identidad usado para autenticarse.
+
+Ejemplo:
+```yaml
+fileUploader:
+  identity: /.ssh/identity.ppk
+```
 
 
----
 ## Uso
 
-Esta configuración global se aplica a todos los tipos de evento recibidos. Sin embargo, existe la 
-posibilidad de ajustar una o más propiedades con valores especñificos según el tipo de evento. Por
-ejemplo, la siguiente configuración usaría los mismos parámetros de conexión pero subiendo los ficheros
-a diferentes directorios según el tipo de evento:
+Esta configuración global se aplica a todos los tipos de evento recibidos. Sin embargo, existe la posibilidad de ajustar 
+una o más propiedades con valores específicos según el tipo de evento. Por ejemplo, la siguiente configuración usaría 
+los mismos parámetros de conexión pero subiendo los ficheros a diferentes directorios según el tipo de evento:
 
 ```yaml copy=true
 fileUploader:

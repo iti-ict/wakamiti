@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 import static org.awaitility.Awaitility.await;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.4")
+@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.5")
 @I18nResource("iti_wakamiti_wakamiti-amqp")
 public class AmqpStepContributor implements StepContributor {
 

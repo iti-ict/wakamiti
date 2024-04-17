@@ -15,12 +15,13 @@ import org.hamcrest.Matchers;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.hamcrest.Matchers.*;
 
 
 /**
@@ -42,6 +43,19 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
     public static final String NOT_LESS = "matcher.number.not.less";
     public static final String NOT_GREATER_EQUALS = "matcher.number.not.greater.equals";
     public static final String NOT_LESS_EQUALS = "matcher.number.not.less.equals";
+
+    private final Map<String, Function<T, Matcher<T>>> matchers = map(
+            EQUALS, Matchers::comparesEqualTo,
+            GREATER, Matchers::greaterThan,
+            LESS, Matchers::lessThan,
+            GREATER_EQUALS, Matchers::greaterThanOrEqualTo,
+            LESS_EQUALS, Matchers::lessThanOrEqualTo,
+            NOT_EQUALS, value -> not(comparesEqualTo(value)),
+            NOT_GREATER, value -> not(greaterThan(value)),
+            NOT_LESS, value -> not(lessThan(value)),
+            NOT_GREATER_EQUALS, value -> not(greaterThanOrEqualTo(value)),
+            NOT_LESS_EQUALS, value -> not(lessThanOrEqualTo(value))
+    );
 
     private final ThrowableFunction<Locale, String> numberRegexProvider;
     private final ThrowableFunction<Number, T> mapper;
@@ -124,18 +138,7 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
      */
     @Override
     protected String[] expressions() {
-        return new String[]{
-                EQUALS,
-                GREATER,
-                GREATER_EQUALS,
-                LESS,
-                LESS_EQUALS,
-                NOT_EQUALS,
-                NOT_GREATER,
-                NOT_GREATER_EQUALS,
-                NOT_LESS,
-                NOT_LESS_EQUALS,
-        };
+        return matchers.keySet().toArray(new String[0]);
     }
 
     /**
@@ -158,30 +161,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
             String key,
             String value
     ) throws ParseException {
-        Matcher<T> matcher = null;
         T numericValue = mapper.apply(formatter.apply(locale).parse(value));
-        if (EQUALS.equals(key)) {
-            matcher = Matchers.comparesEqualTo(numericValue);
-        } else if (GREATER.equals(key)) {
-            matcher = Matchers.greaterThan(numericValue);
-        } else if (LESS.equals(key)) {
-            matcher = Matchers.lessThan(numericValue);
-        } else if (GREATER_EQUALS.equals(key)) {
-            matcher = Matchers.greaterThanOrEqualTo(numericValue);
-        } else if (LESS_EQUALS.equals(key)) {
-            matcher = Matchers.lessThanOrEqualTo(numericValue);
-        } else if (NOT_EQUALS.equals(key)) {
-            matcher = Matchers.not(Matchers.comparesEqualTo(numericValue));
-        } else if (NOT_GREATER.equals(key)) {
-            matcher = Matchers.not(Matchers.greaterThan(numericValue));
-        } else if (NOT_LESS.equals(key)) {
-            matcher = Matchers.not(Matchers.lessThan(numericValue));
-        } else if (NOT_GREATER_EQUALS.equals(key)) {
-            matcher = Matchers.not(Matchers.greaterThanOrEqualTo(numericValue));
-        } else if (NOT_LESS_EQUALS.equals(key)) {
-            matcher = Matchers.not(Matchers.lessThanOrEqualTo(numericValue));
-        }
-        return matcher;
+        return matchers.get(key).apply(numericValue);
     }
 
 }

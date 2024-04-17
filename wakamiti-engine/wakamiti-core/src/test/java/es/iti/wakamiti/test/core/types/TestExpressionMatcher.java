@@ -36,6 +36,15 @@ public class TestExpressionMatcher {
                 "que siguiente se inserta en la tabla de BBDD USER:"
         );
 
+        assertExpression(
+                new Locale("es"),
+                "(se recupera(n)) (el|los) valor(es) de",
+                "se recupera el valor de",
+                "se recuperan los valores de",
+                "el valor de",
+                "los valores de",
+                "valor de"
+        );
     }
 
 
@@ -51,6 +60,17 @@ public class TestExpressionMatcher {
                 "the following are inserted in the database table USER:",
                 "the following inserted in the database table USER:",
                 "the following inserted in the database table USER:"
+        );
+
+        assertExpression(
+                Locale.ENGLISH,
+                "the following SQL query value(s) (is|are retrieved):",
+                "the following SQL query value is retrieved:",
+                "the following SQL query value is retrieved:",
+                "the following SQL query values are retrieved:",
+                "the following SQL query value:",
+                "the following SQL query values:",
+                "the following SQL query values retrieved:"
         );
     }
 

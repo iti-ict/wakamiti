@@ -5,9 +5,9 @@
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>es.iti.wakamiti</groupId>
@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -28,6 +28,8 @@
     <properties>
         <h2.version>2.2.224</h2.version>
         <test.containers>1.19.5</test.containers>
+
+        <wakamiti-engine.version>2.5.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -74,14 +76,9 @@
 
         <!-- test -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-junit</artifactId>
-            <version>2.4.0</version>
+            <version>${wakamiti-engine.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -90,7 +87,16 @@
             <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -242,10 +248,14 @@
                                         </ports>
                                         <volumes>
                                             <bind>
-                                                <volume>${project.build.directory}/test-classes/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql</volume>
+                                                <volume>
+                                                    ${project.build.directory}/test-classes/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql
+                                                </volume>
                                             </bind>
                                         </volumes>
-                                        <cmd>--default_authentication_plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</cmd>
+                                        <cmd>--default_authentication_plugin=mysql_native_password
+                                            --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+                                        </cmd>
                                     </run>
                                 </image>
                             </images>
@@ -309,22 +319,35 @@
                                 <argument>-K</argument>
                                 <argument>database.connection.password=${database.password}</argument>
                             </arguments>
-                            <quietLogs>false</quietLogs>
+<!--                            <quietLogs>false</quietLogs>-->
                         </configuration>
                     </plugin>
 
                     <plugin>
                         <groupId>es.iti.wakamiti</groupId>
                         <artifactId>wakamiti-maven-plugin</artifactId>
+                        <version>${wakamiti-engine.version}</version>
+                        <executions>
+                            <execution>
+                                <id>verify</id>
+                                <goals><goal>verify</goal></goals>
+                            </execution>
+                            <execution>
+                                <id>control</id>
+                                <goals><goal>control</goal></goals>
+                            </execution>
+                        </executions>
                         <configuration>
                             <includeProjectDependencies>true</includeProjectDependencies>
-                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml</configurationFiles>
+                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml
+                            </configurationFiles>
                             <logLevel>off</logLevel>
                             <properties>
                                 <workingDir>${project.build.directory}/test-classes</workingDir>
                                 <resourcePath>${project.build.directory}/test-classes</resourcePath>
                                 <tagFilter>launcher</tagFilter>
-                                <database.connection.url>jdbc:mysql://localhost:${database.port}/${database.name}</database.connection.url>
+                                <database.connection.url>jdbc:mysql://localhost:${database.port}/${database.name}
+                                </database.connection.url>
                                 <database.connection.username>${database.username}</database.connection.username>
                                 <database.connection.password>${database.password}</database.connection.password>
                                 <data.dir>.</data.dir>
