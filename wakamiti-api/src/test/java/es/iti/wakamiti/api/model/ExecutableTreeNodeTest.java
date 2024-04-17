@@ -42,7 +42,7 @@ public class ExecutableTreeNodeTest {
     public void testDuration() {
         Optional<Duration> result = plan.duration();
 
-        assertThat(result.isPresent()).isTrue();
+        assertThat(result).isPresent();
         assertThat(result.get().toMinutes()).isEqualTo(5);
     }
 

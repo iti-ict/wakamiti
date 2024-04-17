@@ -4,37 +4,46 @@ date: 2023-08-04
 slug: /en/plugins/email
 ---
 
-This plugin allows to check the status of a e-mail store server, verify the  number of unread messages and intercept new 
-incoming messages. It also allows to check fields of the last incoming message such as subject, sender, body, and 
-attachments.
 
-This plugin should be used along others to form complete scenarios, e.g., for checking that the application sends emails 
-as a consequence of some other operation such a REST request.
+This plugin allows you to check the status of folders on a mail server, check the number of unread messages and 
+intercept new incoming messages. It also allows you to validate fields of the last message such as subject, sender, body 
+and attachments.
+
+This plugin is designed to be used in conjunction with other plugins to create complete scenarios. For example, to 
+validate that an application is sending mail as a result of another operation such as a REST request.
+
+
+---
+## Tabla de contenido
+
+---
+
+
+## Install
+
+
+Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:email-wakamiti-plugin:1.1.3
+es.iti.wakamiti:email-wakamiti-plugin:1.2.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>email-wakamiti-plugin</artifactId>
-  <version>1.1.3</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
----
-## Table of content
 
----
-
----
-## Configuration
+## Options
 
 
-### `email.store.address`
+### `email.address`
+- Type: `string` *required*
 
-Address of the user of the mail server, used as login credentials.
+User's email address, to be used as login credentials.
 
 Example:
 ```yaml
@@ -42,26 +51,23 @@ email:
   address: test@localhost
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### `email.password`
+- Type: `string` *required*
 
-Password of the user of the mail server, used as login credentials.
+User password, to be used as login credentials.
+
 Example:
 ```yaml
 email:
   password: xjlk4324
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### `email.store.host`
+- Type: `string` *required*
 
-Host name or IP address where the mail store server is hosted.
+Host name or IP address where the mail server store is located.
 
 Example:
 ```yaml
@@ -70,25 +76,22 @@ email:
     host: imap.gmail.com
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### `email.store.port`
+- Type: `integer` *required*
 
-Port to access to the mail store (it varies according the protocol).
+Port for accessing the mail server store (usually varies depending on the protocol).
 
 Example:
 ```yaml
 email:
-  port: 993
+  store:
+    port: 993
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### `email.store.protocol`
+- Type: `string` *required*
 
 Protocol used by the mail store.
 
@@ -99,11 +102,12 @@ email:
     protocol: imap
 ```
 
-<br /><br />
 
 ### `email.store.folder`
+- Type: `string` *required*
 
-Name of the folder to test in the mail store.
+Name of the folder to be scanned in the mail store.
+
 Example:
 ```yaml
 email:
@@ -111,53 +115,44 @@ email:
     folder: INBOX
 ```
 
-Since: 1.0.0
 
-
----
 ## Steps
 
 
 ### Define the mail store server to use
 ```text copy=true
-the email server at {host:text}:{port:int} using the protocol {protocol:word}
+the email server at {host}:{port} using the protocol {protocol}
 ```
 
 #### Parameters:
-| name       | wakamiti type | description                                 |
-|------------|---------------|---------------------------------------------|
-| `host`     | `text`        | IP or name of the mail store                |
-| `port`     | `int`         | Port of the mail store (according protocol) |
-| `protocol` | `word`        | Protocol of the mail store                  |
+| name       | wakamiti type        | description                                 |
+|------------|----------------------|---------------------------------------------|
+| `host`     | `text` *required*    | IP or name of the mail store                |
+| `port`     | `integer` *required* | Port of the mail store (according protocol) |
+| `protocol` | `word` *required*    | Protocol of the mail store                  |
 
 #### Examples:
 ```gherkin
-  Given the email server at 'imap.gmail.com':993 using the protocol imap
+Given the email server at 'imap.gmail.com':993 using the protocol imap
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Define the mail user credentials
 ```text copy=true
-the email user with address {address:text} and password {password:text}
+the email user with address {address} and password {password}
 ```
 
 #### Parameters:
-| name       | wakamiti type | description       |
-|------------|---------------|-------------------|
-| `address`  | `text`        | The email address |
-| `password` | `text`        | The user password |
+| name       | wakamiti type     | description       |
+|------------|-------------------|-------------------|
+| `address`  | `text` *required* | The email address |
+| `password` | `text` *required* | The user password |
 
 #### Examples:
 ```gherkin
-  Given the email user with address 'john@mymail.com' and password 'daDjkl3434S'
+Given the email user with address 'john@mymail.com' and password 'daDjkl3434S'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Define the mail store folder to use
 ```text copy=true
@@ -165,139 +160,120 @@ the email folder {text}
 ```
 
 #### Parameters:
-| wakamiti type  | description                 |
-|----------------|-----------------------------|
-| `text`         | The name of the mail folder |
+| name   | wakamiti type     | description                 |
+|--------|-------------------|-----------------------------|
+| `text` | `text` *required* | The name of the mail folder |
 
 #### Examples:
 ```gherkin
-  Given the email folder 'INBOX'
+Given the email folder 'INBOX'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the number of unread emails
 ```text copy=true
-(that) the number of unread emails {integer-assertion}
+(that) the number of unread emails {matcher}
 ```
 #### Parameters:
-| wakamiti type       | description                                              |
-|---------------------|----------------------------------------------------------|
-| `integer-assertion` | The validation to apply to the number of unread messages |
+| name       | wakamiti type                  | description                                              |
+|------------|--------------------------------|----------------------------------------------------------|
+| `matcher`  | `integer-assertion` *required* | The validation to apply to the number of unread messages |
 
 #### Examples:
 ```gherkin
-  Given that the number of unread emails is greater than 0
+Given that the number of unread emails is greater than 0
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify that a new mail is received in a given interval
 ```text copy=true
-(that) a new email is received within {sec:integer} seconds
+(that) a new email is received within {sec} seconds
 ```
 
 #### Parameters:
-| name       | wakamiti type | description                                       |
-|------------|---------------|---------------------------------------------------|
-| `sec`      | `integer`     | Number of seconds to wait for an incoming message |
+| name  | wakamiti type        | description                                       |
+|-------|----------------------|---------------------------------------------------|
+| `sec` | `integer` *required* | Number of seconds to wait for an incoming message |
 
 #### Examples:
 ```gherkin
-  Then a new email is received within 5 seconds
+Then a new email is received within 5 seconds
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the subject of the last email
 ```text copy=true
-(that) the subject of the email {text-assertion}
+(that) the subject of the email {matcher}
 ```
 
 #### Parameters:
-| wakamiti type    | description                                         |
-|------------------|-----------------------------------------------------|
-| `text-assertion` | The validation to apply to the subject of the email |
+| name      | wakamiti type                | description                                         |
+|-----------|------------------------------|-----------------------------------------------------|
+| `matcher` | `text-assertion` *required*  | The validation to apply to the subject of the email |
 
 #### Examples:
 ```gherkin
-  Then the subject of the email starts with 'Issue opened'
+Then the subject of the email starts with 'Issue opened'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the sender of the last email
 ```text copy=true
-(that) the sender of the email {text-assertion}
+(that) the sender of the email {matcher}
 ```
 
 #### Parameters:
-| wakamiti type    | description                                        |
-|------------------|----------------------------------------------------|
-| `text-assertion` | The validation to apply to the sender of the email |
+| name      | wakamiti type                | description                                        |
+|-----------|------------------------------|----------------------------------------------------|
+| `matcher` | `text-assertion` *required*  | The validation to apply to the sender of the email |
 
 #### Examples:
 ```gherkin
-  Then the sender of the email is 'support@company.com'
+Then the sender of the email is 'support@company.com'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the body contents of the last email
 ```text copy=true
 (that) the body of the email is:
+    {data}
 ```
 
 #### Parameters:
-| wakamiti type | description            |
-|---------------|------------------------|
-| `document`    | The content to compare |
+| name   | wakamiti type         | description            |
+|--------|-----------------------|------------------------|
+| `data` | `document` *required* | The content to compare |
 
 #### Examples:
 ```gherkin
-  Then the body of the email is:
+Then the body of the email is:
   """
-     Hello,
-     Your issue has been received.
-     Regards
+  Hello,
+  Your issue has been received.
+  Regards
   """
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify partially the body contents of the last email
 ```text copy=true
 (that) the body of the email contains:
+    {data}
 ```
 
 #### Parameters:
-| wakamiti type | description            |
-|---------------|------------------------|
-| `document`    | The content to compare |
+| name   | wakamiti type         | description            |
+|--------|-----------------------|------------------------|
+| `data` | `document` *required* | The content to compare |
 
 #### Examples:
 ```gherkin
-  Then the body of the email contains:
+Then the body of the email contains:
   """
-     Your issue has been received.
+  Your issue has been received.
   """
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the body contents of the last email against an external file
 ```text copy=true
@@ -305,18 +281,15 @@ Since: 1.0.0
 ```
 
 #### Parameters:
-| wakamiti type | description                 |
-|---------------|-----------------------------|
-| `file`        | Path of the file to compare |
+| name   | wakamiti type     | description                 |
+|--------|-------------------|-----------------------------|
+| `file` | `file` *required* | Path of the file to compare |
 
 #### Examples:
 ```gherkin
-  Then the body of the email is the content of the file 'email.txt'
+Then the body of the email is the content of the file 'email.txt'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the body contents of the last email contains the content of an external file
 ```text copy=true
@@ -324,56 +297,47 @@ Since: 1.0.0
 ```
 
 #### Parameters:
-| wakamiti type | description                 |
-|---------------|-----------------------------|
-| `file`        | Path of the file to compare |
+| name   | wakamiti type     | description                 |
+|--------|-------------------|-----------------------------|
+| `file` | `file` *required* | Path of the file to compare |
 
 #### Examples:
 ```gherkin
-  Then the body of the email contains the content of the file 'email.txt'
+Then the body of the email contains the content of the file 'email.txt'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the number of attachments of the last email
 ```text copy=true
-(that) the number of attachments in the email {integer-assertion}
+(that) the number of attachments in the email {matcher}
 ```
 
 #### Parameters:
-| wakamiti type       | description                                          |
-|---------------------|------------------------------------------------------|
-| `integer-assertion` | The validation to apply to the number of attachments |
+| name       | wakamiti type                  | description                                          |
+|------------|--------------------------------|------------------------------------------------------|
+| `matcher`  | `integer-assertion` *required* | The validation to apply to the number of attachments |
 
 #### Examples:
 ```gherkin
-  Then the number of attachments in the email is less than 2
+Then the number of attachments in the email is less than 2
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify that the email contains an attached file with certain name
 ```text copy=true
-(that) the email has an attached file whose name {text-assertion}
+(that) the email has an attached file whose name {matcher}
 ```
 
 #### Parameters:
-| wakamiti type    | description                                               |
-|------------------|-----------------------------------------------------------|
-| `text-assertion` | The validation to apply to the name of the attached files |
+| name      | wakamiti type                | description                                               |
+|-----------|------------------------------|-----------------------------------------------------------|
+| `matcher` | `text-assertion` *required*  | The validation to apply to the name of the attached files |
 
 #### Examples:
 ```gherkin
-  Then the email has an attached file whose name is 'attach.txt'
+Then the email has an attached file whose name is 'attach.txt'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the binary content of an attached file
 ```text copy=true
@@ -381,18 +345,15 @@ Since: 1.0.0
 ```
 
 #### Parameters:
-| wakamiti type | description                 |
-|---------------|-----------------------------|
-| `file`        | Path of the file to compare |
+| name   | wakamiti type     | description                 |
+|--------|-------------------|-----------------------------|
+| `file` | `file` *required* | Path of the file to compare |
 
 #### Examples:
 ```gherkin
-  Then the email has an attached file with the content of the binary file 'attach.dat'
+Then the email has an attached file with the content of the binary file 'attach.dat'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the text content of an attached file
 ```text copy=true
@@ -400,75 +361,64 @@ Since: 1.0.0
 ```
 
 #### Parameters:
-| wakamiti type | description                 |
-|---------------|-----------------------------|
-| `file`        | Path of the file to compare |
+| name   | wakamiti type     | description                 |
+|--------|-------------------|-----------------------------|
+| `file` | `file` *required* | Path of the file to compare |
 
 #### Examples:
 ```gherkin
-  Then the email has an attached file with the content of the text file 'attach.txt'
+Then the email has an attached file with the content of the text file 'attach.txt'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Verify the text content of an attach file against the following text
 ```text copy=true
 (that) the email has an attached file with the following content:
+    {data}
 ```
 
 #### Parameters:
-| wakamiti type | description             |
-|---------------|-------------------------|
-| `document`    | Text to compare against |
+| name   | wakamiti type         | description            |
+|--------|-----------------------|------------------------|
+| `data` | `document` *required* | The content to compare |
 
 #### Examples:
 ```gherkin
-  Then the email has an attached file with the following content:
+Then the email has an attached file with the following content:
   """
   This is an attached content
   """
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Delete all emails from a given sender (clean-up operation)
 ```text copy=true
-At finish, delete all emails whose sender {text-assertion}
+At finish, delete all emails whose sender {matcher}
 ```
 
 #### Parameters:
-| wakamiti type    | description                                 |
-|------------------|---------------------------------------------|
-| `text-assertion` | The validation to apply to the email sender |
+| name      | wakamiti type                | description                                 |
+|-----------|------------------------------|---------------------------------------------|
+| `matcher` | `text-assertion` *required*  | The validation to apply to the email sender |
 
 #### Examples:
 ```gherkin
-  Background:
-    * At finish, delete all emails whose sender is 'test@localhost'
+* At finish, delete all emails whose sender is 'test@localhost'
 ```
 
-Since: 1.0.0
-
-<br /><br />
 
 ### Delete all emails with a given subject (clean-up operation)
 ```text copy=true
-At finish, delete all emails whose subject {text-assertion}
+At finish, delete all emails whose subject {matcher}
 ```
 
 #### Parameters:
-| wakamiti type    | description                                  |
-|------------------|----------------------------------------------|
-| `text-assertion` | The validation to apply to the email subject |
+| name      | wakamiti type                | description                                  |
+|-----------|------------------------------|----------------------------------------------|
+| `matcher` | `text-assertion` *required*  | The validation to apply to the email subject |
 
 #### Examples:
 ```gherkin
-  Background:
-    * At finish, delete all emails whose subject starts with 'Testing'
+* At finish, delete all emails whose subject starts with 'Testing'
 ```
 
-Since: 1.0.0

@@ -14,10 +14,8 @@ import es.iti.wakamiti.api.util.Either;
 import es.iti.wakamiti.core.Wakamiti;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -98,19 +96,62 @@ public class ExpressionMatcher {
     protected static String regexPriorAdjustments(String sourceExpression) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
-        regex = regex.replaceAll("[^ |(]*+(\\|[^ |)]++)++", "\\($0\\)");
+        regex = regex.replaceAll("[^ |(]*?(\\|[^ |)]+)++", "($0)");
         // (( -> ( and )) -> (
-        regex = regex.replace("((", "(").replace("))", ")");
+        regex = regex.replaceAll("\\(\\(([^()]*)\\)\\)", "($1)");
         // * -> any value
         regex = regex.replaceAll("(?<!\\\\)\\*", "(.*)");
-        // ( ) -> optional
-        regex = regex.replaceAll("(?<!\\\\)\\(([^!][^)]*)\\)", "(?:$1)?");
-        // (...)?_ -> (?:(...)?_)?
-        regex = regex.replaceAll("\\(\\?:[^)]+\\)\\? ", "(?:$0)?");
-        // _(?:.*)? -> (?:.*)?
-        regex = regex.replace(" (?:.*)?", "(?:.*)?");
-        // (!a) -> ((?!a).)*
-        regex = regex.replaceAll("(?<!\\\\)\\(!([^)]*)\\)", "((?!$1).)*");
+        // () -> ...
+        regex = regexBracketedAdjustments(regex);
+
+        return regex;
+    }
+
+    private static String regexBracketedAdjustments(String regex) {
+        Pattern bracketed = Pattern.compile("(?<x>\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\))");
+        Pattern nested = Pattern.compile("(?<!\\\\)\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)"
+                + bracketed.pattern() + "(?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\)");
+
+        BiFunction<String, Pattern, String> doReplace = (string, pattern) -> {
+            while (string.matches(".*" + pattern.pattern() + ".*")) {
+                List<String> parts = new LinkedList<>();
+                Matcher matcher = pattern.matcher(string);
+                while (matcher.find()) {
+                    parts.add(matcher.group("x"));
+                }
+                string = regexBracketedAdjustments(string, parts);
+            }
+            return string;
+        };
+
+        regex = doReplace.apply(regex, nested);
+        regex = doReplace.apply(regex, bracketed);
+
+        return regex.replace("[", "(").replace("]", ")");
+    }
+
+    private static String regexBracketedAdjustments(String regex, List<String> texts) {
+        texts = texts.stream().distinct().collect(Collectors.toList());
+        Collections.reverse(texts);
+        for (String text : texts) {
+            String aux = text;
+
+            // ( ) -> optional
+            aux = aux.replaceAll("(?<!\\\\)\\(([^!][^)]*)\\)", "(?:$1)?");
+            // (!a) -> ((?!a).)*
+            aux = aux.replaceAll("(?<!\\\\)\\(!([^)]*)\\)", "(?:(?:(?!$1).)*)?");
+            // _(?:.*)? -> (?:.*)?
+            aux = aux.replaceAll(" (\\(\\?:.+\\*\\)\\?)", "$1");
+
+            aux = aux.replace("(", "[").replace(")", "]");
+            regex = regex.replace(text, aux);
+
+            if (regex.contains(aux + " ")) {
+                regex = regex.replace(aux + " ", "[?:" + aux + " ]?");
+            } else if (regex.contains(" " + aux)) {
+                regex = regex.replace(" " + aux, "[?: " + aux + "]?");
+            }
+        }
         return regex;
     }
 

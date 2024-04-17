@@ -3,20 +3,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import es.iti.wakamiti.core.gherkin.parser.Comment;
-import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser.RuleType;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser.TokenType;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
+
 
 public class AstNode {
 
@@ -28,12 +23,13 @@ public class AstNode {
     }
 
     public void add(RuleType ruleType, Object obj) {
-        List<Object> items = subItems.get(ruleType);
-        if (items == null) {
-            items = new ArrayList<>();
-            subItems.put(ruleType, items);
-        }
-        items.add(obj);
+       subItems.computeIfAbsent(ruleType, k -> new ArrayList<>()).add(obj);
+//        List<Object> items = subItems.get(ruleType);
+//        if (items == null) {
+//            items = new ArrayList<>();
+//            subItems.put(ruleType, items);
+//        }
+//        items.add(obj);
     }
 
 

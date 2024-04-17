@@ -9,10 +9,10 @@ Feature: REST Test Feature
   Scenario: Get a user from a service
     Given a user identified by 'user1'
     When the user is requested
-    Then the response HTTP code is greater than or equals to 200
+    Then the response HTTP code is greater than or equal to 200
     And the response HTTP code is less than 500
     And the response content type is XML
-    And the response is equals to the file '${data.dir}/server/users/user1.xml'
+    And the response is equal to the file '${data.dir}/server/users/user1.xml'
     And the response contains:
       """
 <item>

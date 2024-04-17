@@ -124,12 +124,33 @@ export default {
 }
 
 /deep/ > h2, /deep/ > h3, /deep/ > h4, /deep/ > h5, /deep/ > h6 {
-  padding-top: 100px;
-  margin-top: -80px;
+  margin-top: 40px;
+}
 
- /* @include respond-above(md) {
-    font-size: 2rem;
-  } */
+/deep/ > h2 {
+  padding-bottom: 15px;
+  border-bottom: 1px solid;
+
+  &.bright {
+    border-color: $textBright;
+  }
+
+  &.dark {
+    border-color: $textDark;
+  }
+}
+
+/deep/ > :not(h2) + h3 {
+  padding-top: 25px;
+  border-top: 1px solid;
+
+  &.bright {
+    border-color: $textBright;
+  }
+
+  &.dark {
+    border-color: $textDark;
+  }
 }
 
 /deep/ > p > img {

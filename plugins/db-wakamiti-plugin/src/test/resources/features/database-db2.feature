@@ -51,7 +51,7 @@ Característica: Testing database steps
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
     Cuando se ejecuta el script SQL del fichero '${data.dir}/db/dml.sql'
-    Y se ejecuta el procedimiento del fichero '${data.dir}/db/procedure-db2.sql'
+    Y se ejecuta el procedimiento SQL del fichero '${data.dir}/db/procedure-db2.sql'
     Entonces el siguiente registro no existe en la tabla client:
       | id | first_name | second_name | active  | birth_date |
       | 1  | Rosa       | Melano      | 1       | <null>     |
@@ -131,7 +131,7 @@ Característica: Testing database steps
     Dada la URL de conexión a BBDD '${database.connection.url}' usando el usuario '${database.connection.username}' y la contraseña '${database.connection.password}' como 'db'
     Y que se usa la conexión 'db'
     Cuando se inserta el contenido del fichero CSV '${data.dir}/data1.csv' en la tabla client
-    Y se ejecuta el siguiente procedimiento:
+    Y se ejecuta el siguiente procedimiento SQL:
       """
       declare l_c CURSOR;
       BEGIN

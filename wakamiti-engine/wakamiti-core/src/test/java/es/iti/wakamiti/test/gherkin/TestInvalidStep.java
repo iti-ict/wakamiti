@@ -6,7 +6,6 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
@@ -17,6 +16,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -26,15 +26,16 @@ public class TestInvalidStep {
     public void testInvalidStep() {
 
         Map<String, String> properties = new HashMap<>();
-        properties.put(WakamitiConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
+        properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(
-                WakamitiConfiguration.RESOURCE_PATH,
+                RESOURCE_PATH,
                 "src/test/resources/features/test5_invalidStep.feature"
         );
         properties.put(
-                WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS,
+                NON_REGISTERED_STEP_PROVIDERS,
                 "es.iti.wakamiti.test.gherkin.WakamitiSteps"
         );
+        properties.put(OUTPUT_FILE_PATH, "target/wakamiti.json");
         Configuration configuration = Wakamiti.defaultConfiguration()
                 .appendFromMap(properties);
         PlanNode plan = Wakamiti.instance().createPlanFromConfiguration(configuration);

@@ -18,11 +18,15 @@ import java.util.jar.JarFile;
  */
 public class ClasspathAgent {
 
+    private ClasspathAgent() {
+
+    }
+
     /**
      * The Instrumentation instance used for adding JAR files
      * to the classpath.
      */
-    public static Instrumentation instrumentation;
+    private static Instrumentation instrumentation;
 
     /**
      * Premain method called when the agent is started with the

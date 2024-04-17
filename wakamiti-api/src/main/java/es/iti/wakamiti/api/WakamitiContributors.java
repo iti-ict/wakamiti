@@ -238,9 +238,8 @@ public class WakamitiContributors {
         if (contributor instanceof Configurable) {
             ((Configurable) contributor).configure(configuration);
         }
-        configuratorsFor(contributor).forEach(configurator -> {
-            configurator.configurer().configure(contributor, configurator.defaultConfiguration().append(configuration));
-        });
+        configuratorsFor(contributor).forEach(configurator ->
+                configurator.configurer().configure(contributor, configurator.defaultConfiguration().append(configuration)));
         return contributor;
     }
 

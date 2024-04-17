@@ -29,7 +29,7 @@ comunicación con el cliente y otro dirigido a los detalles del sistema.
 - **Totalmente localizable**: puedes usar tu propio idioma siempre que proporcione a Wakamiti un archivo de traducción.
 - **Fácilmente extensible**: escribe tus propios plugins para cualquier punto de extensión (pasos, generador de informes, 
 analizadores de idioma, etc) y compártelos con la comunidad.
-- **Lanzadores alternativos**: ejecute Wakamiti como un conjunto de pruebas de JUnit, como un objetivo de verificación de 
+- **Lanzadores alternativos**: ejecuta Wakamiti como un conjunto de pruebas de JUnit, como un objetivo de verificación de 
 Maven o directamente como un comando de consola.
 
 

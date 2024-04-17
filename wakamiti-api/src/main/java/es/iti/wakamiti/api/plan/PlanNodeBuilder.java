@@ -30,7 +30,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private String keyword;
     private String name;
     private String displayNamePattern = "[{id}] {keyword} {name}";
-    private Optional<PlanNodeData> data = Optional.empty();
+    private PlanNodeData data;
     private Object underlyingModel;
     private boolean filtered;
 
@@ -96,7 +96,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     }
 
     public Optional<PlanNodeData> data() {
-        return data;
+        return Optional.ofNullable(data);
     }
 
     public Object getUnderlyingModel() {
@@ -164,7 +164,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     }
 
     public PlanNodeBuilder setData(PlanNodeData data) {
-        this.data = Optional.ofNullable(data);
+        this.data = data;
         return this;
     }
 
@@ -188,7 +188,7 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         copy.setSource(this.source());
         copy.addDescription(this.description);
         copy.properties.putAll(this.properties);
-        copy.data = this.data.map(PlanNodeData::copy);
+        copy.setData(this.data().map(PlanNodeData::copy).orElse(null));
         copy.filtered = this.filtered;
         super.copy(copy);
         return copy;

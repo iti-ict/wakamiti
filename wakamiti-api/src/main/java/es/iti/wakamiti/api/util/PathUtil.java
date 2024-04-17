@@ -35,6 +35,10 @@ public class PathUtil {
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
 
+    private PathUtil() {
+
+    }
+
     /**
      * Replaces placeholders in the provided path based on the given PlanNode.
      *

@@ -10,10 +10,8 @@ import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,12 +26,17 @@ public class UnaryNumberAssertProvider extends AbstractAssertProvider {
     public static final String NULL = "matcher.generic.null";
     public static final String NOT_NULL = "matcher.generic.not.null";
 
+    private final Map<String, Supplier<Matcher<?>>> matchers = Map.of(
+            NULL, Matchers::nullValue,
+            NOT_NULL, Matchers::notNullValue
+    );
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected String[] expressions() {
-        return new String[]{NULL, NOT_NULL};
+        return matchers.keySet().toArray(new String[0]);
     }
 
     /**
@@ -64,14 +67,7 @@ public class UnaryNumberAssertProvider extends AbstractAssertProvider {
      */
     @Override
     protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
-
-        Matcher<?> matcher = null;
-        if (NULL.equals(expression)) {
-            matcher = Matchers.nullValue();
-        } else if (NOT_NULL.equals(expression)) {
-            matcher = Matchers.notNullValue();
-        }
-        return matcher;
+        return matchers.get(expression).get();
     }
 
 }

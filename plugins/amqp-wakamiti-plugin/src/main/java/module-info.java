@@ -1,6 +1,5 @@
 module es.iti.wakamiti.amqp {
 
-    requires junit;
     requires awaitility;
     requires com.rabbitmq.client;
     requires imconfig;
