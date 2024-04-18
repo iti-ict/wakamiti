@@ -4,26 +4,34 @@ date: 2023-01-20
 slug: /en/plugins/groovy
 ---
 
+
 This plugin provides a `groovy` class compiler and steps for `groovy` code execution.
 
+
+---
+## Tabla de contenido
+
+---
+
+
+## Install
+
+
+Include the module in the corresponding section.
+
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:groovy-wakamiti-plugin:2.3.3
+es.iti.wakamiti:groovy-wakamiti-plugin:2.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>groovy-wakamiti-plugin</artifactId>
-  <version>2.3.3</version>
+  <version>2.4.0</version>
 </dependency>
 ```
 
----
-## Table of content
 
----
-
----
 ## Compiler
 
 The groovy compiler will attempt to compile any file with `.groovy` extension present in the working directory (or 
@@ -97,12 +105,14 @@ When executed, it would be shown in the log:
 [e.i.w.example.CustomSteps.customStep]   INFO - Hello, user! Your password is s3cr3t
 ```
 
----
+
 ## Steps
+
 
 ### Execute code
 ```text copy=true
 (that) the following groovy code is executed:
+    {data}
 ```
 Runs the given groovy script with the available variables:
 - `ctx`: Context of the scenario. This is a container with the `id` of the scenario, the results of the different steps, 
@@ -110,9 +120,9 @@ Runs the given groovy script with the available variables:
 - `log`: Wakamiti logger to debug the script.
 
 #### Parameters:
-| Name | Wakamiti type | Description    |
-|------|---------------|----------------|
-|      | `document`    | Script content |
+| Name   | Wakamiti type         | Description    |
+|--------|-----------------------|----------------|
+| `data` | `document` *required* | Script content |
 
 #### Examples:
 ```gherkin
@@ -132,7 +142,7 @@ Scenario: Example
     """
 ```
 
----
+
 ## Dynamic properties
 
 ### Groovy property

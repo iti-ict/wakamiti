@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Extension(
         provider =  "es.iti.wakamiti",
         name = "azure-reporter",
-        version = "2.4",
+        version = "2.5",
         priority = 10
 )
 public class AzureReporter implements Reporter {

@@ -37,7 +37,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 /**
  * A contributor class for database-related steps in the test scenarios.
  */
-@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.4")
+@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.5")
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 
@@ -146,6 +146,64 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
         cleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.executeSQLScript(file);
+        });
+    }
+
+    /**
+     * Sets the SQL procedure that will be executed by the default SQL
+     * connection after the scenario ends, regardless of execution status.
+     *
+     * @param document The script content
+     */
+    @Step(value = "db.define.cleanup.procedure.document")
+    public void setCleanupProcedure(Document document) {
+        cleanUpOperations.add(() -> {
+            this.switchConnection();
+            this.executeProcedure(document);
+        });
+    }
+
+    /**
+     * Sets the SQL procedure that will be executed by a named SQL
+     * connection after the scenario ends, regardless of execution status.
+     *
+     * @param alias    The SQL connection name
+     * @param document The script content
+     */
+    @Step(value = "db.define.cleanup.procedure.document.alias", args = {"alias:text"})
+    public void setCleanupProcedure(String alias, Document document) {
+        cleanUpOperations.add(() -> {
+            this.switchConnection(alias);
+            this.executeProcedure(document);
+        });
+    }
+
+    /**
+     * Sets the SQL procedure that will be executed by the default SQL
+     * connection after the scenario ends, regardless of execution status.
+     *
+     * @param file The script content
+     */
+    @Step(value = "db.define.cleanup.procedure.file", args = {"proc:file"})
+    public void setCleanupProcedure(File file) {
+        cleanUpOperations.add(() -> {
+            this.switchConnection();
+            this.executeProcedure(file);
+        });
+    }
+
+    /**
+     * Sets the SQL procedure that will be executed by a named SQL
+     * connection after the scenario ends, regardless of execution status.
+     *
+     * @param file  The script content
+     * @param alias The SQL connection name
+     */
+    @Step(value = "db.define.cleanup.procedure.file.alias", args = {"proc:file", "alias:text"})
+    public void setCleanupProcedure(File file, String alias) {
+        cleanUpOperations.add(() -> {
+            this.switchConnection(alias);
+            this.executeProcedure(file);
         });
     }
 

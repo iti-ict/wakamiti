@@ -2,8 +2,8 @@ Feature: Testing database steps
 
 
   Scenario: Test 1
-    * At finish, the table client is cleared
-    * At finish, the table city is cleared
+    * On completion, the table client is cleared
+    * On completion, the table city is cleared
     When the following users are inserted into the database table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
@@ -22,7 +22,7 @@ Feature: Testing database steps
 
 
   Scenario: Test 2
-    * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed
+    * On completion, the SQL script file '${data.dir}/db/clean.sql' is executed
     When the SQL script file '${data.dir}/db/dml-sqlserver.sql' is executed
     And the SQL procedure file '${data.dir}/db/procedure-sqlserver.sql' is executed
     Then the following record does not exist in the table client:
@@ -45,25 +45,25 @@ Feature: Testing database steps
 
 
   Scenario: Test 3
-    * At finish, the table client is cleared using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database using 'db' connection
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client using 'db' connection
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client using 'db' connection
-    * At finish, the following users are inserted into the table client using 'db' connection:
+    * On completion, the table client is cleared using 'db' connection
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database using 'db' connection
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database using 'db' connection
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client using 'db' connection
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client using 'db' connection
+    * On completion, the following users are inserted into the table client using 'db' connection:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
-    * At finish, the following user is deleted from the table client using 'db' connection:
+    * On completion, the following user is deleted from the table client using 'db' connection:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
-    * At finish, the user having first_name = 'Annie' is deleted from the table client using 'db' connection
-    * At finish, the user satisfying the following SQL clause is deleted from the table client using 'db' connection:
+    * On completion, the user having first_name = 'Annie' is deleted from the table client using 'db' connection
+    * On completion, the user satisfying the following SQL clause is deleted from the table client using 'db' connection:
       """
       BIRTH_DATE < CAST('2000-01-01' as DATE)
       """
-    * At finish, the following SQL script is executed using 'db' connection:
+    * On completion, the following SQL script is executed using 'db' connection:
       """
       DELETE FROM CLIENT_CITY;
       DELETE FROM CITY;
@@ -110,21 +110,21 @@ Feature: Testing database steps
 
 
   Scenario: Test 4
-    * At finish, the SQL script file '${data.dir}/db/clean.sql' is executed using 'db' connection
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
-    * At finish, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
-    * At finish, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
-    * At finish, the following users are inserted into the table client:
+    * On completion, the SQL script file '${data.dir}/db/clean.sql' is executed using 'db' connection
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+    * On completion, the following users are inserted into the table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
       | 2  | Annie      | Hall        | 0      | 2011-09-12 |
       | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
-    * At finish, the following user is deleted from the table client:
+    * On completion, the following user is deleted from the table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | John       | Smith       | 1      | 2000-10-30 |
-    * At finish, the user having first_name = 'Annie' is deleted from the table client
-    * At finish, the user satisfying the following SQL clause is deleted from the table client:
+    * On completion, the user having first_name = 'Annie' is deleted from the table client
+    * On completion, the user satisfying the following SQL clause is deleted from the table client:
       """
       BIRTH_DATE < CAST('2000-01-01' as DATE)
       """
@@ -147,7 +147,7 @@ Feature: Testing database steps
 
 
   Scenario: Test 5
-    * At finish, the following SQL script is executed:
+    * On completion, the following SQL script is executed:
       """
       DELETE FROM CLIENT_CITY;
       DELETE FROM CITY;
@@ -181,9 +181,9 @@ Feature: Testing database steps
 
   # database.enableCleanupUponCompletion: true
   Scenario: Cleanup of data with foreign key
-    * At finish, the table client is empty
-    * At finish, the table city is empty
-    * At finish, the table client_city is empty
+    * On completion, the table client is empty
+    * On completion, the table city is empty
+    * On completion, the table client_city is empty
     Given the following user inserted into the database table client:
       | id | first_name | second_name | active | birth_date |
       | 1  | Rosa       | Melano      | 1      | 1980-12-25 |

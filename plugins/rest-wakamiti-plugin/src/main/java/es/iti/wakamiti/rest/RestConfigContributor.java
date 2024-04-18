@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.4",
+@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.5",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 

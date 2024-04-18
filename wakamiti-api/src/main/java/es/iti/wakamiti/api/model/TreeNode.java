@@ -22,7 +22,7 @@ public abstract class TreeNode<S extends TreeNode<S>> {
 
     private final List<S> children;
 
-    public TreeNode(List<S> children) {
+    protected TreeNode(List<S> children) {
         this.children = Collections.unmodifiableList(children);
     }
 

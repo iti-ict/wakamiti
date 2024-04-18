@@ -4,48 +4,53 @@ date: 2023-06-09
 slug: /en/plugins/appium
 ---
 
-This plugin allows Wakamiti to write scenarios that interact with an 
-[Appium](http://appium.io/docs/en/2.0/) server. Appium is an open-source project 
-designed to facilitate UI automation of many app platforms, including mobile apps.
 
-The usage of this plugin requires that an Appium server is up and running, as well as an
-emulated virtual device. Below, there is an example of how to set up a testing environment
-for this.
+This plugin allows Wakamiti to write scenarios interacting with an [Appium](http://appium.io/docs/en/2.0/) server. 
+Appium is an open source project designed to help automate UI testing on various platforms, including mobile.
+
+A running Appium server and an emulated virtual device are required to use this plugin.
 
 > **DISCLAIMER**
 > 
-> In its current state, this plugin is mostly a proof of concept rather than a fully 
-> functional plugin, and the provided steps and configuration may vary in future 
-> versions.
+> This plugin is currently more of a proof of concept than a fully functional plugin, and steps and configuration may 
+> vary in future versions.
+
+
+---
+## Tabla de contenido
+
+---
+
+
+## Install
+
+
+Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
+es.iti.wakamiti:appium-wakamiti-plugin:2.3.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
     <groupId>es.iti.wakamiti</groupId>
     <artifactId>appium-wakamiti-plugin</artifactId>
-    <version>2.2.3</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
----
-## Table of content
 
----
+## Options
 
----
-## Configuration
 
-> You can specify any capability to be passed to the Web Driver using the proper property key in
-> the form ```appium.capabilities.xxxxxx```. In this document, the most relevant options are described,
-> but for an exhaustive list of the available properties, please check the
-> [W3C WebDriver draft](https://w3c.github.io/webdriver/#capabilities).
+> Each capability to be passed to the web driver can be specified using the appropriate key in the format 
+> `appium.capabilities.xxxxxx`. This document describes the most relevant options, but for a complete list of available
+> properties, see the [W3C WebDriver draft](https://w3c.github.io/webdriver/#capabilities).
 
-<br /><br />
 
-### `appium.url` 
+### `appium.url`
+- Type: `string` *required*
+
 The URL of the Appium server
 
 Example:
@@ -54,9 +59,10 @@ appium:
   url: http://127.0.0.1:4723/wd/hub
 ```
 
-<br /><br />
 
 ### `appium.capabilities.app`
+- Type: `file` *required*
+
 The full path of the packaged app to test
 
 Example:
@@ -66,9 +72,10 @@ appium:
     app: ApiDemos-debug.apk
 ```
 
-<br /><br />
 
 ### `appium.capabilities.platformName`
+- Type: `string` *required*
+
 The mobile platform that would be tested 
 
 Example:
@@ -78,9 +85,10 @@ appium:
     platformName: Android
 ```
 
-<br /><br />
 
 ### `appium.capabilities.platformVersion`
+- Type: `integer` *required*
+
 The version of the platform that would be tested
 
 Example:
@@ -90,9 +98,10 @@ appium:
     platformVersion: 11
 ```
 
-<br /><br />
 
 ### `appium.capabilities.appPackage`
+- Type: `string` *required*
+
 The name of the package that contains the application to be tested
 
 Example:
@@ -102,9 +111,10 @@ appium:
     appPackage: io.appium.android.apis
 ```
 
-<br /><br />
 
 ### `appium.capabilities.appActivity`
+- Type: `string` *required*
+
 The name of the activity to be tested
 
 Example:
@@ -114,167 +124,179 @@ appium:
     appActivity: '.view.TextFields'
 ```
 
----
-## Steps
 
+## Steps
 
 
 ### Select a UI element by its ID
 ```text copy=true
 the UI element with ID {text}
 ```
-Select an element that would be the subject of the following steps.
+Selects an element that would be the subject of the following steps.
+
+#### Parameters
+| Name   | Wakamiti type     | Description    |
+|--------|-------------------|----------------|
+| `text` | `text` *required* | The element ID |
 
 #### Examples:
 ```gherkin
-  Given the UI element with ID '3423423'
+Given the UI element with ID '3423423'
 ```
 
-<br /><br />
 
 ### Select a UI element by its type
 ```text copy=true
 the UI element with type {text}
 ```
-Select an element that would be the subject of the following steps.
+Selects an element that would be the subject of the following steps.
+
+#### Parameters
+| Name   | Wakamiti type     | Description      |
+|--------|-------------------|------------------|
+| `text` | `text` *required* | The element type |
 
 #### Examples:
 ```gherkin
-  Given the UI element with type 'android.widget.EditText'
+Given the UI element with type 'android.widget.EditText'
 ```
 
-<br /><br />
 
 ### Select a UI element by its path
 ```text copy=true
 the UI element with path {text}
 ```
-Select an element that would be the subject of the following steps.
+Selects an element that would be the subject of the following steps.
+
+#### Parameters
+| Name   | Wakamiti type     | Description      |
+|--------|-------------------|------------------|
+| `text` | `text` *required* | The element path |
 
 #### Examples:
 ```gherkin
-  Given the UI element with path 'main.form.name'
+Given the UI element with path 'main.form.name'
 ```
 
-<br /><br />
 
 ### Type a text on an element
 ```text copy=true
 the text {text} is typed on that element
 ```
-Emulate the action of typing a text when an element is selected.
+Emulates the action of typing a text when an element is selected.
+
+#### Parameters
+| Name   | Wakamiti type     | Description         |
+|--------|-------------------|---------------------|
+| `text` | `text` *required* | The element content |
 
 #### Examples:
 ```gherkin
-  When the text 'John' is typed on that element
+When the text 'John' is typed on that element
 ```
 
-<br /><br />
 
 ### Tap on an element
 ```text copy=true
 a tap is done over that element
 ```
-Emulate the action of tapping on the selected element.
+Emulates the action of tapping on the selected element.
 
 #### Examples:
 ```gherkin
-  When a tap is done over that element
+When a tap is done over that element
 ```
 
-<br /><br />
 
 ### Double-tap on an element
 ```text copy=true
 a double-tap is done over that element
 ```
-Emulate the action of double-tapping on the selected element.
+Emulates the action of double-tapping on the selected element.
 
 #### Examples:
 ```gherkin
-  When a double-tap is done over that element
+When a double-tap is done over that element
 ```
 
-<br /><br />
 
 ### Validate the text of an element
 ```text copy=true
 that element contains the value {text}
 ```
-Assert that the previously selected element contains a certain text.
+Asserts that the previously selected element contains a certain text.
 
 #### Examples:
 ```gherkin
-  Then that element contains the value 'Accepted'
+Then that element contains the value 'Accepted'
 ```
 
-<br /><br />
 
 ### Validate an element is enabled
 ```text copy=true
 that element is enabled
 ```
-Assert that the previously selected element is currently enabled.
+Asserts that the previously selected element is currently enabled.
 
 #### Examples:
 ```gherkin
-  Then that element is enabled
+Then that element is enabled
 ```
 
-<br /><br />
 
 ### Validate an element is disabled
 ```text copy=true
 that element is disabled
 ```
-Assert that the previously selected element is currently disabled.
+Asserts that the previously selected element is currently disabled.
 
 #### Examples:
 ```gherkin
-  Then that element is disabled
+Then that element is disabled
 ```
 
-<br /><br />
 
 ### Validate an element is displayed
 ```text copy=true
 that element is displayed
 ```
-Assert that the previously selected element is displayed on screen.
+Asserts that the previously selected element is displayed on screen.
 
 #### Examples:
 ```gherkin
-  Then that element is displayed
+Then that element is displayed
 ```
 
-<br /><br />
 
 ### Validate an element is not displayed
 ```text copy=true
 that element is not displayed
 ```
-Assert that the previously selected element is not displayed on screen.
+Asserts that the previously selected element is not displayed on screen.
 
 #### Examples:
 ```gherkin
-  Then that element is not displayed
+Then that element is not displayed
 ```
 
-<br /><br />
 
 ### Emulate an incoming call
 ```text copy=true
 an incoming call with number {text} is received
 ```
-Emulate an incoming call from a specific phone number. Only available if the tested application 
-runs on a emulated device.
+Emulates an incoming call from a specific phone number. Only available if the tested application runs on an emulated 
+device.
+
+#### Parameters
+| Name   | Wakamiti type     | Description      |
+|--------|-------------------|------------------|
+| `text` | `text` *required* | The phone number |
 
 #### Examples:
 ```gherkin
-  When an incoming call with number '555-4324-432' is received
+When an incoming call with number '555-4324-432' is received
 ```
 
-<br /><br />
 
 ### Accepts an incoming call
 ```text copy=true
@@ -284,10 +306,9 @@ Accepts the current incoming call.
 
 #### Examples:
 ```gherkin
-  When the incoming call is accepted
+When the incoming call is accepted
 ```
 
-<br /><br />
 
 ### Rejects an incoming call
 ```text copy=true
@@ -297,10 +318,9 @@ Rejects the current incoming call.
 
 #### Examples:
 ```gherkin
-  When the incoming call is rejected
+When the incoming call is rejected
 ```
 
-<br /><br />
 
 ### Ends the current call
 ```text copy=true
@@ -310,12 +330,10 @@ Ends (hangs up) the current call.
 
 #### Examples:
 ```gherkin
-  When the call is ended
+When the call is ended
 ```
 
 
-
----
 ## Usage
 
 
@@ -334,19 +352,19 @@ Ends (hangs up) the current call.
 
 ![android-sdk][android-sdk]
 
-5. Install Appium and Appium-doctor
+4. Install Appium and Appium-doctor
 ```text copy=true
    npm install -g appium
    npm install @appium/doctor --location=global
 ```
 
-4. Check the installation
+5. Check the installation
 ```text copy=true
 appium-doctor --android
 ```
 All should be OK, otherwise check the red messages
 
-5. Start the Appium server
+6. Start the Appium server
 ```text copy=true
 appium
 ```
@@ -355,20 +373,28 @@ Default port is 4723
 Download a demo APK from:
 https://github.com/appium/appium/raw/1.x/sample-code/apps/ApiDemos-debug.apk
 
-6. Create an Android Virtual Device
+7. Create an Android Virtual Device
 ```text copy=true
-$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"```
+$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"
 ```
 
-7. Start the emulator
+8. Start the emulator
 ```text copy=true
 $ANDROID_HOME/emulator/emulator -avd Nexus6P
 ```
 
-In case the emulator fails due to a previous emulation process in a zombie state, it can be 
-cleared using
+In case the emulator fails due to a previous emulation process in a zombie state, it can be cleared using
 ```text copy=true
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
+
+[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png
+
+Ideally, we would like to be able to do all this semi-automatically from the APK, but for now, we have to:
+- Install Android Studio
+- Create a virtual device (AVD) e.g., Pixel 2 API 30 with Android 11
+- Launch the AVD with the play button
+
+
 
 [android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png

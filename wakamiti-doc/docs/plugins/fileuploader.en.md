@@ -10,81 +10,132 @@ attempts to upload it to a remote location using the FTP/FTPS protocol. More spe
 it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPUT_FILE_WRITTEN`, and
 `REPORT_OUTPUT_FILE_WRITTEN`.
 
+
+---
+## Tabla de contenido
+
+---
+
+
+## Install
+
+
+Include the module in the corresponding section.
+
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:file-uploader-wakamiti-plugin:2.5.0
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>
-  <version>2.5.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
----
-## Table of content
 
----
-
----
-## Configuration
+## Options
 
 
-### `fileUploader.enable` : `true`|`false`
-Since: ```2.0.0```
+### `fileUploader.enabled` 
+- Type: `boolean`
+- Default: `true`
 
-Enable / disable the event observer. Default value is `false`
+Indicates whether the plugin is activated.
 
-<br /><br />
+Example:
+```yaml
+fileUploader:
+  enabled: "false"
+```
+
 
 ### `fileUploader.host`
-Since: ```2.0.0```
+- Type: `string` *required*
 
-The host name or IP address to be used to upload the files. Optionally, it can include a specific
-port in the form `hostname:port`
+The name or IP address of the machine to which the files are to be uploaded. Optionally, you can include a port number, 
+in the form `hostname:port`.
 
-<br /><br />
+Example:
+```yaml
+fileUploader:
+  host: 172.0.0.1:22
+```
+
 
 ### `fileUploader.credentials.username`
-Since: ```2.0.0```
+- Type: `string` *required*
 
-The username to be used to stablish the FTP/FTPS connection
+The username used to establish the connection.
 
-<br /><br />
+Example:
+```yaml
+fileUploader:
+  credentials: 
+    username: test
+```
+
 
 ### `fileUploader.credentials.password`
-Since: ```2.0.0```
+- Type: `string` *required*
 
-The password to be used to stablish the FTP/FTPS connection
+The password used to establish the connection.
 
-<br /><br />
+Example:
+```yaml
+fileUploader:
+  credentials:
+    password: test
+```
 
-### `fileUploader.protocol` : `ftp` | `ftps`
-Since: ```2.0.0```
 
-The specific protocol to be used (`ftps` is recommended)
+### `fileUploader.protocol`
+- Type: `string` 
+- Default: `ftps`
 
-<br /><br />
+The specific protocol to be used. Possible values are:
+- `ftp`
+- `ftps`
+- `sftp`
+
+Example:
+```yaml
+fileUploader:
+  protocol: sftp
+```
+
 
 ### `fileUploader.destinationDir`
-Since: ```2.0.0```
+- Type: `file` *required*
 
 The destination directory where the files should be uploaded within the remote location. It can include
 placeholders like `%DATE%`, `%TIME%`, or `%execID%`
 
+Example:
+```yaml
+fileUploader:
+  destinationDir: /home/test/file-%DATE%.txt
+```
+
+
 ### `fileUploader.identity`
-Since: ```2.5.0```
+- Type: `file` 
 
-Path of the identity file (such as a `ppk` file) used to authentication. 
+Path of the identity file used to authentication. 
+
+Example:
+```yaml
+fileUploader:
+  identity: /.ssh/identity.ppk
+```
 
 
----
 ## Usage
 
-This configuration would be applied to every event type. However, they can be fine-tunned in case
-you require configuration variations according the even type. For example, the configuration
-below would use the same connection parameters but upload files to different directories:
+This global setting applies to all received event types. However, there is the possibility to set one or more properties 
+with specific values depending on the type of event. For example, the following configuration would use the same 
+connection parameters but upload files to different directories depending on the type of event:
 
 ```yaml copy=true
 fileUploader:
