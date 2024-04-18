@@ -363,7 +363,7 @@ parameters will replace the service path fragments indicate with `{}`, and form 
 content-type `application/x-www-form-urlencoded`.
 
 ##### Parameters:
-| Nombre  | Wakamiti type     | Descripción               |
+| Name    | Wakamiti type     | Description               |
 |---------|-------------------|---------------------------|
 | `name`  | `text` *required* | Header or parameter name  |
 | `value` | `text` *required* | Header or parameter value |
@@ -660,7 +660,7 @@ Given 'mixed' as subtype multipart
 ```
 
 
-### Definir nombre de fichero multiparte
+### Define multipart filename
 ```text copy=true
 {name} as attached file name
 ```
@@ -668,7 +668,7 @@ Sets the default name for multipart files. This step is equivalent to setting th
 [`rest.config.multipart.filename`](#restconfigmultipartfilename).
 
 ##### Parameters:
-| Nombre | Wakamiti type     | Description         |
+| Name   | Wakamiti type     | Description         |
 |--------|-------------------|---------------------|
 | `name` | `text` *required* | Multipart file name |
 
@@ -1189,7 +1189,7 @@ Then the response length is less than 500
 
 ### Check response header
 ```text copy=true
-the (texto|entero|decimal) response header {name} {matcher}
+the (text|integer|decimal) response header {name} {matcher}
 ```
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
 
