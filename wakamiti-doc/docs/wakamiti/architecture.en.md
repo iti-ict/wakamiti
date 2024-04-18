@@ -57,19 +57,19 @@ Sets the results file directory.
 
 The output path may contain the following replacement placeholders:
 
-| placeholder | replacement            |
-|-------------|------------------------|
-| `%YYYY%`    | year (4 dígits)        |
-| `%YY%`      | year (2 dígits)        |
-| `%MM%`      | month                  |
-| `%DD%`      | day of month           |
-| `%hh%`      | hour (24H)             |
-| `%mm%`      | minutes                |
-| `%ss%`      | seconds                |
-| `%sss%`     | miliseconds (3 dígits) |
-| `%DATE%`    | `%YYYY%%MM%%DD%`       |
-| `%TIME%`    | `%hh%%mm%%ss%%ssss%`   |
-| `%execID%`  | unique execution       |
+| placeholder | replacement             |
+|-------------|-------------------------|
+| `%YYYY%`    | year (4 dígits)         |
+| `%YY%`      | year (2 dígits)         |
+| `%MM%`      | month                   |
+| `%DD%`      | day of month            |
+| `%hh%`      | hour (24H)              |
+| `%mm%`      | minutes                 |
+| `%ss%`      | seconds                 |
+| `%sss%`     | milliseconds (3 dígits) |
+| `%DATE%`    | `%YYYY%%MM%%DD%`        |
+| `%TIME%`    | `%hh%%mm%%ss%%ssss%`    |
+| `%execID%`  | unique execution        |
 
 Example:
 ```yaml
@@ -123,7 +123,7 @@ wakamiti:
 - Default: `false`
 
 Sets whether the plan executor should assert that each test case is properly annotated with a tag 
-matching the pattern from  `idTagPattern`. If enabled and some test case does not satisfiy this requisite, the 
+matching the pattern from  `idTagPattern`. If enabled and some test case does not satisfy this requirement, the 
 executor will stop resulting in an error.
 
 Example:
