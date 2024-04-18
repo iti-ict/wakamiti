@@ -1,20 +1,27 @@
 name: Release a new tagged version
 on:
-  push:
-    tags:
-      - 'v*.*.*'
-      - '*-plugin-v*.*.*'
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      TAG_NAME:
+        description: 'Tag name that the major tag will point to'
+        required: true
+
+env:
+  TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
 
 jobs:
   build:
     name: Build
+    if: ${{ startsWith(env.TAG_NAME, 'v') || contains(env.TAG_NAME, '-plugin-v')}}
     runs-on: ubuntu-latest
     steps:
       
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -26,23 +33,15 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE      
 
-#      - name: Cache Maven packages
-#        uses: actions/cache@v1
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
-
-
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: ./mvnw -B install -DskipTests -ntp
 
-
       - name: Publish Docker tagged version and latest version
-        run: ./mvnw -B deploy -DskipTests -ntp -pl wakamiti-engine/wakamiti-docker -P release,-default -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
-
+        run: |
+          ./mvnw -B deploy -DskipTests -ntp -pl wakamiti-engine/wakamiti-docker -P release,-default \
+          -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
 
       - name: Stage JARs into Maven Central Repository
         env:
