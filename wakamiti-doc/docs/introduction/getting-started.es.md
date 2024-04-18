@@ -50,9 +50,9 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:rest-wakamiti-plugin
+      - es.iti.wakamiti:db-wakamiti-plugin
+      - es.iti.wakamiti:html-report-wakamiti-plugin
   htmlReport:
     title: Test
   rest:
