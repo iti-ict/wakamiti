@@ -3,15 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser;
 
-import es.iti.wakamiti.core.gherkin.parser.Comment;
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
-import es.iti.wakamiti.core.gherkin.parser.Step;
 
 import java.util.List;
+
 
 public class Background extends ScenarioDefinition {
 

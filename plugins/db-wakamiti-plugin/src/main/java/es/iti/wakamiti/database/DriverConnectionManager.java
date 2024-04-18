@@ -16,7 +16,7 @@ import es.iti.commons.jext.Extension;
 /**
  * Manages JDBC connections using a driver-based approach.
  */
-@Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "2.4")
+@Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "2.5")
 public class DriverConnectionManager implements ConnectionManager {
 
     /**

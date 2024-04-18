@@ -18,12 +18,15 @@
 
 
     <artifactId>azure-wakamiti-plugin</artifactId>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
 
     <name>[Wakamiti Plugin] Azure integration</name>
     <description>Azure plan test integration</description>
     <inceptionYear>2023</inceptionYear>
 
+    <properties>
+        <wakamiti-engine.version>2.5.0</wakamiti-engine.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -41,11 +44,15 @@
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
-            <version>2.4.0</version>
+            <version>${wakamiti-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 
 </project>

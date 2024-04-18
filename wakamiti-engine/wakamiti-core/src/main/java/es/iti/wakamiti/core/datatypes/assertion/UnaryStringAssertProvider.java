@@ -11,6 +11,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -30,19 +31,27 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_EMPTY = "matcher.generic.not.empty";
     public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
 
+    private final Map<String, Supplier<Matcher<?>>> matchers = new LinkedHashMap<>();
+
+    public UnaryStringAssertProvider() {
+        matchers.put(NULL, Matchers::nullValue);
+        matchers.put(EMPTY, () -> Matchers.anyOf(
+                matcher(Matchers.emptyString(), String.class),
+                matcherCollection(Matchers.empty(), Collection.class)));
+        matchers.put(NULL_EMPTY, () -> Matchers.anyOf(
+                matcher(Matchers.emptyOrNullString(), String.class),
+                matcherCollection(Matchers.empty(), Collection.class)));
+        matchers.put(NOT_NULL, Matchers::notNullValue);
+        matchers.put(NOT_EMPTY, () -> Matchers.not(matchers.get(EMPTY)));
+        matchers.put(NOT_NULL_EMPTY, () -> Matchers.not(matchers.get(NULL_EMPTY)));
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected String[] expressions() {
-        return new String[]{
-                NULL,
-                EMPTY,
-                NULL_EMPTY,
-                NOT_NULL,
-                NOT_EMPTY,
-                NOT_NULL_EMPTY
-        };
+        return matchers.keySet().toArray(new String[0]);
     }
 
     /**
@@ -73,41 +82,7 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      */
     @Override
     protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
-
-        Matcher<?> matcher = null;
-        if (NULL.equals(expression)) {
-            matcher = Matchers.nullValue();
-
-        } else if (EMPTY.equals(expression)) {
-            List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyString(), String.class));
-            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
-            matcher = Matchers.anyOf(matchers);
-
-        } else if (NULL_EMPTY.equals(expression)) {
-            List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
-            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
-            matcher = Matchers.anyOf(matchers);
-
-        } else if (NOT_NULL.equals(expression)) {
-            matcher = Matchers.notNullValue();
-
-        } else if (NOT_EMPTY.equals(expression)) {
-            List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyString(), String.class));
-            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
-            matcher = Matchers.anyOf(matchers);
-            matcher = Matchers.not(matcher);
-
-        } else if (NOT_NULL_EMPTY.equals(expression)) {
-            List<Matcher<? super Object>> matchers = new ArrayList<>();
-            matchers.add(matcher(Matchers.emptyOrNullString(), String.class));
-            matchers.add(matcherCollection(Matchers.empty(), Collection.class));
-            matcher = Matchers.anyOf(matchers);
-            matcher = Matchers.not(matcher);
-        }
-        return matcher;
+        return matchers.get(expression).get();
     }
 
     /**

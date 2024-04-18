@@ -9,3 +9,5 @@ mvnw    eol=lf
 *.cmd   eol=crlf
 
 *.png binary
+*.gif binary
+*.apk binary

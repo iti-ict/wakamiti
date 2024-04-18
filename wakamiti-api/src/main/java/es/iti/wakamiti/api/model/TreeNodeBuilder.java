@@ -25,13 +25,13 @@ import java.util.stream.Stream;
 public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
 
     private final List<S> children = new ArrayList<>();
-    private Optional<S> parent = Optional.empty();
+    private S parent;
 
-    public TreeNodeBuilder() {
+    protected TreeNodeBuilder() {
         super();
     }
 
-    public TreeNodeBuilder(Collection<S> children) {
+    protected TreeNodeBuilder(Collection<S> children) {
         addChildren(children);
     }
 
@@ -90,7 +90,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @return The optional parent
      */
     public Optional<S> parent() {
-        return parent;
+        return Optional.ofNullable(parent);
     }
 
     /**
@@ -121,7 +121,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @return The root of the tree
      */
     public S root() {
-        return parent.map(TreeNodeBuilder::root).orElse((S) this);
+        return Optional.ofNullable(parent).map(TreeNodeBuilder::root).orElse((S) this);
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @return The stream of ancestors
      */
     public Stream<S> ancestors() {
-        return parent.map(s -> Stream.concat(Stream.of(s), s.ancestors())).orElseGet(Stream::empty);
+        return Optional.ofNullable(parent).map(s -> Stream.concat(Stream.of(s), s.ancestors())).orElseGet(Stream::empty);
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @return The stream of siblings
      */
     public Stream<S> siblings() {
-        return parent.isPresent() ? parent.get().children().filter(x -> x != this) : Stream.empty();
+        return Optional.ofNullable(parent).stream().flatMap(S::children).filter(x -> x != this);
     }
 
     /**
@@ -160,7 +160,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
     public S addChild(S child) {
         children.add(child);
         child.parent().ifPresent(previousParent -> previousParent.removeChild(child));
-        ((TreeNodeBuilder<S>) child).parent = Optional.of((S) this);
+        ((TreeNodeBuilder<S>) child).parent = (S) this;
         return (S) this;
     }
 
@@ -175,7 +175,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
     public S addChild(S child, int index) {
         children.add(index, child);
         child.parent().ifPresent(previousParent -> previousParent.removeChild(child));
-        ((TreeNodeBuilder<S>) child).parent = Optional.of((S) this);
+        ((TreeNodeBuilder<S>) child).parent = (S) this;
         return (S) this;
     }
 
@@ -235,9 +235,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
             throw new IllegalArgumentException("Node to replace is not a current child node");
         }
         children.set(index, newChild);
-        ((TreeNodeBuilder<S>) oldChild).parent = Optional.empty();
+        ((TreeNodeBuilder<S>) oldChild).parent = null;
         newChild.parent().ifPresent(previousParent -> previousParent.removeChild(newChild));
-        ((TreeNodeBuilder<S>) newChild).parent = Optional.of((S) this);
+        ((TreeNodeBuilder<S>) newChild).parent = (S) this;
         return (S) this;
     }
 
@@ -260,7 +260,7 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      */
     public S removeChild(S child) {
         children.remove(child);
-        ((TreeNodeBuilder<S>) child).parent = Optional.empty();
+        ((TreeNodeBuilder<S>) child).parent = null;
         return (S) this;
     }
 

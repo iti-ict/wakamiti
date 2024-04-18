@@ -2,7 +2,7 @@
 // Learn more: https://gridsome.org/docs/config
 
 // Changes here require a server restart.
-// To restart press CTRL + C in terminal and run `gridsome develop`
+// To restart, press CTRL + C in terminal and run `gridsome develop`
 const path = require('path')
 
 function addStyleResource (rule) {
@@ -55,7 +55,7 @@ module.exports = {
         locales: [ 'es', 'en' ],
         fallbackLocale: 'es',          // fallback language
         defaultLocale,                 // default language
-        enablePathRewrite: false,      // rewrite path with locale prefix, default: true
+        enablePathRewrite: false,      // rewrite the path with locale prefix, default: true
         rewriteDefaultLanguage: false, // rewrite default locale, default: true
         enablePathGeneration: false,
         routes: {
