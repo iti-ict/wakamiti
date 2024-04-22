@@ -12,7 +12,8 @@
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-plugin-starter</artifactId>
-        <version>2.4.0</version>
+        <version>${revision}</version>
+        <relativePath>../../wakamiti-plugin-starter</relativePath>
     </parent>
 
     <repositories>
@@ -24,12 +25,6 @@
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.release>11</maven.compiler.release>
-    </properties>
 
 
     <name>[Wakamiti Plugin] jmeter</name>

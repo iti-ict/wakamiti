@@ -7,12 +7,10 @@
 package es.iti.wakamiti.plugins.jmeter;
 
 
-
-import imconfig.Configuration;
-import imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
-import org.apache.regexp.RE;
+import imconfig.Configuration;
+import imconfig.Configurer;
 
 
 @Extension(
@@ -35,10 +33,10 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             BASE_URL, "http://localhost:8080",
-            RESULTSTREE_ENABLED, "true",
-            INFLUXDB_ENABLED, "false",
-            CSV_ENABLED, "false",
-            HTML_ENABLED, "false",
+            RESULTSTREE_ENABLED, Boolean.TRUE.toString(),
+            INFLUXDB_ENABLED, Boolean.FALSE.toString(),
+            CSV_ENABLED, Boolean.FALSE.toString(),
+            HTML_ENABLED, Boolean.FALSE.toString(),
             INFLUXDB_URL, "http://localhost:8086/write?db=jmeter",
             CSV_PATH, "./test-results.csv",
             HTML_PATH, "./test-results.html"
@@ -67,20 +65,16 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
     private void configure(JMeterStepContributor contributor, Configuration configuration) {
 
         configuration.get(BASE_URL, String.class).ifPresent(contributor::setBaseURL);
-        boolean treeEnabled = configuration.get(RESULTSTREE_ENABLED, Boolean.class).orElse(true);
-        boolean influxEnabled = configuration.get(INFLUXDB_ENABLED, Boolean.class).orElse(true);
-        boolean csvEnabled = configuration.get(CSV_ENABLED, Boolean.class).orElse(false);
-        boolean htmlEnabled = configuration.get(HTML_ENABLED, Boolean.class).orElse(false);
-        String influxUrl = configuration.get(INFLUXDB_URL, String.class).orElse("");
-        String csvPath = configuration.get(CSV_PATH, String.class).orElse("");
-        String htmlPath = configuration.get(HTML_PATH, String.class).orElse("");
-        String username = configuration.get(USERNAME, String.class).orElse("");
-        String password = configuration.get(PASSWORD, String.class).orElse("");
+        configuration.get(RESULTSTREE_ENABLED, Boolean.class).ifPresent(contributor::setResultsTree);
+        configuration.get(HTML_ENABLED, Boolean.class).ifPresent(contributor::setHTML);
+        configuration.get(CSV_ENABLED, Boolean.class).ifPresent(contributor::setCSV);
+        configuration.get(INFLUXDB_ENABLED, Boolean.class).ifPresent(contributor::setInfluxDB);
+        configuration.get(HTML_PATH, String.class).ifPresent(contributor::setHTMLPath);
+        configuration.get(CSV_PATH, String.class).ifPresent(contributor::setCSVPath);
+        configuration.get(INFLUXDB_URL, String.class).ifPresent(contributor::setInfluxDBUrl);
+        configuration.get(USERNAME, String.class).ifPresent(contributor::setUsername);
+        configuration.get(PASSWORD, String.class).ifPresent(contributor::setPassword);
 
-
-
-        contributor.configureOutputOptions(treeEnabled, influxEnabled, csvEnabled, htmlEnabled, influxUrl, csvPath, htmlPath);
-        contributor.setAuthCredentials(username,password);
 
     }
 
