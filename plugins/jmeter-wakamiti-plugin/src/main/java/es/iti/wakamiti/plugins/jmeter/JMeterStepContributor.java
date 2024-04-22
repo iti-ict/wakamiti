@@ -49,7 +49,7 @@ public class JMeterStepContributor implements StepContributor {
     private String htmlPath;
     private String username;
     private String password;
-    private static final String errorMessage = "No test results stored to verify the response times.";
+    private static final String ERROR_MESSAGE = "No test results stored to verify the response times.";
 
     private void resetThreadGroup() {
         this.threadGroup = null;
