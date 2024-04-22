@@ -12,10 +12,8 @@ import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.http.entity.ContentType;
 import org.apache.jmeter.protocol.http.util.HTTPConstantsInterface;
-import org.slf4j.Logger;
 import us.abstracta.jmeter.javadsl.core.DslTestPlan;
 import us.abstracta.jmeter.javadsl.core.TestPlanStats;
 import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
@@ -51,7 +49,7 @@ public class JMeterStepContributor implements StepContributor {
     private String htmlPath;
     private String username;
     private String password;
-    private final String errorMessage = "No test results stored to verify the response times.";
+    private static final String errorMessage = "No test results stored to verify the response times.";
 
     private void resetThreadGroup() {
         this.threadGroup = null;
