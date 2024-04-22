@@ -387,7 +387,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setPercentile(Integer percentile, Integer duration) {
 
         if (lastTestStats == null) {
-            throw new IllegalStateException(errorMessage);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
 
         switch (percentile){
@@ -412,7 +412,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseTime(Integer duration){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException(errorMessage);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
 
         assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofSeconds(duration));
@@ -422,7 +422,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setPercentilems(Integer percentile, Integer duration) {
 
         if (lastTestStats == null) {
-            throw new IllegalStateException(errorMessage);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
 
         switch (percentile){
@@ -447,7 +447,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseTimems(Integer duration){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException(errorMessage);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
 
         assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofMillis(duration));
@@ -459,7 +459,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseErrors(Integer errors){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException(errorMessage);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
         assertThat(lastTestStats.overall().errorsCount()).isLessThan(errors);
         resetThreadGroup();
