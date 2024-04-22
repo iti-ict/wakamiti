@@ -37,8 +37,6 @@ import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 @I18nResource("es_iti_wakamiti_jmeter")
 public class JMeterStepContributor implements StepContributor {
 
-    private final Logger logger = WakamitiLogger.forClass(JMeterStepContributor.class);
-
     private DslDefaultThreadGroup threadGroup = threadGroup();
 
     private boolean basicTest = true;
@@ -53,6 +51,7 @@ public class JMeterStepContributor implements StepContributor {
     private String htmlPath;
     private String username;
     private String password;
+    private final String errorMessage = "No test results stored to verify the response times.";
 
     private void resetThreadGroup() {
         this.threadGroup = null;
@@ -390,7 +389,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setPercentile(Integer percentile, Integer duration) {
 
         if (lastTestStats == null) {
-            throw new IllegalStateException("No test results stored to verify the response times.");
+            throw new IllegalStateException(errorMessage);
         }
 
         switch (percentile){
@@ -415,7 +414,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseTime(Integer duration){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException("No test results stored to verify the response times.");
+            throw new IllegalStateException(errorMessage);
         }
 
         assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofSeconds(duration));
@@ -425,7 +424,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setPercentilems(Integer percentile, Integer duration) {
 
         if (lastTestStats == null) {
-            throw new IllegalStateException("No test results stored to verify the response times.");
+            throw new IllegalStateException(errorMessage);
         }
 
         switch (percentile){
@@ -450,7 +449,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseTimems(Integer duration){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException("No test results stored to verify the response times.");
+            throw new IllegalStateException(errorMessage);
         }
 
         assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofMillis(duration));
@@ -462,7 +461,7 @@ public class JMeterStepContributor implements StepContributor {
     public void setResponseErrors(Integer errors){
 
         if (lastTestStats == null) {
-            throw new IllegalStateException("No test results stored to verify the response times.");
+            throw new IllegalStateException(errorMessage);
         }
         assertThat(lastTestStats.overall().errorsCount()).isLessThan(errors);
         resetThreadGroup();
