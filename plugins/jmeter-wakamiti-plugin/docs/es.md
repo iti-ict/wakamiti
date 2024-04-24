@@ -67,10 +67,10 @@ Para configurar las salidas y diferentes opciones del plugin, de momento se debe
 ```
  private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
     BASE_URL, "http://localhost:8080",
-    RESULTSTREE_ENABLED, "true",
-    INFLUXDB_ENABLED, "false",
-    CSV_ENABLED, "false",
-    HTML_ENABLED, "false",
+    RESULTSTREE_ENABLED, Boolean.TRUE.toString(),
+    INFLUXDB_ENABLED, Boolean.FALSE.toString(),
+    CSV_ENABLED, Boolean.FALSE.toString(),
+    HTML_ENABLED, Boolean.FALSE.toString(),
     INFLUXDB_URL, "http://localhost:8086/write?db=jmeter",
     CSV_PATH, "./test-results.csv",
     HTML_PATH, "./test-results.html"
@@ -251,32 +251,32 @@ Establece la ruta base. Este paso es equivalente a configurar la propiedad [`res
 
 ### Definir entrada CSV
 ```
-un fichero con los siguientes datos {fichero:text}
+(que) se realiza POST usando un fichero con los siguientes datos {file:text}
 ```
 Establece un fichero CSV como entrada para las pruebas de JMeter.
 
 #### Parámetros:
 | Nombre     | Wakamiti type | Descripción                                  |
 |------------|---------------|----------------------------------------------|
-| `fichero`  | `text`        | Ruta al fichero CSV con los datos de entrada |
+| `file`     | `text`        | Ruta al fichero CSV con los datos de entrada |
 
 #### Ejemplos:
 ```gherkin
-   Dado un fichero con los siguientes datos './usuarios.csv'
+   Dado que se realiza POST un fichero con los siguientes datos './usuarios.csv'
 ```
 
 <br /><br />
 
 ### Definir entrada CSV con variables
 ```
-un fichero con los siguientes datos {fichero:text} trabajando con las variables:
+(que) se realiza un POST usando un fichero con los siguientes datos {file:text} trabajando con las variables:
 ```
 Establece un fichero CSV como entrada y especifica las variables a utilizar durante las pruebas de JMeter. Permite filtrar y usar solo ciertas columnas del fichero CSV como variables dentro de la prueba.
 
 #### Parámetros:
 | Nombre     | Wakamiti type | Descripción                                       |
 |------------|---------------|---------------------------------------------------|
-| `fichero`  | `text`        | Ruta al fichero CSV con los datos de entrada      |
+| `file`     | `text`        | Ruta al fichero CSV con los datos de entrada      |
 |            | `DataTable`   | Una tabla que especifica las variables a utilizar |
 
 #### Ejemplos:
@@ -290,7 +290,7 @@ Dado un fichero con los siguientes datos 'usuarios.csv' trabajando con las varia
 
 ### Realizar petición GET
 ```
-(que) hago un GET al endpoint {service:text}
+(que) se realiza un GET al endpoint {service:text}
 ```
 Realiza una petición GET al endpoint especificado.
 
@@ -301,14 +301,14 @@ Realiza una petición GET al endpoint especificado.
 
 #### Ejemplos:
 ```gherkin
- hago un GET al endpoint '/api/usuarios'
+Dado que se realiza un GET al endpoint '/api/usuarios'
 ```
 
 <br /><br />
 
 ### Realizar petición PUT
 ```
-(que) hago un PUT al endpoint {service:text} con el siguiente mensaje:
+(que) se realiza un PUT al endpoint {service:text} con el siguiente mensaje:
 ```
 Realiza una petición GET al endpoint especificado.
 
@@ -320,7 +320,7 @@ Realiza una petición GET al endpoint especificado.
 
 #### Ejemplos:
 ```gherkin
- hago un PUT al endpoint '/api/usuarios/123' con el siguiente mensaje:
+ Dado que se realiza un PUT al endpoint '/api/usuarios/123' con el siguiente mensaje:
     """
     {
         "nombre": "Ana",
@@ -333,7 +333,7 @@ Realiza una petición GET al endpoint especificado.
 
 ### Realizar petición POST
 ```
-(que) hago un POST al endpoint {service:text} con el siguiente mensaje:
+(que) se realiza un POST al endpoint {service:text} con el siguiente mensaje:
 ```
 Realiza una petición GET al endpoint especificado.
 
@@ -345,7 +345,7 @@ Realiza una petición GET al endpoint especificado.
 
 #### Ejemplos:
 ```gherkin
- hago un POST al endpoint '/api/usuarios' con el siguiente mensaje:
+ Dado que se realiza un POST al endpoint '/api/usuarios' con el siguiente mensaje:
     """
     {
         "nombre": "Carlos",
@@ -358,7 +358,7 @@ Realiza una petición GET al endpoint especificado.
 
 ### Realizar petición GET y extraer variable con expresión regular
 ```
-(que) hago un GET al endpoint {service:text} y extraigo el valor utilizando expresión regular {regex:text} y lo almaceno en {variableName:text}
+(que) se realiza un GET al endpoint {service:text} y se extrae el valor utilizando la expresión regular {regex:text} almacenándolo en {variableName:text}
 ```
 Realiza una petición GET al endpoint especificado y extrae un valor usando una expresión regular, almacenando el resultado en una variable.
 
@@ -371,14 +371,14 @@ Realiza una petición GET al endpoint especificado y extrae un valor usando una 
 
 #### Ejemplos:
 ```gherkin
-  (que) hago un GET al endpoint '/api/usuarios' y extraigo el valor utilizando expresión regular '\d+' y lo almaceno en 'userID'
+  Dado que se realiza un GET al endpoint '/api/usuarios' y se extrae el valor utilizando expresión regular '\d+' almacenándolo en 'userID'
 ```
 
 <br /><br />
 
 ### Realizar petición GET y extraer variable con delimitadores
 ```
-(que) hago un GET al endpoint {service:text} y extraigo el valor entre {leftBoundary:text} y {rightBoundary:text} y lo almaceno en {variableName:text}
+(que) se realiza un GET al endpoint {service:text} y se extrae el valor entre {leftBoundary:text} y {rightBoundary:text} almacenándolo en {variableName:text}
 ```
 Realiza una petición GET y extrae un valor delimitado por textos específicos.
 
@@ -392,14 +392,14 @@ Realiza una petición GET y extrae un valor delimitado por textos específicos.
 
 #### Ejemplos:
 ```gherkin
-  (que) hago un GET al endpoint '/api/usuarios/detalles' y extraigo el valor entre 'id:' y ',' y lo almaceno en 'userID'
+  Dado que se realiza un GET al endpoint '/api/usuarios/detalles' y se extrae el valor entre 'id:' y ',' almacenándolo en 'userID'
 ```
 
 <br /><br />
 
 ### Realizar petición GET y extraer variable con JSON Path
 ```
-(que) hago un GET al endpoint {service:text} y extraigo el valor en el Json Path {jsonPath:text} y lo almaceno en {variableName:text}
+(que) se realiza un GET al endpoint {service:text} y se extrae el valor en el Json Path {jsonPath:text} almacenándolo en {variableName:text}
 ```
 Realiza una petición GET y extrae un valor especificado por un JSON Path.
 
@@ -412,14 +412,14 @@ Realiza una petición GET y extrae un valor especificado por un JSON Path.
 
 #### Ejemplos:
 ```gherkin
-  (que) hago un GET al endpoint '/api/usuarios/detalles' y extraigo el valor entre 'id:' y ',' y lo almaceno en 'userID'
+  Dado que se realiza un GET al endpoint '/api/usuarios/detalles' y se extrae el valor entre 'id:' y ',' almacenándolo en 'userID'
 ```
 
 <br /><br />
 
 ### Realizar petición PUT con variable extraida
 ```
-(que) hago un PUT al endpoint {service:text} con la variable almacenada {variableName:text} como cuerpo del mensaje
+(que) se realiza un PUT al endpoint {service:text} con la variable almacenada {variableName:text} como cuerpo del mensaje
 ```
 Envía una petición PUT utilizando como cuerpo del mensaje el valor de una variable previamente extraída.
 
@@ -431,14 +431,14 @@ Envía una petición PUT utilizando como cuerpo del mensaje el valor de una vari
 
 #### Ejemplos:
 ```gherkin
-   (que) hago un PUT al endpoint '/api/usuarios/123' con la variable almacenada 'datosUsuario' como cuerpo del mensaje
+   Dado que se realiza un PUT al endpoint '/api/usuarios/123' con la variable almacenada 'datosUsuario' como cuerpo del mensaje
 ```
 
 <br /><br />
 
 ### Realizar petición POST con variable extraida   (#realizar-petición-get-a-un-endpoint-con-variable-extraida)
 ```
-(que) hago un POST al endpoint {service:text} con la variable almacenada {variableName:text} como cuerpo del mensaje
+(que) se realiza un POST al endpoint {service:text} con la variable almacenada {variableName:text} como cuerpo del mensaje
 ```
 Envía una petición PUT utilizando como cuerpo del mensaje el valor de una variable previamente extraída.
 
@@ -450,14 +450,14 @@ Envía una petición PUT utilizando como cuerpo del mensaje el valor de una vari
 
 #### Ejemplos:
 ```gherkin
-   (que) hago un POST al endpoint '/api/usuarios/123' con la variable almacenada 'datosUsuario' como cuerpo del mensaje
+  Dado que se realiza un POST al endpoint '/api/usuarios/123' con la variable almacenada 'datosUsuario' como cuerpo del mensaje
 ```
 
 <br /><br />
 
 ### Realizar petición GET a un endpoint con variable extraida  
 ```
-(que) hago un GET al endpoint {service:text} / y la variable {variableName:text} extraida previamente
+(que) se realiza un GET al endpoint {service:text} / y la variable {variableName:text} extraida previamente
 ```
 Realiza una petición GET al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente.
 
@@ -469,14 +469,14 @@ Realiza una petición GET al endpoint compuesto por un segmento de URL base segu
 
 #### Ejemplos:
 ```gherkin
-  (que) hago un GET al endpoint '/api/usuario' / y la variable 'userId' extraida previamente
+  Dado que se realiza un GET al endpoint '/api/usuario' / y la variable 'userId' extraida previamente
 ```
 
 <br /><br />
 
 ### Realizar petición PUT a un endpoint con variable extraida  
 ```
-(que) hago un PUT al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
+(que) se realiza un PUT al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
 ```
 Envía una petición PUT al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente, con un cuerpo de mensaje específico
 
@@ -489,7 +489,7 @@ Envía una petición PUT al endpoint compuesto por un segmento de URL base segui
 
 #### Ejemplos:
 ```gherkin
- (que) hago un PUT al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
+ Dado que se realiza un PUT al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
     """
     {
         "nombre": "Actualizado",
@@ -502,7 +502,7 @@ Envía una petición PUT al endpoint compuesto por un segmento de URL base segui
 
 ### Realizar petición POST a un endpoint con variable extraida  
 ```
-(que) hago un POST al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
+(que) se realiza un POST al endpoint {service:text} / y la variable {variableName:text} extraida previamente con el siguiente mensaje:
 ```
 Envía una petición POST al endpoint compuesto por un segmento de URL base seguido de una barra y el valor de una variable que ha sido extraída previamente, con un cuerpo de mensaje específico
 
@@ -515,7 +515,7 @@ Envía una petición POST al endpoint compuesto por un segmento de URL base segu
 
 #### Ejemplos:
 ```gherkin
- (que) hago un POST al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
+ Dado que se realiza un POST al endpoint '/api/usuario' / y la variable 'userId' extraida previamente con el siguiente mensaje:
     """
     {
         "nombre": "Nuevo",
@@ -560,89 +560,89 @@ Configura la autenticación básica para las peticiones HTTP que se realicen con
 
 ### Deshabilitar cookies
 ```
-(que) deshabilito las cookies
+(que) se deshabilitan las cookies
 ```
 Deshabilita el manejo de cookies por parte de JMeter para todas las peticiones HTTP.
 
 #### Ejemplos:
 ```gherkin
-  Dado que deshabilito las cookies
+  Dado que se deshabilitan las cookies
 ```
 
 <br /><br />
 
 ### Deshabilitar caché
 ```
-(que) deshabilito la cache
+(que) se deshabilita la caché
 ```
 Deshabilita el almacenamiento en caché de las peticiones HTTP en JMeter.
 
 #### Ejemplos:
 ```gherkin
-  Dado que deshabilito la cache
+  Dado que se deshabilita la caché
 ```
 
 <br /><br />
 
 ### Establecer timeout de conexión
 ```
-establezco un timeout de conexión de {duracion:int} segundos
+(que) se establece un timeout de conexión de {duration:int} segundos
 ```
 Define un tiempo máximo de espera para establecer una conexión.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción              |
 |-----------|---------------|--------------------------|
-| `duracion`| `int`         | Duración del timeout     |
+| `duration`| `int`         | Duración del timeout     |
 
 #### Ejemplos:
 ```gherkin
-  Dado que establezco un timeout de conexión de 30 segundos
+  Dado que se establece un timeout de conexión de 30 segundos
 ```
 
 <br /><br />
 
 ### Establecer timeout de respuesta
 ```
-establezco un timeout de respuesta de {duracion:int} minutos
+(que) se establece un timeout de respuesta de {duration:int} minutos
 ```
 Define un tiempo máximo de espera para establecer una conexión.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción              |
 |-----------|---------------|--------------------------|
-| `duracion`| `int`         | Duración del timeout     |
+| `duration`| `int`         | Duración del timeout     |
 
 #### Ejemplos:
 ```gherkin
-  Dado que establezco un timeout de respuesta de 2 minutos
+  Dado que se establece un timeout de respuesta de 2 minutos
 ```
 
 <br /><br />
 
 ### Descargar recursos asociados
 ```
-(que) descargo todos los recursos asociados a la URL
+(que) se descargan todos los recursos asociados a la URL
 ```
 Configura JMeter para que automáticamente descargue los recursos embebidos asociados con las peticiones HTML (por ejemplo, imágenes, scripts, estilos).
 
 #### Ejemplos:
 ```gherkin
-  Dado que descargo todos los recursos asociados a la URL
+  Dado que se descargan todos los recursos asociados a la URL
 ```
 
 <br /><br />
 
 ### Utilizar un Servidor Proxy
 ```
-se utiliza un servidor proxy en la URL {URL:text}
+(que) se utiliza un servidor proxy en la URL {url:text}
 ```
 Configura JMeter para enviar todas las peticiones a través de un servidor proxy.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción              |
 |-----------|---------------|--------------------------|
-| `URL`     | `text`        | URL del servidor proxy   |
+| `url`     | `text`        | URL del servidor proxy   |
 
 #### Ejemplos:
 ```gherkin
@@ -653,164 +653,172 @@ Configura JMeter para enviar todas las peticiones a través de un servidor proxy
 
 ### Ejecutar Plan de Pruebas JMX
 ```
-ejecuto el test plan del archivo JMX {archivo:text}
+se ejecuta el test plan del archivo JMX {file:text}
 ```
 Ejecuta un plan de pruebas JMeter especificado en un archivo JMX.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción              |
 |-----------|---------------|--------------------------|
-| `archivo` | `text`        | Ruta al archivo JMX      |
+| `file`    | `text`        | Ruta al archivo JMX      |
 
 #### Ejemplos:
 ```gherkin
-  When ejecuto el test plan del archivo JMX 'plan.jmx'
+  Cuando se ejecuta el test plan del archivo JMX 'plan.jmx'
 ```
 
 <br /><br />
 
 ### Ejecutar prueba de humo
 ```
-ejecuto una prueba de humo
+se ejecuta una prueba de humo
 ```
 Ejecuta una prueba de humo básica para verificar que el sistema bajo prueba está operativo.
 
 #### Ejemplos:
 ```gherkin
- Cuando ejecuto una prueba de humo
+ Cuando se ejecuta una prueba de humo
 ```
 
 <br /><br />
 
 ### Ejecutar prueba de carga
 ```
-ejecuto una prueba de carga con {usuarios:int} usuarios durante {duracion:int} minutos
+se ejecuta una prueba de carga con {users:int} usuarios durante {duration:int} minutos
 ```
 Ejecuta una prueba de carga simulando la actividad de un número específico de usuarios durante un tiempo determinado.
 
 #### Parámetros:
 | Nombre    | Wakamiti type | Descripción              |
 |-----------|---------------|--------------------------|
-| `usuarios`|   `int`       | Número de usuarios       |
-| `duracion`|   `int`       | Tiempo de la prueba      |
+| `users`   |   `int`       | Número de usuarios       |
+| `duration`|   `int`       | Tiempo de la prueba      |
 
 #### Ejemplos:
 ```gherkin
- Cuando ejecuto una prueba de carga con 500 usuarios durante 10 minutos
+ Cuando se ejecuta una prueba de carga con 500 usuarios durante 10 minutos
 ```
 
 <br /><br />
 
 ### Ejecutar prueba de estrés
 ```
-ejecuto una prueba de estrés comenzando con {usuarios:int} usuarios, incrementando en {incrementoUsuarios:int} hasta {maxUsuarios:int} usuarios durante {duracion:int} minutos
+se ejecuta una prueba de estrés comenzando con {users:int} usuarios, incrementando en {usersIncrease:int} hasta {maxUsers:int} usuarios durante {duration:int} minutos
 ```
 Ejecuta una prueba de estrés incrementando gradualmente la carga de usuarios y manteniendo dicha carga para identificar el punto de ruptura del sistema.
 
 #### Parámetros:
 | Nombre              | Wakamiti type | Descripción                                   |
 |---------------------|---------------|-----------------------------------------------|
-| `usuarios`          |   `int`       | Número inicial de usuarios                    |
-| `incrementoUsuarios`|   `int`       | Incremento de usuarios por intervalo          |
-| `maxUsuarios`       |   `int`       | Máximo número de usuarios                     |
-| `duracion`          |   `int`       | Tiempo que se mantiene la carga por intervalo |
+| `users`             |   `int`       | Número inicial de usuarios                    |
+| `usersIncrease`     |   `int`       | Incremento de usuarios por intervalo          |
+| `maxUsers`          |   `int`       | Máximo número de usuarios                     |
+| `duration`          |   `int`       | Tiempo que se mantiene la carga por intervalo |
 
 #### Ejemplos:
 ```gherkin
- Cuando ejecuto una prueba de estrés comenzando con 100 usuarios, incrementando en 100 hasta 2000 usuarios durante 5 minutos
+ Cuando se ejecuta una prueba de estrés comenzando con 100 usuarios, incrementando en 100 hasta 2000 usuarios durante 5 minutos
 ```
 
 <br /><br />
 
 ### Ejecutar prueba de picos
 ```
-ejecuto una prueba de picos con {numeroPicos:int} picos de {usuariosPico:int} usuarios, bajando a {usuariosFueraPico:int} usuarios durante {duracion:int} minutos
+se ejecuta una prueba de picos con {peaks:int} picos de {peakUsers:int} usuarios, bajando a {nonPeakUsers:int} usuarios durante {duration:int} minutos
 ```
 Ejecuta una prueba de picos para simular cargas irregulares en el sistema, alternando entre un número alto y bajo de usuarios.
 
 #### Parámetros:
 | Nombre              | Wakamiti type | Descripción                                              |
 |---------------------|---------------|----------------------------------------------------------|
-| `numeroPicos`       |   `int`       | Número de picos de carga                                 |
-| `usuariosPico`      |   `int`       | Número de usuarios en cada pico                          |
-| `usuariosFueraPico` |   `int`       | Número de usuarios fuera de los picos                    |
-| `duracion`          |   `int`       | Tiempo que se mantiene la carga antes de simular un pico |
+| `peaks`             |   `int`       | Número de picos de carga                                 |
+| `peakUsers`         |   `int`       | Número de usuarios en cada pico                          |
+| `nonPeakUsers`      |   `int`       | Número de usuarios fuera de los picos                    |
+| `duration`          |   `int`       | Tiempo que se mantiene la carga antes de simular un pico |
 
 #### Ejemplos:
 ```gherkin
- Cuando ejecuto una prueba de picos con 3 picos de 1000 usuarios, bajando a 200 usuarios durante 5 minutos
+ Cuando se ejecuta una prueba de picos con 3 picos de 1000 usuarios, bajando a 200 usuarios durante 5 minutos
 ```
 
 <br /><br />
 
 ### Ejecutar prueba de límite operativo
 ```
-ejecuto una prueba de límite operativo comenzando con {usuarios:int} usuarios, incrementando en {incrementoUsuarios:int} hasta {maxUsuarios:int} usuarios con rampas de subida de {duracion:int} minutos
+se ejecuta una prueba de límite operativo comenzando con {users:int} usuarios, incrementando en {usersIncrease:int} hasta {maxUsers:int} usuarios con con rampas de subida de {duration:int} minutos
 ```
 Ejecuta una prueba para encontrar el límite operativo del sistema, aumentando progresivamente el número de usuarios.
 
 #### Parámetros:
 | Nombre              | Wakamiti type | Descripción                                              |
 |---------------------|---------------|----------------------------------------------------------|
-| `usuarios   `       |   `int`       | Número inicial de usuarios                               |
-| `incrementoUsuarios`|   `int`       | Incremento de usuarios                                   |
-| `usuariosFueraPico` |   `int`       | Número máximo de usuarios                                |
-| `duracion`          |   `int`       | Tiempo de rampa de subida antes de aumentar los usuarios |
+| `users   `          |   `int`       | Número inicial de usuarios                               |
+| `usersIncrease`     |   `int`       | Incremento de usuarios                                   |
+| `maxUsers`          |   `int`       | Número máximo de usuarios                                |
+| `duration`          |   `int`       | Tiempo de rampa de subida antes de aumentar los usuarios |
 
 #### Ejemplos:
 ```gherkin
- Cuando ejecuto una prueba de límite operativo comenzando con 100 usuarios, incrementando en 100 hasta 5000 usuarios con rampas de subida de 2 minutos
+ Cuando se ejecuta una prueba de límite operativo comenzando con 100 usuarios, incrementando en 100 hasta 5000 usuarios con rampas de subida de 2 minutos
 ```
 
 <br /><br />
 
 ### Comprobar percentil de tiempo de respuesta
 ```
-comprueba que el percentil {percentil:int} de tiempo de respuesta es menor que {duracionTest:int} segundos
+comprueba que el percentil {percentile:int} de tiempo de respuesta es menor que {duration:int} segundos
+comprueba que el percentil {percentile:int} de tiempo de respuesta es menor que {duration:int} milisegundos
 ```
 Verifica que el percentil especificado del tiempo de respuesta sea menor que la duración dada.
 
 #### Parámetros:
 | Nombre        | Wakamiti type | Descripción                                   |
 |---------------|---------------|-----------------------------------------------|
-| `percentil`   |   `int`       | Percentil del tiempo de respuesta a comprobar |
-| `duracionTest`|   `int`       | Duración máxima esperada                      |
+| `percentile`  |   `int`       | Percentil del tiempo de respuesta a comprobar |
+| `duration`    |   `int`       | Duración máxima esperada                      |
 
 #### Ejemplos:
 ```gherkin
  Entonces comprueba que el percentil 95 de tiempo de respuesta es menor que 2 segundos
+```
+```gherkin
+ Entonces comprueba que el percentil 95 de tiempo de respuesta es menor que 2 milisegundos
 ```
 
 <br /><br />
 
 ### Comprobar tiempo de respuesta medio
 ```
-comprueba que el tiempo de respuesta medio es menor que {duracionTest:int} segundos
+comprueba que el tiempo de respuesta medio es menor que {duration:int} segundos
+comprueba que el tiempo de respuesta medio es menor que {duration:int} milisegundos
 ```
 Verifica que el tiempo de respuesta medio sea menor que la duración dada.
 
 #### Parámetros:
 | Nombre        | Wakamiti type | Descripción                                   |
 |---------------|---------------|-----------------------------------------------|
-| `duracionTest`|   `int`       | Duración máxima esperada                      |
+| `duration`    |   `int`       | Duración máxima esperada                      |
 
 #### Ejemplos:
 ```gherkin
  Entonces comprueba que el tiempo de respuesta medio es menor que 2 segundos
+```
+```gherkin
+ Entonces comprueba que el tiempo de respuesta medio es menor que 2 milisegundos
 ```
 
 <br /><br />
 
 ### Comprobar errores en las peticiones
 ```
-comprueba que el número de peticiones que han devuelto error es menor que {errores:int}
+comprueba que el número de peticiones que han devuelto error es menor que {errors:int}
 ```
 Verifica que el número de peticiones que han devuelto un error es menor que el número especificado.
 
 #### Parámetros:
 | Nombre   | Wakamiti type | Descripción               |
 |----------|---------------|---------------------------|
-| `errores`|   `int`       | Errores máximos esperados |
+| `errors` |   `int`       | Errores máximos esperados |
 
 #### Ejemplos:
 ```gherkin
