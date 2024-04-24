@@ -63,10 +63,10 @@ To configure the outputs and different options of the plugin, you currently need
 ```
 private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
    BASE_URL, "http://localhost:8080",
-   RESULTSTREE_ENABLED, "true",
-   INFLUXDB_ENABLED, "false",
-   CSV_ENABLED, "false",
-   HTML_ENABLED, "false",
+   RESULTSTREE_ENABLED, Boolean.TRUE.toString(),
+   INFLUXDB_ENABLED, Boolean.TRUE.toString(),
+   CSV_ENABLED, Boolean.TRUE.toString(),
+   HTML_ENABLED, Boolean.TRUE.toString(),
    INFLUXDB_URL, "http://localhost:8086/write?db=jmeter",
    CSV_PATH, "./test-results.csv",
    HTML_PATH, "./test-results.html"
@@ -244,7 +244,7 @@ Sets the base path. This step is equivalent to configuring the [`rest.baseURL`](
 
 ### Define CSV Input
 ```
-a file with the following data {file:text}
+(that) a POST is performed using a file with the following data {file:text}
 ```
 Sets a CSV file as input for JMeter tests.
 
@@ -255,14 +255,14 @@ Sets a CSV file as input for JMeter tests.
 
 #### Example:
 ```gherkin
-     Given a file with the following data './users.csv'
+     Given a POST is performed using a file with the following data './users.csv'
 ```
 
 <br /><br />
 
 ### Define CSV Input with Variables
 ```
-a file with the following data {file:text} working with the variables:
+(that) a POST is performed using a file with the following data {file:text} working with the variables:
 ```
 Sets a CSV file as input and specifies the variables to be used during JMeter tests. It allows filtering and using only certain columns from the CSV file as variables within the test.
 
@@ -274,7 +274,7 @@ Sets a CSV file as input and specifies the variables to be used during JMeter te
 
 #### Example:
 ```gherkin
-Given a file with the following data 'users.csv' working with the variables:
+Given a POST is performed using a file with the following data 'users.csv' working with the variables:
    | username |
    | password |
 ```
@@ -283,7 +283,7 @@ Given a file with the following data 'users.csv' working with the variables:
 
 ### Perform GET Request
 ```
- perform a GET to the endpoint {service:text}
+ (that) a GET is performed to the endpoint {service:text}
 ```
 Sends a GET request to the previously defined parameters.
 
@@ -294,14 +294,14 @@ Sends a GET request to the previously defined parameters.
 
 #### Example:
 ```gherkin
- perform a GET to the endpoint '/api/users'
+ Given that a GET is performed to the endpoint '/api/users'
 ```
 
 <br /><br />
 
 ### Perform PUT Request
 ```
-perform a PUT to the endpoint {service:text} with the following message:
+(that) a PUT is performed to the endpoint {service:text} with the following message:
 ```
 Sends a PUT request to the previously defined parameters.
 
@@ -313,7 +313,7 @@ Sends a PUT request to the previously defined parameters.
 
 #### Example:
 ```gherkin
- perform a PUT to the endpoint '/api/users/123' with the following message:
+ Given that a PUT is performed to the endpoint '/api/users/123' with the following message:
     """
     {
         "firstName": "Ana",
@@ -326,7 +326,7 @@ Sends a PUT request to the previously defined parameters.
 
 ### Perform POST Request
 ```
-perform a POST to the endpoint {service:text} with the following message:
+(that) a POST is performed to the endpoint {service:text} with the following message:
 ```
 Sends a POST request to the previously defined parameters.
 
@@ -338,7 +338,7 @@ Sends a POST request to the previously defined parameters.
 
 #### Example:
 ```gherkin
- perform a POST to the endpoint '/api/users/123' with the following message:
+ Given that a POST is performed to the endpoint '/api/users/123' with the following message:
     """
     {
         "firstName": "Ana",
@@ -351,7 +351,7 @@ Sends a POST request to the previously defined parameters.
 
 ### Perform GET Request and Extract Variable with Regular Expression
 ```
-(I) perform a GET to the endpoint {service:text} and extract the value using regular expression {regex:text} and store it in {variableName:text}
+(that) a GET is performed to the endpoint {service:text} and the value is extracted using the regular expression {regex:text} storing it in {variableName:text}
 ```
 Performs a GET request to the specified endpoint and extracts a value using a regular expression, storing the result in a variable.
 
@@ -364,14 +364,14 @@ Performs a GET request to the specified endpoint and extracts a value using a re
 
 #### Example:
 ```gherkin
-  (I) perform a GET to the endpoint '/api/users' and extract the value using regular expression '\d+' and store it in 'userID'
+  Given that a GET is performed to the endpoint '/api/users' and the value is extracted using regular expression '\d+' storing it in 'userID'
 ```
 
 <br /><br />
 
 ### Perform GET Request and Extract Variable with Delimiters
 ```
-(I) perform a GET to the endpoint {service:text} and extract the value between {leftBoundary:text} and {rightBoundary:text} and store it in {variableName:text}
+(that) a GET is performed to the endpoint {service:text} and the value is extracted between {leftBoundary:text} and {rightBoundary:text} storing it in {variableName:text}
 ```
 Performs a GET request and extracts a value delimited by specific texts.
 
@@ -385,14 +385,14 @@ Performs a GET request and extracts a value delimited by specific texts.
 
 #### Example:
 ```gherkin
-    (I) perform a GET to the endpoint '/api/users/details' and extract the value between 'id:' and ',' and store it in 'userID'
+    Given that a GET is performed to the endpoint '/api/users/details' and the value is extracted between 'id:' and ',' storing it in 'userID'
 ```
 
 <br /><br />
 
 ### Perform GET Request and Extract Variable with JSON Path
 ```
-(I) perform a GET to the endpoint {service:text} and extract the value at the Json Path {jsonPath:text} and store it in {variableName:text}
+(that) a GET is performed to the endpoint {service:text} and the value at the Json Path {jsonPath:text} is extracted storing it in {variableName:text}
 ```
 Performs a GET request and extracts a value specified by a JSON Path.
 
@@ -405,7 +405,7 @@ Performs a GET request and extracts a value specified by a JSON Path.
 
 #### Example:
 ```gherkin
-   (I) perform a GET to the endpoint '/api/users/details' and extract the value at the Json Path '$.id' and store it in 'userID'
+  Given that a GET is performed to the endpoint '/api/users/details' and the value at the Json Path '$.id' is extracted storing it in 'userID'
 ```
 
 <br /><br />
@@ -413,7 +413,7 @@ Performs a GET request and extracts a value specified by a JSON Path.
 
 ### Perform PUT Request with Extracted Variable
 ```
-(I) perform a PUT to the endpoint {service:text} with the stored variable {variableName:text} as the message body
+(that) a PUT is performed to the endpoint {service:text} with the stored variable {variableName:text} as the message body
 ```
 Sends a PUT request using the value of a previously extracted variable as the message body.
 
@@ -425,14 +425,14 @@ Sends a PUT request using the value of a previously extracted variable as the me
 
 #### Example:
 ```gherkin
- (I) perform a PUT to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
+ Given that a PUT is performed to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
 ```
 
 <br /><br />
 
 ### Perform POST Request with Extracted Variable
 ```
-(I) perform a POST to the endpoint {service:text} with the stored variable {variableName:text} as the message body
+(that) a POST is performed to the endpoint {service:text} with the stored variable {variableName:text} as the message body
 ```
 Sends a POST request using the value of a previously extracted variable as the message body.
 
@@ -444,14 +444,14 @@ Sends a POST request using the value of a previously extracted variable as the m
 
 #### Example:
 ```gherkin
- (I) perform a POST to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
+ Given that a POST is performed to the endpoint '/api/users/123' with the stored variable 'userData' as the message body
 ```
 
 <br /><br />
 
 ### Perform GET Request to an Endpoint with Extracted Variable
 ```
-(I) perform a GET to the endpoint {service:text} / and the previously extracted variable {variableName:text}
+(that) a GET is performed to the endpoint {service:text} / and the previously extracted variable {variableName:text}
 ```
 Performs a GET request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable.
 
@@ -463,14 +463,14 @@ Performs a GET request to an endpoint composed of a base URL segment followed by
 
 #### Example:
 ```gherkin
-   (I) perform a GET to the endpoint '/api/user' / and the previously extracted variable 'userId'
+   Given that a GET is performed to the endpoint '/api/user' / and the previously extracted variable 'userId'
 ```
 
 <br /><br />
 
 ### Perform PUT Request to an Endpoint with Extracted Variable
 ```
-(I) perform a PUT to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
+(that) a PUT is performed to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
 ```
 Sends a PUT request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable, with a specific message body.
 
@@ -484,7 +484,7 @@ Sends a PUT request to an endpoint composed of a base URL segment followed by a 
 
 #### Example:
 ```gherkin
-   (I) perform a PUT to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
+   Given that a PUT is performed to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
     """
     {
         "firstName": "Updated",
@@ -497,7 +497,7 @@ Sends a PUT request to an endpoint composed of a base URL segment followed by a 
 
 ### Perform POST Request to an Endpoint with Extracted Variable
 ```
-(I) perform a POST to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
+(that) a POST is performed to the endpoint {service:text} / and the previously extracted variable {variableName:text} with the following message:
 ```
 Sends a POST request to an endpoint composed of a base URL segment followed by a slash and the value of a previously extracted variable, with a specific message body.
 
@@ -511,7 +511,7 @@ Sends a POST request to an endpoint composed of a base URL segment followed by a
 
 #### Example:
 ```gherkin
-   (I) perform a POST to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
+    Given that a POST is performed to the endpoint '/api/user' / and the previously extracted variable 'userId' with the following message:
     """
     {
         "firstName": "Updated",
@@ -524,7 +524,7 @@ Sends a POST request to an endpoint composed of a base URL segment followed by a
 
 ### Define Basic Authentication with Credentials
 ```
-a service uses basic authentication with the credentials {username:text}:{password:text}
+(that) the service uses basic authentication with the credentials {username:text}:{password:text}
 ```
 Sets up basic authentication for HTTP requests.
 
@@ -536,109 +536,109 @@ Sets up basic authentication for HTTP requests.
 
 #### Examples:
 ```gherkin
-  Given a service uses basic authentication with the credentials 'Mariano' : 'mariano123@'
+  Given the service uses basic authentication with the credentials 'Mariano' : 'mariano123@'
 ```
 
 <br /><br />
 
 ### Define Basic Authentication
 ```
-a service uses basic authentication
+(that) the service uses basic authentication
 ```
 Sets up basic authentication for HTTP requests with default configured credentials.
 
 #### Examples:
 ```gherkin
-  Given a service uses basic authentication
+  Given that the service uses basic authentication
 ```
 
 <br /><br />
 
 ### Disable Cookies
 ```
-(that) I disable cookies
+(that) cookies are disabled
 ```
 Disables cookie handling by JMeter for all HTTP requests.
 
 #### Examples:
 ```gherkin
-   Given that I disable cookies
+   Given that cookies are disabled
 ```
 
 <br /><br />
 
 ### Disable Cache
 ```
-(that) I disable the cache
+(that) the cache is disabled
 ```
 Disables caching of HTTP requests in JMeter.
 
 #### Ejemplos:
 ```gherkin
- Given that I disable the cache
+ Given that the cache is disabled
 ```
 
 <br /><br />
 
 ### Set Connection Timeout
 ```
-I set a connection timeout of {duration:int} seconds
+(that) a connection timeout of {duration:int} seconds is set
 ```
 Defines a maximum wait time for establishing a connection.
 
 #### Parameters:
 | Name       | Wakamiti type | Description            |
 |------------|---------------|------------------------|
-| `duracion` | `int`         | Timeout duration       |
+| `duration` | `int`         | Timeout duration       |
 
 #### Examples:
 ```gherkin
-   Given that I set a connection timeout of 30 seconds
+   Given that a connection timeout of 30 seconds is set
 ```
 
 <br /><br />
 
 ### Set Response  Timeout
 ```
-I set a Response  timeout of {duration:int} minutes
+(that) a response timeout of {duration:int} minutes is set
 ```
 Defines a maximum wait time for receiving a response .
 
 #### Parameters:
 | Name       | Wakamiti type | Description            |
 |------------|---------------|------------------------|
-| `duracion` | `int`         | Timeout duration       |
+| `duration` | `int`         | Timeout duration       |
 
 #### Examples:
 ```gherkin
-   Given that I set a response  timeout of 2 minutes
+   Given that a response  timeout of 2 minutes is set
 ```
 
 <br /><br />
 
 ### Download Associated Resources
 ```
-(that) I download all resources associated with the URL
+(that) all resources associated with the URL are downloaded
 ```
 Configures JMeter to automatically download embedded resources associated with HTML requests (e.g., images, scripts, styles).
 
 #### Examples:
 ```gherkin
-   Given that I download all resources associated with the URL
+   Given that all resources associated with the URL are downloaded
 ```
 
 <br /><br />
 
 ### Use a Proxy Server
 ```
-a proxy server is used at the URL {URL:text}
+(that) a proxy server is used at the URL {url:text}
 ```
 Configures JMeter to route all requests through a proxy server.
 
 #### Parameters:
 | Name      | Wakamiti type | Description              |
 |-----------|---------------|--------------------------|
-| `URL`     | `text`        | Proxy server URL         |
+| `url`     | `text`        | Proxy server URL         |
 
 #### Examples:
 ```gherkin
@@ -649,38 +649,38 @@ Configures JMeter to route all requests through a proxy server.
 
 ### Execute JMX Test Plan
 ```
-I execute the test plan from the JMX file {archivo:text}
+the test plan from the JMX file {file:text} is executed
 ```
 Runs a JMeter test plan specified in a JMX file.
 
 #### Parameters:
 | Name      | Wakamiti type | Description              |
 |-----------|---------------|--------------------------|
-| `archivo` | `text`        | Path to the JMX file     |
+| `file`    | `text`        | Path to the JMX file     |
 
 #### Ejemplos:
 ```gherkin
-   When I execute the test plan from the JMX file 'plan.jmx'
+   When the test plan from the JMX file 'plan.jmx' is executed
 ```
 
 <br /><br />
 
 ### Execute Smoke Test
 ```
-I execute a smoke test
+a smoke test is executed
 ```
 Runs a basic smoke test to check if the system under test is operational.
 
 #### Example:
 ```gherkin
- When I execute a smoke test
+ When a smoke test is executed
 ```
 
 <br /><br />
 
 ### Execute Load Test
 ```
-I execute a load test with {users:int} users for {duration:int} minutes
+a load test with {users:int} users for {duration:int} minutes is executed
 ```
 Runs a load test simulating the activity of a specific number of users for a set duration.
 
@@ -692,14 +692,14 @@ Runs a load test simulating the activity of a specific number of users for a set
 
 #### Example:
 ```gherkin
-  When I execute a load test with 500 users for 10 minutes
+  When a load test with 500 users for 10 minutes is executed
 ```
 
 <br /><br />
 
 ### Execute Stress Test
 ```
-I execute a stress test starting with {users:int} users, increasing by {incrementUsers:int} up to {maxUsers:int} users over {duration:int} minutes
+a stress test starting with {users:int} users, increasing by {usersIncrease:int} up to {maxUsers:int} users over {duration:int} minutes is executed
 ```
 Runs a stress test by gradually increasing the load of users and maintaining it to identify the breaking point of the system.
 
@@ -707,41 +707,41 @@ Runs a stress test by gradually increasing the load of users and maintaining it 
 | Name                | Wakamiti type | Description                                   |
 |---------------------|---------------|-----------------------------------------------|
 | `users`             |   `int`       | Initial number of users                       |
-| `incrementUsers`    |   `int`       | User increment per interval                   |
+| `usersIncrease`     |   `int`       | User increment per interval                   |
 | `maxUsers`          |   `int`       | Maximum number of users                       |
 | `duration`          |   `int`       | Duration to maintain the load per interval    |
 
 #### Example:
 ```gherkin
-  When I execute a stress test starting with 100 users, increasing by 100 up to 2000 users over 5 minutes
+  When a stress test starting with 100 users, increasing by 100 up to 2000 users over 5 minutes is executed
 ```
 
 <br /><br />
 
-### Execute Spike Test
+### Execute Peak Test
 ```
-I execute a spike test with {numberOfSpikes:int} spikes of {usersPerSpike:int} users, dropping to {usersOffPeak:int} users over {duration:int} minutes
+a peak test with {peaks:int} peaks of {peakUsers:int} users, dropping to {nonPeakUsers:int} users over {duration:int} minutes is executed
 ```
 Runs a spike test to simulate irregular loads on the system, alternating between a high and low number of users.
 
 #### Parameters:
 | Name                | Wakamiti type | Description                                              |
 |---------------------|---------------|----------------------------------------------------------|
-| `numberOfSpikes`    |   `int`       | Number of load spikes                                    |
-| `usersPerSpike`     |   `int`       | Number of users at each spike                            |
-| `usersOffPeak`      |   `int`       | Number of users off the spikes                           |
+| `peaks`             |   `int`       | Number of load spikes                                    |
+| `peakUsers`         |   `int`       | Number of users at each spike                            |
+| `nonPeakUsers`      |   `int`       | Number of users off the spikes                           |
 | `duration`          |   `int`       | Duration to maintain the load before a spike             |
 
 #### Example:
 ```gherkin
-  When I execute a spike test with 3 spikes of 1000 users, dropping to 200 users over 5 minutes
+  When a peak test with 3 spikes of 1000 users, dropping to 200 users over 5 minutes is executed
 ```
 
 <br /><br />
 
 ### Execute Operational Limit Test
 ```
-I execute an operational limit test starting with {users:int} users, increasing by {incrementUsers:int} up to {maxUsers:int} users with ramp-up periods of {duration:int} minutes
+an operational limit test starting with {users:int} users, increasing by {usersIncrease:int} up to {maxUsers:int} users with ramp-up periods of {duration:int} minutes is executed
 ```
 Runs a test to find the operational limit of the system, progressively increasing the number of users.
 
@@ -749,20 +749,21 @@ Runs a test to find the operational limit of the system, progressively increasin
 |  Name               | Wakamiti type | Description                                              |
 |---------------------|---------------|----------------------------------------------------------|
 | `users`             |   `int`       | Initial number of users                                  |
-| `incrementUsers`    |   `int`       | User increment                                           |
+| `usersIncrease`     |   `int`       | User increment                                           |
 | `maxUsers`          |   `int`       | Maximum number of users                                  |
 | `duration`          |   `int`       | Ramp-up time before increasing users                     |
 
 #### Example:
 ```gherkin
-  When I execute an operational limit test starting with 100 users, increasing by 100 up to 5000 users with ramp-up periods of 2 minutes
+  When an operational limit test starting with 100 users, increasing by 100 up to 5000 users with ramp-up periods of 2 minutes is executed
 ```
 
 <br /><br />
 
 ### Check Response Time Percentile
 ```
-check that the {percentile:int} percentile of response time is less than {testDuration:int} seconds
+check that the {percentile:int} percentile of response time is less than {duration:int} seconds
+check that the {percentile:int} percentile of response time is less than {duration:int} milliseconds
 ```
 Verifies that the specified response time percentile is less than the given duration.
 
@@ -770,29 +771,36 @@ Verifies that the specified response time percentile is less than the given dura
 | Name          | Wakamiti type | Description                                   |
 |---------------|---------------|-----------------------------------------------|
 | `percentile`  |   `int`       | Response time percentile to check             |
-| `testDuration`|   `int`       | Expected maximum duration                     |
+| `duration`    |   `int`       | Expected maximum duration                     |
 
 #### Example:
 ```gherkin
  Then check that the 99 percentile of response time is less than 2 seconds
+```
+```gherkin
+ Then check that the 99 percentile of response time is less than 2 milliseconds
 ```
 
 <br /><br />
 
 ### Check Average Response Time
 ```
-check that the average response time is less than {testDuration:int} seconds
+check that the average response time is less than {duration:int} seconds
+check that the average response time is less than {duration:int} milliseconds
 ```
 Verifies that the average response time is less than the given duration.
 
 #### Parameters:
 | Name          | Wakamiti type | Description                                   |
 |---------------|---------------|-----------------------------------------------|
-| `testDuration`|   `int`       | Expected maximum duration                     |
+| `duration`    |   `int`       | Expected maximum duration                     |
 
 #### Example:
 ```gherkin
   Then check that the average response time is less than 2 seconds
+```
+```gherkin
+  Then check that the average response time is less than 2 milliseconds
 ```
 
 <br /><br />
