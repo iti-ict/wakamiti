@@ -31,6 +31,7 @@ public class TestHtmlReportGenerator {
 
     private static Document xml;
     private static Document xml_2;
+    private static Document xml_3;
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
@@ -40,7 +41,7 @@ public class TestHtmlReportGenerator {
                 "htmlReport.extra_info.value1", "Extra info 1",
                 "htmlReport.extra_info.value2", "Extra info 2");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
-
+        xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
     }
 
     private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
