@@ -1,3 +1,64 @@
+
+function toHTML(s) { return s?.toLowerCase().replace('_', '-')}
+
+function flatten(c) {
+    return c.map((it) => it.t !== 'STEP' && it.t !== 'VIRTUAL_STEP' && it.c ? flatten(it.c) : it).flat(Infinity)
+}
+
+
+function render(data) {
+    for (let elem of document.getElementsByClassName('mustache')) {
+        if (!elem.id) elem.id = Math.random().toString().replace("0.", "");
+        const id = elem.getAttribute("data-template");
+        window.worker.postMessage({uuid: elem.id, id, value: data})
+       // $(elem).html(Mustache.render(window.templates[id], Object.assign(data, aux), window.templates));
+    }
+}
+
+
+function getPage(arr, pageSize, page) {
+    return arr.length <= pageSize ? arr : arr.reduce((r, v, i) => {
+        if (i % pageSize === 0) r.push(arr.slice(i, i + pageSize));
+        return r;
+        }, [])[page]
+}
+
+
+function statuses() {
+    const statuses = [];
+    for (let elem of document.querySelectorAll('.nav-menu--control input')) {
+        if (elem.checked) statuses.push(elem.value);
+    }
+    return statuses;
+}
+
+
+function filtered() {
+    const pageSize = 10;
+    const page = 0;
+
+    // filter by results
+    const aux = JSON.parse(data).c.reduce((rf, feature) => {
+        feature.c = feature.c.reduce((rs, scenario) => {
+            if (scenario.t === 'AGGREGATOR') {
+                scenario.c = scenario.c.filter((s) => {return statuses().includes(s.r)});
+                if (scenario.c.length > 0) rs.push(scenario);
+            } else if (statuses().includes(scenario.r)) {
+                rs.push(scenario);
+            }
+            return rs;
+        }, []);
+        if (feature.c.length > 0) rf.push(feature);
+        return rf;
+    }, []);
+
+    // filter by text
+
+
+    return {c: getPage(aux, pageSize, page)}
+}
+
+
 function hasClass(elem, className) {
     return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
 }
@@ -145,8 +206,19 @@ function newChart(elem, labels, data, backgroundColor) {
 }
 
 
-window.onload = function () {
+function load() {
+    console.log("Running load");
+    // Mustache
+    window.templates = {};
+    for (let elem of document.querySelectorAll('script[type="x-tmpl-mustache"]')) {
+        window.templates[elem.id] = elem.innerHTML;
+        console.log(`Template '${elem.id}' loaded`)
+    }
 
+    render(filtered());
+}
+
+function buttons() {
     for (let elem of document.getElementsByClassName('toggle')) {
         elem.onclick = function () {
             toggleClass(this, 'on');
@@ -161,58 +233,18 @@ window.onload = function () {
         }
     }
 
-    for (let elem of document.querySelectorAll('.nav-menu--control input')) {
-        const disabledClass = 'nav-menu--disabled';
-        const toggle = function () {
-            const menu = document.querySelector('.nav-menu--section > ul');
+    $('input[type="checkbox"]').change(function(e) {
+        $('.loader').show(50);
+    });
+    $(document).on('change', 'input[type="checkbox"]', function(e){
+        e.stopImmediatePropagation();
+        render(filtered());
+    });
 
-            for (let scenario of menu.querySelectorAll('li[data-target="' + elem.id + '"]')) {
-                const href = scenario.querySelector('a').getAttribute('href');
-                const id = document.querySelector(href);
+    hljs.highlightAll();
+}
 
-                if (elem.checked) {
-                    toggleOff(scenario, disabledClass);
-                    toggleOff(id, 'hidden');
-                } else {
-                    scenario.className += ' ' + disabledClass;
-                    id.className += ' hidden';
-                }
-            }
-
-            for (let feature of menu.children) {
-                const href = feature.querySelector('a').getAttribute('href');
-                const id = document.querySelector(href);
-
-                const scenarios = feature.querySelectorAll('ul.nav-menu--sub > li');
-                const disabled = feature.querySelectorAll('ul.nav-menu--sub > li.' + disabledClass);
-                if (scenarios.length > 0) {
-                    if (scenarios.length === disabled.length) {
-                        feature.className += ' ' + disabledClass;
-                        id.className += ' hidden';
-                    } else {
-                        toggleOff(feature, disabledClass);
-                        toggleOff(id, 'hidden');
-                    }
-                } else {
-                    const href = feature.querySelector('a').getAttribute('href');
-                    const id = document.querySelector(href);
-
-                    if (elem.checked) {
-                        toggleOff(feature, disabledClass);
-                        toggleOff(id, 'hidden');
-                    } else {
-                        feature.className += ' ' + disabledClass;
-                        id.className += ' hidden';
-                    }
-                }
-            }
-
-            elem.setAttribute('aria-label', 'Toggle status: ' + (this.checked ? 'on' : 'off'));
-        };
-        elem.onclick = toggle;
-        toggle();
-    }
-
+function charts() {
     const charts = document.getElementsByClassName('chart');
 
     for (let chart of charts) {
@@ -224,7 +256,6 @@ window.onload = function () {
         for (let label of labels) {
             backgroundColor.push(getColor(label));
         }
-
 
         newChart(chart, labels, counts, backgroundColor);
     }
@@ -241,8 +272,69 @@ window.onload = function () {
             backgroundColor.push(getErrorColor(i));
         }
 
-
         newChart(chart, labels, counts, backgroundColor);
     }
-    hljs.highlightAll();
 }
+
+function generateContent(e) {
+    const frag = new DocumentFragment();
+    const el = document.getElementById(e.data.uuid);
+    const container = document.createElement("div");
+    $(el).find('li:not(.loader)').remove();
+    const promises = e.data.value.c.map((c) => {
+        return new Promise(resolve => {
+            setTimeout(function() {
+                const content = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
+                    isAggregator: function(){return this.t === 'AGGREGATOR'},
+                    toHTML: function () {return toHTML(this);},
+                    toView: function () {return toHTML(this).split('-')
+                        .map((word) => {return word[0].toUpperCase() + word.substring(1);}).join(" ");},
+                    isPassed: function () {return !['ERROR', 'FAILED', 'UNDEFINED'].includes(this.r)},
+                    hasChildren: function(){return this.c?.length > 0},
+                    hasTags: function(){return this.g?.length > 0},
+                    cResults: function(){return Object.entries(this.tr)
+                        .map((it)=>{return {key: it[0], value: it[1]}});},
+                    sum: function(){return Object.values(this.tr)
+                        .reduce((r, v) => {return r + v;}, 0)},
+                    cFResults: function(){return Object.entries(flatten(this.c)
+                        .reduce((r, it) => {(r[it.r] = (r[it.r] || [])).push(it); return r;}, {}))
+                        .map((it)=>{return {key: it[0], value: it[1].length}});},
+                    hasDoc: function(){return !!this.m || !!this.p || !!this.d;},
+                    hasDataTable: function(){return !!this.d},
+                    getHeader: function(){return this.d[0];},
+                    getBody: function(){return this.d.slice(1);},
+                    count: function(){return flatten(this.c).length;}
+                }), window.templates);
+                container.innerHTML = content;
+                frag.appendChild(container.firstElementChild);
+                // el.appendChild(frag);
+                resolve();
+            }, 100);
+        });
+    });
+    Promise.all(promises).then(() => {
+        el.appendChild(frag);
+        buttons();
+        $(el).find('.loader').hide(50);
+        $(el).find('li:not(.loader)').show(50);
+    });
+}
+
+
+$(function () {
+    var blob = new Blob([document.querySelector('#worker').textContent], { type: "text/javascript" });
+    window.worker = new Worker((window.URL || window.webkitURL).createObjectURL(blob));
+    window.worker.addEventListener('message', function(e) {
+        if (!e.data.uuid) {
+            console.log("Call " + JSON.stringify(e.data));
+            return;
+        }
+        console.log("Call elem " + e.data.uuid);
+        generateContent(e);
+    }, false);
+
+    Mustache.tags = ['<%', '%>'];
+    charts();
+    load();
+});
+
