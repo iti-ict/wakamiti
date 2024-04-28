@@ -165,9 +165,12 @@ public class RunnableBackend extends AbstractBackend {
      */
     @Override
     public void setUp() {
+        String type = "set-up";
+        LOGGER.debug("Performing {} operations...", type);
         for (ThrowableRunnable setUpOperation : setUpOperations) {
-            runMethod(setUpOperation, "set-up");
+            runMethod(setUpOperation, type);
         }
+        LOGGER.debug("{} finished", type);
     }
 
     /**
@@ -176,9 +179,12 @@ public class RunnableBackend extends AbstractBackend {
      */
     @Override
     public void tearDown() {
+        String type = "tear-down";
+        LOGGER.debug("Performing {} operations...", type);
         for (ThrowableRunnable tearDownOperation : tearDownOperations) {
-            runMethod(tearDownOperation, "tear-down");
+            runMethod(tearDownOperation, type);
         }
+        LOGGER.debug("{} finished", type);
     }
 
     /**
