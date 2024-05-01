@@ -118,7 +118,8 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
             if (altDir.isPresent()) {
                 config = config.appendFromPairs(
                         OUTPUT_FILE_PATH, String.format("%s/%s", altDir.get(),
-                                WakamitiConfiguration.DEFAULTS.get(OUTPUT_FILE_PATH, String.class).get()),
+                                WakamitiConfiguration.DEFAULTS.get(OUTPUT_FILE_PATH, String.class)
+                                        .orElse("wakamiti.json")),
                         OUTPUT_FILE_PER_TEST_CASE_PATH, altDir.get());
             }
             return config.appendFromAnnotation(testedClass);
