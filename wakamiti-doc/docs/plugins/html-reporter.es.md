@@ -20,14 +20,14 @@ Un generador de informes en formato `HTML` con los resultados de las pruebas.
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:html-reporter-wakamiti-plugin:2.4.0
+es.iti.wakamiti:html-reporter-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>html-reporter-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 

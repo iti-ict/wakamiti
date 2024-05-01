@@ -26,14 +26,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.1.0
+es.iti.wakamiti:db-wakamiti-plugin:3.2.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.1.0</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -828,15 +828,15 @@ If the alias is not included, the default connection will be used.
 
 ### Async mode
 ```text copy=true
-* in {time} seconds
+* in {duration}
 ```
 
-The step waits for a maximum of the indicated seconds until the condition indicated in the step is fulfilled.
+The step waits for a maximum of the indicated duration until the condition indicated in the step is fulfilled.
 
 #### Parameters:
-| Name   | Wakamiti type    | Description |
-|--------|------------------|-------------|
-| `time` | `int` *required* | The timeout |
+| Name       | Wakamiti type            | Description |
+|------------|--------------------------|-------------|
+| `duration` | [duration][5] *required* | The timeout |
 
 #### Examples:
 ```gherkin
@@ -848,3 +848,4 @@ Then a user identified by '1' exists in the table USERS in 10 seconds
 [2]: en/wakamiti/architecture#comparador
 [3]: #post-execution-mode
 [4]: #async-mode
+[5]: en/wakamiti/architecture#duration 
