@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+## [unreleased]
+
+### Added
+- Duration data type
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [1.3.0] - 2024-04-16
 
 ### Changed

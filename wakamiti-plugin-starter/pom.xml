@@ -24,16 +24,14 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.4.1</revision>
-
-        <wakamiti.api>2.4.1</wakamiti.api>
+        <revision>2.4.2-SNAPSHOT</revision>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-api</artifactId>
-            <version>${wakamiti.api}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
