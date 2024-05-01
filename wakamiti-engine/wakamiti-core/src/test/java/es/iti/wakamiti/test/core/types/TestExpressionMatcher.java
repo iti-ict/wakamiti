@@ -118,6 +118,16 @@ public class TestExpressionMatcher {
         );
     }
 
+    @Test
+    public void testExpressionStep6() {
+        assertExpression(
+                new Locale("es"),
+                "se realiza la búsqueda en {duration}",
+                "se realiza la búsqueda en 5 segundos",
+                "se realiza la búsqueda en 1 hora"
+        );
+    }
+
 
     private void assertExpression(Locale locale, String expression, String... steps) {
         for (String step : steps) {

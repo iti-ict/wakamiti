@@ -89,7 +89,6 @@ Example:
 ```yaml
 wakamiti:
   outputFilePerTestCase: true
-
 ```
 
 
@@ -107,7 +106,7 @@ wakamiti:
 
 ### `wakamiti.idTagPattern`
 - Type: `regex`
-- Default: `ID-(\w*)`
+- Default: `ID([\w-]+)`
 
 Specifies the tag pattern of scenario identifiers. Must be a valid regular expression.
 
@@ -123,7 +122,7 @@ wakamiti:
 - Default: `false`
 
 Sets whether the plan executor should assert that each test case is properly annotated with a tag 
-matching the pattern from  `idTagPattern`. If enabled and some test case does not satisfy this requirement, the 
+matching the pattern from  `idTagPattern`. If enabled and some test cases do not satisfy this requirement, the 
 executor will stop resulting in an error.
 
 Example:
@@ -465,6 +464,14 @@ A datetime in format `yyyy-MM-ddThh:mm`, `yyyy-MM-ddThh:mm:ss` or `yyyy-MM-ddThh
 
 Example: 
 `'2022-02-22T12:05:06.468'`.
+
+
+### `duration`
+
+A text fragment that translates to a duration in the format 
+`~x~ (nanosecond|microsecond|millisecond|second|minute|hour|day)(s)`, where `~x~` is an integer.
+
+Example: `3 seconds`.
 
 
 ### `text-assertion`

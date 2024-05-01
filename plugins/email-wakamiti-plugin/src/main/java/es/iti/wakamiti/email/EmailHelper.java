@@ -6,6 +6,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.slf4j.Logger;
+
 import javax.mail.*;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
@@ -14,19 +15,20 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 
 public class EmailHelper {
 
-    private static Logger logger = WakamitiLogger.forClass(EmailStepContributor.class);
-
-
+    private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
+    private static final Logger logger = WakamitiLogger.forClass(EmailStepContributor.class);
     private Session session;
     private Store store;
-    private Map<String, Folder> folders = new HashMap<>();
+    private final Map<String, Folder> folders = new HashMap<>();
 
 
     public EmailHelper(String protocol, String host, Integer port, String address, String password) {
@@ -47,6 +49,24 @@ public class EmailHelper {
         }
     }
 
+    private static Map<String, byte[]> findAttachments(Multipart multipart, int maxAttachments) {
+        try {
+            Map<String, byte[]> attachments = new HashMap<>();
+            for (int i = 0; i < multipart.getCount() && attachments.size() < maxAttachments; i++) {
+                BodyPart bodyPart = multipart.getBodyPart(i);
+                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) && bodyPart instanceof MimeBodyPart) {
+                    attachments.put(bodyPart.getFileName(), readBytes(((MimeBodyPart) bodyPart)));
+                }
+            }
+            return attachments;
+        } catch (IOException | MessagingException e) {
+            throw new WakamitiException(e);
+        }
+    }
+
+    private static byte[] readBytes(MimeBodyPart bodyPart) throws MessagingException, IOException {
+        return bodyPart.getInputStream().readAllBytes();
+    }
 
     public void close() {
         try {
@@ -63,7 +83,6 @@ public class EmailHelper {
         }
     }
 
-
     private void closeFolders() {
         for (Map.Entry<String, Folder> entry : folders.entrySet()) {
             try {
@@ -75,7 +94,6 @@ public class EmailHelper {
         }
         folders.clear();
     }
-
 
     private Folder folder(String folderName) {
 
@@ -96,7 +114,6 @@ public class EmailHelper {
         }
     }
 
-
     public Integer getUnreadMessages(String folderName) {
         try {
             Flags seen = new Flags(Flags.Flag.SEEN);
@@ -107,11 +124,10 @@ public class EmailHelper {
         }
     }
 
-
     public Message getLatestMessage(String folderName) {
         try {
             Folder folder = folder(folderName);
-            for (int i=folder.getMessageCount(); i>0; i--) {
+            for (int i = folder.getMessageCount(); i > 0; i--) {
                 Message message = folder.getMessage(i);
                 if (!message.isSet(Flags.Flag.DELETED)) {
                     return message;
@@ -125,8 +141,7 @@ public class EmailHelper {
         }
     }
 
-
-    public Message waitForIncomingMessage(String folderName, long seconds) {
+    public Message waitForIncomingMessage(String folderName, Duration duration) {
 
         Folder folder = folder(folderName);
         AtomicBoolean received = new AtomicBoolean();
@@ -139,9 +154,9 @@ public class EmailHelper {
         folder.addMessageCountListener(listener);
         try {
 
-            Awaitility.await().atMost(seconds, TimeUnit.SECONDS).pollDelay(Durations.ONE_SECOND).untilTrue(received);
+            Awaitility.await().atMost(duration).pollDelay(Durations.ONE_SECOND).untilTrue(received);
             if (!received.get()) {
-                throw new AssertionError("No new email messages received within " + seconds + " seconds");
+                throw new AssertionError("No new email messages received within " + formatDuration(duration.toMillis(), FORMAT));
             }
             return folder.getMessage(folder.getMessageCount());
 
@@ -152,7 +167,6 @@ public class EmailHelper {
         }
 
     }
-
 
     public Map<String, byte[]> getAllAttachments(Message message) {
         try {
@@ -166,7 +180,6 @@ public class EmailHelper {
             throw new WakamitiException(e);
         }
     }
-
 
     public Map.Entry<String, byte[]> getFirstAttachment(Message message) {
         try {
@@ -182,7 +195,6 @@ public class EmailHelper {
             throw new WakamitiException(e);
         }
     }
-
 
     public String getBody(Message message) {
         try {
@@ -207,23 +219,6 @@ public class EmailHelper {
         }
     }
 
-
-    private static Map<String, byte[]> findAttachments(Multipart multipart, int maxAttachments) {
-        try {
-            Map<String, byte[]> attachments = new HashMap<>();
-            for (int i = 0; i < multipart.getCount() && attachments.size() < maxAttachments; i++) {
-                BodyPart bodyPart = multipart.getBodyPart(i);
-                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) && bodyPart instanceof MimeBodyPart) {
-                    attachments.put(bodyPart.getFileName(), readBytes(((MimeBodyPart) bodyPart)));
-                }
-            }
-            return attachments;
-        } catch (IOException | MessagingException e) {
-            throw new WakamitiException(e);
-        }
-    }
-
-
     public void deleteMessages(String folderName, ThrowableFunction<Message, Boolean> condition) {
         try {
             Folder folder = folder(folderName);
@@ -237,13 +232,6 @@ public class EmailHelper {
             throw new WakamitiException(e);
         }
     }
-
-
-
-    private static byte[] readBytes(MimeBodyPart bodyPart) throws MessagingException, IOException {
-        return bodyPart.getInputStream().readAllBytes();
-    }
-
 
     public Message[] getAllMessages(String folderName) throws MessagingException {
         return folder(folderName).getMessages();

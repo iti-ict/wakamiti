@@ -25,7 +25,6 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-db2.feature"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = "data.dir", value = "src/test/resources"),
         @Property(key = "database.connection.url", value = "jdbc:db2://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),

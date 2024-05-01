@@ -37,7 +37,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 /**
  * A contributor class for database-related steps in the test scenarios.
  */
-@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.5")
+@Extension(provider = "es.iti.wakamiti", name = "database-steps", version = "2.6")
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 
@@ -1350,16 +1350,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified ID exists in the given table
      * asynchronously within the specified time.
      *
-     * @param id    The ID of the row to be checked for existence
-     * @param table The name of the table
-     * @param time  The maximum time to wait for the assertion to complete (in
-     *              seconds)
+     * @param id       The ID of the row to be checked for existence
+     * @param table    The name of the table
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.exists.row.single.id.async", args = {"id:text", "table:word", "time:int"})
-    public void assertRowExistsBySingleIdAsync(String id, String table, Integer time) {
+    @Step(value = "db.assert.table.exists.row.single.id.async", args = {"id:text", "table:word", "duration:duration"})
+    public void assertRowExistsBySingleIdAsync(String id, String table, Duration duration) {
         String keyColumn = primaryKey(table);
         try (DataSet dataSet = new InlineDataSet(table, new String[]{keyColumn}, new String[]{id}, nullSymbol)) {
-            assertNonEmptyAsync(dataSet, time);
+            assertNonEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1385,16 +1384,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified ID does not exist in the given table
      * asynchronously within the specified time.
      *
-     * @param id    The ID of the row to be checked for non-existence
-     * @param table The name of the table
-     * @param time  The maximum time to wait for the assertion to complete (in
-     *              seconds)
+     * @param id       The ID of the row to be checked for non-existence
+     * @param table    The name of the table
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.not.exists.row.single.id.async", args = {"id:text", "table:word", "time:int"})
-    public void assertRowNotExistsBySingleIdAsync(String id, String table, Integer time) {
+    @Step(value = "db.assert.table.not.exists.row.single.id.async",
+            args = {"id:text", "table:word", "duration:duration"})
+    public void assertRowNotExistsBySingleIdAsync(String id, String table, Duration duration) {
         String keyColumn = primaryKey(table);
         try (DataSet dataSet = new InlineDataSet(table, new String[]{keyColumn}, new String[]{id}, nullSymbol)) {
-            assertEmptyAsync(dataSet, time);
+            assertEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1421,17 +1420,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified value in the given column exists in
      * the table asynchronously within the specified time.
      *
-     * @param table  The name of the table
-     * @param column The name of the column
-     * @param value  The value to be checked for existence
-     * @param time   The maximum time to wait for the assertion to complete (in
-     *               seconds)
+     * @param table    The name of the table
+     * @param column   The name of the column
+     * @param value    The value to be checked for existence
+     * @param duration The maximum time to wait for the assertion to complete
      */
     @Step(value = "db.assert.table.exists.row.one.column.async",
-            args = {"column:word", "value:text", "table:word", "time:int"})
-    public void assertRowExistsByOneColumnAsync(String column, String value, String table, Integer time) {
+            args = {"column:word", "value:text", "table:word", "duration:duration"})
+    public void assertRowExistsByOneColumnAsync(String column, String value, String table, Duration duration) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
-            assertNonEmptyAsync(dataSet, time);
+            assertNonEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1458,17 +1456,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts that a row with the specified value in the given column does not
      * exist in the table asynchronously within the specified time.
      *
-     * @param column The name of the column
-     * @param value  The value to be checked for non-existence
-     * @param table  The name of the table
-     * @param time   The maximum time to wait for the assertion to complete (in
-     *               seconds)
+     * @param column   The name of the column
+     * @param value    The value to be checked for non-existence
+     * @param table    The name of the table
+     * @param duration The maximum time to wait for the assertion to complete
      */
     @Step(value = "db.assert.table.not.exists.row.one.column.async",
-            args = {"column:word", "value:text", "table:word", "time:int"})
-    public void assertRowNotExistsByOneColumnAsync(String column, String value, String table, Integer time) {
+            args = {"column:word", "value:text", "table:word", "duration:duration"})
+    public void assertRowNotExistsByOneColumnAsync(String column, String value, String table, Duration duration) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
-            assertEmptyAsync(dataSet, time);
+            assertEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1497,19 +1494,18 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts the row count with the specified value in the given column in the
      * table asynchronously within the specified time.
      *
-     * @param column  The name of the column
-     * @param value   The value to be checked for row count
-     * @param table   The name of the table
-     * @param matcher The assertion to be applied to the row count
-     * @param time    The maximum time to wait for the assertion to complete (in
-     *                seconds)
+     * @param column   The name of the column
+     * @param value    The value to be checked for row count
+     * @param table    The name of the table
+     * @param matcher  The assertion to be applied to the row count
+     * @param duration The maximum time to wait for the assertion to complete
      */
     @Step(value = "db.assert.table.count.row.one.column.async",
-            args = {"column:word", "value:text", "table:word", "matcher:long-assertion", "time:int"})
+            args = {"column:word", "value:text", "table:word", "matcher:long-assertion", "duration:duration"})
     public void assertRowCountByOneColumnAsync(
-            String column, String value, String table, Assertion<Long> matcher, Integer time) {
+            String column, String value, String table, Assertion<Long> matcher, Duration duration) {
         try (DataSet dataSet = new InlineDataSet(table, new String[]{column}, new String[]{value}, nullSymbol)) {
-            assertCountAsync(dataSet, matcher, time);
+            assertCountAsync(dataSet, matcher, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1536,16 +1532,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts asynchronously that at least one row exists in the given table
      * that matches the provided WHERE clause.
      *
-     * @param table  The name of the table
-     * @param time   The maximum time to wait for the assertion to complete (in
-     *               seconds)
-     * @param clause The SQL WHERE clause
+     * @param table    The name of the table
+     * @param duration The maximum time to wait for the assertion to complete
+     * @param clause   The SQL WHERE clause
      */
-    @Step(value = "db.assert.table.exists.sql.where.async", args = {"table:word", "time:int"})
-    public void assertRowExistsByClauseAsync(String table, Integer time, Document clause) {
+    @Step(value = "db.assert.table.exists.sql.where.async", args = {"table:word", "duration:duration"})
+    public void assertRowExistsByClauseAsync(String table, Duration duration, Document clause) {
         assertAsync(
                 () -> matcherNonEmpty().test(countBy(table, clause.getContent())),
-                time,
+                duration,
                 () -> Assertions.fail(message(
                         ERROR_ASSERT_SOME_RECORD_EXPECTED,
                         GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it doesn't"
@@ -1573,14 +1568,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts asynchronously that no row exists in the given table that matches
      * the provided WHERE clause.
      *
-     * @param table  The name of the table
-     * @param time   The maximum time to wait for the assertion to complete (in
-     *               seconds)
-     * @param clause The SQL WHERE clause
+     * @param table    The name of the table
+     * @param duration The maximum time to wait for the assertion to complete
+     * @param clause   The SQL WHERE clause
      */
-    @Step(value = "db.assert.table.not.exists.sql.where.async", args = {"table:word", "time:int"})
-    public void assertRowNotExistsByClauseAsync(String table, Integer time, Document clause) {
-        assertAsync(() -> matcherEmpty().test(countBy(table, clause.getContent())), time, () ->
+    @Step(value = "db.assert.table.not.exists.sql.where.async", args = {"table:word", "duration:duration"})
+    public void assertRowNotExistsByClauseAsync(String table, Duration duration, Document clause) {
+        assertAsync(() -> matcherEmpty().test(countBy(table, clause.getContent())), duration, () ->
                 Assertions.fail(message(
                         ERROR_ASSERT_NO_RECORD_EXPECTED,
                         GIVEN_WHERE_CLAUSE, Database.from(connection()).table(table), "it does"
@@ -1612,16 +1606,16 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * Asserts asynchronously the count of rows in the given table that match the
      * provided WHERE clause.
      *
-     * @param table   The name of the table
-     * @param matcher The assertion to be applied on the count of rows
-     * @param time    The maximum time to wait for the assertion to complete (in
-     *                seconds)
-     * @param clause  The SQL WHERE clause
+     * @param table    The name of the table
+     * @param matcher  The assertion to be applied on the count of rows
+     * @param duration The maximum time to wait for the assertion to complete
+     * @param clause   The SQL WHERE clause
      */
-    @Step(value = "db.assert.table.count.sql.where.async", args = {"table:word", "matcher:long-assertion", "time:int"})
-    public void assertRowCountByClauseAsync(String table, Assertion<Long> matcher, Integer time, Document clause) {
+    @Step(value = "db.assert.table.count.sql.where.async",
+            args = {"table:word", "matcher:long-assertion", "duration:duration"})
+    public void assertRowCountByClauseAsync(String table, Assertion<Long> matcher, Duration duration, Document clause) {
         AtomicLong result = new AtomicLong(0);
-        assertAsync(() -> matcher.test(result.addAndGet(countBy(table, clause.getContent()))), time, () ->
+        assertAsync(() -> matcher.test(result.addAndGet(countBy(table, clause.getContent()))), duration, () ->
                 Assertions.fail(message(
                         ERROR_ASSERT_SOME_RECORD_EXPECTED,
                         GIVEN_WHERE_CLAUSE,
@@ -1651,14 +1645,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * table within the given time frame.
      *
      * @param table     The name of the database table
-     * @param time      The maximum time to wait for the assertion to complete (in
-     *                  seconds)
+     * @param duration  The maximum time to wait for the assertion to complete
      * @param dataTable The DataTable to check for existence in the database table
      */
-    @Step(value = "db.assert.table.exists.data.async", args = {"table:word", "time:int"})
-    public void assertDataTableExistsAsync(String table, Integer time, DataTable dataTable) {
+    @Step(value = "db.assert.table.exists.data.async", args = {"table:word", "duration:duration"})
+    public void assertDataTableExistsAsync(String table, Duration duration, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            assertNonEmptyAsync(dataSet, time);
+            assertNonEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1684,14 +1677,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      * database table within a given time frame.
      *
      * @param table     The name of the database table
-     * @param time      The maximum time to wait for the assertion to complete (in
-     *                  seconds)
+     * @param duration  The maximum time to wait for the assertion to complete
      * @param dataTable The DataTable to check for absence in the database table
      */
-    @Step(value = "db.assert.table.not.exists.data.async", args = {"table:word", "time:int"})
-    public void assertDataTableNotExistsAsync(String table, Integer time, DataTable dataTable) {
+    @Step(value = "db.assert.table.not.exists.data.async", args = {"table:word", "duration:duration"})
+    public void assertDataTableNotExistsAsync(String table, Duration duration, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            assertEmptyAsync(dataSet, time);
+            assertEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1720,14 +1712,15 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      *
      * @param table     The name of the database table
      * @param matcher   The assertion matcher for the row count
-     * @param time      The maximum time to wait for the assertion to complete (in
-     *                  seconds)
+     * @param duration  The maximum time to wait for the assertion to complete
      * @param dataTable The DataTable containing the rows to be counted
      */
-    @Step(value = "db.assert.table.count.data.async", args = {"table:word", "matcher:long-assertion", "time:int"})
-    public void assertDataTableCountAsync(String table, Assertion<Long> matcher, Integer time, DataTable dataTable) {
+    @Step(value = "db.assert.table.count.data.async",
+            args = {"table:word", "matcher:long-assertion", "duration:duration"})
+    public void assertDataTableCountAsync(
+            String table, Assertion<Long> matcher, Duration duration, DataTable dataTable) {
         try (DataSet dataSet = new DataTableDataSet(table, dataTable, nullSymbol)) {
-            assertCountAsync(dataSet, matcher, time);
+            assertCountAsync(dataSet, matcher, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1755,19 +1748,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the data rows included in the specified XLS file exist.
      *
-     * @param file The XLS file containing the data rows to be asserted
-     * @param time The maximum time to wait for the assertion to complete (in
-     *             seconds)
+     * @param file     The XLS file containing the data rows to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.exists.xls.async", args = {"xls:file", "time:int"})
-    public void assertXLSFileExistsAsync(File file, Integer time) {
+    @Step(value = "db.assert.table.exists.xls.async", args = {"xls:file", "duration:duration"})
+    public void assertXLSFileExistsAsync(File file, Duration duration) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                Duration duration = assertNonEmptyAsync(dataSet, time);
-                time -= (int) duration.toSeconds();
+                duration = duration.minus(assertNonEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -1796,18 +1787,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the data rows included in the specified XLS file do not exist.
      *
-     * @param file The XLS file containing the data rows to be asserted
-     * @param time The maximum time to wait for the assertion to complete (in seconds)
+     * @param file     The XLS file containing the data rows to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.not.exists.xls.async", args = {"xls:file", "time:int"})
-    public void assertXLSFileNotExistsAsync(File file, Integer time) {
+    @Step(value = "db.assert.table.not.exists.xls.async", args = {"xls:file", "duration:duration"})
+    public void assertXLSFileNotExistsAsync(File file, Duration duration) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                Duration duration = assertEmptyAsync(dataSet, time);
-                time -= (int) duration.toSeconds();
+                duration = duration.minus(assertEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -1835,17 +1825,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the data rows included in the specified CSV file exist.
      *
-     * @param file  The CSV file containing the data rows to be asserted
-     * @param table The name of the table where data is to be asserted
-     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     * @param file     The CSV file containing the data rows to be asserted
+     * @param table    The name of the table where data is to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.exists.csv.async", args = {"csv:file", "table:word", "time:int"})
-    public void assertCSVFileExistsAsync(File file, String table, Integer time) {
+    @Step(value = "db.assert.table.exists.csv.async", args = {"csv:file", "table:word", "duration:duration"})
+    public void assertCSVFileExistsAsync(File file, String table, Duration duration) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
 
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
-            assertNonEmptyAsync(dataSet, time);
+            assertNonEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1872,17 +1862,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the data rows included in the specified CSV file do not exist.
      *
-     * @param file  The CSV file containing the data rows to be asserted
-     * @param table The name of the table where data is to be asserted
-     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     * @param file     The CSV file containing the data rows to be asserted
+     * @param table    The name of the table where data is to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.not.exists.csv.async", args = {"csv:file", "table:word", "time:int"})
-    public void assertCSVFileNotExistsAsync(File file, String table, Integer time) {
+    @Step(value = "db.assert.table.not.exists.csv.async", args = {"csv:file", "table:word", "duration:duration"})
+    public void assertCSVFileNotExistsAsync(File file, String table, Duration duration) {
         file = resourceLoader().absolutePath(file);
         assertFileExists(file);
 
         try (DataSet dataSet = new CsvDataSet(table, file, csvFormat, nullSymbol)) {
-            assertEmptyAsync(dataSet, time);
+            assertEmptyAsync(dataSet, duration);
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
@@ -1906,12 +1896,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the specified database table is not empty.
      *
-     * @param table The name of the database table to be asserted
-     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     * @param table    The name of the database table to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.not.empty.async", args = {"table:word", "time:int"})
-    public void assertTableIsNotEmptyAsync(String table, Integer time) {
-        assertAsync(() -> matcherNonEmpty().test(countBy(table, "1=1")), time, () ->
+    @Step(value = "db.assert.table.not.empty.async", args = {"table:word", "duration:duration"})
+    public void assertTableIsNotEmptyAsync(String table, Duration duration) {
+        assertAsync(() -> matcherNonEmpty().test(countBy(table, "1=1")), duration, () ->
                 Assertions.fail(message(
                         "It was expected some record exist in table {}, but it doesn't",
                         Database.from(connection()).table(table)
@@ -1937,12 +1927,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts asynchronously that the specified database table is empty.
      *
-     * @param table The name of the database table to be asserted
-     * @param time  The maximum time to wait for the assertion to complete (in seconds)
+     * @param table    The name of the database table to be asserted
+     * @param duration The maximum time to wait for the assertion to complete
      */
-    @Step(value = "db.assert.table.empty.async", args = {"table:word", "time:int"})
-    public void assertTableIsEmptyAsync(String table, Integer time) {
-        assertAsync(() -> matcherEmpty().test(countBy(table, "1=1")), time, () ->
+    @Step(value = "db.assert.table.empty.async", args = {"table:word", "duration:duration"})
+    public void assertTableIsEmptyAsync(String table, Duration duration) {
+        assertAsync(() -> matcherEmpty().test(countBy(table, "1=1")), duration, () ->
                 Assertions.fail(message(
                         "It was expected no record exist in table {}, but it does",
                         Database.from(connection()).table(table)

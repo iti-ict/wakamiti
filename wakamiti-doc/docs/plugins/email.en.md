@@ -25,14 +25,14 @@ validate that an application is sending mail as a result of another operation su
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:email-wakamiti-plugin:1.2.0
+es.iti.wakamiti:email-wakamiti-plugin:1.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>email-wakamiti-plugin</artifactId>
-  <version>1.2.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -175,9 +175,9 @@ Given the email folder 'INBOX'
 (that) the number of unread emails {matcher}
 ```
 #### Parameters:
-| name       | wakamiti type                  | description                                              |
-|------------|--------------------------------|----------------------------------------------------------|
-| `matcher`  | `integer-assertion` *required* | The validation to apply to the number of unread messages |
+| name       | wakamiti type                     | description                                              |
+|------------|-----------------------------------|----------------------------------------------------------|
+| `matcher`  | [integer-assertion][1] *required* | The validation to apply to the number of unread messages |
 
 #### Examples:
 ```gherkin
@@ -187,13 +187,13 @@ Given that the number of unread emails is greater than 0
 
 ### Verify that a new mail is received in a given interval
 ```text copy=true
-(that) a new email is received within {sec} seconds
+(that) a new email is received within {duration}
 ```
 
 #### Parameters:
-| name  | wakamiti type        | description                                       |
-|-------|----------------------|---------------------------------------------------|
-| `sec` | `integer` *required* | Number of seconds to wait for an incoming message |
+| name       | wakamiti type            | description                          |
+|------------|--------------------------|--------------------------------------|
+| `duration` | [duration][2] *required* | Time to wait for an incoming message |
 
 #### Examples:
 ```gherkin
@@ -207,9 +207,9 @@ Then a new email is received within 5 seconds
 ```
 
 #### Parameters:
-| name      | wakamiti type                | description                                         |
-|-----------|------------------------------|-----------------------------------------------------|
-| `matcher` | `text-assertion` *required*  | The validation to apply to the subject of the email |
+| name      | wakamiti type                  | description                                         |
+|-----------|--------------------------------|-----------------------------------------------------|
+| `matcher` | [text-assertion][1] *required* | The validation to apply to the subject of the email |
 
 #### Examples:
 ```gherkin
@@ -223,9 +223,9 @@ Then the subject of the email starts with 'Issue opened'
 ```
 
 #### Parameters:
-| name      | wakamiti type                | description                                        |
-|-----------|------------------------------|----------------------------------------------------|
-| `matcher` | `text-assertion` *required*  | The validation to apply to the sender of the email |
+| name      | wakamiti type                  | description                                        |
+|-----------|--------------------------------|----------------------------------------------------|
+| `matcher` | [text-assertion][1] *required* | The validation to apply to the sender of the email |
 
 #### Examples:
 ```gherkin
@@ -313,9 +313,9 @@ Then the body of the email contains the content of the file 'email.txt'
 ```
 
 #### Parameters:
-| name       | wakamiti type                  | description                                          |
-|------------|--------------------------------|------------------------------------------------------|
-| `matcher`  | `integer-assertion` *required* | The validation to apply to the number of attachments |
+| name       | wakamiti type                     | description                                          |
+|------------|-----------------------------------|------------------------------------------------------|
+| `matcher`  | [integer-assertion][1] *required* | The validation to apply to the number of attachments |
 
 #### Examples:
 ```gherkin
@@ -329,9 +329,9 @@ Then the number of attachments in the email is less than 2
 ```
 
 #### Parameters:
-| name      | wakamiti type                | description                                               |
-|-----------|------------------------------|-----------------------------------------------------------|
-| `matcher` | `text-assertion` *required*  | The validation to apply to the name of the attached files |
+| name      | wakamiti type                  | description                                               |
+|-----------|--------------------------------|-----------------------------------------------------------|
+| `matcher` | [text-assertion][1] *required* | The validation to apply to the name of the attached files |
 
 #### Examples:
 ```gherkin
@@ -397,9 +397,9 @@ At finish, delete all emails whose sender {matcher}
 ```
 
 #### Parameters:
-| name      | wakamiti type                | description                                 |
-|-----------|------------------------------|---------------------------------------------|
-| `matcher` | `text-assertion` *required*  | The validation to apply to the email sender |
+| name      | wakamiti type                  | description                                 |
+|-----------|--------------------------------|---------------------------------------------|
+| `matcher` | [text-assertion][1] *required* | The validation to apply to the email sender |
 
 #### Examples:
 ```gherkin
@@ -413,12 +413,15 @@ At finish, delete all emails whose subject {matcher}
 ```
 
 #### Parameters:
-| name      | wakamiti type                | description                                  |
-|-----------|------------------------------|----------------------------------------------|
-| `matcher` | `text-assertion` *required*  | The validation to apply to the email subject |
+| name      | wakamiti type                  | description                                  |
+|-----------|--------------------------------|----------------------------------------------|
+| `matcher` | [text-assertion][1] *required* | The validation to apply to the email subject |
 
 #### Examples:
 ```gherkin
 * At finish, delete all emails whose subject starts with 'Testing'
 ```
 
+
+[1]: en/wakamiti/architecture#comparador
+[2]: en/wakamiti/architecture#duration 
