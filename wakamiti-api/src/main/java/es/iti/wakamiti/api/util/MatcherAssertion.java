@@ -39,7 +39,7 @@ public class MatcherAssertion<T> implements Assertion<T> {
         if (assertion instanceof MatcherAssertion) {
             return ((MatcherAssertion<T>) assertion).matcher;
         } else {
-            return new BaseMatcher<T>() {
+            return new BaseMatcher<>() {
                 @Override
                 public boolean matches(Object actual) {
                     return assertion.test(actual);

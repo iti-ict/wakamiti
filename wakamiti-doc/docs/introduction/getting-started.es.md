@@ -4,6 +4,7 @@ date: 2022-09-20
 slug: /introduction/getting-started
 ---
 
+
 En este tutorial rápido aprenderás a:
 - Definir la configuración básica.
 - Definir un escenario.
@@ -33,7 +34,7 @@ docker compose up -d
 
 ### 1. Configurar Wakamiti
 La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen los 
-tests. Por ejemplo, en el mismo con el código fuente del tutorial:
+tests (por ejemplo, en el mismo con el código fuente del tutorial):
 ```diff
   tutorial
   ├── application-wakamiti.properties
@@ -49,9 +50,9 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:rest-wakamiti-plugin
+      - es.iti.wakamiti:db-wakamiti-plugin
+      - es.iti.wakamiti:html-report-wakamiti-plugin
   htmlReport:
     title: Test
   rest:

@@ -39,6 +39,10 @@ import static javax.xml.xpath.XPathEvaluationResult.XPathResultType.*;
  */
 public class XmlUtils {
 
+    private XmlUtils() {
+
+    }
+
     /**
      * Parses the given XML string into an XmlObject.
      *

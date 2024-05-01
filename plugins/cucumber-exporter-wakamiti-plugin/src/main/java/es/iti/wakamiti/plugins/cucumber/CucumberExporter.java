@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-@Extension(name = "cucumber-exporter", version = "2.4")
+@Extension(name = "cucumber-exporter", version = "2.5")
 public class CucumberExporter implements Reporter {
 
     public static final Logger LOGGER = WakamitiLogger.forClass(CucumberExporter.class);

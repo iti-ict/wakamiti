@@ -4,35 +4,36 @@ date: 2022-09-20
 slug: /en/introduction/getting-started
 ---
 
+
 In this quick tutorial, you will learn how to:
 - Write the basic configuration.
 - Write a scenario.
-- Run wakamiti.
+- Run Wakamiti.
 - Learn the basic workflow.
 
-Please be aware that this tutorial assumes that you have a:
+Please be aware that this tutorial assumes that you have:
 - Some experience using a terminal.
 - Some experience using a text editor.
-- Basic understanding of `gherkin` syntax.
+- A basic understanding of `gherkin` syntax.
 
-Before we begin, you will need the following:
+Before starting, you will need the following:
 - Install and run [Docker](https://www.docker.com/get-started/).
 - The source code of [this tutorial](javascript:downloadTutorial()).
 
 Optionally:
-- Install an IDE, like [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
-  It's not necessary to have it, but it will make scenario development much easier.
+- Install an IDE, such as [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
+  It's not essential, but it will make scenario development much easier.
 
 ### 0. Start the sample application
-Unzip the downloaded zip file with the tutorial source code, open a terminal in that directory and launch the 
+Unzip the downloaded zip file containing the tutorial source code, open a terminal in that directory and launch the 
 application with the following command:
 ```shell copy=true
 docker compose up -d
 ```
 
 ### 1. Wakamiti configuration
-Wakamiti configuration is done by means of a `yaml` file that will be placed in the same directory where the tests are 
-located. For example, in the same with the source code of the tutorial:
+Wakamiti configuration is created by using a `yaml` file that will be placed in the same directory where the tests are 
+located (e.g., where the source code of the tutorial is located):
 ```diff
   tutorial
   ├── application-wakamiti.properties
@@ -40,7 +41,7 @@ located. For example, in the same with the source code of the tutorial:
 + └── wakamiti.yaml
 ```
 
-This is the basic configuration to be able to run the tests:
+This is the basic configuration to be able to run tests:
 ```yml copy=true
 wakamiti:
   resourceTypes:
@@ -48,9 +49,9 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:rest-wakamiti-plugin
+      - es.iti.wakamiti:db-wakamiti-plugin
+      - es.iti.wakamiti:html-report-wakamiti-plugin
   htmlReport:
     title: Test
   rest:
@@ -63,12 +64,12 @@ wakamiti:
       driver: com.mysql.cj.jdbc.Driver
 ```
 > **NOTE** <br />
-> Note that each plugin has its own configuration, which you can check in [their respective sections](en/plugins).
+> Note that each plugin has its own configuration, which can be checked in [their respective sections](en/plugins).
 > You can also check other options in [global configuration](en/wakamiti/architecture#global-configuration).
 
 
 ### 2. Scenario definition
-When we do *Behaviour-Driven Development*, we use concrete examples to specify what we want the software to do. 
+When we do *Behaviour-Driven Development*, we specify what we want the software to do using concrete examples.
 Scenarios are written before production code. They start their life as an executable specification. As the 
 production code emerges, scenarios take on a role as living documentation and automated tests.
 
@@ -84,11 +85,11 @@ Feature: Get the pets owners
   Scenario: An existing owner is consulted
     Given the REST service '/owners/{id}'
     And the path parameter 'id' with value '20'
-    And the following user is inserted into the database table owners:
+    And the following user is inserted into the table owners:
       | ID  | FIRST_NAME | LAST_NAME      |
       | 20  | Pepe       | Perez Martínez |
     When the user is requested
-    Then the response HTTP code is equals to 200
+    Then the response HTTP code is equal to 200
     And the response is:
       """json
       {
@@ -98,11 +99,11 @@ Feature: Get the pets owners
       }
       """
 ```
-The first line of this file starts with the keyword `Feature:` followed by a name. It is a good idea to use a name 
-similar to the file name.
+The first line of this file starts with the keyword `Feature:` followed by a name. It is recommended to use a similar 
+name to the file name.
 
-The third line, `Scenario: An existing owner is queried`, is a scenario, which is a concrete example that illustrates 
-how the software should behave.
+The third line, `Scenario: An existing owner is queried`, is a scenario (i.e., a specific example that illustrates how 
+the software should behave).
 
 The rest of the lines starting with `Given`, `When`, `Then`, `And` are the steps of our scenario, and are what Wakamiti 
 will execute.
@@ -110,7 +111,7 @@ will execute.
 [See more](https://cucumber.io/docs/gherkin/) in detail the `gherkin` syntax.
 
 ### 3. Run Wakamiti
-The tests are executed with the terminal, from the working directory (the one containing the Wakamiti features and the 
+Tests are executed with the terminal, from the working directory (the one containing the Wakamiti features and the 
 `.feature` file we have created), with the following command:
 
 * Windows:
@@ -121,9 +122,9 @@ docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```Shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
-With this command, you will download the latest version of Wakamiti. To work with a specific version, 
-you should specify it in the Docker command as follows: `wakamiti/wakamiti:version`, You can view the available 
-versions in the [Wakamiti dockerhub](https://hub.docker.com/r/wakamiti/wakamiti/tags) repository.
+With this command, the latest version of Wakamiti will be downloaded. To work with a specific version, it should be
+specified in the Docker command as follows: `wakamiti/wakamiti:version`. The available versions can be checked in the 
+[Wakamiti dockerhub](https://hub.docker.com/r/wakamiti/wakamiti/tags) repository.
 
 
 ### 4.Reports

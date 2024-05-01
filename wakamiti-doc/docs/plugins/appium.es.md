@@ -9,42 +9,50 @@ Este plugin permite usar Wakamiti para escribir escenarios que interactuen con u
 facilitar la automatización de tests UI en varias plataformas, incluyendo aplicaciones móviles.
 
 El uso de este plugin requiere un servidor Appium en marcha, al igual que un dispositivo
-virtual emulado. Más abajo hay un ejemplo de como preparar un entorno de test adecuado.
+virtual emulado. 
 
 > **AVISO**
 > 
-> En su estado actual, este plugin es principalmente una prueba de concepto más que un plugin 
-> plenamente funcional. Los pasos y la configuración indicada pueden variar en futuras versiones.
+> En su estado actual, este plugin es más una prueba de concepto que un plugin plenamente funcional. Los pasos y la 
+> configuración indicada pueden variar en futuras versiones.
 
-```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:appium-wakamiti-plugin:2.2.3
-```
-
-```text tabs=coord name=maven copy=true
-<dependency>
-  <groupId>es.iti.wakamiti</groupId>
-  <artifactId>appium-wakamiti-plugin</artifactId>
-  <version>2.2.3</version>
-</dependency>
-```
 
 ---
 ## Tabla de contenido
 
 ---
 
----
+
+## Instalación
+
+
+Incluye el módulo en la sección correspondiente.
+
+```text tabs=coord name=yaml copy=true
+es.iti.wakamiti:appium-wakamiti-plugin:2.3.0
+```
+
+```text tabs=coord name=maven copy=true
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>appium-wakamiti-plugin</artifactId>
+  <version>2.3.0</version>
+</dependency>
+```
+
+
 ## Configuración
 
 
-> Se puede especificar cualquier capacidad a pasar al Web Driver usando la clave adecuada con
-> el formato ```appium.capabilities.xxxxxx```. En este document se describen las opciones mas relevantes,
-> pero para una lista exhaustiva de las propiedades disponibles, consultar el
+> Se puede especificar cualquier capacidad a pasar al Web Driver usando la clave adecuada con el formato 
+> `appium.capabilities.xxxxxx`. En este document se describen las opciones mas relevantes, pero para una lista 
+> exhaustiva de las propiedades disponibles, consultar el 
 > [borrador W3C WebDriver](https://w3c.github.io/webdriver/#capabilities).
 
-<br /><br />
 
 ### `appium.url` 
+- Tipo: `string` *obligatorio*
+
 La URL del servidor Appium.
 
 Ejemplo:
@@ -53,9 +61,10 @@ appium:
   url: http://127.0.0.1:4723/wd/hub
 ```
 
-<br /><br />
 
 ### `appium.capabilities.app`
+- Tipo: `file` *obligatorio*
+
 La ruta completa de la aplicación a testear.
 
 Ejemplo:
@@ -65,9 +74,10 @@ appium:
     app: ApiDemos-debug.apk
 ```
 
-<br /><br />
 
 ### `appium.capabilities.platformName`
+- Tipo: `string` *obligatorio*
+
 El tipo de plataforma móvil que se va a testear.
 
 Ejemplo:
@@ -77,9 +87,10 @@ appium:
     platformName: Android
 ```
 
-<br /><br />
 
 ### `appium.capabilities.platformVersion`
+- Tipo: `integer` *obligatorio*
+
 La versión de la plataforma que se va a testear.
 
 Ejemplo:
@@ -89,9 +100,10 @@ appium:
     platformVersion: 11
 ```
 
-<br /><br />
 
 ### `appium.capabilities.appPackage`
+- Tipo: `string` *obligatorio*
+
 El nombre del paquete que contiene la aplicación que se va a testear.
 
 Ejemplo:
@@ -101,9 +113,10 @@ appium:
     appPackage: io.appium.android.apis
 ```
 
-<br /><br />
 
 ### `appium.capabilities.appActivity`
+- Tipo: `string` *obligatorio*
+
 El nombre de la actividad a testear.
 
 Ejemplo:
@@ -113,8 +126,11 @@ appium:
     appActivity: '.view.TextFields'
 ```
 
----
+
 ## Pasos
+
+
+Este plugin proporciona los siguientes pasos:
 
 
 ### Seleccionar un elemento de interfaz a partir de su ID
@@ -123,12 +139,16 @@ el elemento de interfaz con el ID {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
 
+#### Parámetros:
+| Nombre | Wakamiti type     | Descripción     |
+|--------|-------------------|-----------------|
+| `text` | `text` *required* | ID del elemento |
+
 #### Ejemplos:
 ```gherkin
-  Dado el elemento de interfaz con el ID '3423423'
+Dado el elemento de interfaz con el ID '3423423'
 ```
 
-<br /><br />
 
 ### Seleccionar un elemento de interfaz a partir de su tipo
 ```text copy=true
@@ -136,12 +156,16 @@ el elemento de interfaz de tipo {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
 
+#### Parámetros:
+| Nombre | Wakamiti type     | Descripción       |
+|--------|-------------------|-------------------|
+| `text` | `text` *required* | Tipo del elemento |
+
 #### Ejemplos:
 ```gherkin
-  Dado el elemento de interfaz de tipo 'android.widget.EditText'
+Dado el elemento de interfaz de tipo 'android.widget.EditText'
 ```
 
-<br /><br />
 
 ### Seleccionar un elemento de interfaz a partir de su ruta
 ```text copy=true
@@ -149,12 +173,16 @@ el elemento de interfaz con ruta {text}
 ```
 Selecciona un elmento que será el sujeto de los siguientes pasos.
 
+#### Parámetros:
+| Nombre | Wakamiti type     | Descripción       |
+|--------|-------------------|-------------------|
+| `text` | `text` *required* | Ruta del elemento |
+
 #### Ejemplos:
 ```gherkin
-  Dado el elemento de interfaz con ruta  'main.form.name'
+Dado el elemento de interfaz con ruta  'main.form.name'
 ```
 
-<br /><br />
 
 ### Teclear un texto en un elemento
 ```text copy=true
@@ -162,12 +190,16 @@ se escribe el texto {text} en ese elemento
 ```
 Emula la acción de introducir un texto cuando un elemento se ha seleccionado.
 
+#### Parámetros:
+| Nombre | Wakamiti type     | Descripción            |
+|--------|-------------------|------------------------|
+| `text` | `text` *required* | Contenido del elemento |
+
 #### Ejemplos:
 ```gherkin
-  Cuando se escribe el texto 'John' en ese elemento
+Cuando se escribe el texto 'John' en ese elemento
 ```
 
-<br /><br />
 
 ### Se pulsa sobre un elemento
 ```text copy=true
@@ -177,10 +209,9 @@ Emula la acción de pulsar sobre un elemento.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se pulsa sobre ese elemento
+Cuando se pulsa sobre ese elemento
 ```
 
-<br /><br />
 
 ### Se pulsa dos veces sobre un elemento
 ```text copy=true
@@ -190,10 +221,9 @@ Emula la acción de pulsar dos veces sobre un elemento.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se pulsa dos veces sobre ese elemento
+Cuando se pulsa dos veces sobre ese elemento
 ```
 
-<br /><br />
 
 ### Valida el texto de un elemento
 ```text copy=true
@@ -203,10 +233,9 @@ Comprueba que el elemento previamente seleccionado contiene un texto específico
 
 #### Ejemplos:
 ```gherkin
-  Entonces ese elemento contiene el valor 'Accepted'
+Entonces ese elemento contiene el valor 'Accepted'
 ```
 
-<br /><br />
 
 ### Valida que un elemento está habilitado
 ```text copy=true
@@ -216,10 +245,9 @@ Comprueba que el elemento previamente seleccionado está habilitado.
 
 #### Ejemplos:
 ```gherkin
-  Entonces ese elemento esta habilitado
+Entonces ese elemento esta habilitado
 ```
 
-<br /><br />
 
 ### Valida que un elemento está deshabilitado
 ```text copy=true
@@ -229,12 +257,11 @@ Comprueba que el elemento previamente seleccionado está deshabilitado.
 
 #### Ejemplos:
 ```gherkin
-  Entonces ese elemento esta deshabilitado
+Entonces ese elemento esta deshabilitado
 ```
 
-<br /><br />
 
-### Validate an element is displayed
+### Validar que se muestra un elemento
 ```text copy=true
 ese elemento se muestra por pantalla
 ```
@@ -242,12 +269,11 @@ Comprueba que el elemento previamente seleccionado está siendo mostrado por pan
 
 #### Ejemplos:
 ```gherkin
-  Entonces ese elemento se muestra por pantalla
+Entonces ese elemento se muestra por pantalla
 ```
 
-<br /><br />
 
-### Validate an element is not displayed
+### Validar que no se muestra un elemento
 ```text copy=true
 ese elemento no se muestra por pantalla
 ```
@@ -255,24 +281,27 @@ Comprueba que el elemento previamente seleccionado no está siendo mostrado por 
 
 #### Ejemplos:
 ```gherkin
-   Entonces ese elemento no se muestra por pantalla
+Entonces ese elemento no se muestra por pantalla
 ```
 
-<br /><br />
 
 ### Emular una llamada entrante
 ```text copy=true
 se recibe una llamada entrante con el numero {text}
 ```
-Emula una llamada entrante de un número de teléfono específico. Solo disponible si la aplicación
-a testear está siendo ejecutada en un dispositivo emulado.
+Emula una llamada entrante de un número de teléfono específico. Solo disponible si la aplicación a testear está siendo 
+ejecutada en un dispositivo emulado.
+
+#### Parámetros:
+| Nombre | Wakamiti type     | Descripción        |
+|--------|-------------------|--------------------|
+| `text` | `text` *required* | Número de teléfono |
 
 #### Ejemplos:
 ```gherkin
-  Cuando se recibe una llamada entrante con el numero '555-4324-432'
+Cuando se recibe una llamada entrante con el numero '555-4324-432'
 ```
 
-<br /><br />
 
 ### Aceptar una llamada entrante
 ```text copy=true
@@ -282,10 +311,9 @@ Acepta la llamada que está entrando en ese momento.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se acepta la llamada entrante
+Cuando se acepta la llamada entrante
 ```
 
-<br /><br />
 
 ### Rechazar una llamada entrante
 ```text copy=true
@@ -295,10 +323,9 @@ Rechaza la llamada que está entrando en ese momento.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se rechaza la llamada entrante
+Cuando se rechaza la llamada entrante
 ```
 
-<br /><br />
 
 ### Finaliza la llamada actual
 ```text copy=true
@@ -312,8 +339,6 @@ Finaliza (cuelga) la llamada actual.
 ```
 
 
-
----
 ## Uso
 
 
@@ -332,19 +357,19 @@ Finaliza (cuelga) la llamada actual.
 
 ![android-sdk][android-sdk]
 
-5. Instalar Appium y Appium-doctor
+4. Instalar Appium y Appium-doctor
 ```text copy=true
    npm install -g appium
    npm install @appium/doctor --location=global
 ```
 
-4. Comprobar la instalación
+5. Comprobar la instalación
 ```text copy=true
 appium-doctor --android
 ```
 Todo debería salir como OK, en caso contrario revisar los checks en rojo.
 
-5. Arrancar el servidor Appium
+6. Arrancar el servidor Appium
 ```text copy=true
 appium
 ```
@@ -353,29 +378,31 @@ El puerto por defecto es 4723
 Descargar APK de prueba en:
 https://github.com/appium/appium/raw/1.x/sample-code/apps/ApiDemos-debug.apk
 
-6. Crear un dipositivo Virtual
+7. Crear un dipositivo Virtual
 ```text copy=true
-$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"```
+$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Nexus6P --abi google_apis_playstore/x86 --package 'system-images;android-30;google_apis_playstore;x86' --device "Nexus 6P"
 ```
 
-7. Iniciar el emulador Android
+8. Iniciar el emulador Android
 ```text copy=true
 $ANDROID_HOME/emulator/emulator -avd Nexus6P
 ```
 
 
-Si en algún momento el emulador se queda pillado y dice que ya existe una emulación en curso,
-se puede limpiar el estado con
+Si en algún momento el emulador se queda congelado y dice que ya existe una emulación en curso, se puede limpiar el
+estado con
 ```text copy=true
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
+[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png
 
 Lo ideal sería poder lanzar todo esto de manera semiautomática únicamente
 a partir del APK, pero de momento hay que:
 - Instalar Android Studio
-- Crear dispositivo virtual (AVD) Por ejemplo Pixel 2 API 30 con Android 11
+- Crear dispositivo virtual (AVD) Por ejemplo, Pixel 2 API 30 con Android 11
 - Arrancar el AVD con el botón de play
+
 
 
 [android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png

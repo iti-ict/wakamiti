@@ -13,7 +13,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "${pluginId}", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "${pluginId}", version = "2.5")
 @I18nResource("es_iti_wakamiti_${pluginId}")
 public class ${PluginId}StepContributor implements StepContributor {
 

@@ -491,6 +491,7 @@ public class SQLParser {
     public Update toUpdate(String table, Map<String, Object> sets, Expression where) {
         Update update = new Update();
         update.setTable(new Table(this.format(table)));
+        update.setUpdateSets(new LinkedList<>());
         sets.entrySet().stream()
                 .map(set -> new UpdateSet(new Column(set.getKey()), toExpression(set.getValue())))
                 .forEach(update::addUpdateSet);

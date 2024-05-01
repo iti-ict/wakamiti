@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.util.*;
 
 @I18nResource("iti_wakamiti_wakamiti-email")
-@Extension(provider = "es.iti.wakamiti", name = "email-steps", version = "2.4")
+@Extension(provider = "es.iti.wakamiti", name = "email-steps", version = "2.5")
 
 public class EmailStepContributor implements StepContributor {
 

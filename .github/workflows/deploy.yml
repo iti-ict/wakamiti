@@ -54,3 +54,6 @@ jobs:
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
           ./mvnw -B -ntp install -DskipTests
 
+#      - name: Copy plugin documentation
+#        run: |
+#         echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)   # print pom version

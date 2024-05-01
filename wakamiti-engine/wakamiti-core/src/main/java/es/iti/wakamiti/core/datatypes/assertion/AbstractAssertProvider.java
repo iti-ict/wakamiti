@@ -35,7 +35,7 @@ public abstract class AbstractAssertProvider {
     private final Map<Locale, Map<String, Pattern>> translatedExpressions = new HashMap<>();
 
 
-    public AbstractAssertProvider() {
+    protected AbstractAssertProvider() {
 
     }
 

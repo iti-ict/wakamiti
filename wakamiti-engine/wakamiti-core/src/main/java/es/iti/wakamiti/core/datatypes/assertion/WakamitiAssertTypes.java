@@ -27,7 +27,7 @@ import java.util.*;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "assertion-types", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "assertion-types")
 public class WakamitiAssertTypes implements DataTypeContributor {
 
     /**

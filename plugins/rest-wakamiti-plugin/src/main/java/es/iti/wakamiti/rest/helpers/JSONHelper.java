@@ -27,7 +27,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-json-helper",
-        version = "2.4",
+        version = "2.5",
         extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class JSONHelper implements ContentTypeHelper {
