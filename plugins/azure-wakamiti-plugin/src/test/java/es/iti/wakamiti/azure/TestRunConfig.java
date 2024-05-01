@@ -11,7 +11,6 @@ import imconfig.Property;
     @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.azure.MockSteps"),
     @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
     @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources"),
-    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
     @Property(key = AzureConfigContributor.AZURE_HOST, value = "azure-devops.iti.upv.es"),
     @Property(key = AzureConfigContributor.AZURE_ORGANIZATION, value = "ST"),
     @Property(key = AzureConfigContributor.AZURE_PROJECT, value = "ACS"),
