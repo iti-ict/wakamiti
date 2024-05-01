@@ -15,6 +15,7 @@ import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
 import org.slf4j.Logger;
@@ -24,18 +25,22 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 import static org.awaitility.Awaitility.await;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.5")
+@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.6")
 @I18nResource("iti_wakamiti_wakamiti-amqp")
 public class AmqpStepContributor implements StepContributor {
 
     private final Logger logger = WakamitiLogger.forClass(AmqpStepContributor.class);
+
+    private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
 
     private AmqpConnectionParams connectionParams;
     private Connection connection;
@@ -160,14 +165,14 @@ public class AmqpStepContributor implements StepContributor {
     }
 
 
-    private void checkMessageExistsInReceived(String message, Long seconds) {
+    private void checkMessageExistsInReceived(String message, Duration duration) {
         try {
             await()
-                    .atMost(seconds, TimeUnit.SECONDS)
+                    .atMost(duration)
                     .pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS)
                     .until(() -> messageExistsInReceived(message));
         } catch (ConditionTimeoutException e) {
-            throw new AssertionError("Message not received in " + seconds + " seconds");
+            throw new AssertionError("Message not received in " + formatDuration(duration.toMillis(), FORMAT));
         }
     }
 
@@ -209,20 +214,21 @@ public class AmqpStepContributor implements StepContributor {
 
 
     @Step("amqp.send.await")
-    public void awaitFor(Long seconds) {
-        await().timeout(seconds + 1, TimeUnit.SECONDS).pollDelay(seconds, TimeUnit.SECONDS).until(() -> true);
+    public void awaitFor(Duration duration) {
+        await().timeout(duration.plusSeconds(1))
+                .pollDelay(duration).until(() -> true);
     }
 
 
-    @Step("amqp.check.received.json.from.string")
-    public void checkReceivedJSONFromString(Long seconds, Document json) {
-        checkMessageExistsInReceived(json.getContent(), seconds);
+    @Step(value = "amqp.check.received.json.from.string", args = {"duration:duration"})
+    public void checkReceivedJSONFromString(Duration duration, Document json) {
+        checkMessageExistsInReceived(json.getContent(), duration);
     }
 
 
-    @Step(value = "amqp.check.received.json.from.file", args = {"seconds:integer", "file:file"})
-    public void checkReceivedJSONFromString(Long seconds, File file) {
-        checkMessageExistsInReceived(readFile(file), seconds);
+    @Step(value = "amqp.check.received.json.from.file", args = {"duration:duration", "file:file"})
+    public void checkReceivedJSONFromString(Duration duration, File file) {
+        checkMessageExistsInReceived(readFile(file), duration);
     }
 
 

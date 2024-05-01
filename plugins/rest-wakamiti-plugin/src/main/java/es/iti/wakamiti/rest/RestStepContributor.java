@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Optional;
 
 import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
@@ -37,7 +38,7 @@ import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 @I18nResource("iti_wakamiti_wakamiti-rest")
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.5")
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";
@@ -115,19 +116,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         specifications.add(request -> request.header(name, value));
     }
 
-    @Step("rest.define.timeout.millis")
-    public void setTimeoutInMillis(Integer millis) {
+    @Step("rest.define.timeout")
+    public void setTimeout(Duration duration) {
         config(
                 RestAssured.config()
                         .httpClient(HttpClientConfig.httpClientConfig()
-                                .setParam("http.socket.timeout", millis)
-                                .setParam("http.connection.timeout", millis))
+                                .setParam("http.socket.timeout", (int) duration.toMillis())
+                                .setParam("http.connection.timeout", (int) duration.toMillis()))
         );
-    }
-
-    @Step("rest.define.timeout.secs")
-    public void setTimeoutInSecs(Integer secs) {
-        setTimeoutInMillis(secs * 1000);
     }
 
     @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
