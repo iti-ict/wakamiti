@@ -3,10 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.amqp;
 
 
@@ -22,8 +18,7 @@ import org.junit.runner.RunWith;
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
     @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
-    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
+    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features")
 })
 public class AmqpTest {
 

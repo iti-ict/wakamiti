@@ -25,14 +25,14 @@ validar que una aplicación envía correos como consecuencia de alguna otra oper
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:email-wakamiti-plugin:1.2.0
+es.iti.wakamiti:email-wakamiti-plugin:1.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>email-wakamiti-plugin</artifactId>
-  <version>1.2.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -176,9 +176,9 @@ Dada la carpeta de correo 'INBOX'
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                      | descripción                                           |
-|-----------|------------------------------------|-------------------------------------------------------|
-| `matcher` | `integer-assertion` *obligatorio*  | Comprobación a aplicar al número de mensajes sin leer |
+| nombre    | tipo wakamiti                        | descripción                                           |
+|-----------|--------------------------------------|-------------------------------------------------------|
+| `matcher` | [integer-assertion][1] *obligatorio* | Comprobación a aplicar al número de mensajes sin leer |
 
 #### Ejemplos:
 ```gherkin
@@ -188,13 +188,13 @@ Dado que el número de correos sin leer es mayor que 0
 
 ### Comprobar que se recibe un nuevo correo en un intervalo de tiempo determinado
 ```text copy=true
-(que) se recibe un nuevo correo en los próximos {sec} segundos
+(que) se recibe un nuevo correo en los próximos {duration}
 ```
 
 #### Parámetros:
-| nombre | tipo wakamiti           | descripción                                        |
-|--------|-------------------------|----------------------------------------------------|
-| `sec`  | `integer` *obligatorio* | Segundos a la espera de que llegue un nuevo correo |
+| nombre     | tipo wakamiti               | descripción                                      |
+|------------|-----------------------------|--------------------------------------------------|
+| `duration` | [duration][2] *obligatorio* | Tiempo a la espera de que llegue un nuevo correo |
 
 #### Ejemplos:
 ```gherkin
@@ -208,9 +208,9 @@ Entonces se recibe un nuevo correo en los próximos 5 segundos
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                  |
-|-----------|--------------------------------|----------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al asunto del correo  |
+| nombre    | tipo wakamiti                     | descripción                                  |
+|-----------|-----------------------------------|----------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al asunto del correo  |
 
 #### Ejemplos:
 ```gherkin
@@ -224,9 +224,9 @@ Entonces el asunto del correo empieza por 'Nueva incidencia'
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                    |
-|-----------|--------------------------------|------------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al remitente del correo |
+| nombre    | tipo wakamiti                     | descripción                                    |
+|-----------|-----------------------------------|------------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al remitente del correo |
 
 #### Ejemplos:
 ```gherkin
@@ -314,9 +314,9 @@ Entonces el cuerpo del correo contiene el contenido del fichero 'email.txt'
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                  |
-|-----------|--------------------------------|----------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al número de adjuntos |
+| nombre    | tipo wakamiti                     | descripción                                  |
+|-----------|-----------------------------------|----------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al número de adjuntos |
 
 #### Ejemplos:
 ```gherkin
@@ -330,9 +330,9 @@ Entonces el número de adjuntos en el correo es menor que 2
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                               |
-|-----------|--------------------------------|-----------------------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al nombre de los ficheros adjuntos |
+| nombre    | tipo wakamiti                     | descripción                                               |
+|-----------|-----------------------------------|-----------------------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al nombre de los ficheros adjuntos |
 
 #### Ejemplos:
 ```gherkin
@@ -398,9 +398,9 @@ Al finalizar, se borran todos los correos cuyo remitente {matcher}
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                        |
-|-----------|--------------------------------|----------------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al remitente de los correos |
+| nombre    | tipo wakamiti                     | descripción                                        |
+|-----------|-----------------------------------|----------------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al remitente de los correos |
 
 #### Ejemplos:
 ```gherkin
@@ -414,12 +414,15 @@ Al finalizar, se borran todos los correos cuyo asunto {matcher}
 ```
 
 #### Parámetros:
-| nombre    | tipo wakamiti                  | descripción                                     |
-|-----------|--------------------------------|-------------------------------------------------|
-| `matcher` | `text-assertion` *obligatorio* | Comprobación a aplicar al asunto de los correos |
+| nombre    | tipo wakamiti                     | descripción                                     |
+|-----------|-----------------------------------|-------------------------------------------------|
+| `matcher` | [text-assertion][1] *obligatorio* | Comprobación a aplicar al asunto de los correos |
 
 #### Ejemplos:
 ```gherkin
 * Al finalizar, se borran todos los correos cuyo asunto empieza por 'Testing'
 ```
 
+
+[1]: wakamiti/architecture#comparador
+[2]: wakamiti/architecture#duration 

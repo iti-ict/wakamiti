@@ -155,7 +155,7 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
         if (includeDecimals) {
             pattern.append("\\").append(symbols.getDecimalSeparator()).append("\\d+?");
         }
-        return pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX;
+        return "("+pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX+")";
     }
 
 }

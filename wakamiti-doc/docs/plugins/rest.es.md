@@ -454,15 +454,15 @@ Dadas las siguientes cabeceras:
 
 ### Definir timeout
 ```text copy=true
-un timeout de {int} (mili)segundos
+un timeout de {duration}
 ```
-Establece un tiempo máximo de respuesta (en segundos o milisegundos) para las siguientes peticiones HTTP. En el caso de
+Establece un tiempo máximo de respuesta para las siguientes peticiones HTTP. En el caso de
 exceder el tiempo indicado se detendrá la llamada y se producirá un error.
 
 #### Parámetros:
-| Nombre | Wakamiti type       | Descripción       |
-|--------|---------------------|-------------------|
-| `int`  | `int` *obligatorio* | El tiempo máximo  |
+| Nombre     | Wakamiti type               | Descripción       |
+|------------|-----------------------------|-------------------|
+| `duration` | [duration][2] *obligatorio* | El tiempo máximo  |
 
 #### Ejemplos:
 ```gherkin
@@ -481,9 +481,9 @@ Establece una validación general para el código HTTP de todas las respuestas s
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
 #### Parámetros:
-| Nombre    | Wakamiti type                     | Descripción              |
-|-----------|-----------------------------------|--------------------------|
-| `matcher` | `integer-assertion` *obligatorio* | [Comparador][1] numérico |
+| Nombre    | Wakamiti type                        | Descripción              |
+|-----------|--------------------------------------|--------------------------|
+| `matcher` | [integer-assertion][1] *obligatorio* | [Comparador][1] numérico |
 
 #### Ejemplo:
 ```gherkin
@@ -968,9 +968,9 @@ el código de respuesta HTTP {matcher}
 Comprueba que el código HTTP de la última respuesta satisface una validación de enteros.
 
 #### Parámetros:
-| Nombre    | Wakamiti type                     | Descripción               |
-|-----------|-----------------------------------|---------------------------|
-| `matcher` | `integer-assertion` *obligatorio* | Una validación de enteros |
+| Nombre    | Wakamiti type                        | Descripción               |
+|-----------|--------------------------------------|---------------------------|
+| `matcher` | [integer-assertion][1] *obligatorio* | Una validación de enteros |
 
 #### Ejemplos:
 ```gherkin
@@ -1170,10 +1170,10 @@ Comprueba el valor (*texto*, *entero* o *decimal*) de un fragmento del cuerpo de
 dada (usando [JSONPath][jsonpath], [XPath][xpath] o [GPath][gpath] dependiendo del tipo de contenido).
 
 #### Parámetros:
-| Nombre     | Wakamiti type               | Descripción                      |
-|------------|-----------------------------|----------------------------------|
-| `fragment` | `text` *obligatorio*        | Una ruta JSONPath, XPath o GPath |
-| `matcher`  | `*-assertion` *obligatorio* | El comparador del fragmento      |
+| Nombre     | Wakamiti type                  | Descripción                      |
+|------------|--------------------------------|----------------------------------|
+| `fragment` | `text` *obligatorio*           | Una ruta JSONPath, XPath o GPath |
+| `matcher`  | [*-assertion][1] *obligatorio* | El comparador del fragmento      |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
 #### Ejemplos:
@@ -1210,9 +1210,9 @@ el tamaño de la respuesta {matcher}
 Comprueba que la longitud en bytes de la última respuesta satisface una validación.
 
 #### Parámetros:
-| Nombre    | Wakamiti type                     | Descripción               |
-|-----------|-----------------------------------|---------------------------|
-| `matcher` | `integer-assertion` *obligatorio* | Una validación de enteros |
+| Nombre    | Wakamiti type                        | Descripción               |
+|-----------|--------------------------------------|---------------------------|
+| `matcher` | [integer-assertion][1] *obligatorio* | Una validación de enteros |
 
 #### Ejemplos:
 ```gherkin
@@ -1228,10 +1228,10 @@ Comprueba que una determinada cabecera HTTP en la última respuesta satisface un
 *decimal*.
 
 #### Parámetros:
-| Nombre    | Wakamiti type               | Descripción                         |
-|-----------|-----------------------------|-------------------------------------|
-| `name`    | `text` *obligatorio*        | Nombre de la cabecera               |
-| `matcher` | `*-assertion` *obligatorio* | [Comparador][1] de texto o numérico |
+| Nombre    | Wakamiti type                  | Descripción                         |
+|-----------|--------------------------------|-------------------------------------|
+| `name`    | `text` *obligatorio*           | Nombre de la cabecera               |
+| `matcher` | [*-assertion][1] *obligatorio* | [Comparador][1] de texto o numérico |
 `*`: `text`, `integer` o `decimal`, dependiendo del tipo indicado en el paso.
 
 #### Ejemplos:
@@ -1318,3 +1318,4 @@ esquema aceptados son [JSON Schema][jsonschema] para respuestas JSON y [XML Sche
 [xpath]: https://en.wikipedia.org/wiki/XPath (XPath)
 [gpath]: https://accenture.github.io/bdd-for-all/GPATH.html (GPath)
 [1]: wakamiti/architecture#comparadores
+[2]: wakamiti/architecture#duration

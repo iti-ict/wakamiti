@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
@@ -33,7 +32,6 @@ import static org.junit.Assert.assertTrue;
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
         @Property(key = "fileUploader.standardOutputs.destinationDir", value = "dira/dirb/%DATE%"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.fileuploader.WakamitiSteps"),
 })
 @RunWith(WakamitiJUnitRunner.class)

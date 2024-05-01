@@ -26,14 +26,14 @@ This plugin provides a set of steps to interact with an application via the
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.4.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -222,14 +222,14 @@ Sends a JSON message extracted from a local file to the given queue.
 
 ### Set pause
 ```text copy=true
-wait for {integer} second(s)
+wait for {duration}
 ```
-Waits a fixed number of seconds (usually to ensure a message has been processed).
+Waits a fixed duration (usually to ensure a message has been processed).
 
 #### Parameters
-| Name      | Wakamiti type        | Description                 |
-|-----------|----------------------|-----------------------------|
-| `integer` | `integer` *required* | Amount of time (in seconds) |
+| Name       | Wakamiti type            | Description    |
+|------------|--------------------------|----------------|
+| `duration` | [duration][1] *required* | Amount of time |
 
 #### Examples:
 ```gherkin
@@ -239,16 +239,16 @@ Waits a fixed number of seconds (usually to ensure a message has been processed)
 
 ### Validate message
 ```text copy=true
-the following JSON message is received within {integer} seconds:
+the following JSON message is received within {duration}:
     {data}
 ```
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.
 
 #### Parameters
-| Name      | Wakamiti type         | Description                 |
-|-----------|-----------------------|-----------------------------|
-| `integer` | `integer` *required*  | Amount of time (in seconds) |
-| `data`    | `document` *required* | A JSON message body         |
+| Name       | Wakamiti type            | Description         |
+|------------|--------------------------|---------------------|
+| `duration` | [duration][1] *required* | Amount of time      |
+| `data`     | `document` *required*    | A JSON message body |
 
 #### Examples:
 ```gherkin
@@ -265,16 +265,16 @@ Then the following JSON message is received within 5 seconds:
 
 ### Validate message (file)
 ```text copy=true
-the message from the JSON file {file} is received within {seconds} seconds
+the message from the JSON file {file} is received within {duration}
 ```
 
 Validates that a specific JSON message is received in the destination queue, failing after a certain timeout.
 
 #### Parameters
-| Name      | Wakamiti type        | Description                        |
-|-----------|----------------------|------------------------------------|
-| `file`    | `file` *required*    | A local file with the JSON message |
-| `seconds` | `integer` *required* | Amount of time (in seconds)        |
+| Name       | Wakamiti type            | Description                        |
+|------------|--------------------------|------------------------------------|
+| `file`     | `file` *required*        | A local file with the JSON message |
+| `duration` | [duration][1] *required* | Amount of time                     |
 
 #### Examples:
 ```gherkin
@@ -282,3 +282,4 @@ Then the message from the JSON file 'data/message.json' is received within 5 sec
 ```
 
 
+[1]: en/wakamiti/architecture#duration

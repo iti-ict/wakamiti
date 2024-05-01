@@ -28,14 +28,14 @@ A running Appium server and an emulated virtual device are required to use this 
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:appium-wakamiti-plugin:2.3.0
+es.iti.wakamiti:appium-wakamiti-plugin:2.5.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
     <groupId>es.iti.wakamiti</groupId>
     <artifactId>appium-wakamiti-plugin</artifactId>
-    <version>2.3.0</version>
+    <version>2.5.0</version>
 </dependency>
 ```
 

@@ -49,9 +49,9 @@ wakamiti:
   launcher:
     modules:
       - mysql:mysql-connector-java:8.0.28
-      - es.iti.wakamiti:rest-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:db-wakamiti-plugin:2.3.3
-      - es.iti.wakamiti:html-report-wakamiti-plugin:2.3.3
+      - es.iti.wakamiti:rest-wakamiti-plugin
+      - es.iti.wakamiti:db-wakamiti-plugin
+      - es.iti.wakamiti:html-report-wakamiti-plugin
   htmlReport:
     title: Test
   rest:
@@ -85,11 +85,11 @@ Feature: Get the pets owners
   Scenario: An existing owner is consulted
     Given the REST service '/owners/{id}'
     And the path parameter 'id' with value '20'
-    And the following user is inserted into the database table owners:
+    And the following user is inserted into the table owners:
       | ID  | FIRST_NAME | LAST_NAME      |
       | 20  | Pepe       | Perez Martínez |
     When the user is requested
-    Then the response HTTP code is equals to 200
+    Then the response HTTP code is equal to 200
     And the response is:
       """json
       {

@@ -26,14 +26,14 @@ validación de datos.
 Incluye el módulo y el controlador(es) JDBC en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.1.0
+es.iti.wakamiti:db-wakamiti-plugin:3.2.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.1.0</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -833,15 +833,15 @@ Al finalizar, se ejecuta el siguiente script SQL usando la conexión 'db1':
 
 ### Modo async
 ```text copy=true
-* en {time} segundos
+* en {duration}
 ```
 
-El paso espera un máximo de los segundos indicados hasta que se cumple la condición indicada en el paso para continuar.
+El paso espera un máximo de la duración indicada hasta que se cumple la condición indicada en el paso para continuar.
 
 #### Parámetros:
-| Nombre | Wakamiti type       | Descripción   |
-|--------|---------------------|---------------|
-| `time` | `int` *obligatorio* | Tiempo máximo |
+| Nombre     | Wakamiti type               | Descripción   |
+|------------|-----------------------------|---------------|
+| `duration` | [duration][5] *obligatorio* | Tiempo máximo |
 
 #### Ejemplos:
 ```gherkin
@@ -853,3 +853,4 @@ Entonces un usuario identificado por '1' existe en la tabla USERS en 10 segundos
 [2]: wakamiti/architecture#comparador
 [3]: #modo-post-ejecución
 [4]: #modo-async
+[5]: wakamiti/architecture#duration
