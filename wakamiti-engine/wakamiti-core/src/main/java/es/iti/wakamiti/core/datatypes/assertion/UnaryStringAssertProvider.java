@@ -71,7 +71,7 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(Locale locale) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .collect(Collectors.toCollection(LinkedList::new));

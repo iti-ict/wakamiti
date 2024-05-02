@@ -5,4 +5,5 @@ module es.iti.wakamiti.amqp {
     requires imconfig;
     requires iti.commons.jext;
     requires es.iti.wakamiti.api;
+    requires org.apache.commons.lang3;
 }

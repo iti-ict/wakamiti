@@ -37,8 +37,8 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     public PlanNode(NodeType nodeType, List<PlanNode> children) {
         super(children);
         description = null;
-        tags = Collections.emptySet();
-        properties = Collections.emptyMap();
+        tags = new LinkedHashSet<>();
+        properties = new LinkedHashMap<>();
         this.nodeType = nodeType;
         language = null;
         id = null;

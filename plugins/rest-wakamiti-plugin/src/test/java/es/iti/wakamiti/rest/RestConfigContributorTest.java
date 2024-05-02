@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -43,7 +44,7 @@ public class RestConfigContributorTest {
         verify(contributor, times(0)).setBaseURL(any());
         verify(contributor, times(0)).setContentType(any());
         verify(contributor, times(0)).setFailureHttpCodeAssertion(any(Assertion.class));
-        verify(contributor, times(0)).setTimeoutInMillis(any());
+        verify(contributor, times(0)).setTimeout(any());
 
         verify(oauth2Provider, times(0)).clientId(any());
         verify(oauth2Provider, times(0)).clientSecret(any());
@@ -70,7 +71,7 @@ public class RestConfigContributorTest {
         verify(contributor).setContentType("XML");
         verify(contributor).setFailureHttpCodeAssertion(argThat(m ->
                 m.description().equals(new MatcherAssertion<>(Matchers.lessThan(999)).description())));
-        verify(contributor).setTimeoutInMillis(10000);
+        verify(contributor).setTimeout(Duration.ofMillis(10000));
 
         assertThat(oauth2Provider.clientId()).isEqualTo("WEB");
         assertThat(oauth2Provider.clientSecret()).isEqualTo("dhg3h89ec8h");

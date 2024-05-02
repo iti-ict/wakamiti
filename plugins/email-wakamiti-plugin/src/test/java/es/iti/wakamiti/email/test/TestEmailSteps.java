@@ -32,8 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
         @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
         @Property(key = EmailConfigContributor.STORE_PORT, value = "2345"),
-        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
-        @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
+        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps")
 })
 @I18nResource("test-steps")
 public class TestEmailSteps implements StepContributor {

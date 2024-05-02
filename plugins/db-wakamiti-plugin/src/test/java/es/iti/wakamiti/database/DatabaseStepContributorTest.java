@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -1071,7 +1072,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsBySingleIdAsync("1", "client", 1);
+        contributor.assertRowExistsBySingleIdAsync("1", "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1091,7 +1092,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowExistsBySingleIdAsync("2", "client", 1);
+            contributor.assertRowExistsBySingleIdAsync("2", "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1165,7 +1166,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsBySingleIdAsync("2", "client", 1);
+        contributor.assertRowNotExistsBySingleIdAsync("2", "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1185,7 +1186,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowNotExistsBySingleIdAsync("1", "client", 1);
+            contributor.assertRowNotExistsBySingleIdAsync("1", "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1297,7 +1298,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", 1);
+        contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1317,7 +1318,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowExistsByOneColumnAsync("second_name", "Otro", "client", 1);
+            contributor.assertRowExistsByOneColumnAsync("second_name", "Otro", "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1429,7 +1430,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByOneColumnAsync("second_name", "Otro", "client", 1);
+        contributor.assertRowNotExistsByOneColumnAsync("second_name", "Otro", "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1449,7 +1450,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowNotExistsByOneColumnAsync("second_name", "Melano", "client", 1);
+            contributor.assertRowNotExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1566,7 +1567,7 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertRowCountByOneColumnAsync("second_name", "Melano", "client",
-                new MatcherAssertion<>(comparesEqualTo(1L)), 1);
+                new MatcherAssertion<>(comparesEqualTo(1L)), Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1586,7 +1587,7 @@ public class DatabaseStepContributorTest {
         try {
             // Act
             contributor.assertRowCountByOneColumnAsync("second_name", "Otro", "client",
-                    new MatcherAssertion<>(comparesEqualTo(1L)), 1);
+                    new MatcherAssertion<>(comparesEqualTo(1L)), Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1697,7 +1698,8 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-20'"));
+        contributor.assertRowExistsByClauseAsync("client", Duration.ofSeconds(1),
+                new Document("birth_date > '1980-12-20'"));
 
         // Check
         assertThatNoException();
@@ -1717,7 +1719,8 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-30'"));
+            contributor.assertRowExistsByClauseAsync("client", Duration.ofSeconds(1),
+                    new Document("birth_date > '1980-12-30'"));
 
             // Check
         } catch (AssertionError e) {
@@ -1827,7 +1830,8 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowNotExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-30'"));
+        contributor.assertRowNotExistsByClauseAsync("client", Duration.ofSeconds(1),
+                new Document("birth_date > '1980-12-30'"));
 
         // Check
         assertThatNoException();
@@ -1847,7 +1851,8 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowNotExistsByClauseAsync("client", 1, new Document("birth_date > '1980-12-20'"));
+            contributor.assertRowNotExistsByClauseAsync("client", Duration.ofSeconds(1),
+                    new Document("birth_date > '1980-12-20'"));
 
             // Check
         } catch (AssertionError e) {
@@ -1961,8 +1966,8 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                new Document("birth_date > '1980-12-20'"));
+        contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                Duration.ofSeconds(1), new Document("birth_date > '1980-12-20'"));
 
         // Check
         assertThatNoException();
@@ -1982,8 +1987,8 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                    new Document("birth_date > '1980-12-30'"));
+            contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                    Duration.ofSeconds(1), new Document("birth_date > '1980-12-30'"));
 
             // Check
         } catch (AssertionError e) {
@@ -2152,7 +2157,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
+        contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                 new String[]{"first_name", "second_name", "active", "birth_date"},
                 new String[]{"Rosa", "Melano", "1", "1980-12-25"}
         }));
@@ -2175,7 +2180,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
+            contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                     new String[]{"first_name", "second_name", "active", "birth_date"},
                     new String[]{"Rosa", "Melano", "0", "1980-12-25"}
             }));
@@ -2219,7 +2224,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertDataTableExistsAsync("client", 1, new DataTable(new String[][]{
+            contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                     new String[]{"first_name", "second_name", "active", "birth_date"},
                     new String[]{"Eva", "Perez", "1", "1980-12-25"}
             }));
@@ -2308,7 +2313,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertDataTableNotExistsAsync("client", 1, new DataTable(new String[][]{
+        contributor.assertDataTableNotExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                 new String[]{"first_name", "second_name", "active", "birth_date"},
                 new String[]{"Rosa", "Melano", "0", "1980-12-25"}
         }));
@@ -2331,7 +2336,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertDataTableNotExistsAsync("client", 1, new DataTable(new String[][]{
+            contributor.assertDataTableNotExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                     new String[]{"first_name", "second_name", "active", "birth_date"},
                     new String[]{"Rosa", "Melano", "1", "1980-12-25"}
             }));
@@ -2422,8 +2427,8 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                new DataTable(new String[][]{
+        contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                Duration.ofSeconds(1), new DataTable(new String[][]{
                         new String[]{"first_name", "second_name", "active", "birth_date"},
                         new String[]{"Rosa", "Melano", "1", "1980-12-25"}
                 }));
@@ -2446,8 +2451,8 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)), 1,
-                    new DataTable(new String[][]{
+            contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                    Duration.ofSeconds(1), new DataTable(new String[][]{
                             new String[]{"first_name", "second_name", "active", "birth_date"},
                             new String[]{"Rosa", "Melano", "0", "1980-12-25"}
                     }));
@@ -2575,7 +2580,7 @@ public class DatabaseStepContributorTest {
         File file = resource("data1.xlsx");
 
         // Act
-        contributor.assertXLSFileExistsAsync(file, 1);
+        contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -2596,7 +2601,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertXLSFileExistsAsync(file, 1);
+            contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -2638,7 +2643,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertXLSFileExistsAsync(file, 1);
+            contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -2721,7 +2726,7 @@ public class DatabaseStepContributorTest {
         File file = resource("data2.xlsx");
 
         // Act
-        contributor.assertXLSFileNotExistsAsync(file, 1);
+        contributor.assertXLSFileNotExistsAsync(file, Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -2742,7 +2747,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertXLSFileNotExistsAsync(file, 1);
+            contributor.assertXLSFileNotExistsAsync(file, Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -2867,7 +2872,7 @@ public class DatabaseStepContributorTest {
         File file = resource("data1.csv");
 
         // Act
-        contributor.assertCSVFileExistsAsync(file, "client", 1);
+        contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -2888,7 +2893,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertCSVFileExistsAsync(file, "client", 1);
+            contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -2929,7 +2934,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertCSVFileExistsAsync(file, "client", 1);
+            contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -3012,7 +3017,7 @@ public class DatabaseStepContributorTest {
         File file = resource("data2.csv");
 
         // Act
-        contributor.assertCSVFileNotExistsAsync(file, "client", 1);
+        contributor.assertCSVFileNotExistsAsync(file, "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -3033,7 +3038,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertCSVFileNotExistsAsync(file, "client", 1);
+            contributor.assertCSVFileNotExistsAsync(file, "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -3128,7 +3133,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
 
         // Act
-        contributor.assertTableIsNotEmptyAsync("client", 1);
+        contributor.assertTableIsNotEmptyAsync("client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -3149,7 +3154,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertTableIsNotEmptyAsync("client", 1);
+            contributor.assertTableIsNotEmptyAsync("client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -3241,7 +3246,7 @@ public class DatabaseStepContributorTest {
         contributor.truncateTable("client", false);
 
         // Act
-        contributor.assertTableIsEmptyAsync("client", 1);
+        contributor.assertTableIsEmptyAsync("client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -3261,7 +3266,7 @@ public class DatabaseStepContributorTest {
 
         try {
             // Act
-            contributor.assertTableIsEmptyAsync("client", 1);
+            contributor.assertTableIsEmptyAsync("client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {

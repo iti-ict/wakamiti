@@ -23,14 +23,14 @@ it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPU
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:file-uploader-wakamiti-plugin:2.6.0
+es.iti.wakamiti:file-uploader-wakamiti-plugin:2.8.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>file-uploader-wakamiti-plugin</artifactId>
-  <version>2.6.0</version>
+  <version>2.8.0</version>
 </dependency>
 ```
 

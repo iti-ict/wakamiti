@@ -17,14 +17,14 @@
     </parent>
 
     <artifactId>email-wakamiti-plugin</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Email Steps</name>
     <description>Email steps for Wakamiti</description>
     <inceptionYear>2023</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.5.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
     <dependencies>

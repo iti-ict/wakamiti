@@ -23,6 +23,7 @@ import org.hamcrest.Matchers;
 
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 
 
@@ -84,8 +85,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
                 .map(Matchers::lessThan)
                 .map(MatcherAssertion<Integer>::new)
                 .ifPresent(contributor::setFailureHttpCodeAssertion);
-        configuration.get(TIMEOUT, Integer.class)
-                .ifPresent(contributor::setTimeoutInMillis);
+        configuration.get(TIMEOUT, Integer.class).map(Duration::ofMillis)
+                .ifPresent(contributor::setTimeout);
 
         Oauth2ProviderConfig oauth2Provider = contributor.oauth2ProviderConfig;
         configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2Provider::url);
