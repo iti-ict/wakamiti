@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "jmeter", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "jmeter", version = "2.6")
 @I18nResource("es_iti_wakamiti_jmeter")
 public class JMeterStepContributor implements StepContributor {
 
