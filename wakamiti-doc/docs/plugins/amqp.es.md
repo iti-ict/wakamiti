@@ -26,14 +26,14 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.4.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -219,15 +219,15 @@ Cuando se envía a la cola TEST el mensaje del fichero JSON 'data/message.json'
 
 ### Establecer pausa
 ```text copy=true
-se espera durante {integer} segundo(s)
+se espera durante {duration}
 ```
 
-Se produce una espera de un número fijo de segundos (generalmente para asegurarse de que se haya procesado el mensaje).
+Se produce una espera de una duración fija (generalmente para asegurarse de que se haya procesado el mensaje).
 
 #### Parámetros:
-| Nombre    | Wakamiti type           | Descripción                      |
-|-----------|-------------------------|----------------------------------|
-| `integer` | `integer` *obligatorio* | Cantidad de tiempo (en segundos) |
+| Nombre     | Wakamiti type               | Descripción        |
+|------------|-----------------------------|--------------------|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo |
 
 #### Ejemplos:
 ```gherkin
@@ -237,7 +237,7 @@ Se produce una espera de un número fijo de segundos (generalmente para asegurar
 
 ### Validar mensaje
 ```text copy=true
-el siguiente mensaje JSON se recibe en {integer} segundos:
+el siguiente mensaje JSON se recibe en {duration}:
     {data}
 ```
 
@@ -245,10 +245,10 @@ Valida que se reciba un mensaje JSON específico en la [cola observada](#definir
 después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre    | Wakamiti type            | Descripción                      |
-|-----------|--------------------------|----------------------------------|
-| `integer` | `integer` *obligatorio*  | Cantidad de tiempo (en segundos) |
-| `data`    | `document` *obligatorio* | Mensaje JSON                     |
+| Nombre     | Wakamiti type               | Descripción        |
+|------------|-----------------------------|--------------------|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo |
+| `data`     | `document` *obligatorio*    | Mensaje JSON       |
 
 #### Ejemplos:
 ```gherkin
@@ -265,17 +265,17 @@ Cuando el siguiente mensaje JSON se recibe en 5 segundos:
 
 ### Validar mensaje (fichero)
 ```text copy=true
-el mensaje del fichero JSON {file} se recibe en {seconds} segundos
+el mensaje del fichero JSON {file} se recibe en {duration}
 ```
 
 Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino), 
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
-| Nombre    | Wakamiti type           | Descripción                      |
-|-----------|-------------------------|----------------------------------|
-| `file`    | `file` *obligatorio*    | Fichero JSON                     |
-| `seconds` | `integer` *obligatorio* | Cantidad de tiempo (en segundos) |
+| Nombre     | Wakamiti type               | Descripción        |
+|------------|-----------------------------|--------------------|
+| `file`     | `file` *obligatorio*        | Fichero JSON       |
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo |
 
 #### Ejemplos:
 ```gherkin
@@ -283,3 +283,4 @@ Cuando el mensaje del fichero JSON 'data/message.json' se recibe en 5 segundos
 ```
 
 
+[1]: wakamiti/architecture#duration

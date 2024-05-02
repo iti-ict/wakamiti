@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -602,7 +603,7 @@ public class RestStepContributorTest {
     }
 
     /**
-     * Test {@link RestStepContributor#setTimeoutInSecs(Integer)} and
+     * Test {@link RestStepContributor#setTimeout(Duration)} and
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test(expected = SocketTimeoutException.class)
@@ -617,7 +618,7 @@ public class RestStepContributorTest {
         );
 
         // act
-        contributor.setTimeoutInSecs(1);
+        contributor.setTimeout(Duration.ofSeconds(1));
         contributor.executeGetSubject();
 
         // check

@@ -33,9 +33,7 @@ import static org.junit.Assert.assertTrue;
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
         @Property(key = "fileUploader.testCaseOutputs.destinationDir", value = "dira/dirb/%DATE%"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = OUTPUT_FILE_PER_TEST_CASE, value = "true"),
-        @Property(key = OUTPUT_FILE_PER_TEST_CASE_PATH, value = "target"),
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.fileuploader.WakamitiSteps"),
 })
 @RunWith(WakamitiJUnitRunner.class)

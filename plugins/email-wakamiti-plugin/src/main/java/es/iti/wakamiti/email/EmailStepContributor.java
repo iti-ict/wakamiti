@@ -16,37 +16,32 @@ import javax.mail.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.*;
 
 @I18nResource("iti_wakamiti_wakamiti-email")
-@Extension(provider = "es.iti.wakamiti", name = "email-steps", version = "2.5")
+@Extension(provider = "es.iti.wakamiti", name = "email-steps", version = "2.6")
 
 public class EmailStepContributor implements StepContributor {
 
 
+    private final List<Assertion<String>> cleanupFrom = new LinkedList<>();
+    private final List<Assertion<String>> cleanupSubject = new LinkedList<>();
     private String storeProtocol;
     private String host;
     private Integer port;
     private String address;
     private String password;
-
     private String folder;
-
     private Message incomingMessage;
-
     private EmailHelper helper;
-
-    private final List<Assertion<String>> cleanupFrom = new LinkedList<>();
-    private final List<Assertion<String>> cleanupSubject = new LinkedList<>();
-
 
     private EmailHelper helper() {
         if (helper == null) {
-            helper = new EmailHelper(storeProtocol,host,port,address,password);
+            helper = new EmailHelper(storeProtocol, host, port, address, password);
         }
         return helper;
     }
-
 
 
     public void setStoreProtocol(String storeProtocol) {
@@ -93,8 +88,6 @@ public class EmailStepContributor implements StepContributor {
     }
 
 
-
-
     @Step(value = "email.define.host", args = {"host:text", "port:int", "protocol:word"})
     public void defineHost(String host, Integer port, String protocol) {
         this.host = host;
@@ -110,23 +103,21 @@ public class EmailStepContributor implements StepContributor {
     }
 
 
-
     @Step(value = "email.define.folder")
     public void defineFolder(String folder) {
         this.folder = folder;
     }
 
 
-    @Step(value= "email.assert.unread.messages", args = {"integer-assertion"})
+    @Step(value = "email.assert.unread.messages", args = {"integer-assertion"})
     public void assertUnreadMessages(Assertion<Integer> assertion) {
-        Assertion.assertThat(helper().getUnreadMessages(folder),assertion);
+        Assertion.assertThat(helper().getUnreadMessages(folder), assertion);
     }
 
 
-
-    @Step(value = "email.assert.incoming.message", args = {"sec:integer"})
-    public void assertIncomingMessage(Long seconds) {
-       this.incomingMessage = helper().waitForIncomingMessage(folder, seconds);
+    @Step(value = "email.assert.incoming.message", args = {"duration:duration"})
+    public void assertIncomingMessage(Duration duration) {
+        this.incomingMessage = helper().waitForIncomingMessage(folder, duration);
     }
 
 
@@ -183,8 +174,6 @@ public class EmailStepContributor implements StepContributor {
     }
 
 
-
-
     @Step("email.assert.attachment.content.binary.file")
     public void assertAttachmentBinaryFile(File file) {
         try {
@@ -235,34 +224,27 @@ public class EmailStepContributor implements StepContributor {
     }
 
 
-
-
-
     private String readFile(File file) {
         return WakamitiAPI.instance().resourceLoader().readFileAsString(file);
     }
 
 
-
-    private <T> void assertMessage(ThrowableFunction<Message,T> mapper, Matcher<T> matcher) {
+    private <T> void assertMessage(ThrowableFunction<Message, T> mapper, Matcher<T> matcher) {
         try {
-            MatcherAssert.assertThat(mapper.apply(currentMessage()),matcher);
+            MatcherAssert.assertThat(mapper.apply(currentMessage()), matcher);
         } catch (RuntimeException e) {
             throw new WakamitiException(e);
         }
     }
 
 
-
-    private <T> void assertMessage(ThrowableFunction<Message,T> mapper, Assertion<T> assertion) {
+    private <T> void assertMessage(ThrowableFunction<Message, T> mapper, Assertion<T> assertion) {
         try {
-            Assertion.assertThat(mapper.apply(currentMessage()),assertion);
+            Assertion.assertThat(mapper.apply(currentMessage()), assertion);
         } catch (RuntimeException e) {
             throw new WakamitiException(e);
         }
     }
-
-
 
 
     private Message currentMessage() {
@@ -271,11 +253,10 @@ public class EmailStepContributor implements StepContributor {
         }
         Message latestMessage = helper().getLatestMessage(folder);
         if (latestMessage == null) {
-            throw new AssertionError("The email folder "+folder+" is empty");
+            throw new AssertionError("The email folder " + folder + " is empty");
         }
         return latestMessage;
     }
-
 
 
     private Matcher<byte[]> byteMatcher(byte[] bytes) {

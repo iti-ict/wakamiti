@@ -28,7 +28,6 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = GherkinResourceType.NAME),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/en"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true"),
         @Property(key = BASE_URL, value = "http://localhost:8888"),
         @Property(key = "data.dir", value = "src/test/resources"),

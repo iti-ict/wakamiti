@@ -114,7 +114,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(Locale locale) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .map(exp -> exp.replace(VALUE_WILDCARD, "(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)')"))
