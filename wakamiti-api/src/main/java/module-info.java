@@ -9,9 +9,11 @@ module es.iti.wakamiti.api {
     exports es.iti.wakamiti.api.annotations;
     exports es.iti.wakamiti.api.plan;
     exports es.iti.wakamiti.api.util;
+    exports es.iti.wakamiti.api.auth.oauth;
     exports es.iti.wakamiti.api.event;
     exports es.iti.wakamiti.api.datatypes;
     exports es.iti.wakamiti.api.model;
+    exports es.iti.wakamiti.api.matcher;
 
     requires transitive imconfig;
     requires transitive iti.commons.jext;
