@@ -11,17 +11,22 @@ import es.iti.wakamiti.core.util.TokenParser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.core.datatypes.WakamitiCoreTypes.PROPERTY_REGEX;
 
 
@@ -117,30 +122,61 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
             "-",
             ":"
     );
-    private final boolean withDate;
-    private final boolean withTime;
 
     /**
      * Constructor for creating a data type for dates and times in Wakamiti.
      *
      * @param name          Name of the data type.
      * @param javaType      Associated Java data type.
-     * @param withDate      Indicates whether the data type should include date information.
-     * @param withTime      Indicates whether the data type should include time information.
-     * @param temporalQuery Temporal query used for parsing the input string.
      */
     public WakamitiDateDataType(
-            String name, Class<T> javaType, boolean withDate, boolean withTime,
-            TemporalQuery<T> temporalQuery
+            String name, Class<T> javaType
     ) {
         super(
                 name, javaType,
-                locale -> dateTimeRegex(locale, withDate, withTime),
-                locale -> dateTimePatterns(locale, withDate, withTime),
-                locale -> dateTimeParser(locale, withDate, withTime, temporalQuery)
+                locale -> dateTimeRegex(locale, temporalProperties(javaType)),
+                locale -> dateTimePatterns(locale, temporalProperties(javaType)),
+                locale -> dateTimeParser(locale, temporalProperties(javaType), temporalQuery(javaType))
         );
-        this.withDate = withDate;
-        this.withTime = withTime;
+    }
+
+    /**
+     * Temporal query used for parsing the input string.
+     *
+     * @param javaType Associated Java data type.
+     * @return Temporal query used for parsing the input string.
+     * @param <T> The TemporalAccessor
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends TemporalAccessor> TemporalQuery<T> temporalQuery(Class<T> javaType) {
+        return (TemporalQuery<T>) map(
+                LocalDateTime.class, (TemporalQuery<LocalDateTime>) LocalDateTime::from,
+                LocalDate.class, (TemporalQuery<LocalDate>) LocalDate::from,
+                LocalTime.class, (TemporalQuery<LocalTime>) LocalTime::from
+        ).get(javaType);
+    }
+
+    /**
+     * Indicates whether the data type should include date and/or time information.
+     *
+     * @param javaType Associated Java data type.
+     * @return Whether the data type should include date and/or time information.
+     * @param <T> The TemporalAccessor
+     */
+    public static <T extends TemporalAccessor> TemporalProperties temporalProperties(Class<T> javaType) {
+        return map(
+                LocalDateTime.class, new TemporalProperties(){},
+                LocalDate.class, new TemporalProperties() {
+                    public boolean withTime() {
+                        return false;
+                    }
+                },
+                LocalTime.class, new TemporalProperties() {
+                    public boolean withDate() {
+                        return false;
+                    }
+                }
+        ).get(javaType);
     }
 
     /**
@@ -148,18 +184,17 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * with optional inclusion of date and/or time components.
      *
      * @param locale   The locale for which the date and time formats should be considered.
-     * @param withDate Indicates whether the date component should be included in the pattern.
-     * @param withTime Indicates whether the time component should be included in the pattern.
+     * @param properties Indicates whether the data type should include date and/or time information.
      * @return A regular expression pattern for date and time.
      */
-    private static String dateTimeRegex(Locale locale, boolean withDate, boolean withTime) {
+    public static String dateTimeRegex(Locale locale, TemporalProperties properties) {
         final Set<String> regex;
-        if (withDate && withTime) {
+        if (properties.withDate() && properties.withTime()) {
             regex = regexWithDateAndTime(locale);
         } else {
-            regex = regexWithDateOrTime(locale, withDate, withTime);
+            regex = regexWithDateOrTime(locale, properties.withDate(), properties.withTime());
         }
-        regex.addAll(dateTimeRegexISO(withDate, withTime));
+        regex.addAll(dateTimeRegexISO(properties));
         return "(" + String.join(")|(", regex) + ")";
     }
 
@@ -207,15 +242,14 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * Generates a list of regular expression patterns for ISO 8601 formatted date and time strings,
      * considering the specified inclusion of date and time components.
      *
-     * @param withDate Indicates whether the date component should be included.
-     * @param withTime Indicates whether the time component should be included.
+     * @param properties Indicates whether the data type should include date and/or time information.
      * @return A list of regular expression patterns for ISO 8601 formatted date and time strings.
      */
-    private static List<String> dateTimeRegexISO(boolean withDate, boolean withTime) {
+    private static List<String> dateTimeRegexISO(TemporalProperties properties) {
         String[] formats;
-        if (withDate && withTime) {
+        if (properties.withDate() && properties.withTime()) {
             formats = ISO_8601_DATETIME_FORMATS;
-        } else if (withDate) {
+        } else if (properties.withDate()) {
             formats = ISO_8601_DATE_FORMATS;
         } else {
             formats = ISO_8601_TIME_FORMATS;
@@ -253,7 +287,7 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
                 regex.append(REGEX_SYMBOLS.get(nextToken));
             }
         }
-        return regex + "|" + PROPERTY_REGEX;
+        return "(" + regex + "|" + PROPERTY_REGEX + ")";
     }
 
     /**
@@ -304,19 +338,14 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * whether the pattern should include date and/or time information.
      *
      * @param locale   The locale for localization.
-     * @param withDate Indicates whether the pattern should include date information.
-     * @param withTime Indicates whether the pattern should include time information.
+     * @param properties Indicates whether the data type should include date and/or time information.
      * @return A list of date and time patterns.
      */
-    private static List<String> dateTimePatterns(
-            Locale locale,
-            boolean withDate,
-            boolean withTime
-    ) {
-        if (withDate && withTime) {
+    public static List<String> dateTimePatterns(Locale locale, TemporalProperties properties) {
+        if (properties.withDate() && properties.withTime()) {
             return patternsWithDateAndTime(locale);
         } else {
-            return patternsWithDateOrTime(locale, withDate, withTime);
+            return patternsWithDateOrTime(locale, properties.withDate(), properties.withTime());
         }
     }
 
@@ -364,23 +393,21 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      *
      * @param <T>           Type of temporal data implementing the {@link TemporalAccessor} interface.
      * @param locale        The locale for localization.
-     * @param withDate      Indicates whether the data type should include date information.
-     * @param withTime      Indicates whether the data type should include time information.
+     * @param properties Indicates whether the data type should include date and/or time information.
      * @param temporalQuery Temporal query used for parsing the input string.
      * @return A {@link TypeParser} instance for parsing date and time.
      */
-    private static <T extends TemporalAccessor> TypeParser<T> dateTimeParser(
+    public static <T extends TemporalAccessor> TypeParser<T> dateTimeParser(
             Locale locale,
-            boolean withDate,
-            boolean withTime,
+            TemporalProperties properties,
             TemporalQuery<T> temporalQuery
     ) {
 
         List<DateTimeFormatter> formatters;
-        if (withDate && withTime) {
+        if (properties.withDate() && properties.withTime()) {
             formatters = formattersWithDateAndTime(locale);
         } else {
-            formatters = formattersWithDateOrTime(locale, withDate, withTime);
+            formatters = formattersWithDateOrTime(locale, properties.withDate(), properties.withTime());
         }
         return (String input) -> parse(formatters, input, temporalQuery);
     }
@@ -483,7 +510,15 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * @return List of date and time patterns.
      */
     public List<String> getDateTimeFormats(Locale locale) {
-        return dateTimePatterns(locale, withDate, withTime);
+        return dateTimePatterns(locale, temporalProperties(getJavaType()));
     }
 
+    public interface TemporalProperties {
+        default boolean withDate() {
+            return true;
+        }
+        default boolean withTime() {
+            return true;
+        }
+    }
 }
