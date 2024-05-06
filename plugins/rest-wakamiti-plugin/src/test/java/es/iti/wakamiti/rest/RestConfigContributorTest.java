@@ -1,6 +1,6 @@
 package es.iti.wakamiti.rest;
 
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
 import imconfig.Configuration;
 import io.restassured.RestAssured;
 import es.iti.wakamiti.api.WakamitiException;

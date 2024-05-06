@@ -12,8 +12,8 @@ import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
@@ -70,7 +70,8 @@ public class RestSupport {
         response = null;
         validatableResponse = null;
         RequestSpecification request = RestAssured.given()
-                .accept(ContentType.ANY);
+                .accept(ContentType.ANY)
+                .header("Accept-Language", "*");
         specifications.forEach(specification -> specification.accept(request));
         authSpecification.ifPresent(specification -> specification.accept(request));
         return attachLogger(request);

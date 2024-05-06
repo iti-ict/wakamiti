@@ -14,7 +14,7 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.rest.oauth.GrantType;
+import es.iti.wakamiti.api.auth.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 
-import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
+import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
 
 
 /**
