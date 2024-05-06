@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+- Utility interface `BiFunctionThrowable`.
+
+### Changed
+- Authentication utility classes are moved to the api library.
+
 ### Fixed
 - `ID([\w-]+)` is now the default value of `idTagPattern`.
 
