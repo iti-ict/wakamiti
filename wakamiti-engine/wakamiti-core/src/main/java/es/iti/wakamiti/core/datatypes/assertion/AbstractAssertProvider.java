@@ -8,7 +8,7 @@ package es.iti.wakamiti.core.datatypes.assertion;
 
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.datatypes.AbstractProvider;
 import org.hamcrest.Matcher;
 
 import java.text.ParseException;

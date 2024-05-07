@@ -3,15 +3,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.core.backend;
+package es.iti.wakamiti.api;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -31,7 +28,7 @@ import java.util.stream.Collectors;
  */
 public class ExpressionMatcher {
 
-    private static final Logger LOGGER = Wakamiti.LOGGER;
+    private static final Logger LOGGER = WakamitiLogger.forClass(ExpressionMatcher.class);
 
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w++):(\\w+?-?+\\w++)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+?-?+\\w++)\\}";
@@ -199,7 +196,7 @@ public class ExpressionMatcher {
             } else {
                 regex = regex.replace(
                         "{" + typeName + "}",
-                        "(?<" + RunnableBackend.UNNAMED_ARG + ">" + type.getRegex(locale) + ")"
+                        "(?<" + Backend.UNNAMED_ARG + ">" + type.getRegex(locale) + ")"
                 );
             }
         }

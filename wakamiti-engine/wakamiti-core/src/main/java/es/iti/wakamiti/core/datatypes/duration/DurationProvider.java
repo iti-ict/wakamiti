@@ -8,8 +8,8 @@ package es.iti.wakamiti.core.datatypes.duration;
 
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
-import es.iti.wakamiti.core.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 
 import java.text.NumberFormat;

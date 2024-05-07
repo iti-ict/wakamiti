@@ -6,9 +6,9 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.util.ThrowableBiFunction;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
@@ -17,9 +17,7 @@ import org.hamcrest.Matchers;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalQuery;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;

@@ -6,11 +6,8 @@
 package es.iti.wakamiti.core.datatypes.duration;
 
 
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.datatypes.WakamitiCoreTypes;
 import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 
-import java.text.*;
 import java.time.Duration;
 import java.util.Locale;
 
@@ -40,4 +37,5 @@ public class WakamitiDurationDataType extends WakamitiDataTypeBase<Duration> {
     public static String regexPattern(Locale locale) {
         String[] expressions = PROVIDER.regex(locale).toArray(new String[0]);
         return "(" + String.join("|", expressions) + ")";
-    }}
+    }
+}
