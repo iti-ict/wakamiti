@@ -37,8 +37,8 @@ import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@I18nResource("iti_wakamiti_wakamiti-rest")
 @Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
+@I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";
@@ -158,12 +158,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.define.auth.bearer.default")
     public void setBearerDefault() {
-        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(retrieveOauthToken()));
+        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(oauth2Provider.getAccessToken()));
     }
 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
         setBearerDefault();
@@ -171,23 +171,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 

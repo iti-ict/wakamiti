@@ -8,6 +8,7 @@ package es.iti.wakamiti.rest;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.auth.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
@@ -35,6 +36,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.auth.oauth.Oauth2Provider.ACCESS_TOKEN;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -58,7 +60,7 @@ public class RestSupport {
     protected Matcher<Integer> failureHttpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
-    protected Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
+    protected Oauth2Provider oauth2Provider = new Oauth2Provider().setRetriever(this::retrieveOauthToken);
     protected Optional<Consumer<RequestSpecification>> authSpecification = Optional.empty();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
@@ -116,22 +118,16 @@ public class RestSupport {
                 .statusCode(failureHttpCodeAssertion);
     }
 
-    protected String retrieveOauthToken() {
-        final String ACCESS_TOKEN = "access_token";
-        return oauth2ProviderConfig.findCachedToken()
-                .orElseGet(() -> {
-                    oauth2ProviderConfig.checkParameters();
-                    RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC)
-                            .auth().preemptive()
-                            .basic(oauth2ProviderConfig.clientId(), oauth2ProviderConfig.clientSecret())
-                            .formParams(oauth2ProviderConfig.parameters());
-                    String token = attachLogger(request)
-                            .with().post(oauth2ProviderConfig.url())
-                            .then().statusCode(200)
-                            .body(ACCESS_TOKEN, Matchers.notNullValue())
-                            .extract().body().jsonPath().getString(ACCESS_TOKEN);
-                    return oauth2ProviderConfig.storeTokenAndGet(token);
-                });
+    protected String retrieveOauthToken(Oauth2ProviderConfig oauth2ProviderConfig) {
+        RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC)
+                .auth().preemptive()
+                .basic(oauth2ProviderConfig.clientId(), oauth2ProviderConfig.clientSecret())
+                .formParams(oauth2ProviderConfig.parameters());
+        return attachLogger(request)
+                .with().post(oauth2ProviderConfig.url())
+                .then().statusCode(200)
+                .body(ACCESS_TOKEN, Matchers.notNullValue())
+                .extract().body().jsonPath().getString(ACCESS_TOKEN);
     }
 
     protected void executeRequest(BiFunction<RequestSpecification, String, Response> function) {
