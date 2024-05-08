@@ -9,7 +9,6 @@ package es.iti.wakamiti.fileuploader;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
-import es.iti.wakamiti.api.util.PathUtil;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 
@@ -144,28 +143,17 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
     // TODO: move to wakamiti-api
-    private static final DateTimeFormatter YEAR_4 = DateTimeFormatter.ofPattern("yyyy", Locale.ENGLISH);
-    private static final DateTimeFormatter YEAR_2 = DateTimeFormatter.ofPattern("yy", Locale.ENGLISH);
-    private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("MM", Locale.ENGLISH);
-    private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("dd", Locale.ENGLISH);
-    private static final DateTimeFormatter HOUR = DateTimeFormatter.ofPattern("HH", Locale.ENGLISH);
-    private static final DateTimeFormatter MINUTE = DateTimeFormatter.ofPattern("mm", Locale.ENGLISH);
-    private static final DateTimeFormatter SEC = DateTimeFormatter.ofPattern("ss", Locale.ENGLISH);
-    private static final DateTimeFormatter MILLIS = DateTimeFormatter.ofPattern("SSS", Locale.ENGLISH);
-    private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
-    private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
-
     private static Path replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
-        pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
-        pathString = pathString.replace("%YY%", YEAR_2.format(instant));
-        pathString = pathString.replace("%MM%", MONTH.format(instant));
-        pathString = pathString.replace("%DD%", DAY.format(instant));
-        pathString = pathString.replace("%hh%", HOUR.format(instant));
-        pathString = pathString.replace("%mm%", MINUTE.format(instant));
-        pathString = pathString.replace("%ss%", SEC.format(instant));
-        pathString = pathString.replace("%sss%", MILLIS.format(instant));
-        pathString = pathString.replace("%DATE%", DATE.format(instant));
-        pathString = pathString.replace("%TIME%", TIME.format(instant));
+        pathString = pathString.replace("%YYYY%", DateTimeFormatter.ofPattern("yyyy").format(instant));
+        pathString = pathString.replace("%YY%", DateTimeFormatter.ofPattern("yy").format(instant));
+        pathString = pathString.replace("%MM%", DateTimeFormatter.ofPattern("MM").format(instant));
+        pathString = pathString.replace("%DD%", DateTimeFormatter.ofPattern("dd").format(instant));
+        pathString = pathString.replace("%hh%", DateTimeFormatter.ofPattern("HH").format(instant));
+        pathString = pathString.replace("%mm%", DateTimeFormatter.ofPattern("mm").format(instant));
+        pathString = pathString.replace("%ss%", DateTimeFormatter.ofPattern("ss").format(instant));
+        pathString = pathString.replace("%sss%", DateTimeFormatter.ofPattern("SSS").format(instant));
+        pathString = pathString.replace("%DATE%", DateTimeFormatter.ofPattern("yyyyMMdd").format(instant));
+        pathString = pathString.replace("%TIME%", DateTimeFormatter.ofPattern("HHmmssSSS").format(instant));
         return Path.of(pathString);
     }
 }
