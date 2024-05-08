@@ -14,11 +14,11 @@ env:
 jobs:
   get-env-vars:
     name: Get Environment vars
-    runs-on: some-runner
+    runs-on: ubuntu-latest
     outputs:
       isTag: ${{ startsWith(env.TAG_NAME, 'v') || contains(env.TAG_NAME, '-plugin-v') }}
     steps:
-      - run: echo "null"
+      - run: echo "Set"
 
   build:
     name: Build
