@@ -1,3 +1,8 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.fileuploader;
 
 
@@ -30,4 +35,5 @@ public interface FTPTransmitter {
     void disconnect() throws IOException;
 
     void transferFile(Path localFile, Path destinationFolder) throws IOException;
+
 }
