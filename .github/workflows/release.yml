@@ -72,4 +72,4 @@ jobs:
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
           job: ${{ toJson(job) }}
-          overwrite: "{title: `${{ github.event.release.name }}`, text: `${{ github.event.release.body }}`}"
+          overwrite: "{title: '${{ github.event.release.name }}', text: '${{ github.event.release.body }}'}"
