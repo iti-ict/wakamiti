@@ -12,7 +12,7 @@ env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
 
 jobs:
-  get-env-vars:
+  get-env:
     name: Get Environment vars
     runs-on: ubuntu-latest
     outputs:
@@ -22,7 +22,7 @@ jobs:
 
   build:
     name: Build
-    needs: [get-env-vars]
+    needs: [get-env]
     if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
     runs-on: ubuntu-latest
     steps:
