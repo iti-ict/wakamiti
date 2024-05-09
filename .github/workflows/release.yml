@@ -18,7 +18,9 @@ jobs:
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
     steps:
-      - run: echo "${{ env.TAG_NAME }}"
+      - run: |
+          echo "TITLE=$( echo ${{ github.event.release.name }} | sed -r 's/[`]/\\`/g' )" >> $GITHUB_OUTPUT
+          echo "BODY=$( echo ${{ github.event.release.body }} | sed -r 's/[`]/\\`/g' )" >> $GITHUB_OUTPUT
 
   build:
     name: Build
@@ -72,4 +74,4 @@ jobs:
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
           job: ${{ toJson(job) }}
-          overwrite: "{title: '${{ github.event.release.name }}', text: '${{ github.event.release.body }}'}"
+          overwrite: "{title: `${{ needs.get-env.outputs.TITLE }}`, text: `${{ needs.get-env.outputs.BODY }}`}"
