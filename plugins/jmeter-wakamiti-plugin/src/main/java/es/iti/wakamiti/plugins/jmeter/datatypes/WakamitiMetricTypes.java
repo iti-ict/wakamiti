@@ -52,7 +52,9 @@ public class WakamitiMetricTypes implements DataTypeContributor {
             for (AbstractMetricProvider assertProvider : providers) {
                 Optional<Metric<?>> matcher = assertProvider
                         .metricFromExpression(locale, expression);
-                return matcher.orElse(null);
+                if (matcher.isPresent()) {
+                    return matcher.get();
+                }
             }
             return null;
         };
