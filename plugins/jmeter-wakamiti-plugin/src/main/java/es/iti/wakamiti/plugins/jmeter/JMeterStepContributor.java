@@ -226,8 +226,6 @@ public class JMeterStepContributor implements StepContributor {
                 httpSampler(baseUrl + service)
                         .method(HTTPConstantsInterface.PUT)
                         .contentType(ContentType.APPLICATION_JSON)
-                        // Aquí es donde utilizas la variable extraída anteriormente.
-                        // Asegúrate de que el nombre de la variable coincida con el que extrajiste.
                         .body("${" + variableName + "}")
         );
         basicTest = false;
@@ -238,8 +236,6 @@ public class JMeterStepContributor implements StepContributor {
                 httpSampler(baseUrl + service)
                         .method(HTTPConstantsInterface.POST)
                         .contentType(ContentType.APPLICATION_JSON)
-                        // Aquí es donde utilizas la variable extraída anteriormente.
-                        // Asegúrate de que el nombre de la variable coincida con el que extrajiste.
                         .body("${" + variableName + "}")
         );
         basicTest = false;
