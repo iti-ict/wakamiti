@@ -38,6 +38,19 @@ import java.util.*;
 @Extension(provider = "es.iti.wakamiti", name = "assertion-types")
 public class WakamitiAssertTypes implements DataTypeContributor {
 
+    @SuppressWarnings("rawtypes")
+    private static WakamitiDataTypeBase<Assertion> binaryNumberAssert(
+            String name,
+            BinaryNumberAssertProvider<?, ?> provider
+    ) {
+        return new WakamitiAssertDataType(
+                name,
+                "matcher.number",
+                provider,
+                new UnaryNumberAssertProvider()
+        );
+    }
+
     /**
      * Creates a binary number assertion data type.
      *
@@ -53,14 +66,11 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             boolean includeDecimals,
             ThrowableFunction<Number, T> mapper
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromNumber(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromNumber(
                         locale -> WakamitiNumberDataType.numericRegexPattern(locale, includeDecimals),
                         mapper
-                ),
-                new UnaryNumberAssertProvider()
+                )
         );
     }
 
@@ -79,14 +89,11 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             boolean includeDecimals,
             ThrowableFunction<BigDecimal, T> mapper
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromBigDecimal(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromBigDecimal(
                         locale -> WakamitiNumberDataType.numericRegexPattern(locale, includeDecimals),
                         mapper
-                ),
-                new UnaryNumberAssertProvider()
+                )
         );
     }
 
@@ -103,14 +110,11 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             String name,
             ThrowableFunction<Duration, T> mapper
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromDuration(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromDuration(
                         WakamitiDurationDataType::regexPattern,
                         mapper
-                ),
-                new UnaryNumberAssertProvider()
+                )
         );
     }
 
@@ -119,14 +123,11 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             String name,
             Class<? extends T> dateType
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromDate(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromDate(
                         locale -> WakamitiDateDataType.dateTimeRegex(locale, WakamitiDateDataType.temporalProperties(dateType)),
                         dateType
-                ),
-                new UnaryNumberAssertProvider()
+                )
         );
     }
 
