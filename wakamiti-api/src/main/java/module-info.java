@@ -28,6 +28,9 @@ module es.iti.wakamiti.api {
     requires com.fasterxml.jackson.databind;
     requires json.path;
     requires org.apache.groovy;
+    requires java.net.http;
+    requires org.apache.httpcomponents.httpclient;
+    requires org.apache.httpcomponents.httpcore;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;
