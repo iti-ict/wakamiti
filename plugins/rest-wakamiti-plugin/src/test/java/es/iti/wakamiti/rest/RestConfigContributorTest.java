@@ -36,7 +36,7 @@ public class RestConfigContributorTest {
 
         verify(contributor, times(0)).setBaseURL(any());
         verify(contributor, times(0)).setContentType(any());
-        verify(contributor, times(0)).setFailureHttpCodeAssertion(any(Assertion.class));
+        verify(contributor, times(0)).setHttpCodeAssertion(any(Assertion.class));
         verify(contributor, times(0)).setTimeout(any());
 
         verify(contributor, times(0)).setMultipartSubtype(any());
@@ -56,7 +56,7 @@ public class RestConfigContributorTest {
 
         verify(contributor).setBaseURL(new URL("http://localhost:8080/api"));
         verify(contributor).setContentType("XML");
-        verify(contributor).setFailureHttpCodeAssertion(argThat(m ->
+        verify(contributor).setHttpCodeAssertion(argThat(m ->
                 m.description().equals(new MatcherAssertion<>(Matchers.lessThan(999)).description())));
         verify(contributor).setTimeout(Duration.ofMillis(10000));
 

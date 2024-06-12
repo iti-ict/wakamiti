@@ -57,7 +57,7 @@ public class RestSupport {
     protected String path;
     protected String subject;
 
-    protected Matcher<Integer> failureHttpCodeAssertion;
+    protected Matcher<Integer> httpCodeAssertion;
     protected Response response;
     protected ValidatableResponse validatableResponse;
     protected Oauth2Provider oauth2Provider = new Oauth2Provider().setRetriever(this::retrieveOauthToken);
@@ -115,7 +115,7 @@ public class RestSupport {
 
     protected ValidatableResponse commonResponseAssertions(Response response) {
         return response.then()
-                .statusCode(failureHttpCodeAssertion);
+                .statusCode(httpCodeAssertion);
     }
 
     protected String retrieveOauthToken(Oauth2ProviderConfig oauth2ProviderConfig) {

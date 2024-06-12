@@ -126,9 +126,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
-    @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
-    public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
+    @Step(value = "rest.define.http.code.assertion", args = "integer-assertion")
+    public void setHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
+        this.httpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})

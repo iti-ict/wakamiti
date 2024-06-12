@@ -84,7 +84,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(FAILURE_HTTP_CODE_THRESHOLD, Integer.class)
                 .map(Matchers::lessThan)
                 .map(MatcherAssertion<Integer>::new)
-                .ifPresent(contributor::setFailureHttpCodeAssertion);
+                .ifPresent(contributor::setHttpCodeAssertion);
         configuration.get(TIMEOUT, Integer.class).map(Duration::ofMillis)
                 .ifPresent(contributor::setTimeout);
 
