@@ -205,7 +205,11 @@ public class AzureApi {
 
     public AzurePlan createPlan(String name, String area, String iteration) {
         logger.debug(" => createPlan (name='{}' area='{}' iteration='{}')",name,area,iteration);
-        String payload = "{ \"area\": { \"name\": \""+area+"\"}, \"iteration\": \""+iteration+"\", \"name\": \""+name+"\" }";
+        String payload = toJSON(Map.of(
+            "area", Map.of ("name", area),
+            "iteration", iteration,
+            "name", name
+        ));
         String response = post(APIS_TESTPLAN_PLANS, payload);
         String planID = extract(response, ID, "Cannot find the id of the new plan");
         String planRootSuiteID = extract(response, "$.rootSuite.id", "Cannot find the root suite id of the new plan");
@@ -487,6 +491,18 @@ public class AzureApi {
         }
     }
 
+
+
+
+
+    private String toJSON(Object value) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new WakamitiException(e);
+        }
+    }
 
 
 }
