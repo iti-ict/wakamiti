@@ -1,0 +1,50 @@
+wakamiti:
+  jmeter:
+    baseURL: http://localhost:8080/api
+    contentType: APPLICATION_XML
+    httpCodeThreshold: 300
+    timeout: 10000
+    cookies: true
+    cache: true
+    resources:
+      download: true
+      regex: .*
+    proxy:
+      url: http://prox:8080/api
+      username: abc
+      password: s3cr3t
+    auth:
+      username: pepe
+      password: 1234asdf
+    oauth2:
+      url: http://localhost:8080/token
+      clientId: WEB
+      clientSecret: s3cr3t
+      cached: true
+      parameters:
+        grant_type: password
+        username: pepe
+        password: 1234asdf
+        scope: something
+    redirect:
+      follow: false
+    report:
+      tree: true
+      jlt: target/wakamiti.jtl
+      html: target/wakamiti.html
+      influx:
+        url: http://influx
+        token: s3cr3t1
+        title: title
+        application: app
+        measurement: measure
+        samplersRegex: .*
+        tags:
+          key: value
+        percentiles:
+          - 1.1
+          - 2.4
+      graphite:
+        url: graph:123
+        prefix: pre-
+

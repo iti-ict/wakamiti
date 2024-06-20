@@ -14,7 +14,7 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.rest.oauth.GrantType;
+import es.iti.wakamiti.api.auth.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
@@ -31,14 +31,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 
-import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
+import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
 
 
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@I18nResource("iti_wakamiti_wakamiti-rest")
 @Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
+@I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";
@@ -126,9 +126,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
-    @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
-    public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
+    @Step(value = "rest.define.http.code.assertion", args = "integer-assertion")
+    public void setHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
+        this.httpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
 
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
@@ -158,12 +158,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.define.auth.bearer.default")
     public void setBearerDefault() {
-        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(retrieveOauthToken()));
+        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(oauth2Provider.getAccessToken()));
     }
 
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
         setBearerDefault();
@@ -171,23 +171,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         setBearerDefault();
     }
 
     @Step("rest.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 

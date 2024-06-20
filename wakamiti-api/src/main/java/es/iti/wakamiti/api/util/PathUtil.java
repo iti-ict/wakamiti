@@ -61,8 +61,11 @@ public class PathUtil {
      * @return The path with replaced temporal placeholders.
      */
     public static Path replaceTemporalPlaceholders(Path path) {
-        var instant = Instant.now().atZone(ZoneId.systemDefault());
-        return Path.of(replaceTemporalPlaceholders(path.toString(), instant));
+        return replaceTemporalPlaceholders(path, Instant.now());
+    }
+
+    public static Path replaceTemporalPlaceholders(Path path, Instant instant) {
+        return Path.of(replaceTemporalPlaceholders(path.toString(), instant.atZone(ZoneId.systemDefault())));
     }
 
     private static String replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {

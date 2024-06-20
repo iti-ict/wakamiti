@@ -29,6 +29,10 @@ import java.util.Map;
  */
 public interface Backend {
 
+    String UNNAMED_ARG = "unnamed";
+    String DOCUMENT_ARG = "document";
+    String DATATABLE_ARG = "datatable";
+
     /**
      * Performs set-up operations prior to running any step.
      * Typically, these operations correspond to methods

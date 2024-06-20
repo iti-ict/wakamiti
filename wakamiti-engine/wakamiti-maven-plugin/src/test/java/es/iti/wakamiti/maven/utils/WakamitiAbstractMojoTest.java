@@ -13,6 +13,8 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.mock;
 
 public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti");
     private Wakamiti wakamiti;
 
     protected Wakamiti getWakamitiMock() {
@@ -52,6 +55,7 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
                 .getPluginDescriptor().getPluginLookupKey());
         execution.getMojoDescriptor().getPluginDescriptor().setPlugin(plugin);
         Mojo mojo = lookupConfiguredMojo(session, execution);
+        mojo.setLog(new TestLogger());
         assertThat(mojo).isNotNull();
         try {
             mojo.execute();

@@ -4,14 +4,14 @@ package es.iti.wakamiti.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.auth.oauth.GrantType;
+import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
-import es.iti.wakamiti.rest.oauth.GrantType;
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
 import io.restassured.RestAssured;
 import org.apache.xmlbeans.XmlObject;
 import org.junit.AfterClass;
@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import static es.iti.wakamiti.rest.TestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -517,7 +518,7 @@ public class RestStepContributorTest {
         // act
         contributor.setService("/users/{user}/list/{list}");
         contributor.setPathParameters(new DataTable(new String[][]{
-                new String[] { "column1" }, new String[] { "value1" }
+                new String[]{"column1"}, new String[]{"value1"}
         }));
         contributor.executeGetQuery();
 
@@ -593,7 +594,7 @@ public class RestStepContributorTest {
         // act
         contributor.setHeaders(
                 new DataTable(new String[][]{
-                        new String[] { "column1" }, new String[] { "value1" }
+                        new String[]{"column1"}, new String[]{"value1"}
                 })
         );
         contributor.executeGetSubject();
@@ -663,9 +664,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -701,9 +702,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -739,10 +740,10 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
-        contributor.oauth2ProviderConfig.cacheAuth(true);
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().cacheAuth(true);
 
         mockServer(
                 request()
@@ -766,7 +767,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        verify(contributor, times(2)).retrieveOauthToken();
+        verify(contributor, times(1)).retrieveOauthToken(any());
     }
 
     /**
@@ -779,9 +780,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -820,9 +821,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -860,10 +861,10 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
-        contributor.oauth2ProviderConfig.cacheAuth(true);
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().cacheAuth(true);
 
         mockServer(
                 request()
@@ -888,7 +889,7 @@ public class RestStepContributorTest {
         contributor.executeGetSubject();
 
         // check
-        verify(contributor, times(2)).retrieveOauthToken();
+        verify(contributor, times(1)).retrieveOauthToken(any());
     }
 
     /**
@@ -901,9 +902,9 @@ public class RestStepContributorTest {
         // prepare
         String token = "1234567890";
 
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -936,9 +937,9 @@ public class RestStepContributorTest {
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoGrantTypeConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
 
         // act
         contributor.setBearerDefault();
@@ -955,8 +956,8 @@ public class RestStepContributorTest {
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoUrlConfigWithError() {
         // prepare
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         // act
         contributor.setBearerAuthPassword("username", "password");
@@ -973,8 +974,8 @@ public class RestStepContributorTest {
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientIdConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         // act
         contributor.setBearerAuthPassword("username", "password");
@@ -991,8 +992,8 @@ public class RestStepContributorTest {
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoClientSecretConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
 
         // act
         contributor.setBearerAuthPassword("username", "password");
@@ -1009,9 +1010,9 @@ public class RestStepContributorTest {
     @Test(expected = WakamitiException.class)
     public void testSetBearerAuthPasswordWhenNoRequiredParamConfigWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.type(GrantType.PASSWORD);
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().type(GrantType.PASSWORD);
 
         // act
         contributor.setBearerDefault();
@@ -1028,9 +1029,9 @@ public class RestStepContributorTest {
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenCodeErrorWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -1056,9 +1057,9 @@ public class RestStepContributorTest {
     @Test(expected = AssertionError.class)
     public void testSetBearerAuthPasswordWhenTokenMissingWithError() throws MalformedURLException {
         // prepare
-        contributor.oauth2ProviderConfig.url(new URL(BASE_URL.concat("/token")));
-        contributor.oauth2ProviderConfig.clientId("WEB_APP");
-        contributor.oauth2ProviderConfig.clientSecret("ytv8923yy9234y96");
+        contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
+        contributor.oauth2Provider.configuration().clientId("WEB_APP");
+        contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
 
         mockServer(
                 request()
@@ -1434,7 +1435,7 @@ public class RestStepContributorTest {
     }
 
     /**
-     * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)} 
+     * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)}
      */
     @Test
     public void testDeleteDataWhenFileWithSuccess() throws JsonProcessingException {
@@ -1510,7 +1511,7 @@ public class RestStepContributorTest {
 
     /**
      * Test {@link RestStepContributor#setRequestParameter(String, String)} and
-     * {@link RestStepContributor#executePutSubject()} 
+     * {@link RestStepContributor#executePutSubject()}
      */
     @Test
     public void testWhenPutSubjectAndParamsWithSuccess() throws JsonProcessingException {
@@ -1729,7 +1730,7 @@ public class RestStepContributorTest {
 
     /**
      * Test {@link RestStepContributor#setRequestParameter(String, String)} and
-     * {@link RestStepContributor#executePostSubject()} 
+     * {@link RestStepContributor#executePostSubject()}
      */
     @Test
     public void testWhenPostSubjectAndParamWithSuccess() throws JsonProcessingException {
@@ -1861,7 +1862,7 @@ public class RestStepContributorTest {
 
     /**
      * Test {@link RestStepContributor#setRequestParameter(String, String)} and
-     * {@link RestStepContributor#executePostData()} 
+     * {@link RestStepContributor#executePostData()}
      */
     @Test
     public void testWhenPostDataAndParamWithSuccess() throws JsonProcessingException {
@@ -1916,7 +1917,7 @@ public class RestStepContributorTest {
     }
 
     /**
-     * Test {@link RestStepContributor#assertHttpCode(Assertion)} 
+     * Test {@link RestStepContributor#assertHttpCode(Assertion)}
      */
     @Test(expected = WakamitiException.class)
     public void testWhenResponseIsNullWithError() {

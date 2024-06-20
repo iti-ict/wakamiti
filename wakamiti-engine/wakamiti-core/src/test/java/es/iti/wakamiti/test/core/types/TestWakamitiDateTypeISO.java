@@ -22,17 +22,14 @@ import java.util.Locale;
 public class TestWakamitiDateTypeISO {
 
     private static final WakamitiDataType<LocalDate> DATE_TYPE = new WakamitiDateDataType<>(
-            "date", LocalDate.class, true, false, LocalDate::from
-    );
+            "date", LocalDate.class);
     private static final WakamitiDataType<LocalTime> TIME_TYPE = new WakamitiDateDataType<>(
-            "time", LocalTime.class, false, true, LocalTime::from
-    );
+            "time", LocalTime.class);
     private static final WakamitiDataType<LocalDateTime> DATETIME_TYPE = new WakamitiDateDataType<>(
-            "datetime", LocalDateTime.class, true, true, LocalDateTime::from
-    );
+            "datetime", LocalDateTime.class);
 
     private static final List<Locale> testLocales = Arrays.asList(
-            Locale.CANADA, Locale.CHINESE, Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH, Locale.GERMAN
+            Locale.CANADA, Locale.CHINESE, Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH, Locale.GERMAN, Locale.forLanguageTag("es")
     );
 
     @Test

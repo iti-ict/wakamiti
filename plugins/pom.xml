@@ -31,6 +31,7 @@
         <module>rest-wakamiti-plugin</module>
         <module>spring-wakamiti-plugin</module>
         <module>io-wakamiti-plugin</module>
+        <module>jmeter-wakamiti-plugin</module>
         <module>file-uploader-wakamiti-plugin</module>
         <module>email-wakamiti-plugin</module>
     </modules>

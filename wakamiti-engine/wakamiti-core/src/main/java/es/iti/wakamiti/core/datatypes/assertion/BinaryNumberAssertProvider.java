@@ -6,15 +6,18 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import es.iti.wakamiti.api.ExpressionMatcher;
+import es.iti.wakamiti.api.util.ThrowableBiFunction;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
+import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
+import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.time.Duration;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -30,7 +33,7 @@ import static org.hamcrest.Matchers.*;
  * @param <T> The type of numbers to compare.
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class BinaryNumberAssertProvider<T extends Comparable<T>> extends AbstractAssertProvider {
+public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends AbstractAssertProvider {
 
     public static final String EQUALS = "matcher.number.equals";
     public static final String GREATER = "matcher.number.greater";
@@ -58,8 +61,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
     );
 
     private final ThrowableFunction<Locale, String> numberRegexProvider;
-    private final ThrowableFunction<Number, T> mapper;
-    private final ThrowableFunction<Locale, NumberFormat> formatter;
+    private final ThrowableFunction<R, T> mapper;
+    private final ThrowableBiFunction<Locale, String, R> formatter;
 
     /**
      * Constructs a BinaryNumberAssertProvider.
@@ -70,8 +73,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
      */
     protected BinaryNumberAssertProvider(
             ThrowableFunction<Locale, String> numberRegexProvider,
-            ThrowableFunction<Number, T> mapper,
-            ThrowableFunction<Locale, NumberFormat> formatter
+            ThrowableFunction<R, T> mapper,
+            ThrowableBiFunction<Locale, String, R> formatter
     ) {
         this.numberRegexProvider = numberRegexProvider;
         this.mapper = mapper;
@@ -86,14 +89,14 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
      * @param <T>                 The type of numbers to compare.
      * @return A BinaryNumberAssertProvider instance.
      */
-    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromNumber(
+    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T, Number> createFromNumber(
             ThrowableFunction<Locale, String> numberRegexProvider,
             ThrowableFunction<Number, T> converter
     ) {
         return new BinaryNumberAssertProvider<>(
                 numberRegexProvider,
                 converter,
-                locale -> WakamitiNumberDataType.decimalFormat(locale, false)
+                (locale, value) -> WakamitiNumberDataType.decimalFormat(locale, false).parse(value)
         );
     }
 
@@ -105,14 +108,47 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
      * @param <T>                 The type of numbers to compare.
      * @return A BinaryNumberAssertProvider instance.
      */
-    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T> createFromBigDecimal(
+    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T, Number> createFromBigDecimal(
             ThrowableFunction<Locale, String> numberRegexProvider,
             ThrowableFunction<BigDecimal, T> converter
     ) {
         return new BinaryNumberAssertProvider<>(
                 numberRegexProvider,
                 WakamitiNumberDataType.castConverter(BigDecimal.class::cast, converter),
-                locale -> WakamitiNumberDataType.decimalFormat(locale, true)
+                (locale, value) -> WakamitiNumberDataType.decimalFormat(locale, true).parse(value)
+        );
+    }
+
+    /**
+     * Creates a BinaryNumberAssertProvider from a number.
+     *
+     * @param regexProvider A function providing the duration regex.
+     * @param converter     A function to convert the duration to the desired type.
+     * @param <T>           The type of numbers to compare.
+     * @return A BinaryNumberAssertProvider instance.
+     */
+    public static <T extends Comparable<T>> BinaryNumberAssertProvider<T, Duration> createFromDuration(
+            ThrowableFunction<Locale, String> regexProvider,
+            ThrowableFunction<Duration, T> converter
+    ) {
+        return new BinaryNumberAssertProvider<>(
+                regexProvider,
+                converter,
+                (locale, value) -> WakamitiDurationDataType.parser(locale).parse(value)
+        );
+    }
+
+    public static <T extends Comparable<T> & TemporalAccessor>
+    BinaryNumberAssertProvider<T, ? extends TemporalAccessor> createFromDate(
+            ThrowableFunction<Locale, String> regexProvider,
+            Class<? extends T> dateType
+    ) {
+        return new BinaryNumberAssertProvider<>(
+                regexProvider,
+                x -> x,
+                (locale, value) -> WakamitiDateDataType.dateTimeParser(locale,
+                        WakamitiDateDataType.temporalProperties(dateType),
+                        WakamitiDateDataType.temporalQuery(dateType)).parse(value)
         );
     }
 
@@ -160,8 +196,8 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>> extends Abstrac
             Locale locale,
             String key,
             String value
-    ) throws ParseException {
-        T numericValue = mapper.apply(formatter.apply(locale).parse(value));
+    ) {
+        T numericValue = mapper.apply(formatter.apply(locale, value));
         return matchers.get(key).apply(numericValue);
     }
 

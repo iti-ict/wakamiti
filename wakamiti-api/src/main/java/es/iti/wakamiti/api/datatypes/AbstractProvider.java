@@ -3,13 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.core.datatypes;
+package es.iti.wakamiti.api.datatypes;
 
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
+import es.iti.wakamiti.api.ExpressionMatcher;
 
 import java.util.*;
 import java.util.regex.Pattern;

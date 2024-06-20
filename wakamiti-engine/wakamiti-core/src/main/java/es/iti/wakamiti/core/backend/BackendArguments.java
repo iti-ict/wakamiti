@@ -6,6 +6,7 @@
 package es.iti.wakamiti.core.backend;
 
 
+import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.annotations.Step;
@@ -90,7 +91,7 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
             String argType = "";
             final String[] nameAndType = stepAnnotation.args()[i].split(":");
             if (nameAndType.length == 1) {
-                argName = RunnableBackend.UNNAMED_ARG;
+                argName = Backend.UNNAMED_ARG;
                 argType = nameAndType[0];
             } else if (nameAndType.length == 2) {
                 argName = nameAndType[0];
@@ -120,7 +121,7 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
                 Optional<WakamitiDataType<?>> argType = typeRegistry
                         .findTypesForJavaType(methodArgType).findAny();
                 argType.ifPresent(wakamitiDataType ->
-                        argumentMap.add(new Pair<>(RunnableBackend.UNNAMED_ARG, wakamitiDataType.getName())));
+                        argumentMap.add(new Pair<>(Backend.UNNAMED_ARG, wakamitiDataType.getName())));
             }
         }
     }
@@ -156,11 +157,11 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
      */
     protected String validateArgument(int index) {
         String error = null;
-        if (argumentMap.get(index).value().equals(RunnableBackend.DOCUMENT_ARG)) {
+        if (argumentMap.get(index).value().equals(Backend.DOCUMENT_ARG)) {
             if (!methodArgTypes[index].equals(Document.class)) {
                 error = "(expected " + Document.class + ")";
             }
-        } else if (argumentMap.get(index).value().equals(RunnableBackend.DATATABLE_ARG)) {
+        } else if (argumentMap.get(index).value().equals(Backend.DATATABLE_ARG)) {
             if (!methodArgTypes[index].equals(DataTable.class)) {
                 error = "(expected " + DataTable.class + ")";
             }
@@ -190,9 +191,9 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
         boolean error = false;
         if (methodArgTypes.length - index == 1) {
             if (methodArgTypes[index].equals(Document.class)) {
-                argumentMap.add(new Pair<>(RunnableBackend.DOCUMENT_ARG, RunnableBackend.DOCUMENT_ARG));
+                argumentMap.add(new Pair<>(Backend.DOCUMENT_ARG, Backend.DOCUMENT_ARG));
             } else if (methodArgTypes[index].equals(DataTable.class)) {
-                argumentMap.add(new Pair<>(RunnableBackend.DATATABLE_ARG, RunnableBackend.DATATABLE_ARG));
+                argumentMap.add(new Pair<>(Backend.DATATABLE_ARG, Backend.DATATABLE_ARG));
             } else {
                 error = true;
             }

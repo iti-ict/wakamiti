@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
 import imconfig.Configuration;
 import imconfig.Configurer;
 import io.restassured.RestAssured;
@@ -84,11 +84,11 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(FAILURE_HTTP_CODE_THRESHOLD, Integer.class)
                 .map(Matchers::lessThan)
                 .map(MatcherAssertion<Integer>::new)
-                .ifPresent(contributor::setFailureHttpCodeAssertion);
+                .ifPresent(contributor::setHttpCodeAssertion);
         configuration.get(TIMEOUT, Integer.class).map(Duration::ofMillis)
                 .ifPresent(contributor::setTimeout);
 
-        Oauth2ProviderConfig oauth2Provider = contributor.oauth2ProviderConfig;
+        Oauth2ProviderConfig oauth2Provider = contributor.oauth2Provider.configuration();
         configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2Provider::url);
         configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2Provider::clientId);
         configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);

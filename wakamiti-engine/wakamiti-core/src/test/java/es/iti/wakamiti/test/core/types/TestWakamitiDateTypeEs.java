@@ -24,8 +24,8 @@ import java.util.Locale;
  * being the main difference that a comma is required between date and hour, whereas no
  * comma is used in previous JRE versions.
  *
- * @see https://www.oracle.com/technetwork/java/javase/9-relnote-issues-3704069.html#JDK-8008577
- * @see http://openjdk.java.net/jeps/252
+ * @see <a href="https://www.oracle.com/technetwork/java/javase/9-relnote-issues-3704069.html#JDK-8008577">https://www.oracle.com/technetwork/java/javase/9-relnote-issues-3704069.html#JDK-8008577</a>
+ * @see <a href="http://openjdk.java.net/jeps/252">http://openjdk.java.net/jeps/252</a>
  * <p>
  * These tests are targeted to JRE >=9.
  */
@@ -34,14 +34,12 @@ public class TestWakamitiDateTypeEs {
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.test");
     private static final Locale LOCALE = Locale.forLanguageTag("es");
     private static final WakamitiDateDataType<LocalDate> DATE_TYPE = new WakamitiDateDataType<>(
-            "date", LocalDate.class, true, false, LocalDate::from
-    );
+            "date", LocalDate.class);
     private static final WakamitiDateDataType<LocalTime> TIME_TYPE = new WakamitiDateDataType<>(
-            "time", LocalTime.class, false, true, LocalTime::from
-    );
+            "time", LocalTime.class);
     private static final WakamitiDateDataType<LocalDateTime> DATETIME_TYPE = new WakamitiDateDataType<>(
-            "datetime", LocalDateTime.class, true, true, LocalDateTime::from
-    );
+            "datetime", LocalDateTime.class);
+
     @ClassRule
     public static JavaVersionRule javaVersionRule = new JavaVersionRule(version -> version >= 9);
 
