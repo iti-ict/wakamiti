@@ -153,12 +153,15 @@ public class TestUtil {
         List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
-                MediaType.TEXT_XML, TestUtil::xml
+                MediaType.TEXT_XML, TestUtil::xml,
+                MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> string_to_map = Map.of(
                 MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
                 }),
                 MediaType.TEXT_XML, str -> TestUtil.xml(str, new TypeReference<>() {
+                }),
+                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
                 })
         );
 
@@ -183,10 +186,16 @@ public class TestUtil {
                         if (!map.containsKey(mimeType)) {
                             map.put(mimeType, new LinkedList<>());
                         }
+                        if (!string_to_map.containsKey(mimeType)) {
+                            throw new IllegalStateException("Mime type unexpected: " + mimeType);
+                        }
                         map.get(mimeType).add(string_to_map.get(mimeType).apply(read(file)));
                     }
 
                     for (MediaType mimeType : map.keySet().stream().filter(filter).collect(Collectors.toList())) {
+                        if (!string_to_map.containsKey(mimeType)) {
+                            throw new IllegalStateException("Mime type unexpected: " + mimeType);
+                        }
                         expectations.add(new Expectation(
                                         request()
                                                 .withPath("/" + p)
@@ -233,6 +242,9 @@ public class TestUtil {
                             )
                     );
 
+                    if (!string_to_map.containsKey(mimeType)) {
+                        throw new IllegalStateException("Mime type unexpected: " + mimeType);
+                    }
                     Map<String, Object> json = string_to_map.get(mimeType).apply(body);
 
                     for (String key : json.keySet()) {
