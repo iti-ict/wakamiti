@@ -65,7 +65,7 @@ public class JMeterSupport {
     /**
      * DslHttpSampler specification, used in all DslHttSamplers
      **/
-    protected List<Consumer<DslHttpSampler>> httpSpecifications = new LinkedList<>();
+    protected Map<String, Consumer<DslHttpSampler>> httpSpecifications = new LinkedHashMap<>();
     /**
      * Configuration definitions, used in TestPlan
      **/
@@ -104,7 +104,7 @@ public class JMeterSupport {
     protected DslHttpSampler newHttpSampler(String path) {
         DslHttpSampler httpSampler = httpSampler(path);
         Optional.ofNullable(authSpecification).ifPresent(spec -> spec.accept(httpSampler));
-        httpSpecifications.forEach(spec -> spec.accept(httpSampler));
+        httpSpecifications.values().forEach(spec -> spec.accept(httpSampler));
         httpSamplers.addLast(httpSampler);
         return httpSampler;
     }
@@ -236,11 +236,11 @@ public class JMeterSupport {
     }
 
     /**
-     * Converts a DataTable into a list of map of name-value pairs.
+     * Converts a DataTable into a list of stretches.
      *
      * @param dataTable The DataTable to convert.
      * @return A list of map containing the name-value pairs.
-     * @throws WakamitiException if the DataTable does not have exactly two columns.
+     * @throws WakamitiException if the DataTable does not have two or three columns.
      */
     protected List<Map<String, String>> tableToStretches(DataTable dataTable) {
         if (dataTable.columns() < 2 || dataTable.columns() > 3) {
@@ -278,49 +278,6 @@ public class JMeterSupport {
             throw new WakamitiException("REST content type must be one of the following: {}",
                     ContentTypeUtil.names(), e);
         }
-    }
-
-    /**
-     * Adds a result tree visualizer to the list of reporters.
-     */
-    public void setResultTree() {
-        this.reporters.add(resultsTreeVisualizer());
-    }
-
-    /**
-     * Adds a JTL writer to the list of reporters.
-     *
-     * @param writer The JTL writer to add.
-     */
-    public void setJtlWriter(JtlWriter writer) {
-        this.reporters.add(writer);
-    }
-
-    /**
-     * Adds an HTML reporter to the list of reporters.
-     *
-     * @param reporter The HTML reporter to add.
-     */
-    public void setHtmlReporter(HtmlReporter reporter) {
-        this.reporters.add(reporter);
-    }
-
-    /**
-     * Adds an InfluxDB backend listener to the list of reporters.
-     *
-     * @param listener The InfluxDB backend listener to add.
-     */
-    public void setInfluxListener(InfluxDbBackendListener listener) {
-        this.reporters.add(listener);
-    }
-
-    /**
-     * Adds a Graphite backend listener to the list of reporters.
-     *
-     * @param listener The Graphite backend listener to add.
-     */
-    public void setGraphiteListener(GraphiteBackendListener listener) {
-        this.reporters.add(listener);
     }
 
     /**

@@ -6,12 +6,13 @@
 package es.iti.wakamiti.plugins.jmeter.dsl;
 
 
+import es.iti.wakamiti.api.WakamitiException;
 import org.apache.http.entity.ContentType;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.fife.ui.rsyntaxtextarea.FileTypeUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -78,7 +79,11 @@ public class ContentTypeUtil {
     }
 
     public static ContentType of(File file) {
-        return ContentType.create(FileTypeUtil.get().guessContentType(file));
+        try {
+            return ContentType.create(Files.probeContentType(file.toPath()));
+        } catch (IOException e) {
+            throw new WakamitiException("Cannot get mime type of file '{}'", file, e);
+        }
     }
 
     /**

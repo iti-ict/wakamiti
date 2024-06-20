@@ -3,463 +3,373 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.plugins.jmeter;
+
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.auth.oauth.GrantType;
+import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.plugins.jmeter.dsl.ContentTypeUtil;
 import org.apache.http.entity.ContentType;
-import org.apache.jmeter.protocol.http.util.HTTPConstantsInterface;
-import us.abstracta.jmeter.javadsl.core.DslTestPlan;
-import us.abstracta.jmeter.javadsl.core.TestPlanStats;
-import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
-import us.abstracta.jmeter.javadsl.core.threadgroups.DslDefaultThreadGroup;
+import org.apache.jmeter.assertions.AssertionResult;
+import us.abstracta.jmeter.javadsl.core.configs.DslVariables;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static es.iti.wakamiti.plugins.jmeter.JMeterConfigContributor.PASSWORD;
+import static es.iti.wakamiti.plugins.jmeter.JMeterConfigContributor.USERNAME;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 
 
 @Extension(provider = "es.iti.wakamiti", name = "jmeter", version = "2.6")
-@I18nResource("es_iti_wakamiti_jmeter")
-public class JMeterStepContributor implements StepContributor {
+@I18nResource("iti_wakamiti_jmeter")
+public class JMeterStepContributor extends JMeterSupport implements StepContributor {
 
-    private DslDefaultThreadGroup threadGroup = threadGroup();
-
-    private boolean basicTest = true;
-    private String baseUrl;
-    private TestPlanStats lastTestStats;
-    private boolean resultsTreeEnabled;
-    private boolean influxDBEnabled;
-    private boolean csvEnabled;
-    private boolean htmlEnabled;
-    private String influxDBUrl;
-    private String csvPath;
-    private String htmlPath;
-    private String username;
-    private String password;
-    private static final String ERROR_MESSAGE = "No test results stored to verify the response times.";
-
-    private void resetThreadGroup() {
-        this.threadGroup = null;
-        this.basicTest = true;
+    /**
+     * Sets the content type for all http requests.
+     *
+     * @param contentType The content type
+     * @see ContentType
+     */
+    @Step(value = "jmeter.define.contentType", args = "word")
+    public void setContentType(String contentType) {
+        httpSpecifications.put("contentType",
+                req -> req.contentType(parseContentType(contentType)));
     }
-    private List<String> getCSVHeaders(String fichero) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(fichero))) {
-            return Arrays.asList(br.readLine().split(","));
+
+    /**
+     * Sets the default base url.
+     *
+     * @param url The base url
+     */
+    @Step(value = "jmeter.define.baseURL", args = "url")
+    public void setBaseURL(URL url) {
+        this.checkURL(url);
+        this.httpDefaults.url(url.toString());
+    }
+
+    /**
+     * Sets the range of http codes that are valid for all http requests.
+     *
+     * @param httpCodeAssertion The valid http codes
+     */
+    @Step(value = "jmeter.define.http.code.assertion", args = "integer-assertion")
+    public void setHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
+        this.httpSpecifications.put("code.assertion", httpSampler -> httpSampler.children(
+                jsr223PostProcessor(s -> {
+                    try {
+                        Assertion.assertThat(Integer.parseInt(s.prev.getResponseCode()), httpCodeAssertion);
+                        s.prev.setSuccessful(true);
+                    } catch (AssertionError e) {
+                        AssertionResult result = new AssertionResult();
+                        result.setResultForFailure(e.getMessage());
+                        s.prev.addAssertionResult(result);
+                        s.prev.setSuccessful(false);
+                    }
+                })
+        ));
+    }
+
+    /**
+     * Sets the default connection and response timeout.
+     *
+     * @param duration The duration timeout
+     */
+    @Step("jmeter.define.timeout")
+    public void setTimeout(Duration duration) {
+        this.httpDefaults
+                .connectionTimeout(duration)
+                .responseTimeout(duration);
+    }
+
+    /**
+     * Enables cookies for all http requests.
+     */
+    @Step("jmeter.define.cookies.enable")
+    public void cookiesEnabled() {
+        this.configs.add(httpCookies());
+    }
+
+    /**
+     * Disables cookies for all http requests.
+     */
+    @Step("jmeter.define.cookies.disable")
+    public void cookiesDisabled() {
+        this.configs.add(httpCookies().disable());
+    }
+
+    /**
+     * Enables caching for all http requests.
+     */
+    @Step("jmeter.define.cache.enable")
+    public void cacheEnabled() {
+        this.configs.add(httpCache());
+    }
+
+    /**
+     * Disables caching for all http requests.
+     */
+    @Step("jmeter.define.cache.disable")
+    public void cacheDisabled() {
+        this.configs.add(httpCache().disable());
+    }
+
+    /**
+     * Enables download of embedded resources on all http requests.
+     */
+    @Step("jmeter.define.resources.enable")
+    public void resourcesEnabled() {
+        this.httpDefaults.downloadEmbeddedResources(true);
+    }
+
+    /**
+     * Disables download of embedded resources on all http requests.
+     */
+    @Step("jmeter.define.resources.disable")
+    public void resourcesDisabled() {
+        this.httpDefaults.downloadEmbeddedResources(false);
+    }
+
+    /**
+     * Specifies the regular expression of the embedded resources to
+     * download in response to all requests.
+     *
+     * @param regex The regex pattern
+     */
+    @Step(value = "jmeter.define.resources.matching", args = {"pattern:text"})
+    public void resourcesMatching(String regex) {
+        this.httpDefaults.downloadEmbeddedResourcesMatching(regex);
+    }
+
+    /**
+     * Specifies the regular expression of the embedded resources that
+     * will not be downloaded in response to all requests.
+     *
+     * @param regex The regex pattern
+     */
+    @Step(value = "jmeter.define.resources.not.matching", args = {"pattern:text"})
+    public void resourcesNotMatching(String regex) {
+        this.httpDefaults.downloadEmbeddedResourcesNotMatching(regex);
+    }
+
+    /**
+     * Specifies the URL of a proxy server through which HTTP requests
+     * are sent to their final destination.
+     *
+     * @param url The URL of the server proxy
+     */
+    @Step(value = "jmeter.define.proxy", args = {"url:url"})
+    public void setProxy(URL url) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Setting proxy [url: {}]", url);
         }
+        this.httpDefaults.proxy(url.toString());
     }
 
-    private String buildRequestBody(List<String> columnNames) {
-        return columnNames.stream()
-                .map(name -> String.format("\"%s\": \"${%s}\"", name, name))
-                .collect(Collectors.joining(", ", "{", "}"));
-    }
-    private void setListeners(){
-
-        if (resultsTreeEnabled) {
-            threadGroup.children(resultsTreeVisualizer());
+    /**
+     * Specifies the URL and credentials of a proxy server through which
+     * HTTP requests are sent to their final destination.
+     *
+     * @param url The URL of the server proxy
+     * @param username The username
+     * @param password The password
+     */
+    @Step(value = "jmeter.define.proxy.auth", args = {"url:url", "username:text", "password:text"})
+    public void setProxy(URL url, String username, String password) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Setting proxy [url: {}, credentials: {}:{}]", url, username, "*".repeat(password.length()));
         }
+        this.httpDefaults.proxy(url.toString(), username, password);
+    }
 
-        if (influxDBEnabled) {
-            threadGroup.children(influxDbListener(influxDBUrl));
+
+    @Step(value = "jmeter.define.auth.basic", args = {"username:text", "password:text"})
+    public void setBasicAuth(String username, String password) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Setting header [Authorization: {}:{}]", username, "*".repeat(password.length()));
         }
+        this.authSpecification = httpSampler -> httpSampler.header(AUTHORIZATION, basic(username, password));
+    }
 
-        if (csvEnabled) {
-            threadGroup.children(jtlWriter(csvPath));
+    @Step("jmeter.define.auth.bearer.token")
+    public void setBearerAuth(String token) {
+        LOGGER.trace("Setting header [Authorization: Bearer {}]", token);
+        this.authSpecification = httpSampler -> httpSampler.header(AUTHORIZATION, bearer(token));
+    }
+
+    @Step("jmeter.define.auth.bearer.token.file")
+    public void setBearerAuthFile(File file) {
+        this.setBearerAuth(this.readFile(file).trim());
+    }
+
+    @Step("jmeter.define.auth.none")
+    public void setNoneAuth() {
+        this.authSpecification = null;
+    }
+
+    @Step("jmeter.define.auth.bearer.default")
+    public void setBearerDefault() {
+        this.authSpecification = httpSampler ->
+                httpSampler.header(AUTHORIZATION, bearer(oauth2Provider.getAccessToken()));
+    }
+
+    @Step(value = "jmeter.define.auth.bearer.password", args = {"username:text", "password:text"})
+    public void setBearerAuthPassword(String username, String password) {
+        this.oauth2Provider.configuration().type(GrantType.PASSWORD)
+                .addParameter(USERNAME, username)
+                .addParameter(PASSWORD, password);
+        this.setBearerDefault();
+    }
+
+    @Step(value = "jmeter.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
+    public void setBearerAuthPassword(String username, String password, DataTable params) {
+        this.oauth2Provider.configuration().type(GrantType.PASSWORD)
+                .addParameter(USERNAME, username)
+                .addParameter(PASSWORD, password);
+        this.tableToMap(params).forEach(this.oauth2Provider.configuration()::addParameter);
+        this.setBearerDefault();
+    }
+
+    @Step("jmeter.define.auth.bearer.client")
+    public void setBearerAuthClient() {
+        this.oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
+        this.setBearerDefault();
+    }
+
+    @Step("jmeter.define.auth.bearer.client.parameters")
+    public void setBearerAuthClient(DataTable params) {
+        this.oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
+        this.tableToMap(params).forEach(this.oauth2Provider.configuration()::addParameter);
+        this.setBearerDefault();
+    }
+
+    @Step("jmeter.define.dataset.file")
+    public void setDatasetFile(File csv) {
+        this.configs.add(csvDataSet(absolutePath(csv)));
+    }
+
+    @Step("jmeter.define.dataset.vars")
+    public void setVariables(DataTable vars) {
+        DslVariables variables = vars();
+        tableToMap(vars).forEach(variables::set);
+        this.configs.add(variables);
+    }
+
+    @Step(value = "jmeter.define.dataset.var", args = {"name:text", "value:text"})
+    public void setVariable(String name, String value) {
+        this.configs.add(vars().set(name, value));
+    }
+
+    @Step(value = "jmeter.define.request", args = {"method:word", "service:text"})
+    public void setRequest(String method, String service) {
+        this.newHttpSampler(service.replace("{", "${"))
+                .method(method);
+    }
+
+    @Step("jmeter.define.request.body.data")
+    public void setBody(Document body) {
+        this.currentHttpSampler().body(body.getContent());
+    }
+
+    // TODO: incluir el resto de pasos de definicion de la request
+    // todos los pasos jmeter.define.request... usan el currentHttpSampler
+
+    @Step("jmeter.define.request.form.parameters")
+    public void setFormParameters(DataTable params) {
+        tableToMap(params).forEach((k, v) ->
+                this.currentHttpSampler().bodyPart(k, v, ContentType.TEXT_PLAIN));
+    }
+
+    @Step(value = "jmeter.define.request.form.parameter", args = {"name:text", "value:text"})
+    public void setFormParameter(String name, String value) {
+        this.currentHttpSampler().bodyPart(name, value, ContentType.TEXT_PLAIN);
+    }
+
+    @Step(value = "jmeter.define.request.attached.file", args = {"name:text", "file"})
+    public void setAttachedFile(String name, File file) {
+        this.currentHttpSampler().bodyFilePart(name, absolutePath(file), ContentTypeUtil.of(file));
+    }
+
+    @Step(value = "jmeter.define.request.extractor.regex", args = {"regex:text", "name:text"})
+    public void setRegexExtractor(String regex, String name) {
+        this.currentHttpSampler().children(regexExtractor(name, regex));
+    }
+
+    // TODO: incluir el resto de pasos de definición de extractores
+
+
+    @Step(value = "jmeter.execute.simple", args = "threads:int")
+    public void executeSimple(Integer threads) throws IOException {
+        this.threadSpecifications.add(group -> group.rampTo(threads, Duration.ZERO).holdIterating(1));
+        this.executePlan();
+    }
+
+    @Step(value = "jmeter.execute.load.duration", args = {"threads:int", "ramp:duration", "hold:duration"})
+    public void executeLoad(Integer threads, Duration ramp, Duration hold) throws IOException {
+        this.threadSpecifications.add(group -> group.rampToAndHold(threads, ramp, hold).rampTo(0, ramp));
+        this.executePlan();
+    }
+
+    @Step(value = "jmeter.execute.load.iterations", args = {"threads:int", "ramp:duration", "iterations:int"})
+    public void executeLoad(Integer threads, Duration ramp, Integer iterations) throws IOException {
+        for (int i = 0; i < iterations; i++) {
+            this.threadSpecifications.add(group -> group.rampTo(threads, ramp).rampTo(0, ramp));
         }
+        this.executePlan();
+    }
 
-        if (htmlEnabled) {
-            threadGroup.children(htmlReporter(htmlPath));
+    @Step(value = "jmeter.execute.increase.iterations",
+            args = {"threads:int", "ramp:duration", "hold:duration", "iterations:int"})
+    public void executeIncrease(Integer threads, Duration ramp, Duration hold, Integer iterations) throws IOException {
+        for (int i = 0; i < iterations; i++) {
+            final int it = i+1;
+            this.threadSpecifications.add(group -> group.rampToAndHold(threads*it, ramp, hold));
         }
+        this.executePlan();
     }
 
-    private void runTest() throws IOException {
-
-        if(basicTest)
-        {
-            lastTestStats = testPlan(
-                    threadGroup.children(
-                            httpSampler(baseUrl)
-                    )).run();
-        }
-        else {
-            lastTestStats = testPlan(threadGroup).run();
-        }
-    }
-    @Step(value = "jmeter.define.baseURL")
-    public void setBaseURL(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public void setResultsTree(Boolean enable) { this.resultsTreeEnabled = enable; }
-
-    public void setInfluxDB(Boolean enable) { this.influxDBEnabled = enable; }
-
-    public void setHTML(Boolean enable) { this.htmlEnabled = enable; }
-
-    public void setCSV(Boolean enable) { this.csvEnabled = enable; }
-
-    public void setInfluxDBUrl(String url) { this.influxDBUrl = url; }
-
-    public void setHTMLPath(String path) { this.htmlPath= path; }
-
-    public void setCSVPath(String path) { this.csvPath = path; }
-
-    public void setUsername(String username) { this.username = username; }
-
-    public void setPassword(String password) { this.password = password; }
-
-
-    @Step(value = "jmeter.define.csvinput", args = { "file:text" })
-    public void setCSVInput(String file) throws IOException {
-
-        List<String> columnNames = getCSVHeaders(file);
-        String requestBody = buildRequestBody(columnNames);
-
-        threadGroup.children(csvDataSet(file));
-        threadGroup.children(
-                httpSampler(baseUrl)
-                        .post(requestBody,
-                                ContentType.APPLICATION_JSON)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.define.csvinputvariables", args = { "file:text" })
-    public void setCSVInputVariables(String file, DataTable variables) throws IOException {
-
-        List<String> csvHeaders = getCSVHeaders(file);
-
-        List<String> filter = Arrays.stream(variables.getValues())
-                .map(row -> row[0])
-                .filter(csvHeaders::contains)
-                .collect(Collectors.toList());
-        String requestBody = buildRequestBody(filter);
-
-        threadGroup.children(csvDataSet(file));
-        threadGroup.children(
-                httpSampler(baseUrl)
-                        .post(requestBody,
-                                ContentType.APPLICATION_JSON)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.define.auth.basic", args = { "username:text" , "password:text" })
-    public void setAuthBasic(String username, String password){
-
-       threadGroup.children(httpAuth().basicAuth(baseUrl,System.getenv(username), System.getenv(password)));
-    }
-    @Step(value = "jmeter.define.auth.default")
-    public void setAuthBasicDefault(){
-
-        threadGroup.children(httpAuth().basicAuth(baseUrl,System.getenv(username), System.getenv(password)));
-    }
-    @Step(value = "jmeter.define.cookies")
-    public void disableCookies(){
-
-        threadGroup.children(httpCookies().disable());
-    }
-    @Step(value = "jmeter.define.cache")
-    public void disableCache(){
-
-        threadGroup.children(httpCache().disable());
-    }
-    @Step(value = "jmeter.define.get", args = { "service:text" })
-    public void getRequest(String service) {
-        threadGroup.children(httpSampler(baseUrl+service));
-        basicTest = false;
-    }
-
-    @Step(value = "jmeter.define.put", args = { "service:text" })
-    public void putRequest(String service, Document body) {
-
-        String requestBody = body.getContent();
-        threadGroup.children(
-                httpSampler(baseUrl+service)
-                        .method(HTTPConstantsInterface.PUT)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body(requestBody)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.define.post", args = { "service:text" })
-    public void postRequest(String service, Document body) {
-
-        String requestBody = body.getContent();
-        threadGroup.children(
-                httpSampler(baseUrl+service)
-                        .method(HTTPConstantsInterface.POST)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body(requestBody)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.regex.get", args = { "service:text", "variableName:text", "regex:text"})
-    public void getExtractRegex(String service, String variableName, String regex){
-        threadGroup.children(httpSampler(baseUrl+service),(regexExtractor(variableName,regex)));
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.boundaries.get", args = { "service:text", "variableName:text", "leftBoundarie:text"," rightBoundarie:text"})
-    public void getExtractBoundaries(String service, String variableName, String leftBoundarie, String rightBoundarie){
-        threadGroup.children(httpSampler(baseUrl+service)).children(boundaryExtractor(variableName,leftBoundarie,rightBoundarie));
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.json.get", args = { "service:text", "variableName:text", "jsonPath:text"})
-    public void getExtractJson(String service, String variableName, String jsonPath){
-        threadGroup.children(httpSampler(baseUrl+service).children(jsonExtractor(variableName,jsonPath).queryLanguage(DslJsonExtractor.JsonQueryLanguage.JSON_PATH)));
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.put", args = { "service:text", "variableName:text"})
-    public void putWithVariable(String service, String variableName) {
-        threadGroup.children(
-                httpSampler(baseUrl + service)
-                        .method(HTTPConstantsInterface.PUT)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body("${" + variableName + "}")
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.post", args = { "service:text", "variableName:text"})
-    public void postWithVariable(String service, String variableName) {
-        threadGroup.children(
-                httpSampler(baseUrl + service)
-                        .method(HTTPConstantsInterface.POST)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body("${" + variableName + "}")
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.endpoint.get", args = { "service:text", "variableName:text"})
-    public void getWithEndpointExtracted(String service, String variableName) {
-        String endpointExtracted = service + "/${" + variableName + "}";
-        threadGroup.children(httpSampler(baseUrl+endpointExtracted));
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.endpoint.put", args = { "service:text", "variableName:text"})
-    public void putWithEndpointExtracted(String service, String variableName, Document body) {
-        String endpointExtracted = service + "/${" + variableName + "}";
-        String requestBody = body.getContent();
-        threadGroup.children(
-                httpSampler(baseUrl+endpointExtracted)
-                        .method(HTTPConstantsInterface.PUT)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body(requestBody)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.extract.endpoint.post", args = { "service:text", "variableName:text"})
-    public void postWithEndpointExtracted(String service, String variableName, Document body) {
-        String endpointExtracted = service + "/${" + variableName + "}";
-        String requestBody = body.getContent();
-        threadGroup.children(
-                httpSampler(baseUrl+endpointExtracted)
-                        .method(HTTPConstantsInterface.POST)
-                        .contentType(ContentType.APPLICATION_JSON)
-                        .body(requestBody)
-        );
-        basicTest = false;
-    }
-    @Step(value = "jmeter.define.connectiontimeout", args = { "duration:int" })
-    public void setConnectionTimeout(Integer duration) {
-
-       threadGroup.children(httpDefaults().connectionTimeout(Duration.ofSeconds(duration)));
-    }
-    @Step(value = "jmeter.define.responsetimeout", args = { "duration:int" })
-    public void setResponseTimeout(Integer duration) {
-
-        threadGroup.children(httpDefaults().responseTimeout(Duration.ofMinutes(duration)));
-    }
-    @Step(value = "jmeter.define.resources")
-    public void downloadEmbeddedResources() {
-
-        threadGroup.children(httpDefaults().downloadEmbeddedResources());
-    }
-    @Step(value = "jmeter.define.proxy", args = { "url:text" })
-    public void setResponseTimeout(String url) {
-
-        threadGroup.children(httpDefaults().proxy(url));
+    @Step("jmeter.execute.stretches")
+    public void executeStretches(DataTable stretches) throws IOException {
+        tableToStretches(stretches).stream().map(Map::values).map(LinkedList::new).forEach(stretch -> {
+            int threads = parse(stretch.get(0), Integer.class);
+            Duration ramp = parse(stretch.get(1), Duration.class);
+            if (stretch.size() > 2) {
+                this.threadSpecifications.add(group ->
+                        group.rampToAndHold(threads, ramp, parse(stretch.get(2), Duration.class)));
+            } else {
+                this.threadSpecifications.add(group -> group.rampTo(threads, ramp));
+            }
+        });
+        this.executePlan();
     }
 
 
-    @Step(value = "jmeter.test.jmxfile", args = { "file:text" })
-    public void runJMXTest(String file) throws IOException {
-
-        lastTestStats = DslTestPlan.fromJmx(file).run();
-
+    @Step(value = "jmeter.assert.metric.duration", args = {"metric:duration-metric", "matcher:duration-assertion"})
+    public void assertDurationMetric(Metric<Duration> metric, Assertion<Duration> matcher) {
+        assertResponseNotNull();
+        Assertion.assertThat(metric.apply(stats.overall()), matcher);
     }
 
-    @Step(value = "jmeter.test.foamtest")
-    public void runFoamTest() throws IOException {
-
-        threadGroup = threadGroup(1, 1);
-
-        setListeners();
-
-        runTest();
-
+    @Step(value = "jmeter.assert.metric.long", args = {"metric:long-metric", "matcher:long-assertion"})
+    public void assertLongMetric(Metric<Long> metric, Assertion<Long> matcher) {
+        assertResponseNotNull();
+        Assertion.assertThat(metric.apply(stats.overall()), matcher);
     }
 
-    @Step(value = "jmeter.test.loadtest", args = {"users:int", "duration:int"})
-    public void runLoadTest(Integer users, Integer duration) throws IOException {
-
-
-         threadGroup = threadGroup.rampToAndHold(users, Duration.ofSeconds(0), Duration.ofMinutes(duration));
-
-         setListeners();
-
-         runTest();
-
+    @Step(value = "jmeter.assert.metric.double", args = {"metric:double-metric", "matcher:double-assertion"})
+    public void assertDoubleMetric(Metric<Double> metric, Assertion<Double> matcher) {
+        assertResponseNotNull();
+        Assertion.assertThat(metric.apply(stats.overall()), matcher);
     }
-    @Step(value = "jmeter.test.limitetest", args = {"users:int", "usersIncrease:int", "maxUsers:int", "duration:int"})
-    public void runLimitTest(Integer users, Integer usersIncrease, Integer maxUsers, Integer duration) throws IOException {
-
-        int usuariosActuales = users;
-
-        while (usuariosActuales <= maxUsers) {
-            threadGroup= threadGroup.rampTo(usuariosActuales, Duration.ofMinutes(duration));
-            usuariosActuales += usersIncrease;
-        }
-
-        setListeners();
-
-        runTest();
-
-    }
-    @Step(value = "jmeter.test.stresstest", args = {"users:int", "usersIncrease:int", "maxUsers:int", "duration:int"})
-    public void runLoadTest(Integer users, Integer usersIncrease, Integer maxUsers, Integer duracion) throws IOException {
-
-        // Calcula el número total de pasos necesarios para llegar de 'usuarios' a 'maxUsuarios' en incrementos de 'incrementoUsuarios'
-        int totalPasos = (maxUsers - users) / usersIncrease;
-        // Crea el grupo de hilos con los usuarios iniciales, incrementando usuarios cada periodo de tiempo especificado
-        int actualUsers = users;
-        for (int paso = 0; paso <= totalPasos; paso++) {
-            threadGroup = threadGroup.rampToAndHold(actualUsers, Duration.ofSeconds(10), Duration.ofMinutes(duracion));
-            actualUsers += usersIncrease;
-        }
-
-        //Disminuir a 0 'usuarios'
-        threadGroup = threadGroup.rampTo(0, Duration.ofSeconds(20));
-
-        setListeners();
-
-        runTest();
-
-    }
-    @Step(value = "jmeter.test.peaktest", args = {"peaks:int", "peakUsers:int", "nonPeakUsers:int", "duration:int"})
-    public void runPeakTest(Integer peaks, Integer peakUsers, Integer nonPeakUsers, Integer duration) throws IOException {
-
-        threadGroup = threadGroup.rampToAndHold(nonPeakUsers, Duration.ofSeconds(20), Duration.ofMinutes(duration));
-
-        for (int i = 0; i < peaks; i++) {
-            // Sube al pico
-            threadGroup = threadGroup.rampTo(peakUsers, Duration.ofSeconds(20));
-            // Baja al número de usuarios fuera del pico
-            threadGroup = threadGroup.rampTo(nonPeakUsers, Duration.ofSeconds(20));
-            // Mantiene el número de usuarios fuera del pico
-            threadGroup = threadGroup.holdFor(Duration.ofMinutes(duration));
-        }
-
-        //Disminuir a 0 'usuarios'
-        threadGroup = threadGroup.rampTo(0, Duration.ofSeconds(20));
-
-        setListeners();
-
-        runTest();
-
-    }
-
-    @Step(value = "jmeter.assert.percentil", args = {"percentile:int", "duration:int"})
-    public void setPercentile(Integer percentile, Integer duration) {
-
-        if (lastTestStats == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-
-        switch (percentile){
-            case 50:
-                assertThat(lastTestStats.overall().sampleTime().median()).isLessThan(Duration.ofSeconds(duration));
-                break;
-            case 90:
-                assertThat(lastTestStats.overall().sampleTime().perc90()).isLessThan(Duration.ofSeconds(duration));
-                break;
-            case 95:
-                assertThat(lastTestStats.overall().sampleTime().perc95()).isLessThan(Duration.ofSeconds(duration));
-                break;
-            case 99:
-                assertThat(lastTestStats.overall().sampleTime().perc99()).isLessThan(Duration.ofSeconds(duration));
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported percentile: " + percentile);
-        }
-        resetThreadGroup();
-    }
-    @Step(value = "jmeter.assert.responseTime", args = "duracionTest:int")
-    public void setResponseTime(Integer duration){
-
-        if (lastTestStats == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-
-        assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofSeconds(duration));
-        resetThreadGroup();
-    }
-    @Step(value = "jmeter.assert.percentilms", args = {"percentil:int", "duracionTest:int"})
-    public void setPercentilems(Integer percentile, Integer duration) {
-
-        if (lastTestStats == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-
-        switch (percentile){
-            case 50:
-                assertThat(lastTestStats.overall().sampleTime().median()).isLessThan(Duration.ofMillis(duration));
-                break;
-            case 90:
-                assertThat(lastTestStats.overall().sampleTime().perc90()).isLessThan(Duration.ofMillis(duration));
-                break;
-            case 95:
-                assertThat(lastTestStats.overall().sampleTime().perc95()).isLessThan(Duration.ofMillis(duration));
-                break;
-            case 99:
-                assertThat(lastTestStats.overall().sampleTime().perc99()).isLessThan(Duration.ofMillis(duration));
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported percentile: " + percentile);
-        }
-        resetThreadGroup();
-    }
-    @Step(value = "jmeter.assert.responseTimems", args = "duracionTest:int")
-    public void setResponseTimems(Integer duration){
-
-        if (lastTestStats == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-
-        assertThat(lastTestStats.overall().sampleTime().mean()).isLessThan(Duration.ofMillis(duration));
-        resetThreadGroup();
-    }
-
-
-    @Step(value = "jmeter.assert.errors", args = "errors:int")
-    public void setResponseErrors(Integer errors){
-
-        if (lastTestStats == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-        assertThat(lastTestStats.overall().errorsCount()).isLessThan(errors);
-        resetThreadGroup();
-    }
-
-
 }
