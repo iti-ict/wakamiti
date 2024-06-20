@@ -39,7 +39,7 @@ import static org.mockserver.model.ParameterBody.params;
 public class DefaultAccessTokenRetrieverTest {
 
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT);
+    private static final String BASE_URL = MessageFormat.format("https://localhost:{0,number,#}", PORT);
 
     private static final ClientAndServer client = startClientAndServer(PORT);
 
