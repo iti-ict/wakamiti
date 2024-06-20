@@ -8,7 +8,6 @@ package es.iti.wakamiti.maven.utils;
 import es.iti.wakamiti.core.Wakamiti;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
