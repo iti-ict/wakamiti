@@ -1,0 +1,20 @@
+<item>
+    <id>user1</id>
+    <name>User One</name>
+    <age>11</age>
+    <vegetables>
+        <LinkedList>
+            <item>
+                <id>1</id>
+                <description>Cucumber</description>
+            </item>
+            <item>
+                <id>2</id>
+                <description>Gherkin</description>
+            </item>
+        </LinkedList>
+    </vegetables>
+    <contact>
+        <email>user1@mail</email>
+    </contact>
+</item>
