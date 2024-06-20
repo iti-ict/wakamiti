@@ -15,7 +15,6 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
-import es.iti.wakamiti.core.datatypes.duration.DurationProvider;
 import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
 import org.hamcrest.Matcher;
 

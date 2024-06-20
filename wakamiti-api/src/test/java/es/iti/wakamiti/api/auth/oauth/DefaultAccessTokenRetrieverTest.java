@@ -39,7 +39,7 @@ import static org.mockserver.model.ParameterBody.params;
 public class DefaultAccessTokenRetrieverTest {
 
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
+    private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT);
 
     private static final ClientAndServer client = startClientAndServer(PORT);
 
@@ -203,7 +203,7 @@ public class DefaultAccessTokenRetrieverTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testGetWhenMissingClientParametersWithError() throws MalformedURLException {
+    public void testGetWhenMissingClientParametersWithError() {
         // prepare
         Oauth2Provider provider = new Oauth2Provider();
         provider.configuration()
@@ -338,7 +338,7 @@ public class DefaultAccessTokenRetrieverTest {
                 .type(GrantType.CLIENT_CREDENTIALS);
 
         // act
-        provider.setRetriever((config) -> token);
+        provider.setRetriever(config -> token);
         String result = provider.getAccessToken();
 
         // check

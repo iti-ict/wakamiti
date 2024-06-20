@@ -8,9 +8,7 @@ package es.iti.wakamiti.core.datatypes;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.core.util.TokenParser;
-import org.apache.commons.lang3.StringUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.*;
@@ -126,8 +123,8 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
     /**
      * Constructor for creating a data type for dates and times in Wakamiti.
      *
-     * @param name          Name of the data type.
-     * @param javaType      Associated Java data type.
+     * @param name     Name of the data type.
+     * @param javaType Associated Java data type.
      */
     public WakamitiDateDataType(
             String name, Class<T> javaType
@@ -144,8 +141,8 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * Temporal query used for parsing the input string.
      *
      * @param javaType Associated Java data type.
+     * @param <T>      The TemporalAccessor
      * @return Temporal query used for parsing the input string.
-     * @param <T> The TemporalAccessor
      */
     @SuppressWarnings("unchecked")
     public static <T extends TemporalAccessor> TemporalQuery<T> temporalQuery(Class<T> javaType) {
@@ -160,18 +157,21 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * Indicates whether the data type should include date and/or time information.
      *
      * @param javaType Associated Java data type.
+     * @param <T>      The TemporalAccessor
      * @return Whether the data type should include date and/or time information.
-     * @param <T> The TemporalAccessor
      */
     public static <T extends TemporalAccessor> TemporalProperties temporalProperties(Class<T> javaType) {
         return map(
-                LocalDateTime.class, new TemporalProperties(){},
+                LocalDateTime.class, new TemporalProperties() {
+                },
                 LocalDate.class, new TemporalProperties() {
+                    @Override
                     public boolean withTime() {
                         return false;
                     }
                 },
                 LocalTime.class, new TemporalProperties() {
+                    @Override
                     public boolean withDate() {
                         return false;
                     }
@@ -183,7 +183,7 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * Constructs a regular expression pattern for date and time based on the specified locale,
      * with optional inclusion of date and/or time components.
      *
-     * @param locale   The locale for which the date and time formats should be considered.
+     * @param locale     The locale for which the date and time formats should be considered.
      * @param properties Indicates whether the data type should include date and/or time information.
      * @return A regular expression pattern for date and time.
      */
@@ -337,7 +337,7 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      * Retrieves a list of date and time patterns based on the specified locale, indicating
      * whether the pattern should include date and/or time information.
      *
-     * @param locale   The locale for localization.
+     * @param locale     The locale for localization.
      * @param properties Indicates whether the data type should include date and/or time information.
      * @return A list of date and time patterns.
      */
@@ -393,7 +393,7 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
      *
      * @param <T>           Type of temporal data implementing the {@link TemporalAccessor} interface.
      * @param locale        The locale for localization.
-     * @param properties Indicates whether the data type should include date and/or time information.
+     * @param properties    Indicates whether the data type should include date and/or time information.
      * @param temporalQuery Temporal query used for parsing the input string.
      * @return A {@link TypeParser} instance for parsing date and time.
      */
@@ -517,6 +517,7 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
         default boolean withDate() {
             return true;
         }
+
         default boolean withTime() {
             return true;
         }

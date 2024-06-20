@@ -156,7 +156,7 @@ public class JMeterConfigContributorTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testWhenProxyWithoutUrlWithError() throws MalformedURLException {
+    public void testWhenProxyWithoutUrlWithError() {
         // prepare
         Configuration configuration = configContributor.defaultConfiguration()
                 .appendFromPairs(

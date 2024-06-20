@@ -107,21 +107,21 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
                 .map(MatcherAssertion<Integer>::new)
                 .ifPresent(contributor::setHttpCodeAssertion);
         configuration.get(TIMEOUT, Long.class).map(Duration::ofMillis).ifPresent(contributor::setTimeout);
-        configuration.get(COOKIES, Boolean.class).ifPresent(cookie -> {
+        configuration.get(COOKIES, boolean.class).ifPresent(cookie -> {
             if (cookie) {
                 contributor.cookiesEnabled();
             } else {
                 contributor.cookiesDisabled();
             }
         });
-        configuration.get(CACHE, Boolean.class).ifPresent(cookie -> {
+        configuration.get(CACHE, boolean.class).ifPresent(cookie -> {
             if (cookie) {
                 contributor.cacheEnabled();
             } else {
                 contributor.cacheDisabled();
             }
         });
-        configuration.get(RESOURCES_DOWNLOAD, Boolean.class)
+        configuration.get(RESOURCES_DOWNLOAD, boolean.class)
                 .ifPresent(down -> contributor.httpDefaults.downloadEmbeddedResources(down));
         configuration.get(RESOURCES_REGEX, String.class).ifPresent(contributor::resourcesMatching);
 
@@ -132,12 +132,12 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
         configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2Provider::url);
         configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2Provider::clientId);
         configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);
-        configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(oauth2Provider::cacheAuth);
+        configuration.get(OAUTH2_CACHED, boolean.class).ifPresent(oauth2Provider::cacheAuth);
         configuration.inner(OAUTH2_DEFAULT_PARAMETERS).asMap().forEach(oauth2Provider::addParameter);
 
-        configuration.get(REDIRECT_FOLLOW, Boolean.class).ifPresent(contributor.httpDefaults::followRedirects);
+        configuration.get(REDIRECT_FOLLOW, boolean.class).ifPresent(contributor.httpDefaults::followRedirects);
 
-        configuration.get(TREE_ENABLED, Boolean.class).filter(x -> x).map(x -> resultsTreeVisualizer())
+        configuration.get(TREE_ENABLED, boolean.class).filter(x -> x).map(x -> resultsTreeVisualizer())
                 .ifPresent(contributor.reporters::add);
         configuration.get(JTL_PATH, Path.class)
                 .map(PathUtil::replaceTemporalPlaceholders)

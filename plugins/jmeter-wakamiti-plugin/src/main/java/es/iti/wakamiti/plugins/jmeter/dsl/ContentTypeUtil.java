@@ -32,6 +32,7 @@ public class ContentTypeUtil {
                 try {
                     CONTENT_TYPE_MAP.put(field.getName(), (ContentType) field.get(null));
                 } catch (IllegalAccessException ignored) {
+                    // ignore error
                 }
             }
         }
