@@ -110,6 +110,29 @@
                     </div>
                 </section>
             </li>
+            <#if extra_info?has_content>
+            <li class="details--item">
+                <section class="test--component summary--component">
+                    <header class="test--header">
+                        <button class="test--header-btn" type="button">
+                            <h3 class="test--title">Extra info</h3>
+                            <hr/>
+                        </button>
+                    </header>
+                    <div class="test--body details--body">
+                        <ul>
+                            <#assign keys = extra_info?keys>
+                            <#list keys as key>
+                            <li>
+                                <label>${key}</label>
+                                <span>${extra_info[key]}</span>
+                            </li>
+                            </#list>
+                        </ul>
+                    </div>
+                </section>
+            </li>
+            </#if>
         </ul>
 
 
