@@ -1111,7 +1111,9 @@ footer a:hover {
     display: inline-block;
     -webkit-box-flex: 1;
     -ms-flex: auto;
-    flex: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: min-content
 }
 .details--body {
     text-align: left;
