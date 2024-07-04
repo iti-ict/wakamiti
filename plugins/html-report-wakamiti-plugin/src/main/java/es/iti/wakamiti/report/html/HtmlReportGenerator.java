@@ -85,6 +85,8 @@ public class HtmlReportGenerator implements Reporter {
         configuration.get(TITLE, String.class).ifPresent(this::setTitle);
         var reportConfiguration = configuration.inner(PREFIX);
         this.parameters = new HashMap<>(reportConfiguration.asMap());
+        var reportExtraInfoConfiguration = configuration.inner(PREFIX.concat(EXTRA_INFO));
+        this.parameters.put("extra_info", reportExtraInfoConfiguration.asMap());
     }
 
     @Override

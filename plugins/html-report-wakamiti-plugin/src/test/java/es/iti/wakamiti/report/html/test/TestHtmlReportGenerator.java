@@ -36,7 +36,9 @@ public class TestHtmlReportGenerator {
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
         xml = load("wakamiti",
                 "htmlReport.output", "target/wakamiti.html",
-                "htmlReport.title", "Test Report Title");
+                "htmlReport.title", "Test Report Title",
+                "htmlReport.extra_info.value1", "Extra info 1",
+                "htmlReport.extra_info.value2", "Extra info 2");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
 
     }
@@ -119,6 +121,24 @@ public class TestHtmlReportGenerator {
                 .extractingText()
                 .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
                         "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
+    }
+
+
+    @Test
+    public void testReportExtraInfo() {
+        assertThat(xml)
+                .nodesByXPath("//*[text()='Extra info 1']")
+                .exist();
+        assertThat(xml)
+                .nodesByXPath("//*[text()='Extra info 2']")
+                .exist();
+
+        assertThat(xml_2)
+                .nodesByXPath("//*[text()='Extra info 1']")
+                .doNotExist();
+        assertThat(xml_2)
+                .nodesByXPath("//*[text()='Extra info 2']")
+                .doNotExist();
     }
 
 }

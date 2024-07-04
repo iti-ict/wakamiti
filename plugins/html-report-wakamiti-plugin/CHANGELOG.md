@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [unreleased]
 
+### Added
+- Extra information on HTML report
+
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
 
