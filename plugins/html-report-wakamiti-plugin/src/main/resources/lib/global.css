@@ -1110,10 +1110,8 @@ footer a:hover {
 .details--item {
     display: inline-block;
     -webkit-box-flex: 1;
-    -ms-flex: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: min-content
+    -ms-flex: 1 1 0;
+    flex: 1 1 0;
 }
 .details--body {
     text-align: left;
@@ -1139,9 +1137,10 @@ footer a:hover {
 }
 .summary--component .details--body {
     /*max-width: 350px !important;*/
-    padding-left: 15px;
+    padding: 15px;
     height: 180px !important;
     min-height: 180px !important;
+    min-width: 310px !important;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
