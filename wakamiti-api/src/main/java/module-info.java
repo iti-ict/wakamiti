@@ -31,6 +31,7 @@ module es.iti.wakamiti.api {
     requires java.net.http;
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
+    requires plexus.utils;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;
