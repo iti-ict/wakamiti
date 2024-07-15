@@ -36,7 +36,7 @@ public class WakamitiAPITest implements WakamitiAPI {
 
     @Override
     public void publishEvent(String eventType, Object data) {
-
+        // this implementation method does nothing
     }
 
     @Override
