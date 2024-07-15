@@ -3,18 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.plugins.jmeter.dsl;
+package es.iti.wakamiti.jmeter.dsl;
 
 
-import es.iti.wakamiti.api.WakamitiException;
 import org.apache.http.entity.ContentType;
-
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -77,14 +73,6 @@ public class ContentTypeUtil {
             throw new IllegalArgumentException("No such content type: " + contentType);
         }
         return CONTENT_TYPE_MAP.get(contentType);
-    }
-
-    public static ContentType of(File file) {
-        try {
-            return ContentType.create(Files.probeContentType(file.toPath()));
-        } catch (IOException e) {
-            throw new WakamitiException("Cannot get mime type of file '{}'", file, e);
-        }
     }
 
     /**

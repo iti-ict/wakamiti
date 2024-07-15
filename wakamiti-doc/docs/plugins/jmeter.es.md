@@ -1,6 +1,19 @@
+---
+title: JMeter steps
+date: 2022-09-20
+slug: /plugins/jmeter
+---
+
+
 
 
 Este plugin proporciona un conjunto de pasos para realizar pruebas de rendimiento utilizando JMeter DSL.
+
+
+---
+## Tabla de contenido
+
+---
 
 
 ## Instalación
@@ -25,7 +38,7 @@ es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0
 ### `jmeter.baseURL`
 - Tipo: `URL` *requerido*
 
-Establece la URL base para las llamadas REST. Esta configuración es equivalente al paso 
+Establece la URL base para las llamadas REST. Esta configuración es equivalente al paso
 [Definir URL base](#definir-url-base) si se prefiere una declaración más descriptiva.
 
 Ejemplo:
@@ -438,7 +451,7 @@ Dado que se descargan los recursos embebidos que no cumplen el patrón '.*'
 ```text copy=true
 un proxy con la URL {url} (y las credenciales {username}:{password})
 ```
-Especifica la URL, con o sin credenciales, de un servidor proxy a través del cual se envían las peticiones HTTP a su 
+Especifica la URL, con o sin credenciales, de un servidor proxy a través del cual se envían las peticiones HTTP a su
 destino final.
 
 #### Parámetros:
@@ -609,13 +622,13 @@ los datos del fichero {file}
 ```
 Establece el conjunto de datos de un archivo CSV para las peticiones HTTP.
 
-Por defecto, el archivo CSV se abrirá una vez y será compartido por todos los subprocesos. Esto significa que cuando un 
+Por defecto, el archivo CSV se abrirá una vez y será compartido por todos los subprocesos. Esto significa que cuando un
 hilo lea una línea CSV en una iteración, el siguiente hilo que lea una línea continuará con la siguiente línea.
 
-Si desea cambiar esto (para compartir el archivo por grupo de hilos o utilizar un archivo por hilo), puede utilizar la 
+Si desea cambiar esto (para compartir el archivo por grupo de hilos o utilizar un archivo por hilo), puede utilizar la
 propiedad [`jmeter.csv.sharing`](#jmetercsvsharing).
 
-Compruebe las propiedades [`csv`](#jmetercsvdelimiter) para detalles y opciones adicionales (como cambiar el 
+Compruebe las propiedades [`csv`](#jmetercsvdelimiter) para detalles y opciones adicionales (como cambiar el
 delimitador, parar al final del fichero, etc.).
 
 #### Parámetros:
@@ -674,7 +687,7 @@ Y una llamada GET al servicio '/users/{id}?city={city}'
 ```text copy=true
 una llamada {method} al servicio {service}
 ```
-Define una petición HTTP a un servicio. Las partes restantes de la llamada se definen en pasos posteriores hasta que se 
+Define una petición HTTP a un servicio. Las partes restantes de la llamada se definen en pasos posteriores hasta que se
 defina otra llamada REST.
 
 Se pueden definir varias llamadas en un escenario.
@@ -827,7 +840,7 @@ con el valor json {query} extraído en la variable {name}
 ```text copy=true
 con el fragmento entre {leftBoundary} y {rightBoundary} extraído en la variable {name}
 ```
-Define un extractor de datos de la respuesta de la petición en curso. Este extractor puede ser de una expresión regular, 
+Define un extractor de datos de la respuesta de la petición en curso. Este extractor puede ser de una expresión regular,
 una ruta json o límites definidos.
 
 #### Parámetros:
@@ -897,7 +910,7 @@ Cuando se ejecutan 10 hilos en 10 segundos manteniendo 30 segundos
 
 Esto produce el siguiente escenario:
 
-<img src="load.png"  alt="load scenario"/>
+<img src="/load.png"  alt="load scenario"/>
 
 
 ### Ejecutar carga (iteraciones)
@@ -921,14 +934,14 @@ Cuando se ejecutan 10 hilos en 10 segundos 3 veces
 
 Esto produce el siguiente escenario:
 
-<img src="load_it.png"  alt="load scenario"/>
+<img src="/load_it.png"  alt="load scenario"/>
 
 
 ### Ejecutar carga (incremento)
 ```text copy=true
 se ejecuta(n) {threads} hilo(s) en {ramp} cada {hold} {iterations} ve(z|ces)
 ```
-Ejecuta un grupo de hilos el número de veces indicado, en el tiempo indicado, incrementando los hilos en cada tiempo 
+Ejecuta un grupo de hilos el número de veces indicado, en el tiempo indicado, incrementando los hilos en cada tiempo
 indicado, el número indicado de veces.
 
 #### Parámetros:
@@ -947,7 +960,7 @@ Cuando se ejecutan 10 hilos en 10 segundos cada 10 segundos 3 veces
 
 Esto produce el siguiente escenario:
 
-<img src="stress.png"  alt="load scenario"/>
+<img src="/stress.png"  alt="load scenario"/>
 
 
 ### Ejecutar carga (tramos)
@@ -978,7 +991,7 @@ Cuando se ejecuta(n) (el|los) siguiente(s) tramo(s):
 
 Esto produce el siguiente escenario:
 
-<img src="stretches.png"  alt="load scenario"/>
+<img src="/stretches.png"  alt="load scenario"/>
 
 
 ### Comprobar métricas

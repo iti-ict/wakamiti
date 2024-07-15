@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.plugins.jmeter;
+package es.iti.wakamiti.jmeter;
 
 
 import es.iti.commons.jext.Extension;
@@ -14,10 +14,11 @@ import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.plugins.jmeter.dsl.ContentTypeUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import org.apache.http.entity.ContentType;
 import org.apache.jmeter.assertions.AssertionResult;
 import us.abstracta.jmeter.javadsl.core.configs.DslVariables;
+import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +27,18 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static es.iti.wakamiti.plugins.jmeter.JMeterConfigContributor.PASSWORD;
-import static es.iti.wakamiti.plugins.jmeter.JMeterConfigContributor.USERNAME;
+import static es.iti.wakamiti.jmeter.JMeterConfigContributor.PASSWORD;
+import static es.iti.wakamiti.jmeter.JMeterConfigContributor.USERNAME;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "jmeter", version = "2.6")
-@I18nResource("iti_wakamiti_jmeter")
+/**
+ * Contributes JMeter-related steps for defining and executing
+ * HTTP requests and configurations.
+ */
+@Extension(provider = "es.iti.wakamiti", name = "jmeter-steps", version = "2.6")
+@I18nResource("iti_wakamiti_wakamiti-jmeter")
 public class JMeterStepContributor extends JMeterSupport implements StepContributor {
 
     /**
@@ -73,7 +78,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
                         s.prev.setSuccessful(true);
                     } catch (AssertionError e) {
                         AssertionResult result = new AssertionResult("HTTP code");
-                        result.setResultForFailure(e.getMessage());
+                        result.setResultForFailure("HTTP code " + e.getMessage());
                         s.prev.addAssertionResult(result);
                         s.prev.setSuccessful(false);
                     }
@@ -86,7 +91,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
      *
      * @param duration The duration timeout
      */
-    @Step("jmeter.define.timeout")
+    @Step(value = "jmeter.define.timeout", args = {"duration"})
     public void setTimeout(Duration duration) {
         this.httpDefaults
                 .connectionTimeout(duration)
@@ -169,7 +174,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
      *
      * @param url The URL of the server proxy
      */
-    @Step(value = "jmeter.define.proxy", args = {"url:url"})
+    @Step(value = "jmeter.define.proxy", args = {"url"})
     public void setProxy(URL url) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Setting proxy [url: {}]", url);
@@ -181,11 +186,11 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
      * Specifies the URL and credentials of a proxy server through which
      * HTTP requests are sent to their final destination.
      *
-     * @param url The URL of the server proxy
+     * @param url      The URL of the server proxy
      * @param username The username
      * @param password The password
      */
-    @Step(value = "jmeter.define.proxy.auth", args = {"url:url", "username:text", "password:text"})
+    @Step(value = "jmeter.define.proxy.auth", args = {"url", "username:text", "password:text"})
     public void setProxy(URL url, String username, String password) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Setting proxy [url: {}, credentials: {}:{}]", url, username, "*".repeat(password.length()));
@@ -193,7 +198,12 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.httpDefaults.proxy(url.toString(), username, password);
     }
 
-
+    /**
+     * Sets basic authentication for HTTP requests.
+     *
+     * @param username The username
+     * @param password The password
+     */
     @Step(value = "jmeter.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
         if (LOGGER.isTraceEnabled()) {
@@ -202,28 +212,50 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.authSpecification = httpSampler -> httpSampler.header(AUTHORIZATION, basic(username, password));
     }
 
+    /**
+     * Sets bearer token authentication for HTTP requests.
+     *
+     * @param token The bearer token
+     */
     @Step("jmeter.define.auth.bearer.token")
     public void setBearerAuth(String token) {
         LOGGER.trace("Setting header [Authorization: Bearer {}]", token);
         this.authSpecification = httpSampler -> httpSampler.header(AUTHORIZATION, bearer(token));
     }
 
+    /**
+     * Sets bearer token authentication for HTTP requests from a file.
+     *
+     * @param file The file containing the bearer token
+     */
     @Step("jmeter.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
         this.setBearerAuth(this.readFile(file).trim());
     }
 
+    /**
+     * Disables authentication for HTTP requests.
+     */
     @Step("jmeter.define.auth.none")
     public void setNoneAuth() {
         this.authSpecification = null;
     }
 
+    /**
+     * Sets default bearer token authentication using OAuth2 provider.
+     */
     @Step("jmeter.define.auth.bearer.default")
     public void setBearerDefault() {
         this.authSpecification = httpSampler ->
                 httpSampler.header(AUTHORIZATION, bearer(oauth2Provider.getAccessToken()));
     }
 
+    /**
+     * Sets bearer token authentication using password grant type.
+     *
+     * @param username The username
+     * @param password The password
+     */
     @Step(value = "jmeter.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
         this.oauth2Provider.configuration().type(GrantType.PASSWORD)
@@ -232,6 +264,14 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication using password grant type
+     * and additional parameters.
+     *
+     * @param username The username
+     * @param password The password
+     * @param params   Additional parameters
+     */
     @Step(value = "jmeter.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
         this.oauth2Provider.configuration().type(GrantType.PASSWORD)
@@ -241,12 +281,22 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication using client credentials grant
+     * type.
+     */
     @Step("jmeter.define.auth.bearer.client")
     public void setBearerAuthClient() {
         this.oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         this.setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication using client credentials grant
+     * type and additional parameters.
+     *
+     * @param params Additional parameters
+     */
     @Step("jmeter.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
         this.oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
@@ -254,11 +304,21 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.setBearerDefault();
     }
 
+    /**
+     * Sets the dataset from a CSV file for HTTP requests.
+     *
+     * @param csv The CSV file
+     */
     @Step("jmeter.define.dataset.file")
     public void setDatasetFile(File csv) {
-        this.configs.add(csvDataSet(absolutePath(csv)));
+        this.configs.add(csvConfigurer.apply(csvDataSet(absolutePath(csv))));
     }
 
+    /**
+     * Sets the variables for HTTP requests.
+     *
+     * @param vars The variables
+     */
     @Step("jmeter.define.dataset.vars")
     public void setVariables(DataTable vars) {
         DslVariables variables = vars();
@@ -266,61 +326,202 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.configs.add(variables);
     }
 
+    /**
+     * Sets a single variable for HTTP requests.
+     *
+     * @param name  The variable name
+     * @param value The variable value
+     */
     @Step(value = "jmeter.define.dataset.var", args = {"name:text", "value:text"})
     public void setVariable(String name, String value) {
         this.configs.add(vars().set(name, value));
     }
 
+    /**
+     * Sets the HTTP request with method and service.
+     *
+     * @param method  The HTTP method
+     * @param service The service URL
+     */
     @Step(value = "jmeter.define.request", args = {"method:word", "service:text"})
     public void setRequest(String method, String service) {
         this.newHttpSampler(service.replace("{", "${"))
                 .method(method);
     }
 
+    /**
+     * Sets the body content for the HTTP request.
+     *
+     * @param body The document body
+     */
     @Step("jmeter.define.request.body.data")
     public void setBody(Document body) {
-        this.currentHttpSampler().body(body.getContent());
+        this.currentHttpSampler().body(body.getContent().replace("{", "${"));
     }
 
-    // TODO: incluir el resto de pasos de definicion de la request
-    // todos los pasos jmeter.define.request... usan el currentHttpSampler
+    /**
+     * Sets the body content for the HTTP request using a file.
+     *
+     * @param file The file containing the body content
+     */
+    @Step(value = "jmeter.define.request.body.file", args = {"file"})
+    public void setBody(File file) {
+        this.currentHttpSampler().body(readFile(file).replace("{", "${"));
+    }
 
+    /**
+     * Sets parameters for the HTTP request using a data table.
+     *
+     * @param params The table of parameters
+     */
+    @Step("jmeter.define.request.parameters")
+    public void setParameters(DataTable params) {
+        tableToMap(params).forEach((k, v) ->
+                this.currentHttpSampler().param(k.replace("{", "${"), v.replace("{", "${")));
+    }
+
+    /**
+     * Sets a single parameter for the HTTP request.
+     *
+     * @param name  The name of the parameter
+     * @param value The value of the parameter
+     */
+    @Step(value = "jmeter.define.request.parameter", args = {"name:text", "value:text"})
+    public void setParameter(String name, String value) {
+        this.currentHttpSampler().param(name.replace("{", "${"), value.replace("{", "${"));
+    }
+
+    /**
+     * Sets headers for the HTTP request using a data table.
+     *
+     * @param params The table of headers
+     */
+    @Step("jmeter.define.request.headers")
+    public void setHeaders(DataTable params) {
+        tableToMap(params).forEach((k, v) ->
+                this.currentHttpSampler().header(k.replace("{", "${"), v.replace("{", "${")));
+    }
+
+    /**
+     * Sets a single header for the HTTP request.
+     *
+     * @param name  The name of the header
+     * @param value The value of the header
+     */
+    @Step(value = "jmeter.define.request.header", args = {"name:text", "value:text"})
+    public void setHeader(String name, String value) {
+        this.currentHttpSampler().header(name.replace("{", "${"), value.replace("{", "${"));
+    }
+
+    /**
+     * Sets form parameters for the HTTP request.
+     *
+     * @param params The form parameters
+     */
     @Step("jmeter.define.request.form.parameters")
     public void setFormParameters(DataTable params) {
         tableToMap(params).forEach((k, v) ->
-                this.currentHttpSampler().bodyPart(k, v, ContentType.TEXT_PLAIN));
+                this.currentHttpSampler().bodyPart(k.replace("{", "${"), v.replace("{", "${"), ContentType.TEXT_PLAIN));
     }
 
+    /**
+     * Sets a single form parameter for the HTTP request.
+     *
+     * @param name  The parameter name
+     * @param value The parameter value
+     */
     @Step(value = "jmeter.define.request.form.parameter", args = {"name:text", "value:text"})
     public void setFormParameter(String name, String value) {
-        this.currentHttpSampler().bodyPart(name, value, ContentType.TEXT_PLAIN);
+        this.currentHttpSampler().bodyPart(name.replace("{", "${"), value.replace("{", "${"), ContentType.TEXT_PLAIN);
     }
 
-    @Step(value = "jmeter.define.request.attached.file", args = {"name:text", "file"})
-    public void setAttachedFile(String name, File file) {
-        this.currentHttpSampler().bodyFilePart(name, absolutePath(file), ContentTypeUtil.of(file));
+    /**
+     * Sets a file to be attached to the HTTP request.
+     *
+     * @param file The file to attach
+     * @param name The parameter name
+     */
+    @Step(value = "jmeter.define.request.attached.file", args = {"file", "name:text"})
+    public void setAttachedFile(File file, String name) {
+        ContentType mimeType = ResourceLoader.getContentType(file);
+        this.currentHttpSampler()
+                .bodyFilePart(name.replace("{", "${"), absolutePath(file).replace("{", "${"), mimeType);
     }
 
+    /**
+     * Sets a regex extractor for the HTTP request.
+     *
+     * @param regex The regex pattern
+     * @param name  The name for the extracted value
+     */
     @Step(value = "jmeter.define.request.extractor.regex", args = {"regex:text", "name:text"})
     public void setRegexExtractor(String regex, String name) {
         this.currentHttpSampler().children(regexExtractor(name, regex));
     }
 
-    // TODO: incluir el resto de pasos de definición de extractores
+    /**
+     * Sets a JSON extractor for the HTTP request.
+     *
+     * @param query The JSON query to extract data
+     * @param name  The name for the extracted value
+     */
+    @Step(value = "jmeter.define.request.extractor.json", args = {"query:text", "name:text"})
+    public void setJsonExtractor(String query, String name) {
+        this.currentHttpSampler().children(jsonExtractor(name, query)
+                .queryLanguage(query.startsWith("$") ?
+                        DslJsonExtractor.JsonQueryLanguage.JSON_PATH :
+                        DslJsonExtractor.JsonQueryLanguage.JMES_PATH));
+    }
+
+    /**
+     * Sets a boundary extractor for the HTTP request.
+     *
+     * @param leftBoundary  The left boundary for extraction
+     * @param rightBoundary The right boundary for extraction
+     * @param name          The name for the extracted value
+     */
+    @Step(value = "jmeter.define.request.extractor.boundary", args = {"leftBoundary:text", "rightBoundary:text", "name:text"})
+    public void setBoundaryExtractor(String leftBoundary, String rightBoundary, String name) {
+        this.currentHttpSampler().children(boundaryExtractor(name, leftBoundary, rightBoundary));
+    }
 
 
+    /**
+     * Executes a thread group the specified number of times.
+     *
+     * @param threads The number of threads
+     * @throws IOException if an I/O error occurs
+     */
     @Step(value = "jmeter.execute.simple", args = "threads:int")
     public void executeSimple(Integer threads) throws IOException {
         this.threadSpecifications.add(group -> group.rampTo(threads, Duration.ZERO).holdIterating(1));
         this.executePlan();
     }
 
+    /**
+     * Executes a thread group for the specified number of threads, ramp-up
+     * time and hold time.
+     *
+     * @param threads The number of threads
+     * @param ramp    The ramp-up duration
+     * @param hold    The hold duration
+     * @throws IOException if an I/O error occurs
+     */
     @Step(value = "jmeter.execute.load.duration", args = {"threads:int", "ramp:duration", "hold:duration"})
     public void executeLoad(Integer threads, Duration ramp, Duration hold) throws IOException {
         this.threadSpecifications.add(group -> group.rampToAndHold(threads, ramp, hold).rampTo(0, ramp));
         this.executePlan();
     }
 
+    /**
+     * Executes a thread group for the specified number of threads, ramp-up,
+     * for the specified number of times.
+     *
+     * @param threads   The number of threads
+     * @param ramp      The ramp-up duration
+     * @param iterations The number of iterations
+     * @throws IOException if an I/O error occurs
+     */
     @Step(value = "jmeter.execute.load.iterations", args = {"threads:int", "ramp:duration", "iterations:int"})
     public void executeLoad(Integer threads, Duration ramp, Integer iterations) throws IOException {
         for (int i = 0; i < iterations; i++) {
@@ -333,8 +534,8 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
             args = {"threads:int", "ramp:duration", "hold:duration", "iterations:int"})
     public void executeIncrease(Integer threads, Duration ramp, Duration hold, Integer iterations) throws IOException {
         for (int i = 0; i < iterations; i++) {
-            final int it = i+1;
-            this.threadSpecifications.add(group -> group.rampToAndHold(threads*it, ramp, hold));
+            final int it = i + 1;
+            this.threadSpecifications.add(group -> group.rampToAndHold(threads * it, ramp, hold));
         }
         this.executePlan();
     }

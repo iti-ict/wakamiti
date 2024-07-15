@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.plugins.jmeter.datatypes;
+package es.iti.wakamiti.jmeter.datatypes;
 
 
 import es.iti.wakamiti.api.ExpressionMatcher;
@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.datatypes.AbstractProvider;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.plugins.jmeter.Metric;
+import es.iti.wakamiti.jmeter.Metric;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMetricProvider extends AbstractProvider {
 
-    public static final String RESOURCE = "iti_wakamiti_metric";
+    public static final String RESOURCE = "iti_wakamiti-metric";
     protected static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
 
     protected AbstractMetricProvider() {

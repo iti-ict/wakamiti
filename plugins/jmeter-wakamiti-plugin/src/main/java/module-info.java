@@ -6,14 +6,14 @@
 
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.plugins.jmeter.JMeterConfigContributor;
-import es.iti.wakamiti.plugins.jmeter.JMeterStepContributor;
+import es.iti.wakamiti.jmeter.JMeterConfigContributor;
+import es.iti.wakamiti.jmeter.JMeterStepContributor;
 
 module es.iti.wakamiti.plugins.jmeter {
 
-    exports es.iti.wakamiti.plugins.jmeter;
-    exports es.iti.wakamiti.plugins.jmeter.datatypes;
-    exports es.iti.wakamiti.plugins.jmeter.dsl;
+    exports es.iti.wakamiti.jmeter;
+    exports es.iti.wakamiti.jmeter.datatypes;
+    exports es.iti.wakamiti.jmeter.dsl;
 
     requires es.iti.wakamiti.api;
     requires jmeter.java.dsl;

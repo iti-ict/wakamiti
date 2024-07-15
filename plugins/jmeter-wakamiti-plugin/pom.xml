@@ -31,6 +31,13 @@
     <description>Jmeter steps for Wakamiti</description>
     <inceptionYear>2024</inceptionYear>
 
+    <properties>
+        <mockserver.version>5.15.0</mockserver.version>
+        <jackson.version>2.15.2</jackson.version>
+
+        <wakamiti-engine.version>2.6.0-SNAPSHOT</wakamiti-engine.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -40,6 +47,12 @@
             <groupId>us.abstracta.jmeter</groupId>
             <artifactId>jmeter-java-dsl</artifactId>
             <version>1.25.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-xml</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -168,5 +181,127 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+
+        <profile>
+            <id>integrationTests</id>
+            <activation>
+                <property>
+                    <name>!skipTests</name>
+                </property>
+            </activation>
+            <properties>
+                <rest.port>8888</rest.port>
+
+                <workdir>/wakamiti/test-classes</workdir>
+                <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
+                <volume>${project.build.directory}:/wakamiti</volume>
+                <arguments>-K tagFilter=launcher -K jmeter.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
+                <add.host />
+
+                <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mock-server</groupId>
+                        <artifactId>mockserver-maven-plugin</artifactId>
+                        <version>5.15.0</version>
+                        <configuration>
+                            <serverPort>${rest.port}</serverPort>
+                            <logLevel>OFF</logLevel>
+                            <initializationClass>es.iti.wakamiti.jmeter.mockserver.InitializationClass</initializationClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.fasterxml.jackson.core</groupId>
+                                <artifactId>jackson-core</artifactId>
+                                <version>${jackson.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>docker</executable>
+                            <commandlineArgs>${run.command}</commandlineArgs>
+                            <quietLogs>true</quietLogs>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>es.iti.wakamiti</groupId>
+                        <artifactId>wakamiti-maven-plugin</artifactId>
+                        <version>${wakamiti-engine.version}</version>
+                        <executions>
+                            <execution>
+                                <id>verify</id>
+                                <goals><goal>verify</goal></goals>
+                            </execution>
+                            <execution>
+                                <id>control</id>
+                                <goals><goal>control</goal></goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml</configurationFiles>
+                            <logLevel>off</logLevel>
+                            <properties>
+                                <workingDir>${project.build.directory}/test-classes</workingDir>
+                                <resourcePath>${project.build.directory}/test-classes</resourcePath>
+                                <tagFilter>launcher</tagFilter>
+                                <jmeter.baseURL>http://localhost:${rest.port}</jmeter.baseURL>
+                                <jmeter.oauth2.url>http://localhost:${rest.port}/token</jmeter.oauth2.url>
+                                <data.dir>.</data.dir>
+                                <outputFilePath>${project.build.directory}/wakamiti.json</outputFilePath>
+                                <logs.showStepSource>false</logs.showStepSource>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>properties-linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

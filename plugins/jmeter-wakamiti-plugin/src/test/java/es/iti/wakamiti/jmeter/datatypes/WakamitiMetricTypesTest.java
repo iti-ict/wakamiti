@@ -3,11 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.plugins.jmeter.datatypes;
+package es.iti.wakamiti.jmeter.datatypes;
 
 
 import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.plugins.jmeter.Metric;
+import es.iti.wakamiti.jmeter.Metric;
 import org.junit.Test;
 import us.abstracta.jmeter.javadsl.core.stats.CountMetricSummary;
 import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;

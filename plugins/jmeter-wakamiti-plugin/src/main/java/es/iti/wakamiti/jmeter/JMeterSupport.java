@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.plugins.jmeter;
+package es.iti.wakamiti.jmeter;
 
 
 import es.iti.wakamiti.api.WakamitiAPI;
@@ -13,13 +13,14 @@ import es.iti.wakamiti.api.auth.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.plugins.jmeter.dsl.ContentTypeUtil;
+import es.iti.wakamiti.jmeter.dsl.ContentTypeUtil;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import us.abstracta.jmeter.javadsl.core.DslTestPlan;
 import us.abstracta.jmeter.javadsl.core.TestPlanStats;
 import us.abstracta.jmeter.javadsl.core.configs.BaseConfigElement;
-import us.abstracta.jmeter.javadsl.core.listeners.*;
+import us.abstracta.jmeter.javadsl.core.configs.DslCsvDataSet;
+import us.abstracta.jmeter.javadsl.core.listeners.BaseListener;
 import us.abstracta.jmeter.javadsl.core.threadgroups.DslDefaultThreadGroup;
 import us.abstracta.jmeter.javadsl.http.DslHttpDefaults;
 import us.abstracta.jmeter.javadsl.http.DslHttpSampler;
@@ -30,6 +31,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
@@ -78,6 +80,10 @@ public class JMeterSupport {
      * TestPlan stats result
      **/
     protected TestPlanStats stats;
+    /**
+     * DslCsvDataSet configurator
+     */
+    protected UnaryOperator<DslCsvDataSet> csvConfigurer;
 
     /**
      * Creates a new default thread group and applies any thread
@@ -89,6 +95,8 @@ public class JMeterSupport {
     protected DslDefaultThreadGroup newThreadGroup() {
         DslDefaultThreadGroup thread = threadGroup();
         threadSpecifications.forEach(spec -> spec.accept(thread));
+        httpSamplers.forEach(sampler ->
+                httpSpecifications.values().forEach(spec -> spec.accept(sampler)));
         httpSamplers.forEach(thread::children);
         return thread;
     }
@@ -104,7 +112,6 @@ public class JMeterSupport {
     protected DslHttpSampler newHttpSampler(String path) {
         DslHttpSampler httpSampler = httpSampler(path);
         Optional.ofNullable(authSpecification).ifPresent(spec -> spec.accept(httpSampler));
-        httpSpecifications.values().forEach(spec -> spec.accept(httpSampler));
         httpSamplers.addLast(httpSampler);
         return httpSampler;
     }
@@ -257,7 +264,8 @@ public class JMeterSupport {
                     map.put(keys[col], dataTable.value(row, col));
                 }
             }
-            list.add(map);
+            if (row != 0)
+                list.add(map);
         }
         return list;
     }

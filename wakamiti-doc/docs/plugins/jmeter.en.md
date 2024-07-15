@@ -1,6 +1,19 @@
+---
+title: JMeter steps
+date: 2022-09-20
+slug: /en/plugins/jmeter
+---
+
+
 
 
 This plugin provides a set of steps for conducting performance testing using JMeter DSL.
+
+
+---
+## Tabla de contenido
+
+---
 
 
 ## Install
@@ -361,7 +374,7 @@ Given a timeout of 2 seconds
 (that) any request will be successful if its HTTP code {matcher}
 ```
 Sets the range of http codes that are valid for all http requests.
-It's similar to setting the configuration property [`jmeter.httpCodeTreshold`](#jmeterhttpcodethreshold) but using any 
+It's similar to setting the configuration property [`jmeter.httpCodeTreshold`](#jmeterhttpcodethreshold) but using any
 integer assertion.
 
 #### Parameters:
@@ -435,7 +448,7 @@ Given that embedded resources do not match the '.*' pattern are downloaded
 ```text copy=true
 a proxy with the URL {url} (and credentials {username}:{password})
 ```
-Specifies the URL, with or without credentials, of a proxy server through which HTTP requests are sent to their final 
+Specifies the URL, with or without credentials, of a proxy server through which HTTP requests are sent to their final
 destination.
 
 #### Parameters:
@@ -530,7 +543,7 @@ the service uses the oauth authentication credentials {username}:{password} with
     {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
-configured oauth2 service ([url](#jmeteroauth2url), [clientId](#jmeteroauth2clientid), 
+configured oauth2 service ([url](#jmeteroauth2url), [clientId](#jmeteroauth2clientid),
 [clientSecret](#jmeteroauth2clientsecret)), using the indicated credentials, for the following requests.
 
 Additional parameters supported by `Oauth` can also be added using a table.
@@ -562,7 +575,7 @@ the service uses the oauth authentication with the following parameters:
     {table}
 ```
 Sets the bearer authentication token to be sent in the `Authorization` header, which is previously retrieved from the
-configured oauth2 service ([url](#jmeteroauth2url), [clientId](#jmeteroauth2clientid), 
+configured oauth2 service ([url](#jmeteroauth2url), [clientId](#jmeteroauth2clientid),
 [clientSecret](#jmeteroauth2clientsecret)), using client data, for the following requests.
 
 Additional parameters supported by `Oauth` can also be added using a table.
@@ -601,13 +614,13 @@ the data in file {file}
 ```
 Sets the dataset from a CSV file for HTTP requests.
 
-By default, the CSV file will be opened once and shared by all threads. This means that when one thread reads a CSV 
+By default, the CSV file will be opened once and shared by all threads. This means that when one thread reads a CSV
 line in one iteration, then the following thread reading a line will continue with the following line.
 
-If you want to change this (to share the file per thread group or use one file per thread), then you can use the 
-[`jmeter.csv.sharing`](#jmetercsvsharing) property. 
+If you want to change this (to share the file per thread group or use one file per thread), then you can use the
+[`jmeter.csv.sharing`](#jmetercsvsharing) property.
 
-Check [`csv`](#jmetercsvdelimiter) properties for additional details and options (like changing delimiter, stopping on 
+Check [`csv`](#jmetercsvdelimiter) properties for additional details and options (like changing delimiter, stopping on
 the end of file, etc.).
 
 #### Parameters:
@@ -666,7 +679,7 @@ And a GET call to the service '/users/{id}?city={city}'
 ```text copy=true
 a {method} call to the service {service}
 ```
-Defines a HTTP request to a service. The remaining parts of the call are defined in subsequent steps until another REST 
+Defines a HTTP request to a service. The remaining parts of the call are defined in subsequent steps until another REST
 call is defined.
 
 Multiple calls can be defined in a scenario.
@@ -688,7 +701,7 @@ Given a GET call to the service '/users'
 with the following data:
     {data}
 ```
-Defines the payload body of the current HTTP request. 
+Defines the payload body of the current HTTP request.
 
 #### Parameters:
 | Name   | Wakamiti type         | Description              |
@@ -732,7 +745,7 @@ Given a POST call to the service '/users'
 ```text copy=true
 with the (parameter|header|form parameter) {name} with value {value}
 ```
-Defines a header, parameter or form parameter of the current HTTP request. 
+Defines a header, parameter or form parameter of the current HTTP request.
 
 #### Parameters:
 | Name    | Wakamiti type     | Description         |
@@ -791,7 +804,7 @@ Given a GET call to the service '/users'
 ```
 
 
-### Define request attached file 
+### Define request attached file
 ```text copy=true
 with the attached file {file} named {name}
 ```
@@ -819,7 +832,7 @@ with json value {query} extracted in the variable {name}
 ```text copy=true
 with the fragment between {leftBoundary} and {rightBoundary} extracted in the variable {name}
 ```
-Defines a data extractor of the current request response. This extractor can be from a regular expression, a json path 
+Defines a data extractor of the current request response. This extractor can be from a regular expression, a json path
 or defined boundaries.
 
 #### Parameters:
@@ -889,7 +902,7 @@ When 10 threads are executed in 10 seconds holding 30 seconds
 
 This produces the following scenario:
 
-<img src="load.png"  alt="load scenario"/>
+<img src="/load.png"  alt="load scenario"/>
 
 
 ### Execute load (iterations)
@@ -913,14 +926,14 @@ When 10 threads are executed in 10 seconds 3 times
 
 This produces the following scenario:
 
-<img src="load_it.png"  alt="load scenario"/>
+<img src="/load_it.png"  alt="load scenario"/>
 
 
 ### Execute load (increase)
 ```text copy=true
 {threads} thread(s) (is|are) executed in {ramp} every {hold} {iterations} time(s)
 ```
-Executes a thread group for the specified number of threads, ramping up, increasing threads every specified time for a 
+Executes a thread group for the specified number of threads, ramping up, increasing threads every specified time for a
 specified number of times.
 
 #### Parameters:
@@ -939,7 +952,7 @@ When 10 threads are executed in 10 seconds every 10 seconds 3 times
 
 This produces the following scenario:
 
-<img src="stress.png"  alt="load scenario"/>
+<img src="/stress.png"  alt="load scenario"/>
 
 
 ### Execute load (stretches)
@@ -970,7 +983,7 @@ When a test is executed with the following stretches:
 
 This produces the following scenario:
 
-<img src="stretches.png"  alt="load scenario"/>
+<img src="/stretches.png"  alt="load scenario"/>
 
 
 ### Check metric
@@ -1035,3 +1048,4 @@ Accepted values are:
 [1]: #data-types
 [2]: en/wakamiti/architecture#comparators
 [3]: en/wakamiti/architecture#duration
+

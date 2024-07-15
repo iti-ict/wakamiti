@@ -1,4 +1,4 @@
-package es.iti.wakamiti.plugins.jmeter;
+package es.iti.wakamiti.jmeter;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,7 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import es.iti.wakamiti.plugins.jmeter.dsl.ContentTypeUtil;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.jmeter.dsl.ContentTypeUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.codehaus.plexus.util.FileUtils;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockserver.model.Header.header;
+import static org.mockserver.model.HttpOverrideForwardedRequest.forwardOverriddenRequest;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -94,36 +96,6 @@ public class TestUtil {
         }
     }
 
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
-        var map = new LinkedHashMap<K, V>();
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        map.put(key4, value4);
-        return map;
-    }
-
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2, K key3, V value3) {
-        var map = new LinkedHashMap<K, V>();
-        map.put(key1, value1);
-        map.put(key2, value2);
-        map.put(key3, value3);
-        return map;
-    }
-
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2) {
-        var map = new LinkedHashMap<K, V>();
-        map.put(key1, value1);
-        map.put(key2, value2);
-        return map;
-    }
-
-    public static <K, V> Map<K, V> map(K key1, V value1) {
-        var map = new LinkedHashMap<K, V>();
-        map.put(key1, value1);
-        return map;
-    }
-
     public static File file(String path) {
         try {
             return new File(TestUtil.class.getClassLoader().getResource(path).toURI());
@@ -153,13 +125,10 @@ public class TestUtil {
         List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
-                MediaType.TEXT_XML, TestUtil::xml,
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> string_to_map = Map.of(
                 MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
-                }),
-                MediaType.TEXT_XML, str -> TestUtil.xml(str, new TypeReference<>() {
                 }),
                 MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
                 })
@@ -177,8 +146,7 @@ public class TestUtil {
                     fs = fs == null ? new File[0] : fs;
                     Arrays.sort(fs);
                     for (File file : fs) {
-                        MediaType mimeType = Optional.of(file)
-                                .map(ContentTypeUtil::of)
+                        MediaType mimeType = Optional.of(ResourceLoader.getContentType(file))
                                 .map(ContentType::getMimeType)
                                 .map(MediaType::parse)
                                 .get();
@@ -216,8 +184,7 @@ public class TestUtil {
                 .map(root.toPath()::relativize)
                 .forEachOrdered(p -> {
                     File file = new File(root, p.toString());
-                    MediaType mimeType = Optional.of(file)
-                            .map(ContentTypeUtil::of)
+                    MediaType mimeType = Optional.of(ResourceLoader.getContentType(file))
                             .map(ContentType::getMimeType)
                             .map(MediaType::parse)
                             .get();
