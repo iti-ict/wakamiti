@@ -13,10 +13,17 @@ import es.iti.wakamiti.api.extensions.DataTypeContributor;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
+import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
+import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 
@@ -29,6 +36,19 @@ import java.util.*;
  */
 @Extension(provider = "es.iti.wakamiti", name = "assertion-types")
 public class WakamitiAssertTypes implements DataTypeContributor {
+
+    @SuppressWarnings("rawtypes")
+    private static WakamitiDataTypeBase<Assertion> binaryNumberAssert(
+            String name,
+            BinaryNumberAssertProvider<?, ?> provider
+    ) {
+        return new WakamitiAssertDataType(
+                name,
+                "matcher.number",
+                provider,
+                new UnaryNumberAssertProvider()
+        );
+    }
 
     /**
      * Creates a binary number assertion data type.
@@ -45,14 +65,11 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             boolean includeDecimals,
             ThrowableFunction<Number, T> mapper
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromNumber(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromNumber(
                         locale -> WakamitiNumberDataType.numericRegexPattern(locale, includeDecimals),
                         mapper
-                ),
-                new UnaryNumberAssertProvider()
+                )
         );
     }
 
@@ -71,14 +88,45 @@ public class WakamitiAssertTypes implements DataTypeContributor {
             boolean includeDecimals,
             ThrowableFunction<BigDecimal, T> mapper
     ) {
-        return new WakamitiAssertDataType(
-                name,
-                "matcher.number",
-                BinaryNumberAssertProvider.createFromBigDecimal(
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromBigDecimal(
                         locale -> WakamitiNumberDataType.numericRegexPattern(locale, includeDecimals),
                         mapper
-                ),
-                new UnaryNumberAssertProvider()
+                )
+        );
+    }
+
+    /**
+     * Creates a binary duration assertion data type.
+     *
+     * @param name            The name of the data type.
+     * @param mapper          The mapper function for the assertion.
+     * @param <T>             The type of the assertion.
+     * @return The created data type.
+     */
+    @SuppressWarnings("rawtypes")
+    public static <T extends Comparable<T>> WakamitiDataTypeBase<Assertion> binaryDurationAssert(
+            String name,
+            ThrowableFunction<Duration, T> mapper
+    ) {
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromDuration(
+                        WakamitiDurationDataType::regexPattern,
+                        mapper
+                )
+        );
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static <T extends Comparable<T> & TemporalAccessor> WakamitiDataTypeBase<Assertion> binaryDateAssert(
+            String name,
+            Class<? extends T> dateType
+    ) {
+        return binaryNumberAssert(
+                name, BinaryNumberAssertProvider.createFromDate(
+                        locale -> WakamitiDateDataType.dateTimeRegex(locale, WakamitiDateDataType.temporalProperties(dateType)),
+                        dateType
+                )
         );
     }
 
@@ -149,6 +197,12 @@ public class WakamitiAssertTypes implements DataTypeContributor {
         types.add(binaryBigDecimalAssert("float-assertion", true, BigDecimal::floatValue));
         types.add(binaryBigDecimalAssert("double-assertion", true, BigDecimal::doubleValue));
         types.add(binaryBigDecimalAssert("bigdecimal-assertion", true, x -> x));
+        types.add(binaryDurationAssert("duration-assertion", x -> x));
+
+        types.add(binaryDateAssert("datetime-assertion", LocalDateTime.class));
+        types.add(binaryDateAssert("date-assertion", LocalDate.class));
+        types.add(binaryDateAssert("time-assertion", LocalTime.class));
+
         return types;
     }
 

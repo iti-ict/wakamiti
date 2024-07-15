@@ -6,11 +6,11 @@
 package es.iti.wakamiti.test.core.types;
 
 
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.util.Either;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.junit.Test;
 
 import java.util.HashMap;

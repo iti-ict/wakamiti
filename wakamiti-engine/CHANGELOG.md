@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+- Duration data type and Duration assertion.
+
+### Changed
+- Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
+
 ### Fixed
 - The junit wakamiti configuration is modified to set the default output path of the current project.
-
-### Added
-- Duration data type
 
 
 ## [2.5.0] - 2024-04-16

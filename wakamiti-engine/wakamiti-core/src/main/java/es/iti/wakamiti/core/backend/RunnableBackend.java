@@ -40,9 +40,6 @@ import java.util.regex.Matcher;
 public class RunnableBackend extends AbstractBackend {
 
     public static final Logger LOGGER = Wakamiti.LOGGER;
-    public static final String UNNAMED_ARG = "unnamed";
-    public static final String DOCUMENT_ARG = "document";
-    public static final String DATATABLE_ARG = "datatable";
     private static final List<String> DATA_ARG_ALTERNATIVES = List.of(DOCUMENT_ARG, DATATABLE_ARG);
 
     private final PlanNode testCase;

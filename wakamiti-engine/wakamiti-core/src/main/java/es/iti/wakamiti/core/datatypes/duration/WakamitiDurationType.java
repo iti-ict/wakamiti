@@ -9,9 +9,7 @@ package es.iti.wakamiti.core.datatypes.duration;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.extensions.DataTypeContributor;
-import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 
-import java.time.Duration;
 import java.util.List;
 
 
@@ -25,8 +23,6 @@ import java.util.List;
 @Extension(provider = "es.iti.wakamiti", name = "duration-types", version = "2.6")
 public class WakamitiDurationType implements DataTypeContributor {
 
-    private static final DurationProvider PROVIDER = new DurationProvider();
-
     /**
      * Contributes the duration data type to Wakamiti.
      *
@@ -34,17 +30,7 @@ public class WakamitiDurationType implements DataTypeContributor {
      */
     @Override
     public List<WakamitiDataType<?>> contributeTypes() {
-        return List.of(new WakamitiDataTypeBase<>(
-                "duration",
-                Duration.class,
-                locale -> {
-                    String[] expressions = PROVIDER.regex(locale).toArray(new String[0]);
-                    return "(" + String.join("|", expressions) + ")";
-                },
-                DurationProvider::getAllExpressions,
-                locale -> expression -> PROVIDER.durationFromExpression(locale, expression).orElse(null)
-        ) {
-        });
+        return List.of(new WakamitiDurationDataType());
     }
 
 }

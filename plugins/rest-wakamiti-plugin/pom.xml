@@ -41,6 +41,12 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -63,11 +69,6 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -192,7 +193,7 @@
                             <includeProjectDependencies>true</includeProjectDependencies>
                             <executable>docker</executable>
                             <commandlineArgs>${run.command}</commandlineArgs>
-                            <quietLogs>false</quietLogs>
+                            <quietLogs>true</quietLogs>
                         </configuration>
                     </plugin>
 

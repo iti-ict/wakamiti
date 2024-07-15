@@ -15,7 +15,7 @@
     <artifactId>wakamiti-starter</artifactId>
     <packaging>pom</packaging>
     <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
 
     <name>Wakamiti Starter</name>
@@ -473,6 +473,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.17.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.luiinge</groupId>

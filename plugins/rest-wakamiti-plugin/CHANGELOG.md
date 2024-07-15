@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning][2].
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
 
+### Fixed
+- Http code assertion step definition
+
 
 ## [2.5.0] - 2024-04-16
 
