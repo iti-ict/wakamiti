@@ -100,7 +100,7 @@ rest:
 
 
 ### `rest.oauth2.url`
-- Type: `URL`
+- Type: `URL` *required*
 
 Specifies the [OAuth 2.0][oauth2] authentication service to use to generate the token to be sent in the `Authorization` 
 HTTP header of REST calls.
@@ -468,19 +468,19 @@ Given a timeout of 2 seconds
 
 ### Define HTTP code threshold
 ```text copy=true
-any request will fail when response HTTP code {matcher}
+(that) any request will be successful if its HTTP code {matcher}
 ```
 Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer
 assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type                     | Description             |
-|-----------|-----------------------------------|-------------------------|
-| `matcher` | [integer-assertion][2] *required* | Numeric [comparator][1] |
+| Name      | Wakamiti type                  | Description             |
+|-----------|--------------------------------|-------------------------|
+| `matcher` | `integer-assertion` *required* | Numeric [comparator][1] |
 
 ##### Example:
 ```gherkin
-* any request will fail when response HTTP code is greater than 500
+* any request will be successful if its HTTP code is less than 500
 ```
 
 
@@ -686,9 +686,9 @@ the attached file is included with the following data:
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name   | Wakamiti type         | Description          |
-|--------|-----------------------|----------------------|
-| `data` | `document` *required* | Content to be attach |
+| Name   | Wakamiti type         | Description            |
+|--------|-----------------------|------------------------|
+| `data` | `document` *required* | Content to be attached |
 
 ##### Examples:
 ```gherkin

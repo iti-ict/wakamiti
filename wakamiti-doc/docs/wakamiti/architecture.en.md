@@ -569,7 +569,7 @@ is greater than 14.3
 is less than 14
 ```
 ```
-is less thane 14.3
+is less than 14.3
 ```
 ```
 is not greater than 14

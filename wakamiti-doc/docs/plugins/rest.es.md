@@ -475,19 +475,19 @@ Dado un timeout de 10 segundos
 
 ### Definir umbral de códigos HTTP
 ```text copy=true
-(que) toda petición se considera fallida si su código HTTP {matcher}
+(que) toda petición se considera satisfactoria si su código HTTP {matcher}
 ```
 Establece una validación general para el código HTTP de todas las respuestas siguientes. Es similar a la propiedad de
 configuración [`rest.httpCodeTreshold`](#resthttpcodethreshold) pero con una validación de enteros personalizada.
 
 #### Parámetros:
-| Nombre    | Wakamiti type                        | Descripción              |
-|-----------|--------------------------------------|--------------------------|
-| `matcher` | [integer-assertion][1] *obligatorio* | [Comparador][1] numérico |
+| Nombre    | Wakamiti type                     | Descripción              |
+|-----------|-----------------------------------|--------------------------|
+| `matcher` | `integer-assertion` *obligatorio* | [Comparador][1] numérico |
 
 #### Ejemplo:
 ```gherkin
-* toda petición se considera fallida si su código HTTP es igual o mayor que 500
+* toda petición se considera satisfactoria si su código HTTP es menor que 500
 ```
 
 

@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.FileUtils;
 import org.mockserver.client.MockServerClient;
@@ -187,10 +187,8 @@ public class TestUtil {
                     fs = fs == null ? new File[0] : fs;
                     Arrays.sort(fs);
                     for (File file : fs) {
-                        MediaType mimeType = Optional.of(file.getName())
-                                .map(FileUtils::getExtension)
-                                .map(ContentTypeHelper.contentTypeFromExtension::get)
-                                .map(ContentType::toString)
+                        MediaType mimeType = Optional.of(ResourceLoader.getContentType(file))
+                                .map(org.apache.http.entity.ContentType::getMimeType)
                                 .map(MediaType::parse)
                                 .get();
 
@@ -221,10 +219,8 @@ public class TestUtil {
                 .map(root.toPath()::relativize)
                 .forEachOrdered(p -> {
                     File file = new File(root, p.toString());
-                    MediaType mimeType = Optional.of(file.getName())
-                            .map(FileUtils::getExtension)
-                            .map(ContentTypeHelper.contentTypeFromExtension::get)
-                            .map(ContentType::toString)
+                    MediaType mimeType = Optional.of(ResourceLoader.getContentType(file))
+                            .map(org.apache.http.entity.ContentType::getMimeType)
                             .map(MediaType::parse)
                             .get();
 

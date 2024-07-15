@@ -26,7 +26,7 @@ Característica: Jmeter test
 
 
   Esquema del escenario: multiple calls
-    Dadas las cookies activadas
+    Dado que las cookies están activadas
     Y que toda petición se considera satisfactoria si su código HTTP es menor que 300
     Y la caché está activada
     Y que se descargan los recursos embebidos

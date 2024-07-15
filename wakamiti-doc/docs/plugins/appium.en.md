@@ -388,7 +388,6 @@ In case the emulator fails due to a previous emulation process in a zombie state
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
-[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png
 
 Ideally, we would like to be able to do all this semi-automatically from the APK, but for now, we have to:
 - Install Android Studio
