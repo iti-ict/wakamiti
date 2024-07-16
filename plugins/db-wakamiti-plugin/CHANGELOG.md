@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning][2].
 ## [unreleased]
 
 ### Fixed
-- Row with all values set to null in xls file [#267]
+- Row with all values set to null in xls file (#267)
 
 ### Added
-- Duration data type
+- Duration data type.
+- More information is added to the error trace when compared to the closest matching record.
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`

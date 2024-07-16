@@ -9,6 +9,7 @@ package es.iti.wakamiti.database;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
@@ -16,7 +17,6 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Select;
-import es.iti.wakamiti.api.imconfig.Configuration;
 import org.h2.tools.RunScript;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -123,7 +123,7 @@ public class DatabaseStepContributorTest {
 
             // Check
         } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("Bad jdbc url");
+            assertThat(e).hasMessage("Bad jdbc url");
             throw e;
         }
     }
@@ -1032,8 +1032,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=2} exist in table %s, but it doesn't",
                             db.column(table, "id"), table));
             throw new WakamitiException();
@@ -1098,8 +1098,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=2} exist in table %s, but it doesn't",
                             db.column(table, "id"), table));
             throw new WakamitiException();
@@ -1145,8 +1145,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=1} exist in table %s, but it does",
                             db.column(table, "id"), table));
             throw new WakamitiException();
@@ -1192,8 +1192,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=1} exist in table %s, but it does",
                             db.column(table, "id"), table));
             throw new WakamitiException();
@@ -1239,8 +1239,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1324,8 +1324,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1371,8 +1371,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1456,8 +1456,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1505,8 +1505,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1593,8 +1593,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
@@ -1639,8 +1639,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying the given WHERE clause exist in table %s, but it doesn't",
                             db.table("client")));
             throw new WakamitiException();
@@ -1725,8 +1725,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying the given WHERE clause exist in table %s, but it doesn't",
                             db.table("client")));
             throw new WakamitiException();
@@ -1771,8 +1771,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying the given WHERE clause exist in table %s, but it does",
                             db.table("client")));
             throw new WakamitiException();
@@ -1857,8 +1857,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying the given WHERE clause exist in table %s, but it does",
                             db.table("client")));
             throw new WakamitiException();
@@ -1905,8 +1905,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying the given WHERE clause exist in table %s, but <0L> was less than <1L>",
                             db.table("client")));
             throw new WakamitiException();
@@ -1993,8 +1993,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying the given WHERE clause exist in table %s, but <0L> was less than <1L>",
                             db.table("client")));
             throw new WakamitiException();
@@ -2046,8 +2046,9 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format("Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2057,7 +2058,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2089,8 +2090,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=1, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2189,9 +2190,10 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format(
-                            "Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2201,7 +2203,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2233,8 +2235,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=1, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2289,8 +2291,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2345,8 +2347,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2403,8 +2405,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=0, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2461,8 +2463,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=0, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2513,9 +2515,10 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format(
-                            "Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2525,7 +2528,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2555,8 +2558,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2607,9 +2610,10 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format(
-                            "Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2619,7 +2623,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2649,8 +2653,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2701,8 +2705,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2753,8 +2757,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2805,9 +2809,10 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format(
-                            "Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2817,7 +2822,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2847,8 +2852,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2899,8 +2904,9 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .contains(String.format("Expecting actual:" + System.lineSeparator() +
+            assertThat(e)
+                    .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
@@ -2910,7 +2916,7 @@ public class DatabaseStepContributorTest {
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"1\"]",
+                                    "  [\"%3$s\"=\"1\"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2940,8 +2946,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record satisfying {%s=Eva, %s=Perez, %s=0, %s=1980-12-25} exist in table %s, but it doesn't",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -2992,8 +2998,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -3044,8 +3050,8 @@ public class DatabaseStepContributorTest {
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
@@ -3094,8 +3100,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format("It was expected some record exist in table %s, but it doesn't",
+            assertThat(e)
+                    .hasMessage(String.format("It was expected some record exist in table %s, but it doesn't",
                             db.table("client")));
             throw new WakamitiException();
         }
@@ -3159,8 +3165,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format(
+            assertThat(e)
+                    .hasMessage(String.format(
                             "It was expected some record exist in table %s, but it doesn't",
                             db.table("client")));
             throw new WakamitiException();
@@ -3206,8 +3212,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format("It was expected no record exist in table %s, but it does",
+            assertThat(e)
+                    .hasMessage(String.format("It was expected no record exist in table %s, but it does",
                             db.table("client")));
             throw new WakamitiException();
         }
@@ -3271,8 +3277,8 @@ public class DatabaseStepContributorTest {
             // Check
         } catch (AssertionError e) {
             Database db = Database.from(contributor.connection());
-            assertThat(e.getMessage())
-                    .isEqualTo(String.format("It was expected no record exist in table %s, but it does",
+            assertThat(e)
+                    .hasMessage(String.format("It was expected no record exist in table %s, but it does",
                             db.table("client")));
             throw new WakamitiException();
         }
