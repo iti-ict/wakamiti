@@ -9,7 +9,7 @@ package es.iti.wakamiti.test.properties;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 

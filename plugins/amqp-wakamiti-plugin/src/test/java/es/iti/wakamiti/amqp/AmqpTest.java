@@ -6,8 +6,8 @@
 package es.iti.wakamiti.amqp;
 
 
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.AfterClass;

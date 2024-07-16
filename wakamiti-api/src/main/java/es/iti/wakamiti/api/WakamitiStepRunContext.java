@@ -6,7 +6,7 @@
 package es.iti.wakamiti.api;
 
 
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.util.Locale;
 

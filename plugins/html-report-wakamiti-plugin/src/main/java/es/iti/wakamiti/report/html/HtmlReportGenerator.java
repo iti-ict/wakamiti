@@ -12,13 +12,13 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.PathUtil;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.report.html.factory.CountStepsMethod;
 import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
 import es.iti.wakamiti.report.html.factory.SumAllMethod;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
@@ -44,14 +44,14 @@ public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);
 
-    private final Configuration templateConfiguration;
+    private final freemarker.template.Configuration templateConfiguration;
     private String cssFile;
     private String outputFile;
     private String title;
     private Map<String, Object> parameters;
 
     public HtmlReportGenerator() {
-        templateConfiguration = new Configuration(Configuration.VERSION_2_3_29);
+        templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_29);
         templateConfiguration.setDefaultEncoding("UTF-8");
         templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         templateConfiguration.setLogTemplateExceptions(true);
@@ -79,7 +79,7 @@ public class HtmlReportGenerator implements Reporter {
         this.title = title;
     }
 
-    public void setConfiguration(imconfig.Configuration configuration) {
+    public void setConfiguration(Configuration configuration) {
         configuration.get(CSS_FILE, String.class).ifPresent(this::setCssFile);
         configuration.get(OUTPUT_FILE, String.class).ifPresent(this::setOutputFile);
         configuration.get(TITLE, String.class).ifPresent(this::setTitle);

@@ -2,7 +2,7 @@ package es.iti.wakamiti.azure;
 
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.core.JsonPlanSerializer;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.io.IOException;
 

@@ -20,7 +20,7 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 

@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.util.List;
 import java.util.Optional;

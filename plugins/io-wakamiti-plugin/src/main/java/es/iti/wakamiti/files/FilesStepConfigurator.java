@@ -7,8 +7,8 @@
 package es.iti.wakamiti.files;
 
 
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 

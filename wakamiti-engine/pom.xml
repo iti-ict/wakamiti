@@ -43,7 +43,7 @@
             <dependency>
                 <groupId>io.github.luiinge</groupId>
                 <artifactId>maven-fetcher</artifactId>
-                <version>1.7.0</version>
+                <version>1.7.1</version>
             </dependency>
             <dependency>
                 <groupId>es.iti.wakamiti</groupId>

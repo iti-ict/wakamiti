@@ -5,8 +5,8 @@
  */
 package es.iti.wakamiti.groovy.it;
 
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;

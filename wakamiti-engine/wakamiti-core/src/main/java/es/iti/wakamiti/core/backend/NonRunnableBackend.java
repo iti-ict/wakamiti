@@ -8,7 +8,7 @@ package es.iti.wakamiti.core.backend;
 
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.plan.PlanNode;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.util.List;
 

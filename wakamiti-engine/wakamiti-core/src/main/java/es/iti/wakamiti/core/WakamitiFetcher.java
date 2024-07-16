@@ -8,7 +8,7 @@ package es.iti.wakamiti.core;
 
 import es.iti.wakamiti.api.ClasspathAgent;
 import es.iti.wakamiti.api.WakamitiException;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import maven.fetcher.FetchedArtifact;
 import maven.fetcher.MavenFetchRequest;
 import maven.fetcher.MavenFetchResult;

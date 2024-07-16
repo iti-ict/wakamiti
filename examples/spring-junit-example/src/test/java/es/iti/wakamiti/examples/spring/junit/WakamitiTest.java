@@ -11,8 +11,8 @@ package es.iti.wakamiti.examples.spring.junit;
 
 
 import es.iti.wakamiti.spring.junit.WakamitiSpringJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

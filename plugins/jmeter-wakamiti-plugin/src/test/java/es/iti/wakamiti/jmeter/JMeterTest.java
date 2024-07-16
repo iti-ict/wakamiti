@@ -3,8 +3,8 @@ package es.iti.wakamiti.jmeter;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

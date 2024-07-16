@@ -2,8 +2,8 @@ package es.iti.wakamiti.azure;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
 //import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 //import org.junit.runner.RunWith;
 
 
