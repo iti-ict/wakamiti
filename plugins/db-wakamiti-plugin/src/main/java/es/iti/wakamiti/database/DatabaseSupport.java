@@ -38,7 +38,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
@@ -441,8 +440,10 @@ public class DatabaseSupport {
         for (Pair<String[], Object[]> row : rows) {
             if (!matcherNonEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
                 similarBy(dataSet.table(), row.key(), row.value()).ifPresentOrElse(result ->
-                                assertThat(result).containsExactlyEntriesOf(toMap(row.key(),
-                                        Stream.of(row.value()).map(DatabaseHelper::toString).toArray(String[]::new))),
+                                assertThat(result)
+                                        .as("The closest record")
+                                        .containsExactlyEntriesOf(toMap(row.key(),
+                                                Stream.of(row.value()).map(DatabaseHelper::toString).toArray(String[]::new))),
                         () -> fail(message(
                                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                                 toMap(row.key(), row.value()),
@@ -557,8 +558,10 @@ public class DatabaseSupport {
         }, duration, () -> {
             Pair<String[], Object[]> processed = currentRow.get();
             similarBy(dataSet.table(), processed.key(), processed.value()).ifPresentOrElse(row ->
-                            assertThat(row).containsExactlyEntriesOf(
-                                    toMap(processed.key(), DatabaseHelper.toString(processed.value()))),
+                            assertThat(row)
+                                    .as("The closest record")
+                                    .containsExactlyEntriesOf(
+                                            toMap(processed.key(), DatabaseHelper.toString(processed.value()))),
                     failSomeRecordExpected(dataSet.table(), currentRow)
             );
         });
