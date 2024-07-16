@@ -24,7 +24,6 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core.gherkin.parser;
 
     requires transitive es.iti.wakamiti.api;
-    requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
     requires transitive maven.fetcher;

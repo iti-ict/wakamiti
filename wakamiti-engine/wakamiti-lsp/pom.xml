@@ -51,10 +51,6 @@
             <version>1.5.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.luiinge</groupId>
-            <artifactId>immutable-config</artifactId>
-        </dependency>
-        <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
             <version>${revision}</version>

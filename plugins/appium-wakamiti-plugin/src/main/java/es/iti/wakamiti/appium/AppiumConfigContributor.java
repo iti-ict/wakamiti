@@ -1,7 +1,7 @@
 package es.iti.wakamiti.appium;
 
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import org.openqa.selenium.remote.DesiredCapabilities;

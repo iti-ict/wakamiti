@@ -250,7 +250,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
             configuration = buildFromJSON(url);
         } else if (file.endsWith(".xml")) {
             configuration = buildFromXML(url);
-        } else if (file.endsWith(".yaml")) {
+        } else if (file.endsWith(".yaml") || file.endsWith(".yml")) {
             configuration = buildFromYAML(url);
         } else {
             throw new ConfigurationException("Cannot determine resource type of " + url);

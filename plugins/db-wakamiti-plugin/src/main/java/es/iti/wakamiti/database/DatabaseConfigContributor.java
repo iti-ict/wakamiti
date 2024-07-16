@@ -8,8 +8,8 @@ package es.iti.wakamiti.database;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import slf4jansi.AnsiLogger;
 
 import java.util.stream.Collectors;

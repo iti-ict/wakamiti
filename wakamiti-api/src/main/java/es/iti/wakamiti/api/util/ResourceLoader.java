@@ -10,7 +10,7 @@ import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.extensions.ResourceType;
-import imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.codehaus.plexus.util.FileUtils;

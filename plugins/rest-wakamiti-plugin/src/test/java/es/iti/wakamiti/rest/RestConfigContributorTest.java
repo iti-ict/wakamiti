@@ -3,7 +3,7 @@ package es.iti.wakamiti.rest;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
 import org.junit.Test;

@@ -19,8 +19,8 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.parser.*;
-import imconfig.Configurable;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.slf4j.Logger;
 
 import java.io.File;

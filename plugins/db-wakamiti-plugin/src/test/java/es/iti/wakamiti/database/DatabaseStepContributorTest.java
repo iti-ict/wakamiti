@@ -16,7 +16,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Select;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.h2.tools.RunScript;
 import org.junit.*;
 import org.slf4j.Logger;

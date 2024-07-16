@@ -39,10 +39,6 @@
             <artifactId>jext</artifactId>
             <version>${jext.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.github.luiinge</groupId>-->
-<!--            <artifactId>immutable-config</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.github.luiinge</groupId>
             <artifactId>slf4j-ansi</artifactId>
@@ -87,11 +83,15 @@
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-json</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
             <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.28</version>
         </dependency>
 
         <dependency>

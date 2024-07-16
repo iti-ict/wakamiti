@@ -14,17 +14,13 @@ import java.util.function.Function;
 import java.util.stream.*;
 
 import es.iti.wakamiti.core.gherkin.parser.*;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.Hinter;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import org.eclipse.lsp4j.*;
 import org.slf4j.*;
-
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.api.*;
-
 
 
 public class GherkinDocumentAssessor {

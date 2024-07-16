@@ -24,7 +24,7 @@ import es.iti.wakamiti.server.domain.model.ExecutionCriteria;
 import es.iti.wakamiti.server.domain.model.WakamitiExecution;
 import es.iti.wakamiti.server.spi.ApplicationContext;
 import es.iti.wakamiti.server.spi.ExecutionRepository;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;

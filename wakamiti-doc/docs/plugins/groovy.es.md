@@ -54,8 +54,8 @@ package example
 import es.iti.wakamiti.api.annotations.I18nResource
 import es.iti.wakamiti.api.annotations.Step
 import es.iti.wakamiti.api.util.WakamitiLogger
-import imconfig.Configurable
-import imconfig.Configuration
+import es.iti.wakamiti.api.imconfig.Configurable
+import es.iti.wakamiti.api.imconfig.Configuration
 import org.slf4j.Logger
 
 @I18nResource("custom-steps")

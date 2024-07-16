@@ -8,7 +8,7 @@ package es.iti.wakamiti.jmeter;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
