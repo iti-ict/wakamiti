@@ -6,7 +6,7 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "cucumber-exporter-config", version = "2.5",
+@Extension(provider =  "es.iti.wakamiti", name = "cucumber-exporter-config", version = "2.6",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class CucumberExporterConfig implements ConfigContributor<CucumberExporter> {
 

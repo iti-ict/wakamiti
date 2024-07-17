@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import static java.lang.String.format;
 
-@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.5",
+@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.6",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 

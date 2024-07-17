@@ -8,7 +8,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.nio.file.Path;
 
-@Extension(provider =  "es.iti.wakamiti", name = "appium-config", version = "2.5",
+@Extension(provider =  "es.iti.wakamiti", name = "appium-config", version = "2.6",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class AppiumConfigContributor implements ConfigContributor<AppiumStepContributor> {
 

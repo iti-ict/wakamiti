@@ -41,7 +41,7 @@ import static java.util.Objects.isNull;
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin",
-        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
+        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "2.6")
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(GherkinPlanBuilder.class);

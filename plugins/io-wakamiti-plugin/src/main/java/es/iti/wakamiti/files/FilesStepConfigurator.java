@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Extension(provider =  "es.iti.wakamiti", name = "files-step-config", version = "2.5")
+@Extension(provider =  "es.iti.wakamiti", name = "files-step-config", version = "2.6")
 public class FilesStepConfigurator implements ConfigContributor<FilesStepContributor> {
 
     private static final String ENTRY_SEPARATOR = "=";

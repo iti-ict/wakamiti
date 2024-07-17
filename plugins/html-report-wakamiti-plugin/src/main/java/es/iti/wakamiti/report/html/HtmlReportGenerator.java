@@ -39,7 +39,7 @@ import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.5")
+@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.6")
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);

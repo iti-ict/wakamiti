@@ -31,7 +31,7 @@ import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNu
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "2.6")
 public class WakamitiCoreTypes implements DataTypeContributor {
 
     public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";

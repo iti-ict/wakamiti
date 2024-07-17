@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 @Extension(
     provider =  "es.iti.wakamiti",
     name = "azure-config",
-    version = "2.5",
+    version = "2.6",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class AzureConfigContributor implements ConfigContributor<AzureReporter> {

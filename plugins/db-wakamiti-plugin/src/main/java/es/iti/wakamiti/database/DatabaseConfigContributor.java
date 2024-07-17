@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @see ConfigContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "database-step-config", version = "2.5",
+@Extension(provider = "es.iti.wakamiti", name = "database-step-config", version = "2.6",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {
 

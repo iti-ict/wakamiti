@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-@Extension(provider =  "es.iti.wakamiti", name = "io-steps", version = "2.5")
+@Extension(provider =  "es.iti.wakamiti", name = "io-steps", version = "2.6")
 @I18nResource("iti_wakamiti_wakamiti-files")
 public class FilesStepContributor implements StepContributor {
 
