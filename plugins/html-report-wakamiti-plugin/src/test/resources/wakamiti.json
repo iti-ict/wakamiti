@@ -41,7 +41,7 @@
       },
       "children": [
         {
-          "id": "CP-A",
+          "id": "CP-A.1",
           "nodeType": "TEST_CASE",
           "keyword": "Scenario",
           "result": "PASSED",

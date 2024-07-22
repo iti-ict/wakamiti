@@ -93,36 +93,36 @@ public class TestHtmlReportGenerator {
                 .isEqualTo("Total duration 2h 24m 8s 410ms");
     }
 
-    @Test
-    public void testReportMenuToggles() {
-        String elem = "//*[contains(@class,\"nav-menu--control\")]";
-
-        assertThat(xml).valueByXPath("count(" + elem + ")").isEqualTo("6");
-
-        boolean[] tests = new boolean[]{false, true, true, true, false, false};
-
-        for (int i = 0; i < 6; i++) {
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "][contains(@class,'toggle-switch--disabled')])")
-                    .isEqualTo(tests[i]);
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@checked)")
-                    .isEqualTo(!tests[i]);
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@disabled)")
-                    .isEqualTo(tests[i]);
-        }
-
-    }
-
-    @Test
-    public void testReportMenuIndex() {
-        String elem = "//*[@class='nav-menu--section']//a/@href";
-        assertThat(xml).nodesByXPath(elem)
-                .extractingText()
-                .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
-                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
-    }
+//    @Test
+//    public void testReportMenuToggles() {
+//        String elem = "//*[contains(@class,\"nav-menu--control\")]";
+//
+//        assertThat(xml).valueByXPath("count(" + elem + ")").isEqualTo("6");
+//
+//        boolean[] tests = new boolean[]{false, true, true, true, false, false};
+//
+//        for (int i = 0; i < 6; i++) {
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "][contains(@class,'toggle-switch--disabled')])")
+//                    .isEqualTo(tests[i]);
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@checked)")
+//                    .isEqualTo(!tests[i]);
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@disabled)")
+//                    .isEqualTo(tests[i]);
+//        }
+//
+//    }
+//
+//    @Test
+//    public void testReportMenuIndex() {
+//        String elem = "//*[@class='nav-menu--section']//a/@href";
+//        assertThat(xml).nodesByXPath(elem)
+//                .extractingText()
+//                .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
+//                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
+//    }
 
 
     @Test

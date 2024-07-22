@@ -21,7 +21,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
 
     public static final String PREFIX = "htmlReport";
-    public static final String EXTRA_INFO = ".extra_info";
+    public static final String EXTRA_INFO = PREFIX+".extra_info";
     public static final String OUTPUT_FILE = PREFIX+".output";
     public static final String CSS_FILE = PREFIX+".css";
     public static final String TITLE = PREFIX+".title";
