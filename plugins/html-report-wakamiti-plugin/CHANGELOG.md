@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning][2].
 - ID selector issues (#275)
 
 ### Added
+- Moustache.js template library
 - Additional information block in the HTML report
 - Text filter
 - Pagination
