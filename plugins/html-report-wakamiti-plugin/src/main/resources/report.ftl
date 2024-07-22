@@ -120,11 +120,75 @@
                     </div>
                 </section>
             </li>
+            <#if extra_info?has_content>
+                <li class="details--item">
+                    <section class="test--component summary--component">
+                        <header class="test--header">
+                            <button class="test--header-btn" type="button">
+                                <h3 class="test--title">Extra info</h3>
+                                <hr/>
+                            </button>
+                        </header>
+                        <div class="test--body details--body">
+                            <ul>
+                                <#assign keys = extra_info?keys>
+                                <#list keys as key>
+                                    <li>
+                                        <label>${key}</label>
+                                        <span>${extra_info[key]}</span>
+                                    </li>
+                                </#list>
+                            </ul>
+                        </div>
+                    </section>
+                </li>
+            </#if>
         </ul>
 
+        <div class="pagination">
+            <div class="page-size">
+                <label for="numElements">Features per page</label>
+                <select name="numElements" id="numElements">
+                    <option value="1">1</option>
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
 
-        <ul class="suite--list mustache" data-template="feature">
+            <div class="simple-pagination mustache" data-template="pagination" data-prev="pages">
+            </div>
+            <input type="hidden" name="current" id="current-page" value="1" />
+        </div>
+        <script id="pagination" type="x-tmpl-mustache">
+            <div>
+            <button class="simple-pagination__button" type="button" <%^isFirst%>data-page="1"<%/isFirst%><%#isFirst%>disabled<%/isFirst%>>
+                <i class="material-icons">first_page</i>
+            </button>
+            <button class="simple-pagination__button" type="button" <%^isFirst%>data-page="<%prev%>"<%/isFirst%><%#isFirst%>disabled<%/isFirst%>>
+                <i class="material-icons">chevron_left</i>
+            </button>
+            <%#pages%>
+                <%>pages%>
+            <%/pages%>
+            <button class="simple-pagination__button" type="button" <%^isLast%>data-page="<%next%>"<%/isLast%><%#isLast%>disabled<%/isLast%>>
+                <i class="material-icons">chevron_right</i>
+            </button>
+            <button class="simple-pagination__button" type="button" <%^isLast%>data-page="<%total%>"<%/isLast%><%#isLast%>disabled<%/isLast%>>
+                <i class="material-icons">last_page</i>
+            </button>
+            </div>
+        </script>
+        <script id="pages" type="x-tmpl-mustache">
+            <button class="simple-pagination__button <%#isCurrent%>selected<%/isCurrent%>" type="button"
+            <%#isNum%>data-page="<%.%>"<%/isNum%><%^isNum%>disabled<%/isNum%><%#isCurrent%>disabled<%/isCurrent%>>
+                <%.%>
+            </button>
+        </script>
+
+        <ul class="suite--list mustache" data-template="feature" data-prev="page">
             <li style="display: flex; justify-content: center" class="loader">Loading...</li>
+            <li style="display: flex; justify-content: center" class="empty">No data</li>
         </ul>
         <script id="feature" type="x-tmpl-mustache">
             <li id="<%i%>">
@@ -364,10 +428,17 @@
         </div>
 
         <div class="nav-menu--section">
+            <label for="search-input">
+                <input id="search-input" type="search" name="search-input" placeholder="Search text" autocomplete="off" />
+            </label>
+        </div>
+
+        <div class="nav-menu--section">
             <ul class="mustache" data-template="feature_menu">
                 <li class="loader">Loading...</li>
+                <li class="empty">No data</li>
             </ul>
-            <script id="feature_menu" type="x-tmpl-mustache">
+            <script id="feature_menu" class="menu" type="x-tmpl-mustache">
                 <li>
                     <%>a_menu%>
                     <div>
