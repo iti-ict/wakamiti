@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [unreleased]
 
+### Fixed 
+- ID selector issues (#275)
+
 ### Added
-- Extra information on HTML report
+- Additional information block in the HTML report
+- Text filter
+- Pagination
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`

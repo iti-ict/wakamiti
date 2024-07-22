@@ -8,6 +8,10 @@ package es.iti.wakamiti.report.html;
 
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.event.Event;
@@ -27,10 +31,7 @@ import org.slf4j.Logger;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
@@ -43,6 +44,10 @@ import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
     private final freemarker.template.Configuration templateConfiguration;
     private String cssFile;
@@ -53,12 +58,11 @@ public class HtmlReportGenerator implements Reporter {
     public HtmlReportGenerator() {
         templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_29);
         templateConfiguration.setDefaultEncoding("UTF-8");
-        templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
         templateConfiguration.setLogTemplateExceptions(true);
         templateConfiguration.setWrapUncheckedExceptions(true);
         templateConfiguration.setFallbackOnNullLoopVariable(false);
         templateConfiguration.setClassLoaderForTemplateLoading(classLoader(), "/");
-
         templateConfiguration.setCustomNumberFormats(
                 Collections.singletonMap("duration", DurationTemplateNumberFormatFactory.INSTANCE));
     }
@@ -85,7 +89,7 @@ public class HtmlReportGenerator implements Reporter {
         configuration.get(TITLE, String.class).ifPresent(this::setTitle);
         var reportConfiguration = configuration.inner(PREFIX);
         this.parameters = new HashMap<>(reportConfiguration.asMap());
-        var reportExtraInfoConfiguration = configuration.inner(PREFIX.concat(EXTRA_INFO));
+        var reportExtraInfoConfiguration = configuration.inner(EXTRA_INFO);
         this.parameters.put("extra_info", reportExtraInfoConfiguration.asMap());
     }
 
@@ -99,12 +103,14 @@ public class HtmlReportGenerator implements Reporter {
             ))));
             parameters.put("globalStyle", readStyles());
             parameters.put("globalScript", readJavascript());
-            parameters.put("plan", rootNode);
+            parameters.put("plan", rootNode.withoutChildren());
             parameters.put("title", title);
             parameters.put("version", WakamitiAPI.instance().version());
             parameters.put("plugin_version", version());
             parameters.put("sum", new SumAllMethod());
             parameters.put("countSteps", new CountStepsMethod());
+            parameters.put("data", OBJECT_MAPPER.writeValueAsString(FilteredSnapshot.of(rootNode.getChildren()))
+                    .replace("\\", "\\\\").replace("'", "\\'"));
 
             File parent = output.toFile().getCanonicalFile().getParentFile();
             if (!parent.exists()) {
