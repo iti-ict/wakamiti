@@ -193,6 +193,15 @@ public class RunnableBackend extends AbstractBackend {
      */
     private void runMethod(ThrowableRunnable operation, String type) {
         try {
+            Locale locale = LocaleLoader.forLanguage(testCase.language());
+            WakamitiStepRunContext.set(
+                    new WakamitiStepRunContext(
+                            configuration,
+                            this,
+                            locale,
+                            locale
+                    )
+            );
             operation.run();
         } catch (Exception | Error e) {
             Throwable tr = e;
