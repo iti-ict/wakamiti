@@ -29,6 +29,7 @@ public final class DatabaseHelper {
      * The date time formatter used for formatting timestamps with milliseconds.
      */
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * The date formatter used for formatting dates without time.
@@ -46,7 +47,7 @@ public final class DatabaseHelper {
      * @return {@code true} if the string is a date or date time, {@code false} otherwise
      */
     public static boolean isDateOrDateTime(String str) {
-        return Stream.of(DATE_TIME_FORMATTER, DATE_FORMATTER).anyMatch(formatter -> {
+        return Stream.of(DATE_TIME_FORMATTER, DATE_TIME_FORMATTER_2, DATE_FORMATTER).anyMatch(formatter -> {
             try {
                 formatter.parse(str);
                 return true;

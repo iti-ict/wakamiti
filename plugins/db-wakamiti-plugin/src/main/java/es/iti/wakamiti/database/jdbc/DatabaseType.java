@@ -14,8 +14,6 @@ import es.iti.wakamiti.api.WakamitiException;
  */
 public enum DatabaseType {
 
-
-
     ORACLE("select 1 from dual"),
     HSQLDB("SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"),
     H2(),

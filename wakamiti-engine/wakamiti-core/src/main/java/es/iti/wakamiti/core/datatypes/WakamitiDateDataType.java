@@ -52,14 +52,21 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
             "hh:mm",
             "hh:mm:ss",
             "hh:mm:ss.SSS",
+            "hh:mm:ss.SSSZ",
             PROPERTY_REGEX
     };
 
-    private static final String[] ISO_8601_DATETIME_FORMATS = {
+    private static final String[] ISO_8601_DATETIME_FORMATS = new String[]{
             "yyyy-MM-dd'T'hh:mm",
+            "yyyy-MM-dd hh:mm",
             "yyyy-MM-dd'T'hh:mm:ss",
+            "yyyy-MM-dd hh:mm:ss",
             "yyyy-MM-dd'T'hh:mm:ss.SSS",
+            "yyyy-MM-dd hh:mm:ss.SSS",
+            "yyyy-MM-dd'T'hh:mm:ss.SSSZ",
+            "yyyy-MM-dd hh:mm:ss.SSSZ",
             PROPERTY_REGEX + "'T'" + PROPERTY_REGEX,
+            PROPERTY_REGEX + " " + PROPERTY_REGEX,
             PROPERTY_REGEX
     };
 
@@ -455,6 +462,10 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
             }
         }
         formatters.add(DateTimeFormatter.ISO_DATE_TIME);
+        formatters.add(
+                new DateTimeFormatterBuilder().append(DateTimeFormatter.ISO_LOCAL_DATE)
+                        .appendLiteral(' ').append(DateTimeFormatter.ISO_LOCAL_TIME).toFormatter()
+        );
         return formatters;
     }
 

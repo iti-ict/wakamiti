@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning][2].
 ## [unreleased]
 
 ### Fixed
-- Row with all values set to null in xls file (#267)
+- Row with all values set to null in xls file. (#267)
+- DateTime timezone issues.
 
 ### Added
 - Duration data type.

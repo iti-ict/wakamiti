@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Duration data type and Duration assertion.
+- DateTime assertion.
+- DateTime `yyyy-MM-dd[ hh:mm:ss[.SSS][Z]]` to ISO 8601 DateTime formats
 
 ### Changed
 - Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
