@@ -80,9 +80,9 @@ public class SQLParser {
             DatabaseType.SQLSERVER, e -> new CastExpression()
                     .withLeftExpression(new StringValue(e))
                     .withUseCastKeyword(true)
-                    .withType(new ColDataType((//DatabaseHelper.isDate(e) ?
-                            DateTimeLiteralExpression.DateTime.DATE /*:
-                            DateTimeLiteralExpression.DateTime.TIMESTAMP*/).toString()))
+                    .withType(new ColDataType((DatabaseHelper.isDate(e) ?
+                            DateTimeLiteralExpression.DateTime.DATE :
+                            "DATETIME").toString()))
     );
 
     private static final Map<DatabaseType, java.util.function.Function<String, String>> FORMAT = Map.of(
