@@ -11,8 +11,8 @@ BEGIN
        BEGIN
         SELECT @id = id FROM inserted;
        END;
-    INSERT INTO client (id, first_name, second_name, active, birth_date)
-    SELECT @id, first_name, second_name, active, birth_date FROM Inserted;
+    INSERT INTO client (id, first_name, second_name, active, birth_date, creation)
+    SELECT @id, first_name, second_name, active, birth_date, creation FROM Inserted;
 END;
 
 GO
