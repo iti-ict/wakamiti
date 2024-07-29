@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Utility interface `BiFunctionThrowable`.
 - Path temporal placeholder for a specific instant.
+- New methods in JsonUtils to convert to any type.
 
 ### Changed
 - Authentication utility classes are moved to the api library.
