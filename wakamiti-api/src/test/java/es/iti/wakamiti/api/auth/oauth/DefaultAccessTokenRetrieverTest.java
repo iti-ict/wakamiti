@@ -7,6 +7,8 @@ package es.iti.wakamiti.api.auth.oauth;
 
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
