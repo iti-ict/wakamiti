@@ -114,11 +114,14 @@ function page(data) {
  * @returns {[{current: number, total: number, pages: string[]}]}
  */
 function pages(data) {
-    const p = getPage() - 1;
+    const p = getPage();
     const t = Math.ceil(data.length / getPageSize());
     const s = Math.min(t, 7);
-    const h = Math.floor(s * .5);
-
+    const h = Math.ceil(s * .5);
+    // console.log('page: ' + p);
+    // console.log('total: ' + t);
+    // console.log('size: ' + s);
+    // console.log('half: ' + h);
     let pages = Array.from({length: s}, (v, i) => {
         if (p < h) {
             return 1 + i;
@@ -137,7 +140,7 @@ function pages(data) {
         }
     }
     // console.log("Pages: " + pages);
-    return [{current: p + 1, total: t, pages}];
+    return [{current: p, total: t, pages}];
 }
 
 /**
