@@ -21,13 +21,14 @@ import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
 import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -205,7 +206,8 @@ public class RunnableBackend extends AbstractBackend {
             operation.run();
         } catch (Exception | Error e) {
             Throwable tr = e;
-            while (StringUtils.isBlank(tr.getMessage())) {
+            while (isBlank(tr.getMessage())) {
+                if (tr.getCause() == null) break;
                 tr = tr.getCause();
             }
             LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
