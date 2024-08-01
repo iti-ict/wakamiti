@@ -39,6 +39,7 @@ module es.iti.wakamiti.api {
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.groovy.xml;
     requires Saxon.HE;
+    requires org.apache.commons.codec;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;

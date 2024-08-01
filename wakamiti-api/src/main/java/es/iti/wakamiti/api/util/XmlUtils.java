@@ -140,12 +140,15 @@ public class XmlUtils {
     private static void processMap(Document doc, Element current, Map<String, Object> map) {
         map.forEach((key, value) -> {
             Element element = doc.createElement(key);
-            if (value instanceof Node) {
-                value = xml(value);
-            }
             if (value instanceof XmlObject) {
-                Node node = doc.importNode(((XmlObject) value).getDomNode().getFirstChild(), true);
-                element.appendChild(node);
+                value = ((XmlObject) value).getDomNode().getFirstChild();
+            }
+            if (value instanceof Document) {
+                value = ((Document) value).getFirstChild();
+            }
+            if (value instanceof Node) {
+                value = doc.importNode((Node) value, true);
+                element.appendChild((Node) value);
             } else if (value instanceof Map) {
                 processMap(doc, element, (Map<String, Object>) value);
             } else {
