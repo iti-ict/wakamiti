@@ -9,7 +9,7 @@ package es.iti.wakamiti.jmeter;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.auth.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
