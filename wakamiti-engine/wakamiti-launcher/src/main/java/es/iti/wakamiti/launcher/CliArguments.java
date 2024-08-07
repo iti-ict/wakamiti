@@ -36,6 +36,7 @@ public class CliArguments {
     private static final String ARG_CLEAN = "c";
     private static final String ARG_FILE = "f";
     private static final String ARG_MODULES = "m";
+    private static final String ARG_NO_EXECUTION = "n";
     private static final String ARG_WAKAMITI_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
     private final Options cliOptions;
@@ -48,6 +49,7 @@ public class CliArguments {
         cliOptions.addOption(ARG_CLEAN, "clean", false, "Force any module to be re-gathered");
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
+        cliOptions.addOption(ARG_NO_EXECUTION, "no-execution", false, "Generates report without execution");
         cliOptions.addOption(
                 Option.builder(ARG_WAKAMITI_PROPERTY)
                         .argName("wakamitiProperty=value")
@@ -145,6 +147,16 @@ public class CliArguments {
      */
     public boolean isShowContributionsEnabled() {
         return cliCommand.hasOption(ARG_LIST);
+    }
+
+
+    /**
+     * Checks if the noExecution option is specified in the command-line arguments.
+     *
+     * @return {@code true} if the noExecution option is specified, {@code false} otherwise.
+     */
+    public boolean isNoExecution() {
+        return cliCommand.hasOption(ARG_NO_EXECUTION);
     }
 
     /**

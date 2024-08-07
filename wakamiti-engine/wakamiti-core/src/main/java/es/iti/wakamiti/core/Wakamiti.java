@@ -426,6 +426,19 @@ public class Wakamiti {
     }
 
     /**
+     * Generates the report of the specified test plan using the provided configuration.
+     *
+     * @param plan          The test plan to execute.
+     * @param configuration The configuration for plan execution.
+     */
+    public void generateExecutionPlan(PlanNode plan, Configuration configuration) {
+        writeOutputFile(plan, configuration);
+        if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
+            generateReports(configuration, new PlanNodeSnapshot(plan));
+        }
+    }
+
+    /**
      * Creates a new {@link BackendFactory} instance using the default backend factory implementation.
      *
      * @return A new {@link BackendFactory} instance.
