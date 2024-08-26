@@ -64,6 +64,9 @@ Característica: Pruebas de propiedades dinámicas 1
     * un id ABC
     * un id ${text}
     * un id ${10#}
+    * un string especial 's4_$= A'
+    * un string especial '${-1#}'
+    * un string especial '${text2}'
 
   @ID-4
   Escenario: Escenario tipo fichero
