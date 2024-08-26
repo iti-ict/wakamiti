@@ -402,6 +402,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.STEP)
+                .setId(id(List.of(), step.getText(), ""))
                 .setKeyword(trim(step.getKeyword()))
                 .setName(trim(step.getText()))
                 .setDisplayNamePattern("{keyword} {name}")
