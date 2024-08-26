@@ -429,7 +429,7 @@ public class MapUtils {
                 @SuppressWarnings("unchecked")
                 K k = Objects.requireNonNull((K) input[i]);
                 @SuppressWarnings("unchecked")
-                V v = Objects.requireNonNull((V) input[i + 1]);
+                V v = (V) input[i + 1];
                 if (containsKey(k)) {
                     throw new IllegalArgumentException("duplicate key: " + k);
                 } else {
