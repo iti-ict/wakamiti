@@ -290,7 +290,8 @@ public class RunnableBackend extends AbstractBackend {
             Map<String, Argument> arguments = stepBackend.invokingArguments();
             step.arguments().addAll(arguments.values());
             Object result = stepBackend.runnableStep().run(arguments);
-            ((List<Object>) extraProperties.get(ContextMap.RESULTS_PROP)).add(result);
+            ((Map<String, Object>) extraProperties.get(ContextMap.RESULTS_PROP))
+                    .put(step.properties().getOrDefault("id", step.id()), result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());
@@ -397,7 +398,7 @@ public class RunnableBackend extends AbstractBackend {
 
         ContextMap() {
             super.put(ID_PROP, testCase.id());
-            super.put(RESULTS_PROP, new LinkedList<>());
+            super.put(RESULTS_PROP, new LinkedHashMap<>());
         }
 
         @Override
