@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,7 +37,13 @@ public class StepPropertyEvaluatorTest {
     @Before
     public void setup() {
         LinkedHashMap<String, Object> results = new LinkedHashMap<>();
-        results.put("results", Arrays.asList(null, json, xml, json.toString(), xml.toString()));
+        results.put("results", map(
+                "s1", null,
+                "s2", json,
+                "s3", xml,
+                "s4", json.toString(),
+                "s5", xml.toString()
+        ));
 
         WakamitiStepRunContext context = mock(WakamitiStepRunContext.class);
         Backend backend = mock(Backend.class);
@@ -182,10 +189,10 @@ public class StepPropertyEvaluatorTest {
                 "${5#//id/text()}", "3"
         ));
 
-        result = resolver.eval("${5#//id/text()}");
+        result = resolver.eval("${s5#//id/text()}");
         assertThat(result.value()).isEqualTo("3");
         assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
-                "${5#//id/text()}", "3"
+                "${s5#//id/text()}", "3"
         ));
 
         result = resolver.eval("${5#//id/text()}${5#//id/text()}");
