@@ -282,6 +282,13 @@ public class WakamitiSteps implements StepContributor {
         return word;
     }
 
+    @Step(value = "given.string.special", args = {"string"})
+    public Object setSpecialString(String text) {
+        LOGGER.info("This text is: {}", text);
+        assert Objects.equals(text, "s4_$= A");
+        return text;
+    }
+
     @Step(value = "given.id", args = {"id"})
     public Object setId(String id) {
         LOGGER.info("This id is: {}", id);
