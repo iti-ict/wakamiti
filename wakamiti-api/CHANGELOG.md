@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `ID([\w-]+)` is now the default value of `idTagPattern`.
+- The map util accepts null values.
 
 
 ## [2.4.1] - 2024-04-16
