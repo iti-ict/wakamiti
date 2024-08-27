@@ -10,6 +10,7 @@ module es.iti.wakamiti.api {
     exports es.iti.wakamiti.api.annotations;
     exports es.iti.wakamiti.api.plan;
     exports es.iti.wakamiti.api.util;
+    exports es.iti.wakamiti.api.util.http;
     exports es.iti.wakamiti.api.util.http.oauth;
     exports es.iti.wakamiti.api.event;
     exports es.iti.wakamiti.api.datatypes;
@@ -40,6 +41,7 @@ module es.iti.wakamiti.api {
     requires org.apache.groovy.xml;
     requires Saxon.HE;
     requires org.apache.commons.codec;
+    requires org.apache.commons.text;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;
