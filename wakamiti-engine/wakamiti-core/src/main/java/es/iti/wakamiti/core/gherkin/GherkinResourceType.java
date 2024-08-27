@@ -26,7 +26,7 @@ import java.nio.charset.Charset;
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = GherkinResourceType.NAME,
-        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType", version = "1.1")
+        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType", version = "2.6")
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
     public static final String NAME = "gherkin";

@@ -38,7 +38,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
@@ -441,8 +440,10 @@ public class DatabaseSupport {
         for (Pair<String[], Object[]> row : rows) {
             if (!matcherNonEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
                 similarBy(dataSet.table(), row.key(), row.value()).ifPresentOrElse(result ->
-                                assertThat(result).containsExactlyEntriesOf(toMap(row.key(),
-                                        Stream.of(row.value()).map(DatabaseHelper::toString).toArray(String[]::new))),
+                                assertThat(result)
+                                        .as("The closest record")
+                                        .containsExactlyEntriesOf(toMap(row.key(),
+                                                Stream.of(row.value()).map(DatabaseHelper::toString).toArray(String[]::new))),
                         () -> fail(message(
                                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                                 toMap(row.key(), row.value()),
@@ -495,11 +496,11 @@ public class DatabaseSupport {
      * Asserts asynchronously that the count of records in the given DataSet
      * satisfies the specified matcher within the specified time.
      *
-     * @param dataSet The DataSet to be checked.
-     * @param matcher The assertion to be applied to the count of records.
-     * @param time    The maximum time to wait for the assertion to succeed, in milliseconds.
+     * @param dataSet  The DataSet to be checked.
+     * @param matcher  The assertion to be applied to the count of records.
+     * @param duration The maximum time to wait for the assertion to succeed.
      */
-    protected void assertCountAsync(DataSet dataSet, Assertion<Long> matcher, int time) {
+    protected void assertCountAsync(DataSet dataSet, Assertion<Long> matcher, Duration duration) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicLong count = new AtomicLong(0);
         assertAsync(() -> {
@@ -507,7 +508,7 @@ public class DatabaseSupport {
                     .mapToLong(row -> countBy(dataSet.table(), row.key(), row.value()))
                     .sum());
             return matcher.test(count.get());
-        }, time, () -> fail(message(
+        }, duration, () -> fail(message(
                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                 rows.size() == 1 ? toMap(rows.get(0).key(), rows.get(0).value()) : "the given data",
                 Database.from(connection()).table(dataSet.table()), matcher.describeFailure(count.get())
@@ -519,13 +520,13 @@ public class DatabaseSupport {
      * If the condition is not satisfied within the specified time, executes the catch action.
      *
      * @param action      The action to be checked asynchronously.
-     * @param time        The maximum time to wait for the condition to be satisfied, in seconds.
+     * @param duration    The maximum time to wait for the condition to be satisfied.
      * @param catchAction The action to be executed if the condition is not satisfied within the specified time.
      */
-    protected void assertAsync(BooleanSupplier action, int time, Runnable catchAction) {
+    protected void assertAsync(BooleanSupplier action, Duration duration, Runnable catchAction) {
         try {
             await()
-                    .atMost(time, TimeUnit.SECONDS)
+                    .atMost(duration)
                     .pollInterval(Durations.ONE_HUNDRED_MILLISECONDS)
                     .until(action::getAsBoolean);
         } catch (ConditionTimeoutException ignored) {
@@ -537,11 +538,11 @@ public class DatabaseSupport {
      * Asserts asynchronously that each row in the given data set is not empty within the specified time.
      * If any row is found to be empty within the specified time, executes further assertions on the empty row.
      *
-     * @param dataSet The data set to be checked asynchronously.
-     * @param time    The maximum time to wait for each row to be non-empty, in seconds.
+     * @param dataSet  The data set to be checked asynchronously.
+     * @param duration The maximum time to wait for each row to be non-empty.
      * @return The duration taken to perform the assertion asynchronously.
      */
-    protected Duration assertNonEmptyAsync(DataSet dataSet, Integer time) {
+    protected Duration assertNonEmptyAsync(DataSet dataSet, Duration duration) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicReference<Pair<String[], Object[]>> currentRow = new AtomicReference<>();
 
@@ -554,11 +555,13 @@ public class DatabaseSupport {
                 }
             }
             return true;
-        }, time, () -> {
+        }, duration, () -> {
             Pair<String[], Object[]> processed = currentRow.get();
             similarBy(dataSet.table(), processed.key(), processed.value()).ifPresentOrElse(row ->
-                            assertThat(row).containsExactlyEntriesOf(
-                                    toMap(processed.key(), DatabaseHelper.toString(processed.value()))),
+                            assertThat(row)
+                                    .as("The closest record")
+                                    .containsExactlyEntriesOf(
+                                            toMap(processed.key(), DatabaseHelper.toString(processed.value()))),
                     failSomeRecordExpected(dataSet.table(), currentRow)
             );
         });
@@ -569,11 +572,11 @@ public class DatabaseSupport {
      * Asserts asynchronously that each row in the given data set is empty within the specified time.
      * If any row is found to be non-empty within the specified time, executes further assertions on the non-empty row.
      *
-     * @param dataSet The data set to be checked asynchronously.
-     * @param time    The maximum time to wait for each row to be empty, in seconds.
+     * @param dataSet  The data set to be checked asynchronously.
+     * @param duration The maximum time to wait for each row to be empty, in seconds.
      * @return The duration taken to perform the assertion asynchronously.
      */
-    protected Duration assertEmptyAsync(DataSet dataSet, Integer time) {
+    protected Duration assertEmptyAsync(DataSet dataSet, Duration duration) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicReference<Pair<String[], Object[]>> currentRow = new AtomicReference<>();
 
@@ -586,7 +589,7 @@ public class DatabaseSupport {
                 }
             }
             return true;
-        }, time, failNoRecordExpected(dataSet.table(), currentRow));
+        }, duration, failNoRecordExpected(dataSet.table(), currentRow));
         return Duration.between(start, Instant.now());
     }
 

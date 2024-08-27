@@ -1,14 +1,34 @@
+
 Feature: Testing database steps
 
 
   Scenario: Test 1
+    * On completion, the table client is not empty
+    * On completion, the user identified by '1' exists in the table client
+    * On completion, the user identified by '4' does not exist in the table client
+    * On completion, the user having birth_date = '2000-10-30' exists in the table client
+    * On completion, the user having birth_date = '1982-12-30' does not exist in the table client
+    * On completion, the user satisfying the following SQL clause exists in the table client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * On completion, the following record exists in the table client:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     * On completion, the table client is cleared
     * On completion, the table city is cleared
+    * On completion, the user satisfying the following SQL clause does not exist in the table client:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * On completion, the following record does not exist in the table client:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     When the following users are inserted into the database table client:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | John       | Smith       | 1      | 2000-10-30 |
-      | 2  | Annie      | Hall        | 0      | 2011-09-12 |
-      | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
+      | 2  | Annie      | Hall        | 0      | 2011-09-12 | 2024-07-22 12:34:56     |
+      | 3  | Bruce      | <null>      | 1      | 1982-12-31 | 2024-07-22 12:34:56.000 |
     Then the database table client is not empty
     And the number of users having active = '1' in the database table client is 2
     And the number of users satisfying the following SQL clause in the table client is 2:
@@ -17,21 +37,28 @@ Feature: Testing database steps
       """
     And the database table city is empty
     And the following record exists in the table client:
-      | first_name | second_name | birth_date |
-      | John       | Smith       | 2000-10-30 |
+      | first_name | second_name | birth_date | creation                |
+      | John       | Smith       | 2000-10-30 | 2024-07-22              |
 
 
   Scenario: Test 2
     * On completion, the SQL script file '${data.dir}/db/clean.sql' is executed
+    * On completion, the number of users satisfying the following SQL clause in the table client is 0:
+      """
+      1=1
+      """
+    * On completion, the number of users satisfying the following in the table client is 0:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     When the SQL script file '${data.dir}/db/dml-oracle.sql' is executed
     And the SQL procedure file '${data.dir}/db/procedure-oracle.sql' is executed
     Then the following record does not exist in the table client:
       | id | first_name | second_name | active  | birth_date |
       | 1  | Rosa       | Melano      | 1       | <null>     |
     But the following records exist in the table client:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | Rosa       | Melano      | 0      | <null>     |
-      | 2  | Ester      | Colero      | 0      | 2000-01-02 |
+      | id | first_name | second_name | active | birth_date | creation            |
+      | 1  | Rosa       | Melano      | 0      | 1980-12-25 | 2024-07-22 12:34:56 |
+      | 2  | Ester      | Colero      | 0      | 2000-01-02 | <null>              |
     And the following records exist in the table city:
       | id | name     | latitude  | longitude |
       | 1  | Valencia | 39.469906 | -0.376288 |
@@ -45,31 +72,62 @@ Feature: Testing database steps
 
 
   Scenario: Test 3
+    * On completion, the table client is not empty using 'db' connection
     * On completion, the table client is cleared using 'db' connection
+    * On completion, the table client is empty using 'db' connection
     * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database using 'db' connection
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' exists in the database using 'db' connection
     * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database using 'db' connection
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database using 'db' connection
     * On completion, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client using 'db' connection
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' exists in the table client using 'db' connection
     * On completion, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client using 'db' connection
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client using 'db' connection
     * On completion, the following users are inserted into the table client using 'db' connection:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | John       | Smith       | 1      | 2000-10-30 |
-      | 2  | Annie      | Hall        | 0      | 2011-09-12 |
-      | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
+      | 2  | Annie      | Hall        | 0      | 2011-09-12 | 2024-07-22 12:34:56     |
+      | 3  | Bruce      | <null>      | 1      | 1982-12-31 | 2024-07-22 12:34:56.000 |
+    * On completion, the following record exists in the table client using 'db' connection:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     * On completion, the following user is deleted from the table client using 'db' connection:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | John       | Smith       | 1      | 2000-10-30 |
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
+    * On completion, the following record does not exist in the table client using 'db' connection:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
+    * On completion, the user identified by '2' exists in the table client using 'db' connection
+    * On completion, the user identified by '1' does not exist in the table client using 'db' connection
     * On completion, the user having first_name = 'Annie' is deleted from the table client using 'db' connection
+    * On completion, the user having first_name = 'Annie' does not exist in the table client using 'db' connection
+    * On completion, the user having second_name = '<null>' exists in the table client using 'db' connection
+    * On completion, the user satisfying the following SQL clause exists in the table client using 'db' connection:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
     * On completion, the user satisfying the following SQL clause is deleted from the table client using 'db' connection:
+      """
+      BIRTH_DATE < date '2000-01-01'
+      """
+    * On completion, the user satisfying the following SQL clause does not exist in the table client using 'db' connection:
       """
       BIRTH_DATE < date '2000-01-01'
       """
     * On completion, the following SQL script is executed using 'db' connection:
       """
-      DELETE FROM CLIENT_CITY;
+      DELETE FROM client_city;
       DELETE FROM CITY;
       DELETE FROM CLIENT;
       DELETE FROM OTHER;
       """
+    * On completion, the number of users satisfying the following SQL clause in the table client is 0 using 'db' connection:
+      """
+      1=1
+      """
+    * On completion, the number of users satisfying the following in the table client is 0 using 'db' connection:
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     Given the database connection URL '${database.connection.url}' using the user '${database.connection.username}' and the password '${database.connection.password}' as 'db'
     And the 'db' connection is used
     When the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
@@ -100,18 +158,18 @@ Feature: Testing database steps
       BIRTH_DATE = date '1980-12-25'
       """
     And the following record exists in the table client in 1 second:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
+      | id | first_name | second_name | active | birth_date | creation            |
+      | 1  | Rosa       | Melano      | 0      | 1980-12-25 | 2024-07-22 12:34:56 |
     And the following record does not exist in the table client in 1 second:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | Rosa       | Melano      | 1      | 1980-12-25 |
+      | id | first_name | second_name | active | birth_date | creation            |
+      | 1  | Rosa       | Melano      | 1      | 1980-12-25 | 2024-07-22 12:34:56 |
     And the following SQL query value:
       """
       SELECT trim(BIRTH_DATE) FROM CLIENT;
       """
     And the number of records satisfying the following in the table client is 1 in 1 second:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | Rosa       | Melano      | 0      | 1980-12-25 |
+      | id | first_name | second_name | active | birth_date | creation            |
+      | 1  | Rosa       | Melano      | 0      | 1980-12-25 | 2024-07-22 12:34:56 |
     And the content of the CSV file '${data.dir}/data2.csv' exists in the table client in 1 second
     And the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client in 1 second
     And the table city is empty in 1 second
@@ -121,17 +179,21 @@ Feature: Testing database steps
   Scenario: Test 4
     * On completion, the SQL script file '${data.dir}/db/clean.sql' is executed using 'db' connection
     * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is inserted into the database
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' exists in the database
     * On completion, the content of the XLS file '${data.dir}/data1.xlsx' is deleted from the database
+    * On completion, the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database
     * On completion, the content of the CSV file '${data.dir}/data1.csv' is inserted into the table client
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' exists in the table client
     * On completion, the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+    * On completion, the content of the CSV file '${data.dir}/data1.csv' does not exist in the table client
     * On completion, the following users are inserted into the table client:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | John       | Smith       | 1      | 2000-10-30 |
-      | 2  | Annie      | Hall        | 0      | 2011-09-12 |
-      | 3  | Bruce      | <null>      | 1      | 1982-12-31 |
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
+      | 2  | Annie      | Hall        | 0      | 2011-09-12 | 2024-07-22 12:34:56     |
+      | 3  | Bruce      | <null>      | 1      | 1982-12-31 | 2024-07-22 12:34:56.000 |
     * On completion, the following user is deleted from the table client:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | John       | Smith       | 1      | 2000-10-30 |
+      | id | first_name | second_name | active | birth_date | creation                |
+      | 1  | John       | Smith       | 1      | 2000-10-30 | 2024-07-22              |
     * On completion, the user having first_name = 'Annie' is deleted from the table client
     * On completion, the user satisfying the following SQL clause is deleted from the table client:
       """
@@ -148,11 +210,11 @@ Feature: Testing database steps
       """
     And the number of records having id = '${-1#[0].ID}' in the table client is 1
     And the following records do not exist in the table client:
-      | first_name | second_name | active | birth_date |
-      | Rosa       | Melano      | 0      | 1980-12-25 |
+      | first_name | second_name | active | birth_date | creation            |
+      | Rosa       | Melano      | 0      | 1980-12-25 | 2024-07-22 12:34:56 |
     And the number of records satisfying the following in the table client is 1:
-      | first_name | second_name | active | birth_date |
-      | Rosa       | Melano      | 1      | 1980-12-25 |
+      | first_name | second_name | active | birth_date | creation            |
+      | Rosa       | Melano      | 1      | 1980-12-25 | 2024-07-22 12:34:56 |
 
 
   Scenario: Test 5
@@ -194,8 +256,8 @@ Feature: Testing database steps
     * On completion, the table city is empty
     * On completion, the table client_city is empty
     Given the following user inserted into the database table client:
-      | id | first_name | second_name | active | birth_date |
-      | 1  | Rosa       | Melano      | 1      | 1980-12-25 |
+      | id | first_name | second_name | active | birth_date | creation            |
+      | 1  | Rosa       | Melano      | 1      | 1980-12-25 | 2024-07-22 12:34:56 |
     And the following city is inserted into the database table city:
       | id | name     |
       | 1  | Valencia |

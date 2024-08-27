@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.*;
 import java.util.*;
 import java.util.stream.*;
 
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.Pair;
 import org.eclipse.lsp4j.*;
 import org.yaml.snakeyaml.Yaml;

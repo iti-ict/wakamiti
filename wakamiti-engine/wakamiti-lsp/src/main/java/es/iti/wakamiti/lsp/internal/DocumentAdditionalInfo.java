@@ -12,8 +12,7 @@ import com.github.curiousoddman.rgxgen.RgxGen;
 
 import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
 import es.iti.wakamiti.core.gherkin.parser.Tag;
-import imconfig.Configuration;
-import es.iti.wakamiti.core.gherkin.parser.*;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 
 public class DocumentAdditionalInfo {

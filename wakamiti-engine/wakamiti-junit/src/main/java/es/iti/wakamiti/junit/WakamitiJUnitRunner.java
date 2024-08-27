@@ -7,15 +7,16 @@ package es.iti.wakamiti.junit;
 
 
 import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import imconfig.Configuration;
-import imconfig.ConfigurationException;
-import imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 import org.junit.*;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
@@ -29,12 +30,14 @@ import org.slf4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 
 
 /**
@@ -96,7 +99,26 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      */
     private Configuration retrieveConfiguration(Class<?> testedClass) throws InitializationError {
         try {
-            return es.iti.wakamiti.core.Wakamiti.defaultConfiguration().appendFromAnnotation(testedClass);
+            Configuration config = es.iti.wakamiti.core.Wakamiti.defaultConfiguration();
+            Optional<String> altDir = Optional.ofNullable(getClass().getClassLoader().getResource("."))
+                    .map(u -> {
+                        try {
+                            return u.toURI();
+                        } catch (URISyntaxException e) {
+                            return null;
+                        }
+                    })
+                    .map(url -> Path.of(url).toString().replace(System.getProperty("user.dir"), ""))
+                    .map(dir -> dir.replaceAll("^[\\\\/]([^\\\\/]+).*", "$1"));
+
+            if (altDir.isPresent()) {
+                config = config.appendFromPairs(
+                        OUTPUT_FILE_PATH, String.format("%s/%s", altDir.get(),
+                                WakamitiConfiguration.DEFAULTS.get(OUTPUT_FILE_PATH, String.class)
+                                        .orElse("wakamiti.json")),
+                        OUTPUT_FILE_PER_TEST_CASE_PATH, altDir.get());
+            }
+            return config.appendFromAnnotation(testedClass);
         } catch (ConfigurationException e) {
             LOGGER.error("Error loading configuration from {}", testedClass);
             throw new InitializationError(e);

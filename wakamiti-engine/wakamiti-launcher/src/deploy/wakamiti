@@ -6,19 +6,18 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 
-export CLASSPATH="${WAKAMITI_HOME}/wakamiti-launcher.jar:${WAKAMITI_HOME}/lib/*:${WAKAMITI_HOME}/lib-ext/*"
-
 if test -z "${WAKAMITI_HOME}"
 then
   export WAKAMITI_HOME="/usr/local/share/wakamiti"
 fi
-java -jar "${WAKAMITI_HOME}/java-version-checker.jar" 11
+export CLASSPATH="${WAKAMITI_HOME}/wakamiti-launcher.jar:${WAKAMITI_HOME}/lib/*:${WAKAMITI_HOME}/lib-ext/*"
 
 if test "$ADD_CLASSPATH"
 then
   export CLASSPATH="$CLASSPATH:$ADD_CLASSPATH"
 fi
 
+java -jar "${WAKAMITI_HOME}/java-version-checker.jar" 11
 if test $? -ne 0
 then
   exit -2

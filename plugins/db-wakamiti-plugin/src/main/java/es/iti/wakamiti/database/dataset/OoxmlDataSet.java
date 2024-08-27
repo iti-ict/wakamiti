@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 
 /**
@@ -143,6 +144,9 @@ public class OoxmlDataSet extends MultiDataSet {
                 return false;
             } else {
                 currentRow = rowIterator.next();
+                if (IntStream.range(0, columns.length).allMatch(i -> rowValue(i) == null)) {
+                    return nextRow();
+                }
                 return true;
             }
         }
@@ -172,6 +176,9 @@ public class OoxmlDataSet extends MultiDataSet {
                         }
                         break;
                 }
+            }
+            if (value != null && value.toString().isEmpty()) {
+                value = null;
             }
             return value;
         }

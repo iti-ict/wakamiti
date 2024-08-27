@@ -8,8 +8,8 @@ package es.iti.wakamiti.fileuploader.it;
 
 import es.iti.wakamiti.fileuploader.MockFtpServer;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,9 +33,7 @@ import static org.junit.Assert.assertTrue;
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
         @Property(key = "fileUploader.testCaseOutputs.destinationDir", value = "dira/dirb/%DATE%"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = OUTPUT_FILE_PER_TEST_CASE, value = "true"),
-        @Property(key = OUTPUT_FILE_PER_TEST_CASE_PATH, value = "target"),
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.fileuploader.WakamitiSteps"),
 })
 @RunWith(WakamitiJUnitRunner.class)

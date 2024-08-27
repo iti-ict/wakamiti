@@ -31,7 +31,7 @@ import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNu
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "2.6")
 public class WakamitiCoreTypes implements DataTypeContributor {
 
     public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";
@@ -82,11 +82,9 @@ public class WakamitiCoreTypes implements DataTypeContributor {
                 "id", String.class, locale -> IDENTIFIER_REGEX, WORD_HINT,
                 locale -> (input -> input)
         ));
-        types.add(new WakamitiDateDataType<>("date", LocalDate.class, true, false, LocalDate::from));
-        types.add(new WakamitiDateDataType<>("time", LocalTime.class, false, true, LocalTime::from));
-        types.add(new WakamitiDateDataType<>(
-                "datetime", LocalDateTime.class, true, true, LocalDateTime::from
-        ));
+        types.add(new WakamitiDateDataType<>("date", LocalDate.class));
+        types.add(new WakamitiDateDataType<>("time", LocalTime.class));
+        types.add(new WakamitiDateDataType<>("datetime", LocalDateTime.class));
         // java datatypes
         types.add(new WakamitiDataTypeBase<>(
                 "string", String.class, locale -> STRING_REGEX, TEXT_HINT,

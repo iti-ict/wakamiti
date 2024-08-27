@@ -2,7 +2,7 @@ package es.iti.wakamiti.fileuploader;
 
 
 import es.iti.wakamiti.api.event.Event;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.After;
 import org.junit.Before;

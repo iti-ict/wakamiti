@@ -6,11 +6,11 @@
 package es.iti.wakamiti.test.core.types;
 
 
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.util.Either;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.backend.ExpressionMatcher;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -115,6 +115,16 @@ public class TestExpressionMatcher {
                 "se realiza la búsqueda *",
                 "se realiza la búsqueda",
                 "se realiza la búsqueda de algo"
+        );
+    }
+
+    @Test
+    public void testExpressionStep6() {
+        assertExpression(
+                new Locale("es"),
+                "se realiza la búsqueda en {duration}",
+                "se realiza la búsqueda en 5 segundos",
+                "se realiza la búsqueda en 1 hora"
         );
     }
 

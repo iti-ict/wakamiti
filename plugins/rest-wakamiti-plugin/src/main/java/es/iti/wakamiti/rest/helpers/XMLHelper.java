@@ -31,7 +31,7 @@ import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-xml-helper",
-        version = "2.5",
+        version = "2.6",
         extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class XMLHelper implements ContentTypeHelper {

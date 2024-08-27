@@ -7,8 +7,8 @@ package es.iti.wakamiti.api.extensions;
 
 
 import es.iti.commons.jext.ExtensionPoint;
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

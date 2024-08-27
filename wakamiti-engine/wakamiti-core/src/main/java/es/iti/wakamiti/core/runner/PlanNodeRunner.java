@@ -17,7 +17,7 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.time.Instant;
 import java.util.*;

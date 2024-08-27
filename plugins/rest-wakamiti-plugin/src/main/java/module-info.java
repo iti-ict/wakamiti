@@ -12,17 +12,15 @@ import es.iti.wakamiti.rest.RestStepContributor;
 module es.iti.wakamiti.rest {
 
     exports es.iti.wakamiti.rest;
-    exports es.iti.wakamiti.rest.oauth;
     exports es.iti.wakamiti.rest.helpers;
     exports es.iti.wakamiti.rest.log;
-    exports es.iti.wakamiti.rest.matcher;
 
     requires es.iti.wakamiti.api;
     requires junit;
     requires org.hamcrest;
     requires rest.assured;
     requires rest.assured.common;
-    requires plexus.utils;
+//    requires plexus.utils;
     requires json.schema.validator;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.dataformat.xml;

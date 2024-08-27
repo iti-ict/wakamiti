@@ -16,7 +16,7 @@ import es.iti.wakamiti.core.gherkin.parser.Examples;
 import es.iti.wakamiti.core.gherkin.parser.Feature;
 import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
 import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.*;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "gherkin-redefinition-transformer", version = "1.1")
+@Extension(provider = "es.iti.wakamiti", name = "gherkin-redefinition-transformer", version = "2.6")
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
         implements PlanTransformer {
 

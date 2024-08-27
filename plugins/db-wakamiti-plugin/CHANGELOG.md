@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+## [unreleased]
+
+### Fixed
+- Row with all values set to null in xls file. (#267)
+- DateTime timezone issues.
+
+### Added
+- Duration data type.
+- More information is added to the error trace when compared to the closest matching record.
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [3.1.0] - 2024-04-16
 
 ### Fixed

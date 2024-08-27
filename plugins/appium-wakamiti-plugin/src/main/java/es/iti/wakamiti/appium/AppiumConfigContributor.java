@@ -1,14 +1,14 @@
 package es.iti.wakamiti.appium;
 
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.nio.file.Path;
 
-@Extension(provider =  "es.iti.wakamiti", name = "appium-config", version = "2.5",
+@Extension(provider =  "es.iti.wakamiti", name = "appium-config", version = "2.6",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class AppiumConfigContributor implements ConfigContributor<AppiumStepContributor> {
 
