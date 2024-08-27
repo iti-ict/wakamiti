@@ -1,0 +1,18 @@
+{
+  "id": "user2",
+  "name": "User Two",
+  "age": 12,
+  "vegetables": [
+    {
+      "id": 1,
+      "description": "Cucumber"
+    },
+    {
+      "id": 3,
+      "description": "Pickle"
+    }
+  ],
+  "contact": {
+    "email": "user2@mail"
+  }
+}

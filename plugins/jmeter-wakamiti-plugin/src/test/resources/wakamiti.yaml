@@ -1,0 +1,17 @@
+wakamiti:
+  resourceTypes: gherkin
+  outputFilePath: target/wakamiti.json
+  log:
+    level: off
+
+  jmeter:
+    oauth2:
+      url: http://host.docker.internal:8888/token
+      clientId: WEB
+      clientSecret: s3cr3t
+      parameters:
+        grant_type: password
+        username: abc
+        password: 123
+    csv:
+      eofStop: true

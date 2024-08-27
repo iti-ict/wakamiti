@@ -2,7 +2,6 @@ module es.iti.wakamiti.launcher {
 
     exports es.iti.wakamiti.launcher;
 
-    requires transitive imconfig;
     requires es.iti.wakamiti.core;
     requires maven.fetcher;
     requires java.instrument;

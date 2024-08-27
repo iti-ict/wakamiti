@@ -12,9 +12,9 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import io.restassured.RestAssured;
 import io.restassured.config.Config;
 import io.restassured.config.LogConfig;
@@ -23,13 +23,14 @@ import org.hamcrest.Matchers;
 
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 
 
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.5",
+@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.6",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 
@@ -83,11 +84,11 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(FAILURE_HTTP_CODE_THRESHOLD, Integer.class)
                 .map(Matchers::lessThan)
                 .map(MatcherAssertion<Integer>::new)
-                .ifPresent(contributor::setFailureHttpCodeAssertion);
-        configuration.get(TIMEOUT, Integer.class)
-                .ifPresent(contributor::setTimeoutInMillis);
+                .ifPresent(contributor::setHttpCodeAssertion);
+        configuration.get(TIMEOUT, Integer.class).map(Duration::ofMillis)
+                .ifPresent(contributor::setTimeout);
 
-        Oauth2ProviderConfig oauth2Provider = contributor.oauth2ProviderConfig;
+        Oauth2ProviderConfig oauth2Provider = contributor.oauth2Provider.configuration();
         configuration.get(OAUTH2_URL, URL.class).ifPresent(oauth2Provider::url);
         configuration.get(OAUTH2_CLIENT_ID, String.class).ifPresent(oauth2Provider::clientId);
         configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);

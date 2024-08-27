@@ -19,8 +19,8 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.parser.*;
-import imconfig.Configurable;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -41,7 +41,7 @@ import static java.util.Objects.isNull;
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin",
-        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "1.1")
+        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "2.6")
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(GherkinPlanBuilder.class);
@@ -402,6 +402,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder parentNode
     ) {
         return new PlanNodeBuilder(NodeType.STEP)
+                .setId(id(List.of(), step.getText(), ""))
                 .setKeyword(trim(step.getKeyword()))
                 .setName(trim(step.getText()))
                 .setDisplayNamePattern("{keyword} {name}")

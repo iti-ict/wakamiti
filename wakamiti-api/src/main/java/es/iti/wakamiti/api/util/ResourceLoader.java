@@ -10,7 +10,10 @@ import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -625,6 +628,18 @@ public class ResourceLoader {
      */
     public interface Parser<T> {
         T parse(InputStream stream, Charset charset) throws IOException;
+    }
+
+    public static Map<String, ContentType> contentTypeFromExtension = ConfigurationFactory.instance()
+            .fromResource("mime-types.properties", ResourceLoader.class.getClassLoader())
+            .asMap().entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> ContentType.create(e.getValue())));
+
+    public static ContentType getContentType(File file) {
+        return Optional.of(file.getName())
+                .map(FileUtils::getExtension)
+                .map(ResourceLoader.contentTypeFromExtension::get)
+                .orElse(ContentType.DEFAULT_BINARY);
     }
 
 }

@@ -19,7 +19,7 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.slf4j.Logger;
 
 import java.lang.annotation.Annotation;

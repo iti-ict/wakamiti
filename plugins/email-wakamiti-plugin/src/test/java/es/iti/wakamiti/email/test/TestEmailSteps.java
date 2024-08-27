@@ -12,8 +12,8 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import es.iti.wakamiti.email.EmailConfigContributor;
 import es.iti.wakamiti.email.EmailHelper;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.AfterClass;
@@ -32,8 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         @Property(key = EmailConfigContributor.ADDRESS, value = "test@localhost"),
         @Property(key = EmailConfigContributor.PASSWORD, value = "test"),
         @Property(key = EmailConfigContributor.STORE_PORT, value = "2345"),
-        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps"),
-        @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json")
+        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.email.test.TestEmailSteps")
 })
 @I18nResource("test-steps")
 public class TestEmailSteps implements StepContributor {

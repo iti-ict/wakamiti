@@ -3,9 +3,9 @@ package ${package}.test;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Configuration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.junit.runner.RunWith;
 
 @RunWith(WakamitiJUnitRunner.class)

@@ -6,7 +6,7 @@
 package es.iti.wakamiti.launcher;
 
 
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;

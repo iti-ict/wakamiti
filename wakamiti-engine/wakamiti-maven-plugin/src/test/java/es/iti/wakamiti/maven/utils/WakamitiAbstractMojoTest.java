@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.maven.utils;
 
+
 import es.iti.wakamiti.core.Wakamiti;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+
 
 public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
 
@@ -52,6 +54,7 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
                 .getPluginDescriptor().getPluginLookupKey());
         execution.getMojoDescriptor().getPluginDescriptor().setPlugin(plugin);
         Mojo mojo = lookupConfiguredMojo(session, execution);
+        mojo.setLog(new TestLogger());
         assertThat(mojo).isNotNull();
         try {
             mojo.execute();

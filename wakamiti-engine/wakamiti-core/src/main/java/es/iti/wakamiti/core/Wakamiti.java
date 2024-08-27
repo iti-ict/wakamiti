@@ -22,7 +22,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.backend.DefaultBackendFactory;
 import es.iti.wakamiti.core.runner.PlanRunner;
 import es.iti.wakamiti.core.util.TagFilter;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.slf4j.Logger;
 
 import java.io.*;

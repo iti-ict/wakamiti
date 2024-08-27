@@ -16,10 +16,7 @@ import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.core.backend.RunnableBackend;
 import org.apache.xmlbeans.XmlObject;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +46,7 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      */
     @Override
     public Pattern pattern() {
-        return Pattern.compile("\\$\\{(?<name>((-?\\d+)#((?!\\$\\{|\\}).)*))\\}");
+        return Pattern.compile("\\$\\{(?<name>((-?[\\w-]+)#((?!\\$\\{|}).)*))}");
     }
 
     /**
@@ -63,15 +60,26 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      */
     @Override
     public String evalProperty(String property, Matcher matcher) {
-        String name = matcher.group("name");
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
-        int step = Integer.parseInt(matcher.group(3));
-        List<?> steps = Optional.ofNullable(context.backend().getExtraProperties()
+        Map<?, ?> steps = Optional.ofNullable(context.backend().getExtraProperties()
                         .get(RunnableBackend.ContextMap.RESULTS_PROP))
-                .map(List.class::cast)
-                .orElse(new LinkedList<>());
-        Object result = steps.get(step < 0 ? steps.size() + step : step - 1);
-        String fragment = name.replaceAll("^-?\\d+#", "").trim();
+                .map(Map.class::cast)
+                .orElse(new LinkedHashMap<>());
+
+        String name = matcher.group("name");
+        String id = name.split("#")[0].trim();
+        String fragment = name.replace(id + "#", "").trim();
+        Object result;
+        try {
+            int step = Integer.parseInt(id);
+            result = steps.values().toArray()[step < 0 ? steps.size() + step : step - 1];
+            if (result == null) {
+                throw new NullPointerException();
+            }
+        } catch (Exception e) {
+            result = steps.get(id);
+        }
+
         String evaluation = Objects.toString(result);
         if (!fragment.isBlank()) {
             try {

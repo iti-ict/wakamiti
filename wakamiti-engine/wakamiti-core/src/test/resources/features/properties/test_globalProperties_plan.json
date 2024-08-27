@@ -1,0 +1,718 @@
+{
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "children" : [ {
+    "nodeType" : "AGGREGATOR",
+    "id" : "#h493e5",
+    "name" : "Pruebas de propiedades dinámicas 1",
+    "keyword" : "Característica",
+    "language" : "es",
+    "source" : "src/test/resources/features/properties/test_globalProperties.feature[2,1]",
+    "displayName" : "Característica: Pruebas de propiedades dinámicas 1",
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "children" : [ {
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-1",
+      "name" : "Escenario tipo número",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "src/test/resources/features/properties/test_globalProperties.feature[5,3]",
+      "displayName" : "[ID-1] Escenario: Escenario tipo número",
+      "tags" : [ "ID-1" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Pruebas de propiedades dinámicas 1"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "un número entero 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[6,5]",
+        "displayName" : "* un número entero 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número entero 8",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[7,5]",
+        "displayName" : "* un número entero 8",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número entero ${1#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[8,5]",
+        "displayName" : "* un número entero ${1#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número decimal 3,2",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[9,5]",
+        "displayName" : "* un número decimal 3,2",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número decimal ${number.decimal}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[10,5]",
+        "displayName" : "* un número decimal ${number.decimal}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número decimal ${4#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[11,5]",
+        "displayName" : "* un número decimal ${4#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número int 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[12,5]",
+        "displayName" : "* un número int 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número int ${number.integer}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[13,5]",
+        "displayName" : "* un número int ${number.integer}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número int ${7#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[14,5]",
+        "displayName" : "* un número int ${7#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número short 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[15,5]",
+        "displayName" : "* un número short 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número short ${number.integer}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[16,5]",
+        "displayName" : "* un número short ${number.integer}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número short ${10#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[17,5]",
+        "displayName" : "* un número short ${10#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número long 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[18,5]",
+        "displayName" : "* un número long 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número long ${number.integer}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[19,5]",
+        "displayName" : "* un número long ${number.integer}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número long ${13#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[20,5]",
+        "displayName" : "* un número long ${13#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número biginteger 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[21,5]",
+        "displayName" : "* un número biginteger 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número biginteger ${number.integer}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[22,5]",
+        "displayName" : "* un número biginteger ${number.integer}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número biginteger ${16#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[23,5]",
+        "displayName" : "* un número biginteger ${16#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número byte 6",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[24,5]",
+        "displayName" : "* un número byte 6",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número byte ${number.integer}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[25,5]",
+        "displayName" : "* un número byte ${number.integer}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número byte ${19#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[26,5]",
+        "displayName" : "* un número byte ${19#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número double 3,2",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[27,5]",
+        "displayName" : "* un número double 3,2",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número double ${number.decimal}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[28,5]",
+        "displayName" : "* un número double ${number.decimal}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número double ${22#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[29,5]",
+        "displayName" : "* un número double ${22#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número float 3,2",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[30,5]",
+        "displayName" : "* un número float 3,2",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número float ${number.decimal}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[31,5]",
+        "displayName" : "* un número float ${number.decimal}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número float ${25#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[32,5]",
+        "displayName" : "* un número float ${25#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número bigdecimal 3,2",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[33,5]",
+        "displayName" : "* un número bigdecimal 3,2",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número bigdecimal ${number.decimal}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[34,5]",
+        "displayName" : "* un número bigdecimal ${number.decimal}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un número bigdecimal ${28#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[35,5]",
+        "displayName" : "* un número bigdecimal ${28#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-2",
+      "name" : "Escenario tipo fecha y tiempo",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "src/test/resources/features/properties/test_globalProperties.feature[38,3]",
+      "displayName" : "[ID-2] Escenario: Escenario tipo fecha y tiempo",
+      "tags" : [ "ID-2" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Pruebas de propiedades dinámicas 1"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "ahora son las 10:05",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[39,5]",
+        "displayName" : "* ahora son las 10:05",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "ahora son las 10:05:03",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[40,5]",
+        "displayName" : "* ahora son las 10:05:03",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "ahora son las 10:05:03.123",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[41,5]",
+        "displayName" : "* ahora son las 10:05:03.123",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "ahora son las ${datetime.now}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[42,5]",
+        "displayName" : "* ahora son las ${datetime.now}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "ahora son las ${3#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[43,5]",
+        "displayName" : "* ahora son las ${3#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "hoy es 2023-01-10",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[44,5]",
+        "displayName" : "* hoy es 2023-01-10",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "hoy es ${datetime.today}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[45,5]",
+        "displayName" : "* hoy es ${datetime.today}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "hoy es ${6#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[46,5]",
+        "displayName" : "* hoy es ${6#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "este instante es 2023-01-10T10:05",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[47,5]",
+        "displayName" : "* este instante es 2023-01-10T10:05",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "este instante es 2023-01-10T10:05:03",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[48,5]",
+        "displayName" : "* este instante es 2023-01-10T10:05:03",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "este instante es 2023-01-10T10:05:03.123",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[49,5]",
+        "displayName" : "* este instante es 2023-01-10T10:05:03.123",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "este instante es ${datetime.today}T${datetime.now}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[50,5]",
+        "displayName" : "* este instante es ${datetime.today}T${datetime.now}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "este instante es ${10#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[51,5]",
+        "displayName" : "* este instante es ${10#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-3",
+      "name" : "Escenario tipo string",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "src/test/resources/features/properties/test_globalProperties.feature[54,3]",
+      "displayName" : "[ID-3] Escenario: Escenario tipo string",
+      "tags" : [ "ID-3" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Pruebas de propiedades dinámicas 1"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "un string 'ABC aa'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[55,5]",
+        "displayName" : "* un string 'ABC aa'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un string '${text} aa'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[56,5]",
+        "displayName" : "* un string '${text} aa'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un string '${1#}'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[57,5]",
+        "displayName" : "* un string '${1#}'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un texto 'ABC aa'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[58,5]",
+        "displayName" : "* un texto 'ABC aa'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un texto '${text} aa'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[59,5]",
+        "displayName" : "* un texto '${text} aa'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un texto '${4#}'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[60,5]",
+        "displayName" : "* un texto '${4#}'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una palabra ABC",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[61,5]",
+        "displayName" : "* una palabra ABC",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una palabra ${text}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[62,5]",
+        "displayName" : "* una palabra ${text}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una palabra ${7#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[63,5]",
+        "displayName" : "* una palabra ${7#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un id ABC",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[64,5]",
+        "displayName" : "* un id ABC",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un id ${text}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[65,5]",
+        "displayName" : "* un id ${text}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un id ${10#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[66,5]",
+        "displayName" : "* un id ${10#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-4",
+      "name" : "Escenario tipo fichero",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "src/test/resources/features/properties/test_globalProperties.feature[69,3]",
+      "displayName" : "[ID-4] Escenario: Escenario tipo fichero",
+      "tags" : [ "ID-4" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Pruebas de propiedades dinámicas 1"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "un fichero 'src/test/resources/features/properties/ABC'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[70,5]",
+        "displayName" : "* un fichero 'src/test/resources/features/properties/ABC'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un fichero 'src/test/resources/features/properties/${text}'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[71,5]",
+        "displayName" : "* un fichero 'src/test/resources/features/properties/${text}'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un fichero '${1#}'",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[72,5]",
+        "displayName" : "* un fichero '${1#}'",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "un fichero 'src/test/resources/features/properties/ABC' con el siguiente contenido:",
+        "keyword" : "Y",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[73,5]",
+        "displayName" : "Y un fichero 'src/test/resources/features/properties/ABC' con el siguiente contenido:",
+        "properties" : {
+          "gherkinType" : "step"
+        },
+        "document" : "The number is 6."
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-5",
+      "name" : "Escenario tipo URL",
+      "keyword" : "Escenario",
+      "language" : "es",
+      "source" : "src/test/resources/features/properties/test_globalProperties.feature[79,3]",
+      "displayName" : "[ID-5] Escenario: Escenario tipo URL",
+      "tags" : [ "ID-5" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "Pruebas de propiedades dinámicas 1"
+      },
+      "children" : [ {
+        "nodeType" : "STEP",
+        "name" : "una URL https://test.es/ABC",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[80,5]",
+        "displayName" : "* una URL https://test.es/ABC",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una URL ${url}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[81,5]",
+        "displayName" : "* una URL ${url}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una URL https://${host}/${text}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[82,5]",
+        "displayName" : "* una URL https://${host}/${text}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "nodeType" : "STEP",
+        "name" : "una URL ${1#}",
+        "keyword" : "*",
+        "language" : "es",
+        "source" : "src/test/resources/features/properties/test_globalProperties.feature[83,5]",
+        "displayName" : "* una URL ${1#}",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      } ]
+    } ]
+  } ]
+}

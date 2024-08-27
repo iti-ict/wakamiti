@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [unreleased]
+
+### Added
+- Duration data type and Duration assertion.
+- DateTime assertion.
+- DateTime `yyyy-MM-dd[ hh:mm:ss[.SSS][Z]]` to ISO 8601 DateTime formats
+
+### Changed
+- Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
+- The StepPropertyEvaluator accepts both step index and the step `id`.
+- Step nodes have ids.
+
+### Fixed
+- The junit wakamiti configuration is modified to set the default output path of the current project.
+- Reset classpath on every run of `wakamiti-maven-plugin` verify mojo.
+
+
 ## [2.5.0] - 2024-04-16
 
 ### Fixed

@@ -10,7 +10,7 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.Test;
 
 import java.util.HashMap;
