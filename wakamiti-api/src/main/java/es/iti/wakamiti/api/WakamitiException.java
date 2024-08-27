@@ -8,6 +8,8 @@ package es.iti.wakamiti.api;
 
 import java.util.Arrays;
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
+
 
 /**
  * An exception class specific to Wakamiti, providing additional features for
@@ -57,7 +59,7 @@ public class WakamitiException extends RuntimeException {
      *             and may be zero.
      */
     public WakamitiException(String message, Object... args) {
-        super(replace(message, argsWithoutThrowable(args)), throwable(args));
+        super(format(message, argsWithoutThrowable(args)), throwable(args));
     }
 
     /**
@@ -75,19 +77,6 @@ public class WakamitiException extends RuntimeException {
     }
 
 
-    private static String replace(String message, Object[] args) {
-        StringBuilder s = new StringBuilder(message);
-        for (Object arg : args) {
-            int pos = s.indexOf("{}");
-            if (pos == -1) {
-                break;
-            }
-            s.replace(pos, pos + 2, String.valueOf(arg));
-        }
-        return s.toString();
-    }
-
-
     private static Object[] argsWithoutThrowable(Object[] args) {
         return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);
     }
@@ -97,8 +86,7 @@ public class WakamitiException extends RuntimeException {
         if (args == null || args.length == 0) {
             return null;
         }
-        return args[args.length - 1] instanceof Throwable ? (Throwable) args[args.length - 1]
-                        : null;
+        return args[args.length - 1] instanceof Throwable ? (Throwable) args[args.length - 1] : null;
     }
 
 }

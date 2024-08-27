@@ -1,135 +1,203 @@
+/**
+ * The current filtered pages.
+ *
+ * @type {*[]}
+ */
+let cp = [];
 
-let currentPages = [];
-
-function toHTML(s) { return s?.toLowerCase().replace('_', '-')}
-
-function flatten(c) {
-    return c.map((it) => it.t !== 'STEP' && it.t !== 'VIRTUAL_STEP' && it.c ? flatten(it.c) : it).flat(Infinity)
+/**
+ * Replace some values to display correctly in HTML.
+ *
+ * @param {string} s The string value.
+ * @returns {string | undefined}
+ */
+function toHTML(s) {
+    return s?.toLowerCase().replace('_', '-');
 }
 
+/**
+ * Flattens a nested array to a single depth level.
+ *
+ * @param {Array} c - The array to be flattened.
+ * @returns {Array} - The flattened array.
+ */
+function flatten(c) {
+    return c.map((it) => it.t !== 'STEP' && it.t !== 'VIRTUAL_STEP' && it.c ? flatten(it.c) : it)
+        .flat(Infinity);
+}
+
+/**
+ * Sets the given value as the current page.
+ *
+ * @param {number} n The current page number
+ */
 function setPage(n) {
     document.getElementById('current-page').value = n;
     // console.log('Page set to ' + n);
 }
 
+/**
+ * Gets the current page number.
+ *
+ * @returns {number}
+ */
 function getPage() {
     return parseInt(document.getElementById('current-page').value);
 }
 
+/**
+ * Gets the current selected features per page number.
+ *
+ * @returns {number}
+ */
 function getPageSize() {
     return parseInt(document.getElementById('numElements').value);
 }
 
+/**
+ * Removes the hash part from the URL.
+ */
 function resetUrl() {
     if (window.location.href.includes('#')) {
         window.history.pushState({}, document.title, window.location.href.split('#')[0]);
     }
 }
 
+/**
+ * Renders the content of mustache templates.
+ */
 function render() {
-    for (let elem of document.getElementsByClassName('mustache')) {
-        $(elem).find('li:not(.loader):not(.empty)').remove();
-        $(elem).find('.empty').hide(50);
+    // clean the mustache panels
+    for (let e of document.getElementsByClassName('mustache')) {
+        $(e).find('li:not(.loader):not(.empty)').remove();
+        $(e).find('.empty').hide(50);
     }
     const data = filtered();
-    for (let elem of document.getElementsByClassName('mustache')) {
-        if (!elem.id) elem.id = Math.random().toString().replace("0.", "");
-        const id = elem.getAttribute("data-template");
-        const func = elem.getAttribute("data-prev");
+    // send data to mustache panels
+    for (let e of document.getElementsByClassName('mustache')) {
+        if (!e.id) e.id = Math.random().toString().replace("0.", "");
+        const id = e.getAttribute("data-template");
+        const func = e.getAttribute("data-prev");
         const aux = func ? this[func](data) : data;
-        window.worker.postMessage({uuid: elem.id, id, value: {c: aux}});
+        window.worker.postMessage({uuid: e.id, id, value: {c: aux}});
     }
 }
 
+/**
+ * Sets the pages according to the applied filters and selected settings.
+ */
 function makePages() {
-    const data = filtered();
-    const pageSize = getPageSize();
+    const d = filtered();
+    const ps = getPageSize();
     // console.log('Page size: ' + pageSize);
-    const total = Math.ceil(data.length / pageSize);
-    currentPages = Array.from({length: total}, (v, index) => {
-        const init = pageSize * index;
-        return data.slice(init, init + pageSize);
+    cp = Array.from({length: Math.ceil(d.length / ps)}, (v, i) => {
+        const f = ps * i;
+        return d.slice(f, f + ps);
     });
 }
 
+/**
+ * Returns the current page.
+ *
+ * @param data Unused parameter
+ * @returns {*}
+ */
 function page(data) {
-    return currentPages[getPage() - 1]
+    return cp[getPage() - 1]
 }
 
+/**
+ * Generates the paging elements from the given data and the paging
+ * configuration.
+ *
+ * @param data {*[]} The data
+ * @returns {[{current: number, total: number, pages: string[]}]}
+ */
 function pages(data) {
-    const page = getPage() - 1;
-    const pageSize = getPageSize();
-    const total = Math.ceil(data.length / pageSize);
-    const size = Math.min(total, 7);
-    const half = Math.floor(size * .5);
-
-    let pages = Array.from({length: size}, (v, index) => {
-        if (page < half) {
-            return 1 + index;
-        } else if (page > (total - half)) {
-            return total - size + 1 + index;
+    const p = getPage();
+    const t = Math.ceil(data.length / getPageSize());
+    const s = Math.min(t, 7);
+    const h = Math.ceil(s * .5);
+    // console.log('page: ' + p);
+    // console.log('total: ' + t);
+    // console.log('size: ' + s);
+    // console.log('half: ' + h);
+    let pages = Array.from({length: s}, (v, i) => {
+        if (p < h) {
+            return 1 + i;
+        } else if (p > (t - h)) {
+            return t - s + 1 + i;
         } else {
-            return page - half + 1 + index;
+            return p - h + 1 + i;
         }
     });
-    if (pages.length < total) {
+    if (pages.length < t) {
         if (pages[0] > 1) {
             pages[0] = '...';
         }
-        if (pages.at(-1) < total) {
+        if (pages.at(-1) < t) {
             pages[pages.length - 1] = '...';
         }
     }
     // console.log("Pages: " + pages);
-    return [{current: page + 1, total, pages}];
+    return [{current: p, total: t, pages}];
 }
 
+/**
+ * Gets the checked status list.
+ *
+ * @returns {string[]}
+ */
 function statuses() {
-    const statuses = [];
-    for (let elem of document.querySelectorAll('.nav-menu--control input')) {
-        if (elem.checked) statuses.push(elem.value);
+    const a = [];
+    for (let e of document.querySelectorAll('.nav-menu--control input')) {
+        if (e.checked) a.push(e.value);
     }
-    return statuses;
+    return a;
 }
 
-
+/**
+ * Applies the filters set to the result data.
+ *
+ * @returns {*[]}
+ */
 function filtered() {
     // filter by results
-    let aux = JSON.parse(data).c.reduce((rf, feature) => {
-        feature.c = feature.c.reduce((rs, scenario) => {
-            if (scenario.t === 'AGGREGATOR') {
-                scenario.c = scenario.c.filter((s) => {return statuses().includes(s.r)});
-                if (scenario.c.length > 0) rs.push(scenario);
-            } else if (statuses().includes(scenario.r)) {
-                rs.push(scenario);
+    let aux = JSON.parse(data).c.reduce((rf, f) => {
+        f.c = f.c.reduce((rs, sc) => {
+            if (sc.t === 'AGGREGATOR') {
+                sc.c = sc.c.filter((s) => {return statuses().includes(s.r)});
+                if (sc.c.length > 0) rs.push(sc);
+            } else if (statuses().includes(sc.r)) {
+                rs.push(sc);
             }
             return rs;
         }, []);
-        if (feature.c.length > 0) rf.push(feature);
+        if (f.c.length > 0) rf.push(f);
         return rf;
     }, []);
 
     // filter by text
     const text = document.getElementById("search-input").value.toLowerCase();
     if (text) {
-        aux = aux.reduce((rf, feature) => {
-            feature.c = feature.c.reduce((rs, scenario) => {
-                if (scenario.t === "AGGREGATOR") {
-                    scenario.c = scenario.c.filter((s) => {
+        aux = aux.reduce((rf, f) => {
+            f.c = f.c.reduce((rs, sc) => {
+                if (sc.t === "AGGREGATOR") {
+                    sc.c = sc.c.filter((s) => {
                         return s.n.toLowerCase().includes(text)
                             || s.g?.some((it) => ('@' + it).toLowerCase().includes(text))
                             || s.l?.some((it) => it.toLowerCase().includes(text));
                     });
-                    if (scenario.c.length > 0) rs.push(scenario);
-                } else if (scenario.n.toLowerCase().includes(text)
-                    || scenario.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-                    || scenario.l?.some((it) => it.toLowerCase().includes(text))
+                    if (sc.c.length > 0) rs.push(sc);
+                } else if (sc.n.toLowerCase().includes(text)
+                    || sc.g?.some((it) => ('@' + it).toLowerCase().includes(text))
+                    || sc.l?.some((it) => it.toLowerCase().includes(text))
                 ) {
-                    rs.push(scenario);
+                    rs.push(sc);
                 }
                 return rs;
             }, []);
-            if (feature.c.length > 0) rf.push(feature);
+            if (f.c.length > 0) rf.push(f);
             return rf;
         }, []);
     }
@@ -137,92 +205,98 @@ function filtered() {
     return aux;
 }
 
+/**
+ * Sets the page on which the given feature or scenario id is located as the current page.
+ *
+ * @param {string} id The feature or scenario id.
+ */
 function searchPage(id) {
     // console.log('Searching id ' + id);
-    // console.log('Current pages: ' + JSON.stringify(currentPages));
-    const index = currentPages.findIndex((page) => {
-        return page.some((feature) => {
-            return feature.i === id || feature.c?.some((scenario) => {
-                if (scenario.t === "AGGREGATOR") {
-                    return scenario.c?.some((s) => s.i === id);
+    // console.log('Current pages: ' + JSON.stringify(cp));
+    const i = cp.findIndex((p) => {
+        return p.some((f) => {
+            return f.i === id || f.c?.some((sc) => {
+                if (sc.t === "AGGREGATOR") {
+                    return sc.c?.some((s) => s.i === id);
                 } else {
-                    return scenario.i === id;
+                    return sc.i === id;
                 }
             });
         })
     });
-    if (index === -1) {
+    if (i === -1) {
         throw new Error('Id \'' + id + '\' not found');
     }
-    if ((index + 1) !== getPage()) {
+    if ((i + 1) !== getPage()) {
         $('.loader').show(50);
-        setPage(index + 1);
+        setPage(i + 1);
         render();
     }
 }
 
-function hasClass(elem, className) {
-    return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
-}
-
-
-function toggleOff(elem, className) {
-    let newClass = ' ' + elem.className.replace(/[\t\r\n]/g, " ") + ' ';
-    while (newClass.indexOf(" " + className + " ") >= 0) {
-        newClass = newClass.replace(" " + className + " ", " ");
+/**
+ * Toggles a class on a specific element within a group of elements.
+ *
+ * @param {HTMLElement} e The HTML element to toggle the class on.
+ * @param {string} c The class name to be toggled.
+ */
+function toggleGroup(e, c) {
+    let p = e.parentElement;
+    while (p.nodeName.toLowerCase() !== 'li') {
+        p = p.parentElement;
     }
-    elem.className = newClass.replace(/^\s+|\s+$/g, '');
-}
-
-
-function toggleClass(elem, className) {
-    if (hasClass(elem, className)) {
-        toggleOff(elem, className);
-    } else {
-        elem.className += ' ' + className;
+    const on = $(e).hasClass(c);
+    for (let t of p.getElementsByClassName('toggle')) {
+        $(t).removeClass(c);
     }
-}
-
-
-function toggleGroup(elem, className) {
-    let parent = elem.parentElement;
-    while (parent.nodeName.toLowerCase() !== 'li') {
-        parent = parent.parentElement;
-    }
-
-    const on = hasClass(elem, className);
-
-    for (let toggle of parent.getElementsByClassName('toggle')) {
-        toggleOff(toggle, className);
-    }
-
     if (!on) {
-        toggleClass(elem, className);
+        $(e).toggleClass(c);
     }
 }
 
-
-function getColor(name) {
-    name = '--' + name.toLowerCase().replaceAll(' ', '-') + '-color';
-    return getComputedStyle(document.documentElement).getPropertyValue(name);
+/**
+ * Gets the css color of the given result type.
+ *
+ * @param {string} t The result type
+ * @returns {string}
+ */
+function getColor(t) {
+    t = '--' + t.toLowerCase().replaceAll(' ', '-') + '-color';
+    return getComputedStyle(document.documentElement).getPropertyValue(t);
 }
 
-function getErrorColor(index){
-    name = '--error-classifier' + index;
-    return getComputedStyle(document.documentElement).getPropertyValue(name);
-
+/**
+ * Gets the css color of the given error classifier.
+ *
+ * @param {number} i The error index
+ * @returns {string}
+ */
+function getErrorColor(i){
+    return getComputedStyle(document.documentElement).getPropertyValue('--error-classifier' + i);
 }
-function newChart(elem, labels, data, backgroundColor) {
 
-    const datasets = [{
-        data,
-        backgroundColor,
-        hoverOffset: 4,
-        borderWidth: [0, 0, 0, 0],
-    }];
-    new Chart(elem, {
+/**
+ * Generate chart.
+ *
+ * @param {HTMLElement} e The html element
+ * @param l The labels
+ * @param {*} d The data
+ * @param {string[]} bg The background colors
+ */
+function newChart(e, l, d, bg) {
+    new Chart(e, {
         type: 'doughnut',
-        data: {labels, datasets},
+        data: {
+            labels: l,
+            datasets: [
+                {
+                    data: d,
+                    backgroundColor: bg,
+                    hoverOffset: 4,
+                    borderWidth: [0, 0, 0, 0],
+                }
+            ]
+        },
         options: {
             responsive: false,
             maintainAspectRatio: true,
@@ -238,7 +312,7 @@ function newChart(elem, labels, data, backgroundColor) {
                     }
                 },
                 htmlLegend: {
-                    container: elem.parentElement,
+                    container: e.parentElement,
                 },
                 legend: {
                     display: false,
@@ -247,72 +321,72 @@ function newChart(elem, labels, data, backgroundColor) {
         },
         plugins: [{
             beforeDraw: function (chart, a, b) {
-                let width = chart.width,
-                    height = chart.height,
+                let w = chart.width,
+                    h = chart.height,
                     ctx = chart.ctx;
 
                 ctx.restore();
-                let fontSize = (height / 100).toFixed(2);
-                ctx.font = fontSize + "em sans-serif";
+                let fs = (h / 100).toFixed(2);
+                ctx.font = fs + "em sans-serif";
                 ctx.textBaseline = "middle";
 
-                let text = data.filter((label, i) => chart.getDataVisibility(i)).reduce((a, b) => a + b, 0).toString(),
-                    textX = Math.round((width - ctx.measureText(text).width) / 2),
-                    textY = height / 2;
+                let t = d.filter((label, i) => chart.getDataVisibility(i)).reduce((a, b) => a + b, 0).toString(),
+                    tX = Math.round((w - ctx.measureText(t).width) / 2),
+                    tY = h / 2;
 
-                ctx.fillText(text, textX, textY);
+                ctx.fillText(t, tX, tY);
                 ctx.save();
             },
         },{
             id: 'htmlLegend',
-            afterUpdate(chart, args, options) {
-                if (options.container.querySelector('ul')) {
-                    options.container.querySelector('ul').remove();
+            afterUpdate(chart, args, op) {
+                if (op.container.querySelector('ul')) {
+                    op.container.querySelector('ul').remove();
                 }
 
-                const legend = document.createElement('ul');
-                legend.className = 'chart-legend';
+                const le = document.createElement('ul');
+                le.className = 'chart-legend';
 
                 // Reuse the built-in legendItems generator
-                const items = chart.options.plugins.legend.labels.generateLabels(chart);
+                const its = chart.options.plugins.legend.labels.generateLabels(chart);
 
-                items.forEach(item => {
+                its.forEach(it => {
                     const li = document.createElement('li');
                     li.onclick = () => {
-                        chart.toggleDataVisibility(item.index);
+                        chart.toggleDataVisibility(it.index);
                         chart.update();
                     };
 
                     // Color box
-                    const boxSpan = document.createElement('span');
-                    boxSpan.style.background = item.fillStyle;
-                    boxSpan.style.borderColor = item.strokeStyle;
-                    boxSpan.style.padding = '8px';
-                    boxSpan.style.borderWidth = item.lineWidth + 'px';
+                    const s = document.createElement('span');
+                    s.style.background = it.fillStyle;
+                    s.style.borderColor = it.strokeStyle;
+                    s.style.padding = '8px';
+                    s.style.borderWidth = it.lineWidth + 'px';
 
                     // Text
-                    const textContainer = document.createElement('p');
-                    textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
+                    const txt = document.createElement('p');
+                    txt.style.textDecoration = it.hidden ? 'line-through' : '';
+                    txt.appendChild(document.createTextNode(it.text));
 
-                    const text = document.createTextNode(item.text);
-                    textContainer.appendChild(text);
-
-                    li.appendChild(boxSpan);
-                    li.appendChild(textContainer);
-                    legend.appendChild(li);
+                    li.appendChild(s);
+                    li.appendChild(txt);
+                    le.appendChild(li);
                 });
-                options.container.appendChild(legend);
+                op.container.appendChild(le);
             }
         }]
     });
 }
 
-
+/**
+ * Retrieves the mustache templates.
+ */
 function load() {
     // Mustache
     window.templates = {};
-    for (let elem of document.querySelectorAll('script[type="x-tmpl-mustache"]')) {
-        window.templates[elem.id] = elem.innerHTML;
+    for (let e of document.querySelectorAll('script[type="x-tmpl-mustache"]')) {
+        window.templates[e.id] = e.innerHTML;
         // console.log(`Template '${elem.id}' loaded`)
     }
     makePages();
@@ -324,17 +398,20 @@ function load() {
     }
 }
 
+/**
+ * Create buttons.
+ */
 function buttons() {
-    for (let elem of document.getElementsByClassName('toggle')) {
-        elem.onclick = function () {
-            toggleClass(this, 'on');
+    for (let e of document.getElementsByClassName('toggle')) {
+        e.onclick = function () {
+            $(this).toggleClass('on');
             return false;
         }
     }
 
-    document.addEventListener('click', (event) => {
-        if (!event.composedPath().includes(document.querySelector('nav.collapsable'))
-                && !event.composedPath().includes(document.querySelector('.menu-button'))) {
+    document.addEventListener('click', (e) => {
+        if (!e.composedPath().includes(document.querySelector('nav.collapsable'))
+                && !e.composedPath().includes(document.querySelector('.menu-button'))) {
             $('.menu-button.on').removeClass('on');
         }
     });
@@ -343,8 +420,8 @@ function buttons() {
         $('.menu-button.on').removeClass('on');
     });
 
-    for (let elem of document.getElementsByClassName('toggle-group')) {
-        elem.onclick = function () {
+    for (let e of document.getElementsByClassName('toggle-group')) {
+        e.onclick = function () {
             toggleGroup(this, 'on');
             return false;
         }
@@ -394,43 +471,47 @@ function buttons() {
         searchPage($(this).attr('href').replace('#', '').toString());
     });
 
-    hljs.highlightAll();
+    // hljs.highlightAll();
 }
 
+/**
+ * Create charts.
+ */
 function charts() {
-    const charts = document.getElementsByClassName('chart');
+    for (let ch of document.getElementsByClassName('chart')) {
+        const r = JSON.parse(ch.getAttribute("data-result"));
+        const ls = Object.keys(r).map(k => k.replaceAll("_", " "));
+        const c = Object.values(r);
+        const bg = [];
 
-    for (let chart of charts) {
-        const result = JSON.parse(chart.getAttribute("data-result"));
-        const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
-        const counts = Object.values(result);
-        const backgroundColor = [];
-
-        for (let label of labels) {
-            backgroundColor.push(getColor(label));
+        for (let l of ls) {
+            bg.push(getColor(l));
         }
 
-        newChart(chart, labels, counts, backgroundColor);
+        newChart(ch, ls, c, bg);
     }
 
-    const chartsError = document.getElementsByClassName('chart-error');
+    for (let ch of document.getElementsByClassName('chart-error')) {
+        const r = JSON.parse(ch.getAttribute("data-result"));
+        const ls = Object.keys(r).map(k => k.replaceAll("_", " "));
+        const c = Object.values(r);
+        const bg = [];
 
-    for (let chart of chartsError) {
-        const result = JSON.parse(chart.getAttribute("data-result"));
-        const labels = Object.keys(result).map(k => k.replaceAll("_", " "));
-        const counts = Object.values(result);
-        const backgroundColor = [];
-
-        for (var i = 0; i < labels.length; i++) {
-            backgroundColor.push(getErrorColor(i));
+        for (let i = 0; i < ls.length; i++) {
+            bg.push(getErrorColor(i));
         }
 
-        newChart(chart, labels, counts, backgroundColor);
+        newChart(ch, ls, c, bg);
     }
 }
 
 // worker
 
+/**
+ * Generate template content.
+ *
+ * @param {MessageEvent} e The message event
+ */
 function generateContent(e) {
     const frag = new DocumentFragment();
     const el = document.getElementById(e.data.uuid);  // mustache element
@@ -438,34 +519,43 @@ function generateContent(e) {
 
     if (e.data.value.c.length > 0) {
         e.data.value.c.forEach((c) => {
-            const content = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
-                isAggregator: function(){return this.t === 'AGGREGATOR'},
-                toHTML: function () {return toHTML(this);},
-                toView: function () {return toHTML(this).split('-')
-                    .map((word) => {return word[0].toUpperCase() + word.substring(1);}).join(" ");},
-                isPassed: function () {return !['ERROR', 'FAILED', 'UNDEFINED'].includes(this.r)},
-                hasChildren: function(){return this.c?.length > 0},
-                hasTags: function(){return this.g?.length > 0},
-                cResults: function(){return Object.entries(this.tr)
-                    .map((it)=>{return {key: it[0], value: it[1]}});},
-                sum: function(){return Object.values(this.tr)
-                    .reduce((r, v) => {return r + v;}, 0)},
-                cFResults: function(){return Object.entries(flatten(this.c)
-                    .reduce((r, it) => {(r[it.r] = (r[it.r] || [])).push(it); return r;}, {}))
-                    .map((it)=>{return {key: it[0], value: it[1].length}});},
-                hasDoc: function(){return !!this.m || !!this.p || !!this.d;},
-                hasDataTable: function(){return !!this.d},
-                getHeader: function(){return this.d[0];},
-                getBody: function(){return this.d.slice(1);},
-                count: function(){return flatten(this.c).length;},
-                isNum: function(){return !isNaN(this)},
-                isFirst: function(){return this.current === 1;},
-                isLast: function() {return this.current === this.total},
-                prev: function(){return this.current - 1},
-                next: function(){return this.current + 1},
-                isCurrent: function() {return this == parseInt(document.getElementById('current-page').value)}
+            container.innerHTML = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
+                isAggregator: function(){ return this.t === 'AGGREGATOR' },
+                toHTML: function () { return toHTML(this) },
+                toView: function () {
+                    return toHTML(this).split('-')
+                        .map((word) => { return word[0].toUpperCase() + word.substring(1) })
+                        .join(" ")
+                },
+                isPassed: function () { return !['ERROR', 'FAILED', 'UNDEFINED'].includes(this.r) },
+                hasChildren: function(){ return this.c?.length > 0 },
+                hasTags: function(){ return this.g?.length > 0 },
+                cResults: function(){
+                    return Object.entries(this.tr)
+                        .map((it)=>{ return {key: it[0], value: it[1]} })
+                },
+                sum: function(){
+                    return Object.values(this.tr).reduce((r, v) =>  r + v, 0)
+                },
+                cFResults: function(){
+                    return Object.entries(flatten(this.c)
+                        .reduce((r, it) => { (r[it.r] = (r[it.r] || [])).push(it); return r }, {}))
+                        .map((it)=> { return {key: it[0], value: it[1].length} })
+                },
+                hasDoc: function(){ return !!this.m || !!this.p || !!this.d },
+                hasDataTable: function(){ return !!this.d },
+                getHeader: function(){ return this.d[0] },
+                getBody: function(){ return this.d.slice(1) },
+                count: function(){ return flatten(this.c).length },
+                isNum: function(){ return !isNaN(this) },
+                isFirst: function(){ return this.current === 1 },
+                isLast: function() { return this.current === this.total },
+                prev: function(){ return this.current - 1 },
+                next: function(){ return this.current + 1 },
+                isCurrent: function() {
+                    return this == parseInt(document.getElementById('current-page').value)
+                }
             }), window.templates);
-            container.innerHTML = content;
             frag.appendChild(container.firstElementChild);
         });
         $(el).find('li:not(.loader):not(.empty),button').remove();
@@ -488,8 +578,11 @@ function generateContent(e) {
 
 }
 
+/**
+ * Creates worker.
+ */
 function newWorker() {
-    var blob = new Blob([document.querySelector('#worker').textContent], { type: "text/javascript" });
+    const blob = new Blob([document.querySelector('#worker').textContent], { type: "text/javascript" });
     window.worker = new Worker((window.URL || window.webkitURL).createObjectURL(blob));
     let evs = {};
     window.worker.addEventListener('message', function(e) {
@@ -520,4 +613,3 @@ $(function () {
     charts();
     load();
 });
-

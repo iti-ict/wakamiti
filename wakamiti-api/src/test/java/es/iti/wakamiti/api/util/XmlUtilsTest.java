@@ -119,6 +119,7 @@ public class XmlUtilsTest {
         assertThat(result).isEqualTo("200");
 
         result = XmlUtils.readStringValue(object, "//response");
+        System.out.println(result);
         XmlAssert.assertThat(result).and("<response>"
                         + "<body><item><name>Arnold</name><age>47</age></item></body>"
                         + "<headers><content-type>application/json</content-type><keep-alive>true</keep-alive></headers>"
