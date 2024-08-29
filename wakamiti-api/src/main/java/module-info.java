@@ -39,7 +39,6 @@ module es.iti.wakamiti.api {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.groovy.xml;
-    requires Saxon.HE;
     requires org.apache.commons.codec;
     requires org.apache.commons.text;
 
