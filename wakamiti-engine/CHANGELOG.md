@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
 - The StepPropertyEvaluator accepts both step index and the step `id`.
 - Step nodes have ids.
+- The features can have a `tagId` and will be checked for uniqueness, as will test cases if the `strictTestCaseID` 
+  option is enabled.
 
 ### Fixed
 - The junit wakamiti configuration is modified to set the default output path of the current project.
