@@ -38,6 +38,8 @@ open module es.iti.wakamiti.core {
     requires java.instrument;
     requires org.apache.xmlbeans;
     requires org.apache.commons.lang3;
+    requires java.net.http;
+    requires json.path;
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 
