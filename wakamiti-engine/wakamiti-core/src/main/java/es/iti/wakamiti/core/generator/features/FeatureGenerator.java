@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class GenerateFeaturesService {
+public class FeatureGenerator {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(Wakamiti.class);
 
@@ -44,14 +44,26 @@ public class GenerateFeaturesService {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private final HttpClient client = HttpClient.newHttpClient();
+
+    private final String apiKey;
+    private final String apiDocs;
+    private final String prompt;
 
 
-    public void generate(String apiDocs, String generationPath, String apiKey) throws IOException, URISyntaxException {
-        HttpClient client = HttpClient.newHttpClient();
+    public FeatureGenerator(String apiKey, String apiDocs) throws URISyntaxException, IOException {
+        this.apiKey = apiKey;
+        this.apiDocs = parseApiDocs(apiDocs);
+        this.prompt = loadPrompt();
+    }
 
-        apiDocs = parseApiDocs(apiDocs, client);
+    public FeatureGenerator(String apiKey, String apiDocs, String prompt) throws URISyntaxException, IOException {
+        this.apiKey = apiKey;
+        this.apiDocs = parseApiDocs(apiDocs);
+        this.prompt = prompt;
+    }
 
-        String prompt = loadPrompt();
+    public void generate(String generationPath) {
 
         Path path = Path.of(generationPath).toAbsolutePath();
         if (!Files.exists(path)) {
@@ -67,19 +79,25 @@ public class GenerateFeaturesService {
                 Path featurePath = Path.of(generationPath, fileName + FEATURE_EXTENSION).toAbsolutePath();
                 String info = JsonPath.read(finalApiDocs, "$.paths." + endpoint + "." + method).toString();
 
-                createFeature(featurePath, client, apiKey, prompt.concat(info));
+                createFeature(featurePath, info);
             });
         });
 
     }
 
-    private String runPrompt(HttpClient client, String apiKey, String text) throws URISyntaxException, JsonProcessingException {
+    /**
+     * @param text Text to add to the prompt
+     * @return The result of the AI generated feature text
+     * @throws URISyntaxException
+     * @throws JsonProcessingException
+     */
+    private String runPrompt(String text) throws URISyntaxException, JsonProcessingException {
         ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), text);
         ChatCompletionRequest chatCompletionRequest = new ChatCompletionRequest(ModelEnum.GPT_4.value(), Collections.singletonList(message));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, AUTHORIZATION_PREFIX + apiKey)
+                .header(AUTHORIZATION, AUTHORIZATION_PREFIX + this.apiKey)
                 .uri(new URI(API_URL))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(chatCompletionRequest)))
                 .build();
@@ -95,14 +113,22 @@ public class GenerateFeaturesService {
         return completionResult.getChoices().isEmpty() ? "" : completionResult.getChoices().get(0).getMessage().getContent();
     }
 
-    private String parseApiDocs(String apiDocs, HttpClient client) throws URISyntaxException, IOException {
+    /**
+     * Parse the API docs from swagger. It can be a URL or a JSON.
+     *
+     * @param apiDocs API docs
+     * @return API docs JSON
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    private String parseApiDocs(String apiDocs) throws URISyntaxException, IOException {
         if (apiDocs.startsWith(HTTP)) {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(apiDocs))
                     .GET()
                     .build();
             try {
-                apiDocs = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+                apiDocs = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
             } catch (InterruptedException e) {
                 LOGGER.trace("", e);
                 Thread.currentThread().interrupt();
@@ -111,15 +137,28 @@ public class GenerateFeaturesService {
         return apiDocs;
     }
 
+    /**
+     * Loads the default prompt from a resource file
+     *
+     * @return The loaded prompt
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private String loadPrompt() throws IOException, URISyntaxException {
         return Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(DEFAULT_PROMPT)).toURI()));
     }
 
-    private void createFeature(Path featurePath, HttpClient client, String apiKey, String prompt) {
+    /**
+     * Creates the feature file with the AI response text
+     *
+     * @param featurePath Path where the features have to be created
+     * @param info        Swagger's endpoint info
+     */
+    private void createFeature(Path featurePath, String info) {
         if (!Files.exists(featurePath)) {
             try {
                 Path path = Files.createFile(featurePath);
-                String content = runPrompt(client, apiKey, prompt);
+                String content = runPrompt(prompt.concat(info));
                 Files.write(path, content.getBytes());
 
             } catch (IOException | URISyntaxException e) {
