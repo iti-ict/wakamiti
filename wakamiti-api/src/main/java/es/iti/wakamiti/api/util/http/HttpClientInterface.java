@@ -8,8 +8,10 @@ package es.iti.wakamiti.api.util.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 public interface HttpClientInterface<SELF extends HttpClientInterface<SELF>> {
@@ -48,22 +50,40 @@ public interface HttpClientInterface<SELF extends HttpClientInterface<SELF>> {
 
     SELF bearerAuth(String token);
 
-    Optional<JsonNode> post(String uri);
+    HttpResponse<Optional<JsonNode>> post(String uri);
 
-    Optional<JsonNode> get(String uri);
+    HttpResponse<Optional<JsonNode>> get(String uri);
 
-    Optional<JsonNode> delete(String uri);
+    HttpResponse<Optional<JsonNode>> delete(String uri);
 
-    Optional<JsonNode> put(String uri);
+    HttpResponse<Optional<JsonNode>> put(String uri);
 
-    Optional<JsonNode> patch(String uri);
+    HttpResponse<Optional<JsonNode>> patch(String uri);
 
-    Optional<JsonNode> options(String uri);
+    HttpResponse<Optional<JsonNode>> options(String uri);
 
-    Optional<JsonNode> head(String uri);
+    HttpResponse<Optional<JsonNode>> head(String uri);
 
-    Optional<JsonNode> content(String uri);
+    HttpResponse<Optional<JsonNode>> content(String uri);
 
-    Optional<JsonNode> trace(String uri);
+    HttpResponse<Optional<JsonNode>> trace(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> postAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> getAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> deleteAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> putAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> patchAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> optionsAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> headAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> contentAsync(String uri);
+
+    CompletableFuture<HttpResponse<Optional<JsonNode>>> traceAsync(String uri);
 
 }

@@ -10,6 +10,8 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 
 @SuppressWarnings({"java:S107"})
@@ -438,4 +440,47 @@ public class MapUtils {
             }
         }
     }
+
+    /**
+     * Collects elements into a map using the specified key and value mappers.
+     *
+     * @param keyMapper   A function to extract keys from elements
+     * @param valueMapper A function to extract values from elements
+     * @param <T>         The type of elements to collect
+     * @param <K>         The type of keys
+     * @param <U>         The type of values
+     * @return A collector that accumulates elements into a map
+     */
+    public static <T extends Map.Entry<?,?>, K, U> Collector<T, ?, Map<K, U>> entryCollector(
+            Function<? super T, ? extends K> keyMapper,
+            Function<? super T, ? extends U> valueMapper
+    ) {
+        return Collector.of(
+                LinkedHashMap::new,
+                (m, e) -> m.put(keyMapper.apply(e), valueMapper.apply(e)),
+                (m, r) -> m
+        );
+    }
+
+    public static <K1, U1, K2, U2> Collector<Map.Entry<K1,U1>, ?, Map<K2, U2>> toMap(
+            Function<? super K1, ? extends K2> keyMapper,
+            Function<? super U1, ? extends U2> valueMapper
+    ) {
+        return Collector.of(
+                LinkedHashMap::new,
+                (m, e) -> m.put(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue())),
+                (m, r) -> m
+        );
+    }
+
+    public static <K, U1, U2> Collector<Map.Entry<K,U1>, ?, Map<K, U2>> toMap(
+            Function<? super U1, ? extends U2> valueMapper
+    ) {
+        return toMap(Function.identity(), valueMapper);
+    }
+
+    public static <K, U> Collector<Map.Entry<K,U>, ?, Map<K,U>> toMap() {
+        return toMap(Function.identity());
+    }
+
 }

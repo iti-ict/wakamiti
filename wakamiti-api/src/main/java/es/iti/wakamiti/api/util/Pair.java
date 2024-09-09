@@ -13,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+
 
 /**
  * A simple utility class representing a pair of values.
@@ -51,7 +53,11 @@ public class Pair<T, U> {
      * @return A Collector that accumulates elements into a LinkedHashMap.
      */
     public static <T, U> Collector<Pair<T, U>, ?, Map<T, U>> toMap() {
-        return Collectors.toMap(Pair<T, U>::key, Pair<T, U>::value, (x, y) -> x, LinkedHashMap::new);
+        return Collector.of(
+                LinkedHashMap::new,
+                (m, e) -> m.put(e.key(), e.value()),
+                (m, r) -> m
+        );
     }
 
     /**
@@ -94,6 +100,10 @@ public class Pair<T, U> {
      */
     public <R, P> Pair<R, P> map(BiFunction<T, U, Pair<R, P>> map) {
         return map.apply(key, value);
+    }
+
+    public Map.Entry<T, U> asEntry() {
+        return entry(key, value);
     }
 
     /**
