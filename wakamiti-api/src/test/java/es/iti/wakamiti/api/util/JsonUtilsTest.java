@@ -160,8 +160,8 @@ public class JsonUtilsTest {
                 .isEqualTo(map("date", LocalDate.parse("2010-12-03")));
     }
 
-    @Test(expected = PathNotFoundException.class)
-    public void testReadStringValueWithError() throws JsonProcessingException {
+    @Test
+    public void testReadStringValueWhenNotFoundWithSuccess() throws JsonProcessingException {
         JsonNode obj = json(
                 Map.of(
                         "statusCode", "200",
@@ -170,6 +170,6 @@ public class JsonUtilsTest {
                         "tags", List.of("something", "other")
                 ));
 
-        readStringValue(obj, "$.body.id");
+        assertThat(readStringValue(obj, "$.body.id")).isNull();
     }
 }
