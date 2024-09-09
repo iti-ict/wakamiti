@@ -2,7 +2,6 @@ module es.iti.wakamiti.lsp {
 
     exports es.iti.wakamiti.lsp;
 
-    requires imconfig;
     requires commons.cli;
     requires org.eclipse.lsp4j;
     requires org.eclipse.lsp4j.jsonrpc;

@@ -8,7 +8,7 @@ package es.iti.wakamiti.launcher;
 
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.WakamitiFetcher;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import net.harawata.appdirs.AppDirsFactory;
 
 import java.net.URISyntaxException;

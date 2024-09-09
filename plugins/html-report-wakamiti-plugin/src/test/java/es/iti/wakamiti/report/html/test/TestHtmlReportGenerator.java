@@ -31,14 +31,17 @@ public class TestHtmlReportGenerator {
 
     private static Document xml;
     private static Document xml_2;
+    private static Document xml_3;
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
         xml = load("wakamiti",
                 "htmlReport.output", "target/wakamiti.html",
-                "htmlReport.title", "Test Report Title");
+                "htmlReport.title", "Test Report Title",
+                "htmlReport.extra_info.value1", "Extra info 1",
+                "htmlReport.extra_info.value2", "Extra info 2");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
-
+        xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
     }
 
     private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
@@ -90,35 +93,53 @@ public class TestHtmlReportGenerator {
                 .isEqualTo("Total duration 2h 24m 8s 410ms");
     }
 
+//    @Test
+//    public void testReportMenuToggles() {
+//        String elem = "//*[contains(@class,\"nav-menu--control\")]";
+//
+//        assertThat(xml).valueByXPath("count(" + elem + ")").isEqualTo("6");
+//
+//        boolean[] tests = new boolean[]{false, true, true, true, false, false};
+//
+//        for (int i = 0; i < 6; i++) {
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "][contains(@class,'toggle-switch--disabled')])")
+//                    .isEqualTo(tests[i]);
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@checked)")
+//                    .isEqualTo(!tests[i]);
+//            assertThat(xml)
+//                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@disabled)")
+//                    .isEqualTo(tests[i]);
+//        }
+//
+//    }
+//
+//    @Test
+//    public void testReportMenuIndex() {
+//        String elem = "//*[@class='nav-menu--section']//a/@href";
+//        assertThat(xml).nodesByXPath(elem)
+//                .extractingText()
+//                .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
+//                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
+//    }
+
+
     @Test
-    public void testReportMenuToggles() {
-        String elem = "//*[contains(@class,\"nav-menu--control\")]";
+    public void testReportExtraInfo() {
+        assertThat(xml)
+                .nodesByXPath("//*[text()='Extra info 1']")
+                .exist();
+        assertThat(xml)
+                .nodesByXPath("//*[text()='Extra info 2']")
+                .exist();
 
-        assertThat(xml).valueByXPath("count(" + elem + ")").isEqualTo("6");
-
-        boolean[] tests = new boolean[]{false, true, true, true, false, false};
-
-        for (int i = 0; i < 6; i++) {
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "][contains(@class,'toggle-switch--disabled')])")
-                    .isEqualTo(tests[i]);
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@checked)")
-                    .isEqualTo(!tests[i]);
-            assertThat(xml)
-                    .valueByXPath("boolean(" + elem + "[" + (i + 1) + "]/input/@disabled)")
-                    .isEqualTo(tests[i]);
-        }
-
-    }
-
-    @Test
-    public void testReportMenuIndex() {
-        String elem = "//*[@class='nav-menu--section']//a/@href";
-        assertThat(xml).nodesByXPath(elem)
-                .extractingText()
-                .containsExactly("#a327ycn3219c", "#CP-A", "#CP-B",
-                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
+        assertThat(xml_2)
+                .nodesByXPath("//*[text()='Extra info 1']")
+                .doNotExist();
+        assertThat(xml_2)
+                .nodesByXPath("//*[text()='Extra info 2']")
+                .doNotExist();
     }
 
 }

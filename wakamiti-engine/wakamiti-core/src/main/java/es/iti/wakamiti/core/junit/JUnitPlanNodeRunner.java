@@ -16,7 +16,7 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;

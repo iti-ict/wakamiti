@@ -7,7 +7,7 @@ package es.iti.wakamiti.api.util;
 
 
 import es.iti.wakamiti.api.WakamitiAPI;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import slf4jansi.AnsiLogger;

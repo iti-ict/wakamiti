@@ -11,7 +11,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.JsonPlanSerializer;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.Test;
 import org.slf4j.Logger;
 

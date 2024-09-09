@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  *
  * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-loader", version = "2.5")
+@Extension(provider =  "es.iti.wakamiti", name = "groovy-loader", version = "2.6")
 public class GroovyLoaderContributor implements LoaderContributor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.groovy");

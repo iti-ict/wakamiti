@@ -14,12 +14,12 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.rest.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import es.iti.wakamiti.api.util.ResourceLoader;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
@@ -28,34 +28,66 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Optional;
 
-import static es.iti.wakamiti.rest.matcher.CharSequenceLengthMatcher.length;
+import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Provides methods to configure and execute REST API requests and assertions.
+ * It includes methods for setting request parameters, headers, authentication,
+ * and executing various HTTP methods.
+ *
+ * @see RestSupport
+ * @see StepContributor
  */
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
 @I18nResource("iti_wakamiti_wakamiti-rest")
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.5")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
 
-
+    /**
+     * Sets the content type for the request.
+     * Accepted values are:
+     * <ul>
+     *   <li>{@code ANY}</li>
+     *   <li>{@code TEXT}</li>
+     *   <li>{@code JSON}</li>
+     *   <li>{@code XML}</li>
+     *   <li>{@code HTML}</li>
+     *   <li>{@code URLENC}</li>
+     *   <li>{@code BINARY}</li>
+     *   <li>{@code MULTIPART}</li>
+     * </ul>
+     *
+     * @param contentType the content type to be set.
+     * @see ContentType
+     */
     @Step(value = "rest.define.contentType", args = "word")
     public void setContentType(String contentType) {
         specifications.add(request ->
                 request.contentType(parseContentType(contentType)));
     }
 
+    /**
+     * Sets the base URL for the request.
+     *
+     * @param url the base URL to be set.
+     */
     @Step(value = "rest.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         checkURL(url);
         this.baseURL = url;
     }
 
+    /**
+     * Sets the service path for the request.
+     *
+     * @param service the service path to be set.
+     */
     @Step("rest.define.service")
     public void setService(String service) {
         this.path = (service.startsWith("/") ? service.substring(1) : service);
@@ -75,66 +107,130 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
+    /**
+     * Sets the collection of request parameters from a two-column table
+     * in name-value format.
+     *
+     * @param dataTable the DataTable containing the request parameters.
+     */
     @Step("rest.define.request.parameters")
     public void setRequestParameters(DataTable dataTable) {
         specifications.add(request -> request.params(tableToMap(dataTable)));
     }
 
+    /**
+     * Sets a single request parameter.
+     *
+     * @param name  the name of the parameter.
+     * @param value the value of the parameter.
+     */
     @Step(value = "rest.define.request.parameter", args = {"name:text", "value:text"})
     public void setRequestParameter(String name, String value) {
         specifications.add(request -> request.param(name, value));
     }
 
+    /**
+     * Sets the collection of query parameters from a two-column table
+     * in name-value format.
+     *
+     * @param dataTable the DataTable containing the query parameters.
+     */
     @Step("rest.define.query.parameters")
     public void setQueryParameters(DataTable dataTable) {
         specifications.add(request -> request.queryParams(tableToMap(dataTable)));
     }
 
+    /**
+     * Sets a single query parameter.
+     *
+     * @param name  the name of the parameter.
+     * @param value the value of the parameter.
+     */
     @Step(value = "rest.define.query.parameter", args = {"name:text", "value:text"})
     public void setQueryParameter(String name, String value) {
         specifications.add(request -> request.queryParam(name, value));
     }
 
+    /**
+     * Sets the collection of path parameters from a two-column table
+     * in name-value format.
+     *
+     * @param dataTable the DataTable containing the path parameters.
+     */
     @Step("rest.define.path.parameters")
     public void setPathParameters(DataTable dataTable) {
         specifications.add(request -> request.pathParams(tableToMap(dataTable)));
     }
 
+    /**
+     * Sets a single path parameter.
+     *
+     * @param name  the name of the parameter.
+     * @param value the value of the parameter.
+     */
     @Step(value = "rest.define.path.parameter", args = {"name:text", "value:text"})
     public void setPathParameter(String name, String value) {
         specifications.add(request -> request.pathParam(name, value));
     }
 
+    /**
+     * Sets the collection of headers from a two-column table in name-value
+     * format.
+     *
+     * @param dataTable the DataTable containing the headers.
+     */
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
         specifications.add(request -> request.headers(tableToMap(dataTable)));
     }
 
+    /**
+     * Sets a single header.
+     *
+     * @param name  the name of the header.
+     * @param value the value of the header.
+     */
     @Step(value = "rest.define.header", args = {"name:text", "value:text"})
     public void setHeader(String name, String value) {
         specifications.add(request -> request.header(name, value));
     }
 
-    @Step("rest.define.timeout.millis")
-    public void setTimeoutInMillis(Integer millis) {
+    /**
+     * Sets the default requests timeout.
+     *
+     * @param duration the duration of the timeout.
+     */
+    @Step("rest.define.timeout")
+    public void setTimeout(Duration duration) {
         config(
                 RestAssured.config()
                         .httpClient(HttpClientConfig.httpClientConfig()
-                                .setParam("http.socket.timeout", millis)
-                                .setParam("http.connection.timeout", millis))
+                                .setParam("http.socket.timeout", (int) duration.toMillis())
+                                .setParam("http.connection.timeout", (int) duration.toMillis()))
         );
     }
 
-    @Step("rest.define.timeout.secs")
-    public void setTimeoutInSecs(Integer secs) {
-        setTimeoutInMillis(secs * 1000);
+    /**
+     * Sets a limit on HTTP response codes.
+     * <p>
+     * Whenever a REST call returns an HTTP code equal to or greater than this
+     * value, the step is automatically marked as failed without checking any
+     * other conditions.
+     *
+     * @param httpCodeAssertion the assertion for the HTTP response code.
+     */
+    @Step(value = "rest.define.http.code.assertion", args = "integer-assertion")
+    public void setHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
+        this.httpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
     }
 
-    @Step(value = "rest.define.failure.http.code.assertion", args = "integer-assertion")
-    public void setFailureHttpCodeAssertion(Assertion<Integer> httpCodeAssertion) {
-        this.failureHttpCodeAssertion = MatcherAssertion.asMatcher(httpCodeAssertion);
-    }
-
+    /**
+     * Sets the basic authentication credentials to be sent in the
+     * {@code Authorization} header for the request.
+     *
+     * @param username the username for authentication.
+     * @param password the password for authentication.
+     */
     @Step(value = "rest.define.auth.basic", args = {"username:text", "password:text"})
     public void setBasicAuth(String username, String password) {
         if (LOGGER.isTraceEnabled()) {
@@ -143,58 +239,131 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         authSpecification = Optional.of(request -> request.auth().preemptive().basic(username, password));
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header for the request.
+     *
+     * @param token the bearer token for authentication.
+     */
     @Step("rest.define.auth.bearer.token")
     public void setBearerAuth(String token) {
         LOGGER.trace("Setting header [Authorization: Bearer {}]", token);
         authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(token));
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header for the request.
+     *
+     * @param file the file containing the token.
+     */
     @Step("rest.define.auth.bearer.token.file")
     public void setBearerAuthFile(File file) {
         assertFileExists(file);
         setBearerAuth(resourceLoader().readFileAsString(file).trim());
     }
 
+    /**
+     * Disables authentication for the request.
+     */
     @Step("rest.define.auth.none")
     public void setNoneAuth() {
         authSpecification = Optional.of(request -> request.auth().none());
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header, which is previously retrieved from the configured oauth2 service,
+     * for the request.
+     */
     @Step("rest.define.auth.bearer.default")
     public void setBearerDefault() {
-        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(retrieveOauthToken()));
+        authSpecification = Optional.of(request -> request.auth().preemptive().oauth2(oauth2Provider.getAccessToken()));
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header, which is previously retrieved from the configured oauth2 service,
+     * using the indicated credentials, for the request.
+     *
+     * @param username the username for authentication.
+     * @param password the password for authentication.
+     */
     @Step(value = "rest.define.auth.bearer.password", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
         setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header, which is previously retrieved from the configured oauth2 service,
+     * using the indicated credentials, for the request.
+     * <p>
+     * Additional parameters supported by {@code Oauth2} can also be added using
+     * a two-column table in name-value format.
+     *
+     * @param username the username for authentication.
+     * @param password the password for authentication.
+     * @param params   additional parameters for authentication.
+     */
     @Step(value = "rest.define.auth.bearer.password.parameters", args = {"username:text", "password:text"})
     public void setBearerAuthPassword(String username, String password, DataTable params) {
-        oauth2ProviderConfig.type(GrantType.PASSWORD)
+        oauth2Provider.configuration().type(GrantType.PASSWORD)
                 .addParameter(USERNAME_PARAM, username)
                 .addParameter(PASSWORD_PARAM, password);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header, which is previously retrieved from the configured oauth2 service,
+     * using client data, for the following requests.
+     */
     @Step("rest.define.auth.bearer.client")
     public void setBearerAuthClient() {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         setBearerDefault();
     }
 
+    /**
+     * Sets bearer token authentication to be sent in the {@code Authorization}
+     * header, which is previously retrieved from the configured oauth2 service,
+     * using client data, for the following requests.
+     * <p>
+     * Additional parameters supported by {@code Oauth2} can also be added using
+     * a two-column table in name-value format.
+     *
+     * @param params   additional parameters for authentication.
+     */
     @Step("rest.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
-        oauth2ProviderConfig.type(GrantType.CLIENT_CREDENTIALS);
-        tableToMap(params).forEach(oauth2ProviderConfig::addParameter);
+        oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
+        tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
     }
 
+    /**
+     * Sets the default subtype for multipart requests.
+     * Available values are:
+     * <ul>
+     *   <li>{@code form-data}</li>
+     *   <li>{@code alternative}</li>
+     *   <li>{@code byteranges}</li>
+     *   <li>{@code digest}</li>
+     *   <li>{@code mixed}</li>
+     *   <li>{@code parallel}</li>
+     *   <li>{@code related}</li>
+     *   <li>{@code report}</li>
+     *   <li>{@code signed}</li>
+     *   <li>{@code encrypted}</li>
+     * </ul>
+     *
+     * @param subtype the subtype to set
+     */
     @Step("rest.define.multipart.subtype")
     public void setMultipartSubtype(String subtype) {
         assertSubtype(subtype);
@@ -205,6 +374,11 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
+    /**
+     * Sets the default filename for multipart content.
+     *
+     * @param name the filename to set
+     */
     @Step("rest.define.multipart.filename")
     public void setFilename(String name) {
         config(
@@ -214,11 +388,19 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
+    /**
+     * Attaches the document content as a file to the multipart {@code form-data}
+     * request.
+     *
+     * @param name     the name of the multipart field
+     * @param document the content to be attached
+     * @throws IOException if an I/O error occurs
+     */
     @Step(value = "rest.define.attached.data", args = "name:text")
     public void setAttachedFile(String name, Document document) throws IOException {
         String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
-        ContentType mimeType = ContentTypeHelper.contentTypeFromExtension.get(ext);
-
+        ContentType mimeType = ContentType.fromContentType(
+                ResourceLoader.contentTypeFromExtension.get(ext).getMimeType());
 
         File tempFile = new File(System.getProperty("java.io.tmpdir"),
                 RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
@@ -234,13 +416,18 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
+    /**
+     * Attaches a file to the multipart {@code form-data} request.
+     *
+     * @param name the name of the multipart field
+     * @param file the file to attach
+     */
     @Step(value = "rest.define.attached.file", args = {"name:text", "file"})
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
-        ContentType mimeType = Optional.of(file.getName())
-                .map(FileUtils::getExtension)
-                .map(ContentTypeHelper.contentTypeFromExtension::get)
-                .orElse(ContentType.BINARY);
+
+        ContentType mimeType = ContentType.fromContentType(
+                resourceLoader().getContentType(file).getMimeType());
 
         specifications.add(request ->
                 request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
@@ -249,6 +436,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         );
     }
 
+    /**
+     * Sets the collection of form parameters from a two-column table in
+     * name-value format.
+     * <p>
+     * This step will also force the request to use the
+     * {@code application/x-www-form-urlencoded} content type.
+     *
+     * @param table the table of form parameters
+     */
     @Step(value = "rest.define.form.parameters")
     public void setFormParameters(DataTable table) {
         specifications.add(request -> request.contentType(ContentType.URLENC));

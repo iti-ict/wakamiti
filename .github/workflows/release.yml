@@ -27,6 +27,7 @@ jobs:
     needs: [get-env]
     if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       
       - uses: actions/checkout@v2

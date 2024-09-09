@@ -14,12 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
 import es.iti.wakamiti.launcher.CliArguments;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 
 
 public class TestWakamitiLauncher {

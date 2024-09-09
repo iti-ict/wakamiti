@@ -6,12 +6,12 @@
 package es.iti.wakamiti.fileuploader.it;
 
 
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.fileuploader.AbstractFilesUploader;
 import es.iti.wakamiti.fileuploader.MockSftpServer;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

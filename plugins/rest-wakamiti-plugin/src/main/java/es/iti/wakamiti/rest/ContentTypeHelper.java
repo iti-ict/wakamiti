@@ -6,7 +6,6 @@
 package es.iti.wakamiti.rest;
 
 
-import imconfig.ConfigurationFactory;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -15,20 +14,12 @@ import es.iti.commons.jext.ExtensionPoint;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.Document;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 /**
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 @ExtensionPoint
 public interface ContentTypeHelper {
-
-    Map<String, ContentType> contentTypeFromExtension = ConfigurationFactory.instance()
-            .fromResource("mime-types.properties", ContentTypeHelper.class.getClassLoader())
-            .asMap().entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> ContentType.fromContentType(e.getValue())));
 
     ContentType contentType();
 

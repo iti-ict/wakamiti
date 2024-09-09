@@ -39,20 +39,7 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
 
         @Override
         public String formatToPlainText(TemplateNumberModel numberModel) throws TemplateModelException {
-
-            Duration duration = Duration.ofMillis(numberModel.getAsNumber().longValue());
-            int hours = duration.toHoursPart();
-            int minutes = duration.toMinutesPart();
-            int seconds = duration.toSecondsPart();
-            int millis = duration.toMillisPart();
-
-            StringBuilder sb = new StringBuilder();
-            if (hours > 0) sb.append(hours).append("h ");
-            if (minutes > 0) sb.append(minutes).append("m ");
-            if (seconds > 0) sb.append(seconds).append("s ");
-            sb.append(millis).append("ms");
-
-            return sb.toString();
+            return DurationTemplateNumberFormatFactory.format(numberModel.getAsNumber().longValue());
         }
 
         @Override
@@ -67,4 +54,19 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
 
     }
 
+    public static String format(long value) {
+        Duration duration = Duration.ofMillis(value);
+        int hours = duration.toHoursPart();
+        int minutes = duration.toMinutesPart();
+        int seconds = duration.toSecondsPart();
+        int millis = duration.toMillisPart();
+
+        StringBuilder sb = new StringBuilder();
+        if (hours > 0) sb.append(hours).append("h ");
+        if (minutes > 0) sb.append(minutes).append("m ");
+        if (seconds > 0) sb.append(seconds).append("s ");
+        sb.append(millis).append("ms");
+
+        return sb.toString();
+    }
 }
