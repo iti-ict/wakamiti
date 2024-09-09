@@ -221,7 +221,7 @@
                                 <tagFilter>launcher</tagFilter>
                                 <rest.baseURL>http://localhost:${rest.port}</rest.baseURL>
                                 <data.dir>.</data.dir>
-                                <outputFilePath>${project.build.directory}/wakamiti.json</outputFilePath>
+                                <outputFilePath>${project.build.directory}/wakamiti-mvn.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
                             </properties>
                         </configuration>

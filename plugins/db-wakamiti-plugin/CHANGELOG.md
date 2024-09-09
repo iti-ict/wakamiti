@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
+- Moved map collector to `wakamiti-api`
 
 
 ## [3.1.0] - 2024-04-16

@@ -3,10 +3,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package es.iti.wakamiti.api.auth.oauth;
+package es.iti.wakamiti.api.util.http.oauth;
 
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
