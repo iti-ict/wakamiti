@@ -9,7 +9,7 @@ package es.iti.wakamiti.core.plan;
 import es.iti.wakamiti.api.extensions.PlanTransformer;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.util.List;
 

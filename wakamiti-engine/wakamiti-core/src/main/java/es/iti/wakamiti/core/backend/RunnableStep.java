@@ -6,6 +6,7 @@
 package es.iti.wakamiti.core.backend;
 
 
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;

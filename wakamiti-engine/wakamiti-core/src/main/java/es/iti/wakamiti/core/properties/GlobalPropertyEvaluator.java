@@ -6,8 +6,8 @@
 package es.iti.wakamiti.core.properties;
 
 
-import imconfig.Configurable;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;

@@ -1,4 +1,4 @@
-applicationName: Wakamiti 1.3.0
+applicationName: Wakamiti 2.6.0
 distributions:
   - os: linux
     fileSet:

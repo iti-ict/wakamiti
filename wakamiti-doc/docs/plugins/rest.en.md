@@ -20,14 +20,14 @@ This plugin provides a set of steps to interact with a RESTful API.
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:rest-wakamiti-plugin:2.4.0
+es.iti.wakamiti:rest-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ rest:
 
 
 ### `rest.oauth2.url`
-- Type: `URL`
+- Type: `URL` *required*
 
 Specifies the [OAuth 2.0][oauth2] authentication service to use to generate the token to be sent in the `Authorization` 
 HTTP header of REST calls.
@@ -448,14 +448,14 @@ Given the following headers:
 
 ### Define timeout
 ```text copy=true
-a timeout of {int} (milli)seconds
+a timeout of {duration}
 ```
-Sets a response timeout (in second or milliseconds) for the subsequent HTTP requests.
+Sets a response timeout for the subsequent HTTP requests.
 
 ##### Parameters:
-| Name   | Wakamiti type    | Description                 |
-|--------|------------------|-----------------------------|
-| `int`  | `int` *required* | The timeout in milliseconds |
+| Name       | Wakamiti type            | Description |
+|------------|--------------------------|-------------|
+| `duration` | [duration][2] *required* | The timeout |
 
 ##### Examples:
 ```gherkin
@@ -468,7 +468,7 @@ Given a timeout of 2 seconds
 
 ### Define HTTP code threshold
 ```text copy=true
-any request will fail when response HTTP code {matcher}
+(that) any request will be successful if its HTTP code {matcher}
 ```
 Similar to setting the configuration property [`rest.httpCodeTreshold`](#resthttpcodethreshold) but using any integer
 assertion.
@@ -480,7 +480,7 @@ assertion.
 
 ##### Example:
 ```gherkin
-* any request will fail when response HTTP code is greater than 500
+* any request will be successful if its HTTP code is less than 500
 ```
 
 
@@ -686,9 +686,9 @@ the attached file is included with the following data:
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name   | Wakamiti type         | Description          |
-|--------|-----------------------|----------------------|
-| `data` | `document` *required* | Content to be attach |
+| Name   | Wakamiti type         | Description            |
+|--------|-----------------------|------------------------|
+| `data` | `document` *required* | Content to be attached |
 
 ##### Examples:
 ```gherkin
@@ -952,9 +952,9 @@ the response HTTP code {matcher}
 Validate that the HTTP code of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type                  | Description            |
-|-----------|--------------------------------|------------------------|
-| `matcher` | `integer-assertion` *required* | Number [comparator][1] |
+| Name      | Wakamiti type                     | Description            |
+|-----------|-----------------------------------|------------------------|
+| `matcher` | [integer-assertion][2] *required* | Number [comparator][1] |
 
 ##### Examples:
 ```gherkin
@@ -1137,10 +1137,10 @@ Validates the value from a [JSONPath][jsonpath], [XPath][xpath] or [GPath][gpath
 *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name       | Wakamiti type            | Description                      |
-|------------|--------------------------|----------------------------------|
-| `fragment` | `text` *required*        | A JSONPath, XPath or GPath query |
-| `matcher`  | `*-assertion` *required* | [Comparator][1]                  |
+| Name       | Wakamiti type               | Description                      |
+|------------|-----------------------------|----------------------------------|
+| `fragment` | `text` *required*           | A JSONPath, XPath or GPath query |
+| `matcher`  | [*-assertion][1] *required* | [Comparator][1]                  |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -1177,9 +1177,9 @@ the response length {matcher}
 Validate that the length in bytes of the last response satisfies the given assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type                  | Description            |
-|-----------|--------------------------------|------------------------|
-| `matcher` | `integer-assertion` *required* | Number [comparator][1] |
+| Name      | Wakamiti type                     | Description            |
+|-----------|-----------------------------------|------------------------|
+| `matcher` | [integer-assertion][1] *required* | Number [comparator][1] |
 
 ##### Examples:
 ```gherkin
@@ -1194,10 +1194,10 @@ the (text|integer|decimal) response header {name} {matcher}
 Validate that a header value from the last REST response satisfies the *text*, *integer* or *decimal* assertion.
 
 ##### Parameters:
-| Name      | Wakamiti type            | Description          |
-|-----------|--------------------------|----------------------|
-| `name`    | `text` *required*        | The HTTP header name |
-| `matcher` | `*-assertion` *required* | [Comparator][1]      |
+| Name      | Wakamiti type               | Description          |
+|-----------|-----------------------------|----------------------|
+| `name`    | `text` *required*           | The HTTP header name |
+| `matcher` | [*-assertion][1] *required* | [Comparator][1]      |
 `*`: `text`, `integer` o `decimal`.
 
 ##### Examples:
@@ -1284,4 +1284,5 @@ Then the response satisfies the schema from the file 'data/user-schema.json'
 [xmlschema]: https://www.w3.org/2001/XMLSchema (XML Schema)
 [xpath]: https://en.wikipedia.org/wiki/XPath (XPath)
 [gpath]: https://accenture.github.io/bdd-for-all/GPATH.html (GPath)
-[1]: wakamiti/architecture#comparators
+[1]: en/wakamiti/architecture#comparators
+[2]: en/wakamiti/architecture#duration

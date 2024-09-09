@@ -18,7 +18,7 @@
 
 
     <artifactId>html-report-wakamiti-plugin</artifactId>
-    <version>2.5.0</version>
+    <version>2.6.0</version>
 
     <name>[Wakamiti Plugin] HTML Report</name>
     <description>HTML Report generator for Wakamiti results</description>
@@ -26,7 +26,7 @@
 
     <properties>
         <xmlunit.version>2.9.1</xmlunit.version>
-        <wakamiti-engine.version>2.5.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.0</wakamiti-engine.version>
     </properties>
 
     <!-- dependencies -->
@@ -88,6 +88,15 @@
             <artifactId>xmlunit-legacy</artifactId>
             <version>${xmlunit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
         </dependency>
 
     </dependencies>

@@ -18,7 +18,9 @@ import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
@@ -200,6 +202,14 @@ public class PlanNodeSnapshot {
     ) {
         return node.children.stream().map(mapper).filter(Objects::nonNull)
                 .max(Comparator.naturalOrder()).orElse(null);
+    }
+
+    public Stream<PlanNodeSnapshot> flatten(Predicate<PlanNodeSnapshot> filter) {
+        return Stream.concat(
+                Optional.of(this).filter(filter).stream(),
+                Optional.ofNullable(this.children).stream().flatMap(Collection::stream)
+                        .flatMap(p -> p.flatten(filter))
+                );
     }
 
     /**

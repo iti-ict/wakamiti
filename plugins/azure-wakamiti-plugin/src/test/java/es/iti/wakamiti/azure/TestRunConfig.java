@@ -2,8 +2,8 @@ package es.iti.wakamiti.azure;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
 //import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 //import org.junit.runner.RunWith;
 
 
@@ -11,7 +11,6 @@ import imconfig.Property;
     @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.azure.MockSteps"),
     @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
     @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources"),
-    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
     @Property(key = AzureConfigContributor.AZURE_HOST, value = "azure-devops.iti.upv.es"),
     @Property(key = AzureConfigContributor.AZURE_ORGANIZATION, value = "ST"),
     @Property(key = AzureConfigContributor.AZURE_PROJECT, value = "ACS"),

@@ -1,0 +1,43 @@
+properties:
+  test:
+    key:
+      string: Properties Test String Value
+      strings:
+       - Properties Array Value 1
+       - Properties Array Value 2
+      string_number: "0543"
+      bool: true
+      bools:
+       - true
+       - false
+       - true
+      integer: 77
+      integers:
+       - 77
+       - 79
+       - 83
+      long: 54353
+      longs:
+       - 54353
+       - 65256
+       - 98432
+      double: 3.45
+      doubles:
+       - 3.45
+       - 6.76
+       - 9.32
+      float: 6.98
+      floats:
+       - 6.98
+       - 2.23
+       - 1.24
+      bigdecimal: 755.87
+      bigdecimals:
+       - 755.87
+       - 876.43
+       - 908.32       
+      biginteger: 123456789
+      bigintegers:
+       - 123456789
+       - 543987532
+       - 549874348 

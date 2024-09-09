@@ -9,8 +9,8 @@ package es.iti.wakamiti.rest.it;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import es.iti.wakamiti.rest.RestConfigContributor;
-import imconfig.AnnotatedConfiguration;
-import imconfig.Property;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -28,7 +28,6 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = GherkinResourceType.NAME),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/en"),
-        @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true"),
         @Property(key = BASE_URL, value = "http://localhost:8888"),
         @Property(key = "data.dir", value = "src/test/resources"),
