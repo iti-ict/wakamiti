@@ -35,9 +35,13 @@
         "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
       ],
       "childrenResults": {"PASSED": 1 , "FAILED":  1},
+      "testCaseResults": {
+        "PASSED": 1,
+        "FAILED": 1
+      },
       "children": [
         {
-          "id": "CP-A",
+          "id": "CP-A.1",
           "nodeType": "TEST_CASE",
           "keyword": "Scenario",
           "result": "PASSED",
@@ -236,6 +240,10 @@
       "name": "Feature esta es la feature 2",
       "duration": 58,
       "childrenResults": {"PASSED": 1, "ERROR": 1 },
+      "testCaseResults": {
+        "PASSED": 2,
+        "FAILED": 1
+      },
       "children": [
         {
           "id": "CP-C",

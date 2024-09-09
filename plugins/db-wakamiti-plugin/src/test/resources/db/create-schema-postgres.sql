@@ -5,7 +5,8 @@ CREATE TABLE client (
     first_name varchar(255) DEFAULT NULL,
     second_name varchar(255) DEFAULT NULL,
     active int DEFAULT 0,
-    birth_date timestamp
+    birth_date date,
+    creation timestamp
 );
 
 CREATE TABLE city (

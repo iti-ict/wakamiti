@@ -21,6 +21,7 @@
 
 
     <modules>
+        <module>rest-wakamiti-plugin</module>
         <module>amqp-wakamiti-plugin</module>
         <module>appium-wakamiti-plugin</module>
         <module>azure-wakamiti-plugin</module>
@@ -28,9 +29,9 @@
         <module>cucumber-exporter-wakamiti-plugin</module>
         <module>groovy-wakamiti-plugin</module>
         <module>html-report-wakamiti-plugin</module>
-        <module>rest-wakamiti-plugin</module>
         <module>spring-wakamiti-plugin</module>
         <module>io-wakamiti-plugin</module>
+        <module>jmeter-wakamiti-plugin</module>
         <module>file-uploader-wakamiti-plugin</module>
         <module>email-wakamiti-plugin</module>
     </modules>

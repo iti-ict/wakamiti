@@ -14,9 +14,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import es.iti.wakamiti.spring.db.SpringConnectionProvider;
-import imconfig.Configuration;
-import imconfig.ConfigurationException;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

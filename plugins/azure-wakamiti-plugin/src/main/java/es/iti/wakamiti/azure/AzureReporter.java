@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Extension(
         provider =  "es.iti.wakamiti",
         name = "azure-reporter",
-        version = "2.5",
+        version = "2.6",
         priority = 10
 )
 public class AzureReporter implements Reporter {
@@ -113,7 +113,6 @@ public class AzureReporter implements Reporter {
     @Override
     public void report(PlanNodeSnapshot result) {
 
-        System.out.println("azure report disabled:" +disabled);
         if (disabled) {
             return;
         }
@@ -350,7 +349,7 @@ public class AzureReporter implements Reporter {
             azureTestCase = api.getTestCaseByName(suite, testCaseName).orElse(null);
         }
 
-        if (testCaseId == null) {
+        if (azureTestCase == null) {
             if (createItemsIfAbsent) {
                 LOGGER.info("Creating new test case '{}'", testCaseName);
                 azureTestCase = api.createTestCase(suite, testCaseName);

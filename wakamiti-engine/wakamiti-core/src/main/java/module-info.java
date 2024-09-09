@@ -8,6 +8,7 @@ import es.iti.wakamiti.api.extensions.*;
 import es.iti.wakamiti.core.DefaultWakamitiAPI;
 import es.iti.wakamiti.core.datatypes.WakamitiCoreTypes;
 import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
+import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationType;
 import es.iti.wakamiti.core.gherkin.GherkinPlanBuilder;
 import es.iti.wakamiti.core.gherkin.GherkinRedefinitionPlanTransformer;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
@@ -23,7 +24,6 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core.gherkin.parser;
 
     requires transitive es.iti.wakamiti.api;
-    requires transitive imconfig;
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
     requires transitive maven.fetcher;
@@ -44,7 +44,7 @@ open module es.iti.wakamiti.core {
     provides ResourceType with GherkinResourceType;
     provides PlanBuilder with GherkinPlanBuilder;
     provides PlanTransformer with GherkinRedefinitionPlanTransformer;
-    provides DataTypeContributor with WakamitiCoreTypes, WakamitiAssertTypes;
+    provides DataTypeContributor with WakamitiCoreTypes, WakamitiAssertTypes, WakamitiDurationType;
     provides PropertyEvaluator with GlobalPropertyEvaluator, StepPropertyEvaluator;
 
 }

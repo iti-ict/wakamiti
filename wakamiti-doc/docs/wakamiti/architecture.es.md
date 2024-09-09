@@ -91,7 +91,6 @@ Ejemplo:
 ```yaml
 wakamiti:
   outputFilePerTestCase: true
-
 ```
 
 
@@ -109,7 +108,7 @@ wakamiti:
 
 ### `wakamiti.idTagPattern`
 - Tipo: `regex`
-- Por defecto: `ID-(\w*)`
+- Por defecto: `ID-(\w+)`
 
 Establece el patrón de identificadores de los escenarios. Debe contener una expresión regular válida.
 
@@ -471,6 +470,13 @@ Ejemplo: `'12:05:06.468'`.
 Una fecha y hora con formato `yyyy-MM-ddThh:mm`, `yyyy-MM-ddThh:mm:ss` o `yyyy-MM-ddThh:mm:ss.SSS`. 
 
 Ejemplo: `'2022-02-22T12:05:06.468'`.
+
+
+### `duration`
+Un fragmento de texto que se traduce en una duración, con formato 
+`~x~ (nanosegundo|micrasegundo|milisegundo|segundo|minuto|hora|día)(s)` donde `~x~` es un número entero.
+
+Ejemplo: `3 segundos`.
 
 
 ### `text-assertion`

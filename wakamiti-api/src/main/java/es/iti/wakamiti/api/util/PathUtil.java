@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 /**
@@ -61,8 +62,11 @@ public class PathUtil {
      * @return The path with replaced temporal placeholders.
      */
     public static Path replaceTemporalPlaceholders(Path path) {
-        var instant = Instant.now().atZone(ZoneId.systemDefault());
-        return Path.of(replaceTemporalPlaceholders(path.toString(), instant));
+        return replaceTemporalPlaceholders(path, Instant.now());
+    }
+
+    public static Path replaceTemporalPlaceholders(Path path, Instant instant) {
+        return Path.of(replaceTemporalPlaceholders(path.toString(), instant.atZone(ZoneId.systemDefault())));
     }
 
     private static String replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
@@ -78,4 +82,19 @@ public class PathUtil {
         pathString = pathString.replace("%TIME%", TIME.format(instant));
         return pathString;
     }
+
+    public static String encodeURI(String input) {
+        return Pattern.compile("[^;,/?:@&=+$\\w-.!~*'()]").matcher(input).replaceAll(m -> {
+            String hex = Integer.toHexString(m.group().toCharArray()[0]).toUpperCase();
+            return "%" + (hex.length() == 1 ? '0' + hex : hex);
+        });
+    }
+
+    public static String decodeURI(String input) {
+        return Pattern.compile("%(\\d{2})").matcher(input).replaceAll(m -> {
+            String hex = m.group(1);
+            return String.valueOf((char) Integer.parseInt(hex, 16));
+        });
+    }
+
 }

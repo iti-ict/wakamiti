@@ -28,14 +28,14 @@ A running Appium server and an emulated virtual device are required to use this 
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:appium-wakamiti-plugin:2.3.0
+es.iti.wakamiti:appium-wakamiti-plugin:2.5.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
     <groupId>es.iti.wakamiti</groupId>
     <artifactId>appium-wakamiti-plugin</artifactId>
-    <version>2.3.0</version>
+    <version>2.5.0</version>
 </dependency>
 ```
 
@@ -388,7 +388,6 @@ In case the emulator fails due to a previous emulation process in a zombie state
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
-[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png
 
 Ideally, we would like to be able to do all this semi-automatically from the APK, but for now, we have to:
 - Install Android Studio

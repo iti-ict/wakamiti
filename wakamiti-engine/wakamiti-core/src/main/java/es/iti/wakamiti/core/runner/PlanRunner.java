@@ -13,8 +13,8 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
-import imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 import org.slf4j.Logger;
 
 import java.time.Instant;

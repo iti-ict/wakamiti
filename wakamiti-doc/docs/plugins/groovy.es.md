@@ -20,14 +20,14 @@ Este plugin proporciona un compilador de clases `groovy` y pasos para la ejecuci
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:groovy-wakamiti-plugin:2.4.0
+es.iti.wakamiti:groovy-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>groovy-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -54,8 +54,8 @@ package example
 import es.iti.wakamiti.api.annotations.I18nResource
 import es.iti.wakamiti.api.annotations.Step
 import es.iti.wakamiti.api.util.WakamitiLogger
-import imconfig.Configurable
-import imconfig.Configuration
+import es.iti.wakamiti.api.imconfig.Configurable
+import es.iti.wakamiti.api.imconfig.Configuration
 import org.slf4j.Logger
 
 @I18nResource("custom-steps")

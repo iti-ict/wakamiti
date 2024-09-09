@@ -12,8 +12,8 @@ import java.util.function.Function;
 
 
 /**
- * A functional interface representing a function that may throw
- * checked exceptions.
+ * Represents a function that accepts one argument and produces a result
+ * and may throw checked exceptions.
  *
  * @param <T> The type of the input to the function.
  * @param <R> The type of the result of the function.

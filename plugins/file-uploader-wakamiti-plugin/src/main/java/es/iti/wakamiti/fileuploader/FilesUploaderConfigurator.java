@@ -8,15 +8,14 @@ package es.iti.wakamiti.fileuploader;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 
 import java.util.Arrays;
 
 import static java.lang.String.format;
 
-
-@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.5",
+@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.6",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 

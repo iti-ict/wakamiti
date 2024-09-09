@@ -1,13 +1,11 @@
 package es.iti.wakamiti.rest;
 
-import es.iti.wakamiti.rest.oauth.Oauth2ProviderConfig;
-import imconfig.Configuration;
-import io.restassured.RestAssured;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -16,9 +14,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -27,13 +27,7 @@ public class RestConfigContributorTest {
     private final RestConfigContributor configContributor = new RestConfigContributor();
     @Spy
     private RestStepContributor contributor;
-    @Spy
-    private Oauth2ProviderConfig oauth2Provider;
 
-    @Before
-    public void setup() {
-        contributor.oauth2ProviderConfig = oauth2Provider;
-    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -42,14 +36,8 @@ public class RestConfigContributorTest {
 
         verify(contributor, times(0)).setBaseURL(any());
         verify(contributor, times(0)).setContentType(any());
-        verify(contributor, times(0)).setFailureHttpCodeAssertion(any(Assertion.class));
-        verify(contributor, times(0)).setTimeoutInMillis(any());
-
-        verify(oauth2Provider, times(0)).clientId(any());
-        verify(oauth2Provider, times(0)).clientSecret(any());
-        verify(oauth2Provider, times(0)).url(any());
-        verify(oauth2Provider, times(0)).cacheAuth(anyBoolean());
-        verify(oauth2Provider, times(0)).addParameter(any(), any());
+        verify(contributor, times(0)).setHttpCodeAssertion(any(Assertion.class));
+        verify(contributor, times(0)).setTimeout(any());
 
         verify(contributor, times(0)).setMultipartSubtype(any());
         assertThat(RestAssured.config.getMultiPartConfig().defaultSubtype()).isEqualTo("form-data");
@@ -68,22 +56,18 @@ public class RestConfigContributorTest {
 
         verify(contributor).setBaseURL(new URL("http://localhost:8080/api"));
         verify(contributor).setContentType("XML");
-        verify(contributor).setFailureHttpCodeAssertion(argThat(m ->
+        verify(contributor).setHttpCodeAssertion(argThat(m ->
                 m.description().equals(new MatcherAssertion<>(Matchers.lessThan(999)).description())));
-        verify(contributor).setTimeoutInMillis(10000);
+        verify(contributor).setTimeout(Duration.ofMillis(10000));
 
-        assertThat(oauth2Provider.clientId()).isEqualTo("WEB");
-        assertThat(oauth2Provider.clientSecret()).isEqualTo("dhg3h89ec8h");
-        assertThat(oauth2Provider.url()).isEqualTo(new URL("http://localhost:8080/token"));
-
-        verify(oauth2Provider).clientId("WEB");
-        verify(oauth2Provider).clientSecret("dhg3h89ec8h");
-        verify(oauth2Provider).url(new URL("http://localhost:8080/token"));
-        verify(oauth2Provider).cacheAuth(true);
-        verify(oauth2Provider).addParameter("grant_type", "password");
-        verify(oauth2Provider).addParameter("username", "pepe");
-        verify(oauth2Provider).addParameter("password", "1234asdf");
-        verify(oauth2Provider).addParameter("scope", "something");
+        assertThat(contributor.oauth2Provider.configuration().clientId()).isEqualTo("WEB");
+        assertThat(contributor.oauth2Provider.configuration().clientSecret()).isEqualTo("dhg3h89ec8h");
+        assertThat(contributor.oauth2Provider.configuration().url()).isEqualTo(new URL("http://localhost:8080/token"));
+        assertThat(contributor.oauth2Provider.configuration().parameters())
+                .containsEntry("grant_type", "password")
+                .containsEntry("username", "pepe")
+                .containsEntry("password", "1234asdf")
+                .containsEntry("scope", "something");
 
         verify(contributor).setMultipartSubtype("digest");
         assertThat(RestAssured.config.getRedirectConfig().followsRedirects()).isFalse();
