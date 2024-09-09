@@ -23,10 +23,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -56,13 +53,13 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
             .build();
 
     private final URL baseUrl;
-    protected JsonNode body;
-    protected Map<String, String> finalQueryParams = new LinkedHashMap<>();
-    protected Map<String, String> finalPathParams = new LinkedHashMap<>();
-    protected Map<String, String> finalHeaders = new LinkedHashMap<>();
-    protected Map<String, String> queryParams = new LinkedHashMap<>();
-    protected Map<String, String> pathParams = new LinkedHashMap<>();
-    protected Map<String, String> headers = new LinkedHashMap<>();
+    protected transient JsonNode body;
+    protected transient Map<String, Object> finalQueryParams = new LinkedHashMap<>();
+    protected transient Map<String, Object> finalPathParams = new LinkedHashMap<>();
+    protected transient Map<String, Object> finalHeaders = new LinkedHashMap<>();
+    protected transient Map<String, Object> queryParams = new LinkedHashMap<>();
+    protected transient Map<String, Object> pathParams = new LinkedHashMap<>();
+    protected transient Map<String, Object> headers = new LinkedHashMap<>();
     private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
     };
 
@@ -77,19 +74,19 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     @Override
     public SELF queryParam(String name, Object value) {
-        queryParams.put(name, value.toString());
+        queryParams.put(name, value);
         return self();
     }
 
     @Override
     public SELF pathParam(String name, Object value) {
-        pathParams.put(name, value.toString());
+        pathParams.put(name, value);
         return self();
     }
 
     @Override
     public SELF header(String name, Object value) {
-        headers.put(name, value.toString());
+        headers.put(name, value);
         return self();
     }
 
@@ -126,7 +123,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()));
         headers(map("Content-Type", "application/json", "Accept", "application/json"));
-        headers.forEach(builder::header);
+        headers.forEach((k, v) -> builder.header(k, Objects.toString(v)));
         return builder.build();
     }
 
@@ -303,7 +300,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                         .orElse("<none>");
     }
 
-    private String stringify(Map<String, String> params) {
+    private String stringify(Map<String, Object> params) {
         if (params.isEmpty()) {
             return "<none>";
         } else {
@@ -326,7 +323,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         this.queryParams.clear();
         this.pathParams.clear();
         this.headers.clear();
-        return clone();
+        return copy();
     }
 
     private HttpResponse.BodyHandler<Optional<JsonNode>> asJSON() {
@@ -343,8 +340,21 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                 });
     }
 
-    @Override
-    public SELF clone() {
-        return SerializationUtils.clone(self()).postCall(this.postCall);
+    public SELF copy() {
+        SELF self = SerializationUtils.clone(self()).postCall(this.postCall);
+        if (self.headers == null) self.headers = new LinkedHashMap<>();
+        if (self.pathParams == null) self.pathParams = new LinkedHashMap<>();
+        if (self.queryParams == null) self.queryParams = new LinkedHashMap<>();
+        if (self.finalHeaders == null) self.finalHeaders = new LinkedHashMap<>();
+        if (self.finalPathParams == null) self.finalPathParams = new LinkedHashMap<>();
+        if (self.finalQueryParams == null) self.finalQueryParams = new LinkedHashMap<>();
+        self.headers(this.headers);
+        self.pathParams(this.pathParams);
+        self.queryParams(this.queryParams);
+        Optional.ofNullable(body).ifPresent(b -> self.body(b.toString()));
+        self.finalHeaders.putAll(this.finalHeaders);
+        self.finalPathParams.putAll(this.finalPathParams);
+        self.finalQueryParams.putAll(this.finalQueryParams);
+        return self;
     }
 }

@@ -8,6 +8,7 @@ package es.iti.wakamiti.api.util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -24,14 +25,14 @@ public class StringUtils {
      * @return The formatted text
      * @throws NoSuchFieldException If a parameter is not in the parameters map
      */
-    public static String format(String message, Map<String, String> parameters) throws NoSuchFieldException {
+    public static String format(String message, Map<String, ?> parameters) throws NoSuchFieldException {
         Pattern pattern = Pattern.compile("\\{(\\w+?)}");
         List<String> missing = pattern.matcher(message).results().map(r -> r.group(1)).distinct()
                 .filter(r -> !parameters.containsKey(r)).collect(Collectors.toList());
         if (!missing.isEmpty()) {
             throw new NoSuchFieldException("Missing parameters " + missing);
         }
-        return pattern.matcher(message).replaceAll((r) -> escapeEcmaScript(parameters.get(r.group(1))));
+        return pattern.matcher(message).replaceAll((r) -> escapeEcmaScript(Objects.toString(parameters.get(r.group(1)))));
     }
 
     /**
