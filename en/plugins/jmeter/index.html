@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="es" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22es%22%7D%7D">
+  <head>
+    <title>JMeter steps - Wakamiti</title><meta name="gridsome:hash" content="8b85ae6be56304d1a3fead811f8d2ea09b58b04b"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.23"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><meta data-vue-tag="ssr" name="theme-color" content="#10c186"><meta data-vue-tag="ssr" name="google-site-verification" content="undefined"><meta data-vue-tag="ssr" name="apple-mobile-web-app-status-bar-style" content="default"><meta data-vue-tag="ssr" data-key="description" name="description" content="undefined"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/svg+xml" sizes="16x16" href="/wakamiti/assets/static/logo.ce0531f.0e4f5137dd2d5351e7e577d559b09583.svg"><link data-vue-tag="ssr" rel="icon" type="image/svg+xml" sizes="32x32" href="/wakamiti/assets/static/logo.ac8d93a.0e4f5137dd2d5351e7e577d559b09583.svg"><link data-vue-tag="ssr" rel="icon" type="image/svg+xml" sizes="96x96" href="/wakamiti/assets/static/logo.b9532cc.0e4f5137dd2d5351e7e577d559b09583.svg"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/svg+xml" sizes="76x76" href="/wakamiti/assets/static/logo.f22e9f3.0e4f5137dd2d5351e7e577d559b09583.svg"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/svg+xml" sizes="120x120" href="/wakamiti/assets/static/logo.1539b60.0e4f5137dd2d5351e7e577d559b09583.svg"><link rel="preload" href="/wakamiti/assets/css/0.styles.091fd5cb.css" as="style"><link rel="preload" href="/wakamiti/assets/js/app.96980f8d.js" as="script"><link rel="preload" href="/wakamiti/assets/js/page--src--templates--doc-vue.4cf50185.js" as="script"><link rel="prefetch" href="/wakamiti/assets/js/page--node-modules--gridsome--app--pages--404-vue.c3294df7.js"><link rel="prefetch" href="/wakamiti/assets/js/page--src--pages--index-vue.3cbc3722.js"><link rel="prefetch" href="/wakamiti/assets/js/vendors~page--src--templates--doc-vue.01905b36.js"><link rel="stylesheet" href="/wakamiti/assets/css/0.styles.091fd5cb.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="site" data-v-4e2e9e0a data-v-0524b614><header class="header" data-v-81c7413c data-v-4e2e9e0a><a href="/wakamiti/en/" title="Back to home" class="logo active" data-v-75aea175 data-v-81c7413c><!----><div data-v-75aea175 data-v-75aea175><img alt="logo" src="data:image/svg+xml,%3csvg fill='none' viewBox='0 0 1000 200' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3cdefs%3e%3cfilter id='__svg-blur-9a0d5bd9b7f3eb7cc03b9c1e59633de9'%3e%3cfeGaussianBlur in='SourceGraphic' stdDeviation='40'/%3e%3c/filter%3e%3c/defs%3e%3cimage x='0' y='0' filter='url(%23__svg-blur-9a0d5bd9b7f3eb7cc03b9c1e59633de9)' width='1000' height='200' xlink:href='data:image/svg%2bxml%3bbase64%2ciVBORw0KGgoAAAANSUhEUgAAAEAAAAANCAYAAAAZr2hsAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD7klEQVRIx%2b2Wa0gVQRTH70NN7IFm%2begh9LDogVhRRhHF1Xuvlnevd1fSyKQMIqiI6ElUlH0qgupDSFTUhyiCCupDoBmBvSMsCaIHEQUVgRW9vvSl/mf3zO7ZvavV9xZ%2b7Mycmf%2bcOXN2ZgOxhB6gJ4o3lWOaVadH1uOJuoDqG%2bO%2bcVE335oecPRSjqaPXWlPjkbs/vSUJReZ4xTKN0vLsOoYF/VqsZ6rrLntXk1bzBE1glGexGoz60Eum1iD0a4ZIbvO78qEYemoyTSznzk%2bbs9jSO2QHTBNLM4aG4q6NyeoAoCFYawu7Iblk0KzyyKAll5aAGQQ7Lo1QAbCt%2bxyPOHWkA857BkTdNsNXz9sX8ScsYRnfk89fbx7Lr/F8w7reaATxojouBGRPyKiHub2OrQ/xnsK10OskYPyUpAHxoMa0A3msp12XGk0gh5Q6tEYiPJscB4MF76MxeJVn23gANpy2TYNuj3wsRvv2/x%2biPZxbJ%2bO%2bmW8y8Ua0gJQAH7B0CAmPYYI3rOd19iBhH7VWLaS%2bu7nega/yfkq0ARi4Ds4xbscNFPZyZhbRlMLabSyfia/J6GNFtdO83PfUnBcbNpF1B%2bBErYXgDXgBPgJOy22BRSyPR5P1tNcdSCrrwAUgvcwbAZnQTVoQ9Q72a4WWQY%2bg7vgNS1aOEYZsBzUgi5EvV0EM2jvckKvAF9Z4zkYIDSK2Y8NrF8CjoI7os9p1G%2bC0Z7UXgBeYd4VnLVh0f4NaHag%2b8iALzzZU7CVd%2bEa76AaSLvzkdK0OrWYomoIx/JRrwcnk0uayVbBY3h3DRXENvCWPo0avYH6xYUGbQRlzjre0fvkAzbiuuhzhjIIjBLZlQ0WgjdgLc%2bTJQLwAyT7y4Ai0AsDpWAEPAF7QYeahAdWgp28Q61gorMDqTDq5zhAV8AH8Z2GxE6R/h7W2O7SsALQy4uh86QZHAY3PBnQBUY6t4CeyZ/fS7DaE4D54MufMmACOSOc7AAXSEwMauSUnQNmmoLWTpazxiB2PsX9H4BnIEcEkD6RF6wxgzIIvKPAs8YI/l4rhS%2b04B4RgEt8uBY6N4WewYH9BNa7AqDpEfsMSAuAcy/SAZYtJqVTfAugRalvqZZ3rggMpZMZHKKF8ERDUJ4nNHLBQfUpcBul4W4wDOTzAbcPTGWNwSjvAmPEVYYxxioRgAY%2b5DLV1Vhl/XgVg01gFs%2bl/KZzZIfpr2afQ/73Iv8s%2bN2dwf7vW8du/Yh47n7rBvhrDT9fouJnyPdO99Hys7v%2bN1x/gu5AmPc%2bp5dqC9lt7BxdgfZklob8g3PZ/0Ej7DdG%2bGxrqAwQf6Bh7%2bJlu1hL4P%2bD5zchBjV332YqQgAAAABJRU5ErkJggg==' /%3e%3c/svg%3e" width="1000" data-src="/wakamiti/assets/static/logo-dark.97c148e.2e5cb9fe662c7d99852fac0fef6d7f82.svg" data-srcset="/wakamiti/assets/static/logo-dark.82a2fbd.2e5cb9fe662c7d99852fac0fef6d7f82.svg 480w, /wakamiti/assets/static/logo-dark.97c148e.2e5cb9fe662c7d99852fac0fef6d7f82.svg 1000w" data-sizes="(max-width: 1000px) 100vw, 1000px" class="g-image g-image--lazy g-image--loading" data-v-75aea175><noscript data-v-75aea175><img src="/wakamiti/assets/static/logo-dark.97c148e.2e5cb9fe662c7d99852fac0fef6d7f82.svg" class="g-image g-image--loaded" width="1000" alt="logo"></noscript></div></a><nav class="nav" data-v-81c7413c><button id="languageSwitch" aria-label="Switch language between spanish and english" data-v-3bd90801 data-v-81c7413c><!----><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="globe feather feather-globe" data-v-3bd90801 data-v-3bd90801><circle cx="12" cy="12" r="10" data-v-3bd90801></circle><line x1="2" y1="12" x2="22" y2="12" data-v-3bd90801></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" data-v-3bd90801></path></svg>
+  ES
+</button><button id="themeSwitch" aria-label="Switch theme between light and dark" data-v-2a25ef95 data-v-81c7413c><!----><!----></button><button aria-label="Toggle the sidebar" class="toggle" data-v-def1a688 data-v-81c7413c><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="open feather feather-menu" data-v-def1a688 data-v-def1a688><line x1="3" y1="12" x2="21" y2="12" data-v-def1a688></line><line x1="3" y1="6" x2="21" y2="6" data-v-def1a688></line><line x1="3" y1="18" x2="21" y2="18" data-v-def1a688></line></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close feather feather-x" style="display:none;" data-v-def1a688 data-v-def1a688><line x1="18" y1="6" x2="6" y2="18" data-v-def1a688></line><line x1="6" y1="6" x2="18" y2="18" data-v-def1a688></line></svg></button></nav></header><aside class="sidebar" data-v-14629373 data-v-4e2e9e0a><div class="scroll" data-v-14629373><nav data-v-14629373><ul data-v-14629373><li class="section" data-v-14629373><h3 class="section-title" data-v-14629373>Introduction</h3><ul data-v-14629373><li data-v-14629373><a href="/wakamiti/en/introduction/what-is-wakamiti" class="topic" data-v-14629373>What is Wakamiti?</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373></ul><!----><!----></li><li data-v-14629373><a href="/wakamiti/en/introduction/getting-started" class="topic" data-v-14629373>Getting started</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373></ul></li></ul></li><li class="section" data-v-14629373><h3 class="section-title" data-v-14629373>Wakamiti in-depth</h3><ul data-v-14629373><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture" class="topic" data-v-14629373>Architecture</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture#global-options" class="sub-topic" data-v-14629373>Global options</a></li><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture#feature-options" class="sub-topic" data-v-14629373>Feature options</a></li><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture#data-types" class="sub-topic" data-v-14629373>Data types</a></li><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture#comparators" class="sub-topic" data-v-14629373>Comparators</a></li><li data-v-14629373><a href="/wakamiti/en/wakamiti/architecture#dynamic-properties" class="sub-topic" data-v-14629373>Dynamic properties</a></li></ul><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></li><li data-v-14629373><a href="/wakamiti/en/plugins" class="topic active" data-v-14629373>Plugins</a><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ul data-v-14629373><li data-v-14629373><a href="/wakamiti/en/plugins/rest" class="sub-topic" data-v-14629373>REST steps</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/database" class="sub-topic" data-v-14629373>DB steps</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/amqp" class="sub-topic" data-v-14629373>AMQP steps</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/html-reporter" class="sub-topic" data-v-14629373>HTML reporter</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/cucumber-exporter" class="sub-topic" data-v-14629373>Cucumber reporter</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/fileuploader" class="sub-topic" data-v-14629373>File Uploader</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/appium" class="sub-topic" data-v-14629373>Appium</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/azure" class="sub-topic" data-v-14629373>Azure Integration</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/email" class="sub-topic" data-v-14629373>Email steps</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/jmeter" aria-current="page" class="sub-topic active--exact active" data-v-14629373>Jmeter steps</a></li><li data-v-14629373><a href="/wakamiti/en/plugins/groovy" class="sub-topic" data-v-14629373>Groovy</a></li></ul><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></li></ul></li></ul><a href="https://github.com/iti-ict/wakamiti" title="Git-repository" aria-label="Wakamiti on Github" class="git small" data-v-6ddfe858 data-v-14629373><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon feather feather-github" data-v-6ddfe858 data-v-6ddfe858><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" data-v-6ddfe858 data-v-6ddfe858></path></svg>
+  Fork me on Github
+</a></nav></div></aside><main class="main" data-v-4e2e9e0a><h1 data-v-4e2e9e0a data-v-0524b614>
+    JMeter steps
+  </h1><div class="markdown" data-v-4e2e9e0a data-v-0524b614><p>This plugin provides a set of steps for conducting performance testing using JMeter DSL.</p>
+<hr>
+<ul id="toc">
+<li><a href="#install">Install</a></li>
+<li>
+<p><a href="#options">Options</a></p>
+<ul>
+<li><a href="#jmeterbaseurl"><code class="language-text">jmeter.baseURL</code></a></li>
+<li><a href="#jmetercontenttype"><code class="language-text">jmeter.contentType</code></a></li>
+<li><a href="#jmeterhttpcodethreshold"><code class="language-text">jmeter.httpCodeThreshold</code></a></li>
+<li><a href="#jmetertimeout"><code class="language-text">jmeter.timeout</code></a></li>
+<li><a href="#jmetercookies"><code class="language-text">jmeter.cookies</code></a></li>
+<li><a href="#jmetercache"><code class="language-text">jmeter.cache</code></a></li>
+<li><a href="#jmeterresourcesdownload"><code class="language-text">jmeter.resources.download</code></a></li>
+<li><a href="#jmeterresourcesregex"><code class="language-text">jmeter.resources.regex</code></a></li>
+<li><a href="#jmetercsvdelimiter"><code class="language-text">jmeter.csv.delimiter</code></a></li>
+<li><a href="#jmetercsvencoding"><code class="language-text">jmeter.csv.encoding</code></a></li>
+<li><a href="#jmetercsveofstop"><code class="language-text">jmeter.csv.eofStop</code></a></li>
+<li><a href="#jmetercsvrandom"><code class="language-text">jmeter.csv.random</code></a></li>
+<li><a href="#jmetercsvsharing"><code class="language-text">jmeter.csv.sharing</code></a></li>
+<li><a href="#jmeterproxyurl"><code class="language-text">jmeter.proxy.url</code></a></li>
+<li><a href="#jmeterproxyusername"><code class="language-text">jmeter.proxy.username</code></a></li>
+<li><a href="#jmeterproxypassword"><code class="language-text">jmeter.proxy.password</code></a></li>
+<li><a href="#jmeteroauth2url"><code class="language-text">jmeter.oauth2.url</code></a></li>
+<li><a href="#jmeteroauth2clientid"><code class="language-text">jmeter.oauth2.clientId</code></a></li>
+<li><a href="#jmeteroauth2clientsecret"><code class="language-text">jmeter.oauth2.clientSecret</code></a></li>
+<li><a href="#jmeteroauth2cached"><code class="language-text">jmeter.oauth2.cached</code></a></li>
+<li><a href="#jmeteroauth2parameters"><code class="language-text">jmeter.oauth2.parameters</code></a></li>
+<li><a href="#jmeterredirectfollow"><code class="language-text">jmeter.redirect.follow</code></a></li>
+<li><a href="#jmeterreporttree"><code class="language-text">jmeter.report.tree</code></a></li>
+<li><a href="#jmeterreportjtl"><code class="language-text">jmeter.report.jtl</code></a></li>
+<li><a href="#jmeterreporthtml"><code class="language-text">jmeter.report.html</code></a></li>
+<li><a href="#jmeterreportinfluxurl"><code class="language-text">jmeter.report.influx.url</code></a></li>
+<li><a href="#jmeterreportinfluxtoken"><code class="language-text">jmeter.report.influx.token</code></a></li>
+<li><a href="#jmeterreportinfluxtitle"><code class="language-text">jmeter.report.influx.title</code></a></li>
+<li><a href="#jmeterreportinfluxapplication"><code class="language-text">jmeter.report.influx.application</code></a></li>
+<li><a href="#jmeterreportinfluxmeasurement"><code class="language-text">jmeter.report.influx.measurement</code></a></li>
+<li><a href="#jmeterreportinfluxsamplersregex"><code class="language-text">jmeter.report.influx.samplersRegex</code></a></li>
+<li><a href="#jmeterreportinfluxtags"><code class="language-text">jmeter.report.influx.tags</code></a></li>
+<li><a href="#jmeterreportinfluxpercentiles"><code class="language-text">jmeter.report.influx.percentiles</code></a></li>
+<li><a href="#jmeterreportgraphiteurl"><code class="language-text">jmeter.report.graphite.url</code></a></li>
+<li><a href="#jmeterreportinfluxprefix"><code class="language-text">jmeter.report.influx.prefix</code></a></li>
+</ul>
+</li>
+<li>
+<p><a href="#steps">Steps</a></p>
+<ul>
+<li><a href="#define-base-url">Define base URL</a></li>
+<li><a href="#define-content-type">Define content type</a></li>
+<li><a href="#define-timeout">Define timeout</a></li>
+<li><a href="#define-http-code-threshold">Define HTTP code threshold</a></li>
+<li><a href="#define-cookies">Define cookies</a></li>
+<li><a href="#define-cache">Define cache</a></li>
+<li><a href="#define-embedded-resources-download">Define embedded resources download</a></li>
+<li><a href="#define-embedded-resources-download-pattern">Define embedded resources download pattern</a></li>
+<li><a href="#define-proxy">Define proxy</a></li>
+<li><a href="#define-basic-authentication">Define basic authentication</a></li>
+<li><a href="#define-oauth2-authentication">Define oauth2 authentication</a></li>
+<li><a href="#define-oauth2-authentication-by-token">Define oauth2 authentication by token</a></li>
+<li><a href="#define-oauth2-authentication-by-token-file">Define oauth2 authentication by token (file)</a></li>
+<li><a href="#define-oauth2-authentication-by-credentials">Define oauth2 authentication by credentials</a></li>
+<li><a href="#define-oauth2-authentication-by-client">Define oauth2 authentication by client</a></li>
+<li><a href="#clear-authentication">Clear authentication</a></li>
+<li><a href="#define-dataset">Define dataset</a></li>
+<li><a href="#define-variables">Define variables</a></li>
+<li><a href="#define-variables-table">Define variables (table)</a></li>
+<li><a href="#define-request">Define request</a></li>
+<li><a href="#define-request-body">Define request body</a></li>
+<li><a href="#define-request-body-file">Define request body (file)</a></li>
+<li><a href="#define-request-parameters-or-headers">Define request parameters or headers</a></li>
+<li><a href="#define-request-parameters-table">Define request parameters (table)</a></li>
+<li><a href="#define-request-attached-file">Define request attached file</a></li>
+<li><a href="#define-request-extractor">Define request extractor</a></li>
+<li><a href="#execute-simple">Execute simple</a></li>
+<li><a href="#execute-load">Execute load</a></li>
+<li><a href="#execute-load-iterations">Execute load (iterations)</a></li>
+<li><a href="#execute-load-increase">Execute load (increase)</a></li>
+<li><a href="#execute-load-stretches">Execute load (stretches)</a></li>
+<li><a href="#check-metric">Check metric</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#data-types">Data types</a></p>
+<ul>
+<li><a href="#duration-metric"><code class="language-text">duration-metric</code></a></li>
+<li><a href="#long-metric"><code class="language-text">long-metric</code></a></li>
+<li><a href="#double-metric"><code class="language-text">double-metric</code></a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="install"><a href="#install" aria-hidden="true"><span class="icon icon-link"></span></a>Install</h2>
+<p>Include the module in the corresponding section.</p>
+<div id="coord" class="remark-code-tabs"><label for="coord#0" class="remark-code-tab">
+                        <input type="radio" id=coord#0 name="coord" checked/> yaml
+                    </label><div class="remark-code-content"><div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0</pre><pre class="hidden">es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0</pre></div></div><label for="coord#2" class="remark-code-tab">
+                        <input type="radio" id=coord#2 name="coord" /> maven
+                    </label><div class="remark-code-content"><div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">&lt;dependency>
+  &lt;groupId>es.iti.wakamiti&lt;/groupId>
+  &lt;artifactId>jmeter-wakamiti-plugin&lt;/artifactId>
+  &lt;version>1.0.0&lt;/version>
+&lt;/dependency></pre><pre class="hidden">&lt;dependency&gt;
+  &lt;groupId&gt;es.iti.wakamiti&lt;/groupId&gt;
+  &lt;artifactId&gt;jmeter-wakamiti-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></div></div></div>
+<hr class="remark-code-tabs-x" rel="coord#maven" />
+<h2 id="options"><a href="#options" aria-hidden="true"><span class="icon icon-link"></span></a>Options</h2>
+<h3 id="jmeterbaseurl"><a href="#jmeterbaseurl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.baseURL</code></h3>
+<ul>
+<li>Type: <code class="language-text">URL</code> <em>required</em></li>
+</ul>
+<p>Defines the base URL for REST calls. This setting is equivalent to the <a href="#define-base-url">Define base URL</a> step if a
+more descriptive statement is preferred.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">baseURL</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//example.org/api/v2</pre></div>
+<h3 id="jmetercontenttype"><a href="#jmetercontenttype" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.contentType</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+<li>Default: <code class="language-text">APPLICATION_JSON</code></li>
+</ul>
+<p>Specifies the type of content to send in the header of REST calls. Accepted values are:</p>
+<table>
+<thead>
+<tr>
+<th>literal</th>
+<th><code class="language-text">content-type</code> header value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">WILDCARD</code></td>
+<td><code class="language-text">*/*</code></td>
+</tr>
+<tr>
+<td><code class="language-text">TEXT_PLAIN</code></td>
+<td><code class="language-text">text/plain</code></td>
+</tr>
+<tr>
+<td><code class="language-text">TEXT_XML</code></td>
+<td><code class="language-text">text/xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">TEXT_HTML</code></td>
+<td><code class="language-text">text/html</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_JSON</code></td>
+<td><code class="language-text">application/json</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_XML</code></td>
+<td><code class="language-text">application/xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_XHTML_XML</code></td>
+<td><code class="language-text">application/xhtml+xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_SVG_XML</code></td>
+<td><code class="language-text">application/svg+xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_SOAP_XML</code></td>
+<td><code class="language-text">application/soap+xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_ATOM_XML</code></td>
+<td><code class="language-text">application/atom+xml</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_FORM_URLENCODED</code></td>
+<td><code class="language-text">application/x-www-form-urlencoded</code></td>
+</tr>
+<tr>
+<td><code class="language-text">APPLICATION_OCTET_STREAM</code></td>
+<td><code class="language-text">application/octet-stream</code></td>
+</tr>
+<tr>
+<td><code class="language-text">MULTIPART_FORM_DATA</code></td>
+<td><code class="language-text">multipart/form-data</code></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">contentType</span><span class="token punctuation">:</span> APPLICATION_XML</pre></div>
+<h3 id="jmeterhttpcodethreshold"><a href="#jmeterhttpcodethreshold" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.httpCodeThreshold</code></h3>
+<ul>
+<li>Type: <code class="language-text">integer</code></li>
+<li>Default: <code class="language-text">500</code></li>
+</ul>
+<p>Sets a limit on HTTP response codes. Whenever a REST call returns an HTTP code equal to or greater than this value, the
+step is automatically marked as failed without checking any other conditions.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">httpCodeThreshold</span><span class="token punctuation">:</span> <span class="token number">999</span></pre></div>
+<h3 id="jmetertimeout"><a href="#jmetertimeout" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.timeout</code></h3>
+<ul>
+<li>Type: <code class="language-text">integer</code></li>
+<li>Default: <code class="language-text">60000</code></li>
+</ul>
+<p>Sets a maximum response time (in milliseconds) for subsequent HTTP requests. If this time is exceeded, the request is
+aborted and an error is raised.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">timeout</span><span class="token punctuation">:</span> <span class="token number">10000</span></pre></div>
+<h3 id="jmetercookies"><a href="#jmetercookies" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.cookies</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmetercache"><a href="#jmetercache" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.cache</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmeterresourcesdownload"><a href="#jmeterresourcesdownload" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.resources.download</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmeterresourcesregex"><a href="#jmeterresourcesregex" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.resources.regex</code></h3>
+<ul>
+<li>Type: <code class="language-text">regex</code></li>
+</ul>
+<h3 id="jmetercsvdelimiter"><a href="#jmetercsvdelimiter" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.csv.delimiter</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+<li>Default: <code class="language-text">,</code></li>
+</ul>
+<h3 id="jmetercsvencoding"><a href="#jmetercsvencoding" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.csv.encoding</code></h3>
+<ul>
+<li>Type: <code class="language-text">charset</code></li>
+<li>Default: <code class="language-text">UTF-8</code></li>
+</ul>
+<h3 id="jmetercsveofstop"><a href="#jmetercsveofstop" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.csv.eofStop</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmetercsvrandom"><a href="#jmetercsvrandom" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.csv.random</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmetercsvsharing"><a href="#jmetercsvsharing" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.csv.sharing</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+<li>Default: <code class="language-text">ALL_THREADS</code></li>
+</ul>
+<p>Accepted values are:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALL_THREADS</td>
+<td>All threads in the test plan will share the CSV file, meaning that any thread iteration will consume an entry from it. You can think as having only one pointer to the current line of the CSV, being advanced by any thread iteration. The file is only opened once.</td>
+</tr>
+<tr>
+<td>THREAD_GROUP</td>
+<td>CSV file consumption is only shared within thread groups. This means that threads in separate thread groups will use separate indexes to consume the data. The file is open once per thread group.</td>
+</tr>
+<tr>
+<td>THREAD</td>
+<td>CSV file consumption is isolated per thread. This means that each thread will start consuming the CSV from the beginning and not share any information with other threads. The file is open once per thread.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="jmeterproxyurl"><a href="#jmeterproxyurl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.proxy.url</code></h3>
+<ul>
+<li>Type: <code class="language-text">url</code></li>
+</ul>
+<h3 id="jmeterproxyusername"><a href="#jmeterproxyusername" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.proxy.username</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeterproxypassword"><a href="#jmeterproxypassword" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.proxy.password</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeteroauth2url"><a href="#jmeteroauth2url" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.oauth2.url</code></h3>
+<ul>
+<li>Type: <code class="language-text">URL</code></li>
+</ul>
+<p>Specifies the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service to use to generate the token to be sent in the <code class="language-text">Authorization</code>
+HTTP header of REST calls.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">url</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//accounts.google.com/o/oauth2/auth</pre></div>
+<h3 id="jmeteroauth2clientid"><a href="#jmeteroauth2clientid" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.oauth2.clientId</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<p>Sets the <code class="language-text">clientId</code> parameter for the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service defined by the value of the
+<code class="language-text">jmeter.oauth2.url</code> configuration property.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">clientId</span><span class="token punctuation">:</span> WEB_APP</pre></div>
+<h3 id="jmeteroauth2clientsecret"><a href="#jmeteroauth2clientsecret" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.oauth2.clientSecret</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<p>Sets the <code class="language-text">clientSecret</code> parameter for the <a href="https://datatracker.ietf.org/doc/html/rfc6749" title="OAuth 2.0" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0</a> authentication service defined by the value of the
+<code class="language-text">jmeter.oauth2.url</code> configuration property.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span> 
+    <span class="token key atrule">clientSecret</span><span class="token punctuation">:</span> ABRACADABRAus1ZMGHvq9R</pre></div>
+<h3 id="jmeteroauth2cached"><a href="#jmeteroauth2cached" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.oauth2.cached</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<p>Specifies whether to cache the retrieved token to avoid repeated calls to the oauth service for the same data.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span>
+    <span class="token key atrule">cached</span><span class="token punctuation">:</span> <span class="token boolean important">true</span></pre></div>
+<h3 id="jmeteroauth2parameters"><a href="#jmeteroauth2parameters" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.oauth2.parameters</code></h3>
+<ul>
+<li>Type: <code class="language-text">property[]</code></li>
+</ul>
+<p>Sets the default parameters for OAuth authentication.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">oauth2</span><span class="token punctuation">:</span>
+    <span class="token key atrule">parameters</span><span class="token punctuation">:</span>
+      <span class="token key atrule">grant_type</span><span class="token punctuation">:</span> password
+      <span class="token key atrule">username</span><span class="token punctuation">:</span> pepe
+      <span class="token key atrule">password</span><span class="token punctuation">:</span> 1234asdf
+      <span class="token key atrule">scope</span><span class="token punctuation">:</span> something</pre></div>
+<h3 id="jmeterredirectfollow"><a href="#jmeterredirectfollow" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.redirect.follow</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">true</code></li>
+</ul>
+<p>Specifies whether to allow redirects in HTTP calls.</p>
+<p>Example:</p>
+<div class="remark-code-clipboard"><pre class="language-yaml"><span class="token key atrule">jmeter</span><span class="token punctuation">:</span>
+  <span class="token key atrule">redirect</span><span class="token punctuation">:</span>
+    <span class="token key atrule">follow</span><span class="token punctuation">:</span> <span class="token boolean important">false</span></pre></div>
+<h3 id="jmeterreporttree"><a href="#jmeterreporttree" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.tree</code></h3>
+<ul>
+<li>Type: <code class="language-text">boolean</code></li>
+<li>Default: <code class="language-text">false</code></li>
+</ul>
+<h3 id="jmeterreportjtl"><a href="#jmeterreportjtl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.jtl</code></h3>
+<ul>
+<li>Type: <code class="language-text">path</code></li>
+<li>Default: <code class="language-text">./wakamiti.jtl</code></li>
+</ul>
+<h3 id="jmeterreporthtml"><a href="#jmeterreporthtml" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.html</code></h3>
+<ul>
+<li>Type: <code class="language-text">path</code></li>
+</ul>
+<h3 id="jmeterreportinfluxurl"><a href="#jmeterreportinfluxurl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.url</code></h3>
+<ul>
+<li>Type: <code class="language-text">url</code></li>
+</ul>
+<h3 id="jmeterreportinfluxtoken"><a href="#jmeterreportinfluxtoken" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.token</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeterreportinfluxtitle"><a href="#jmeterreportinfluxtitle" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.title</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeterreportinfluxapplication"><a href="#jmeterreportinfluxapplication" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.application</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeterreportinfluxmeasurement"><a href="#jmeterreportinfluxmeasurement" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.measurement</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h3 id="jmeterreportinfluxsamplersregex"><a href="#jmeterreportinfluxsamplersregex" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.samplersRegex</code></h3>
+<ul>
+<li>Type: <code class="language-text">regex</code></li>
+</ul>
+<h3 id="jmeterreportinfluxtags"><a href="#jmeterreportinfluxtags" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.tags</code></h3>
+<ul>
+<li>Type: <code class="language-text">property[]</code></li>
+</ul>
+<h3 id="jmeterreportinfluxpercentiles"><a href="#jmeterreportinfluxpercentiles" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.percentiles</code></h3>
+<ul>
+<li>Type: <code class="language-text">long[]</code></li>
+</ul>
+<h3 id="jmeterreportgraphiteurl"><a href="#jmeterreportgraphiteurl" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.graphite.url</code></h3>
+<ul>
+<li>Type: <code class="language-text">url</code></li>
+</ul>
+<h3 id="jmeterreportinfluxprefix"><a href="#jmeterreportinfluxprefix" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">jmeter.report.influx.prefix</code></h3>
+<ul>
+<li>Type: <code class="language-text">string</code></li>
+</ul>
+<h2 id="steps"><a href="#steps" aria-hidden="true"><span class="icon icon-link"></span></a>Steps</h2>
+<h3 id="define-base-url"><a href="#define-base-url" aria-hidden="true"><span class="icon icon-link"></span></a>Define base URL</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the base URL {url}</pre><pre class="hidden">the base URL {url}</pre></div>
+<p>Declarative-way for setting the configuration property <a href="#jmeterbaseurl"><code class="language-text">jmeter.baseURL</code></a>.</p>
+<h4 id="parameters"><a href="#parameters" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">url</code></td>
+<td><code class="language-text">url</code> <em>required</em></td>
+<td>Base URL</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples"><a href="#examples" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the base URL https://example.org/api</pre></div>
+<h3 id="define-content-type"><a href="#define-content-type" aria-hidden="true"><span class="icon icon-link"></span></a>Define content type</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">{word} as content type</pre><pre class="hidden">{word} as content type</pre></div>
+<p>Declarative-way for setting the configuration property <a href="#jmetercontenttype"><code class="language-text">jmeter.contentType</code></a>.</p>
+<h4 id="parameters-1"><a href="#parameters-1" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">type</code></td>
+<td><code class="language-text">word</code> <em>required</em></td>
+<td>the content type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-1"><a href="#examples-1" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given APPLICATION_XML as content type</pre></div>
+<h3 id="define-timeout"><a href="#define-timeout" aria-hidden="true"><span class="icon icon-link"></span></a>Define timeout</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">a timeout of {duration}</pre><pre class="hidden">a timeout of {duration}</pre></div>
+<p>Sets a response timeout for the subsequent HTTP requests.</p>
+<h4 id="parameters-2"><a href="#parameters-2" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">duration</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td>The timeout</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-2"><a href="#examples-2" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a timeout of 12000 milliseconds</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a timeout of 2 seconds</pre></div>
+<h3 id="define-http-code-threshold"><a href="#define-http-code-threshold" aria-hidden="true"><span class="icon icon-link"></span></a>Define HTTP code threshold</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">(that) any request will be successful if its HTTP code {matcher}</pre><pre class="hidden">(that) any request will be successful if its HTTP code {matcher}</pre></div>
+<p>Sets the range of http codes that are valid for all http requests.
+It's similar to setting the configuration property <a href="#jmeterhttpcodethreshold"><code class="language-text">jmeter.httpCodeTreshold</code></a> but using any
+integer assertion.</p>
+<h4 id="parameters-3"><a href="#parameters-3" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">integer-assertion</code> <em>required</em></td>
+<td>Numeric <a href="/wakamiti//en/wakamiti/architecture#comparators">comparator</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="example"><a href="#example" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">* any request will be successful if its HTTP code is greater than 500</pre></div>
+<h3 id="define-cookies"><a href="#define-cookies" aria-hidden="true"><span class="icon icon-link"></span></a>Define cookies</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">(that) cookies are (enabled|disabled)</pre><pre class="hidden">(that) cookies are (enabled|disabled)</pre></div>
+<p>Enables or disables cookies for all http requests.</p>
+<h4 id="example-1"><a href="#example-1" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given that cookies are enabled</pre></div>
+<h3 id="define-cache"><a href="#define-cache" aria-hidden="true"><span class="icon icon-link"></span></a>Define cache</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">(that) cache is (enabled|disabled)</pre><pre class="hidden">(that) cache is (enabled|disabled)</pre></div>
+<p>Enables or disables cache for all http requests.</p>
+<h4 id="example-2"><a href="#example-2" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given that cache is enabled</pre></div>
+<h3 id="define-embedded-resources-download"><a href="#define-embedded-resources-download" aria-hidden="true"><span class="icon icon-link"></span></a>Define embedded resources download</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">(that) embedded resources will (not) be downloaded</pre><pre class="hidden">(that) embedded resources will (not) be downloaded</pre></div>
+<p>Enables or disables download of embedded resources on all http requests.</p>
+<h4 id="example-3"><a href="#example-3" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given that embedded resources will be downloaded</pre></div>
+<h3 id="define-embedded-resources-download-pattern"><a href="#define-embedded-resources-download-pattern" aria-hidden="true"><span class="icon icon-link"></span></a>Define embedded resources download pattern</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">(that) embedded resources (matching|do not match) the {pattern} pattern are downloaded</pre><pre class="hidden">(that) embedded resources (matching|do not match) the {pattern} pattern are downloaded</pre></div>
+<p>Specifies the regular expression of the embedded resources to download or not on all http requests.</p>
+<h4 id="parameters-4"><a href="#parameters-4" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">pattern</code></td>
+<td><code class="language-text">regex</code> <em>required</em></td>
+<td>A valid regular expression</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example-4"><a href="#example-4" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given that embedded resources matching the <span class="token string">'.*'</span> pattern are downloaded</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given that embedded resources do not match the <span class="token string">'.*'</span> pattern are downloaded</pre></div>
+<h3 id="define-proxy"><a href="#define-proxy" aria-hidden="true"><span class="icon icon-link"></span></a>Define proxy</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">a proxy with the URL {url} (and credentials {username}:{password})</pre><pre class="hidden">a proxy with the URL {url} (and credentials {username}:{password})</pre></div>
+<p>Specifies the URL, with or without credentials, of a proxy server through which HTTP requests are sent to their final
+destination.</p>
+<h4 id="parameters-5"><a href="#parameters-5" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">url</code></td>
+<td><code class="language-text">url</code> <em>required</em></td>
+<td>The proxy url</td>
+</tr>
+<tr>
+<td><code class="language-text">username</code></td>
+<td><code class="language-text">text</code></td>
+<td>The proxy username</td>
+</tr>
+<tr>
+<td><code class="language-text">password</code></td>
+<td><code class="language-text">text</code></td>
+<td>The proxy password</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example-5"><a href="#example-5" aria-hidden="true"><span class="icon icon-link"></span></a>Example:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a proxy with the URL https://proxy.org</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a proxy with the URL https://proxy.org and credentials <span class="token string">'user1'</span>:<span class="token string">'s3cr3t'</span></pre></div>
+<h3 id="define-basic-authentication"><a href="#define-basic-authentication" aria-hidden="true"><span class="icon icon-link"></span></a>Define basic authentication</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the basic authentication credentials {username}:{password}</pre><pre class="hidden">the service uses the basic authentication credentials {username}:{password}</pre></div>
+<p>Sets the basic authentication credentials to be sent in the <code class="language-text">Authorization</code> header for the subsequent requests.</p>
+<h4 id="parameters-6"><a href="#parameters-6" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">username</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The username</td>
+</tr>
+<tr>
+<td><code class="language-text">password</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The password</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-3"><a href="#examples-3" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the basic authentication credentials <span class="token string">'us1532'</span>:<span class="token string">'xxxxx'</span></pre></div>
+<h3 id="define-oauth2-authentication"><a href="#define-oauth2-authentication" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication</pre><pre class="hidden">the service uses the oauth authentication</pre></div>
+<p>Sets the bearer authentication token to be sent in the <code class="language-text">Authorization</code> header, which is previously retrieved from the
+configured oauth2 service (<a href="#jmeteroauth2url">url</a>, <a href="#jmeteroauth2clientid">clientId</a>,
+<a href="#jmeteroauth2clientsecret">clientSecret</a>, <a href="#jmeteroauth2parameters">parameters</a>), for the following requests.</p>
+<h4 id="examples-4"><a href="#examples-4" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication</pre></div>
+<h3 id="define-oauth2-authentication-by-token"><a href="#define-oauth2-authentication-by-token" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication by token</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication token {token}</pre><pre class="hidden">the service uses the oauth authentication token {token}</pre></div>
+<p>Sets the bearer authentication token to be sent in the <code class="language-text">Authorization</code> header for subsequent requests.</p>
+<h4 id="parameters-7"><a href="#parameters-7" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">token</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>Authentication token</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-5"><a href="#examples-5" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication token <span class="token string">'hudytw9834y9cqy32t94'</span></pre></div>
+<h3 id="define-oauth2-authentication-by-token-file"><a href="#define-oauth2-authentication-by-token-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication by token (file)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication token from the file {file}</pre><pre class="hidden">the service uses the oauth authentication token from the file {file}</pre></div>
+<p>Sets the bearer authentication token to be sent in the <code class="language-text">Authorization</code> header for subsequent requests, from file.</p>
+<h4 id="parameters-8"><a href="#parameters-8" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code> <em>required</em></td>
+<td>File with the authentication token</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-6"><a href="#examples-6" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication token from the file <span class="token string">'token.txt'</span></pre></div>
+<h3 id="define-oauth2-authentication-by-credentials"><a href="#define-oauth2-authentication-by-credentials" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication by credentials</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication credentials {username}:{password}</pre><pre class="hidden">the service uses the oauth authentication credentials {username}:{password}</pre></div>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication credentials {username}:{password} with the following parameters:
+    {table}</pre><pre class="hidden">the service uses the oauth authentication credentials {username}:{password} with the following parameters:
+    {table}</pre></div>
+<p>Sets the bearer authentication token to be sent in the <code class="language-text">Authorization</code> header, which is previously retrieved from the
+configured oauth2 service (<a href="#jmeteroauth2url">url</a>, <a href="#jmeteroauth2clientid">clientId</a>,
+<a href="#jmeteroauth2clientsecret">clientSecret</a>), using the indicated credentials, for the following requests.</p>
+<p>Additional parameters supported by <code class="language-text">Oauth</code> can also be added using a table.</p>
+<h4 id="parameters-9"><a href="#parameters-9" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">username</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The username</td>
+</tr>
+<tr>
+<td><code class="language-text">password</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The password</td>
+</tr>
+<tr>
+<td><code class="language-text">table</code></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-7"><a href="#examples-7" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication credentials <span class="token string">'us1532'</span>:<span class="token string">'xxxxx'</span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication credentials <span class="token string">'us1532'</span>:<span class="token string">'xxxxx'</span> with the following parameters:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> name  </span><span class="token punctuation">|</span><span class="token th variable"> value     </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> scope </span><span class="token punctuation">|</span><span class="token td string"> something </span><span class="token punctuation">|</span></span></pre></div>
+<h3 id="define-oauth2-authentication-by-client"><a href="#define-oauth2-authentication-by-client" aria-hidden="true"><span class="icon icon-link"></span></a>Define oauth2 authentication by client</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication</pre><pre class="hidden">the service uses the oauth authentication</pre></div>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service uses the oauth authentication with the following parameters:
+    {table}</pre><pre class="hidden">the service uses the oauth authentication with the following parameters:
+    {table}</pre></div>
+<p>Sets the bearer authentication token to be sent in the <code class="language-text">Authorization</code> header, which is previously retrieved from the
+configured oauth2 service (<a href="#jmeteroauth2url">url</a>, <a href="#jmeteroauth2clientid">clientId</a>,
+<a href="#jmeteroauth2clientsecret">clientSecret</a>), using client data, for the following requests.</p>
+<p>Additional parameters supported by <code class="language-text">Oauth</code> can also be added using a table.</p>
+<h4 id="parameters-10"><a href="#parameters-10" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">table</code></td>
+<td><code class="language-text">table</code></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-8"><a href="#examples-8" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service uses the oauth authentication with the following parameters:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> name  </span><span class="token punctuation">|</span><span class="token th variable"> value     </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> scope </span><span class="token punctuation">|</span><span class="token td string"> something </span><span class="token punctuation">|</span></span></pre></div>
+<h3 id="clear-authentication"><a href="#clear-authentication" aria-hidden="true"><span class="icon icon-link"></span></a>Clear authentication</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the service does not use authentication</pre><pre class="hidden">the service does not use authentication</pre></div>
+<p>Deletes the authentication header.</p>
+<h5 id="examples-9"><a href="#examples-9" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h5>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the service does not use authentication</pre></div>
+<h3 id="define-dataset"><a href="#define-dataset" aria-hidden="true"><span class="icon icon-link"></span></a>Define dataset</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the data in file {file}</pre><pre class="hidden">the data in file {file}</pre></div>
+<p>Sets the dataset from a CSV file for HTTP requests.</p>
+<p>By default, the CSV file will be opened once and shared by all threads. This means that when one thread reads a CSV
+line in one iteration, then the following thread reading a line will continue with the following line.</p>
+<p>If you want to change this (to share the file per thread group or use one file per thread), then you can use the
+<a href="#jmetercsvsharing"><code class="language-text">jmeter.csv.sharing</code></a> property.</p>
+<p>Check <a href="#jmetercsvdelimiter"><code class="language-text">csv</code></a> properties for additional details and options (like changing delimiter, stopping on
+the end of file, etc.).</p>
+<h4 id="parameters-11"><a href="#parameters-11" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code> <em>required</em></td>
+<td>A csv file</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-10"><a href="#examples-10" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the data in file <span class="token string">'data/users.csv'</span></pre></div>
+<h3 id="define-variables"><a href="#define-variables" aria-hidden="true"><span class="icon icon-link"></span></a>Define variables</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">variable {name} with value {value}</pre><pre class="hidden">variable {name} with value {value}</pre></div>
+<p>Sets a single variable for HTTP requests.</p>
+<h4 id="parameters-12"><a href="#parameters-12" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">name</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The var name</td>
+</tr>
+<tr>
+<td><code class="language-text">value</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The var value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-11"><a href="#examples-11" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given variable <span class="token string">'something'</span> with value <span class="token string">'abc'</span>
+And a GET call to the service <span class="token string">'/users/{something}'</span></pre></div>
+<h3 id="define-variables-table"><a href="#define-variables-table" aria-hidden="true"><span class="icon icon-link"></span></a>Define variables (table)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the following variables:
+    {table}</pre><pre class="hidden">the following variables:
+    {table}</pre></div>
+<p>Sets multiple variables for HTTP requests.</p>
+<h4 id="parameters-13"><a href="#parameters-13" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">table</code></td>
+<td><code class="language-text">table</code> <em>required</em></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-12"><a href="#examples-12" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given the following variables:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> id   </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span>
+And a GET call to the service <span class="token string">'/users/{id}?city={city}'</span></pre></div>
+<h3 id="define-request"><a href="#define-request" aria-hidden="true"><span class="icon icon-link"></span></a>Define request</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">a {method} call to the service {service}</pre><pre class="hidden">a {method} call to the service {service}</pre></div>
+<p>Defines a HTTP request to a service. The remaining parts of the call are defined in subsequent steps until another REST
+call is defined.</p>
+<p>Multiple calls can be defined in a scenario.</p>
+<h4 id="parameters-14"><a href="#parameters-14" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">method</code></td>
+<td><code class="language-text">word</code> <em>required</em></td>
+<td>The call method (<code class="language-text">GET</code>, <code class="language-text">PUT</code>, <code class="language-text">POST</code>...)</td>
+</tr>
+<tr>
+<td><code class="language-text">service</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The service url</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-13"><a href="#examples-13" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span></pre></div>
+<h3 id="define-request-body"><a href="#define-request-body" aria-hidden="true"><span class="icon icon-link"></span></a>Define request body</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the following data:
+    {data}</pre><pre class="hidden">with the following data:
+    {data}</pre></div>
+<p>Defines the payload body of the current HTTP request.</p>
+<h4 id="parameters-15"><a href="#parameters-15" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">data</code></td>
+<td><code class="language-text">document</code> <em>required</em></td>
+<td>The request payload body</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-14"><a href="#examples-14" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a POST call to the service <span class="token string">'/users'</span>
+* with the following data:
+  <span class="token pystring string">"""json
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1980-02-20",
+    "address": "221B, Baker Street"
+  }
+  """</span></pre></div>
+<h3 id="define-request-body-file"><a href="#define-request-body-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define request body (file)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the data from the file {file}</pre><pre class="hidden">with the data from the file {file}</pre></div>
+<p>Defines the payload body of the current HTTP request. The payload is provided by the given file.</p>
+<h4 id="parameters-16"><a href="#parameters-16" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code> <em>required</em></td>
+<td>A file containing the request payload body</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-15"><a href="#examples-15" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a POST call to the service <span class="token string">'/users'</span>
+* with the data from the file <span class="token string">'data/user123.json'</span></pre></div>
+<h3 id="define-request-parameters-or-headers"><a href="#define-request-parameters-or-headers" aria-hidden="true"><span class="icon icon-link"></span></a>Define request parameters or headers</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the (parameter|header|form parameter) {name} with value {value}</pre><pre class="hidden">with the (parameter|header|form parameter) {name} with value {value}</pre></div>
+<p>Defines a header, parameter or form parameter of the current HTTP request.</p>
+<h4 id="parameters-17"><a href="#parameters-17" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">name</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The parameter name</td>
+</tr>
+<tr>
+<td><code class="language-text">value</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The parameter value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-16"><a href="#examples-16" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the parameter <span class="token string">'id'</span> with value <span class="token string">'13'</span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the form parameter <span class="token string">'id'</span> with value <span class="token string">'13'</span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the header <span class="token string">'Keep-Alive'</span> with value <span class="token string">'1200'</span></pre></div>
+<h3 id="define-request-parameters-table"><a href="#define-request-parameters-table" aria-hidden="true"><span class="icon icon-link"></span></a>Define request parameters (table)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the following (parameters|headers|form parameters):
+    {table}</pre><pre class="hidden">with the following (parameters|headers|form parameters):
+    {table}</pre></div>
+<p>Defines multiple headers, parameters or form parameters of the current HTTP request.</p>
+<h4 id="parameters-18"><a href="#parameters-18" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">table</code></td>
+<td><code class="language-text">table</code> <em>required</em></td>
+<td>A table with <code class="language-text">name</code> and <code class="language-text">value</code> columns</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-17"><a href="#examples-17" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the following parameters:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> id   </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the following form parameters:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> Name </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> id   </span><span class="token punctuation">|</span><span class="token td string"> 13       </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> city </span><span class="token punctuation">|</span><span class="token td string"> Valencia </span><span class="token punctuation">|</span></span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the following headers:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> Name       </span><span class="token punctuation">|</span><span class="token th variable"> Value    </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> Age        </span><span class="token punctuation">|</span><span class="token td string"> 3600     </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> Keep-Alive </span><span class="token punctuation">|</span><span class="token td string"> 1200     </span><span class="token punctuation">|</span></span></pre></div>
+<h3 id="define-request-attached-file"><a href="#define-request-attached-file" aria-hidden="true"><span class="icon icon-link"></span></a>Define request attached file</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the attached file {file} named {name}</pre><pre class="hidden">with the attached file {file} named {name}</pre></div>
+<p>Defines a file attachment in the current request.</p>
+<h4 id="parameters-19"><a href="#parameters-19" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">file</code></td>
+<td><code class="language-text">file</code> <em>required</em></td>
+<td>File to be attach</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-18"><a href="#examples-18" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a POST call to the service <span class="token string">'/users'</span>
+* with the attached file <span class="token string">'data/data.txt'</span> named <span class="token string">'file'</span></pre></div>
+<h3 id="define-request-extractor"><a href="#define-request-extractor" aria-hidden="true"><span class="icon icon-link"></span></a>Define request extractor</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the regular expression {regex} extracted in the variable {name}</pre><pre class="hidden">with the regular expression {regex} extracted in the variable {name}</pre></div>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with json value {query} extracted in the variable {name}</pre><pre class="hidden">with json value {query} extracted in the variable {name}</pre></div>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">with the fragment between {leftBoundary} and {rightBoundary} extracted in the variable {name}</pre><pre class="hidden">with the fragment between {leftBoundary} and {rightBoundary} extracted in the variable {name}</pre></div>
+<p>Defines a data extractor of the current request response. This extractor can be from a regular expression, a json path
+or defined boundaries.</p>
+<h4 id="parameters-20"><a href="#parameters-20" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">regex</code></td>
+<td><code class="language-text">text</code></td>
+<td>The regular expression</td>
+</tr>
+<tr>
+<td><code class="language-text">query</code></td>
+<td><code class="language-text">text</code></td>
+<td>The json path</td>
+</tr>
+<tr>
+<td><code class="language-text">leftBoundary</code></td>
+<td><code class="language-text">text</code></td>
+<td>The left boundary</td>
+</tr>
+<tr>
+<td><code class="language-text">rightBoundary</code></td>
+<td><code class="language-text">text</code></td>
+<td>The right boundary</td>
+</tr>
+<tr>
+<td><code class="language-text">name</code></td>
+<td><code class="language-text">text</code> <em>required</em></td>
+<td>The name of the variable extracted</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-19"><a href="#examples-19" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the regular expression <span class="token string">'"id":\s*"([^"]+)"'</span> extracted in the variable <span class="token string">'id'</span>
+And a GET call to the service <span class="token string">'/users/{id}'</span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with json value <span class="token string">'[0].id'</span> extracted in the variable <span class="token string">'id'</span>
+And a GET call to the service <span class="token string">'/users/{id}'</span></pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+* with the fragment between <span class="token string">'"id":"'</span> and <span class="token string">'"'</span> extracted in the variable <span class="token string">'id'</span>
+And a GET call to the service <span class="token string">'/users/{id}'</span></pre></div>
+<h3 id="execute-simple"><a href="#execute-simple" aria-hidden="true"><span class="icon icon-link"></span></a>Execute simple</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">{threads} thread(s) (is|are) executed</pre><pre class="hidden">{threads} thread(s) (is|are) executed</pre></div>
+<p>Executes a thread group the specified number of times.</p>
+<h4 id="parameters-21"><a href="#parameters-21" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">threads</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td>Number of times to launch</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-20"><a href="#examples-20" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+When 1 thread is executed</pre></div>
+<h3 id="execute-load"><a href="#execute-load" aria-hidden="true"><span class="icon icon-link"></span></a>Execute load</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">{threads} thread(s) (is|are) executed in {ramp} holding {hold}</pre><pre class="hidden">{threads} thread(s) (is|are) executed in {ramp} holding {hold}</pre></div>
+<p>Executes a thread group for the specified number of threads, ramp-up time and hold time.</p>
+<h4 id="parameters-22"><a href="#parameters-22" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">threads</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td>Number of times to launch</td>
+</tr>
+<tr>
+<td><code class="language-text">ramp</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="language-text">hold</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-21"><a href="#examples-21" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+When 10 threads are executed in 10 seconds holding 30 seconds</pre></div>
+<p>This produces the following scenario:</p>
+<img src="/load.png"  alt="load scenario"/>
+<h3 id="execute-load-iterations"><a href="#execute-load-iterations" aria-hidden="true"><span class="icon icon-link"></span></a>Execute load (iterations)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">{threads} thread(s) (is|are) executed in {ramp} {iterations} time(s)</pre><pre class="hidden">{threads} thread(s) (is|are) executed in {ramp} {iterations} time(s)</pre></div>
+<p>Executes a thread group for the specified number of threads, ramp-up, for the specified number of times.</p>
+<h4 id="parameters-23"><a href="#parameters-23" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">threads</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td>Number of times to launch</td>
+</tr>
+<tr>
+<td><code class="language-text">ramp</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="language-text">iterations</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-22"><a href="#examples-22" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+When 10 threads are executed in 10 seconds 3 times</pre></div>
+<p>This produces the following scenario:</p>
+<img src="/load_it.png"  alt="load scenario"/>
+<h3 id="execute-load-increase"><a href="#execute-load-increase" aria-hidden="true"><span class="icon icon-link"></span></a>Execute load (increase)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">{threads} thread(s) (is|are) executed in {ramp} every {hold} {iterations} time(s)</pre><pre class="hidden">{threads} thread(s) (is|are) executed in {ramp} every {hold} {iterations} time(s)</pre></div>
+<p>Executes a thread group for the specified number of threads, ramping up, increasing threads every specified time for a
+specified number of times.</p>
+<h4 id="parameters-24"><a href="#parameters-24" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">threads</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td>Number of times to launch</td>
+</tr>
+<tr>
+<td><code class="language-text">ramp</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="language-text">hold</code></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a> <em>required</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="language-text">iterations</code></td>
+<td><code class="language-text">int</code> <em>required</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-23"><a href="#examples-23" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+When 10 threads are executed in 10 seconds every 10 seconds 3 times</pre></div>
+<p>This produces the following scenario:</p>
+<img src="/stress.png"  alt="load scenario"/>
+<h3 id="execute-load-stretches"><a href="#execute-load-stretches" aria-hidden="true"><span class="icon icon-link"></span></a>Execute load (stretches)</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">a test is executed with the following stretches:
+  {table}</pre><pre class="hidden">a test is executed with the following stretches:
+  {table}</pre></div>
+<p>Executes a thread group for the specified stretches, including:
+1. the number of threads
+2. The ramp duration
+3. The hold duration</p>
+<h4 id="parameters-25"><a href="#parameters-25" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">table</code></td>
+<td><code class="language-text">table</code> <em>required</em></td>
+<td>Stretches</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples-24"><a href="#examples-24" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Given a GET call to the service <span class="token string">'/users'</span>
+When a test is executed with the following stretches:<span class="token table-head">
+  <span class="token punctuation">|</span><span class="token th variable"> threads </span><span class="token punctuation">|</span><span class="token th variable"> ramp       </span><span class="token punctuation">|</span><span class="token th variable"> hold       </span><span class="token punctuation">|</span></span><span class="token table-body">
+  <span class="token punctuation">|</span><span class="token td string"> 10      </span><span class="token punctuation">|</span><span class="token td string"> 10 seconds </span><span class="token punctuation">|</span><span class="token td string"> 0 seconds  </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> 5       </span><span class="token punctuation">|</span><span class="token td string"> 10 seconds </span><span class="token punctuation">|</span><span class="token td string"> 10 seconds </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> 20      </span><span class="token punctuation">|</span><span class="token td string"> 10 seconds </span><span class="token punctuation">|</span><span class="token td string"> 0 seconds  </span><span class="token punctuation">|</span>
+  <span class="token punctuation">|</span><span class="token td string"> 0       </span><span class="token punctuation">|</span><span class="token td string"> 20 seconds </span><span class="token punctuation">|</span><span class="token td string"> 0 seconds  </span><span class="token punctuation">|</span> </span></pre></div>
+<p>This produces the following scenario:</p>
+<img src="/stretches.png"  alt="load scenario"/>
+<h3 id="check-metric"><a href="#check-metric" aria-hidden="true"><span class="icon icon-link"></span></a>Check metric</h3>
+<div class="remark-code-clipboard"><button onclick="copyToClipboard(this)">
+<svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="10" viewBox="0 0 16 16" width="16" data-view-component="true" class="clipboard-check-icon hidden">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+                </button><pre class="language-text">the {metric} {matcher}</pre><pre class="hidden">the {metric} {matcher}</pre></div>
+<p>Validates that a result metric matches the specified matcher.</p>
+<h4 id="parameters-26"><a href="#parameters-26" aria-hidden="true"><span class="icon icon-link"></span></a>Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Wakamiti type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">metric</code></td>
+<td><code class="language-text">*-metric</code> <em>required</em></td>
+<td>The result <a href="#data-types">metric</a></td>
+</tr>
+<tr>
+<td><code class="language-text">matcher</code></td>
+<td><code class="language-text">*-assertion</code> <em>required</em></td>
+<td><a href="/wakamiti//en/wakamiti/architecture#comparators">Comparator</a></td>
+</tr>
+</tbody>
+</table>
+<p><code class="language-text">*</code>: <a href="/wakamiti//en/wakamiti/architecture#duration"><code class="language-text">duration</code></a>, <code class="language-text">long</code> o <code class="language-text">double</code>.</p>
+<h4 id="examples-25"><a href="#examples-25" aria-hidden="true"><span class="icon icon-link"></span></a>Examples:</h4>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Then the 99th percentile is less than 3 seconds</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Then the number of errors is less than 10</pre></div>
+<div class="remark-code-clipboard"><pre class="language-gherkin">Then the number of samples per second is greater than 5.5</pre></div>
+<h2 id="data-types"><a href="#data-types" aria-hidden="true"><span class="icon icon-link"></span></a>Data types</h2>
+<h3 id="duration-metric"><a href="#duration-metric" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">duration-metric</code></h3>
+<p>Accepted values are:</p>
+<ul>
+<li><code class="language-text">minimum duration</code></li>
+<li><code class="language-text">maximum duration</code></li>
+<li><code class="language-text">average duration</code></li>
+<li><code class="language-text">median</code></li>
+<li><code class="language-text">90th percentile</code></li>
+<li><code class="language-text">95th percentile</code></li>
+<li><code class="language-text">99th percentile</code></li>
+</ul>
+<h3 id="long-metric"><a href="#long-metric" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">long-metric</code></h3>
+<p>Accepted values are:</p>
+<ul>
+<li><code class="language-text">number of samples</code></li>
+<li><code class="language-text">number of errors</code></li>
+<li><code class="language-text">number of bytes received</code></li>
+<li><code class="language-text">number of bytes sent</code></li>
+</ul>
+<h3 id="double-metric"><a href="#double-metric" aria-hidden="true"><span class="icon icon-link"></span></a><code class="language-text">double-metric</code></h3>
+<p>Accepted values are:</p>
+<ul>
+<li><code class="language-text">number of samples per second</code></li>
+<li><code class="language-text">number of errors per second</code></li>
+<li><code class="language-text">number of bytes received per second</code></li>
+<li><code class="language-text">number of bytes sent per second</code></li>
+</ul>
+</div></main></div>
+    <script src="/wakamiti/assets/js/app.96980f8d.js" defer></script><script src="/wakamiti/assets/js/page--src--templates--doc-vue.4cf50185.js" defer></script>
+  </body>
+</html>
