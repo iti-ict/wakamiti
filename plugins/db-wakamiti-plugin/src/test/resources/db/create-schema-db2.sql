@@ -5,6 +5,7 @@ CREATE TABLE client (
   second_name varchar(255) DEFAULT NULL,
   active INT DEFAULT 0,
   birth_date DATE,
+  creation TIMESTAMP,
   PRIMARY KEY (ID)
 );
 

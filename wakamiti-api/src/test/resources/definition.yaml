@@ -1,0 +1,31 @@
+defined.property.required:
+   description: This is a test property that is required
+   required: true
+   type: text
+
+defined.property.with-default-value:
+   description: This is a property with a default value
+   type: integer
+   defaultValue: 5
+
+defined.property.regex-text:
+   type: text
+   constraints:
+      pattern: A\d\dB
+
+defined.property.min-max-number:
+   type: integer
+   constraints:
+      min: 2
+      max: 3
+
+defined.property.enumeration:
+   type: enum
+   constraints:
+      values:
+         - red
+         - yellow
+         - orange
+
+defined.property.boolean:
+   type: boolean

@@ -2,6 +2,7 @@ Feature: Groovy Test Feature
 
   @ID-01
   Scenario: Execute script test
+    #id: s1
     Given that the following groovy code is executed:
       """groovy
       1+1
@@ -10,7 +11,7 @@ Feature: Groovy Test Feature
       """groovy
       log.info("Results: {}", ctx.results)
       assert !ctx.results.isEmpty()
-      assert ctx.results[0] == 2
+      assert ctx.results['s1'] == 2
       """
 
 

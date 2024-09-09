@@ -10,9 +10,9 @@ import es.iti.commons.jext.Extension;
 import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.extensions.*;
 import es.iti.wakamiti.api.util.Pair;
-import imconfig.Configurable;
-import imconfig.Configuration;
-import imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -7,7 +7,7 @@ package es.iti.wakamiti.test.gherkin;
 
 
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.Test;
 
 import java.util.Locale;

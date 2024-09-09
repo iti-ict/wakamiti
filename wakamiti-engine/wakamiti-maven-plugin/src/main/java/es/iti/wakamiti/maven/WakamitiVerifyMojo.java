@@ -6,11 +6,12 @@
 package es.iti.wakamiti.maven;
 
 
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugins.annotations.*;
@@ -129,9 +130,8 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     @Parameter(defaultValue = "${mojoExecution}", required = true, readonly = true)
     private MojoExecution mojoExecution;
 
-    @Parameter(defaultValue = "${project.compileClasspathElements}", required = true, readonly = true)
+    @Parameter(defaultValue = "${project.runtimeClasspathElements}", required = true, readonly = true)
     private List<String> projectDependencies;
-
 
     /**
      * Executes the plugin.
@@ -168,9 +168,11 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
                 wakamiti.executePlan(plan, configuration).result()
                         .filter(result -> !testFailureIgnore)
                         .filter(result -> result != Result.PASSED)
-                        .ifPresent(result -> {
-                            throw new WakamitiException("Wakamiti Test Plan not passed: " + result);
-                        });
+                        .ifPresent(result -> plan.errors().findFirst().ifPresentOrElse(e -> {
+                            throw new WakamitiException("Wakamiti Test Plan not passed: {}", result, e);
+                        }, () -> {
+                            throw new WakamitiException("Wakamiti Test Plan not passed: {}", result);
+                        }));
             }
         } catch (WakamitiException e) {
             getLog().error(e);
@@ -202,11 +204,13 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
             Set<URL> urls = new HashSet<>();
             for (String element : projectDependencies) {
                 urls.add(new File(element).toURI().toURL());
+                getLog().debug(element + " loaded");
             }
             ClassLoader contextClassLoader = URLClassLoader.newInstance(
                     urls.toArray(new URL[0]),
                     Thread.currentThread().getContextClassLoader());
             Thread.currentThread().setContextClassLoader(contextClassLoader);
+            WakamitiAPI.instance().contributors().setClassLoaders(Thread.currentThread().getContextClassLoader());
         } catch (MalformedURLException e) {
             throw new WakamitiException(e);
         }

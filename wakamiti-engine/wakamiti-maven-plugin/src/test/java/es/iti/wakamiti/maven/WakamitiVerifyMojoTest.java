@@ -9,7 +9,7 @@ package es.iti.wakamiti.maven;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.maven.utils.ProjectStub;
 import es.iti.wakamiti.maven.utils.WakamitiAbstractMojoTest;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;

@@ -3,11 +3,11 @@ package es.iti.wakamiti.email;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
-import imconfig.Configuration;
-import imconfig.Configurer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "email-step-config", version = "2.5",
+@Extension(provider =  "es.iti.wakamiti", name = "email-step-config", version = "2.6",
     extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class EmailConfigContributor implements ConfigContributor<EmailStepContributor> {
 

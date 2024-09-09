@@ -13,6 +13,10 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -134,6 +138,122 @@ public class TestWakamitiAssertTypesEn {
             assertThat(matcher.test(e.getValue()))
                     .as("failed negative match for: " + e.getKey() + " with " + e.getValue()).isFalse();
         }
+    }
+
+    @Test
+    public void testDuration() {
+        WakamitiDataType<Assertion> durationMatcher = WakamitiAssertTypes
+                .binaryDurationAssert("duration-assert", x -> x);
+        Map<String, Object> exp = new LinkedHashMap<>();
+        exp.put("is -7 seconds", Duration.ofSeconds(7L));
+        exp.put("is equal to 8,000 milliseconds", Duration.ofMillis(8000L));
+        exp.put("is greater than 11 hours", Duration.ofHours(12L));
+        exp.put("is greater than or equal to 12 minutes", Duration.ofMinutes(12L));
+        exp.put("is less than 13 seconds", Duration.ofSeconds(12L));
+        exp.put("is less than or equal to 13 seconds", Duration.ofSeconds(13L));
+        exp.put("is not -7 days", Duration.ofDays(-8L));
+        exp.put("is not equal to 8,000 milliseconds", Duration.ofMillis(8001L));
+        exp.put("is not greater than 11 minutes", Duration.ofMinutes(11L));
+        exp.put("is not greater than or equal to 12 hours", Duration.ofHours(10L));
+        exp.put("is not less than 13 minutes", Duration.ofMinutes(13L));
+        exp.put("is not less than or equal to 13 seconds", Duration.ofSeconds(15L));
+
+        for (Entry<String, Object> e : exp.entrySet()) {
+            Assertion<?> matcher = durationMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+
+        durationMatcher.parse(locale, "is null").test(null);
+        durationMatcher.parse(locale, "is not null").test(Duration.ofSeconds(7L));
+    }
+
+    @Test
+    public void testDateTime() {
+        WakamitiDataType<Assertion> dateMatcher = WakamitiAssertTypes
+                .binaryDateAssert("datetime-assert", LocalDateTime.class);
+        Map<String, Object> exp = new LinkedHashMap<>();
+        exp.put("is Tuesday, January 30, 2018, 5:35 PM", LocalDateTime.of(2018, 1, 30, 17, 35));
+        exp.put("is equal to 5/30/18, 5:35 PM", LocalDateTime.of(2018, 5, 30, 17, 35));
+        exp.put("is greater than 2018-05-30T17:35", LocalDateTime.of(2018, 5, 30, 17, 35, 1));
+        exp.put("is greater than or equal to 2018-05-30T17:35", LocalDateTime.of(2018, 5, 30, 17, 35));
+        exp.put("is less than 2018-05-30T17:35:29", LocalDateTime.of(2018, 5, 30, 17, 35, 28));
+        exp.put("is less than or equal to 2018-05-30T17:35:29", LocalDateTime.of(2018, 5, 30, 17, 35, 29));
+        exp.put("is not 2018-05-30T17:35:29.743", LocalDateTime.of(2018, 5, 30, 17, 35));
+        exp.put("is not equal to 5/30/18, 5:35 PM", LocalDateTime.of(2018, 5, 30, 17, 35, 1));
+        exp.put("is not greater than 2018-05-30T17:35:29", LocalDateTime.of(2018, 5, 30, 17, 35, 29));
+        exp.put("is not greater than or equal to 2018-05-30T17:35:29", LocalDateTime.of(2018, 5, 30, 17, 35, 28));
+        exp.put("is not less than 2018-05-30T17:35", LocalDateTime.of(2018, 5, 30, 17, 35));
+        exp.put("is not less than or equal to 2018-05-30T17:35", LocalDateTime.of(2018, 5, 30, 17, 35, 1));
+
+        for (Entry<String, Object> e : exp.entrySet()) {
+            Assertion<?> matcher = dateMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+
+        dateMatcher.parse(locale, "is null").test(null);
+        dateMatcher.parse(locale, "is not null").test(LocalDateTime.of(2018, 5, 30, 17, 35));
+    }
+
+    @Test
+    public void testDate() {
+        WakamitiDataType<Assertion> dateMatcher = WakamitiAssertTypes
+                .binaryDateAssert("date-assert", LocalDate.class);
+        Map<String, Object> exp = new LinkedHashMap<>();
+        exp.put("is Tuesday, January 30, 2018", LocalDate.of(2018, 1, 30));
+        exp.put("is equal to 5/30/18", LocalDate.of(2018, 5, 30));
+        exp.put("is greater than 2018-05-30", LocalDate.of(2018, 5, 31));
+        exp.put("is greater than or equal to 2018-05-30", LocalDate.of(2018, 5, 30));
+        exp.put("is less than 2018-05-30", LocalDate.of(2018, 5, 29));
+        exp.put("is less than or equal to 2018-05-30", LocalDate.of(2018, 5, 30));
+        exp.put("is not 2018-05-30", LocalDate.of(2018, 5, 29));
+        exp.put("is not equal to 5/30/18", LocalDate.of(2018, 5, 29));
+        exp.put("is not greater than 2018-05-30", LocalDate.of(2018, 5, 30));
+        exp.put("is not greater than or equal to 2018-05-30", LocalDate.of(2018, 5, 29));
+        exp.put("is not less than 2018-05-30", LocalDate.of(2018, 5, 30));
+        exp.put("is not less than or equal to 2018-05-30", LocalDate.of(2018, 5, 31));
+
+        for (Entry<String, Object> e : exp.entrySet()) {
+            Assertion<?> matcher = dateMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+
+        dateMatcher.parse(locale, "is null").test(null);
+        dateMatcher.parse(locale, "is not null").test(LocalDate.of(2018, 5, 30));
+    }
+
+    @Test
+    public void testTime() {
+        WakamitiDataType<Assertion> dateMatcher = WakamitiAssertTypes
+                .binaryDateAssert("time-assert", LocalTime.class);
+        Map<String, Object> exp = new LinkedHashMap<>();
+        exp.put("is 5:35 PM", LocalTime.of(17, 35));
+        exp.put("is equal to 5:35 PM", LocalTime.of(17, 35));
+        exp.put("is greater than 17:35", LocalTime.of(17, 35, 1));
+        exp.put("is greater than or equal to 17:35", LocalTime.of(17, 35));
+        exp.put("is less than 17:35:29", LocalTime.of(17, 35, 28));
+        exp.put("is less than or equal to 17:35:29", LocalTime.of(17, 35, 29));
+        exp.put("is not 17:35:29.743", LocalTime.of(17, 35));
+        exp.put("is not equal to 5:35 PM", LocalTime.of(17, 35, 1));
+        exp.put("is not greater than 17:35:29", LocalTime.of(17, 35, 29));
+        exp.put("is not greater than or equal to 17:35:29", LocalTime.of(17, 35, 28));
+        exp.put("is not less than 17:35", LocalTime.of(17, 35));
+        exp.put("is not less than or equal to 17:35", LocalTime.of(17, 35, 1));
+
+        for (Entry<String, Object> e : exp.entrySet()) {
+            Assertion<?> matcher = dateMatcher.parse(locale, e.getKey());
+            assertThat(matcher).as("null assertion for: " + e.getKey()).isNotNull();
+            assertThat(matcher.test(e.getValue()))
+                    .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
+        }
+
+        dateMatcher.parse(locale, "is null").test(null);
+        dateMatcher.parse(locale, "is not null").test(LocalTime.of(17, 35));
     }
 
     @Test

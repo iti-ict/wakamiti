@@ -8,7 +8,7 @@ package es.iti.wakamiti.api.extensions;
 
 import es.iti.commons.jext.ExtensionPoint;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 /**

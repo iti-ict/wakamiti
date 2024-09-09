@@ -1,0 +1,9 @@
+{
+  "id": "user3",
+  "name": "User Three",
+  "age": 13,
+  "vegetables": [],
+  "contact": {
+    "email": "user3@mail"
+  }
+}

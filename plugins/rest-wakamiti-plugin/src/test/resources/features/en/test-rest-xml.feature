@@ -14,10 +14,10 @@ Feature: REST Test Feature
     And the response content type is XML
     And the response is equal to the file '${data.dir}/server/users/user1.xml'
     And the response contains:
-      """
-<item>
-    <name>User One</name>
-</item>
+      """xml
+      <item>
+          <name>User One</name>
+      </item>
       """
     And the text from response fragment 'item.contact.email' is 'user1@mail'
     And the response satisfies the schema from the file '${data.dir}/data/schema.xml'

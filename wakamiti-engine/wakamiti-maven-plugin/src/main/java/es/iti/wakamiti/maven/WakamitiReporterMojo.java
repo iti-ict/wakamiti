@@ -7,7 +7,7 @@ package es.iti.wakamiti.maven;
 
 
 import es.iti.wakamiti.core.Wakamiti;
-import imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

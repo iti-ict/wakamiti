@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+## [2.6.0] - 2024-09-09
+
+### Fixed 
+- ID selector issues (#275)
+
+### Added
+- Moustache.js template library
+- Additional information block in the HTML report
+- Text filter
+- Pagination
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [2.5.0] - 2024-04-16
 
 ### Changed
