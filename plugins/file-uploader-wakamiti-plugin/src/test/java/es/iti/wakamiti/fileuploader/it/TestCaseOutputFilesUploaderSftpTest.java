@@ -8,10 +8,10 @@ package es.iti.wakamiti.fileuploader.it;
 
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.fileuploader.AbstractFilesUploader;
-import es.iti.wakamiti.fileuploader.MockFtpServer;
+import es.iti.wakamiti.fileuploader.MockSftpServer;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
+import imconfig.AnnotatedConfiguration;
+import imconfig.Property;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,25 +28,27 @@ import java.time.format.DateTimeFormatter;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/features/dummy.feature"),
-        @Property(key = "fileUploader.host", value = "localhost:5432"),
-        @Property(key = "fileUploader.protocol", value = "ftp"),
+        @Property(key = "fileUploader.host", value = "localhost:2345"),
+        @Property(key = "fileUploader.protocol", value = "sftp"),
         @Property(key = "fileUploader.credentials.username", value = "test"),
         @Property(key = "fileUploader.credentials.password", value = "test"),
         @Property(key = "fileUploader.testCaseOutputs.destinationDir", value = "dira/dirb/%DATE%%TIME%"),
         @Property(key = OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = OUTPUT_FILE_PER_TEST_CASE, value = "true"),
+        @Property(key = OUTPUT_FILE_PER_TEST_CASE_PATH, value = "target"),
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.fileuploader.WakamitiSteps"),
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class TestCaseOutputFilesUploaderTest {
+public class TestCaseOutputFilesUploaderSftpTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AbstractFilesUploader.class);
-    private static final MockFtpServer ftpServer = new MockFtpServer(5432);
+    private static final MockSftpServer ftpServer = new MockSftpServer(2345);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {

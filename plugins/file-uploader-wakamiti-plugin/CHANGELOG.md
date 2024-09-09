@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning][2].
 - Upgrade dependencies: `wakamiti-plugin-starter`
 
 
+## [2.7.1] - 2024-05-08
+
+### Fixed
+- Multiple paths creation when `%TIME%` placeholder is used.
+
+
 ## [2.7.0] - 2024-04-16
 
 ### Changed
