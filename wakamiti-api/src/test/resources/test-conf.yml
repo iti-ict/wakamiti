@@ -5,6 +5,7 @@ properties:
       strings:
        - Properties Array Value 1
        - Properties Array Value 2
+      string_number: "0543"
       bool: true
       bools:
        - true

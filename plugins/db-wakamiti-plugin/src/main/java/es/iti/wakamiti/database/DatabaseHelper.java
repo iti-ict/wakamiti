@@ -246,27 +246,6 @@ public final class DatabaseHelper {
     }
 
     /**
-     * Collects elements into a map using the specified key and value mappers.
-     *
-     * @param keyMapper   A function to extract keys from elements
-     * @param valueMapper A function to extract values from elements
-     * @param <T>         The type of elements to collect
-     * @param <K>         The type of keys
-     * @param <U>         The type of values
-     * @return A collector that accumulates elements into a map
-     */
-    public static <T, K, U> Collector<T, ?, Map<K, U>> collectToMap(
-            Function<? super T, ? extends K> keyMapper,
-            Function<? super T, ? extends U> valueMapper
-    ) {
-        return Collector.of(
-                LinkedHashMap::new,
-                (m, e) -> m.put(keyMapper.apply(e), valueMapper.apply(e)),
-                (m, r) -> m
-        );
-    }
-
-    /**
      * Collects key-value pairs into a map.
      *
      * @param <K> The type of keys

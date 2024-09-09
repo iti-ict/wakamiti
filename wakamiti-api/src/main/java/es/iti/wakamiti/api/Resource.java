@@ -52,4 +52,7 @@ public class Resource<T> {
         return content;
     }
 
+    public String toString() {
+        return "Resource[absolutePath=" + absolutePath + ", relativePath=" + relativePath + "]";
+    }
 }

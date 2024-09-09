@@ -372,35 +372,28 @@ public class ResourceLoader {
             Parser<T> parser
     ) {
         List<Resource<?>> discovered = new ArrayList<>();
-        try {
-            if (path.startsWith(CLASSPATH_PROTOCOL)) {
-                String classPath = path.replace(CLASSPATH_PROTOCOL, "");
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                String absoluteClassPath = new File(classLoaderFolder(classLoader) + classPath).getPath();
-                for (URI uri : loadFromClasspath(classPath, classLoader)) {
-                    discoverResourcesInURI(
-                            absoluteClassPath,
-                            uri,
-                            filenameFilter,
-                            parser,
-                            discovered
-                    );
-                }
-            } else {
-                path = Path.of(path).normalize().toString();
-                if (path.endsWith("/") || path.endsWith("\\")) {
-                    path = path.substring(0, path.length() - 1);
-                }
-                URI uri;
-                if (Paths.get(path).isAbsolute()) {
-                    uri = Paths.get(path).toUri();
-                } else {
-                    uri = new File(workingDir, path).toURI();
-                }
-                discoverResourcesInURI(path, uri, filenameFilter, parser, discovered);
+        if (path.startsWith(CLASSPATH_PROTOCOL)) {
+            String classPath = path.replace(CLASSPATH_PROTOCOL, "");
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            for (URI uri : loadFromClasspath(classPath, classLoader)) {
+                discoverResourcesInURI(
+                        classPath,
+                        uri,
+                        filenameFilter,
+                        parser,
+                        discovered
+                );
             }
-        } catch (IOException e) {
-            LOGGER.debug("Error discovering resource: {}", e.getMessage(), e);
+        } else {
+            path = path.replaceAll("^file:", "");
+            path = Path.of(path).toString();
+            URI uri;
+            if (Paths.get(path).isAbsolute()) {
+                uri = Paths.get(path).toUri();
+            } else {
+                uri = workingDir.toPath().normalize().resolve(path).toUri();
+            }
+            discoverResourcesInURI(path, uri, filenameFilter, parser, discovered);
         }
         return discovered;
     }
@@ -453,7 +446,7 @@ public class ResourceLoader {
             try {
                 discovered.add(
                         new Resource<>(
-                                uri.toString(), uri.toString(), parser.parse(uri.toURL().openStream(), charset)
+                                uri.toString(), relative(startPath, uri.toString()), parser.parse(uri.toURL().openStream(), charset)
                         )
                 );
             } catch (IOException e) {

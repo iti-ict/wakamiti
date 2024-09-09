@@ -30,6 +30,7 @@ public class ConfigurationFactoryTest {
 
     private static final String KEY_STRING = "properties.test.key.string";
     private static final String KEY_STRINGS = "properties.test.key.strings";
+    private static final String KEY_STRING_NUMBER = "properties.test.key.string_number";
     private static final String KEY_BOOL = "properties.test.key.bool";
     private static final String KEY_BOOLS = "properties.test.key.bools";
     private static final String KEY_INTEGER = "properties.test.key.integer";
@@ -48,6 +49,7 @@ public class ConfigurationFactoryTest {
     private static final String VAL_STRING = "Properties Test String Value";
     private static final String VAL_STRINGS_1 = "Properties Array Value 1";
     private static final String VAL_STRINGS_2 = "Properties Array Value 2";
+    private static final String VAL_STRING_NUMBER = "0543";
     private static final String VAL_BOOL = "true";
     private static final String VAL_BOOLS_1 = "true";
     private static final String VAL_BOOLS_2 = "false";
@@ -173,6 +175,7 @@ public class ConfigurationFactoryTest {
                                 "test.env.key : Test Environment Value\n" +
                                 "properties.test.key.string : Properties Test String Value\n" +
                                 "properties.test.key.strings : [Properties Array Value 1, Properties Array Value 2]\n" +
+                                "properties.test.key.string_number : 0543\n" +
                                 "properties.test.key.bool : true\n" +
                                 "properties.test.key.bools : [true, false, true]\n" +
                                 "properties.test.key.integer : 77\n" +
@@ -336,6 +339,7 @@ public class ConfigurationFactoryTest {
                 VAL_STRINGS_1,
                 VAL_STRINGS_2
         );
+        Assertions.assertThat(conf.get(KEY_STRING_NUMBER, String.class)).contains(VAL_STRING_NUMBER);
         Assertions.assertThat(conf.get(KEY_BOOL, Boolean.class)).contains(true);
         Assertions.assertThat(conf.getList(KEY_BOOLS, Boolean.class))
                 .containsExactlyInAnyOrder(true, false, true);
@@ -385,6 +389,7 @@ public class ConfigurationFactoryTest {
             @Property(key = KEY_ENV, value = VAL_ENV),
             @Property(key = KEY_STRING, value = VAL_STRING),
             @Property(key = KEY_STRINGS, value = {VAL_STRINGS_1, VAL_STRINGS_2}),
+            @Property(key = KEY_STRING_NUMBER, value = VAL_STRING_NUMBER),
             @Property(key = KEY_BOOL, value = VAL_BOOL),
             @Property(key = KEY_BOOLS, value = {VAL_BOOLS_1, VAL_BOOLS_2, VAL_BOOLS_3}),
             @Property(key = KEY_INTEGER, value = VAL_INTEGER),
