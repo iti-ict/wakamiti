@@ -27,6 +27,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 
 import static es.iti.wakamiti.api.util.MapUtils.map;
@@ -86,15 +87,20 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .pathParams(map("id", "123", "p", "321"))
                 .queryParams(map("param1", "value1", "param2", "value2"))
                 .get("/{id}/{p}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
     }
 
     @Test
@@ -115,14 +121,20 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .basicAuth("user", "pass")
                 .pathParam("id", "123")
                 .body("{\"id\":\"123\",\"name\":\"something\"}")
                 .post("{id}");
 
         // check
-        assertThat(response).isNotPresent();
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isNotPresent();
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("0"))
+                .containsEntry("content-type", List.of("application/json"));
     }
 
     @Test
@@ -147,7 +159,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -155,9 +167,14 @@ public class HttpClientTest {
                 .patch("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
     }
 
     @Test
@@ -182,7 +199,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -190,9 +207,15 @@ public class HttpClientTest {
                 .put("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
     }
 
     @Test
@@ -215,14 +238,19 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
                 .delete("/{id}");
 
         // check
-        assertThat(response).isEmpty();
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(204);
+        assertThat(response.body()).isNotPresent();
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-type", List.of("application/json"));
     }
 
     @Test
@@ -247,7 +275,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -255,9 +283,15 @@ public class HttpClientTest {
                 .options("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
     }
 
     @Test
@@ -282,7 +316,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -290,7 +324,14 @@ public class HttpClientTest {
                 .head("/{id}");
 
         // check
-        assertThat(response).isEmpty();
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isNotPresent();
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
     }
 
     @Test
@@ -315,7 +356,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -323,9 +364,15 @@ public class HttpClientTest {
                 .content("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
     }
 
     @Test
@@ -351,7 +398,7 @@ public class HttpClientTest {
         );
 
         // act
-        Optional<JsonNode> response = abstractClient
+        java.net.http.HttpResponse<Optional<JsonNode>> response = abstractClient
                 .bearerAuth("abc")
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
@@ -359,21 +406,33 @@ public class HttpClientTest {
                 .trace("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
 
         // act
-         response = abstractClient.newRequest()
+        response = abstractClient.newRequest()
                 .pathParam("id", "123")
                 .queryParam("param1", "value1")
                 .body("{\"id\":\"123\",\"name\":\"something\"}")
                 .trace("/{id}");
 
         // check
-        assertThat(response).isPresent().get()
-                .returns("123", json -> json.get("id").asText())
-                .returns("something", json -> json.get("name").asText());
+        assertThat(response).isNotNull();
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
+        assertThat(response.headers().map())
+                .containsEntry("connection", List.of("keep-alive"))
+                .containsEntry("content-length", List.of("32"))
+                .containsEntry("content-type", List.of("application/json"));
+
     }
 
     @Test(expected = WakamitiException.class)
@@ -391,17 +450,13 @@ public class HttpClientTest {
         }
     }
 
-    @Test(expected = WakamitiException.class)
-    public void testGetWhenHttpErrorWithError() {
+    @Test
+    public void testGetWhenHttpErrorWithSuccess() {
         // act
-        try {
-            abstractClient.get("/something");
+        java.net.http.HttpResponse<?> response = abstractClient.get("/something");
 
-            // check
-        } catch (WakamitiException e) {
-            assertThat(e).hasMessage("The Azure API returned a non-OK response");
-            throw e;
-        }
+        // check
+        assertThat(response.statusCode()).isEqualTo(404);
     }
 
     private void mockServer(HttpRequest expected, HttpResponse response) {

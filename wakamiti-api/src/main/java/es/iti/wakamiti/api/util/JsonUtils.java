@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.TypeRef;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
@@ -42,6 +43,7 @@ public class JsonUtils {
     private static final Configuration CONFIG = Configuration.builder()
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .mappingProvider(new JacksonMappingProvider(MAPPER))
+            .options(Option.SUPPRESS_EXCEPTIONS)
             .build();
 
     private JsonUtils() {
@@ -145,7 +147,7 @@ public class JsonUtils {
         binding.setVariable("obj", obj.toString());
         binding.setVariable("exp", expression);
         GroovyShell shell = new GroovyShell(binding);
-        String exp = (obj.isArray() && expression.matches("\\[\\d+].*") ? "'x'" : "'x.'") + " + exp";
+        String exp = (obj.isArray() && expression.startsWith("[") ? "'x'" : "'x.'") + " + exp";
         Object result = shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")");
         if (result == null) return null;
         return MAPPER.convertValue(result, type);

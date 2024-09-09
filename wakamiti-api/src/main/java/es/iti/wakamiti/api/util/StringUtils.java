@@ -16,8 +16,6 @@ import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 public class StringUtils {
 
-    //TODO: english translation
-
     /**
      * Replaces the text values, formatted {@code {parameter}}, from the parameter map values.
      *
@@ -43,7 +41,7 @@ public class StringUtils {
      * @param args The object array
      * @return The formatted text
      */
-    public static String format(String message, Object[] args) {
+    public static String format(String message, Object... args) {
         StringBuilder s = new StringBuilder(message);
         for (Object arg : args) {
             int pos = s.indexOf("{}");

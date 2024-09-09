@@ -11,19 +11,25 @@ import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static es.iti.wakamiti.api.util.JsonUtils.json;
@@ -35,29 +41,37 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 
-public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {
+public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF>, Serializable, Cloneable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
 
     private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_1_1 =
             entry(java.net.http.HttpClient.Version.HTTP_1_1, "HTTP/1.1");
     private static final java.net.http.HttpClient CLIENT = java.net.http.HttpClient.newBuilder()
+            .executor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10))
             .version(HTTP_1_1.getKey())
             .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(20))
             .build();
 
     private final URL baseUrl;
-    protected String body;
+    protected JsonNode body;
     protected Map<String, String> finalQueryParams = new LinkedHashMap<>();
     protected Map<String, String> finalPathParams = new LinkedHashMap<>();
     protected Map<String, String> finalHeaders = new LinkedHashMap<>();
     protected Map<String, String> queryParams = new LinkedHashMap<>();
     protected Map<String, String> pathParams = new LinkedHashMap<>();
     protected Map<String, String> headers = new LinkedHashMap<>();
+    private Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
+    };
 
     public HttpClient(URL baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public SELF postCall(Consumer<HttpResponse<Optional<JsonNode>>> postCall) {
+        this.postCall = postCall;
+        return self();
     }
 
     @Override
@@ -91,7 +105,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     @Override
     public SELF body(String body) {
-        this.body = body;
+        this.body = Optional.ofNullable(body).filter(StringUtils::isNotBlank).map(JsonUtils::json).orElse(null);
         return self();
     }
 
@@ -107,7 +121,6 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                 .method(method,
                         Optional.ofNullable(body)
-                                .map(JsonUtils::json)
                                 .map(JsonNode::toString)
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()));
@@ -126,64 +139,98 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
-    @Override
-    public Optional<JsonNode> post(String uri) {
-        return send(buildRequest("POST", uri));
+    protected HttpRequest buildPost(String uri) {
+        return buildRequest("POST", uri);
+    }
+
+    protected HttpRequest buildGet(String uri) {
+        return buildRequest("GET", uri);
+    }
+
+    protected HttpRequest buildPut(String uri) {
+        return buildRequest("PUT", uri);
+    }
+
+    protected HttpRequest buildPatch(String uri) {
+        return buildRequest("PATCH", uri);
+    }
+
+    protected HttpRequest buildDelete(String uri) {
+        return buildRequest("DELETE", uri);
+    }
+
+    protected HttpRequest buildOptions(String uri) {
+        return buildRequest("OPTIONS", uri);
+    }
+
+    protected HttpRequest buildHead(String uri) {
+        return buildRequest("HEAD", uri);
+    }
+
+    protected HttpRequest buildContent(String uri) {
+        return buildRequest("CONTENT", uri);
+    }
+
+    protected HttpRequest buildTrace(String uri) {
+        return buildRequest("TRACE", uri);
     }
 
     @Override
-    public Optional<JsonNode> get(String uri) {
-        return send(buildRequest("GET", uri));
+    public HttpResponse<Optional<JsonNode>> post(String uri) {
+        return send(buildPost(uri));
     }
 
     @Override
-    public Optional<JsonNode> put(String uri) {
-        return send(buildRequest("PUT", uri));
+    public HttpResponse<Optional<JsonNode>> get(String uri) {
+        return send(buildGet(uri));
     }
 
     @Override
-    public Optional<JsonNode> patch(String uri) {
-        return send(buildRequest("PATCH", uri));
+    public HttpResponse<Optional<JsonNode>> put(String uri) {
+        return send(buildPut(uri));
     }
 
     @Override
-    public Optional<JsonNode> delete(String uri) {
-        return send(buildRequest("DELETE", uri));
+    public HttpResponse<Optional<JsonNode>> patch(String uri) {
+        return send(buildPatch(uri));
     }
 
     @Override
-    public Optional<JsonNode> options(String uri) {
-        return send(buildRequest("OPTIONS", uri));
+    public HttpResponse<Optional<JsonNode>> delete(String uri) {
+        return send(buildDelete(uri));
     }
 
     @Override
-    public Optional<JsonNode> head(String uri) {
-        return send(buildRequest("HEAD", uri));
+    public HttpResponse<Optional<JsonNode>> options(String uri) {
+        return send(buildOptions(uri));
     }
 
     @Override
-    public Optional<JsonNode> content(String uri) {
-        return send(buildRequest("CONTENT", uri));
+    public HttpResponse<Optional<JsonNode>> head(String uri) {
+        return send(buildHead(uri));
     }
 
     @Override
-    public Optional<JsonNode> trace(String uri) {
-        return send(buildRequest("TRACE", uri));
+    public HttpResponse<Optional<JsonNode>> content(String uri) {
+        return send(buildContent(uri));
     }
 
-    private Optional<JsonNode> send(HttpRequest request) {
+    @Override
+    public HttpResponse<Optional<JsonNode>> trace(String uri) {
+        return send(buildTrace(uri));
+    }
+
+    protected HttpResponse<Optional<JsonNode>> send(HttpRequest request) {
         try {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Azure call => {} ", stringify(request));
+                LOGGER.trace("HTTP call => {} ", stringify(request));
             }
-            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<Optional<JsonNode>> response = CLIENT.send(request, asJSON());
+            postCall.accept(response);
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Azure response => {}", stringify(response));
+                LOGGER.trace("HTTP response => {}", stringify(response));
             }
-            if (response.statusCode() >= 400) {
-                throw new WakamitiException("The Azure API returned a non-OK response");
-            }
-            return Optional.ofNullable(response.body()).filter(StringUtils::isNotBlank).map(JsonUtils::json);
+            return response;
         } catch (IOException e) {
             throw new WakamitiException(e);
         } catch (InterruptedException e) {
@@ -192,17 +239,67 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> postAsync(String uri) {
+        return sendAsync(buildPost(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> getAsync(String uri) {
+        return sendAsync(buildGet(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> putAsync(String uri) {
+        return sendAsync(buildPut(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> patchAsync(String uri) {
+        return sendAsync(buildPatch(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> deleteAsync(String uri) {
+        return sendAsync(buildDelete(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> optionsAsync(String uri) {
+        return sendAsync(buildOptions(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> headAsync(String uri) {
+        return sendAsync(buildHead(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> contentAsync(String uri) {
+        return sendAsync(buildContent(uri));
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> traceAsync(String uri) {
+        return sendAsync(buildTrace(uri));
+    }
+
+    private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
+        CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.sendAsync(request, asJSON());
+        completable.thenAccept(postCall);
+        return completable;
+    }
+
     private String stringify(HttpRequest request) {
-        return new StringBuilder(System.lineSeparator())
-                .append("Request method:\t").append(request.method()).append(System.lineSeparator())
-                .append("Request URI:\t").append(request.uri()).append(System.lineSeparator())
-                .append("Query params:\t").append(stringify(queryParams)).append(System.lineSeparator())
-                .append("Path params:\t").append(stringify(pathParams)).append(System.lineSeparator())
-                .append("Headers:\t\t").append(stringify(headers)).append(System.lineSeparator())
-                .append("Body:\t\t\t").append(
-                        Optional.ofNullable(body).map(this::prettify).map(j -> System.lineSeparator() + j)
-                                .orElse("<none>")
-                ).toString();
+        return System.lineSeparator() +
+                "Request method:\t" + request.method() + System.lineSeparator() +
+                "Request URI:\t" + request.uri() + System.lineSeparator() +
+                "Query params:\t" + stringify(queryParams) + System.lineSeparator() +
+                "Path params:\t" + stringify(pathParams) + System.lineSeparator() +
+                "Headers:\t\t" + stringify(headers) + System.lineSeparator() +
+                "Body:\t\t\t" +
+                Optional.ofNullable(body).map(JsonNode::toPrettyString).map(j -> System.lineSeparator() + j)
+                        .orElse("<none>");
     }
 
     private String stringify(Map<String, String> params) {
@@ -213,34 +310,14 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
-    private String stringify(HttpResponse<String> response) {
-        return new StringBuilder(System.lineSeparator())
-                .append(HTTP_1_1.getValue()).append(" ").append(response.statusCode()).append(System.lineSeparator())
-                .append(
-                        response.headers().map().entrySet().stream()
-                                .map(e -> e.getKey() + ": " + join(e.getValue(), "; "))
-                                .collect(Collectors.joining(System.lineSeparator()))
-                ).append(
-                        body(response).map(this::prettify)
-                                .map(str -> System.lineSeparator() + System.lineSeparator() + str).orElse("")
-                ).toString();
-    }
-
-    private Optional<String> body(HttpResponse<String> response) {
-        String body = response.body();
-        if (!isBlank(body)) {
-            return Optional.of(body);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private String prettify(String body) {
-        try {
-            body = json(body).toPrettyString();
-        } catch (RuntimeException ignored) {
-        }
-        return body;
+    private String stringify(HttpResponse<Optional<JsonNode>> response) {
+        return System.lineSeparator() +
+                HTTP_1_1.getValue() + " " + response.statusCode() + System.lineSeparator() +
+                response.headers().map().entrySet().stream()
+                        .map(e -> e.getKey() + ": " + join(e.getValue(), "; "))
+                        .collect(Collectors.joining(System.lineSeparator())) +
+                response.body().map(JsonNode::toPrettyString)
+                        .map(str -> System.lineSeparator() + System.lineSeparator() + str).orElse("");
     }
 
     protected SELF newRequest() {
@@ -248,7 +325,25 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         this.queryParams.clear();
         this.pathParams.clear();
         this.headers.clear();
-        return self();
+        return clone();
     }
 
+    private HttpResponse.BodyHandler<Optional<JsonNode>> asJSON() {
+        return responseInfo -> HttpResponse.BodySubscribers.mapping(
+                HttpResponse.BodySubscribers.ofString(StandardCharsets.UTF_8), str -> {
+                    try {
+                        return Optional.of(json(str));
+                    } catch (Exception e) {
+                        if (!isBlank(str)) {
+                            LOGGER.error("Error parsing message: {}", str, e);
+                        }
+                        return Optional.empty();
+                    }
+                });
+    }
+
+    @Override
+    public SELF clone() {
+        return SerializationUtils.clone(self());
+    }
 }
