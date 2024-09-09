@@ -395,8 +395,6 @@ estado con
 $ANDROID_HOME/platform-tools/adb kill-server
 ```
 
-[android-sdk]: https://iti-ict.github.io/wakamiti/android-sdk.png
-
 Lo ideal sería poder lanzar todo esto de manera semiautomática únicamente
 a partir del APK, pero de momento hay que:
 - Instalar Android Studio
