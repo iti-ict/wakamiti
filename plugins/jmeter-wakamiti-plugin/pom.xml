@@ -24,7 +24,7 @@
     </repositories>
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
 
     <name>[Wakamiti Plugin] jmeter</name>
@@ -35,7 +35,7 @@
         <mockserver.version>5.15.0</mockserver.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.6.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>
