@@ -44,6 +44,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF>, Serializable, Cloneable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
+    private static final long serialVersionUID = 6128016096756071380L;
 
     private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_1_1 =
             entry(java.net.http.HttpClient.Version.HTTP_1_1, "HTTP/1.1");
@@ -62,7 +63,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     protected Map<String, String> queryParams = new LinkedHashMap<>();
     protected Map<String, String> pathParams = new LinkedHashMap<>();
     protected Map<String, String> headers = new LinkedHashMap<>();
-    private Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
+    private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
     };
 
     public HttpClient(URL baseUrl) {
@@ -344,6 +345,6 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     @Override
     public SELF clone() {
-        return SerializationUtils.clone(self());
+        return SerializationUtils.clone(self()).postCall(this.postCall);
     }
 }
