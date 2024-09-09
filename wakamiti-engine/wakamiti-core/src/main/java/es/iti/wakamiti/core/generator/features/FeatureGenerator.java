@@ -63,9 +63,14 @@ public class FeatureGenerator {
         this.prompt = prompt;
     }
 
-    public void generate(String generationPath) {
+    /**
+     * Generates features by AI on the destination path
+     *
+     * @param destinationPath Destination path
+     */
+    public void generate(String destinationPath) {
 
-        Path path = Path.of(generationPath).toAbsolutePath();
+        Path path = Path.of(destinationPath).toAbsolutePath();
         if (!Files.exists(path)) {
             throw new WakamitiException("No such directory: " + path);
         }
@@ -76,7 +81,7 @@ public class FeatureGenerator {
             Map<String, Object> methods = JsonPath.read(finalApiDocs, "$.paths." + endpoint);
             methods.keySet().forEach(method -> {
                 String fileName = method.concat(endpoint.replace(FOLDER_SEPARATOR, UNDERSCORE));
-                Path featurePath = Path.of(generationPath, fileName + FEATURE_EXTENSION).toAbsolutePath();
+                Path featurePath = Path.of(destinationPath, fileName + FEATURE_EXTENSION).toAbsolutePath();
                 String info = JsonPath.read(finalApiDocs, "$.paths." + endpoint + "." + method).toString();
 
                 createFeature(featurePath, info);
@@ -88,8 +93,8 @@ public class FeatureGenerator {
     /**
      * @param text Text to add to the prompt
      * @return The result of the AI generated feature text
-     * @throws URISyntaxException
-     * @throws JsonProcessingException
+     * @throws URISyntaxException      Malformed API URI
+     * @throws JsonProcessingException Response processing error
      */
     private String runPrompt(String text) throws URISyntaxException, JsonProcessingException {
         ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), text);
@@ -118,8 +123,8 @@ public class FeatureGenerator {
      *
      * @param apiDocs API docs
      * @return API docs JSON
-     * @throws URISyntaxException
-     * @throws IOException
+     * @throws URISyntaxException Malformed API URI
+     * @throws IOException        Error sending the request
      */
     private String parseApiDocs(String apiDocs) throws URISyntaxException, IOException {
         if (apiDocs.startsWith(HTTP)) {
@@ -141,8 +146,8 @@ public class FeatureGenerator {
      * Loads the default prompt from a resource file
      *
      * @return The loaded prompt
-     * @throws IOException
-     * @throws URISyntaxException
+     * @throws IOException        Error reading file
+     * @throws URISyntaxException Malformed API URI
      */
     private String loadPrompt() throws IOException, URISyntaxException {
         return Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(DEFAULT_PROMPT)).toURI()));
