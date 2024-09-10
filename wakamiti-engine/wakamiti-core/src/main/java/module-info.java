@@ -22,6 +22,7 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core.runner;
     exports es.iti.wakamiti.core;
     exports es.iti.wakamiti.core.gherkin.parser;
+    exports es.iti.wakamiti.core.generator.features;
 
     requires transitive es.iti.wakamiti.api;
     requires transitive iti.commons.jext;

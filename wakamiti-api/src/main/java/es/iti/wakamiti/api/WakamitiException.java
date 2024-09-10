@@ -75,7 +75,7 @@ public class WakamitiException extends RuntimeException {
     }
 
 
-    private static String replace(String message, Object[] args) {
+    protected static String replace(String message, Object[] args) {
         StringBuilder s = new StringBuilder(message);
         for (Object arg : args) {
             int pos = s.indexOf("{}");
@@ -88,12 +88,12 @@ public class WakamitiException extends RuntimeException {
     }
 
 
-    private static Object[] argsWithoutThrowable(Object[] args) {
+    protected static Object[] argsWithoutThrowable(Object[] args) {
         return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);
     }
 
 
-    private static Throwable throwable(Object... args) {
+    protected static Throwable throwable(Object... args) {
         if (args == null || args.length == 0) {
             return null;
         }

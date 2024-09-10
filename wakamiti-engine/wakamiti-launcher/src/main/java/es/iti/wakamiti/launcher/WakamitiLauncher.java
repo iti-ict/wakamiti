@@ -7,6 +7,7 @@ package es.iti.wakamiti.launcher;
 
 
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.generator.features.FeatureGenerator;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -57,6 +58,12 @@ public class WakamitiLauncher {
         } catch (ParseException e) {
             arguments.printUsage();
             System.exit(1);
+        }
+
+        if (arguments.isFeatureGeneratorEnabled()) {
+            FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments);
+            featureGeneratorRunner.run();
+            return;
         }
 
         boolean debugMode = arguments.isDebugActive();

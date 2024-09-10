@@ -12,5 +12,6 @@ module es.iti.wakamiti.launcher {
     requires net.harawata.appdirs;
     requires commons.cli;
     requires es.iti.wakamiti.api;
+    requires org.apache.commons.lang3;
 
 }
