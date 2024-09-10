@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FeatureGenerator {
 
@@ -46,9 +47,10 @@ public class FeatureGenerator {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient client = HttpClient.newHttpClient();
 
-    private final String apiKey;
-    private final String apiDocs;
-    private final String prompt;
+
+    private String apiKey;
+    private String apiDocs;
+    private String prompt;
 
 
     public FeatureGenerator(String apiKey, String apiDocs) throws URISyntaxException, IOException {

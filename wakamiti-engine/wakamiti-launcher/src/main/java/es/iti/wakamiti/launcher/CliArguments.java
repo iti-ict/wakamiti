@@ -30,6 +30,10 @@ import java.util.stream.Stream;
 public class CliArguments {
 
     public static final String ARG_LIST = "l";
+    public static final String ARG_API_DOCS = "D";
+    public static final String ARG_AI_TOKEN = "t";
+    public static final String ARG_FEATURE_GENERATION_PATH = "p";
+
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
     private static final String ARG_HELP = "h";
     private static final String ARG_DEBUG = "d";
@@ -38,6 +42,7 @@ public class CliArguments {
     private static final String ARG_MODULES = "m";
     private static final String ARG_WAKAMITI_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
+    private static final String ARG_AI = "a";
     private final Options cliOptions;
     private CommandLine cliCommand;
 
@@ -48,6 +53,12 @@ public class CliArguments {
         cliOptions.addOption(ARG_CLEAN, "clean", false, "Force any module to be re-gathered");
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
+
+        cliOptions.addOption(ARG_AI, "ai", false, "Force any module to be re-gathered");
+        cliOptions.addOption(ARG_API_DOCS, "apiDocs", false, "Api docs url or json file");
+        cliOptions.addOption(ARG_AI_TOKEN, "token", false, "Token for chat-gpt");
+        cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", false, "Feature Generator path");
+
         cliOptions.addOption(
                 Option.builder(ARG_WAKAMITI_PROPERTY)
                         .argName("wakamitiProperty=value")
@@ -148,6 +159,18 @@ public class CliArguments {
     }
 
     /**
+     * Checks if the feature generator options are specified in the command-line arguments.
+     *
+     * @return {@code true} if the feature generator options are specified, {@code false} otherwise.
+     */
+    public boolean isFeatureGeneratorEnabled() {
+        return cliCommand.hasOption(ARG_AI)
+                && cliCommand.hasOption(ARG_API_DOCS)
+                && cliCommand.hasOption(ARG_AI_TOKEN)
+                && cliCommand.hasOption(ARG_FEATURE_GENERATION_PATH);
+    }
+
+    /**
      * Retrieves the list of modules specified in the command-line arguments.
      *
      * @return The list of modules, or an empty list if not specified.
@@ -156,6 +179,10 @@ public class CliArguments {
         return cliCommand.hasOption(ARG_MODULES) ?
                 Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
                 List.of();
+    }
+
+    public String getValue(String key) {
+        return cliCommand.getOptionValue(key, "");
     }
 
     private Configuration buildConfiguration(
