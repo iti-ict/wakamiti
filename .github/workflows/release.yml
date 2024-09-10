@@ -12,10 +12,24 @@ env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
 
 jobs:
+  get-env:
+    name: Get Environment vars
+    runs-on: ubuntu-latest
+    outputs:
+      TAG_NAME: ${{ env.TAG_NAME }}
+#      TITLE: ${{ github.event.release.name }}
+#      BODY: ${{ github.event.release.body }}
+    steps:
+      - run: |
+          echo TITLE=$( echo ${{ github.event.release.name }} | sed -r 's/([`"'\''])/\\\1/g' ) >> $GITHUB_OUTPUT
+          echo BODY=$( echo ${{ github.event.release.body }} | sed -r 's/([`"'\''])/\\\1/g' ) >> $GITHUB_OUTPUT
+
   build:
     name: Build
-    if: ${{ startsWith(env.TAG_NAME, 'v') || contains(env.TAG_NAME, '-plugin-v')}}
+    needs: [get-env]
+    if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       
       - uses: actions/checkout@v2
@@ -63,4 +77,4 @@ jobs:
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
           job: ${{ toJson(job) }}
-          overwrite: "{title: `${{ github.event.release.name }}`, text: `${{ github.event.release.body }}`}"
+          overwrite: "{title: `${{ needs.get-env.outputs.TITLE }}`, text: `${{ needs.get-env.outputs.BODY }}`}"

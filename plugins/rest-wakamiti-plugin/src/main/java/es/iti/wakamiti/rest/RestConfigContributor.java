@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
-import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import io.restassured.RestAssured;

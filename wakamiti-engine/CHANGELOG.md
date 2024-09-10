@@ -6,13 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [unreleased]
+## [2.6.0] - 2024-09-09
 
 ### Added
 - Duration data type and Duration assertion.
+- DateTime assertion.
+- DateTime `yyyy-MM-dd[ hh:mm:ss[.SSS][Z]]` to ISO 8601 DateTime formats
 
 ### Changed
 - Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
+- The StepPropertyEvaluator accepts both step index and the step `id`.
+- Step nodes have ids.
+- The features can have a `tagId` and will be checked for uniqueness, as will test cases if the `strictTestCaseID` 
+  option is enabled.
 
 ### Fixed
 - The junit wakamiti configuration is modified to set the default output path of the current project.
