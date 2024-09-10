@@ -21,13 +21,14 @@ import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
 import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -193,10 +194,20 @@ public class RunnableBackend extends AbstractBackend {
      */
     private void runMethod(ThrowableRunnable operation, String type) {
         try {
+            Locale locale = LocaleLoader.forLanguage(testCase.language());
+            WakamitiStepRunContext.set(
+                    new WakamitiStepRunContext(
+                            configuration,
+                            this,
+                            locale,
+                            locale
+                    )
+            );
             operation.run();
         } catch (Exception | Error e) {
             Throwable tr = e;
-            while (StringUtils.isBlank(tr.getMessage())) {
+            while (isBlank(tr.getMessage())) {
+                if (tr.getCause() == null) break;
                 tr = tr.getCause();
             }
             LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
@@ -281,7 +292,8 @@ public class RunnableBackend extends AbstractBackend {
             Map<String, Argument> arguments = stepBackend.invokingArguments();
             step.arguments().addAll(arguments.values());
             Object result = stepBackend.runnableStep().run(arguments);
-            ((List<Object>) extraProperties.get(ContextMap.RESULTS_PROP)).add(result);
+            ((Map<String, Object>) extraProperties.get(ContextMap.RESULTS_PROP))
+                    .put(step.properties().getOrDefault("id", step.id()), result);
             step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());
@@ -388,7 +400,7 @@ public class RunnableBackend extends AbstractBackend {
 
         ContextMap() {
             super.put(ID_PROP, testCase.id());
-            super.put(RESULTS_PROP, new LinkedList<>());
+            super.put(RESULTS_PROP, new LinkedHashMap<>());
         }
 
         @Override

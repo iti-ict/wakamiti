@@ -9,10 +9,7 @@ package es.iti.wakamiti.database;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.util.*;
 import es.iti.wakamiti.database.dataset.DataSet;
 import es.iti.wakamiti.database.dataset.EmptyDataSet;
 import es.iti.wakamiti.database.dataset.MapDataSet;
@@ -73,9 +70,7 @@ public class DatabaseSupport {
     protected boolean enableCleanupUponCompletion;
     protected boolean healthcheck;
     protected UnaryOperator<Map<String, String>> nullSymbolMapper = map ->
-            map.entrySet().stream().collect(collectToMap(
-                    Map.Entry::getKey,
-                    e -> e.getValue().equals(nullSymbol) ? null : e.getValue()));
+            map.entrySet().stream().collect(MapUtils.toMap(v -> v.equals(nullSymbol) ? null : v));
 
     protected static ResourceLoader resourceLoader() {
         return WakamitiAPI.instance().resourceLoader();
@@ -234,7 +229,7 @@ public class DatabaseSupport {
                             result.map(DatabaseHelper::read).ifPresent(list ->
                                     results.addAll(
                                             list.stream().map(m -> m.entrySet().stream().collect(
-                                                            collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
+                                                            MapUtils.toMap(DatabaseHelper::toString)))
                                                     .collect(Collectors.toList())
                                     ));
                         }
@@ -262,10 +257,8 @@ public class DatabaseSupport {
     protected List<Map<String, String>> executeSelect(String sql) {
         try (Select<Map<String, String>> select = Database.from(connection()).select(sql)
                 .get(DatabaseHelper::formatToMap)) {
-            return select.map(map -> map.entrySet().stream().collect(collectToMap(
-                            Map.Entry::getKey,
-                            e -> Optional.ofNullable(e.getValue()).orElse(nullSymbol)
-                    )))
+            return select.map(map -> map.entrySet().stream()
+                            .collect(MapUtils.toMap(v -> Optional.ofNullable(v).orElse(nullSymbol))))
                     .stream().collect(Collectors.toList());
         }
     }
@@ -287,10 +280,8 @@ public class DatabaseSupport {
         }
         try (Call<Map<String, String>> call = Database.from(connection()).call(sql)
                 .get(DatabaseHelper::formatToMap)) {
-            return call.map(map -> map.entrySet().stream().collect(collectToMap(
-                            Map.Entry::getKey,
-                            e -> Optional.ofNullable(e.getValue()).orElse(nullSymbol)
-                    )))
+            return call.map(map -> map.entrySet().stream()
+                            .collect(MapUtils.toMap(v -> Optional.ofNullable(v).orElse(nullSymbol))))
                     .execute()
                     .stream().collect(Collectors.toList());
         }
@@ -636,8 +627,7 @@ public class DatabaseSupport {
         String table = db.table(dataSet.table());
         while (dataSet.nextRow()) {
             Map<String, Object> row = db.processData(dataSet.table(),
-                    dataSet.rowAsMap().entrySet().stream().collect(collectToMap(
-                            Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))));
+                    dataSet.rowAsMap().entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)));
             net.sf.jsqlparser.statement.insert.Insert insert = db.parser().toInsert(table, row);
             try (Update update = db.update(insert.toString()).execute()) {
                 PostCleanUpStatementVisitorAdapter adapter = new PostCleanUpStatementVisitorAdapter();
@@ -655,8 +645,7 @@ public class DatabaseSupport {
                 }
                 result.map(DatabaseHelper::read).ifPresent(list ->
                         results.addAll(
-                                list.stream().map(m -> m.entrySet().stream().collect(
-                                                collectToMap(Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))))
+                                list.stream().map(m -> m.entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)))
                                         .collect(Collectors.toList())
                         ));
             }
@@ -677,8 +666,7 @@ public class DatabaseSupport {
         String table = db.table(dataSet.table());
         while (dataSet.nextRow()) {
             Map<String, Object> row = db.processData(dataSet.table(),
-                    dataSet.rowAsMap().entrySet().stream().collect(collectToMap(
-                            Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))));
+                    dataSet.rowAsMap().entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)));
             net.sf.jsqlparser.statement.delete.Delete delete = db.parser().toDelete(table, row);
             if (addCleanUpOperation) {
                 delete.accept(new PreCleanUpStatementVisitorAdapter());
@@ -749,8 +737,7 @@ public class DatabaseSupport {
 
         while (dataSet.nextRow()) {
             Map<String, Object> row = db.processData(dataSet.table(),
-                    dataSet.rowAsMap().entrySet().stream().collect(collectToMap(
-                            Map.Entry::getKey, e -> DatabaseHelper.toString(e.getValue()))));
+                    dataSet.rowAsMap().entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)));
             Map<String, Object> sets = row.entrySet().stream()
                     .filter(e -> setColumns.contains(e.getKey()))
                     .collect(collectToMap());

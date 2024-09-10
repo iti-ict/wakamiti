@@ -6,7 +6,7 @@
     <parent>
         <artifactId>wakamiti-starter</artifactId>
         <groupId>es.iti.wakamiti</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
@@ -23,7 +23,7 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.5.0-SNAPSHOT</revision>
+        <revision>2.5.0</revision>
     </properties>
 
     <dependencies>

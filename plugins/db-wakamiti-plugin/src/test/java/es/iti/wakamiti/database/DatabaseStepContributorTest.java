@@ -9,11 +9,13 @@ package es.iti.wakamiti.database;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Select;
@@ -30,8 +32,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.hamcrest.Matchers.comparesEqualTo;
@@ -40,7 +46,7 @@ import static org.hamcrest.Matchers.comparesEqualTo;
 public class DatabaseStepContributorTest {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
-    private static final String URL = "jdbc:h2:mem:test;MODE=MySQL";
+    private static final String URL = "jdbc:h2:mem:test;MODE=MySQL;";
     private static final String USER = "sa";
     private static final String PASS = "";
 
@@ -156,6 +162,7 @@ public class DatabaseStepContributorTest {
                 "database.connection.password", PASS
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.setConnectionParameters("jdbc:h2:mem:test2", "sa", "");
@@ -177,6 +184,7 @@ public class DatabaseStepContributorTest {
                 "database.datasource.db2.metadata.caseSensitivity", "lower_cased"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.setConnectionParameters("jdbc:h2:mem:test2", "sa", "", "db1");
@@ -195,6 +203,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         String sql = "SELECT * FROM client WHERE id = 1";
 
@@ -227,6 +236,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = null WHERE id = 1"));
 
         String sql = "SELECT * FROM client WHERE id = 1";
@@ -260,6 +270,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         String sql = "SELECT * FROM client WHERE id = 2";
 
@@ -282,6 +293,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         String sql = "SELECT * FROM xxxxx WHERE id = 2";
 
@@ -302,6 +314,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         String sql = "SELECT * FROM client WHERE xxx = 2";
 
@@ -326,6 +339,7 @@ public class DatabaseStepContributorTest {
                 "database.datasource.db2.metadata.caseSensitivity", "lower_cased"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.switchConnection("db2");
@@ -345,13 +359,14 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
         // Act
         contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
                 client.columns(),
-                new String[]{"2", "Ester", "Colero", "1", "2000-02-01"}
+                new String[]{"2", "Ester", "Colero", "1", "2000-02-01", "<null>"}
         }));
 
         // Check
@@ -360,7 +375,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"2", "Ester", "Colero", "1", "2000-02-01"}
+                    new String[]{"2", "Ester", "Colero", "1", "2000-02-01", null}
             );
         }
     }
@@ -375,13 +390,14 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
         // Act
         contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
                 client.columns(),
-                new String[]{"2", "Ester", "Colero", "<null>", "2000-02-01"}
+                new String[]{"2", "Ester", "Colero", "<null>", "2000-02-01", "2024-07-22 13:00:00"}
         }));
 
         // Check
@@ -390,7 +406,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"2", "Ester", "Colero", null, "2000-02-01"}
+                    new String[]{"2", "Ester", "Colero", null, "2000-02-01", "2024-07-22 13:00:00.000"}
             );
         }
     }
@@ -405,14 +421,15 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
         // Act
         contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
                 client.columns(),
-                new String[]{"2", "Ester", "Colero", "1", "2000-02-01"},
-                new String[]{"3", "Elca", "Puio", "1", "<null>"}
+                new String[]{"2", "Ester", "Colero", "1", "2000-02-01", "<null>"},
+                new String[]{"3", "Elca", "Puio", "1", "<null>", "<null>"}
         }));
 
         // Check
@@ -421,8 +438,8 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"2", "Ester", "Colero", "1", "2000-02-01"},
-                    new String[]{"3", "Elca", "Puio", "1", null}
+                    new String[]{"2", "Ester", "Colero", "1", "2000-02-01", null},
+                    new String[]{"3", "Elca", "Puio", "1", null, null}
             );
         }
     }
@@ -438,14 +455,15 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
         // Act
         JsonNode inserted = (JsonNode) contributor.insertFromDataTable(client.table(), new DataTable(new String[][]{
                 client.columns(),
-                new String[]{"2", "Ester", "Colero", "1", "2000-02-01"},
-                new String[]{"3", "Elca", "Puio", "1", "<null>"}
+                new String[]{"2", "Ester", "Colero", "1", "2000-02-01", "<null>"},
+                new String[]{"3", "Elca", "Puio", "1", "<null>", "<null>"}
         }));
         contributor.cleanUp();
 
@@ -496,6 +514,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -519,6 +538,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -542,6 +562,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -569,6 +590,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET birth_date = null WHERE id = 1"));
 
         Table client = Table.CLIENT;
@@ -598,6 +620,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -614,7 +637,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25"}
+                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -629,6 +652,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.deleteFromDataTable("xxxxx", new DataTable(new String[][]{
@@ -650,6 +674,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -673,6 +698,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -698,6 +724,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -711,7 +738,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25"}
+                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -726,6 +753,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.clearTable("xxxxx");
@@ -744,6 +772,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -769,6 +798,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         Table client = Table.CLIENT;
 
@@ -782,7 +812,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25"}
+                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -797,6 +827,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.clearTableByClause("xxxxx", new Document("first_name = 'Rosa' AND active = 1"));
@@ -815,6 +846,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.clearTableByClause("client", new Document("xxxx = 'Rosa'"));
@@ -833,6 +865,7 @@ public class DatabaseStepContributorTest {
                 "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         String script =
@@ -850,8 +883,8 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"1", "Rosa", "Melano", "0", "1980-12-25"},
-                    new String[]{"2", "Ester", "Colero", "0", "2000-01-02"});
+                    new String[]{"1", "Rosa", "Melano", "0", "1980-12-25", "2024-07-22 12:34:56.000"},
+                    new String[]{"2", "Ester", "Colero", "0", "2000-01-02", null});
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
@@ -884,6 +917,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         String script =
@@ -902,7 +936,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25"}
+                    new String[]{"1", "Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
         try (Select<String[]> select = Database.from(contributor.connection())
@@ -934,6 +968,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         String script = "INSERT INTO other (something) VALUES (37)";
@@ -955,6 +990,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         String script = "UPDATE other SET something = 37 WHERE something = 47";
@@ -976,6 +1012,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         String script = "DELETE FROM other WHERE something = 47";
@@ -1004,6 +1041,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsBySingleId("1", "client");
@@ -1023,6 +1061,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1051,6 +1090,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsBySingleId("1", "xxxx");
@@ -1070,6 +1110,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsBySingleIdAsync("1", "client", Duration.ofSeconds(1));
@@ -1089,6 +1130,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1117,6 +1159,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsBySingleId("2", "client");
@@ -1136,6 +1179,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1164,6 +1208,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsBySingleIdAsync("2", "client", Duration.ofSeconds(1));
@@ -1183,6 +1228,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1211,6 +1257,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
@@ -1230,6 +1277,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1258,6 +1306,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByOneColumn("second_name", "Melano", "xxxx");
@@ -1277,6 +1326,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByOneColumn("xxxx", "Melano", "client");
@@ -1296,6 +1346,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
@@ -1315,6 +1366,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1343,6 +1395,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByOneColumn("second_name", "Otro", "client");
@@ -1362,6 +1415,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1390,6 +1444,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByOneColumn("second_name", "Otro", "xxxx");
@@ -1409,6 +1464,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByOneColumn("xxxx", "Otro", "client");
@@ -1428,6 +1484,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByOneColumnAsync("second_name", "Otro", "client", Duration.ofSeconds(1));
@@ -1447,6 +1504,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1475,6 +1533,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByOneColumn("second_name", "Melano", "client",
@@ -1495,6 +1554,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1524,6 +1584,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByOneColumn("xxxx", "second_name", "Melano",
@@ -1544,6 +1605,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByOneColumn("client", "xxxx", "Melano",
@@ -1564,6 +1626,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByOneColumnAsync("second_name", "Melano", "client",
@@ -1584,6 +1647,8 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
         try {
             // Act
             contributor.assertRowCountByOneColumnAsync("second_name", "Otro", "client",
@@ -1612,6 +1677,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByClause("client", new Document("birth_date > '1980-12-20'"));
@@ -1631,6 +1697,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1658,6 +1725,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByClause("xxxx", new Document("birth_date > '1980-12-20'"));
@@ -1677,6 +1745,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByClause("client", new Document("xxxx > '1980-12-20'"));
@@ -1696,6 +1765,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowExistsByClauseAsync("client", Duration.ofSeconds(1),
@@ -1716,6 +1786,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1744,6 +1815,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByClause("client", new Document("birth_date > '1980-12-30'"));
@@ -1763,6 +1835,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1790,6 +1863,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByClause("xxxx", new Document("birth_date > '1980-12-30'"));
@@ -1809,6 +1883,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByClause("client", new Document("xxxx > '1980-12-30'"));
@@ -1828,6 +1903,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowNotExistsByClauseAsync("client", Duration.ofSeconds(1),
@@ -1848,6 +1924,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1876,6 +1953,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByClause("client", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -1896,6 +1974,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -1924,6 +2003,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByClause("xxxx", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -1944,6 +2024,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByClause("client", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -1964,6 +2045,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertRowCountByClauseAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -1984,6 +2066,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2012,11 +2095,12 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableExists("client", new DataTable(new String[][]{
-                new String[]{"first_name", "second_name", "active", "birth_date"},
-                new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+                new String[]{"first_name", "second_name", "active", "birth_date", "creation"},
+                new String[]{"Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56"}
         }));
 
         // Check
@@ -2078,6 +2162,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2112,6 +2197,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableExists("xxxx", new DataTable(new String[][]{
@@ -2134,6 +2220,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableExists("client", new DataTable(new String[][]{
@@ -2156,6 +2243,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
@@ -2178,6 +2266,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2223,6 +2312,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2257,6 +2347,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableNotExists("client", new DataTable(new String[][]{
@@ -2279,6 +2370,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2313,6 +2405,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableNotExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
@@ -2335,6 +2428,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2369,6 +2463,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableCount("client", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -2392,6 +2487,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2427,6 +2523,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
@@ -2450,6 +2547,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -2485,6 +2583,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.xlsx");
 
         // Act
@@ -2505,6 +2604,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.xlsx");
 
         try {
@@ -2519,12 +2619,13 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
                                     "    \"%3$s\"=\"0\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
+                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
@@ -2532,7 +2633,8 @@ public class DatabaseStepContributorTest {
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation")));
             throw new WakamitiException();
         }
     }
@@ -2548,6 +2650,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data3.xlsx");
 
         try {
@@ -2580,6 +2683,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.xlsx");
 
         // Act
@@ -2600,6 +2704,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.xlsx");
 
         try {
@@ -2614,12 +2719,13 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
                                     "    \"%3$s\"=\"0\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                    "    \"%4$s\"=\"1980-12-25\"," +System.lineSeparator() +
+                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
@@ -2627,7 +2733,8 @@ public class DatabaseStepContributorTest {
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation")));
             throw new WakamitiException();
         }
     }
@@ -2643,6 +2750,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data3.xlsx");
 
         try {
@@ -2675,6 +2783,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.xlsx");
 
         // Act
@@ -2695,6 +2804,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.xlsx");
 
         try {
@@ -2707,11 +2817,12 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date"), table));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
             throw new WakamitiException();
         }
     }
@@ -2727,6 +2838,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.xlsx");
 
         // Act
@@ -2747,6 +2859,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.xlsx");
 
         try {
@@ -2759,11 +2872,12 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date"), table));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
             throw new WakamitiException();
         }
     }
@@ -2779,6 +2893,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.csv");
 
         // Act
@@ -2799,6 +2914,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.csv");
 
         try {
@@ -2813,12 +2929,13 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
                                     "    \"%3$s\"=\"0\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
+                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
@@ -2826,7 +2943,8 @@ public class DatabaseStepContributorTest {
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation")));
             throw new WakamitiException();
         }
     }
@@ -2842,6 +2960,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data3.csv");
 
         try {
@@ -2874,6 +2993,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.csv");
 
         // Act
@@ -2894,6 +3014,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.csv");
 
         try {
@@ -2907,12 +3028,13 @@ public class DatabaseStepContributorTest {
             assertThat(e)
                     .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"1\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
                                     "    \"%3$s\"=\"0\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
+                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
                                     "  [\"%3$s\"=\"0\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
@@ -2920,7 +3042,8 @@ public class DatabaseStepContributorTest {
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation")));
             throw new WakamitiException();
         }
     }
@@ -2936,6 +3059,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data3.csv");
 
         try {
@@ -2968,6 +3092,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.csv");
 
         // Act
@@ -2988,6 +3113,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.csv");
 
         try {
@@ -3000,11 +3126,12 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date"), table));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
             throw new WakamitiException();
         }
     }
@@ -3020,6 +3147,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data2.csv");
 
         // Act
@@ -3040,6 +3168,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         File file = resource("data1.csv");
 
         try {
@@ -3052,11 +3181,12 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=1, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date"), table));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
             throw new WakamitiException();
         }
     }
@@ -3072,6 +3202,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertTableIsNotEmpty("client");
@@ -3091,6 +3222,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.truncateTable("client", false);
 
         try {
@@ -3118,6 +3250,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertTableIsNotEmpty("xxxx");
@@ -3137,6 +3270,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertTableIsNotEmptyAsync("client", Duration.ofSeconds(1));
@@ -3156,6 +3290,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.truncateTable("client", false);
 
         try {
@@ -3184,6 +3319,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.truncateTable("client", false);
 
         // Act
@@ -3204,6 +3340,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -3230,6 +3367,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         // Act
         contributor.assertTableIsEmpty("xxxx");
@@ -3249,6 +3387,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
         contributor.truncateTable("client", false);
 
         // Act
@@ -3269,6 +3408,7 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        createContext(config);
 
         try {
             // Act
@@ -3290,9 +3430,18 @@ public class DatabaseStepContributorTest {
         return new File(classLoader.getResource(resourceName).getFile());
     }
 
+    private void createContext(Configuration configuration) {
+        WakamitiStepRunContext.set(new WakamitiStepRunContext(
+                configuration,
+                Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration),
+                Locale.getDefault(),
+                Locale.getDefault()
+        ));
+    }
+
     private enum Table {
 
-        CLIENT("client", "id", "first_name", "second_name", "active", "birth_date"),
+        CLIENT("client", "id", "first_name", "second_name", "active", "birth_date", "creation"),
         CITY("city", "id", "name", "latitude", "longitude"),
         CLIENT_CITY("client_city", "clientid", "cityid");
 

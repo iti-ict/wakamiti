@@ -135,7 +135,7 @@
 <!--                <version>1.0.2</version>-->
 <!--                <configuration>-->
 <!--                    <distributionDefinition>src/assembly/distribution.yaml</distributionDefinition>-->
-<!--                    <output>src/bin/wakamiti-${project.version}-installer.jar</output>-->
+<!--                    <output>target/wakamiti-${project.version}-installer.jar</output>-->
 <!--                </configuration>-->
 <!--                <executions>-->
 <!--                    <execution>-->

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
 
 
 /**
@@ -656,12 +657,30 @@ public class Wakamiti {
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
                 .map(node -> node.id().matches(idTagPattern) ? node.id() : null)
                 .forEach(id -> ids.computeIfAbsent(id, x -> new AtomicInteger()).incrementAndGet());
+
         if (ids.get(null) != null) {
             throw new WakamitiException("There is one or more test cases without a valid ID");
         }
         ids.forEach((id, count) -> {
             if (count.get() > 1) {
                 throw new WakamitiException("The ID {} is used in {} test cases", id, count);
+            }
+        });
+
+        ids.clear();
+
+        plan.descendants()
+                .filter(node -> node.properties().get("gherkinType").equals(GHERKIN_TYPE_FEATURE))
+                .filter(node -> !node.id().startsWith("#"))
+                .map(node -> node.id().matches(idTagPattern) ? node.id() : null)
+                .forEach(id -> ids.computeIfAbsent(id, x -> new AtomicInteger()).incrementAndGet());
+
+        if (ids.get(null) != null) {
+            throw new WakamitiException("There is one or more features without a valid ID");
+        }
+        ids.forEach((id, count) -> {
+            if (count.get() > 1) {
+                throw new WakamitiException("The ID {} is used in {} features", id, count);
             }
         });
     }
