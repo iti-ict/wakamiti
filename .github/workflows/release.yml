@@ -17,13 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
-      TITLE: ${{ github.event.release.name }}
-      BODY: ${{ github.event.release.body }}
     steps:
       - run: |
-          echo Release created
-  #          echo TITLE=$( echo "${{ github.event.release.name }}" | sed -r 's/(["\])/\\\1/g' ) >> $GITHUB_OUTPUT
-  #          echo BODY=$( echo "${{ github.event.release.body }}" | sed -r 's/(["\])/\\\1/g' ) >> $GITHUB_OUTPUT
+          echo TITLE=$( echo "${{ github.event.release.name }}" | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
+          echo BODY=$( echo "${{ github.event.release.body }}" | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
 
   build:
     name: Build
