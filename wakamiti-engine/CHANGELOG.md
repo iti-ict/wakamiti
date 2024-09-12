@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Module `duration-types` is included in the default modules when there are restricted modules.
+- Force the Gherkin parser to throw an error when a feature or scenario is untitled.
 
 
 ## [2.6.0] - 2024-09-09
