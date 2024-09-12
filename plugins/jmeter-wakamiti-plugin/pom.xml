@@ -16,12 +16,6 @@
         <relativePath>../../wakamiti-plugin-starter</relativePath>
     </parent>
 
-    <repositories>
-        <repository>
-            <id>jmeter-plugins-repo</id>
-            <url>https://jmeter-plugins.org/repo/</url>
-        </repository>
-    </repositories>
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
     <version>1.0.0</version>
@@ -35,8 +29,16 @@
         <mockserver.version>5.15.0</mockserver.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.6.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.1</wakamiti-engine.version>
     </properties>
+
+
+    <repositories>
+        <repository>
+            <id>jmeter-plugins-repo</id>
+            <url>https://jmeter-plugins.org/repo/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
