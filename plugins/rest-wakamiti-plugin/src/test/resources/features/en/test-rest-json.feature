@@ -1,3 +1,4 @@
+#modules: rest-steps
 @launcher
 @ID-test-1
 Feature: REST Test Feature
@@ -10,6 +11,7 @@ Feature: REST Test Feature
   @ID-test-1-1
   Scenario: Get a user from a service
     Given a user identified by 'user1'
+    And a timeout of 10 seconds
     When the user is requested
     Then the response HTTP code is 200
     And the response HTTP code is not 201
