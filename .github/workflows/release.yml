@@ -7,9 +7,17 @@ on:
       TAG_NAME:
         description: 'Tag name that the major tag will point to'
         required: true
+      TITLE:
+        description: 'Release name'
+        required: true
+      BODY:
+        description: 'Release body'
+        required: true
 
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
+  TITLE: ${{ github.event.release.name }}
+  BODY: ${{ github.event.release.body }}
 
 jobs:
   get-env:
@@ -19,10 +27,8 @@ jobs:
       TAG_NAME: ${{ env.TAG_NAME }}
     steps:
       - run: |
-          echo TITLE=$( echo "${{ github.event.release.name }}" | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
-          echo BODY=$( cat << "EOF" \
-            ${{ github.event.release.body }} \
-          EOF | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
+          echo TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
+          echo BODY=$( echo "$BODY" | sed -r 's/([\])/\\\1/g' ) >> $GITHUB_OUTPUT
 
   build:
     name: Build
