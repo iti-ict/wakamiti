@@ -127,7 +127,7 @@ public class TokenMatcher implements ITokenMatcher {
 
     @Override
     public boolean match_BackgroundLine(es.iti.wakamiti.core.gherkin.parser.internal.Token token) {
-        return matchTitleLine(token, TokenType.BackgroundLine, currentDialect.getBackgroundKeywords());
+        return matchTitleLineEmpty(token, TokenType.BackgroundLine, currentDialect.getBackgroundKeywords());
     }
 
     @Override
@@ -142,10 +142,22 @@ public class TokenMatcher implements ITokenMatcher {
 
     @Override
     public boolean match_ExamplesLine(es.iti.wakamiti.core.gherkin.parser.internal.Token token) {
-        return matchTitleLine(token, TokenType.ExamplesLine, currentDialect.getExamplesKeywords());
+        return matchTitleLineEmpty(token, TokenType.ExamplesLine, currentDialect.getExamplesKeywords());
     }
 
     private boolean matchTitleLine(es.iti.wakamiti.core.gherkin.parser.internal.Token token, TokenType tokenType, List<String> keywords) {
+        for (String keyword : keywords) {
+            if (token.line.startsWithTitleKeyword(keyword)) {
+                String title = token.line.getRestTrimmed(keyword.length() + GherkinLanguageConstants.TITLE_KEYWORD_SEPARATOR.length());
+                if (title.isEmpty()) return false;
+                setTokenMatched(token, tokenType, title, keyword, null, null);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchTitleLineEmpty(es.iti.wakamiti.core.gherkin.parser.internal.Token token, TokenType tokenType, List<String> keywords) {
         for (String keyword : keywords) {
             if (token.line.startsWithTitleKeyword(keyword)) {
                 String title = token.line.getRestTrimmed(keyword.length() + GherkinLanguageConstants.TITLE_KEYWORD_SEPARATOR.length());
