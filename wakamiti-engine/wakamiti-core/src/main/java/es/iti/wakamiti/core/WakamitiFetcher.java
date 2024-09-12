@@ -102,7 +102,7 @@ public class WakamitiFetcher {
             mavenFetcher.logger(logger);
 
             MavenFetchRequest fetchRequest = new MavenFetchRequest(modules)
-                    .scopes("compile", "provided");
+                    .scopes("compile", "runtime");
             MavenFetchResult fetchedArtifacts = mavenFetcher.fetchArtifacts(fetchRequest);
 
             if (logger.isDebugEnabled()) {
