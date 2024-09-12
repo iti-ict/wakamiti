@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 public class DefaultBackendFactory implements BackendFactory {
 
     private static final Logger LOGGER = Wakamiti.LOGGER;
-    private static final List<String> DEFAULT_MODULES = List.of("core-types", "assertion-types");
+    private static final List<String> DEFAULT_MODULES = List.of("core-types", "assertion-types", "duration-types");
 
     private final WakamitiContributors contributors;
 

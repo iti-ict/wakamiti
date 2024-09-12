@@ -33,6 +33,7 @@
 
     <properties>
         <wakamiti.launcher.path>${parent.basedir}/wakamiti-launcher</wakamiti.launcher.path>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <io.fabric8.version>0.43.4</io.fabric8.version>
     </properties>
 
@@ -154,6 +155,10 @@
                                     </build>
                                 </image>
                             </images>
+                            <buildArgs>
+                                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
+                                <BUILD_VERSION>${project.version}</BUILD_VERSION>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>
@@ -237,6 +242,10 @@
                                     </build>
                                 </image>
                             </images>
+                            <buildArgs>
+                                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
+                                <BUILD_VERSION>${project.version}</BUILD_VERSION>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>
