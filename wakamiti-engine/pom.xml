@@ -20,7 +20,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>2.6.0</revision>
+        <revision>2.6.1</revision>
     </properties>
 
 
