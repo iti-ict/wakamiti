@@ -28,7 +28,7 @@
     <properties>
         <qpid-broker.version>9.2.0</qpid-broker.version>
 
-        <wakamiti-engine.version>2.6.1</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.2</wakamiti-engine.version>
     </properties>
 
     <dependencies>

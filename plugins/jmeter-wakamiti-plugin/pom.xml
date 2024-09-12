@@ -29,7 +29,7 @@
         <mockserver.version>5.15.0</mockserver.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.6.1</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.2</wakamiti-engine.version>
     </properties>
 
 
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>us.abstracta.jmeter</groupId>
             <artifactId>jmeter-java-dsl</artifactId>
-            <version>1.25.3</version>
+            <version>1.29</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.groovy</groupId>
