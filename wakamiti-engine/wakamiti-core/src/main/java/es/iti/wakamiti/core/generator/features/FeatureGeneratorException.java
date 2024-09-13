@@ -2,6 +2,8 @@ package es.iti.wakamiti.core.generator.features;
 
 import es.iti.wakamiti.api.WakamitiException;
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
+
 public class FeatureGeneratorException extends WakamitiException {
 
 
@@ -19,16 +21,6 @@ public class FeatureGeneratorException extends WakamitiException {
     }
 
     /**
-     * Constructs a new FeatureGeneratorException with the specified detail message.
-     *
-     * @param message The detail message (which is saved for later retrieval by the
-     *                {@link #getMessage()} method).
-     */
-    public FeatureGeneratorException(String message) {
-        super(message);
-    }
-
-    /**
      * Constructs a new FeatureGeneratorException with a formatted detail message.
      *
      * @param message The detail message format string.
@@ -38,6 +30,6 @@ public class FeatureGeneratorException extends WakamitiException {
      *                and may be zero.
      */
     public FeatureGeneratorException(String message, Object... args) {
-        super(replace(message, argsWithoutThrowable(args)), throwable(args));
+        super(format(message, argsWithoutThrowable(args)), throwable(args));
     }
 }
