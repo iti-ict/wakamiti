@@ -309,7 +309,7 @@ jmeter:
 - Tipo: `url`
 
 
-### `jmeter.report.influx.prefix`
+### `jmeter.report.graphite.prefix`
 - Tipo: `string`
 
 
@@ -910,8 +910,7 @@ Cuando se ejecutan 10 hilos en 10 segundos manteniendo 30 segundos
 
 Esto produce el siguiente escenario:
 
-<img src="/load.png"  alt="load scenario"/>
-
+![load scenario](/load.png)
 
 ### Ejecutar carga (iteraciones)
 ```text copy=true
@@ -934,8 +933,7 @@ Cuando se ejecutan 10 hilos en 10 segundos 3 veces
 
 Esto produce el siguiente escenario:
 
-<img src="/load_it.png"  alt="load scenario"/>
-
+![load scenario](/load_it.png)
 
 ### Ejecutar carga (incremento)
 ```text copy=true
@@ -960,8 +958,7 @@ Cuando se ejecutan 10 hilos en 10 segundos cada 10 segundos 3 veces
 
 Esto produce el siguiente escenario:
 
-<img src="/stress.png"  alt="load scenario"/>
-
+![load scenario](/stress.png)
 
 ### Ejecutar carga (tramos)
 ```text copy=true
@@ -991,8 +988,7 @@ Cuando se ejecuta(n) (el|los) siguiente(s) tramo(s):
 
 Esto produce el siguiente escenario:
 
-<img src="/stretches.png"  alt="load scenario"/>
-
+![load scenario](/stretches.png)
 
 ### Comprobar métricas
 ```text copy=true

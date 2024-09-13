@@ -17,4 +17,4 @@ exist, but you can also develop your own plugins!
 - [Azure Integration](en/plugins/azure)
 - [Email steps](en/plugins/email)
 - [JMeter steps](en/plugins/jmeter)
-- [Groovy](plugins/groovy)
+- [Groovy](en/plugins/groovy)

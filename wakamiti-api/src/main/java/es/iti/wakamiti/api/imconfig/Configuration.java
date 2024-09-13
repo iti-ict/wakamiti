@@ -115,8 +115,6 @@ public interface Configuration  {
     /** @return The configuration represented as a {@link Map} object */
     Map<String, String> asMap();
 
-
-
     /** Perform an action for each pair <code>[key,value]</code> */
     void forEach(BiConsumer<String, String> consumer);
 

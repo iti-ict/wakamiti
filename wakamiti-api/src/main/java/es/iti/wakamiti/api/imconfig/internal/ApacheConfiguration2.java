@@ -26,6 +26,19 @@ import java.util.stream.Stream;
 public class ApacheConfiguration2 extends AbstractConfiguration {
 
     protected final org.apache.commons.configuration2.Configuration conf;
+    private final Map<Class<?>, BiFunction<String, JavaType[], ?>> CONVERTER = Map.of(
+            List.class, (key, ct) -> getList(key, rawTypes(ct, 1)[0]),
+            Set.class, (key, ct) -> getSet(key, rawTypes(ct, 1)[0]),
+            Stream.class, (key, ct) -> getStream(key, rawTypes(ct, 1)[0]),
+            Map.class, (key, ct) -> {
+                Class<?>[] types = rawTypes(ct, 2);
+                return inner(key).asMap().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                e -> convert(e.getKey(), types[0]),
+                                e -> convert(e.getValue(), types[1]))
+                        );
+            }
+    );
 
     protected ApacheConfiguration2(
             ConfigurationFactory builder,
@@ -118,20 +131,6 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
         }
     }
 
-    private final Map<Class<?>, BiFunction<String, JavaType[], ?>> CONVERTER = Map.of(
-            List.class, (key, ct) -> getList(key, rawTypes(ct, 1)[0]),
-            Set.class, (key, ct) -> getSet(key, rawTypes(ct, 1)[0]),
-            Stream.class, (key, ct) -> getStream(key, rawTypes(ct, 1)[0]),
-            Map.class, (key, ct) -> {
-                Class<?>[] types = rawTypes(ct, 2);
-                return inner(key).asMap().entrySet().stream()
-                        .collect(Collectors.toMap(
-                                e -> convert(e.getKey(), types[0]),
-                                e -> convert(e.getValue(), types[1]))
-                        );
-            }
-    );
-
     @Override
     @SuppressWarnings("unchecked")
     public <T> Optional<T> get(String key, TypeReference<T> type) {
@@ -140,7 +139,7 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
                 .mapToObj(jt::containedType)
                 .toArray(JavaType[]::new);
         return (Optional<T>) Optional.ofNullable(CONVERTER.getOrDefault(jt.getRawClass(),
-                (k, ct) -> get(k, jt.getRawClass()).orElse(null)))
+                        (k, ct) -> get(k, jt.getRawClass()).orElse(null)))
                 .map(f -> f.apply(key, containedTypes));
     }
 

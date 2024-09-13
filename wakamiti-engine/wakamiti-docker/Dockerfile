@@ -1,4 +1,17 @@
 FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
+LABEL maintainer="mgalbis@iti.es"
+
+# Wakamiti runtime distribution filename.
+ARG BUILD_DATE
+ARG BUILD_VERSION
+
+# Labels.
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name="wakamiti/wakamiti"
+LABEL org.label-schema.description="Wakamiti core"
+LABEL org.label-schema.url="https://iti-ict.github.io/wakamiti/"
+LABEL org.label-schema.version=$BUILD_VERSION
 
 WORKDIR /wakamiti
 

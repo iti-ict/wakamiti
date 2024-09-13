@@ -6,6 +6,7 @@
                 <string>Properties Test String Value</string>
                 <strings>Properties Array Value 1</strings>
                 <strings>Properties Array Value 2</strings>
+                <string_number>0543</string_number>
 
                 <bool>true</bool>
                 <bools>true</bools>

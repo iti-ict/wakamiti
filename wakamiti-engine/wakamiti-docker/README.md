@@ -3,11 +3,11 @@
 
 * Windows:
 ```Shell
-docker run --rm -it --env-file .env -v "%cd%:/wakamiti" --network=host nexus-wakamiti.iti.upv.es/wakamiti
+docker run --rm -it -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
 
 * Linux:
 ```Shell
-docker run --rm -it --env-file .env -v "$(pwd):/wakamiti" --network=host nexus-wakamiti.iti.upv.es/wakamiti
+docker run --rm -it -v "$(pwd):/wakamiti" wakamiti/wakamiti
 ```
 

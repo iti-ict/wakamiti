@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [unreleased]
+## [2.6.1] - 2024-09-12
+
+### Fixed
+- Module `duration-types` is included in the default modules when there are restricted modules.
+- Force the Gherkin parser to throw an error when a feature or scenario is untitled.
+
+
+## [2.6.0] - 2024-09-09
 
 ### Added
 - Duration data type and Duration assertion.
@@ -17,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Datatype AbstractProvider and ExpressionMatcher are moved to the api library.
 - The StepPropertyEvaluator accepts both step index and the step `id`.
 - Step nodes have ids.
+- The features can have a `tagId` and will be checked for uniqueness, as will test cases if the `strictTestCaseID` 
+  option is enabled.
 
 ### Fixed
 - The junit wakamiti configuration is modified to set the default output path of the current project.
