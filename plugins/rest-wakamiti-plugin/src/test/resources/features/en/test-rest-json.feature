@@ -1,4 +1,6 @@
+#modules: rest-steps
 @launcher
+@ID-test-1
 Feature: REST Test Feature
 
 
@@ -6,9 +8,10 @@ Feature: REST Test Feature
     Given the REST service '/users'
     And the REST content type JSON
 
-
+  @ID-test-1-1
   Scenario: Get a user from a service
     Given a user identified by 'user1'
+    And a timeout of 10 seconds
     When the user is requested
     Then the response HTTP code is 200
     And the response HTTP code is not 201
@@ -71,7 +74,7 @@ Feature: REST Test Feature
 }
       """
 
-
+  @ID-test-1-2
   Scenario: Obtain complex JSON in any order
     When the users are queried
     Then the response is (in any order):
@@ -132,7 +135,7 @@ Feature: REST Test Feature
       """
     And the response fragment 'find{ it.id == "user1" }.vegetables' contains the file '${data.dir}/data/vegetables_user1.json'
 
-
+  @ID-test-1-3
   Scenario: URL with parameters
     Given the REST service '/users/{user}/{subject}'
     And the following path parameters:
@@ -154,7 +157,7 @@ Feature: REST Test Feature
       """
     And the response fragment '[1]' is equal to the file '${data.dir}/data/vegetable.json'
 
-
+  @ID-test-1-4
     Scenario: Request with headers and parameters
       Given the REST service '/vegetables'
       And the following headers:
@@ -168,13 +171,13 @@ Feature: REST Test Feature
       And the integer response header content-length is less than 150
       And the decimal response header content-length is less than 150.1
 
-
+  @ID-test-1-5
   Scenario: Not Found
     Given the REST service '/other'
     When the subject is queried
     Then the response HTTP code is 404
 
-
+  @ID-test-1-6
   Scenario: Bad request
     Given the REST service '/bad'
     When the subject is queried

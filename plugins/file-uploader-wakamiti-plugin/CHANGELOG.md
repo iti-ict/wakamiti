@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [2.8.0] - 2024-09-09
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
+
+
+## [2.7.1] - 2024-05-08
+
+### Fixed
+- Multiple paths creation when `%TIME%` placeholder is used.
 
 
 ## [2.7.0] - 2024-04-16

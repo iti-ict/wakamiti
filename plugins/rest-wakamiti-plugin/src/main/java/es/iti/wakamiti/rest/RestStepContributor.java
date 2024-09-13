@@ -14,7 +14,7 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.auth.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;

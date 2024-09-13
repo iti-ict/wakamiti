@@ -16,7 +16,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Pasos Appium](plugins/appium)
 - [Integración Azure](plugins/azure)
 - [Pasos Email](plugins/email)
-- [Pasos JMeter](plugin/jmeter)
+- [Pasos JMeter](plugins/jmeter)
 - [Groovy](plugins/groovy)
 
 

@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.util.MapUtils.entryCollector;
 import static es.iti.wakamiti.database.DatabaseHelper.*;
 import static es.iti.wakamiti.database.jdbc.LogUtils.*;
 import static java.util.Objects.isNull;
@@ -270,7 +271,7 @@ public final class Database {
                     if (!types.containsKey(e.getKey()))
                         throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), e.getKey());
                 })
-                .collect(collectToMap(Map.Entry::getKey, e -> formatValue(e.getValue(), types.get(e.getKey()))));
+                .collect(entryCollector(Map.Entry::getKey, e -> formatValue(e.getValue(), types.get(e.getKey()))));
     }
 
     private Object formatValue(String value, JDBCType type) {

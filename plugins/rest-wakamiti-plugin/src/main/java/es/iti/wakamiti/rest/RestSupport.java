@@ -8,12 +8,12 @@ package es.iti.wakamiti.rest;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.auth.oauth.Oauth2Provider;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.*;
-import es.iti.wakamiti.api.auth.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
@@ -36,7 +36,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.auth.oauth.Oauth2Provider.ACCESS_TOKEN;
+import static es.iti.wakamiti.api.util.http.oauth.Oauth2Provider.ACCESS_TOKEN;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

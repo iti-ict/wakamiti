@@ -1,4 +1,10 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.fileuploader;
+
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
@@ -22,7 +28,6 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     private static final String PROTOCOL = "protocol";
     private static final String IDENTITY = "identity";
 
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
@@ -35,7 +40,6 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
     public Configurer<AbstractFilesUploader> configurer() {
         return this::configure;
     }
-
 
     private void configure(AbstractFilesUploader filesUploader, Configuration configuration) {
         Configuration global = configuration.inner(PREFIX);

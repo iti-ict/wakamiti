@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [3.2.0] - 2024-09-09
 
 ### Fixed
 - Row with all values set to null in xls file. (#267)
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`
+- Moved map collector to `wakamiti-api`
 
 
 ## [3.1.0] - 2024-04-16

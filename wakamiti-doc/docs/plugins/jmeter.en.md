@@ -306,7 +306,7 @@ jmeter:
 - Type: `url`
 
 
-### `jmeter.report.influx.prefix`
+### `jmeter.report.graphite.prefix`
 - Type: `string`
 
 
@@ -902,8 +902,7 @@ When 10 threads are executed in 10 seconds holding 30 seconds
 
 This produces the following scenario:
 
-<img src="/load.png"  alt="load scenario"/>
-
+![load scenario](/load.png)
 
 ### Execute load (iterations)
 ```text copy=true
@@ -926,8 +925,7 @@ When 10 threads are executed in 10 seconds 3 times
 
 This produces the following scenario:
 
-<img src="/load_it.png"  alt="load scenario"/>
-
+![load scenario](/load_it.png)
 
 ### Execute load (increase)
 ```text copy=true
@@ -952,7 +950,7 @@ When 10 threads are executed in 10 seconds every 10 seconds 3 times
 
 This produces the following scenario:
 
-<img src="/stress.png"  alt="load scenario"/>
+![load scenario](/stress.png)
 
 
 ### Execute load (stretches)
@@ -983,8 +981,7 @@ When a test is executed with the following stretches:
 
 This produces the following scenario:
 
-<img src="/stretches.png"  alt="load scenario"/>
-
+![load scenario](/stretches.png)
 
 ### Check metric
 ```text copy=true
