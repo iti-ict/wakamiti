@@ -65,12 +65,6 @@
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-core</artifactId>
             <version>${wakamiti-engine.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.github.luiinge</groupId>
-                    <artifactId>maven-fetcher</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
