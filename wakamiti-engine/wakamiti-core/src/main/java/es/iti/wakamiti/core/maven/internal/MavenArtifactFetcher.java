@@ -80,10 +80,6 @@ public class MavenArtifactFetcher implements DependencySelector {
         this.listener = listener;
     }
 
-    private static String key(Artifact artifact) {
-        return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion();
-    }
-
     private Exclusion exclusionFromCoordinates(String coordinates) {
         var parts = coordinates.split(":");
         if (parts.length >= 2) {
@@ -215,50 +211,28 @@ public class MavenArtifactFetcher implements DependencySelector {
     public DependencySelector deriveChildSelector(DependencyCollectionContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         Dependency dependency = context.getDependency();
-        Collection<Exclusion> exclusions = dependency != null ? dependency.getExclusions() : null;
-        if (exclusions != null && !exclusions.isEmpty()) {
-            Exclusion[] merged = this.exclusions.toArray(new Exclusion[0]);
-            int count = merged.length;
-
-            for (Exclusion exclusion : exclusions) {
-                int index = Arrays.binarySearch(merged, exclusion, ExclusionComparator.INSTANCE);
-                if (index < 0) {
-                    index = -(index + 1);
-                    if (count >= merged.length) {
-                        Exclusion[] tmp = new Exclusion[merged.length + exclusions.size()];
-                        System.arraycopy(merged, 0, tmp, 0, index);
-                        tmp[index] = exclusion;
-                        System.arraycopy(merged, index, tmp, index + 1, count - index);
-                        merged = tmp;
-                    } else {
-                        System.arraycopy(merged, index, merged, index + 1, count - index);
-                        merged[index] = exclusion;
-                    }
-
-                    ++count;
-                }
-            }
-
-            if (new HashSet<>(this.exclusions).containsAll(List.of(merged))
-                    && new HashSet<>(List.of(merged)).containsAll(this.exclusions)) {
-                return this;
-            } else {
-                if (merged.length != count) {
-                    Exclusion[] tmp = new Exclusion[count];
-                    System.arraycopy(merged, 0, tmp, 0, count);
-                    merged = tmp;
-                }
-
-                return new MavenArtifactFetcher(system, remoteRepositories, session, scopes, retrieveOptionals, List.of(merged), artifacts, listener, logger);
-            }
-        } else {
+        Collection<Exclusion> newExclusions = dependency != null ? dependency.getExclusions() : null;
+        if (newExclusions == null || newExclusions.isEmpty()) {
             return this;
+        }
+
+        List<Exclusion> merged = new ArrayList<>(this.exclusions);
+        for (Exclusion exclusion : newExclusions) {
+            int index = Collections.binarySearch(merged, exclusion, new ExclusionComparator());
+            if (index < 0) {
+                merged.add(-(index + 1), exclusion);
+            }
+        }
+
+        if (new HashSet<>(this.exclusions).containsAll(merged) && new HashSet<>(merged).containsAll(this.exclusions)) {
+            return this;
+        } else {
+            return new MavenArtifactFetcher(system, remoteRepositories, session, scopes,
+                    retrieveOptionals, merged, artifacts, listener, logger);
         }
     }
 
     private static class ExclusionComparator implements Comparator<Exclusion> {
-
-        static final ExclusionComparator INSTANCE = new ExclusionComparator();
 
         public int compare(Exclusion e1, Exclusion e2) {
             if (e1 == null) {
