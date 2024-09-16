@@ -24,7 +24,7 @@
     <inceptionYear>2022</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.6.2</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.3</wakamiti-engine.version>
     </properties>
 
     <dependencies>

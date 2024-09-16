@@ -34,10 +34,6 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.luiinge</groupId>
-            <artifactId>maven-fetcher</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.harawata</groupId>
             <artifactId>appdirs</artifactId>
             <version>1.0.3</version>
