@@ -55,9 +55,9 @@ public class CliArguments {
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
 
         cliOptions.addOption(ARG_AI, "ai", false, "Activate feature generator mode");
-        cliOptions.addOption(ARG_API_DOCS, "apiDocs", false, "Api docs url or json file");
-        cliOptions.addOption(ARG_AI_TOKEN, "token", false, "Token for chat-gpt");
-        cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", false, "Feature Generator path");
+        cliOptions.addOption(ARG_API_DOCS, "apiDocs", true, "Api docs url or json file");
+        cliOptions.addOption(ARG_AI_TOKEN, "token", true, "Token for chat-gpt");
+        cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", true, "Feature Generator path");
 
         cliOptions.addOption(
                 Option.builder(ARG_WAKAMITI_PROPERTY)

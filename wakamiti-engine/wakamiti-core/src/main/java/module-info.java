@@ -41,6 +41,7 @@ open module es.iti.wakamiti.core {
     requires org.apache.commons.lang3;
     requires java.net.http;
     requires json.path;
+    requires org.apache.commons.io;
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 

@@ -26,7 +26,7 @@ public class FeatureGeneratorTest {
     private OpenAIService openAIService;
 
     @Test
-    public void test() throws URISyntaxException, IOException {
+    public void shouldGenerateFeatures() throws URISyntaxException, IOException {
 
         FeatureGenerator featureGenerator = new FeatureGenerator(openAIService, "", API_DOCS_JSON);
 
