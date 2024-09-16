@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ## Fixed
 - Errors are correctly captured when comparing the status code.
-
+- `org.codehaus.groovy:*` dependencies are excluded.
 
 ## [1.0.0] - 2024-09-09
 
