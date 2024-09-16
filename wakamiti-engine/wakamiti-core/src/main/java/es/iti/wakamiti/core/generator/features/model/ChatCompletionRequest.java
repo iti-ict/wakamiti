@@ -10,6 +10,7 @@ public class ChatCompletionRequest {
     /**
      * ID of the model to use.
      */
+    @JsonProperty("model")
     String model;
 
     /**
@@ -17,6 +18,7 @@ public class ChatCompletionRequest {
      * href="https://platform.openai.com/docs/guides/chat/introduction">chat format</a>.<br>
      * see {@link ChatMessage}
      */
+    @JsonProperty("messages")
     List<ChatMessage> messages;
 
     /**

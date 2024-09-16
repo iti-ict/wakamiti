@@ -4,18 +4,19 @@ import com.jayway.jsonpath.JsonPath;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class FeatureGenerator {
     private static final String UNDERSCORE = "_";
     private static final String FEATURE_EXTENSION = ".feature";
     private static final String HTTP = "http";
-    private static final String DEFAULT_PROMPT = "generator/features/prompt.txt";
+    private static final String DEFAULT_PROMPT = "/generator/features/prompt.txt";
 
     private final HttpClient client = HttpClient.newHttpClient();
 
@@ -117,7 +118,9 @@ public class FeatureGenerator {
      * @throws URISyntaxException Malformed API URI
      */
     private String loadPrompt() throws IOException, URISyntaxException {
-        return Files.readString(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(DEFAULT_PROMPT)).toURI()));
+        InputStream in = getClass().getResourceAsStream(DEFAULT_PROMPT);
+        byte[] data = IOUtils.toByteArray(in);
+        return new String(data);
     }
 
     /**
