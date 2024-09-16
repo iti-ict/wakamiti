@@ -58,8 +58,8 @@ public class MavenTransferListener implements TransferListener {
 
 
     @Override
-    public void transferProgressed(TransferEvent event) throws TransferCancelledException {
-        
+    public void transferProgressed(TransferEvent event) {
+        // do nothing
     }
 
 
