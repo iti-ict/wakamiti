@@ -30,7 +30,7 @@
         <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.6.2</wakamiti-engine.version>
+        <wakamiti-engine.version>2.6.3</wakamiti-engine.version>
     </properties>
 
 
@@ -132,16 +132,37 @@
                 <rest.port>8888</rest.port>
 
                 <workdir>/wakamiti/test-classes</workdir>
-                <classpath>ADD_CLASSPATH=/wakamiti/dependencies/*:/wakamiti/classes</classpath>
                 <volume>${project.build.directory}:/wakamiti</volume>
-                <arguments>-K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
+                <repo>${user.home}/.m2/repository:/repository</repo>
+                <coordinate>${project.groupId}:${project.artifactId}:${project.version}</coordinate>
+                <arguments>-m ${coordinate} -K tagFilter=launcher -K rest.baseURL=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
                 <add.host />
 
-                <run.command>run --rm -w ${workdir} -e ${classpath} -v ${volume} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
+                <run.command>run --rm -w ${workdir} -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
             </properties>
 
             <build>
                 <plugins>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>docker</executable>
+                            <commandlineArgs>${run.command}</commandlineArgs>
+                            <quietLogs>true</quietLogs>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.mock-server</groupId>
                         <artifactId>mockserver-maven-plugin</artifactId>
@@ -161,7 +182,7 @@
                             </execution>
                             <execution>
                                 <id>stop</id>
-                                <phase>post-integration-test</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
@@ -177,27 +198,6 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.1.0</version>
-                        <executions>
-                            <execution>
-                                <id>test</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <executable>docker</executable>
-                            <commandlineArgs>${run.command}</commandlineArgs>
-                            <quietLogs>true</quietLogs>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
                         <groupId>es.iti.wakamiti</groupId>
                         <artifactId>wakamiti-maven-plugin</artifactId>
                         <version>${wakamiti-engine.version}</version>
@@ -208,6 +208,7 @@
                             </execution>
                             <execution>
                                 <id>control</id>
+                                <phase>install</phase>
                                 <goals><goal>control</goal></goals>
                             </execution>
                         </executions>
