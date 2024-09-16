@@ -33,8 +33,7 @@ public class MavenFetcherTest {
             .toAbsolutePath()
             .toUri()
             .toString();
-    private String m2 = Path.of(System.getenv("USERPROFILE"), ".m2", "repository")
-            .toAbsolutePath().toUri().toString();
+
     private Path localRepo;
 
     @Before
