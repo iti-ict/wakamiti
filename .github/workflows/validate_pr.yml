@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp  \
+           ./mvnw install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp  \
               -Dsonar.organization=iti-ict \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.projectKey=iti-ict_kukumo \
