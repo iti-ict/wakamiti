@@ -61,7 +61,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
     @Step(value = "jmeter.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         this.checkURL(url);
-        this.httpDefaults.url(url.toString());
+        this.baseURL = url;
     }
 
     /**

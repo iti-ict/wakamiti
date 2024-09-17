@@ -51,6 +51,7 @@ public class JMeterSupport {
      * DslHttpDefaults definition, used in TestPlan
      **/
     protected DslHttpDefaults httpDefaults = new DslHttpDefaults();
+    protected URL baseURL;
     /**
      * Oauth2 specification, used in all DslHttSamplers
      **/
