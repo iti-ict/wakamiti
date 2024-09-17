@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [1.0.2] - 2024-09-18
+
+### Fixed
+- The baseURL truncated the path and only considered the host part.
+
+
 ## [1.0.1] - 2024-09-16
 
-## Fixed
+### Fixed
 - Errors are correctly captured when comparing the status code.
 - `org.codehaus.groovy:*` dependencies are excluded.
 
