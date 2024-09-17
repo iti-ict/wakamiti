@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -64,7 +65,8 @@ public class TestCaseOutputFilesUploaderSftpTest {
         File[] dateFiles = resultsPath.toFile().listFiles();
         assertNotNull(dateFiles);
         assertEquals(1, dateFiles.length);
-        assertTrue(dateFiles[0].getName().startsWith(today()));
+        String name = dateFiles[0].getName();
+        assertTrue(name.startsWith(today()));
         File[] jsonFiles = dateFiles[0].listFiles();
         assertNotNull(jsonFiles);
         assertEquals(2, jsonFiles.length);
@@ -75,7 +77,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
     }
 
     private static String today() {
-        return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.from(ZoneOffset.UTC)).format(Instant.now());
+        return DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
     }
 
     /**

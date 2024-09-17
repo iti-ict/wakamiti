@@ -17,9 +17,7 @@
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
-
     <!-- coordinates -->
-    <groupId>es.iti.wakamiti</groupId>
     <artifactId>wakamiti-api</artifactId>
     <version>2.5.0</version>
 
@@ -87,6 +85,8 @@
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-json</artifactId>
         </dependency>
+
+        <!-- TODO: upgrade to the latest version when issue (https://issues.apache.org/jira/browse/CONFIGURATION-849) has been resolved -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.28</version>
+            <version>1.30</version>
         </dependency>
 
         <dependency>
@@ -110,6 +110,10 @@
                 <exclusion>
                     <groupId>commons-codec</groupId>
                     <artifactId>commons-codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
