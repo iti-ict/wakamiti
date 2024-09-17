@@ -76,7 +76,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
                     try {
                         Assertion.assertThat(Integer.parseInt(s.prev.getResponseCode()), httpCodeAssertion);
                         s.prev.setSuccessful(true);
-                    } catch (AssertionError e) {
+                    } catch (Exception | Error e) {
                         AssertionResult result = new AssertionResult("HTTP code");
                         result.setResultForFailure("HTTP code " + e.getMessage());
                         s.prev.addAssertionResult(result);
