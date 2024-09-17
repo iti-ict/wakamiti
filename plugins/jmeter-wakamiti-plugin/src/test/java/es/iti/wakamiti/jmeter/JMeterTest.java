@@ -23,7 +23,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
         @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = "data.dir", value = "src/test/resources"),
         @Property(key = "jmeter.report.jlt", value = "target/wakamiti-it.jtl"),
-        @Property(key = JMeterConfigContributor.BASE_URL, value = "http://localhost:8888"),
+        @Property(key = JMeterConfigContributor.BASE_URL, value = "http://localhost:8888/api"),
         @Property(key = JMeterConfigContributor.OAUTH2_URL, value = "http://localhost:8888/token"),
         @Property(key = JMeterConfigContributor.OAUTH2_CLIENT_ID, value = "WEB"),
         @Property(key = JMeterConfigContributor.OAUTH2_CLIENT_SECRET, value = "s3cr3t"),
