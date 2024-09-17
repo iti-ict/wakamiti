@@ -15,10 +15,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.*;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
-import java.util.Objects;
 
 public class FeatureGenerator {
 
@@ -135,6 +134,7 @@ public class FeatureGenerator {
                 Path path = Files.createFile(featurePath);
                 String content = openAIService.runPrompt(prompt.concat(info), apiKey);
                 Files.write(path, content.getBytes());
+                LOGGER.info("File '{}' created", featurePath);
 
             } catch (IOException | URISyntaxException e) {
                 LOGGER.trace("", e);

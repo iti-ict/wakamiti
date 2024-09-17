@@ -22,7 +22,7 @@ public class OpenAIService {
 
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String AUTHORIZATION = "Authorization";
-    private static final String APPLICATION_JSON_VALUE = "application/ json";
+    private static final String APPLICATION_JSON_VALUE = "application/json";
     private static final String AUTHORIZATION_PREFIX = "Bearer ";
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
@@ -59,6 +59,6 @@ public class OpenAIService {
 
         ChatCompletionResult completionResult = mapper.readValue(result.toString(), ChatCompletionResult.class);
 
-        return completionResult.getChoices().isEmpty() ? "" : completionResult.getChoices().get(0).getMessage().getContent();
+        return completionResult.getChoices() == null || completionResult.getChoices().isEmpty() ? "" : completionResult.getChoices().get(0).getMessage().getContent();
     }
 }

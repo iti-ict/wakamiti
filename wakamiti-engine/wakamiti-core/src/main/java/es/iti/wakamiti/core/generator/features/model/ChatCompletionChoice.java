@@ -1,6 +1,5 @@
 package es.iti.wakamiti.core.generator.features.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +14,7 @@ public class ChatCompletionChoice {
     /**
      * The {@link es.iti.wakamiti.core.generator.features.enums.ChatMessageRole#ASSISTANT} message or delta (when streaming) which was generated
      */
-    @JsonAlias("delta")
+//    @JsonAlias("delta")
     ChatMessage message;
 
     /**
