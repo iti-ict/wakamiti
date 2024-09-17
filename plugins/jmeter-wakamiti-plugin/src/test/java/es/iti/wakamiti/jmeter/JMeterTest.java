@@ -22,7 +22,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
         @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
         @Property(key = "data.dir", value = "src/test/resources"),
-        @Property(key = "jmeter.report.jlt", value = "target/wakamiti-it.jtl"),
+        @Property(key = JMeterConfigContributor.JTL_PATH, value = "target/wakamiti-it.jtl"),
         @Property(key = JMeterConfigContributor.BASE_URL, value = "http://localhost:8888/api"),
         @Property(key = JMeterConfigContributor.OAUTH2_URL, value = "http://localhost:8888/token"),
         @Property(key = JMeterConfigContributor.OAUTH2_CLIENT_ID, value = "WEB"),
@@ -40,8 +40,8 @@ public class JMeterTest {
 
     @BeforeClass
     public static void setupServer() throws IOException {
-        ConfigurationProperties.logLevel("TRACE");
-        TestUtil.prepare(client, "server", media -> true);
+        ConfigurationProperties.logLevel("OFF");
+        prepare(client, "server", media -> true);
     }
 
 

@@ -6,7 +6,6 @@ Característica: Jmeter test
   Escenario: Smoke test
     Dado APPLICATION_XML como el tipo de contenido
     Y que toda petición se considera satisfactoria si su código HTTP es menor que 300
-    Y la URL base ${jmeter.baseURL}
     Y un timeout de 1 segundo
     Y las cookies están desactivadas
     Y la caché está desactivada
@@ -116,6 +115,7 @@ Característica: Jmeter test
 
   Escenario: form
     Dado que toda petición se considera satisfactoria si su código HTTP es menor que 300
+    Y la URL base http://localhost:8888/
     Y una llamada POST al servicio '/token'
     * con los siguientes parámetros de formulario:
       | name     | value |

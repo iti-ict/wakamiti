@@ -196,6 +196,18 @@ public class JMeterSupport {
         }
     }
 
+    protected String uri(String path) {
+        String base = baseURL.toString();
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        StringBuilder url = new StringBuilder(base);
+        if (path != null) {
+            url.append("/").append(path.startsWith("/") ? path.substring(1) : path);
+        }
+        return url.toString();
+    }
+
     /**
      * Parses a text expression into the specified data type.
      *
