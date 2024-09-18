@@ -42,7 +42,7 @@ jobs:
         run: |
           echo Get vars
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "::set-output name=BODY::$( echo ${{ steps.md_html.outputs.html }} )"
+          echo "BODY=$(echo "${{ steps.md_html.outputs.html }}" | tr -d '\n')" >> $GITHUB_OUTPUT
 
   build:
     name: Build
