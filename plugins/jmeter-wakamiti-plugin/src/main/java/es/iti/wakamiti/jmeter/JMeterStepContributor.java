@@ -61,7 +61,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
     @Step(value = "jmeter.define.baseURL", args = "url")
     public void setBaseURL(URL url) {
         this.checkURL(url);
-        this.httpDefaults.url(url.toString());
+        this.baseURL = url;
     }
 
     /**
@@ -76,7 +76,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
                     try {
                         Assertion.assertThat(Integer.parseInt(s.prev.getResponseCode()), httpCodeAssertion);
                         s.prev.setSuccessful(true);
-                    } catch (Exception | Error e) {
+                    } catch (Exception | AssertionError e) {
                         AssertionResult result = new AssertionResult("HTTP code");
                         result.setResultForFailure("HTTP code " + e.getMessage());
                         s.prev.addAssertionResult(result);
@@ -345,7 +345,7 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
      */
     @Step(value = "jmeter.define.request", args = {"method:word", "service:text"})
     public void setRequest(String method, String service) {
-        this.newHttpSampler(service.replace("{", "${"))
+        this.newHttpSampler(uri(service.replace("{", "${")))
                 .method(method);
     }
 
