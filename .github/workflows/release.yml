@@ -16,8 +16,8 @@ on:
 
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
-  TITLE: ${{ github.event.release.name }}
-  BODY: ${{ github.event.release.body }}
+  R_NAME: ${{ github.event.release.name }}
+  R_BODY: ${{ github.event.release.body }}
 
 jobs:
   get-env:
@@ -32,8 +32,8 @@ jobs:
         id: gen_output
         run: |
           echo Get vars
-          echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
-          echo "BODY=$( echo -e "$BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
+          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
+          echo "BODY=$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
   build:
     name: Build
