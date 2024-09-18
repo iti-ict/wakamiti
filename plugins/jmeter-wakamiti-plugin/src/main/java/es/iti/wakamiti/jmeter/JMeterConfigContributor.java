@@ -71,7 +71,7 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
 
     /* Reporters */
     public static final String TREE_ENABLED = "jmeter.report.tree";
-    public static final String JTL_PATH = "jmeter.report.jlt";
+    public static final String JTL_PATH = "jmeter.report.jtl";
     public static final String HTML_PATH = "jmeter.report.html";
 
     public static final String INFLUX_BASE = "jmeter.report.influx";
