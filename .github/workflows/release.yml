@@ -31,7 +31,7 @@ jobs:
       - uses: lifepal/markdown-to-html@v1.1
         id: md_html
         with:
-          text: $R_BODY
+          text: ${{ env.R_BODY }}
       - name: Generate output
         id: gen_output
         run: |
