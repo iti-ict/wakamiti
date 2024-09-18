@@ -95,35 +95,35 @@ jobs:
           echo "${{ needs.get-env.outputs.TITLE }}"
           echo "${{ needs.get-env.outputs.BODY }}"
 
-#      - name: Microsoft Teams Notification
-#        uses: skitionek/notify-microsoft-teams@master
-#        if: ${{ success() }}
-#        with:
-#          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
-#          raw: >-
-#            {
-#              "type": "message",
-#              "attachments": [
-#                {
-#                  "contentType": "application/vnd.microsoft.card.adaptive",
-#                  "content": {
-#                    "type": "AdaptiveCard",
-#                    "body": [
-#                      {
-#                        "size": "extraLarge",
-#                        "style": "heading",
-#                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
-#                        "type": "TextBlock",
-#                        "weight": "bolder",
-#                        "wrap": true
-#                      },
-#                      {
-#                        "text": "${{ needs.get-env.outputs.BODY }}",
-#                        "type": "TextBlock",
-#                        "wrap": true
-#                      }
-#                    ]
-#                  }
-#                }
-#              ]
-#            }
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: ${{ success() }}
+        with:
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
+          raw: >-
+            {
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "type": "AdaptiveCard",
+                    "body": [
+                      {
+                        "size": "extraLarge",
+                        "style": "heading",
+                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
+                        "type": "TextBlock",
+                        "weight": "bolder",
+                        "wrap": true
+                      },
+                      {
+                        "text": "${{ needs.get-env.outputs.BODY }}",
+                        "type": "TextBlock",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
