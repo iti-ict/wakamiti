@@ -34,7 +34,7 @@ jobs:
           echo Get vars
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
           echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
-          echo "$( echo "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_OUTPUT}
+          echo "$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_OUTPUT}
           echo "EOF" >> ${GITHUB_OUTPUT}
   #          echo "BODY=$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
@@ -109,13 +109,13 @@ jobs:
 #                      {
 #                        "size": "extraLarge",
 #                        "style": "heading",
-#                        "text": "Release ${{ env.TITLE }} created! 🎉",
+#                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
 #                        "type": "TextBlock",
 #                        "weight": "bolder",
 #                        "wrap": true
 #                      },
 #                      {
-#                        "text": "${{ env.BODY }}",
+#                        "text": "${{ needs.get-env.outputs.BODY }}",
 #                        "type": "TextBlock",
 #                        "wrap": true
 #                      }
