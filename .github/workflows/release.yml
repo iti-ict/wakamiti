@@ -25,14 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
-      TITLE: ${{ steps.gen_output.outputs.TITLE }}
-      BODY: ${{ steps.gen_output.outputs.BODY }}
+#      TITLE: ${{ steps.gen_output.outputs.TITLE }}
+#      BODY: ${{ steps.gen_output.outputs.BODY }}
     steps:
       - name: Generate output
         id: gen_output
         run: |
-          echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "BODY=$( echo "$BODY" | sed ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
+          echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
+          echo "BODY=$( echo "$BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
   build:
     name: Build
@@ -93,13 +93,13 @@ jobs:
                     {
                         "size": "extraLarge",
                         "style": "heading",
-                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
+                        "text": "Release $TITLE created! 🎉",
                         "type": "TextBlock",
                         "weight": "bolder",
                         "wrap": true
                     },
                     {
-                        "text": "${{ needs.get-env.outputs.BODY }}",
+                        "text": "$BODY",
                         "type": "TextBlock",
                         "wrap": true
                     }
