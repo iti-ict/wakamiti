@@ -34,7 +34,7 @@ jobs:
           echo Get vars
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
           echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
-          echo "$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_OUTPUT}
+          echo "$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_OUTPUT}
           echo "EOF" >> ${GITHUB_OUTPUT}
   #          echo "BODY=$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
@@ -89,38 +89,38 @@ jobs:
           echo "${{ needs.get-env.outputs.TITLE }}"
           echo "${{ needs.get-env.outputs.BODY }}"
 
-#      - name: Microsoft Teams Notification
-#        uses: skitionek/notify-microsoft-teams@master
-#        if: ${{ success() }}
-#        with:
-#          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
-#          raw: >-
-#            {
-#              "type": "message",
-#              "attachments": [
-#                {
-#                  "contentType": "application/vnd.microsoft.card.adaptive",
-#                  "contentUrl": null,
-#                  "content": {
-#                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-#                    "type": "AdaptiveCard",
-#                    "version": "1.2",
-#                    "body": [
-#                      {
-#                        "size": "extraLarge",
-#                        "style": "heading",
-#                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
-#                        "type": "TextBlock",
-#                        "weight": "bolder",
-#                        "wrap": true
-#                      },
-#                      {
-#                        "text": "${{ needs.get-env.outputs.BODY }}",
-#                        "type": "TextBlock",
-#                        "wrap": true
-#                      }
-#                    ],
-#                  }
-#                }
-#              ]
-#            }
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: ${{ success() }}
+        with:
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
+          raw: >-
+            {
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "contentUrl": null,
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [
+                      {
+                        "size": "extraLarge",
+                        "style": "heading",
+                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
+                        "type": "TextBlock",
+                        "weight": "bolder",
+                        "wrap": true
+                      },
+                      {
+                        "text": "${{ needs.get-env.outputs.BODY }}",
+                        "type": "TextBlock",
+                        "wrap": true
+                      }
+                    ],
+                  }
+                }
+              ]
+            }
