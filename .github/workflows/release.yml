@@ -106,7 +106,7 @@ jobs:
                             "items": [
                               {
                                 "type": "Image",
-                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
+                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg ",
                                 "size": "medium"
                               }
                             ]
@@ -118,7 +118,7 @@ jobs:
                                 "type": "TextBlock",
                                 "size": "extraLarge",
                                 "weight": "bolder",
-                                "text": "Nueva version ${{ needs.get-env.outputs.TITLE }}! 🎉",
+                                "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
                                 "wrap": true
                               },
                               {
@@ -138,7 +138,7 @@ jobs:
                       {
                         "type": "Action.OpenUrl",
                         "title": "Ver detalles",
-                        "url": "${{ needs.get-env.outputs.URL }}"
+                        "url": "${{ needs.get-env.outputs.URL }} "
                       }
                     ],
                   }
