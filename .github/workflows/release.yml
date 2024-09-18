@@ -32,7 +32,9 @@ jobs:
       TITLE: ${{ env.TITLE }}
       URL: ${{ env.URL }}
       AUTHOR: ${{ env.AUTHOR }}
-
+    steps:
+      - run: |
+          echo Get variables
 
   build:
     name: Build
