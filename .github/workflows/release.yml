@@ -100,37 +100,37 @@ jobs:
                       {
                         "type": "ColumnSet",
                         "columns": [
-                            {
-                                "type": "Column",
-                                "width": "auto",
-                                "items": [
-                                    {
-                                        "type": "Image",
-                                        "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
-                                        "size": "medium"
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "Column",
-                                "items": [
-                                    {
-                                    "type": "TextBlock",
-                                    "size": "ExtraLarge",
-                                    "weight": "bolder",
-                                    "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
-                                    "wrap": true
-                                    },
-                                    {
-                                    "type": "TextBlock",
-                                    "spacing": "none",
-                                    "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
-                                    "isSubtle": true,
-                                    "wrap": true
-                                    }
-                                ],
-                                "width": "stretch"
-                            }
+                          {
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                              {
+                                "type": "Image",
+                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
+                                "size": "medium"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Column",
+                            "items": [
+                              {
+                                "type": "TextBlock",
+                                "size": "extraLarge",
+                                "weight": "bolder",
+                                "text": "Nueva version ${{ needs.get-env.outputs.TITLE }}! 🎉",
+                                "wrap": true
+                              },
+                              {
+                                "type": "TextBlock",
+                                "spacing": "none",
+                                "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
+                                "isSubtle": true,
+                                "wrap": true
+                              }
+                            ],
+                            "width": "stretch"
+                          }
                         ]
                       }
                     ],
