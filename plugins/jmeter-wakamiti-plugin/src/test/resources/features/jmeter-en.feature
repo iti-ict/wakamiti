@@ -6,7 +6,6 @@ Feature: Jmeter test
   Scenario: Smoke test
     Given APPLICATION_XML as content type
     And that any request will be successful if its HTTP code is less than 300
-    And the base URL ${jmeter.baseURL}
     And a timeout of 1 second
     And that cookies are disabled
     And that cache is disabled
@@ -117,6 +116,7 @@ Feature: Jmeter test
 
   Scenario: form
     Given that any request will be successful if its HTTP code is less than 300
+    And the base URL ${jmeter.host}
     And a POST call to the service '/token'
     * with the following form parameters:
       | name     | value |
