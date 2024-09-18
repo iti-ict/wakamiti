@@ -7,12 +7,13 @@ package es.iti.wakamiti.jmeter.mockserver;
 
 
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.jmeter.TestUtil;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.client.initialize.PluginExpectationInitializer;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+
+import static es.iti.wakamiti.jmeter.TestUtil.prepare;
 
 
 public class InitializationClass implements PluginExpectationInitializer {
@@ -22,7 +23,7 @@ public class InitializationClass implements PluginExpectationInitializer {
     @Override
     public void initializeExpectations(MockServerClient mockServerClient) {
         try {
-            TestUtil.prepare(mockServerClient, "server", mime -> true);
+            prepare(mockServerClient, "server", mime -> true);
             LOGGER.debug("MockServer started in port: {}", mockServerClient.getPort());
         } catch (IOException e) {
             throw new RuntimeException(e);
