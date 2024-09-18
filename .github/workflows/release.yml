@@ -7,47 +7,28 @@ on:
       TAG_NAME:
         description: 'Tag name'
         required: true
-      R_NAME:
+      TITLE:
         description: 'Release name'
         required: true
-      R_BODY:
-        description: 'Release body'
+      URL:
+        description: 'Release url'
+        required: true
+      AUTHOR:
+        description: 'Release author'
         required: true
 
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
-  R_NAME: ${{ github.event.inputs.R_NAME || github.event.release.name }}
-  R_BODY: ${{ github.event.inputs.R_BODY || github.event.release.body }}
+  TITLE: ${{ github.event.inputs.TITLE || github.event.release.name }}
+  URL: ${{ github.event.inputs.URL || github.event.release.url }}
+  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.name }}
 
 jobs:
-  get-env:
-    name: Get Environment vars
-    runs-on: ubuntu-latest
-    outputs:
-      TAG_NAME: ${{ env.TAG_NAME }}
-      TITLE: ${{ steps.gen_output.outputs.TITLE }}
-      BODY: ${{ steps.gen_output.outputs.BODY }}
-    steps:
-      - id: gen_output2
-        run: |
-          echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
-          echo "$( echo -e "$R_BODY" )" >> ${GITHUB_OUTPUT}
-          echo "EOF" >> ${GITHUB_OUTPUT}
-      - id: md_html
-        uses: lifepal/markdown-to-html@v1.1
-        with:
-          text: ${{ steps.gen_output2.outputs.BODY }}
-      - name: Generate output
-        id: gen_output
-        run: |
-          echo Get vars
-          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "BODY=$(echo "${{ steps.md_html.outputs.html }}" | tr -d '\n')" >> $GITHUB_OUTPUT
 
   build:
     name: Build
     needs: [ get-env ]
-    if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
+    if: ${{ startsWith(env.TAG_NAME, 'v') || contains(env.TAG_NAME, '-plugin-v') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -91,10 +72,6 @@ jobs:
 #            -Dsonar.organization=iti-ict \
 #            -Dsonar.host.url=https://sonarcloud.io
 
-      - run: |
-          echo "${{ needs.get-env.outputs.TITLE }}"
-          echo "${{ needs.get-env.outputs.BODY }}"
-
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
         if: ${{ success() }}
@@ -110,19 +87,49 @@ jobs:
                     "type": "AdaptiveCard",
                     "body": [
                       {
-                        "size": "extraLarge",
-                        "style": "heading",
-                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
-                        "type": "TextBlock",
-                        "weight": "bolder",
-                        "wrap": true
-                      },
-                      {
-                        "text": "${{ needs.get-env.outputs.BODY }}",
-                        "type": "TextBlock",
-                        "wrap": true
+                        "type": "ColumnSet",
+                        "columns": [
+                            {
+                                "type": "Column",
+                                "width": "auto",
+                                "items": [
+                                    {
+                                        "type": "Image",
+                                        "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
+                                        "size": "medium"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "Column",
+                                "items": [
+                                    {
+                                    "type": "TextBlock",
+                                    "size": "ExtraLarge",
+                                    "weight": "bolder",
+                                    "text": "Nueva versión ${{ env.TITLE }}! 🎉",
+                                    "wrap": true
+                                    },
+                                    {
+                                    "type": "TextBlock",
+                                    "spacing": "none",
+                                    "text": "Publicada por ${{ env.AUTHOR }}",
+                                    "isSubtle": true,
+                                    "wrap": true
+                                    }
+                                ],
+                                "width": "stretch"
+                            }
+                        ]
                       }
-                    ]
+                    ],
+                    "actions": [
+                      {
+                        "type": "Action.OpenUrl",
+                        "title": "Ver detalles",
+                        "url": "${{ env.URL }}"
+                      }
+                    ],
                   }
                 }
               ]
