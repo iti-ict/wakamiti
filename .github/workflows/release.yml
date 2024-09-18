@@ -25,17 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
-    #      TITLE: ${{ steps.gen_output.outputs.TITLE }}
-    #      BODY: ${{ steps.gen_output.outputs.BODY }}
+      TITLE: ${{ steps.gen_output.outputs.TITLE }}
+      BODY: ${{ steps.gen_output.outputs.BODY }}
     steps:
       - name: Generate output
         id: gen_output
         run: |
           echo Get vars
-          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
-          echo "BODY<<EOF" >> ${GITHUB_ENV}
-          echo "$( echo "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_ENV}
-          echo "EOF" >> ${GITHUB_ENV}
+          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUTS
+          echo "BODY<<EOF" >> ${GITHUB_OUTPUTS}
+          echo "$( echo "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_OUTPUTS}
+          echo "EOF" >> ${GITHUB_OUTPUTS}
   #          echo "BODY=$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
   build:
@@ -86,10 +86,8 @@ jobs:
 #            -Dsonar.host.url=https://sonarcloud.io
 
       - run: |
-          echo "${TITLE}"
-          echo "${BODY}"
-          echo "${{ env.TITLE }}"
-          echo "${{ env.BODY }}"
+          echo "${{ needs.get-env.outputs.TITLE }}"
+          echo "${{ needs.get-env.outputs.BODY }}"
 
 #      - name: Microsoft Teams Notification
 #        uses: skitionek/notify-microsoft-teams@master
