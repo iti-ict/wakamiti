@@ -32,7 +32,7 @@ jobs:
         id: gen_output
         run: |
           echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "BODY=$( echo "$BODY" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
+          echo "BODY=$( echo "$BODY" | sed ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
 
   build:
     name: Build
