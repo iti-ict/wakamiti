@@ -7,10 +7,10 @@ on:
       TAG_NAME:
         description: 'Tag name'
         required: true
-      TITLE:
+      R_NAME:
         description: 'Release name'
         required: true
-      BODY:
+      R_BODY:
         description: 'Release body'
         required: true
 
