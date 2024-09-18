@@ -34,7 +34,7 @@ jobs:
           echo Get vars
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
           echo "BODY<<EOF" >> ${GITHUB_ENV}
-          echo "$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_ENV}
+          echo "$( echo "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> ${GITHUB_ENV}
           echo "EOF" >> ${GITHUB_ENV}
 #          echo "BODY=$( echo -e "$R_BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
@@ -97,17 +97,17 @@ jobs:
                     {
                         "size": "extraLarge",
                         "style": "heading",
-                        "text": "Release $TITLE created! 🎉",
+                        "text": "Release ${{ env.TITLE }} created! 🎉",
                         "type": "TextBlock",
                         "weight": "bolder",
                         "wrap": true
                     },
                     {
-                        "text": "$BODY",
+                        "text": "${{ env.BODY }}",
                         "type": "TextBlock",
                         "wrap": true
                     }
                 ],
                 "type": "AdaptiveCard",
-                "version": "1.6"
+                "version": "1.0"
             }
