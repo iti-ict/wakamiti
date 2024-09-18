@@ -30,11 +30,9 @@ jobs:
     steps:
       - id: gen_output2
         run: |
-#          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
           echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
           echo "$( echo -e "$R_BODY" )" >> ${GITHUB_OUTPUT}
           echo "EOF" >> ${GITHUB_OUTPUT}
-  #          echo "BODY=$( echo -e "$R_BODY" | sed -r 's/([\"`])/\\\1/g' | sed -e ':a;N;$!ba;s/\n/\\n/g' )" >> $GITHUB_ENV
       - id: md_html
         uses: lifepal/markdown-to-html@v1.1
         with:
@@ -44,9 +42,6 @@ jobs:
         run: |
           echo Get vars
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
-#          echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
-#          echo "$( echo "${{ steps.md_html.outputs.html }}" | sed -r 's/([\"`])/\\\1/g' | sed -e ':a;N;$!ba;s/\n/\\n/g' )" >> ${GITHUB_OUTPUT}
-#          echo "EOF" >> ${GITHUB_OUTPUT}
           echo "::set-output name=BODY::${{ steps.md_html.outputs.html }}"
 
   build:
