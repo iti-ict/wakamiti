@@ -51,6 +51,7 @@ public class JMeterSupport {
      * DslHttpDefaults definition, used in TestPlan
      **/
     protected DslHttpDefaults httpDefaults = new DslHttpDefaults();
+    protected URL baseURL;
     /**
      * Oauth2 specification, used in all DslHttSamplers
      **/
@@ -193,6 +194,18 @@ public class JMeterSupport {
         if (!isBlank(url.getQuery())) {
             throw new WakamitiException("Query parameters are not allowed here. Please, use the steps provided for this purpose.");
         }
+    }
+
+    protected String uri(String path) {
+        String base = baseURL.toString();
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        StringBuilder url = new StringBuilder(base);
+        if (path != null) {
+            url.append("/").append(path.startsWith("/") ? path.substring(1) : path);
+        }
+        return url.toString();
     }
 
     /**
