@@ -24,11 +24,20 @@ env:
   AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.name }}
 
 jobs:
+  get-env:
+    name: Get Environment vars
+    runs-on: ubuntu-latest
+    outputs:
+      TAG_NAME: ${{ env.TAG_NAME }}
+      TITLE: ${{ env.TITLE }}
+      URL: ${{ env.URL }}
+      AUTHOR: ${{ env.AUTHOR }}
+
 
   build:
     name: Build
     needs: [ get-env ]
-    if: ${{ startsWith(env.TAG_NAME, 'v') || contains(env.TAG_NAME, '-plugin-v') }}
+    if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -107,13 +116,13 @@ jobs:
                                     "type": "TextBlock",
                                     "size": "ExtraLarge",
                                     "weight": "bolder",
-                                    "text": "Nueva versión ${{ env.TITLE }}! 🎉",
+                                    "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
                                     "wrap": true
                                     },
                                     {
                                     "type": "TextBlock",
                                     "spacing": "none",
-                                    "text": "Publicada por ${{ env.AUTHOR }}",
+                                    "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
                                     "isSubtle": true,
                                     "wrap": true
                                     }
@@ -127,7 +136,7 @@ jobs:
                       {
                         "type": "Action.OpenUrl",
                         "title": "Ver detalles",
-                        "url": "${{ env.URL }}"
+                        "url": "${{ needs.get-env.outputs.URL }}"
                       }
                     ],
                   }
