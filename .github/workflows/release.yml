@@ -31,8 +31,9 @@ jobs:
       - name: Generate output
         id: gen_output
         run: |
+          echo Get vars
           echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
-          echo "BODY=$( echo "$BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
+          echo "BODY=$( echo -e "$BODY" | sed -e ':a;N;$!ba;s/\r?\n/\\n/g' | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_ENV
 
   build:
     name: Build
