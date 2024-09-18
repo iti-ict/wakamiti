@@ -106,7 +106,7 @@ jobs:
                             "items": [
                               {
                                 "type": "Image",
-                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg ",
+                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
                                 "size": "medium"
                               }
                             ]
@@ -138,9 +138,9 @@ jobs:
                       {
                         "type": "Action.OpenUrl",
                         "title": "Ver detalles",
-                        "url": "${{ needs.get-env.outputs.URL }} "
+                        "url": "${{ needs.get-env.outputs.URL }}"
                       }
-                    ],
+                    ]
                   }
                 }
               ]
