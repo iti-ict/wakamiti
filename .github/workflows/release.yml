@@ -106,7 +106,7 @@ jobs:
                             "items": [
                               {
                                 "type": "Image",
-                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg",
+                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.svg ",
                                 "size": "medium"
                               }
                             ]
