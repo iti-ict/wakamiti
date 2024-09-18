@@ -26,13 +26,13 @@ jobs:
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
       TITLE: ${{ steps.gen_output.outputs.TITLE }}
-      BODY: ${{ steps.md_html.outputs.html }}
+      BODY: ${{ steps.gen_output.outputs.BODY }}
     steps:
       - name: Generate output
-        id: gen_output
+        id: gen_output2
         run: |
-          echo Get vars
-          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
+#          echo Get vars
+#          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
           echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
           echo "$( echo -e "$R_BODY" )" >> ${GITHUB_OUTPUT}
           echo "EOF" >> ${GITHUB_OUTPUT}
@@ -40,7 +40,15 @@ jobs:
       - uses: lifepal/markdown-to-html@v1.1
         id: md_html
         with:
-          text: ${{ steps.gen_output.outputs.BODY }}
+          text: ${{ steps.gen_output2.outputs.BODY }}
+      - name: Generate output
+        id: gen_output
+        run: |
+          echo Get vars
+          echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
+          echo "BODY<<EOF" >> ${GITHUB_OUTPUT}
+          echo "$( echo "${{ steps.md_html.outputs.html }}" | sed -r 's/([\"`])/\\\1/g' | sed -e ':a;N;$!ba;s/\n/\\n/g' )" >> ${GITHUB_OUTPUT}
+          echo "EOF" >> ${GITHUB_OUTPUT}
 
   build:
     name: Build
