@@ -116,7 +116,7 @@ Feature: Jmeter test
 
   Scenario: form
     Given that any request will be successful if its HTTP code is less than 300
-    And the base URL http://localhost:8888/
+    And the base URL ${jmeter.host}
     And a POST call to the service '/token'
     * with the following form parameters:
       | name     | value |

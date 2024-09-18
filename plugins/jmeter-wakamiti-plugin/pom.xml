@@ -199,7 +199,7 @@
                 <volume>${project.build.directory}:/wakamiti</volume>
                 <repo>${user.home}/.m2/repository:/repository</repo>
                 <coordinate>${project.groupId}:${project.artifactId}:${project.version}</coordinate>
-                <arguments>-m ${coordinate} -K tagFilter=launcher -K jmeter.baseURL=http://host.docker.internal:${rest.port}/api -K data.dir=.</arguments>
+                <arguments>-m ${coordinate} -K tagFilter=launcher -K jmeter.baseURL=http://host.docker.internal:${rest.port}/api -K jmeter.host=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
                 <add.host />
 
                 <run.command>run --rm -w ${workdir} -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
@@ -287,6 +287,7 @@
                                 <tagFilter>launcher</tagFilter>
                                 <jmeter.baseURL>http://localhost:${rest.port}/api</jmeter.baseURL>
                                 <jmeter.oauth2.url>http://localhost:${rest.port}/token</jmeter.oauth2.url>
+                                <jmeter.host>http://localhost:${rest.port}</jmeter.host>
                                 <data.dir>.</data.dir>
                                 <outputFilePath>${project.build.directory}/wakamiti.json</outputFilePath>
                                 <logs.showStepSource>false</logs.showStepSource>
