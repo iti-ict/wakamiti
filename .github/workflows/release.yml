@@ -41,9 +41,8 @@ jobs:
         id: gen_output
         run: |
           echo Get vars
-          description="${{ steps.md_html.outputs.html }}"
           echo "TITLE=$( echo "$R_NAME" | sed -r 's/([\"`])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "::set-output name=BODY::$description"
+          echo "::set-output name=BODY::$( echo ${{ steps.md_html.outputs.html }} )"
 
   build:
     name: Build
