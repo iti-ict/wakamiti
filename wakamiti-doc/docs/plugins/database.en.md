@@ -572,12 +572,12 @@ Assert that the data provided in the DataTable exists or not in the given table.
 
 #### Examples:
 ```gherkin
-Then the following user exists in the table USER:
+Then the following record exists in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
-Then the following users not exist in the table USER:
+Then the following records not exist in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |

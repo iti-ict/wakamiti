@@ -278,7 +278,7 @@ JSON.
 
 #### Ejemplos:
 ```gherkin
-When se ejecuta el siguiente script SQL:
+Cuando se ejecuta el siguiente script SQL:
 """sql
   INSERT INTO users (id, first_name) VALUES (1, 'Rosa');
   INSERT INTO users (id, first_name) VALUES (2, 'Pepe');
@@ -317,6 +317,9 @@ JSON.
 #### Ejemplos:
 ```gherkin
 Cuando se ejecuta el script SQL del fichero 'data/script.sql'
+```
+```gherkin
+Cuando se ejecuta el procedimiento SQL del fichero 'data/procedure.sql'
 ```
 
 
@@ -575,12 +578,12 @@ Comprueba que todas las filas siguientes existen, o no, en la tabla indicada.
 
 #### Ejemplos:
 ```gherkin
-Entonces el siguiente usuario existe en la tabla USER:
+Entonces el siguiente registro existe en la tabla USER:
     | USER  | STATE | BLOCKING_DATE |   
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
-Entonces los siguientes usuarios no existen en la tabla USER:
+Entonces los siguientes registros no existen en la tabla USER:
     | USER  | STATE | BLOCKING_DATE |   
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
