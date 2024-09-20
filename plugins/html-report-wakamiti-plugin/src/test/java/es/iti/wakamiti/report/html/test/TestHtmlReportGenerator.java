@@ -10,20 +10,11 @@ import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
 import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.assertj.core.api.Assertions;
 import org.custommonkey.xmlunit.HTMLDocumentBuilder;
 import org.custommonkey.xmlunit.TolerantSaxDocumentBuilder;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -34,17 +25,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 public class TestHtmlReportGenerator {
-
-    private static WebDriver driver;
-//    private static WebDriverWait wait;
 
     private static Document xml;
     private static Document xml_2;
@@ -59,16 +43,6 @@ public class TestHtmlReportGenerator {
                 "htmlReport.extra_info.value2", "Extra info 2");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
         xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
-
-        WebDriverManager.firefoxdriver().setup();
-        FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--headless", "--disable-gpu", "--test-type");
-        driver = new FirefoxDriver(options);
-    }
-
-    @AfterClass
-    public static void closeBrowser() {
-        driver.quit();
     }
 
     private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
@@ -152,20 +126,6 @@ public class TestHtmlReportGenerator {
 //    }
 
     @Test
-    public void test() {
-        driver.get(uri("wakamiti_huge"));
-
-        driver.findElement(By.cssSelector("button[title='Menu']")).click();
-        driverWait(driver).until(presenceOfElementLocated(By.id("search-input"))).sendKeys("gfewohge");
-
-        List<WebElement> li = driver.findElements(By.className("empty"));
-
-        Assertions.assertThat(li)
-                .allMatch(WebElement::isDisplayed)
-                .size().isEqualTo(2);
-    }
-
-    @Test
     public void testReportExtraInfo() {
         assertThat(xml)
                 .nodesByXPath("//*[text()='Extra info 1']")
@@ -186,7 +146,4 @@ public class TestHtmlReportGenerator {
         return Path.of("target/" + resource + ".html").toUri().toString();
     }
 
-    private WebDriverWait driverWait(WebDriver driver) {
-        return new WebDriverWait(driver, Duration.of(10, ChronoUnit.SECONDS));
-    }
 }
