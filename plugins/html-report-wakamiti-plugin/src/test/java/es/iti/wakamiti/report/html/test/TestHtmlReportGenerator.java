@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.report.html.test;
 
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
@@ -124,7 +125,6 @@ public class TestHtmlReportGenerator {
 //                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
 //    }
 
-
     @Test
     public void testReportExtraInfo() {
         assertThat(xml)
@@ -140,6 +140,10 @@ public class TestHtmlReportGenerator {
         assertThat(xml_2)
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .doNotExist();
+    }
+
+    private String uri(String resource) {
+        return Path.of("target/" + resource + ".html").toUri().toString();
     }
 
 }

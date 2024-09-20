@@ -6,6 +6,6 @@ module es.iti.wakamiti.report.html {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires org.apache.logging.log4j;
-    requires commons.collections;
+    requires org.apache.commons.collections4;
 
 }

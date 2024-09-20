@@ -10,7 +10,6 @@ import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
