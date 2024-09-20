@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [unreleased]
+
+### Fixed
+- Error if the text filter does not find any scenarios. 
+
+
 ## [2.6.0] - 2024-09-09
 
 ### Fixed 

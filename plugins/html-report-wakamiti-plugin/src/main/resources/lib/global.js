@@ -517,7 +517,7 @@ function generateContent(e) {
     const el = document.getElementById(e.data.uuid);  // mustache element
     const container = document.createElement("div");
 
-    if (e.data.value.c.length > 0) {
+    if (e.data.value.c?.length > 0) {
         e.data.value.c.forEach((c) => {
             container.innerHTML = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
                 isAggregator: function(){ return this.t === 'AGGREGATOR' },
