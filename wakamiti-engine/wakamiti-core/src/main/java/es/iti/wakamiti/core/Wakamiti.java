@@ -431,11 +431,13 @@ public class Wakamiti {
      * @param plan          The test plan to execute.
      * @param configuration The configuration for plan execution.
      */
-    public void generateExecutionPlan(PlanNode plan, Configuration configuration) {
+    public PlanNode notExecutePlan(PlanNode plan, Configuration configuration) {
+        PlanNode result = new PlanRunner(plan, configuration).noRun();
         writeOutputFile(plan, configuration);
         if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
             generateReports(configuration, new PlanNodeSnapshot(plan));
         }
+        return result;
     }
 
     /**
