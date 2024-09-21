@@ -186,24 +186,22 @@ function filtered() {
     // filter by text
     const text = document.getElementById("search-input").value.toLowerCase();
     if (text) {
+        const search = o => o.n.toLowerCase().includes(text)
+            || o.g?.some((it) => ('@' + it).toLowerCase().includes(text))
+            || o.l?.some((it) => it.toLowerCase().includes(text));
+
         aux = aux.reduce((rf, f) => {
-            f.c = f.c.reduce((rs, sc) => {
+            const filtered = f.c.reduce((rs, sc) => {
                 if (sc.t === "AGGREGATOR") {
-                    sc.c = sc.c.filter((s) => {
-                        return s.n.toLowerCase().includes(text)
-                            || s.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-                            || s.l?.some((it) => it.toLowerCase().includes(text));
-                    });
+                    sc.c = sc.c.filter(search);
                     if (sc.c.length > 0) rs.push(sc);
-                } else if (sc.n.toLowerCase().includes(text)
-                    || sc.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-                    || sc.l?.some((it) => it.toLowerCase().includes(text))
-                ) {
+                } else if (search(sc)) {
                     rs.push(sc);
                 }
                 return rs;
             }, []);
-            if (f.c.length > 0) rf.push(f);
+            if (filtered.length > 0) f.c = filtered;
+            if (filtered.length > 0 || search(f)) rf.push(f);
             return rf;
         }, []);
     }
