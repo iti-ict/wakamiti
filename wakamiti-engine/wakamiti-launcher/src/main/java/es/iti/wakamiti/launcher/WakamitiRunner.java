@@ -65,7 +65,8 @@ public class WakamitiRunner {
             if (!plan.hasChildren()) {
                 WakamitiLauncher.logger().warn("Test Plan is empty!");
             } else if (noExecution) {
-                wakamiti.generateExecutionPlan(plan, configuration);
+                wakamiti.notExecutePlan(plan, configuration);
+                return true;
             } else {
                 wakamiti.executePlan(plan, configuration);
             }
