@@ -129,7 +129,7 @@ public class DatabaseStepContributorTest {
 
             // Check
         } catch (WakamitiException e) {
-            assertThat(e).hasMessage("Bad jdbc url");
+            assertThat(e).hasMessage("There is no default connection");
             throw e;
         }
     }
