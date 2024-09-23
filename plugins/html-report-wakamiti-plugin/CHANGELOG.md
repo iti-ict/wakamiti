@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [unreleased]
 
 ### Fixed
-- Error if the text filter does not find any scenarios. [#295]
+- Error if the text filter does not find any scenarios. [#292]
 
 ### Added
 - Generate reports without execution. [#243]
