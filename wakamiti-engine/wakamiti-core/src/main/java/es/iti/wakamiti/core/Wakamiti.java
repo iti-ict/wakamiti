@@ -426,7 +426,7 @@ public class Wakamiti {
     }
 
     /**
-     * Generates the report of the specified test plan using the provided configuration.
+     * Processes the specified test plan using the provided configuration without executing it.
      *
      * @param plan          The test plan to execute.
      * @param configuration The configuration for plan execution.

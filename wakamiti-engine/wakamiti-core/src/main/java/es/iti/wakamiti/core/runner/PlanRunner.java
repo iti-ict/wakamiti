@@ -77,6 +77,11 @@ public class PlanRunner {
         return plan;
     }
 
+    /**
+     * Runs the test plan, without executing each child node using PlanNodeRunners.
+     *
+     * @return The root PlanNode after the execution of the test plan.
+     */
     public PlanNode noRun() {
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
