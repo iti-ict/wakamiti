@@ -229,14 +229,13 @@
                         <executions>
                             <execution>
                                 <id>test</id>
-                                <phase>integration-test</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
                             <executable>docker</executable>
                             <arguments>
                                 <argument>run</argument>
