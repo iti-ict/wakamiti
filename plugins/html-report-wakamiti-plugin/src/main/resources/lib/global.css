@@ -520,16 +520,17 @@ ul {
     background: var(--card-bg);
     border: none;
     border-left: 3px solid transparent;
-    cursor: pointer;
+    cursor: default;
     padding: 10px 16px 10px 13px;
-    -webkit-transition: border-color .2s ease-out;
-    -o-transition: border-color .2s ease-out;
-    transition: border-color .2s ease-out;
-    width: 100%
+    width: 100%;
 }
-.step--component:not(:has(.collapsable)) .step--header-btn,
-.step--header-btn[disabled] {
-    cursor: default
+
+.step--component:has(.collapsable) .step--header-btn:not([disabled]) {
+    cursor: pointer;
+    color: var(--grey500);
+    -webkit-transition: color .2s ease-out;
+    -o-transition: color .2s ease-out;
+    transition: color .2s ease-out;
 }
 .step--title {
     overflow: hidden;
@@ -550,14 +551,9 @@ ul {
     display: -ms-flexbox;
     display: flex;
     line-height: 24px;
-    color: var(--grey500);
-    -webkit-transition: color .2s ease-out;
-    -o-transition: color .2s ease-out;
-    transition: color .2s ease-out;
 }
-.step--component:hover .step--info,
-.step--component:has(.toggle.on) .step--info,
-.step--component:not(:has(.collapsable)) .step--info {
+.step--component:has(.collapsable):hover .step--header-btn,
+.step--component:has(.toggle.on) .step--header-btn {
     color: rgba(0, 0, 0, .87);
 }
 .step--duration-icon {
@@ -927,6 +923,7 @@ footer a:hover {
 }
 .nav-menu--menu {
     position: fixed;
+    z-index: 100;
     -webkit-transition: all .15s cubic-bezier(.25, 1, .8, 1);
     -o-transition: all .15s cubic-bezier(.25, 1, .8, 1);
     transition: all .15s cubic-bezier(.25, 1, .8, 1);
@@ -1241,6 +1238,14 @@ footer a:hover {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    position: sticky;
+    top: calc(var(--navbar-height) * 1.1px);
+    background-color: var(--body-bg);
+    z-index: 10;
+    padding: 5px 0;
+    -webkit-box-shadow: 0 0 10px 10px var(--body-bg);
+    -moz-box-shadow: 0 0 10px 10px var(--body-bg);
+    box-shadow: 0 0 10px 10px var(--body-bg);
 }
 
 .pagination button {
