@@ -7,11 +7,11 @@ package es.iti.wakamiti.launcher;
 
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
 
 import java.net.URISyntaxException;
 
@@ -56,7 +56,7 @@ public class WakamitiRunner {
      *
      * @return True if the test plan passes, false otherwise.
      */
-    public boolean run() {
+    public boolean run(boolean noExecution) {
         Configuration configuration;
         Wakamiti wakamiti = Wakamiti.instance();
         try {
@@ -64,6 +64,9 @@ public class WakamitiRunner {
             PlanNode plan = wakamiti.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 WakamitiLauncher.logger().warn("Test Plan is empty!");
+            } else if (noExecution) {
+                wakamiti.notExecutePlan(plan, configuration);
+                return true;
             } else {
                 wakamiti.executePlan(plan, configuration);
             }

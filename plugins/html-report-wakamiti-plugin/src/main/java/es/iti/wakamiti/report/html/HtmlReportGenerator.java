@@ -101,7 +101,8 @@ public class HtmlReportGenerator implements Reporter {
                     "Output file not configured"
             ))));
             parameters.put("globalStyle", readStyles());
-            parameters.put("globalScript", readJavascript());
+            parameters.put("globalScript", readJavascript("lib/global.js"));
+            parameters.put("chartsScript", readJavascript("lib/charts.js"));
             parameters.put("plan", rootNode.withoutChildren());
             parameters.put("title", title);
             parameters.put("version", WakamitiAPI.instance().version());
@@ -150,8 +151,8 @@ public class HtmlReportGenerator implements Reporter {
         return localCss;
     }
 
-    private String readJavascript() {
-        try (InputStream is = resource("lib/global.js")) {
+    private String readJavascript(String resource) {
+        try (InputStream is = resource(resource)) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             JsMin.builder()
