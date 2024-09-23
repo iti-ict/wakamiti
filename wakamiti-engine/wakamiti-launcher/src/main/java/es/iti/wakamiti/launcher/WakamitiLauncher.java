@@ -7,12 +7,15 @@ package es.iti.wakamiti.launcher;
 
 
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -102,7 +105,7 @@ public class WakamitiLauncher {
             String filename = path.get() + "/wakamiti-"
                     + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss")) + ".log";
             System.setProperty("path", filename);
-            System.setProperty("log4j.configurationFile", "log4j2_file.xml");
+            Configurator.reconfigure(URI.create("log4j2_file.xml"));
         }
         if (level.isEmpty()) {
             if (debug) {
@@ -120,7 +123,7 @@ public class WakamitiLauncher {
         conf.inner("loggers").asProperties()
                 .forEach((k, v) -> Configurator.setLevel(k.toString(), Level.toLevel(v.toString())));
 
-        return LoggerFactory.getLogger(loggerName);
+        return WakamitiLogger.of(LoggerFactory.getLogger(loggerName));
     }
 
 }
