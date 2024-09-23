@@ -89,7 +89,7 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
                     .map(key -> key.split("\\.")[0])
                     .collect(Collectors.toSet())
                     .forEach(alias -> contributor.addConnection(alias, parameters(datasourceConfig.inner(alias))));
-        } else {
+        } else if (databaseConfig.keyStream().anyMatch(k -> k.startsWith("connection"))) {
             contributor.addConnection(parameters(databaseConfig));
         }
 
