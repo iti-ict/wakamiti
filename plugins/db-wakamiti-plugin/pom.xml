@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -229,14 +229,13 @@
                         <executions>
                             <execution>
                                 <id>test</id>
-                                <phase>integration-test</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
                             <executable>docker</executable>
                             <arguments>
                                 <argument>run</argument>
