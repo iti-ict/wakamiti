@@ -118,22 +118,23 @@ connections as you want. The first database will be taken as the default configu
 Example:
 ```yaml
 database:
-  db1:
-    connection:
-      url: jdbc:h2:tcp://localhost:9092/~/test
-      username: test1
-      password: test1
-    metadata:
-      schema: TESTDB1
-      catalog: TESTCAT1
-  db2:
-    connection:
-      url: jdbc:mysql://other.host:3306/test
-      username: test2
-      password: test2
-    metadata:
-      schema: TESTDB2
-      catalog: TESTCAT2
+  datasource:
+    db1:
+      connection:
+        url: jdbc:h2:tcp://localhost:9092/~/test
+        username: test1
+        password: test1
+      metadata:
+        schema: TESTDB1
+        catalog: TESTCAT1
+    db2:
+      connection:
+        url: jdbc:mysql://other.host:3306/test
+        username: test2
+        password: test2
+      metadata:
+        schema: TESTDB2
+        catalog: TESTCAT2
 ```
 
 
