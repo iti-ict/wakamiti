@@ -1,0 +1,261 @@
+{
+  "executionID" : "004f41a9-f3c7-4872-91d6-f7ee0e234d9e",
+  "snapshotInstant" : "2024-09-20T20:08:42.248774400",
+  "nodeType": "AGGREGATOR",
+  "name": "Test Plan",
+  "displayName": "Test Plan",
+  "children": [
+    {
+      "id": "#a327ycn3219c",
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "name": "Esta es la feature 1",
+      "description": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ",
+        "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud ",
+        "exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure ",
+        "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      ],
+      "children": [
+        {
+          "id": "CP-A.1",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "name": "Este es el escenario A",
+          "description": [
+            "Lorem ipsum dolor sit amet."
+          ],
+          "tags": [
+            "CP-A"
+          ],
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Dado",
+              "name": "Paso de negocio A1",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion A1_1"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion A1_2",
+                  "dataTable": [
+                    [ "casa", "perro", "árbol"],
+                    [ "1", "2", "3"],
+                    [ "143", "23", "34"]
+                  ]
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio A2"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Cuando",
+              "name": "Paso de negocio A3",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_1",
+                  "keyword": "Cuando"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A3_2",
+                  "keyword": "Y",
+                  "documentType": "json",
+                  "document": "{\n  \"menu\": {\n    \"id\": \"file\",\n    \"value\": \"File\",\n    \"popup\": {\n      \"menuitem\": [\n        {\n          \"value\": \"New\",\n          \"onclick\": \"CreateNewDoc()\"\n        },\n        {\n          \"value\": \"Open\",\n          \"onclick\": \"OpenDoc()\"\n        },\n        {\n          \"value\": \"Close\",\n          \"onclick\": \"CloseDoc()\"\n        }\n      ]\n    }\n  }\n}"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Entonces",
+              "name": "Paso de negocio A4",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de implementacion A4_1",
+                  "keyword": "Entonces"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeType": "TEST_CASE",
+          "id": "CP-B",
+          "keyword": "Scenario",
+          "name": "Este es el escenario B",
+          "tags": [
+            "CP-B"
+          ],
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Dado",
+              "name": "Paso de negocio B1",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de implementacion B1_1"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B1_2"
+                }
+              ]
+            },
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "Y",
+              "name": "Paso de negocio B2"
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "keyword": "Cuando",
+              "name": "Paso de negocio B3",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de implementacion B3_1"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_2"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de implementacion B3_3"
+                }
+              ]
+            },
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "name": "Paso de negocio B4",
+              "keyword": "Entonces",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de implementacion B4_1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "#jt9043uv30",
+      "nodeType": "AGGREGATOR",
+      "keyword": "Feature",
+      "name": "Feature esta es la feature 2",
+      "children": [
+        {
+          "id": "CP-C",
+          "nodeType": "TEST_CASE",
+          "keyword": "Scenario",
+          "name": "Este es el escenario C",
+          "tags": [
+            "CP-C"
+          ],
+          "children": [
+            {
+              "nodeType": "STEP",
+              "keyword": "Dado",
+              "name": "Paso de escenario C1"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Cuando",
+              "name": "Paso de escenario C2"
+            },
+            {
+              "nodeType": "STEP",
+              "keyword": "Entonces",
+              "name": "Paso de escenario C3"
+            }
+          ]
+        },
+        {
+          "nodeType": "AGGREGATOR",
+          "id": "CP-D",
+          "keyword": "Scenario Outline",
+          "name": "Este es el escenario D con ejemplos",
+          "children": [
+            {
+              "nodeType": "TEST_CASE",
+              "keyword": "Scenario",
+              "id": "CP-D1",
+              "name": "Scenario D con ejemplo 1",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Dado",
+                  "name": "Paso de escenario D1_1"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Cuando",
+                  "name": "Paso de escenario D1_2"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Y",
+                  "name": "Paso de escenario D1_3"
+                },
+                {
+                  "nodeType": "STEP",
+                  "keyword": "Entonces",
+                  "name": "Paso de escenario D1_4"
+                }
+              ]
+            },
+            {
+              "nodeType": "TEST_CASE",
+              "keyword": "Scenario",
+              "id": "CP-D2",
+              "name": "Scenario D con ejemplo 2",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_1",
+                  "keyword": "*"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_2",
+                  "keyword": "*"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_3",
+                  "keyword": "*"
+                },
+                {
+                  "nodeType": "STEP",
+                  "name": "Paso de escenario D2_4",
+                  "keyword": "*"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "children" : [ {
+    "nodeType" : "AGGREGATOR",
+    "name" : "Test 2 - Scenario Outline",
+    "keyword" : "Feature",
+    "language" : "en",
+    "displayName" : "Feature: Test 2 - Scenario Outline",
+    "tags" : [ "Test2" ],
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "children" : [ {
+      "nodeType" : "AGGREGATOR",
+      "id" : "ID-ScenarioOutline1",
+      "name" : "Test Scenario Outline",
+      "keyword" : "Scenario Outline",
+      "language" : "en",
+      "displayName" : "[ID-ScenarioOutline1] Scenario Outline: Test Scenario Outline",
+      "description": ["This is a description for <a>"],
+      "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+      "properties" : {
+        "propertyScenarioOutline" : "A",
+        "gherkinType" : "scenarioOutline"
+      },
+      "dataTable" : [ [ "a", "b", "c" ], [ "1.0", "2", "2.0" ], [ "2.0", "3", "6.0" ], [ "5.0", "4", "20.0" ] ],
+      "children" : [ {
+        "nodeType" : "TEST_CASE",
+        "id" : "ID-ScenarioOutline1_1",
+        "name" : "Test Scenario Outline [1]",
+        "keyword" : "Scenario Outline",
+        "language" : "en",
+        "displayName" : "[ID-ScenarioOutline1_1] Scenario Outline Test Scenario Outline [1]",
+        "description": ["This is a description for 1.0"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A",
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "a number with value 1.0 and another number with value 2",
+          "keyword" : "Given",
+          "language" : "en",
+          "displayName" : "Given a number with value 1.0 and another number with value 2",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "the result is equals to 2.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "displayName" : "Then the result is equals to 2.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        } ]
+      }, {
+        "nodeType" : "TEST_CASE",
+        "id" : "ID-ScenarioOutline1_2",
+        "name" : "Test Scenario Outline [2]",
+        "keyword" : "Scenario Outline",
+        "language" : "en",
+        "displayName" : "[ID-ScenarioOutline1_2] Scenario Outline Test Scenario Outline [2]",
+        "description": ["This is a description for 2.0"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A",
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "a number with value 2.0 and another number with value 3",
+          "keyword" : "Given",
+          "language" : "en",
+          "displayName" : "Given a number with value 2.0 and another number with value 3",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "the result is equals to 6.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "displayName" : "Then the result is equals to 6.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        } ]
+      }, {
+        "nodeType" : "TEST_CASE",
+        "id" : "ID-ScenarioOutline1_3",
+        "name" : "Test Scenario Outline [3]",
+        "keyword" : "Scenario Outline",
+        "language" : "en",
+        "displayName" : "[ID-ScenarioOutline1_3] Scenario Outline Test Scenario Outline [3]",
+        "description": ["This is a description for 5.0"],
+        "tags" : [ "ID-ScenarioOutline1", "Test2" ],
+        "properties" : {
+          "propertyScenarioOutline" : "A",
+          "gherkinType" : "scenario",
+          "featureName" : "Test 2 - Scenario Outline"
+        },
+        "children" : [ {
+          "nodeType" : "STEP",
+          "name" : "a number with value 5.0 and another number with value 4",
+          "keyword" : "Given",
+          "language" : "en",
+          "displayName" : "Given a number with value 5.0 and another number with value 4",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "both numbers are multiplied",
+          "keyword" : "When",
+          "language" : "en",
+          "displayName" : "When both numbers are multiplied",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        }, {
+          "nodeType" : "STEP",
+          "name" : "the result is equals to 20.0",
+          "keyword" : "Then",
+          "language" : "en",
+          "displayName" : "Then the result is equals to 20.0",
+          "properties" : {
+            "propertyScenarioOutline" : "A",
+            "gherkinType" : "step"
+          }
+        } ]
+      } ]
+    } ]
+  } ]
+}
