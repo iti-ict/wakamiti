@@ -1,5 +1,6 @@
 package es.iti.wakamiti.jmeter;
 
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -12,7 +13,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.jmeter.dsl.ContentTypeUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.codehaus.plexus.util.FileUtils;
@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockserver.model.Header.header;
-import static org.mockserver.model.HttpOverrideForwardedRequest.forwardOverriddenRequest;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -123,11 +122,11 @@ public class TestUtil {
     @SuppressWarnings("unchecked")
     public static Expectation[] prepare(String rootPath, Predicate<MediaType> filter) throws IOException {
         List<Expectation> expectations = new LinkedList<>();
-        Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
+        Map<MediaType, Function<List<Map<String, Object>>, String>> listToString = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
-        Map<MediaType, Function<String, Map<String, Object>>> string_to_map = Map.of(
+        Map<MediaType, Function<String, Map<String, Object>>> stringToMap = Map.of(
                 MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
                 }),
                 MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
@@ -136,7 +135,6 @@ public class TestUtil {
 
         File root = file(rootPath);
         List<File> files = listFiles(root);
-
         files.stream().map(File::toPath).filter(Files::isDirectory)
                 .map(root.toPath()::relativize)
                 .forEachOrdered(p -> {
@@ -154,19 +152,19 @@ public class TestUtil {
                         if (!map.containsKey(mimeType)) {
                             map.put(mimeType, new LinkedList<>());
                         }
-                        if (!string_to_map.containsKey(mimeType)) {
+                        if (!stringToMap.containsKey(mimeType)) {
                             throw new IllegalStateException("Mime type unexpected: " + mimeType);
                         }
-                        map.get(mimeType).add(string_to_map.get(mimeType).apply(read(file)));
+                        map.get(mimeType).add(stringToMap.get(mimeType).apply(read(file)));
                     }
 
                     for (MediaType mimeType : map.keySet().stream().filter(filter).collect(Collectors.toList())) {
-                        if (!string_to_map.containsKey(mimeType)) {
+                        if (!stringToMap.containsKey(mimeType)) {
                             throw new IllegalStateException("Mime type unexpected: " + mimeType);
                         }
                         expectations.add(new Expectation(
                                         request()
-                                                .withPath("/" + p)
+                                                .withPath("/" + p.toString().replace("\\", "/"))
                                                 .withHeaders(
                                                         header("Content-type", ".*" + mimeType + ".*")
                                                 )
@@ -174,7 +172,7 @@ public class TestUtil {
                                         response()
                                                 .withStatusCode(HttpStatusCode.OK_200.code())
                                                 .withContentType(mimeType)
-                                                .withBody(list_to_string.get(mimeType).apply(map.get(mimeType)))
+                                                .withBody(listToString.get(mimeType).apply(map.get(mimeType)))
                                 )
                         );
                     }
@@ -209,10 +207,10 @@ public class TestUtil {
                             )
                     );
 
-                    if (!string_to_map.containsKey(mimeType)) {
+                    if (!stringToMap.containsKey(mimeType)) {
                         throw new IllegalStateException("Mime type unexpected: " + mimeType);
                     }
-                    Map<String, Object> json = string_to_map.get(mimeType).apply(body);
+                    Map<String, Object> json = stringToMap.get(mimeType).apply(body);
 
                     for (String key : json.keySet()) {
                         Object current = json.get(key);
@@ -228,16 +226,12 @@ public class TestUtil {
                                             response()
                                                     .withStatusCode(HttpStatusCode.OK_200.code())
                                                     .withContentType(mimeType)
-                                                    .withBody(list_to_string.get(mimeType).apply((List<Map<String, Object>>) current))
+                                                    .withBody(listToString.get(mimeType).apply((List<Map<String, Object>>) current))
                                     )
                             );
                         }
                     }
                 });
-        expectations.add(
-                new Expectation(request().withPath("/bad"))
-                        .thenRespond(response().withStatusCode(HttpStatusCode.BAD_REQUEST_400.code()))
-        );
         expectations.add(
                 new Expectation(request().withPath("/token"))
                         .thenRespond(response().withStatusCode(HttpStatusCode.OK_200.code())

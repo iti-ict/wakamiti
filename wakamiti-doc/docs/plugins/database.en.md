@@ -118,22 +118,23 @@ connections as you want. The first database will be taken as the default configu
 Example:
 ```yaml
 database:
-  db1:
-    connection:
-      url: jdbc:h2:tcp://localhost:9092/~/test
-      username: test1
-      password: test1
-    metadata:
-      schema: TESTDB1
-      catalog: TESTCAT1
-  db2:
-    connection:
-      url: jdbc:mysql://other.host:3306/test
-      username: test2
-      password: test2
-    metadata:
-      schema: TESTDB2
-      catalog: TESTCAT2
+  datasource:
+    db1:
+      connection:
+        url: jdbc:h2:tcp://localhost:9092/~/test
+        username: test1
+        password: test1
+      metadata:
+        schema: TESTDB1
+        catalog: TESTCAT1
+    db2:
+      connection:
+        url: jdbc:mysql://other.host:3306/test
+        username: test2
+        password: test2
+      metadata:
+        schema: TESTDB2
+        catalog: TESTCAT2
 ```
 
 
@@ -572,12 +573,12 @@ Assert that the data provided in the DataTable exists or not in the given table.
 
 #### Examples:
 ```gherkin
-Then the following user exists in the table USER:
+Then the following record exists in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
-Then the following users not exist in the table USER:
+Then the following records not exist in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |

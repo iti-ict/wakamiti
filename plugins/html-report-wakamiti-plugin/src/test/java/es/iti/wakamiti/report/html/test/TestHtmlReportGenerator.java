@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.report.html.test;
 
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
@@ -32,6 +33,7 @@ public class TestHtmlReportGenerator {
     private static Document xml;
     private static Document xml_2;
     private static Document xml_3;
+    private static Document xml_noExecution;
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
@@ -42,6 +44,7 @@ public class TestHtmlReportGenerator {
                 "htmlReport.extra_info.value2", "Extra info 2");
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
         xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
+        xml_noExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
     }
 
     private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
@@ -124,7 +127,6 @@ public class TestHtmlReportGenerator {
 //                        "#jt9043uv30", "#CP-C", "#CP-D1", "#CP-D2");
 //    }
 
-
     @Test
     public void testReportExtraInfo() {
         assertThat(xml)
@@ -140,6 +142,10 @@ public class TestHtmlReportGenerator {
         assertThat(xml_2)
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .doNotExist();
+    }
+
+    private String uri(String resource) {
+        return Path.of("target/" + resource + ".html").toUri().toString();
     }
 
 }

@@ -10,7 +10,7 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.LinkedList;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
 public class FilteredSnapshot {

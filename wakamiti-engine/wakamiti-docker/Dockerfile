@@ -19,7 +19,7 @@ ENV TZ Europe/Madrid
 ENV WAKAMITI_HOME /opt/wakamiti
 ENV WAKAMITI_REPOSITORY /root/.local/share/wakamiti/repository
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash libxext libxrender libxtst libxi fontconfig ttf-dejavu
 
 COPY src/entrypoint.sh /
 

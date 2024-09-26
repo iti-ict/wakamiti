@@ -30,7 +30,7 @@ wakamiti:
       follow: false
     report:
       tree: true
-      jlt: target/wakamiti.jtl
+      jtl: target/wakamiti.jtl
       html: target/wakamiti.html
       influx:
         url: http://influx

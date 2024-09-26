@@ -1,44 +1,46 @@
 name: Release a new tagged version
 on:
   release:
-    types: [released]
+    types: [ released ]
   workflow_dispatch:
     inputs:
       TAG_NAME:
-        description: 'Tag name that the major tag will point to'
+        description: 'Tag name'
         required: true
       TITLE:
         description: 'Release name'
         required: true
-      BODY:
-        description: 'Release body'
+      URL:
+        description: 'Release url'
+        required: true
+      AUTHOR:
+        description: 'Release author'
         required: true
 
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
-  TITLE: ${{ github.event.release.name }}
-  BODY: ${{ github.event.release.body }}
+  TITLE: ${{ github.event.inputs.TITLE || github.event.release.name }}
+  URL: ${{ github.event.inputs.URL || github.event.release.url }}
+  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.name }}
 
 jobs:
   get-env:
     name: Get Environment vars
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       TAG_NAME: ${{ env.TAG_NAME }}
-      TITLE: ${{ steps.gen_output.outputs.TITLE }}
-      BODY: ${{ steps.gen_output.outputs.BODY }}
+      TITLE: ${{ env.TITLE }}
+      URL: ${{ env.URL }}
+      AUTHOR: ${{ env.AUTHOR }}
     steps:
-      - name: Generate output
-        id: gen_output
-        run: |
-          echo "TITLE=$( echo "$TITLE" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
-          echo "BODY=$( echo "$BODY" | sed -r 's/([\])/\\\1/g' )" >> $GITHUB_OUTPUT
+      - run: |
+          echo Get variables
 
   build:
     name: Build
-    needs: [get-env]
+    needs: [ get-env ]
     if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') || contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
 
@@ -88,22 +90,58 @@ jobs:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
           raw: >-
             {
-                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                "body": [
-                    {
-                        "size": "extraLarge",
-                        "style": "heading",
-                        "text": "Release ${{ needs.get-env.outputs.TITLE }} created! 🎉",
-                        "type": "TextBlock",
-                        "weight": "bolder",
-                        "wrap": true
-                    },
-                    {
-                        "text": "${{ needs.get-env.outputs.BODY }}",
-                        "type": "TextBlock",
-                        "wrap": true
-                    }
-                ],
-                "type": "AdaptiveCard",
-                "version": "1.6"
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "type": "AdaptiveCard",
+                    "body": [
+                      {
+                        "type": "ColumnSet",
+                        "columns": [
+                          {
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                              {
+                                "type": "Image",
+                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.png ",
+                                "size": "medium"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Column",
+                            "items": [
+                              {
+                                "type": "TextBlock",
+                                "size": "extraLarge",
+                                "weight": "bolder",
+                                "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
+                                "wrap": true
+                              },
+                              {
+                                "type": "TextBlock",
+                                "spacing": "none",
+                                "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
+                                "isSubtle": true,
+                                "wrap": true
+                              }
+                            ],
+                            "width": "stretch"
+                          }
+                        ]
+                      }
+                    ],
+                    "actions": [
+                      {
+                        "type": "Action.OpenUrl",
+                        "title": "Ver detalles",
+                        "url": "${{ needs.get-env.outputs.URL }}"
+                      }
+                    ]
+                  }
+                }
+              ]
             }
