@@ -56,6 +56,7 @@ public class FeatureGenerator {
      * @param destinationPath Destination path
      */
     public void generate(String destinationPath) {
+        LOGGER.info("Feature generation started...");
 
         Path path = Path.of(destinationPath).toAbsolutePath();
         if (!Files.exists(path)) {
@@ -114,9 +115,8 @@ public class FeatureGenerator {
      *
      * @return The loaded prompt
      * @throws IOException        Error reading file
-     * @throws URISyntaxException Malformed API URI
      */
-    private String loadPrompt() throws IOException, URISyntaxException {
+    private String loadPrompt() throws IOException {
         InputStream in = getClass().getResourceAsStream(DEFAULT_PROMPT);
         byte[] data = IOUtils.toByteArray(in);
         return new String(data);
