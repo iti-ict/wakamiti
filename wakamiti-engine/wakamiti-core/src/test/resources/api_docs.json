@@ -1,0 +1,496 @@
+{
+  "components": {
+    "schemas": {
+      "CreateNotificationDto": {
+        "properties": {
+          "fromUser": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "generationDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "LOG",
+              "MSG"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "ORG_CREATED",
+              "INVITATION_SEND",
+              "USER_REGISTERED",
+              "USER_ASSIGNED",
+              "DATASET_CREATED",
+              "ARTIFACT_UPLOADED",
+              "ARTIFACT_PROFILED",
+              "ARTIFACT_PROFILING_ERROR"
+            ],
+            "type": "string"
+          },
+          "toUser": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fromUser",
+          "kind",
+          "message",
+          "reason",
+          "toUser"
+        ],
+        "type": "object"
+      },
+      "HealthDto": {
+        "properties": {
+          "healthy": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationDetailsDto": {
+        "properties": {
+          "favorite": {
+            "type": "boolean"
+          },
+          "fromUser": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "generationDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "LOG",
+              "MSG"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "notificationStatusHistory": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationStatusDto"
+            },
+            "type": "array"
+          },
+          "reason": {
+            "enum": [
+              "ORG_CREATED",
+              "INVITATION_SEND",
+              "USER_REGISTERED",
+              "USER_ASSIGNED",
+              "DATASET_CREATED",
+              "ARTIFACT_UPLOADED",
+              "ARTIFACT_PROFILED",
+              "ARTIFACT_PROFILING_ERROR"
+            ],
+            "type": "string"
+          },
+          "toUser": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationDto": {
+        "properties": {
+          "favorite": {
+            "type": "boolean"
+          },
+          "fromUser": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "generationDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "LOG",
+              "MSG"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "ORG_CREATED",
+              "INVITATION_SEND",
+              "USER_REGISTERED",
+              "USER_ASSIGNED",
+              "DATASET_CREATED",
+              "ARTIFACT_UPLOADED",
+              "ARTIFACT_PROFILED",
+              "ARTIFACT_PROFILING_ERROR"
+            ],
+            "type": "string"
+          },
+          "toUser": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationKindDto": {
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationReasonDto": {
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationStatusDto": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "READ",
+              "UNREAD",
+              "SENT",
+              "ERROR",
+              "RETRIED"
+            ],
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateNotificationDto": {
+        "properties": {
+          "favorite": {
+            "type": "boolean"
+          },
+          "read": {
+            "enum": [
+              "READ",
+              "UNREAD"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "email": "dataspace@iti.es",
+      "name": "ITI",
+      "url": "https://www.iti.es"
+    },
+    "description": "Notification Service Api for Dataspace",
+    "license": {
+      "name": "LICENSE Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "termsOfService": "https://www.iti.es/nota-legal/",
+    "title": "Notification Service Api",
+    "version": "0.0.1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/health": {
+      "get": {
+        "description": "Endpoint to check for API healthiness",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthDto"
+                }
+              }
+            },
+            "description": "Returns ok if server is in a healthy state"
+          }
+        },
+        "summary": "Check for service healthiness",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/notifications": {
+      "post": {
+        "description": "Create multiple types of notifications",
+        "operationId": "createNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              }
+            },
+            "description": "The notification just created"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Create notification",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}": {
+      "get": {
+        "description": "Get notification including the status history",
+        "operationId": "getNotificationDetails",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDetailsDto"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Get notification details",
+        "tags": [
+          "Notifications"
+        ]
+      },
+      "put": {
+        "description": "Update a notification",
+        "operationId": "updateNotification",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The notification just updated"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Update notification",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/kinds": {
+      "get": {
+        "description": "Get all notification kinds",
+        "operationId": "getAllNotificationKinds",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationKindDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List containing all kinds of notifications available"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Get all notification kinds",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/personal": {
+      "get": {
+        "description": "Get the notifications assigned to the currently authenticated user",
+        "operationId": "getPersonalNotifications",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List of notifications"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Get personal notifications",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/reasons": {
+      "get": {
+        "description": "Get all notification reasons",
+        "operationId": "getAllNotificationReasons",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationReasonDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List containing all reasons available for the notifications"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+            ]
+          }
+        ],
+        "summary": "Get all notification reasons",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Docker local",
+      "url": "https://pre-backend.dataspace.iti.es/notification-service"
+    }
+  ]
+}
