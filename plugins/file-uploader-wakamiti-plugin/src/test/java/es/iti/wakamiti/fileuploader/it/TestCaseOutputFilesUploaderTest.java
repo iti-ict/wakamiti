@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static org.junit.Assert.*;
@@ -65,6 +66,7 @@ public class TestCaseOutputFilesUploaderTest {
         assertTrue(dateFiles[0].getName().startsWith(today()));
         File[] jsonFiles = dateFiles[0].listFiles();
         assertNotNull(jsonFiles);
+        Arrays.sort(jsonFiles);
         assertEquals(2, jsonFiles.length);
         assertEquals("ID-1.json", jsonFiles[0].getName());
         assertEquals("ID-2.json", jsonFiles[1].getName());
