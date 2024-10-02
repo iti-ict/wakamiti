@@ -1,16 +1,34 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.azure.internal;
+
 
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.AzureReporter;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.TestSuiteTree;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 public abstract class Util {
 
@@ -20,7 +38,51 @@ public abstract class Util {
     private static final String PROPERTY_NOT_PRESENT_IN_TEST_CASE = "Property {} not present in test case {}";
 
     private Util() {
-        //
+        // prevent instantiation
+    }
+
+    public static String toZoneId(String datetime, ZoneId zoneId) {
+        return toZoneId(LocalDateTime.parse(datetime), zoneId).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    public static LocalDateTime toZoneId(LocalDateTime dateTime, ZoneId zoneId) {
+        return dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(zoneId).toLocalDateTime();
+    }
+
+    public static List<TestSuite> readTree(List<TestSuiteTree> suites) {
+        return suites.stream().flatMap(it -> {
+            if (it.children() == null) {
+                return Stream.of(it.hasChildren(false));
+            } else {
+                it.hasChildren(true);
+                return readTree(it.children()).stream();
+            }
+        }).collect(Collectors.toList());
+    }
+
+    public static List<TestSuite> hasChildren(List<TestSuite> suites) {
+        return suites.stream().flatMap(Util::flatten)
+                .peek(suite -> {
+                    if (Objects.nonNull(suite.parent())) {
+                        suite.parent().hasChildren(true);
+                    }
+                }).collect(Collectors.toList());
+    }
+
+    public static Stream<TestSuite> flatten(TestSuite suite) {
+        if (suite.parent() == null) {
+            return Stream.of(suite);
+        } else {
+            return Stream.concat(Stream.of(suite), flatten(suite.parent()));
+        }
+    }
+
+    //TODO: revisar
+    public static Set<Path> findFiles(String path) throws IOException {
+        var pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + path);
+        try (Stream<Path> walker = Files.walk(Path.of("")).filter(pathMatcher::matches)) {
+            return walker.collect(Collectors.toSet());
+        }
     }
 
     public static String getPropertyValue(PlanNodeSnapshot node, String property) {

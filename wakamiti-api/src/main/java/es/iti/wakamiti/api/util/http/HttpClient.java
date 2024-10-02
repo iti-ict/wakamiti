@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
@@ -38,32 +37,31 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 
-public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF>, Serializable, Cloneable {
+public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {
+
+    private static final long serialVersionUID = 674371982367L;
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
-    private static final long serialVersionUID = 6128016096756071380L;
 
-    private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_1_1 =
-            entry(java.net.http.HttpClient.Version.HTTP_1_1, "HTTP/1.1");
-    private static final java.net.http.HttpClient CLIENT = java.net.http.HttpClient.newBuilder()
+    private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_VERSION =
+            entry(java.net.http.HttpClient.Version.HTTP_2, "HTTP/2");
+    private static final java.net.http.HttpClient.Builder CLIENT = java.net.http.HttpClient.newBuilder()
             .executor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10))
-            .version(HTTP_1_1.getKey())
+            .version(HTTP_VERSION.getKey())
             .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
-            .connectTimeout(Duration.ofSeconds(20))
-            .build();
+            .connectTimeout(Duration.ofSeconds(20));
 
     private final URL baseUrl;
     protected transient JsonNode body;
-    protected transient Map<String, Object> finalQueryParams = new LinkedHashMap<>();
-    protected transient Map<String, Object> finalPathParams = new LinkedHashMap<>();
-    protected transient Map<String, Object> finalHeaders = new LinkedHashMap<>();
-    protected transient Map<String, Object> queryParams = new LinkedHashMap<>();
-    protected transient Map<String, Object> pathParams = new LinkedHashMap<>();
-    protected transient Map<String, Object> headers = new LinkedHashMap<>();
-    private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
-    };
+    protected final Map<String, Object> finalQueryParams = new LinkedHashMap<>();
+    protected final Map<String, Object> finalPathParams = new LinkedHashMap<>();
+    protected final Map<String, Object> finalHeaders = new LinkedHashMap<>();
+    protected final Map<String, Object> queryParams = new LinkedHashMap<>();
+    protected final Map<String, Object> pathParams = new HashMap<>();
+    protected final Map<String, Object> headers = new LinkedHashMap<>();
+    private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {};
 
-    public HttpClient(URL baseUrl) {
+    protected HttpClient(URL baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -223,7 +221,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP call => {} ", stringify(request));
             }
-            HttpResponse<Optional<JsonNode>> response = CLIENT.send(request, asJSON());
+            HttpResponse<Optional<JsonNode>> response = CLIENT.build().send(request, asJSON());
             postCall.accept(response);
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP response => {}", stringify(response));
@@ -283,7 +281,8 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
-        CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.sendAsync(request, asJSON());
+        CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
+                .sendAsync(request, asJSON());
         completable.thenAccept(postCall);
         return completable;
     }
@@ -296,11 +295,12 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                 "Path params:\t" + stringify(pathParams) + System.lineSeparator() +
                 "Headers:\t\t" + stringify(headers) + System.lineSeparator() +
                 "Body:\t\t\t" +
-                Optional.ofNullable(body).map(JsonNode::toPrettyString).map(j -> System.lineSeparator() + j)
+                Optional.ofNullable(body).map(JsonNode::toPrettyString)
+                        .map(j -> System.lineSeparator() + j)
                         .orElse("<none>");
     }
 
-    private String stringify(Map<String, Object> params) {
+    private String stringify(Map<String, ?> params) {
         if (params.isEmpty()) {
             return "<none>";
         } else {
@@ -310,7 +310,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     private String stringify(HttpResponse<Optional<JsonNode>> response) {
         return System.lineSeparator() +
-                HTTP_1_1.getValue() + " " + response.statusCode() + System.lineSeparator() +
+                HTTP_VERSION.getValue() + " " + response.statusCode() + System.lineSeparator() +
                 response.headers().map().entrySet().stream()
                         .map(e -> e.getKey() + ": " + join(e.getValue(), "; "))
                         .collect(Collectors.joining(System.lineSeparator())) +
@@ -341,20 +341,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     public SELF copy() {
-        SELF self = SerializationUtils.clone(self()).postCall(this.postCall);
-        if (self.headers == null) self.headers = new LinkedHashMap<>();
-        if (self.pathParams == null) self.pathParams = new LinkedHashMap<>();
-        if (self.queryParams == null) self.queryParams = new LinkedHashMap<>();
-        if (self.finalHeaders == null) self.finalHeaders = new LinkedHashMap<>();
-        if (self.finalPathParams == null) self.finalPathParams = new LinkedHashMap<>();
-        if (self.finalQueryParams == null) self.finalQueryParams = new LinkedHashMap<>();
-        self.headers(this.headers);
-        self.pathParams(this.pathParams);
-        self.queryParams(this.queryParams);
-        Optional.ofNullable(body).ifPresent(b -> self.body(b.toString()));
-        self.finalHeaders.putAll(this.finalHeaders);
-        self.finalPathParams.putAll(this.finalPathParams);
-        self.finalQueryParams.putAll(this.finalQueryParams);
-        return self;
+        SELF clone = SerializationUtils.clone(self()).postCall(postCall);
+        Optional.ofNullable(body).map(Objects::toString).ifPresent(clone::body);
+        return clone;
     }
+
 }
