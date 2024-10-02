@@ -20,11 +20,10 @@ import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.codehaus.plexus.util.IOUtil;
+import org.apache.commons.io.IOUtils;
+//import org.codehaus.plexus.util.IOUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -406,7 +405,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
         tempFile.deleteOnExit();
         try (FileOutputStream out = new FileOutputStream(tempFile)) {
-            IOUtil.copy(document.getContent().getBytes(StandardCharsets.UTF_8), out);
+            IOUtils.copy(new ByteArrayInputStream(document.getContent().getBytes(StandardCharsets.UTF_8)), out);
         }
 
         specifications.add(request ->

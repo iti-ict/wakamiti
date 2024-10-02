@@ -1,6 +1,5 @@
 package es.iti.wakamiti.azure;
 
-import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
@@ -14,20 +13,16 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 
-@Extension(
-        provider =  "es.iti.wakamiti",
-        name = "azure-reporter",
-        version = "2.6",
-        priority = 10
-)
+//@Extension(
+//        provider =  "es.iti.wakamiti",
+//        name = "azure-reporter",
+//        version = "2.6",
+//        priority = 10
+//)
 public class AzureReporter implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureReporter.class);
