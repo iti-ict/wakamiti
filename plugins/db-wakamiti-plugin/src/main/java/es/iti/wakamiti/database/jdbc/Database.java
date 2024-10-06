@@ -6,31 +6,18 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import com.mdimension.jchronic.Chronic;
-import com.mdimension.jchronic.Options;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.SQLParser;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import org.slf4j.Logger;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.util.MapUtils.entryCollector;
-import static es.iti.wakamiti.database.DatabaseHelper.*;
 import static es.iti.wakamiti.database.jdbc.LogUtils.*;
-import static java.util.Objects.isNull;
 
 
 /**
@@ -271,66 +258,8 @@ public final class Database {
                     if (!types.containsKey(e.getKey()))
                         throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), e.getKey());
                 })
-                .collect(entryCollector(Map.Entry::getKey, e -> formatValue(e.getValue(), types.get(e.getKey()))));
-    }
-
-    private Object formatValue(String value, JDBCType type) {
-        if (isNull(value)) return null;
-        switch (type) {
-            case BIT:
-            case BOOLEAN:
-                return Boolean.parseBoolean(value);
-            case TINYINT:
-            case BIGINT:
-            case INTEGER:
-            case SMALLINT:
-                if (value.contains(".")) return new BigDecimal(value).toBigInteger();
-                return new BigInteger(value);
-            case DECIMAL:
-            case DOUBLE:
-            case FLOAT:
-            case NUMERIC:
-            case REAL:
-                if (!value.contains(".")) return new BigInteger(value);
-                return new BigDecimal(value);
-            case DATE:
-                Calendar calendar = Chronic.parse(value, new Options(false)).getBeginCalendar();
-                return WakamitiTimestamp.valueOf(
-                        LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId())
-                                .truncatedTo(ChronoUnit.DAYS), true
-                );
-            case TIMESTAMP:
-            case TIME:
-            case TIME_WITH_TIMEZONE:
-            case TIMESTAMP_WITH_TIMEZONE:
-                try {
-                    LocalDateTime dateTime = parse(value, LocalDateTime.class);
-                    value = DATE_TIME_FORMATTER.format(dateTime);
-                } catch (WakamitiException | DateTimeParseException e) {
-                    Calendar calendar2 = Chronic.parse(value, new Options(false)).getBeginCalendar();
-                    value = DATE_TIME_FORMATTER.withZone(calendar2.getTimeZone().toZoneId()).format(calendar2.toInstant());
-                }
-                return WakamitiTimestamp.valueOf(value, false);
-            default:
-                return value;
-        }
-    }
-
-    /**
-     * Parses a text expression into the specified data type.
-     *
-     * @param expression The text expression to parse.
-     * @param type       The class of the type into which the expression should be parsed.
-     * @param <T>        The type parameter representing the target type.
-     * @return The parsed value of the specified type.
-     * @throws WakamitiException if no type registry is found for the specified class.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T parse(String expression, Class<T> type) {
-        WakamitiStepRunContext ctx = WakamitiStepRunContext.current();
-        return (T) ctx.typeRegistry().findTypesForJavaType(type).findFirst()
-                .orElseThrow(() -> new WakamitiException("No type registry found for Class '{}'", type))
-                .parse(ctx.stepLocale(), expression);
+                .collect(entryCollector(Map.Entry::getKey, e ->
+                        this.type.formatter().formatValue(e.getValue(), types.get(e.getKey()))));
     }
 
     /**
