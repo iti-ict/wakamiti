@@ -3,7 +3,7 @@ CREATE TABLE client (
                         id int PRIMARY KEY,
                         first_name varchar(255) DEFAULT NULL,
                         second_name varchar(255) DEFAULT NULL,
-                        active int DEFAULT 0,
+                        active bit DEFAULT 0,
                         birth_date date,
                         [creation] datetime DEFAULT NULL
 );

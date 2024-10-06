@@ -12,7 +12,6 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.fileuploader.AbstractFilesUploader;
 import es.iti.wakamiti.fileuploader.MockSftpServer;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -21,15 +20,13 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 
 @AnnotatedConfiguration({
@@ -52,7 +49,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
     private static final MockSftpServer ftpServer = new MockSftpServer(2345);
 
     @BeforeClass
-    public static void setUp() throws FtpException, IOException {
+    public static void setUp() throws IOException {
         ftpServer.start();
     }
 
@@ -69,6 +66,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
         assertTrue(name.startsWith(today()));
         File[] jsonFiles = dateFiles[0].listFiles();
         assertNotNull(jsonFiles);
+        Arrays.sort(jsonFiles);
         assertEquals(2, jsonFiles.length);
         assertEquals("ID-1.json", jsonFiles[0].getName());
         assertEquals("ID-2.json", jsonFiles[1].getName());
@@ -83,9 +81,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
     /**
      * Pretty print the directory tree and its file names.
      *
-     * @param folder
-     *            must be a folder.
-     * @return
+     * @param folder must be a folder.
      */
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {
@@ -107,7 +103,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
         sb.append(folder.getName());
         sb.append("/");
         sb.append("\n");
-        for (File file : folder.listFiles()) {
+        for (File file : Objects.requireNonNull(folder.listFiles())) {
             if (file.isDirectory()) {
                 printDirectoryTree(file, indent + 1, sb);
             } else {
@@ -126,9 +122,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
 
     private static String getIndentString(int indent) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < indent; i++) {
-            sb.append("|  ");
-        }
+        sb.append("|  ".repeat(Math.max(0, indent)));
         return sb.toString();
     }
 }
