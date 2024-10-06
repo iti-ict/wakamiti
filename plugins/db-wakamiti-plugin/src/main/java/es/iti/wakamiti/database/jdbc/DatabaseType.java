@@ -7,6 +7,9 @@ package es.iti.wakamiti.database.jdbc;
 
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.database.jdbc.format.DefaultSqlFormat;
+import es.iti.wakamiti.database.jdbc.format.SqlFormat;
+import es.iti.wakamiti.database.jdbc.format.SqlServerFormat;
 
 
 /**
@@ -17,7 +20,7 @@ public enum DatabaseType {
     ORACLE("select 1 from dual"),
     HSQLDB("SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"),
     H2(),
-    SQLSERVER(),
+    SQLSERVER(new SqlServerFormat()),
     MYSQL(),
     MARIADB(),
     POSTGRESQL(),
@@ -31,6 +34,7 @@ public enum DatabaseType {
     private static final String DEFAULT = "select 1";
 
     private final String healthCheckSql;
+    private final SqlFormat format;
 
     /**
      * Constructs a DatabaseType enum constant with the given health check SQL query.
@@ -39,10 +43,17 @@ public enum DatabaseType {
      */
     DatabaseType(String healthCheckSql) {
         this.healthCheckSql = healthCheckSql;
+        this.format = new DefaultSqlFormat();
+    }
+
+    DatabaseType(SqlFormat format) {
+        this.healthCheckSql = DEFAULT;
+        this.format = format;
     }
 
     DatabaseType() {
         this.healthCheckSql = DEFAULT;
+        this.format = new DefaultSqlFormat();
     }
 
     /**
@@ -70,5 +81,9 @@ public enum DatabaseType {
      */
     public String healthCheck() {
         return this.healthCheckSql;
+    }
+
+    public SqlFormat formatter() {
+        return this.format;
     }
 }
