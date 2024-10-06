@@ -4,7 +4,7 @@ CREATE TABLE client (
     id SERIAL PRIMARY KEY,
     first_name varchar(255) DEFAULT NULL,
     second_name varchar(255) DEFAULT NULL,
-    active int DEFAULT 0,
+    active boolean DEFAULT false,
     birth_date date,
     creation timestamp
 );
