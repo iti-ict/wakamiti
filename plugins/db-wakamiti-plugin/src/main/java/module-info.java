@@ -16,6 +16,7 @@ module es.iti.wakamiti.db {
     exports es.iti.wakamiti.database;
     exports es.iti.wakamiti.database.dataset;
     exports es.iti.wakamiti.database.jdbc;
+    exports es.iti.wakamiti.database.jdbc.format;
     exports es.iti.wakamiti.database.exception;
 
     requires es.iti.wakamiti.api;
@@ -32,6 +33,7 @@ module es.iti.wakamiti.db {
     requires awaitility;
     requires jchronic;
     requires org.apache.commons.text;
+    requires org.apache.commons.lang3;
 
     provides StepContributor with DatabaseStepContributor;
     provides ConfigContributor with DatabaseConfigContributor;
