@@ -25,6 +25,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static org.junit.Assert.*;
@@ -54,7 +56,7 @@ public class TestCaseOutputFilesUploaderTest {
     }
 
     @AfterClass
-    public static void tearDown() throws IOException {
+    public static void tearDown() {
         if (LOGGER.isDebugEnabled()) {
             System.out.println(printDirectoryTree(ftpServer.getTmpDir().toFile()));
         }
@@ -65,6 +67,7 @@ public class TestCaseOutputFilesUploaderTest {
         assertTrue(dateFiles[0].getName().startsWith(today()));
         File[] jsonFiles = dateFiles[0].listFiles();
         assertNotNull(jsonFiles);
+        Arrays.sort(jsonFiles);
         assertEquals(2, jsonFiles.length);
         assertEquals("ID-1.json", jsonFiles[0].getName());
         assertEquals("ID-2.json", jsonFiles[1].getName());
@@ -79,9 +82,7 @@ public class TestCaseOutputFilesUploaderTest {
     /**
      * Pretty print the directory tree and its file names.
      *
-     * @param folder
-     *            must be a folder.
-     * @return
+     * @param folder must be a folder.
      */
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {
@@ -103,7 +104,7 @@ public class TestCaseOutputFilesUploaderTest {
         sb.append(folder.getName());
         sb.append("/");
         sb.append("\n");
-        for (File file : folder.listFiles()) {
+        for (File file : Objects.requireNonNull(folder.listFiles())) {
             if (file.isDirectory()) {
                 printDirectoryTree(file, indent + 1, sb);
             } else {
@@ -122,9 +123,7 @@ public class TestCaseOutputFilesUploaderTest {
 
     private static String getIndentString(int indent) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < indent; i++) {
-            sb.append("|  ");
-        }
+        sb.append("|  ".repeat(Math.max(0, indent)));
         return sb.toString();
     }
 }
