@@ -21,7 +21,7 @@ env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
   TITLE: ${{ github.event.inputs.TITLE || github.event.release.name }}
   URL: ${{ github.event.inputs.URL || github.event.release.url }}
-  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.name }}
+  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.login }}
 
 jobs:
   get-env:
