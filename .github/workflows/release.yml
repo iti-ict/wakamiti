@@ -124,7 +124,7 @@ jobs:
                               {
                                 "type": "TextBlock",
                                 "spacing": "none",
-                                "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
+                                "text": "Publicada por [${{ needs.get-env.outputs.AUTHOR }}](https://github.com/${{ needs.get-env.outputs.AUTHOR }})",
                                 "isSubtle": true,
                                 "wrap": true
                               }
