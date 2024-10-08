@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning][2].
 - Connection error at startup when no configuration is provided. [#291]
 
 
+## [3.2.1] - 2024-10-07
+
+### Fixed
+- Boolean columns issues.
+
+
 ## [3.2.0] - 2024-09-09
 
 ### Fixed

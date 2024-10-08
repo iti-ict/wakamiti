@@ -20,8 +20,8 @@ on:
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
   TITLE: ${{ github.event.inputs.TITLE || github.event.release.name }}
-  URL: ${{ github.event.inputs.URL || github.event.release.url }}
-  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.name }}
+  URL: ${{ github.event.inputs.URL || github.event.release.html_url }}
+  AUTHOR: ${{ github.event.inputs.AUTHOR || github.event.release.author.login }}
 
 jobs:
   get-env:
@@ -124,7 +124,7 @@ jobs:
                               {
                                 "type": "TextBlock",
                                 "spacing": "none",
-                                "text": "Publicada por ${{ needs.get-env.outputs.AUTHOR }}",
+                                "text": "Publicada por [${{ needs.get-env.outputs.AUTHOR }}](https://github.com/${{ needs.get-env.outputs.AUTHOR }})",
                                 "isSubtle": true,
                                 "wrap": true
                               }
