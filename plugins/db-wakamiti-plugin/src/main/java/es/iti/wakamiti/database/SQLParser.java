@@ -58,7 +58,8 @@ public class SQLParser {
             Float.class, o -> new DoubleValue(o.toString()),
             BigInteger.class, o -> new LongValue(o.toString()),
             BigDecimal.class, o -> new DoubleValue(o.toString()),
-            String.class, o -> new StringValue(o.toString())
+            String.class, o -> new StringValue(o.toString()),
+            Boolean.class, o -> new HexValue(o.toString())
     );
 
     private static final Map<DatabaseType, java.util.function.Function<Column, Function>> TRIM_FUNCTION = Map.of(
@@ -170,10 +171,8 @@ public class SQLParser {
      */
     public Expression toExpression(Object o) {
         if (o == null) return new NullValue();
-        if (o instanceof Number) {
+        if (o instanceof Number || o instanceof Boolean) {
             return CONVERTER.get(o.getClass()).apply(o);
-        } else if (o instanceof Boolean) {
-            return new LongValue(((Boolean) o).compareTo(false));
         } else {
             return isDateOrDateTime(o.toString()) ? dateCast(o.toString()) : new StringValue(o.toString());
         }
@@ -377,11 +376,7 @@ public class SQLParser {
      */
     private EqualsTo equalsTo(Column column, Expression expression) {
         EqualsTo exp = new EqualsTo();
-        if (expression instanceof StringValue && !isDateOrDateTime(((StringValue) expression).getValue())) {
-            exp.setLeftExpression(trim(column));
-        } else {
-            exp.setLeftExpression(column);
-        }
+        exp.setLeftExpression(column);
         if (expression instanceof StringValue && isDateOrDateTime(((StringValue) expression).getValue())) {
             expression = dateCast(((StringValue) expression).getValue());
         }

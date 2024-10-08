@@ -60,7 +60,7 @@ export default {
     window.downloadTutorial = async () => {
       const zip = new JSZip();
       const base = 'https://raw.githubusercontent.com/iti-ict/wakamiti/main/examples/tutorial';
-      const files = ['application-wakamiti.properties', 'docker-compose.yml'];
+      const files = ['application-wakamiti.properties', 'docker-compose.yml', 'readme.md'];
       let count = 0;
       files.forEach(file => {
         https.get(`${base}/${file}`, (response) => {
