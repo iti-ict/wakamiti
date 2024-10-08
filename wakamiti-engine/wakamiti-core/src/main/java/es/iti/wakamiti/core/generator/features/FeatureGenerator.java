@@ -57,24 +57,27 @@ public class FeatureGenerator {
      */
     public void generate(String destinationPath) {
         LOGGER.info("Feature generation started...");
+        try {
+            Path path = Path.of(destinationPath).toAbsolutePath();
+            if (!Files.exists(path)) {
+                throw new FeatureGeneratorException("No such directory: " + path);
+            }
 
-        Path path = Path.of(destinationPath).toAbsolutePath();
-        if (!Files.exists(path)) {
-            throw new WakamitiException("No such directory: " + path);
-        }
+            Map<String, Object> endpoints = JsonPath.read(apiDocs, "$.paths");
+            String finalApiDocs = apiDocs;
+            endpoints.keySet().forEach(endpoint -> {
+                Map<String, Object> methods = JsonPath.read(finalApiDocs, "$.paths." + endpoint);
+                methods.keySet().forEach(method -> {
+                    String fileName = method.concat(endpoint.replace(FOLDER_SEPARATOR, UNDERSCORE));
+                    Path featurePath = Path.of(destinationPath, fileName + FEATURE_EXTENSION).toAbsolutePath();
+                    String info = JsonPath.read(finalApiDocs, "$.paths." + endpoint + "." + method).toString();
 
-        Map<String, Object> endpoints = JsonPath.read(apiDocs, "$.paths");
-        String finalApiDocs = apiDocs;
-        endpoints.keySet().forEach(endpoint -> {
-            Map<String, Object> methods = JsonPath.read(finalApiDocs, "$.paths." + endpoint);
-            methods.keySet().forEach(method -> {
-                String fileName = method.concat(endpoint.replace(FOLDER_SEPARATOR, UNDERSCORE));
-                Path featurePath = Path.of(destinationPath, fileName + FEATURE_EXTENSION).toAbsolutePath();
-                String info = JsonPath.read(finalApiDocs, "$.paths." + endpoint + "." + method).toString();
-
-                createFeature(featurePath, info);
+                    createFeature(featurePath, info);
+                });
             });
-        });
+        } catch (Exception e) {
+            throw new FeatureGeneratorException(e.getMessage(), e);
+        }
 
     }
 
@@ -89,15 +92,15 @@ public class FeatureGenerator {
      */
     private String parseApiDocs(String apiDocs) throws URISyntaxException, IOException {
         if (apiDocs.startsWith(HTTP)) {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(apiDocs))
-                    .GET()
-                    .build();
             try {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(apiDocs))
+                        .GET()
+                        .build();
                 apiDocs = this.client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            } catch (InterruptedException e) {
-                LOGGER.trace("", e);
+            } catch (IllegalArgumentException | InterruptedException e) {
                 Thread.currentThread().interrupt();
+                throw new FeatureGeneratorException(e.getMessage(), e);
             }
         } else {
             var file = new File(apiDocs);
@@ -114,7 +117,7 @@ public class FeatureGenerator {
      * Loads the default prompt from a resource file
      *
      * @return The loaded prompt
-     * @throws IOException        Error reading file
+     * @throws IOException Error reading file
      */
     private String loadPrompt() throws IOException {
         InputStream in = getClass().getResourceAsStream(DEFAULT_PROMPT);

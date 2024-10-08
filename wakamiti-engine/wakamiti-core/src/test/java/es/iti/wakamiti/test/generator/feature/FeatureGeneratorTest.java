@@ -48,7 +48,7 @@ public class FeatureGeneratorTest {
     private static final String API_DOCS_JSON = "api_docs.json";
     private static final String TEMP_PATH = Files.temporaryFolderPath();
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", PORT);
+    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", PORT.toString());
     private static final ClientAndServer server = startClientAndServer(PORT);
     private static final List<File> FEATURES = Stream.of(
                     "get_health", "post_notifications", "get_notifications_{id}", "put_notifications_{id}",
