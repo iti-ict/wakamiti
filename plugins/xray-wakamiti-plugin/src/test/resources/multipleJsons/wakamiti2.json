@@ -1,0 +1,33 @@
+{
+  "testExecutionKey" : "DEMO-1206",
+  "tests" : [
+    {
+      "status": "FAIL",
+      "steps": [
+        {
+          "status": "PASS"
+        },
+        {
+          "status": "FAIL"
+        }
+      ],
+      "testInfo": {
+        "summary": "Create new test",
+        "testType": "Manual",
+        "projectKey": "DEMO",
+        "steps": [
+          {
+            "action": "Step action 1",
+            "data": "Data 1",
+            "result": "Step result 1"
+          },
+          {
+            "action": "Step action 2",
+            "data": "Data 2",
+            "result": "Step result 2"
+          }
+        ]
+      }
+    }
+  ]
+}

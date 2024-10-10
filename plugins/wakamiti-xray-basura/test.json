@@ -1,0 +1,49 @@
+{
+    "fields": {
+       "project": {
+          "key": "ABC"
+       },
+       "summary": "Sum of two numbers",
+       "description": "example of manual test",
+       "issuetype": {
+          "name": "Test"
+       },
+       "customfield_10200": { "value": "Manual" },
+       "customfield_10004": {
+            "steps": [
+                {
+                    "index": 1,
+                    "fields": {
+                        "action": "Step 1",
+                        "data": "input Data 1",
+                        "expected result": "Expected result 1"
+                    }
+                },
+                {
+                    "index": 2,
+                    "fields": {
+                        "action": "Step 2",
+                        "data": "input Data 2",
+                        "expected result": "Expected result 2"
+                    }
+                },
+                {
+                    "index": 3,
+                    "fields": {
+                        "action": "Step 3",
+                        "data": "input Data 3",
+                        "expected result": "Expected result 3"
+                    }
+                },
+                {
+                    "index": 4,
+                    "fields": {
+                        "action": "Step 4",
+                        "data": "input Data 4",
+                        "expected result": "Expected result 4"
+                    }
+                }
+            ]
+        }
+   }
+}

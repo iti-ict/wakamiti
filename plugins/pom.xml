@@ -1,54 +1,76 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-
-    <!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      
+  <modelVersion>4.0.0</modelVersion>
+      
+  <!--
         This POM is used as an aggregator in order to build all the plugins at the same time.
      -->
-
-    <groupId>es.iti.wakamiti</groupId>
-    <artifactId>wakamiti-plugin-aggregator</artifactId>
-    <packaging>pom</packaging>
-    <!-- This version number is for this specific pom, is not relevant for the rest of the components -->
-    <version>1.0.0</version>
-
-
-    <name>Wakamiti Plugin Aggregator</name>
-
-
-
-    <modules>
-        <module>amqp-wakamiti-plugin</module>
-        <module>appium-wakamiti-plugin</module>
-        <module>azure-wakamiti-plugin</module>
-        <module>db-wakamiti-plugin</module>
-        <module>cucumber-exporter-wakamiti-plugin</module>
-        <module>groovy-wakamiti-plugin</module>
-        <module>html-report-wakamiti-plugin</module>
-        <module>rest-wakamiti-plugin</module>
-        <module>spring-wakamiti-plugin</module>
-        <module>io-wakamiti-plugin</module>
-        <module>file-uploader-wakamiti-plugin</module>
-        <module>email-wakamiti-plugin</module>
-    </modules>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-
-
+      
+  <groupId>es.iti.wakamiti</groupId>
+      
+  <artifactId>wakamiti-plugin-aggregator</artifactId>
+      
+  <packaging>pom</packaging>
+      
+  <!-- This version number is for this specific pom, is not relevant for the rest of the components -->
+      
+  <version>1.0.0</version>
+      
+  <name>Wakamiti Plugin Aggregator</name>
+      
+  <modules>
+            
+    <module>amqp-wakamiti-plugin</module>
+            
+    <module>appium-wakamiti-plugin</module>
+            
+    <module>azure-wakamiti-plugin</module>
+            
+    <module>db-wakamiti-plugin</module>
+            
+    <module>cucumber-exporter-wakamiti-plugin</module>
+            
+    <module>groovy-wakamiti-plugin</module>
+            
+    <module>html-report-wakamiti-plugin</module>
+            
+    <module>rest-wakamiti-plugin</module>
+            
+    <module>spring-wakamiti-plugin</module>
+            
+    <module>io-wakamiti-plugin</module>
+            
+    <module>file-uploader-wakamiti-plugin</module>
+            
+    <module>email-wakamiti-plugin</module>
+          
+    <module>xray-wakamiti-plugin</module>
+      
+  </modules>
+      
+  <build>
+            
+    <plugins>
+                  
+      <plugin>
+                        
+        <groupId>org.apache.maven.plugins</groupId>
+                        
+        <artifactId>maven-deploy-plugin</artifactId>
+                        
+        <version>3.1.0</version>
+                        
+        <configuration>
+                              
+          <skip>true</skip>
+                          
+        </configuration>
+                    
+      </plugin>
+              
+    </plugins>
+        
+  </build>
+  
 </project>
