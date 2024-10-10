@@ -33,6 +33,7 @@ public class CliArguments {
     public static final String ARG_API_DOCS = "D";
     public static final String ARG_AI_TOKEN = "t";
     public static final String ARG_FEATURE_GENERATION_PATH = "p";
+    public static final String ARG_LANGUAGE = "L";
 
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
     private static final String ARG_HELP = "h";
@@ -60,6 +61,7 @@ public class CliArguments {
         cliOptions.addOption(ARG_API_DOCS, "apiDocs", true, "Api docs url or json file");
         cliOptions.addOption(ARG_AI_TOKEN, "token", true, "Token for chat-gpt");
         cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", true, "Feature Generator path");
+        cliOptions.addOption(ARG_LANGUAGE, "language", true, "ISO 639-1 language code");
 
         cliOptions.addOption(
                 Option.builder(ARG_WAKAMITI_PROPERTY)
