@@ -52,6 +52,11 @@ open module es.iti.wakamiti.core {
     requires json.path;
     requires org.apache.commons.io;
 
+    requires swagger.parser.core;
+    requires swagger.parser;
+    requires io.swagger.v3.oas.models;
+    requires org.apache.logging.log4j;
+
     provides WakamitiAPI with DefaultWakamitiAPI;
 
     provides ResourceType with GherkinResourceType;

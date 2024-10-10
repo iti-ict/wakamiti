@@ -1,8 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.core.generator.features;
+
 
 import es.iti.wakamiti.api.WakamitiException;
 
-import static es.iti.wakamiti.api.util.StringUtils.format;
 
 public class FeatureGeneratorException extends WakamitiException {
 
@@ -30,6 +35,6 @@ public class FeatureGeneratorException extends WakamitiException {
      *                and may be zero.
      */
     public FeatureGeneratorException(String message, Object... args) {
-        super(format(message, argsWithoutThrowable(args)), throwable(args));
+        super(message, args);
     }
 }
