@@ -1,0 +1,80 @@
+{
+  "executionID" : "1171a230-3711-4060-9561-624736173935",
+  "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "result" : "ERROR",
+  "childrenResults" : {
+    "ERROR" : 1
+  },
+  "children" : [ {
+    "executionID" : "1171a230-3711-4060-9561-624736173935",
+    "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+    "nodeType" : "AGGREGATOR",
+    "id" : "#zdda0e",
+    "name" : "xray",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "xray.feature[4,1]",
+    "displayName" : "Feature: xray",
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "result" : "ERROR",
+    "children" : [ {
+      "executionID" : "1171a230-3711-4060-9561-624736173935",
+      "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+      "nodeType" : "TEST_CASE",
+      "id" : "#d9b0a0",
+      "name" : "Scenario 1",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "xray.feature[7,1]",
+      "displayName" : "[#d9b0a0] Scenario: Scenario 1",
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "xray"
+      },
+      "children" : [ {
+        "executionID" : "1171a230-3711-4060-9561-624736173935",
+        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+        "nodeType" : "STEP",
+        "id" : "#d101d0",
+        "name" : "Step 1",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "xray.feature[8,4]",
+        "displayName" : "Given Step 1",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "executionID" : "1171a230-3711-4060-9561-624736173935",
+        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+        "nodeType" : "STEP",
+        "id" : "#v8d85c",
+        "name" : "Step 2",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "xray.feature[9,4]",
+        "displayName" : "When Step 2",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      }, {
+        "executionID" : "1171a230-3711-4060-9561-624736173935",
+        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+        "nodeType" : "STEP",
+        "id" : "#y3a04a",
+        "name" : "Step 3",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "xray.feature[10,4]",
+        "displayName" : "Then Step 3",
+        "properties" : {
+          "gherkinType" : "step"
+        }
+      } ]
+    } ]
+  } ]
+}
