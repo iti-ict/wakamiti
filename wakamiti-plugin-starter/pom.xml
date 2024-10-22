@@ -23,7 +23,7 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.5.0</revision>
+        <revision>2.5.1-SNAPSHOT</revision>
     </properties>
 
     <dependencies>
