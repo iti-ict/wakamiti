@@ -1,6 +1,7 @@
 open module es.iti.wakamiti.plugins.xray {
 
     exports es.iti.wakamiti.xray;
+    exports es.iti.wakamiti.xray.dto;
 
     requires org.slf4j;
     requires iti.commons.jext;
