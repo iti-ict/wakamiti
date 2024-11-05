@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.WakamitiException;
 public class WakamitiAzureException extends WakamitiException {
 
     private static final String MESSAGE = System.lineSeparator()
-            + "Please resolve this issue in Azure or ignore it to continue.";
+            + "Please try to fix this problem in azure.";
 
     public WakamitiAzureException(String message) {
         super(message + MESSAGE);

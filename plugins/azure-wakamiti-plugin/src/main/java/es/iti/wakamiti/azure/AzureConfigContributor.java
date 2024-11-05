@@ -38,6 +38,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
     public static final String AZURE_API_VERSION = "azure.apiVersion";
     public static final String AZURE_ORGANIZATION = "azure.organization";
     public static final String AZURE_PROJECT = "azure.project";
+    public static final String AZURE_CONFIGURATION = "azure.configuration";
     public static final String AZURE_PLAN = "azure.plan";
     public static final String AZURE_PLAN_NAME = "azure.plan.name";
     public static final String AZURE_PLAN_AREA = "azure.plan.area";
@@ -76,6 +77,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         requiredProperty(configuration, AZURE_ORGANIZATION, String.class, synchronizer::organization);
         requiredProperty(configuration, AZURE_PROJECT, String.class, synchronizer::project);
         requiredProperty(configuration, AZURE_API_VERSION, String.class, synchronizer::version);
+        configuration.get(AZURE_CONFIGURATION, String.class).ifPresent(synchronizer::configuration);
         synchronizer.testPlan(plan(configuration));
         configuration.get(AZURE_SUITE_BASE, String.class).ifPresent(synchronizer::suiteBase);
         configuration.get(AZURE_TAG, String.class).ifPresent(synchronizer::tag);

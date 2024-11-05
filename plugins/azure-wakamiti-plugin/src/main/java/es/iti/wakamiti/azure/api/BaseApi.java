@@ -93,8 +93,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
     }
 
     protected Stream<JsonNode> getAllPages(String uri) {
-        return getAllPages(uri, new TypeRef<>() {
-        });
+        return getAllPages(uri, new TypeRef<>() {});
     }
 
     protected Optional<ArrayNode> doQuery(Query query) {

@@ -31,15 +31,15 @@ import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 public abstract class Mapper {
 
-    private static final String AZURE_SUITE = "azureSuite";
+    protected static final String AZURE_SUITE = "azureSuite";
     private final String suiteBase;
 
     public Mapper(final String suiteBase) {
         this.suiteBase = suiteBase;
     }
 
-    public static Instancer ofType(String type) {
-        return MapUtils.<String, Instancer>map(
+    public static Instantiator ofType(String type) {
+        return MapUtils.<String, Instantiator>map(
                 GHERKIN_TYPE_FEATURE, FeatureMapper::new,
                 GHERKIN_TYPE_SCENARIO, ScenarioMapper::new
         ).get(type);
@@ -56,7 +56,10 @@ public abstract class Mapper {
                     Path path = Path.of(target.getSource()
                             .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
                     if (!isBlank(suiteBase)) {
-                        path = path.relativize(Path.of(suiteBase));
+                        if (!path.startsWith(suiteBase)) {
+                            throw new WakamitiException("Invalid suiteBase: {}", suiteBase);
+                        }
+                        path = Path.of(suiteBase).relativize(path);
                     }
                     return path;
                 });
@@ -99,7 +102,7 @@ public abstract class Mapper {
         return Optional.ofNullable(node.getProperties()).map(p -> p.get("gherkinType")).orElse("");
     }
 
-    public interface Instancer {
+    public interface Instantiator {
         Mapper instance(String suiteBase);
     }
 }

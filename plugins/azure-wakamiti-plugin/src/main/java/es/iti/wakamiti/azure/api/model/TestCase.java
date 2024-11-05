@@ -8,6 +8,7 @@ package es.iti.wakamiti.azure.api.model;
 
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -21,7 +22,7 @@ public class TestCase extends BaseModel {
     private String tag;
     private int order;
     private TestSuite suite;
-    private int testPointId;
+    private List<PointAssignment> pointAssignments;
     private PlanNodeSnapshot metadata;
 
     public TestCase id(String id) {
@@ -54,8 +55,8 @@ public class TestCase extends BaseModel {
         return this;
     }
 
-    public TestCase testPointId(int testPointId) {
-        this.testPointId = testPointId;
+    public TestCase pointAssignments(List<PointAssignment> pointAssignments) {
+        this.pointAssignments = pointAssignments;
         return this;
     }
 
@@ -88,8 +89,8 @@ public class TestCase extends BaseModel {
         return suite;
     }
 
-    public int testPointId() {
-        return testPointId;
+    public List<PointAssignment> PointAssignments() {
+        return pointAssignments;
     }
 
     public PlanNodeSnapshot metadata() {

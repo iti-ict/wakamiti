@@ -126,6 +126,10 @@ public class JsonUtils {
         }
     }
 
+    public static <T> T read(JsonNode obj, String expression) {
+        return read(obj, expression, new TypeRef<>() {});
+    }
+
     public static <T> T read(JsonNode obj, String expression, TypeRef<T> type) {
         if (expression.startsWith("$")) {
             return JsonPath.using(CONFIG).parse(obj).read(expression, type);
