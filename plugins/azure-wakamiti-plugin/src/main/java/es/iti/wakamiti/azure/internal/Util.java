@@ -10,6 +10,7 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.AzureReporter;
+import es.iti.wakamiti.azure.api.model.TestCase;
 import es.iti.wakamiti.azure.api.model.TestSuite;
 import es.iti.wakamiti.azure.api.model.TestSuiteTree;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 
 public abstract class Util {
@@ -51,18 +54,19 @@ public abstract class Util {
 
     public static List<TestSuite> readTree(List<TestSuiteTree> suites) {
         return suites.stream().flatMap(it -> {
-            if (it.children() == null) {
+            if (isEmpty(it.children())) {
                 return Stream.of(it.hasChildren(false));
             } else {
-                it.hasChildren(true);
-                return readTree(it.children()).stream();
+                List<TestSuiteTree> children = it.children().stream()
+                        .map(child -> (TestSuiteTree) child.parent(it.hasChildren(true)))
+                        .collect(Collectors.toList());
+                return readTree(children).stream();
             }
         }).collect(Collectors.toList());
     }
 
-    public static List<TestSuite> hasChildren(List<TestSuite> suites) {
-        return suites.stream().flatMap(Util::flatten)
-                .peek(suite -> {
+    public static List<TestSuite> filterHasChildren(List<TestSuite> suites) {
+        return suites.stream().peek(suite -> {
                     if (Objects.nonNull(suite.parent())) {
                         suite.parent().hasChildren(true);
                     }
@@ -73,7 +77,7 @@ public abstract class Util {
         if (suite.parent() == null) {
             return Stream.of(suite);
         } else {
-            return Stream.concat(Stream.of(suite), flatten(suite.parent()));
+            return Stream.concat(flatten(suite.parent()), Stream.of(suite));
         }
     }
 

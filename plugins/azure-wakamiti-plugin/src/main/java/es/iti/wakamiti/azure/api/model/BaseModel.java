@@ -16,7 +16,8 @@ public class BaseModel implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass().isAssignableFrom(this.getClass()) && this.hashCode() == obj.hashCode();
+        return (this.getClass().isAssignableFrom(obj.getClass()) || obj.getClass().isAssignableFrom(this.getClass()))
+                && this.hashCode() == obj.hashCode();
     }
 
     @Override

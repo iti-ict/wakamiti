@@ -58,6 +58,7 @@ public class AzureSynchronizer implements EventObserver {
     private boolean createItemsIfAbsent;
     private boolean removeOrphans;
     private String idTagPattern;
+    private String configuration;
 
     private TestPlanApi api;
 
@@ -105,6 +106,10 @@ public class AzureSynchronizer implements EventObserver {
         this.tag = tag;
     }
 
+    public void configuration(String configuration) {
+        this.configuration = configuration;
+    }
+
     public void testCasePerFeature(boolean testCasePerFeature) {
         this.testCasePerFeature = testCasePerFeature;
     }
@@ -139,7 +144,8 @@ public class AzureSynchronizer implements EventObserver {
                 return t.get(0);
             };
 
-            api = new TestPlanApi(baseURL, tagIdExtractor).organization(organization).project(project).version(version);
+            api = new TestPlanApi(baseURL, tagIdExtractor, configuration)
+                    .organization(organization).project(project).version(version);
             authenticator.accept(api);
         }
         return api;
@@ -156,9 +162,8 @@ public class AzureSynchronizer implements EventObserver {
 
         if (Event.PLAN_CREATED.equals(event.type())) {
             try {
-                LOGGER.info("Sync plan to Azure...");
+                LOGGER.info("Synchronise test plan with Azure...");
                 sync(data);
-
             } catch (Exception e) {
                 throw new WakamitiException("The test plan could not be synchronized. " +
                         "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
@@ -179,18 +184,13 @@ public class AzureSynchronizer implements EventObserver {
         return List.of(Event.PLAN_CREATED, Event.PLAN_RUN_FINISHED).contains(eventType);
     }
 
+    /**
+     *
+     *
+     * @param plan
+     */
     private void sync(PlanNodeSnapshot plan) {
-        TestPlan remotePlan = api().searchTestPlan(testPlan)
-                .orElseGet(() -> {
-                    if (createItemsIfAbsent) {
-                        return api().createTestPlan(testPlan);
-                    } else {
-                        throw new WakamitiAzureException(
-                                "Test Plan with name '{}', area '{}' and iteration '{}' does not exist in Azure. ",
-                                testPlan.name(), testPlan.area(), testPlan.iteration());
-
-                    }
-                });
+        TestPlan remotePlan = api().getTestPlan(testPlan, createItemsIfAbsent);
         LOGGER.debug("Remote plan #{} ready to sync", remotePlan.id());
 
         String gherkinType = testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO;
@@ -198,14 +198,11 @@ public class AzureSynchronizer implements EventObserver {
 
         List<TestCase> tests = mapper.map(plan)
                 .filter(t -> isBlank(tag) || t.metadata().getTags().contains(tag))
+                .peek(t -> LOGGER.trace("Load test case: {}", t))
                 .collect(Collectors.toList());
-        List<TestSuite> suites = tests.stream().map(TestCase::suite).flatMap(Util::flatten).collect(Collectors.toList());
-
-        if (LOGGER.isTraceEnabled()) {
-            tests.forEach(t -> LOGGER.trace("Load test case {}", t));
-        }
         LOGGER.debug("{} local test cases ready to sync", tests.size());
 
+        List<TestSuite> suites = tests.stream().map(TestCase::suite).flatMap(Util::flatten).collect(Collectors.toList());
         List<TestSuite> remoteSuites = api().searchTestSuites(remotePlan)
                 .flatMap(Util::flatten).collect(Collectors.toList());
         List<TestSuite> newSuites = suites.stream().filter(s -> !remoteSuites.contains(s)).collect(Collectors.toList());
@@ -220,7 +217,7 @@ public class AzureSynchronizer implements EventObserver {
                 .collect(Collectors.toList());
         List<TestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t)).collect(Collectors.toList());
         List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
-                .filter(t -> tests.stream().anyMatch(c -> t.tag().equals(c.tag()) && t.isDifferent(c)))
+                .filter(t -> tests.stream().anyMatch(c -> hasChanged(t, c)))
                 .map(t -> new Pair<>(t, tests.stream().filter(x -> x.tag().equals(t.tag())).findFirst().get()))
                 .collect(Collectors.toList());
 
@@ -240,4 +237,11 @@ public class AzureSynchronizer implements EventObserver {
         remoteSuites.removeAll(nonSuites);
     }
 
+    private boolean hasChanged(TestCase test, TestCase newTest) {
+        return test.tag().equals(newTest.tag()) && test.isDifferent(newTest);
+    }
+
+//    private TestCase getTest(List<TestCase> tests, TestCase test) {
+//
+//    }
 }

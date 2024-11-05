@@ -12,6 +12,7 @@ import java.time.ZoneId;
 public class Settings extends BaseModel {
 
     private ZoneId zoneId;
+    private Integer configuration;
 
     public Settings zoneId(ZoneId zoneId) {
         this.zoneId = zoneId;
@@ -22,4 +23,12 @@ public class Settings extends BaseModel {
         return zoneId;
     }
 
+    public Settings configuration(Integer configuration) {
+        this.configuration = configuration;
+        return this;
+    }
+
+    public Integer configuration() {
+        return configuration;
+    }
 }

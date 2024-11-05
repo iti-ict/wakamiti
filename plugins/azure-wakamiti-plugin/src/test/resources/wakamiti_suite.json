@@ -31,7 +31,8 @@
     "displayName" : "Feature: Azure integration feature",
     "tags" : [ "ID-azure-1", "definition" ],
     "properties" : {
-      "gherkinType" : "feature"
+      "gherkinType" : "feature",
+      "azureSuite" : "api/suite/azure"
     },
     "startInstant" : "2024-01-03T13:14:26.047767",
     "finishInstant" : "2024-01-03T13:14:26.083135",

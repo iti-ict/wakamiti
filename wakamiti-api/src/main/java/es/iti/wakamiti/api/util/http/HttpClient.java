@@ -283,8 +283,17 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
         CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
                 .sendAsync(request, asJSON());
-        completable.thenAccept(postCall);
-        return completable;
+        return completable.thenApply(response -> {
+            try {
+                postCall.accept(response);
+            } catch (RuntimeException e) {
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("HTTP call => {} ", stringify(response.request()));
+                }
+                throw e;
+            }
+            return response;
+        });
     }
 
     private String stringify(HttpRequest request) {

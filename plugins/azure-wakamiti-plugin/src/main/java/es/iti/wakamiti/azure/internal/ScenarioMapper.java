@@ -13,6 +13,8 @@ import es.iti.wakamiti.azure.api.model.TestSuite;
 
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 
 public class ScenarioMapper extends Mapper {
 
@@ -25,7 +27,8 @@ public class ScenarioMapper extends Mapper {
         return super.suiteMap(target)
                 .flatMap(p ->
                         p.key().flatten(node -> gherkinType(node).equals(type()))
-                                .map(node -> new Pair<>(node, new TestSuite().name(p.key().getName()).parent(p.value())))
+                                .map(node -> new Pair<>(node, target.getProperties().containsKey(AZURE_SUITE) ?
+                                        p.value() : new TestSuite().name(p.key().getName()).parent(p.value())))
                 );
     }
 

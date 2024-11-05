@@ -23,9 +23,9 @@ public class TestPlan extends BaseModel {
     @JsonProperty(required = true)
     private String name;
     @JsonProperty(value = "areaPath", required = true)
-    private Path area;
+    private String area;
     @JsonProperty(required = true)
-    private Path iteration;
+    private String iteration;
     @JsonProperty
     private String state;
     @JsonProperty
@@ -37,8 +37,8 @@ public class TestPlan extends BaseModel {
 
     public TestPlan(String name, Path area, Path iteration) {
         this.name = name;
-        this.area = area;
-        this.iteration = iteration;
+        area(area);
+        iteration(iteration);
     }
 
     public TestPlan id(String id) {
@@ -52,12 +52,12 @@ public class TestPlan extends BaseModel {
     }
 
     public TestPlan area(Path area) {
-        this.area = area;
+        this.area = area.toString().replaceAll("/", "\\");
         return this;
     }
 
     public TestPlan iteration(Path iteration) {
-        this.iteration = iteration;
+        this.iteration = iteration.toString().replaceAll("/", "\\");
         return this;
     }
 
@@ -80,11 +80,11 @@ public class TestPlan extends BaseModel {
     }
 
     public Path area() {
-        return area;
+        return Path.of(area);
     }
 
     public Path iteration() {
-        return iteration;
+        return Path.of(iteration);
     }
 
     public String state() {
