@@ -1,4 +1,4 @@
-package es.iti.wakamiti.xray.dto;
+package es.iti.wakamiti.xray.model;
 
 public class XRayTestCase {
 

@@ -1,6 +1,6 @@
 package es.iti.wakamiti.xray.api;
 
-import es.iti.wakamiti.xray.dto.JiraIssue;
+import es.iti.wakamiti.xray.model.JiraIssue;
 import org.slf4j.Logger;
 
 import java.util.Arrays;

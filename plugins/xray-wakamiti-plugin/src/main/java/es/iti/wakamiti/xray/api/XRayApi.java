@@ -1,8 +1,8 @@
 package es.iti.wakamiti.xray.api;
 
-import es.iti.wakamiti.xray.dto.JiraIssue;
-import es.iti.wakamiti.xray.dto.XRayPlan;
-import es.iti.wakamiti.xray.dto.XRayTestCase;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.XRayPlan;
+import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
 import java.util.List;
