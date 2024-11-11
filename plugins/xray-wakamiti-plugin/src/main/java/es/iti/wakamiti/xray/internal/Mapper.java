@@ -6,7 +6,7 @@ import es.iti.wakamiti.api.util.MapUtils;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.azure.api.model.TestCase;
 import es.iti.wakamiti.azure.api.model.TestSuite;
-import es.iti.wakamiti.xray.dto.XRayTestCase;
+import es.iti.wakamiti.xray.model.XRayTestCase;
 
 import java.io.File;
 import java.nio.file.Path;
