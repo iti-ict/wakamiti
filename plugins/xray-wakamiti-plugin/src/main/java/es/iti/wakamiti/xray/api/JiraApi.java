@@ -1,4 +1,4 @@
-package es.iti.wakamiti.xray;
+package es.iti.wakamiti.xray.api;
 
 import es.iti.wakamiti.xray.dto.JiraIssue;
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class JiraApi extends BaseApi {
 
-    private static final String API_CREATE_ISSUE = "/rest/api/3/issue";
+    private static final String API_ISSUE = "/rest/api/3/issue";
     private final String project;
     private final Logger logger;
 
@@ -40,15 +40,15 @@ public class JiraApi extends BaseApi {
                 )
         ));
 
-        String response = post(API_CREATE_ISSUE, payload);
-        String key = extract(response, "$.id", "Cannot find the id of the new plan");
-        String self = extract(response, "$.self", "Cannot find the id of the new plan");
+        String response = post(API_ISSUE, payload);
+        String key = extract(response, "$.id", "Cannot find the attribute 'id' of the issue");
+        String self = extract(response, "$.self", "Cannot find the attribute 'self' of the issue");
 
         return new JiraIssue(key, self, summary, description, type);
     }
 
     public JiraIssue getIssue(String id) {
-        String response = get(API_CREATE_ISSUE + "/" + id);
+        String response = get(API_ISSUE + "/" + id);
 
         String key = extract(response, "$.id", "Cannot find the attribute 'id' of the issue");
         String self = extract(response, "$.self", "Cannot find the attribute 'self' of the issue");
