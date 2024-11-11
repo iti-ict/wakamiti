@@ -1,4 +1,4 @@
-package es.iti.wakamiti.xray;
+package es.iti.wakamiti.xray.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,12 +38,13 @@ public class BaseApi {
     }
 
 
+    protected <T> T extractList(String json, String path, String errorMessage) {
+        Object object = validatePath(json, path, errorMessage);
+        return (T) object;
+    }
+
     protected String extract(String json, String path, String errorMessage) {
-        logger.debug("checking path {}", path);
-        Object object = JsonPath.read(json, path);
-        if (object == null) {
-            throw new NoSuchElementException(errorMessage);
-        }
+        Object object = validatePath(json, path, errorMessage);
         String extracted;
         if (object instanceof List<?>) {
             List<?> list = (List<?>) object;
@@ -58,6 +59,14 @@ public class BaseApi {
         return extracted;
     }
 
+    private Object validatePath(String json, String path, String errorMessage) {
+        logger.debug("checking path {}", path);
+        Object object = JsonPath.read(json, path);
+        if (object == null) {
+            throw new NoSuchElementException(errorMessage);
+        }
+        return object;
+    }
 
     protected String extract(String json, String path) {
         return extract(json, path, "Cannot extract path " + path + " from response");
