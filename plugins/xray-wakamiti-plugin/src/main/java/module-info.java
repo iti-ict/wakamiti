@@ -1,7 +1,7 @@
 open module es.iti.wakamiti.plugins.xray {
 
     exports es.iti.wakamiti.xray;
-    exports es.iti.wakamiti.xray.dto;
+    exports es.iti.wakamiti.xray.model;
     exports es.iti.wakamiti.xray.api;
 
     requires org.slf4j;
