@@ -8,10 +8,10 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.xray.api.XRayApi;
-import es.iti.wakamiti.xray.dto.XRayPlan;
-import es.iti.wakamiti.xray.dto.XRayTestCase;
 import es.iti.wakamiti.xray.internal.Mapper;
 import es.iti.wakamiti.xray.internal.WakamitiXRayException;
+import es.iti.wakamiti.xray.model.XRayPlan;
+import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
 import java.net.URL;
@@ -36,7 +36,6 @@ public class XRaySynchronizer implements EventObserver {
     private final Set<Path> attachments = new LinkedHashSet<>();
     private boolean enabled;
     private URL baseURL;
-    private String organization;
     private String project;
     private String version;
     private XRayPlan testPlan;
@@ -55,10 +54,6 @@ public class XRaySynchronizer implements EventObserver {
 
     public void baseURL(URL baseURL) {
         this.baseURL = baseURL;
-    }
-
-    public void organization(String organization) {
-        this.organization = organization;
     }
 
     public void project(String project) {
@@ -178,10 +173,6 @@ public class XRaySynchronizer implements EventObserver {
             LOGGER.debug("{} remote test cases created", newTests.size());
         }
 
-
-        List<TestSuite> nonSuites = remoteSuites.stream().filter(s -> !suites.contains(s)).collect(Collectors.toList());
-        // azure contiene suites que no constan en local
-        remoteSuites.removeAll(nonSuites);
     }
 
 }

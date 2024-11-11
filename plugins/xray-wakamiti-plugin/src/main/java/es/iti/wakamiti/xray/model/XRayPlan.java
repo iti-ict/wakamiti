@@ -1,4 +1,4 @@
-package es.iti.wakamiti.xray.dto;
+package es.iti.wakamiti.xray.model;
 
 import java.util.List;
 
