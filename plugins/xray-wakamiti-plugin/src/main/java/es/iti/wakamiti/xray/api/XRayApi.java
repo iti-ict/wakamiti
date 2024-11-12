@@ -5,6 +5,7 @@ import es.iti.wakamiti.xray.model.XRayPlan;
 import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +13,13 @@ public class XRayApi extends BaseApi {
 
     private static final String BEARER = "Bearer ";
     private static final String API_GRAPHQL = "/api/v2/graphql";
+    private static final String AUTH_URL = "/api/v1/authenticate";
 
     private final String project;
     private final Logger logger;
 
-    public XRayApi(String urlBase, String token, String project, Logger logger) {
-        super(urlBase, BEARER.concat(token), logger);
+    public XRayApi(URL baseURL, String clientId, String clientSecret, String project, Logger logger) {
+        super(baseURL, AUTH_URL, clientId, clientSecret, logger);
         this.project = project;
         this.logger = logger;
     }
@@ -84,16 +86,6 @@ public class XRayApi extends BaseApi {
                 "            name" +
                 "            kind" +
                 "        }" +
-                "        steps {" +
-                "            id" +
-                "            data" +
-                "            action" +
-                "            result" +
-                "            attachments {" +
-                "                id" +
-                "                filename" +
-                "            }" +
-                "        }" +
                 "        gherkin" +
                 "    }";
 
@@ -111,4 +103,18 @@ public class XRayApi extends BaseApi {
         return Optional.of(new XRayTestCase(key, issue, gherkin));
     }
 
+    public void addTestsToPlan(List<String> createdIssues, XRayPlan remotePlan) {
+        String mutation =
+                "mutation {" +
+                        "    addTestsToTestPlan(" +
+                        "        issueId: " + remotePlan.getId() + "," +
+                        "        testIssueIds: [" + String.join(",", createdIssues) + "]" +
+                        "    ) {" +
+                        "        addedTests" +
+                        "        warning" +
+                        "    }" +
+                        "}";
+
+        post(API_GRAPHQL, mutation);
+    }
 }

@@ -7,6 +7,7 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.xray.api.JiraApi;
 import es.iti.wakamiti.xray.api.XRayApi;
 import es.iti.wakamiti.xray.internal.Mapper;
 import es.iti.wakamiti.xray.internal.WakamitiXRayException;
@@ -15,11 +16,8 @@ import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
 import java.net.URL;
-import java.nio.file.Path;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
@@ -33,20 +31,19 @@ public class XRaySynchronizer implements EventObserver {
     public static final String GHERKIN_TYPE_FEATURE = "feature";
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
 
-    private final Set<Path> attachments = new LinkedHashSet<>();
     private boolean enabled;
     private URL baseURL;
+    private String xRayclientId;
+    private String xRayclientSecret;
+    private String jiraCredentials;
     private String project;
-    private String version;
     private XRayPlan testPlan;
-    private String suiteBase;
     private String tag;
-    private boolean testCasePerFeature;
     private boolean createItemsIfAbsent;
-    private boolean removeOrphans;
     private String idTagPattern;
 
-    private XRayApi api;
+    private XRayApi xRayApi;
+    private JiraApi jiraApi;
 
     public void enabled(boolean enabled) {
         this.enabled = enabled;
@@ -56,40 +53,32 @@ public class XRaySynchronizer implements EventObserver {
         this.baseURL = baseURL;
     }
 
-    public void project(String project) {
-        this.project = project;
+    public void xRayclientId(String clientId) {
+        this.xRayclientId = clientId;
     }
 
-    public void version(String version) {
-        this.version = version;
+    public void xRayclientSecret(String clientSecret) {
+        this.xRayclientSecret = clientSecret;
+    }
+
+    public void jiraCredentials(String jiraCredentials) {
+        this.jiraCredentials = jiraCredentials;
+    }
+
+    public void project(String project) {
+        this.project = project;
     }
 
     public void testPlan(XRayPlan testPlan) {
         this.testPlan = testPlan;
     }
 
-    public void suiteBase(String suiteBase) {
-        this.suiteBase = suiteBase;
-    }
-
     public void tag(String tag) {
         this.tag = tag;
     }
 
-    public void testCasePerFeature(boolean testCasePerFeature) {
-        this.testCasePerFeature = testCasePerFeature;
-    }
-
     public void createItemsIfAbsent(boolean createItemsIfAbsent) {
         this.createItemsIfAbsent = createItemsIfAbsent;
-    }
-
-    public void removeOrphans(boolean removeOrphans) {
-        this.removeOrphans = removeOrphans;
-    }
-
-    public void attachments(Set<Path> attachments) {
-        this.attachments.addAll(attachments);
     }
 
     public void idTagPattern(String idTagPattern) {
@@ -104,6 +93,9 @@ public class XRaySynchronizer implements EventObserver {
             return;
         }
         PlanNodeSnapshot data = (PlanNodeSnapshot) event.data();
+
+        xRayApi = new XRayApi(baseURL, xRayclientId, xRayclientSecret, project, LOGGER);
+        jiraApi = new JiraApi(baseURL, jiraCredentials, project, LOGGER);
 
         if (Event.PLAN_CREATED.equals(event.type())) {
             try {
@@ -131,10 +123,10 @@ public class XRaySynchronizer implements EventObserver {
     }
 
     private void sync(PlanNodeSnapshot plan) {
-        XRayPlan remotePlan = api.getTestPlan(testPlan.getId())
+        XRayPlan remotePlan = xRayApi.getTestPlan(testPlan.getId())
                 .orElseGet(() -> {
                     if (createItemsIfAbsent) {
-                        return api.createTestPlan(testPlan.getSummary());
+                        return xRayApi.createTestPlan(testPlan.getSummary());
                     } else {
                         throw new WakamitiXRayException(
                                 "Test Plan with name '{}' does not exist in XRay. ",
@@ -152,24 +144,28 @@ public class XRaySynchronizer implements EventObserver {
                 .collect(Collectors.toList());
 
         List<XRayTestCase> remoteTests = remotePlan.getTestCases().stream().parallel()
-                .map(testCase -> api.getTestCase(testCase.getIssueId()))
+                .map(testCase -> xRayApi.getTestCase(testCase.getIssueId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
         List<XRayTestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t)).collect(Collectors.toList());
-        List<Pair<XRayTestCase, XRayTestCase>> modSuiteTests = remoteTests.stream()
-                .filter(t -> tests.stream().anyMatch(c -> t.tag().equals(c.tag()) && t.isDifferent(c)))
-                .map(t -> new Pair<>(t, tests.stream().filter(x -> x.tag().equals(t.tag())).findFirst().get()))
+        List<Pair<XRayTestCase, XRayTestCase>> modTests = remoteTests.stream()
+                .filter(t -> tests.stream().anyMatch(c -> t.hasSameLabels(c) && t.isDifferent(c)))
+                .map(t -> new Pair<>(t, tests.stream()
+                        .filter(t::hasSameLabels)
+                        .findFirst()
+                        .get()))
                 .collect(Collectors.toList());
 
-        if (!modSuiteTests.isEmpty()) {
-            api().updateTestCases(remotePlan, modSuiteTests);
-            LOGGER.debug("{} test cases updated", modSuiteTests.size());
+        if (!modTests.isEmpty()) {
+            jiraApi.updateTestCases(modTests);
+            LOGGER.debug("{} test cases updated", modTests.size());
         }
 
         if (!newTests.isEmpty()) {
-            remoteTests.addAll(api().createTestCases(remotePlan, newTests));
+            List<String> createdIssues = jiraApi.createTestCases(remotePlan, newTests);
+            xRayApi.addTestsToPlan(createdIssues, remotePlan);
             LOGGER.debug("{} remote test cases created", newTests.size());
         }
 
