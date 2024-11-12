@@ -8,26 +8,42 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class BaseApi {
 
     public static final String APPLICATION_JSON = "application/json";
 
-    private final String urlBase;
+    private final URL baseURL;
     private final String authorization;
     private final HttpClient httpClient;
     private final Logger logger;
 
-    public BaseApi(String urlBase, String authorization, Logger logger) {
-        this.urlBase = urlBase;
+    public BaseApi(URL baseURL, String authorization, Logger logger) {
+        this.baseURL = baseURL;
         this.authorization = authorization;
+        this.logger = logger;
+
+        this.httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .connectTimeout(Duration.ofSeconds(20))
+                .build();
+    }
+
+    public BaseApi(URL baseURL, String authURL, String clientId, String clientSecret, Logger logger) {
+        String payload = toJSON(Map.of("client_id", clientId, "client_secret", clientSecret));
+        this.baseURL = baseURL;
+        String response = send(authRequest(authURL, payload), payload);
+        this.authorization = "Bearer " + extract(response, "$");
         this.logger = logger;
 
         this.httpClient = HttpClient.newBuilder()
@@ -82,6 +98,10 @@ public class BaseApi {
         return post(uri, payload, APPLICATION_JSON);
     }
 
+    protected String put(String uri, String payload) {
+        return put(uri, payload, APPLICATION_JSON);
+    }
+
 
     protected String patch(String uri, String payload) {
         return patch(uri, payload, APPLICATION_JSON);
@@ -90,6 +110,10 @@ public class BaseApi {
 
     protected String post(String uri, String payload, String contentType) {
         return send(request("POST", uri, payload, contentType), payload);
+    }
+
+    protected String put(String uri, String payload, String contentType) {
+        return send(request("PUT", uri, payload, contentType), payload);
     }
 
 
@@ -116,21 +140,29 @@ public class BaseApi {
                 .build();
     }
 
+    private HttpRequest authRequest(String uri, String payload) {
+        return HttpRequest.newBuilder()
+                .method("POST", HttpRequest.BodyPublishers.ofString(payload))
+                .uri(url(uri))
+                .header("Content-Type", APPLICATION_JSON)
+                .build();
+    }
+
     private URI url(String uri) {
-        return URI.create(urlBase + uri);
+        return URI.create(baseURL + uri);
     }
 
     private String send(HttpRequest request, String payload) {
         try {
             if (logger.isTraceEnabled()) {
-                logger.trace("Azure call => {} {} {} ", request.method(), request.uri(), payload);
+                logger.trace("HTTP call => {} {} {} ", request.method(), request.uri(), payload);
             }
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (logger.isTraceEnabled()) {
-                logger.trace("Azure response => {} {}", response.statusCode(), response.body());
+                logger.trace("HTTP response => {} {}", response.statusCode(), response.body());
             }
             if (response.statusCode() >= 400) {
-                throw new WakamitiException("The Azure API returned a non-OK response");
+                throw new WakamitiException("The HTTP returned a non-OK response");
             }
             return response.body();
         } catch (IOException e) {
