@@ -13,6 +13,7 @@ import es.iti.wakamiti.xray.internal.Mapper;
 import es.iti.wakamiti.xray.internal.WakamitiXRayException;
 import es.iti.wakamiti.xray.model.XRayPlan;
 import es.iti.wakamiti.xray.model.XRayTestCase;
+import es.iti.wakamiti.xray.model.XRayTestSet;
 import org.slf4j.Logger;
 
 import java.net.URL;
@@ -38,9 +39,11 @@ public class XRaySynchronizer implements EventObserver {
     private String jiraCredentials;
     private String project;
     private XRayPlan testPlan;
+    private String testSet;
     private String tag;
     private boolean createItemsIfAbsent;
     private String idTagPattern;
+    private boolean testCasePerFeature;
 
     private XRayApi xRayApi;
     private JiraApi jiraApi;
@@ -73,6 +76,10 @@ public class XRaySynchronizer implements EventObserver {
         this.testPlan = testPlan;
     }
 
+    public void testSet(String testSet) {
+        this.testSet = testSet;
+    }
+
     public void tag(String tag) {
         this.tag = tag;
     }
@@ -83,6 +90,10 @@ public class XRaySynchronizer implements EventObserver {
 
     public void idTagPattern(String idTagPattern) {
         this.idTagPattern = idTagPattern;
+    }
+
+    public void testCasePerFeature(boolean testCasePerFeature) {
+        this.testCasePerFeature = testCasePerFeature;
     }
 
     @Override
@@ -137,13 +148,22 @@ public class XRaySynchronizer implements EventObserver {
         LOGGER.debug("Remote plan #{} ready to sync", remotePlan.getId());
 
         String gherkinType = testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO;
-        Mapper mapper = Mapper.ofType(gherkinType).instance(suiteBase);
+        Mapper mapper = Mapper.ofType(gherkinType).instance(testSet);
 
         List<XRayTestCase> tests = mapper.map(plan)
                 .filter(t -> isBlank(tag) || t.getIssue().getLabels().contains(tag))
                 .collect(Collectors.toList());
 
-        List<XRayTestCase> remoteTests = remotePlan.getTestCases().stream().parallel()
+        List<XRayTestSet> testSets = tests.stream().map(XRayTestCase::getTestSetList).flatMap(List::stream).collect(Collectors.toList());
+        List<XRayTestSet> remoteTestSets = xRayApi.getTestSets(remotePlan);
+        List<XRayTestSet> newTestSets = testSets.stream().filter(s -> !remoteTestSets.contains(s)).collect(Collectors.toList());
+
+        if (!newTestSets.isEmpty()) {
+            remoteTestSets.addAll(xRayApi.createTestSets(newTestSets));
+            LOGGER.debug("{} remote test sets created", newTestSets.size());
+        }
+
+        List<XRayTestCase> remoteTests = remoteTestSets.stream().parallel()
                 .map(testCase -> xRayApi.getTestCase(testCase.getIssueId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -155,7 +175,7 @@ public class XRaySynchronizer implements EventObserver {
                 .map(t -> new Pair<>(t, tests.stream()
                         .filter(t::hasSameLabels)
                         .findFirst()
-                        .get()))
+                        .orElseThrow()))
                 .collect(Collectors.toList());
 
         if (!modTests.isEmpty()) {
@@ -168,6 +188,10 @@ public class XRaySynchronizer implements EventObserver {
             xRayApi.addTestsToPlan(createdIssues, remotePlan);
             LOGGER.debug("{} remote test cases created", newTests.size());
         }
+
+        List<XRayTestSet> nonSuites = remoteTestSets.stream().filter(s -> !testSets.contains(s)).collect(Collectors.toList());
+        // azure contiene suites que no constan en local
+        remoteTestSets.removeAll(nonSuites);
 
     }
 
