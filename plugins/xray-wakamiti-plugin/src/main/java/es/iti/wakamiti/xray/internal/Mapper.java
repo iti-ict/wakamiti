@@ -4,20 +4,19 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.MapUtils;
 import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.azure.api.model.TestCase;
-import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.XRayTestCase;
+import es.iti.wakamiti.xray.model.XRayTestSet;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_FEATURE;
-import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_SCENARIO;
 import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_FEATURE;
 import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
 import static java.util.stream.Collectors.*;
@@ -31,7 +30,7 @@ public abstract class Mapper {
     private static final String AZURE_SUITE = "azureSuite";
     private final String suiteBase;
 
-    public Mapper(final String suiteBase) {
+    protected Mapper(final String suiteBase) {
         this.suiteBase = suiteBase;
     }
 
@@ -42,7 +41,7 @@ public abstract class Mapper {
         ).get(type);
     }
 
-    protected Stream<Pair<PlanNodeSnapshot, TestSuite>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, XRayTestSet>> suiteMap(PlanNodeSnapshot target) {
         Path suitePath = target.getProperties().entrySet().stream()
                 .filter(k -> k.getKey().equals(AZURE_SUITE))
                 .map(Map.Entry::getValue)
@@ -58,25 +57,25 @@ public abstract class Mapper {
                     return path;
                 });
 
-        TestSuite suite = Stream.of(suitePath.toString().split(escapeEcmaScript(File.separator)))
-                .map(dir -> new TestSuite().name(dir).suiteType(TestSuite.Type.staticTestSuite))
-                .reduce((a, b) -> b.parent(a.hasChildren(true)))
+        XRayTestSet suite = Stream.of(suitePath.toString().split(escapeEcmaScript(File.separator)))
+                .map(dir -> new XRayTestSet().issue(new JiraIssue().summary(dir)))
+                .findFirst()
                 .orElseThrow();
 
         return Stream.of(new Pair<>(target, suite));
     }
 
-    protected TestCase caseMap(int i, TestSuite suite, PlanNodeSnapshot target) {
-        return new TestCase()
-                .name(target.getName())
-                .description(join(target.getDescription(), System.lineSeparator()))
-                .tag(
-                        Optional.of(target.getId()).filter(id -> !id.startsWith("#"))
-                                .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
+    protected XRayTestCase caseMap(XRayTestSet suite, PlanNodeSnapshot target) {
+        return new XRayTestCase()
+                .issue(new JiraIssue()
+                        .summary(target.getName())
+                        .description(join(target.getDescription(), System.lineSeparator()))
+                        .labels(Collections.singletonList(
+                                Optional.of(target.getId()).filter(id -> !id.startsWith("#"))
+                                        .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
+                        ))
                 )
-                .order(i)
-                .suite(suite.hasChildren(true))
-                .metadata(target);
+                .testSetList(Collections.singletonList(suite));
     }
 
     public Stream<XRayTestCase> map(PlanNodeSnapshot plan) {
@@ -85,7 +84,7 @@ public abstract class Mapper {
                 .flatMap(this::suiteMap)
                 .collect(groupingBy(Pair::value, mapping(Pair::key, toList())))
                 .entrySet().stream().flatMap(e ->
-                    IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(i, e.getKey(), e.getValue().get(i)))
+                        IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(e.getKey(), e.getValue().get(i)))
                 );
 
     }

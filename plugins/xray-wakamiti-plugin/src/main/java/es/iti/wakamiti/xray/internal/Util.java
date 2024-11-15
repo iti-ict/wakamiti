@@ -10,6 +10,7 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.xray.XRaySynchronizer;
+import es.iti.wakamiti.xray.model.XRayTestSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;

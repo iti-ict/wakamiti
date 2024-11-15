@@ -4,12 +4,12 @@ import java.util.List;
 
 public class JiraIssue {
 
-    private final String key;
-    private final String self;
-    private final String summary;
-    private final String description;
-    private final String type;
-    private final List<String> labels;
+    private String key;
+    private String self;
+    private String summary;
+    private String description;
+    private String type;
+    private List<String> labels;
 
     public JiraIssue(String key, String self, String summary, String description, String type, List<String> labels) {
         this.key = key;
@@ -18,6 +18,40 @@ public class JiraIssue {
         this.description = description;
         this.type = type;
         this.labels = labels;
+    }
+
+    public JiraIssue() {
+
+    }
+
+    public JiraIssue key(String key) {
+        this.key = key;
+        return this;
+    }
+
+    public JiraIssue self(String self) {
+        this.self = self;
+        return this;
+    }
+
+    public JiraIssue summary(String summary) {
+        this.summary = summary;
+        return this;
+    }
+
+    public JiraIssue description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public JiraIssue type(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public JiraIssue labels(List<String> labels) {
+        this.labels = labels;
+        return this;
     }
 
     public String getKey() {
