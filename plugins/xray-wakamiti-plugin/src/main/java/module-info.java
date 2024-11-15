@@ -10,6 +10,7 @@ open module es.iti.wakamiti.plugins.xray {
     requires java.net.http;
     requires json.path;
     requires com.fasterxml.jackson.databind;
+    requires org.apache.commons.text;
     requires org.apache.commons.lang3;
 
 }

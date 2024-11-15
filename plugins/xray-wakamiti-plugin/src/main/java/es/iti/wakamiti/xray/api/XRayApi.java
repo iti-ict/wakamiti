@@ -3,11 +3,13 @@ package es.iti.wakamiti.xray.api;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.XRayPlan;
 import es.iti.wakamiti.xray.model.XRayTestCase;
+import es.iti.wakamiti.xray.model.XRayTestSet;
 import org.slf4j.Logger;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class XRayApi extends BaseApi {
 
@@ -52,7 +54,7 @@ public class XRayApi extends BaseApi {
                 "mutation {" +
                         "    createTestPlan(" +
                         "        jira: {" +
-                        "            fields: { summary: " + title + ", project: {key: " + project + "} }" +
+                        "            fields: { summary: \"" + title + "\", project: {key: \"" + project + "\"} }" +
                         "        }" +
                         "    ) {" +
                         "        testPlan {" +
@@ -116,5 +118,40 @@ public class XRayApi extends BaseApi {
                         "}";
 
         post(API_GRAPHQL, mutation);
+    }
+
+    public List<XRayTestSet> getTestSets(XRayPlan remotePlan) {
+
+        return null;
+    }
+
+    public List<XRayTestSet> createTestSets(List<XRayTestSet> newTestSets) {
+        return newTestSets.stream().map(xrayTestSet -> {
+            String mutation =
+                    "mutation {" +
+                            "    createTestSet(" +
+//                            "        testIssueIds: [\"54321\"]" +
+                            "        jira: {" +
+                            "            fields: { summary: \"" + xrayTestSet.getIssue().getSummary() + "\", project: {key: \"" + project + "\" } }" +
+                            "        }" +
+                            "    ) {" +
+                            "        testSet {" +
+                            "            issueId" +
+                            "            jira(fields: [\"key\", \"summary\"])" +
+                            "        }" +
+                            "        warnings" +
+                            "    }" +
+                            "}";
+
+            String response = post(API_GRAPHQL, mutation);
+
+            String issueId = extract(response, "$.data.getTest.issueId", "Cannot find the attribute 'id' of the test plan");
+            JiraIssue issue = extractList(response, "$.data.getTest.jira", "Cannot find the attribute 'jira' of the test plan");
+
+            return new XRayTestSet()
+                    .issueId(issueId)
+                    .issue(issue);
+
+        }).collect(Collectors.toList());
     }
 }
