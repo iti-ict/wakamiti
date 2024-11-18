@@ -6,10 +6,9 @@
 package es.iti.wakamiti.azure.api;
 
 
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.model.Settings;
-import es.iti.wakamiti.azure.api.model.TestPlan;
-import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.*;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -17,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.matchers.MatchType;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
@@ -28,16 +28,21 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static java.util.stream.Collectors.*;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codehaus.groovy.runtime.DefaultGroovyMethods.groupBy;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.JsonBody.json;
 import static org.mockserver.model.RegexBody.regex;
 
 
@@ -77,14 +82,23 @@ public class TestPlanApiTest {
         mockServer(
                 request()
                         .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
                         .withPath("/ST/ACS/_apis/testplan/configurations")
                         .withQueryStringParameter("api-version", "6.0-preview"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("x-ms-continuationtoken", "123")
-                        .withBody(resource("server/configurations/none.json"))
-        ).ifPresent(requests::add);;
+                        .withBody("{}")
+        ).ifPresent(requests::add);
         mockServer(
                 request()
                         .withMethod("GET")
@@ -108,7 +122,8 @@ public class TestPlanApiTest {
         requests.forEach(mock::verify);
         assertThat(settings).isNotNull();
         assertThat(settings.zoneId()).isEqualTo(ZoneId.of("UTC+01:00"));
-        assertThat(settings.configuration()).isEqualTo(29);
+        assertThat(settings.testCaseType()).isEqualTo("Caso de prueba");
+        assertThat(settings.configuration()).isEqualTo("29");
     }
 
     @Test
@@ -121,6 +136,15 @@ public class TestPlanApiTest {
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(resource("server/settings/by_id.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
         ).ifPresent(requests::add);
         mockServer(
                 request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
@@ -141,7 +165,8 @@ public class TestPlanApiTest {
         requests.forEach(mock::verify);
         assertThat(settings).isNotNull();
         assertThat(settings.zoneId()).isEqualTo(ZoneId.of("UTC-12:00"));
-        assertThat(settings.configuration()).isEqualTo(13);
+        assertThat(settings.testCaseType()).isEqualTo("Caso de prueba");
+        assertThat(settings.configuration()).isEqualTo("13");
     }
 
     @Test
@@ -156,31 +181,14 @@ public class TestPlanApiTest {
                         .withBody(resource("server/settings/none.json"))
         ).ifPresent(requests::add);
         mockServer(
-                request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(resource("server/configurations/multiple.json"))
+                        .withBody(resource("server/categories/single.json"))
         ).ifPresent(requests::add);
-
-        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
-
-        // act
-        Settings settings = client.settings();
-        logResult(settings);
-
-        // check
-        requests.forEach(mock::verify);
-        assertThat(settings).isNotNull();
-        assertThat(settings.zoneId()).isEqualTo(ZoneId.systemDefault());
-        assertThat(settings.configuration()).isEqualTo(13);
-    }
-
-    @Test
-    public void testSettingsWhenTZEndpointNotFoundWithSuccess() throws IOException {
-        // prepare
-        List<HttpRequest> requests = new ArrayList<>();
         mockServer(
                 request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
                 response()
@@ -200,7 +208,44 @@ public class TestPlanApiTest {
         requests.forEach(mock::verify);
         assertThat(settings).isNotNull();
         assertThat(settings.zoneId()).isEqualTo(ZoneId.systemDefault());
-        assertThat(settings.configuration()).isEqualTo(13);
+        assertThat(settings.testCaseType()).isEqualTo("Caso de prueba");
+        assertThat(settings.configuration()).isEqualTo("13");
+    }
+
+    @Test
+    public void testSettingsWhenTZEndpointNotFoundWithSuccess() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/configurations/multiple.json"))
+        ).ifPresent(requests::add);
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
+                .organization("ST").project("ACS").version("6.0-preview");
+
+        // act
+        Settings settings = client.settings();
+        logResult(settings);
+
+        // check
+        requests.forEach(mock::verify);
+        assertThat(settings).isNotNull();
+        assertThat(settings.zoneId()).isEqualTo(ZoneId.systemDefault());
+        assertThat(settings.testCaseType()).isEqualTo("Caso de prueba");
+        assertThat(settings.configuration()).isEqualTo("13");
     }
 
     @Test(expected = WakamitiAzureException.class)
@@ -213,6 +258,15 @@ public class TestPlanApiTest {
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(resource("server/settings/none.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
         ).ifPresent(requests::add);
         mockServer(
                 request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
@@ -250,11 +304,20 @@ public class TestPlanApiTest {
                         .withBody(resource("server/settings/none.json"))
         ).ifPresent(requests::add);
         mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
+        ).ifPresent(requests::add);
+        mockServer(
                 request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(resource("server/configurations/none.json"))
+                        .withBody("{}")
         ).ifPresent(requests::add);
 
         TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
@@ -272,6 +335,100 @@ public class TestPlanApiTest {
             throw e;
         }
     }
+
+    @Test(expected = WakamitiAzureException.class)
+    public void testSettingsWhenNoDefaultCategoryWithError() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/_api/_common/GetUserProfile")
+                        .withQueryStringParameter("api-version", "6.0-preview"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/settings/default.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/none.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/testplan/configurations")
+                        .withQueryStringParameter("api-version", "6.0-preview"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/configurations/multiple.json"))
+        ).ifPresent(requests::add);
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), "wakamiti")
+                .organization("ST").project("ACS").version("6.0-preview");
+
+        // act
+        try {
+            client.settings();
+
+            //check
+        } catch (WakamitiAzureException e) {
+            requests.forEach(mock::verify);
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
+                    "Please try to fix this problem in azure.");
+            assertThat(e.getCause()).isNotNull().hasMessage("Default test case category");
+            throw e;
+        }
+    }
+
+    @Test(expected = WakamitiAzureException.class)
+    public void testSettingsWhenNoCategoryWithError() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/_api/_common/GetUserProfile")
+                        .withQueryStringParameter("api-version", "6.0-preview"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/settings/default.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/testplan/configurations")
+                        .withQueryStringParameter("api-version", "6.0-preview"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/configurations/multiple.json"))
+        ).ifPresent(requests::add);
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), "wakamiti")
+                .organization("ST").project("ACS").version("6.0-preview");
+
+        // act
+        try {
+            client.settings();
+
+            //check
+        } catch (Exception e) {
+            requests.forEach(mock::verify);
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
+                    "Please try to fix this problem in azure.");
+            assertThat(e.getCause()).isNotNull().hasMessage("The Azure API returned a non-OK response");
+            throw e;
+        }
+    }
+
 
     @Test
     public void testGetTestPlanWhenExistsWithSuccess() throws IOException {
@@ -354,9 +511,12 @@ public class TestPlanApiTest {
         ).ifPresent(requests::add);
         mockServer(
                 request().withMethod("POST").withPath("/ST/ACS/_apis/testplan/plans")
-                        .withBody(regex(".*\"name\":\"Wakamiti Test Plan\".*"))
-                        .withBody(regex(".*\"areaPath\":\"ACS\".*"))
-                        .withBody(regex(".*\"iteration\":\"ACS\\\\\\\\Iteración 1\".*")),
+                        .withBody(json("{" +
+                                                "\"name\":\"Wakamiti Test Plan\"," +
+                                                "\"areaPath\":\"ACS\"," +
+                                                "\"iteration\":\"ACS\\\\Iteración 1\"" +
+                                        "}", MatchType.ONLY_MATCHING_FIELDS)
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -426,7 +586,7 @@ public class TestPlanApiTest {
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("x-ms-continuationtoken", "123")
-                        .withBody(resource("server/suites/none.json"))
+                        .withBody("{\"value\":[],\"count\":0}")
         ).ifPresent(requests::add);
         mockServer(
                 request()
@@ -493,9 +653,9 @@ public class TestPlanApiTest {
                 request()
                         .withMethod("POST")
                         .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites")
-                        .withBody(regex(".*\"name\":\"Feature 1\".*"))
-                        .withBody(regex(".*\"suiteType\":\"staticTestSuite\".*"))
-                        .withBody(regex(".*\"parentSuite\":\\{\"id\":\"56984\",\"name\":\"Wakamiti Test Plan\".*")),
+                        .withBody(regex(".*\"name\":\"Feature 1\".+" +
+                                "\"suiteType\":\"staticTestSuite\".+" +
+                                "\"parentSuite\":\\{\"id\":\"56984\",\"name\":\"Wakamiti Test Plan\".*")),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -568,6 +728,375 @@ public class TestPlanApiTest {
     }
 
 
+    @Test
+    public void testGetTestCasesWhenExistsWithSuccess() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        for (String suite : List.of("56984", "56985")) {
+            mockServer(
+                    request()
+                            .withMethod("GET")
+                            .withPath(format("/ST/ACS/_apis/testplan/Plans/56983/suites/{}/TestCase", suite))
+                            .withQueryStringParameter("witFields", join(List.of(TITLE, TAGS), ",")),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody(resource(format("server/workitems/list_{}.json", suite)))
+            ).ifPresent(requests::add);
+        }
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
+                .organization("ST").project("ACS").version("6.0-preview");
+
+
+        TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
+        TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
+                .id("56983").rootSuite(root);
+
+        List<TestSuite> suites = List.of(root, new TestSuite().id("56985").name("Feature 1").parent(root));
+
+        List<TestCase> testCases = List.of(
+                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
+                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
+                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3")
+        );
+
+        // act
+        List<TestCase> remoteTestCases = client.getTestCases(plan, suites, testCases, true);
+        logResult(remoteTestCases);
+
+        // check
+        requests.forEach(mock::verify);
+        assertThat(remoteTestCases).hasSize(3);
+        assertThat(remoteTestCases.get(0))
+                .hasFieldOrPropertyWithValue("id", "56977")
+                .hasFieldOrPropertyWithValue("name", "Scenario A");
+        assertThat(remoteTestCases.get(1))
+                .hasFieldOrPropertyWithValue("id", "56978")
+                .hasFieldOrPropertyWithValue("name", "Scenario B");
+        assertThat(remoteTestCases.get(2))
+                .hasFieldOrPropertyWithValue("id", "56979")
+                .hasFieldOrPropertyWithValue("name", "Scenario C");
+    }
+
+    @Test
+    public void testGetTestCasesWhenNotExistsAndCreateIfAbsentWithSuccess() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/wit/workitemtypecategories/Microsoft.TestCaseCategory"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/categories/single.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request().withMethod("GET").withPath("/ST/ACS/_apis/testplan/configurations"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/configurations/multiple.json"))
+        ).ifPresent(requests::add);
+
+        for (String suite : List.of("56984", "56985", "56986")) {
+            mockServer(
+                    request()
+                            .withMethod("GET")
+                            .withPath(format("/ST/ACS/_apis/testplan/Plans/56983/suites/{}/TestCase", suite))
+                            .withQueryStringParameter("witFields", join(List.of(TITLE, TAGS), ",")),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody("{\"value\":[],\"count\":0}")
+            ).ifPresent(requests::add);
+        }
+
+        TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
+        TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
+                .id("56983").rootSuite(root);
+        List<TestSuite> suites = List.of(root,
+                new TestSuite().id("56985").name("Feature 1").parent(root),
+                new TestSuite().id("56986").name("Feature 2").parent(root)
+        );
+        List<TestCase> testCases = List.of(
+                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
+                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
+                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3"),
+                new TestCase().name("Scenario X").suite(suites.get(2)).order(0).tag("ID-1A"),
+                new TestCase().name("Scenario Y").suite(suites.get(2)).order(1).tag("ID-2A"),
+                new TestCase().name("Scenario Z").suite(suites.get(2)).order(2).tag("ID-3A")
+        );
+
+        for (TestCase t : testCases) {
+            mockServer(
+                    request()
+                            .withMethod("POST")
+                            .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
+                            .withPath("/ST/ACS/_apis/wit/workitems/.+")
+                            .withBody(regex(format(".+" +
+                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+" +
+                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
+                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
+                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
+                                    t.name(), t.tag()))),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody(resource(format("server/workitems/post_{}.json", t.tag())))
+            ).ifPresent(requests::add);
+        }
+
+        for (Map.Entry<String, List<String>> e : map(
+                "56985", List.of("56977", "56978", "56979"),
+                "56986", List.of("56980", "56981", "56982")
+        ).entrySet()) {
+            String json = e.getValue().stream().map(t -> format("{\"workItem\":{\"id\":\"{}\"}}", t))
+                    .collect(joining(",", "[", "]"));
+            mockServer(
+                    request()
+                            .withMethod("POST")
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withPath(format("/ST/ACS/_apis/testplan/Plans/56983/Suites/{}/TestCase", e.getKey()))
+                            .withBody(json(json, MatchType.ONLY_MATCHING_FIELDS)),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody("[]")
+            ).ifPresent(requests::add);
+        }
+
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
+                .organization("ST").project("ACS").version("6.0-preview");
+        client.settings();
+
+        // act
+        List<TestCase> remoteTestCases = client.getTestCases(plan, suites, testCases, true);
+        logResult(remoteTestCases);
+
+        // check
+        requests.forEach(mock::verify);
+        assertThat(remoteTestCases).hasSize(6);
+        assertThat(remoteTestCases.get(0))
+                .hasFieldOrPropertyWithValue("id", "56977")
+                .hasFieldOrPropertyWithValue("name", "Scenario A")
+                .hasFieldOrPropertyWithValue("tag", "ID-1");
+        assertThat(remoteTestCases.get(1))
+                .hasFieldOrPropertyWithValue("id", "56978")
+                .hasFieldOrPropertyWithValue("name", "Scenario B")
+                .hasFieldOrPropertyWithValue("tag", "ID-2");
+        assertThat(remoteTestCases.get(2))
+                .hasFieldOrPropertyWithValue("id", "56979")
+                .hasFieldOrPropertyWithValue("name", "Scenario C")
+                .hasFieldOrPropertyWithValue("tag", "ID-3");
+        assertThat(remoteTestCases.get(3))
+                .hasFieldOrPropertyWithValue("id", "56980")
+                .hasFieldOrPropertyWithValue("name", "Scenario X")
+                .hasFieldOrPropertyWithValue("tag", "ID-1A");
+        assertThat(remoteTestCases.get(4))
+                .hasFieldOrPropertyWithValue("id", "56981")
+                .hasFieldOrPropertyWithValue("name", "Scenario Y")
+                .hasFieldOrPropertyWithValue("tag", "ID-2A");
+        assertThat(remoteTestCases.get(5))
+                .hasFieldOrPropertyWithValue("id", "56982")
+                .hasFieldOrPropertyWithValue("name", "Scenario Z")
+                .hasFieldOrPropertyWithValue("tag", "ID-3A");
+    }
+
+    @Test
+    public void testGetTestCasesWhenNotExistsAndNotCreateIfAbsentWithSuccess() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites/56984/TestCase")
+                        .withQueryStringParameter("witFields", join(List.of(TITLE, TAGS), ",")),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/workitems/list_56984.json"))
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites/56985/TestCase")
+                        .withQueryStringParameter("witFields", join(List.of(TITLE, TAGS), ",")),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/workitems/list_56985.json"))
+        ).ifPresent(requests::add);
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
+                .organization("ST").project("ACS").version("6.0-preview");
+
+
+        TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
+        TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
+                .id("56983").rootSuite(root);
+
+        List<TestSuite> suites = List.of(root, new TestSuite().id("56985").name("Feature 1").parent(root));
+
+        List<TestCase> testCases = List.of(
+                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
+                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
+                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3"),
+                new TestCase().name("Scenario D").suite(suites.get(1)).order(3).tag("ID-4")
+        );
+
+        // act
+        List<TestCase> remoteTestCases = client.getTestCases(plan, suites, testCases, false);
+        logResult(remoteTestCases);
+
+        // check
+        requests.forEach(mock::verify);
+        assertThat(remoteTestCases).hasSize(3);
+        assertThat(remoteTestCases.get(0))
+                .hasFieldOrPropertyWithValue("id", "56977")
+                .hasFieldOrPropertyWithValue("name", "Scenario A");
+        assertThat(remoteTestCases.get(1))
+                .hasFieldOrPropertyWithValue("id", "56978")
+                .hasFieldOrPropertyWithValue("name", "Scenario B");
+        assertThat(remoteTestCases.get(2))
+                .hasFieldOrPropertyWithValue("id", "56979")
+                .hasFieldOrPropertyWithValue("name", "Scenario C");
+    }
+
+    @Test
+    public void testGetTestCasesWhenExistsAndHasChangedWithSuccess() throws IOException {
+        // prepare
+        List<HttpRequest> requests = new ArrayList<>();
+
+        for (String suite : List.of("56984", "56985", "56986")) {
+            mockServer(
+                    request()
+                            .withMethod("GET")
+                            .withPath(format("/ST/ACS/_apis/testplan/Plans/56983/Suites/{}/TestCase", suite))
+                            .withQueryStringParameter("witFields", join(List.of(TITLE, TAGS), ",")),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody(resource(format("server/workitems/list_{}.json", suite)))
+            ).ifPresent(requests::add);
+        }
+
+        TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
+        TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
+                .id("56983").rootSuite(root);
+
+        List<TestSuite> suites = List.of(root,
+                new TestSuite().id("56985").name("Feature 1").parent(root),
+                new TestSuite().id("56986").name("Feature 2").parent(root)
+        );
+        List<Pair<String, TestCase>> testCases = List.of(
+                new Pair<>("56977", new TestCase().name("Scenario AA").suite(suites.get(2)).order(0).tag("ID-1")),
+                new Pair<>("56978", new TestCase().name("Scenario BB").suite(suites.get(2)).order(1).tag("ID-2")),
+                new Pair<>("56979", new TestCase().name("Scenario CC").suite(suites.get(2)).order(4).tag("ID-3")),
+                new Pair<>("56980", new TestCase().name("Scenario XX").suite(suites.get(1)).order(0).tag("ID-1A")),
+                new Pair<>("56981", new TestCase().name("Scenario YY").suite(suites.get(1)).order(1).tag("ID-2A")),
+                new Pair<>("56982", new TestCase().name("Scenario ZZ").suite(suites.get(1)).order(2).tag("ID-3A"))
+        );
+
+        for (Pair<String, TestCase> p : testCases) {
+            mockServer(
+                    request()
+                            .withMethod("PATCH")
+                            .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
+                            .withPath(format("/ST/ACS/_apis/wit/workitems/{}", p.key()))
+                            .withBody(regex(format(".+" +
+                                            "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
+                                    p.value().name()))),
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody(resource(format("server/workitems/patch_{}.json", p.value().tag())))
+            ).ifPresent(requests::add);
+        }
+
+        mockServer(
+                request()
+                        .withMethod("DELETE")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/Suites/56985/TestCase/56977,56978,56979"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[]")
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("DELETE")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/Suites/56986/TestCase/56980,56981,56982"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[]")
+        ).ifPresent(requests::add);
+
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/Suites/56985/TestCase/56980,56981,56982"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[]")
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/ST/ACS/_apis/testplan/Plans/56983/Suites/56986/TestCase/56977,56978,56979"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[]")
+        ).ifPresent(requests::add);
+
+
+        TestPlanApi client = new TestPlanApi(new URL(BASE_URL), Function.identity(), null)
+                .organization("ST").project("ACS").version("6.0-preview");
+
+        // act
+        List<TestCase> remoteTestCases = client.getTestCases(plan, suites,
+                testCases.stream().map(Pair::value).collect(toList()), true);
+        logResult(remoteTestCases);
+
+        // check
+        requests.forEach(mock::verify);
+        assertThat(remoteTestCases).hasSize(6);
+        assertThat(remoteTestCases.get(0))
+                .hasFieldOrPropertyWithValue("id", "56977")
+                .hasFieldOrPropertyWithValue("name", "Scenario AA")
+                .hasFieldOrPropertyWithValue("tag", "ID-1")
+                .extracting(t -> t.suite().id()).isEqualTo("56986");
+        assertThat(remoteTestCases.get(1))
+                .hasFieldOrPropertyWithValue("id", "56978")
+                .hasFieldOrPropertyWithValue("name", "Scenario BB")
+                .hasFieldOrPropertyWithValue("tag", "ID-2")
+                .extracting(t -> t.suite().id()).isEqualTo("56986");
+        assertThat(remoteTestCases.get(2))
+                .hasFieldOrPropertyWithValue("id", "56979")
+                .hasFieldOrPropertyWithValue("name", "Scenario CC")
+                .hasFieldOrPropertyWithValue("tag", "ID-3")
+                .extracting(t -> t.suite().id()).isEqualTo("56986");
+        assertThat(remoteTestCases.get(3))
+                .hasFieldOrPropertyWithValue("id", "56980")
+                .hasFieldOrPropertyWithValue("name", "Scenario XX")
+                .hasFieldOrPropertyWithValue("tag", "ID-1A")
+                .extracting(t -> t.suite().id()).isEqualTo("56985");
+        assertThat(remoteTestCases.get(4))
+                .hasFieldOrPropertyWithValue("id", "56981")
+                .hasFieldOrPropertyWithValue("name", "Scenario YY")
+                .hasFieldOrPropertyWithValue("tag", "ID-2A")
+                .extracting(t -> t.suite().id()).isEqualTo("56985");
+        assertThat(remoteTestCases.get(5))
+                .hasFieldOrPropertyWithValue("id", "56982")
+                .hasFieldOrPropertyWithValue("name", "Scenario ZZ")
+                .hasFieldOrPropertyWithValue("tag", "ID-3A")
+                .extracting(t -> t.suite().id()).isEqualTo("56985");
+    }
 
 
     private void logResult(Object o) {

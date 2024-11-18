@@ -12,7 +12,8 @@ import java.time.ZoneId;
 public class Settings extends BaseModel {
 
     private ZoneId zoneId;
-    private Integer configuration;
+    private String configuration;
+    private String testCaseType;
 
     public Settings zoneId(ZoneId zoneId) {
         this.zoneId = zoneId;
@@ -23,12 +24,21 @@ public class Settings extends BaseModel {
         return zoneId;
     }
 
-    public Settings configuration(Integer configuration) {
+    public Settings configuration(String configuration) {
         this.configuration = configuration;
         return this;
     }
 
-    public Integer configuration() {
+    public String configuration() {
         return configuration;
+    }
+
+    public Settings testCaseType(String testCaseType) {
+        this.testCaseType = testCaseType;
+        return this;
+    }
+
+    public String testCaseType() {
+        return testCaseType;
     }
 }

@@ -89,7 +89,7 @@ public class TestCase extends BaseModel {
         return suite;
     }
 
-    public List<PointAssignment> PointAssignments() {
+    public List<PointAssignment> pointAssignments() {
         return pointAssignments;
     }
 
@@ -103,8 +103,9 @@ public class TestCase extends BaseModel {
     }
 
     public boolean isDifferent(TestCase testCase) {
-        return !this.suite.equals(testCase.suite) || !this.name.equals(testCase.name)
-                || !this.description.equals(testCase.description);
+        return Objects.nonNull(testCase) &&
+                (!this.name.equals(testCase.name) || !Objects.equals(this.description, testCase.description)
+        );
     }
 
     public TestCase merge(TestCase testCase) {

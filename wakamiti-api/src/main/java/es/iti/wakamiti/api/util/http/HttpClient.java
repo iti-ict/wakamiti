@@ -35,6 +35,7 @@ import static es.iti.wakamiti.api.util.PathUtil.encodeURI;
 import static es.iti.wakamiti.api.util.StringUtils.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 
 public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {
@@ -63,6 +64,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     protected HttpClient(URL baseUrl) {
         this.baseUrl = baseUrl;
+        finalHeaders.putAll(map("Content-Type", "application/json", "Accept", "application/json"));
     }
 
     public SELF postCall(Consumer<HttpResponse<Optional<JsonNode>>> postCall) {
@@ -106,9 +108,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private HttpRequest buildRequest(String method, String path) {
-        this.pathParams.putAll(finalPathParams);
-        this.queryParams.putAll(finalQueryParams);
-        this.headers.putAll(finalHeaders);
+        finalPathParams.forEach(pathParams::putIfAbsent);
+        finalQueryParams.forEach(queryParams::putIfAbsent);
+        finalHeaders.forEach(headers::putIfAbsent);
         URI uri = uri(path);
 
         if (!queryParams.isEmpty()) {
@@ -120,7 +122,6 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                                 .map(JsonNode::toString)
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()));
-        headers(map("Content-Type", "application/json", "Accept", "application/json"));
         headers.forEach((k, v) -> builder.header(k, Objects.toString(v)));
         return builder.build();
     }
@@ -222,10 +223,10 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                 LOGGER.trace("HTTP call => {} ", stringify(request));
             }
             HttpResponse<Optional<JsonNode>> response = CLIENT.build().send(request, asJSON());
-            postCall.accept(response);
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP response => {}", stringify(response));
             }
+            postCall.accept(response);
             return response;
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -284,14 +285,11 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
                 .sendAsync(request, asJSON());
         return completable.thenApply(response -> {
-            try {
-                postCall.accept(response);
-            } catch (RuntimeException e) {
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("HTTP call => {} ", stringify(response.request()));
+                    LOGGER.trace("HTTP call => {} {}HTTP response => {} ", stringify(response.request()),
+                            System.lineSeparator()+System.lineSeparator(), stringify(response));
                 }
-                throw e;
-            }
+                postCall.accept(response);
             return response;
         });
     }
@@ -336,13 +334,13 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private HttpResponse.BodyHandler<Optional<JsonNode>> asJSON() {
-        return responseInfo -> HttpResponse.BodySubscribers.mapping(
+        return response -> HttpResponse.BodySubscribers.mapping(
                 HttpResponse.BodySubscribers.ofString(StandardCharsets.UTF_8), str -> {
                     try {
                         return Optional.of(json(str));
                     } catch (Exception e) {
                         if (!isBlank(str)) {
-                            LOGGER.error("Error parsing message: {}", str, e);
+                            return Optional.of(json("{\"message\":\""+escapeEcmaScript(str)+"\"}"));
                         }
                         return Optional.empty();
                     }

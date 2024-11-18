@@ -28,6 +28,7 @@ public class TestSuite extends BaseModel {
     @JsonProperty("parentSuite")
     private TestSuite parent;
     private boolean hasChildren;
+    private int order;
 
     public TestSuite id(String id) {
         this.id = id;
@@ -54,6 +55,11 @@ public class TestSuite extends BaseModel {
         return this;
     }
 
+    public TestSuite order(int order) {
+        this.order = order;
+        return this;
+    }
+
     public String id() {
         return id;
     }
@@ -74,6 +80,10 @@ public class TestSuite extends BaseModel {
         return hasChildren;
     }
 
+    public int order() {
+        return order;
+    }
+
     public TestSuite root() {
         return Optional.ofNullable(parent).map(TestSuite::root).orElse(this);
     }
@@ -90,6 +100,11 @@ public class TestSuite extends BaseModel {
     @Override
     public int hashCode() {
         return Objects.hash(asPath());
+    }
+
+    @Override
+    public String toString() {
+        return "TestSuite["+asPath()+"]";
     }
 
     public enum Type {
