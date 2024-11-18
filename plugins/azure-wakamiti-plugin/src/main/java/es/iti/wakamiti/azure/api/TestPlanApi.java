@@ -16,23 +16,30 @@ import es.iti.wakamiti.azure.api.model.query.Query;
 import es.iti.wakamiti.azure.api.model.query.WorkItemsQuery;
 import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.util.JsonUtils.*;
+import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.api.util.StringUtils.format;
 import static es.iti.wakamiti.azure.api.model.query.Field.*;
 import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
+import static es.iti.wakamiti.azure.internal.Util.path;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -40,9 +47,9 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class TestPlanApi extends BaseApi<TestPlanApi> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureReporter.class);
-
-    private transient Function<String, String> tagExtractor;
+    private static final int MAX_LIST = 200;
     private final String configuration;
+    private transient Function<String, String> tagExtractor;
     private Settings settings;
 
     public TestPlanApi(URL baseUrl, Function<String, String> tagExtractor, String configuration) {
@@ -56,34 +63,55 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
 
         Settings settings = new Settings();
 
-        CompletableFuture<?> future = newRequest()
-                .getAsync(finalPathParams.get(ORGANIZATION) + "/_api/_common/GetUserProfile")
-                .thenAcceptAsync(response -> response.body().ifPresent(json -> {
-                    String tzId = Optional.ofNullable(readStringValue(json, "userPreferences.TimeZoneId"))
-                            .orElse(readStringValue(json, "allTimeZones[0].Id"));
-                    String tzDisplay = readStringValue(json,
-                            format("allTimeZones.find{ it.Id == '{}' }.DisplayName", tzId));
-                    ZoneId zid = ZoneId.of(tzDisplay.replaceAll(".*\\(([^()]++)\\).*", "$1"));
-                    settings.zoneId(zid);
-                }))
-                .exceptionally(t -> {
-                    if (t != null) {
-                        LOGGER.warn("The zone id could not be obtained. Using default: {}", ZoneId.systemDefault(), t);
-                        settings.zoneId(ZoneId.systemDefault());
-                    }
-                    return null;
-                });
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        futures.add(
+                newRequest()
+                        .getAsync(finalPathParams.get(ORGANIZATION) + "/_api/_common/GetUserProfile")
+                        .thenAcceptAsync(response -> response.body().ifPresent(json -> {
+                            String tzId = Optional.ofNullable(readStringValue(json, "userPreferences.TimeZoneId"))
+                                    .orElse(readStringValue(json, "allTimeZones[0].Id"));
+                            String tzDisplay = readStringValue(json,
+                                    format("allTimeZones.find{ it.Id == '{}' }.DisplayName", tzId));
+                            ZoneId zid = ZoneId.of(tzDisplay.replaceAll(".*\\(([^()]++)\\).*", "$1"));
+                            settings.zoneId(zid);
+                        }))
+                        .exceptionally(t -> {
+                            if (t != null) {
+                                LOGGER.warn("The zone id could not be obtained. Using default: {}", ZoneId.systemDefault(), t);
+                                settings.zoneId(ZoneId.systemDefault());
+                            }
+                            return null;
+                        })
+        );
+        futures.add(
+                newRequest()
+                        .pathParam("category", TestCase.CATEGORY)
+                        .getAsync(project() + "/wit/workitemtypecategories/{category}")
+                        .thenAcceptAsync(response -> response.body()
+                                .map(json -> readStringValue(json, "defaultWorkItemType?.name"))
+                                .ifPresentOrElse(settings::testCaseType, () -> {
+                                    throw new NoSuchElementException("Default test case category");
+                                }))
+        );
+
         settings.configuration(getConfiguration());
-        future.join();
+        try {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
+        } catch (InterruptedException e) {
+            throw new WakamitiAzureException("There is no test case category available. ", e);
+        } catch (ExecutionException e) {
+            throw new WakamitiAzureException("There is no test case category available. ", e.getCause());
+        }
 
         return (this.settings = settings);
     }
 
-    private Integer getConfiguration() {
+    private String getConfiguration() {
         Stream<JsonNode> req = newRequest().getAllPages(project() + "/testplan/configurations",
-                json -> read(json, "$.value", new TypeRef<>() {}));
+                json -> read(json, "$.value", new TypeRef<>() {
+                }));
 
-        Function<JsonNode, Integer> mapper = json -> read(json, "$.id", Integer.class);
+        Function<JsonNode, String> mapper = json -> read(json, "$.id", String.class);
         if (isNotBlank(configuration)) {
             return req.filter(json -> equalsIgnoreCase(read(json, "$.name", String.class), configuration))
                     .findFirst().map(mapper).orElseThrow(() ->
@@ -112,7 +140,7 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
                 .orElseThrow(() -> new WakamitiException("Something went wrong: empty body"));
     }
 
-    public Optional<TestPlan> searchTestPlan(TestPlan plan) {
+    public Optional<String> searchTestPlanId(TestPlan plan) {
         Query query = new WorkItemsQuery()
                 .select().where(
                         field(teamProject()).isEqualsTo("@project")
@@ -127,7 +155,11 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
         if (ids.size() > 1) {
             throw new WakamitiAzureException("Too many test plans with same 'name', 'area' and 'iteration': {}. ", ids);
         }
-        return ids.stream().findFirst().flatMap(this::getTestPlan);
+        return ids.stream().findFirst();
+    }
+
+    public Optional<TestPlan> searchTestPlan(TestPlan plan) {
+        return searchTestPlanId(plan).flatMap(this::getTestPlan);
     }
 
     /**
@@ -157,7 +189,8 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
                 .queryParam("asTreeView", true)
                 .getAllPages(project() + "/testplan/Plans/{planId}/suites",
                         json -> {
-                            List<TestSuiteTree> trees = read(json, "$.value", new TypeRef<>() {});
+                            List<TestSuiteTree> trees = read(json, "$.value", new TypeRef<>() {
+                            });
                             return Util.readTree(trees);
                         });
     }
@@ -220,45 +253,102 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
     }
 
 
-    public Stream<TestCase> searchTestCases(TestPlan plan) {
-        return searchTestSuites(plan)
-                .flatMap(Util::flatten).distinct()
-                .flatMap(suite -> getTestCases(plan, suite));
-    }
-
-    public Stream<TestCase> getTestCases(TestPlan plan, TestSuite suite) {
+    public Stream<TestCase> searchTestCases(TestPlan plan, TestSuite suite) {
         return newRequest()
                 .pathParam("planId", plan.id())
                 .pathParam("suiteId", suite.id())
                 .queryParam("excludeFlags", 2)
                 .queryParam("expand", true)
-                .queryParam("witFields", join(List.of(ID, TITLE, TAGS), ","))
+                .queryParam("witFields", join(List.of(TITLE, TAGS), ","))
                 .getAllPages(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase",
-                        new TypeRef<List<JsonNode>>() {})
+                        new TypeRef<List<JsonNode>>() {
+                        })
                 .map(json -> {
-                    WorkItem item = read(json, "$.workItem", new TypeRef<>() {});
+                    WorkItem item = read(json, "$.workItem", new TypeRef<>() {
+                    });
                     return new TestCase().id(item.id()).name(item.name()).suite(suite)
                             .tag(tagExtractor.apply(item.workItemFields().get(TAGS)))
                             .order(Optional.ofNullable(read(json, "$.order", Integer.class)).orElse(0))
-                            .pointAssignments(read(json, "$.pointAssignments"));
+                            .pointAssignments(read(json, "$.pointAssignments", new TypeRef<>() {
+                            }));
                 });
+    }
+
+    public List<TestCase> getTestCases(TestPlan plan, List<TestSuite> suites, List<TestCase> tests, boolean createItemsIfAbsent) {
+        List<TestCase> remoteTests = suites.stream().parallel()
+                .flatMap(suite -> searchTestCases(plan, suite))
+                .collect(Collectors.toList());
+        List<TestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t)).collect(Collectors.toList());
+        List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
+                .filter(t -> tests.stream().anyMatch(c -> t.tag().equals(c.tag()) && (t.isDifferent(c) || !t.suite().equals(c.suite()))))
+                .map(t -> new Pair<>(t, tests.stream().filter(x -> x.tag().equals(t.tag()))
+                        .map(x -> x.id(t.id())).findFirst().orElseThrow()))
+                .collect(Collectors.toList());
+
+        if (!modSuiteTests.isEmpty()) {
+            updateTestCases(plan, modSuiteTests)
+                    .forEach(t -> LOGGER.trace("Remote test #{} updated", t.id()));
+        }
+
+        if (!newTests.isEmpty() && createItemsIfAbsent) {
+            remoteTests.addAll(
+                    createTestCases(plan, newTests).stream()
+                            .peek(t -> LOGGER.trace("Remote test #{} created", t.id()))
+                            .collect(toList())
+            );
+        }
+
+        return remoteTests;
     }
 
     public List<TestCase> createTestCases(TestPlan plan, List<TestCase> testCases) {
         BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
-                .op(WorkItemOp.Operation.replace).path(format("/fields/{}", field)).value(value);
+                .op(WorkItemOp.Operation.add).path(format("/fields/{}", field)).value(value);
 
+        List<CompletableFuture<TestCase>> futures = testCases.stream().map(t -> {
+            List<WorkItemOp> ops = new ArrayList<>();
+            ops.add(newWorkItem.apply(TITLE, t.name()));
+            ops.add(newWorkItem.apply(TAGS, t.tag()));
+            ops.add(newWorkItem.apply(AREA_PATH, path(plan.area())));
+            ops.add(newWorkItem.apply(ITERATION_PATH, path(plan.iteration())));
+            Optional.ofNullable(t.description()).ifPresent(d -> ops.add(newWorkItem.apply(DESCRIPTION, d)));
+            return newRequest()
+                    .postCall(response -> response.body().filter(x -> response.statusCode() < 400)
+                            .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ", t.tag())))
+                    .pathParam("type", settings().testCaseType())
+                    .queryParam("$expand", "none")
+                    .queryParam("suppressNotifications", true)
+                    .queryParam("validateOnly", false)
+                    .header("Content-Type", "application/json-patch+json")
+                    .body(json(ops).toString())
+                    .postAsync(project() + "/wit/workitems/${type}")
+                    .thenApply(response -> response.body().map(json -> readStringValue(json, "id"))
+                            .orElseThrow(() -> new WakamitiException("Cannot create test case. ")))
+                    .thenApply(t::id);
+        }).collect(toList());
+        List<Pair<TestCase, JsonNode>> items = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(x ->
+                        futures.stream().map(CompletableFuture::join).map(t -> new Pair<>(t, json(map(
+                                "workItem", new WorkItem().id(t.id()),
+                                "pointAssignments", List.of(new PointAssignment().configurationId(settings().configuration()))))))
+                ).join().collect(toList());
 
-//        List<CompletableFuture<HttpResponse<Optional<JsonNode>>>> futures = testCases.stream()
-//                .map(suite -> newRequest()
-//                        .pathParam("planId", plan.id())
-//                        .body(json(suite).toString())
-//                        .postAsync(project() + "/testplan/Plans/{planId}/suites"))
-//                .collect(Collectors.toList());
-
-        List<TestCase> result = new LinkedList<>();
-
-        return result;
+        try {
+            CompletableFuture.allOf(items.stream()
+                    .collect(groupingBy(p -> p.key().suite(), mapping(Pair::value, toList())))
+                    .entrySet().stream()
+                    .map(e -> newRequest()
+                            .pathParam("planId", plan.id())
+                            .pathParam("suiteId", e.getKey().id())
+                            .body(e.getValue().toString())
+                            .postAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase")
+                    ).toArray(CompletableFuture[]::new)).get();
+        } catch (InterruptedException e) {
+            throw new WakamitiException(e);
+        } catch (ExecutionException e) {
+            throw new WakamitiException(e.getCause());
+        }
+        return items.stream().map(Pair::key).collect(toList());
     }
 
     public List<TestCase> updateTestCases(TestPlan plan, List<Pair<TestCase, TestCase>> testCases) {
@@ -267,26 +357,29 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
 
         List<TestCase> remove = new LinkedList<>();
         List<TestCase> add = new LinkedList<>();
-        List<CompletableFuture<HttpResponse<Optional<JsonNode>>>> futures = testCases.stream().map(p -> {
+
+        CompletableFuture.allOf(testCases.stream().filter(p -> p.key().isDifferent(p.value())).map(p -> {
             List<WorkItemOp> ops = new ArrayList<>();
             TestCase oldT = p.key();
             TestCase newT = p.value();
             if (!oldT.name().equals(newT.name())) {
                 ops.add(newWorkItem.apply(TITLE, newT.name()));
             }
-            if (!oldT.description().equals(newT.description())) {
+            if (!Objects.equals(oldT.description(), newT.description())) {
                 ops.add(newWorkItem.apply(DESCRIPTION, newT.description()));
-            }
-            if (!oldT.suite().equals(newT.suite())) {
-                remove.add(oldT);
-                add.add(newT);
             }
             return newRequest()
                     .pathParam("id", oldT.id())
                     .body(json(ops).toString())
+                    .header("Content-Type", "application/json-patch+json")
                     .patchAsync(project() + "/wit/workitems/{id}");
-        }).collect(Collectors.toList());
+        }).toArray(CompletableFuture[]::new)).join();
+        testCases.stream().filter(p -> !p.key().suite().equals(p.value().suite())).forEach(p -> {
+            remove.add(p.key());
+            add.add(p.value());
+        });
 
+        List<CompletableFuture<?>> futures = new LinkedList<>();
         // remove suite relation
         remove.stream().collect(groupingBy(TestCase::suite, mapping(TestCase::id, toList())))
                 .entrySet()
@@ -295,7 +388,7 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
                         .pathParam("planId", plan.id())
                         .pathParam("suiteId", e.getKey().id())
                         .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .deleteAsync("/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
+                        .deleteAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
                 .forEach(futures::add);
 
         // add suite relation
@@ -306,19 +399,75 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
                         .pathParam("planId", plan.id())
                         .pathParam("suiteId", e.getKey().id())
                         .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .postAsync("/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
+                        .postAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
                 .forEach(futures::add);
 
+        try {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new WakamitiException(e);
+        }
+        return testCases.stream().map(p -> p.key().merge(p.value())).collect(toList());
+    }
+
+    public TestRun createRun(TestRun run) {
+        run.startDate(Util.toZoneId(run.startDate(), settings().zoneId()));
+        return newRequest().body(json(run).toString()).post(project() + "/test/runs").body()
+                .map(json -> read(json, TestRun.class))
+                .orElseThrow(() -> new WakamitiAzureException("Cannot create test run for plan '{}'", run.plan().id()));
+    }
+
+    public void updateRun(TestRun run) {
+        run.completeDate(Util.toZoneId(run.completeDate(), settings().zoneId()));
+        newRequest().body(json(run).toString())
+                .pathParam("runId", run.id())
+                .patch(project() + "/test/runs/{runId}");
+    }
+
+    public void attachFile(TestRun run, Set<Path> reports) {
+        CompletableFuture.allOf(
+                reports.stream().map(report -> {
+                            try {
+                                return newRequest().body(json(
+                                                new Attachment()
+                                                        .attachmentType(Attachment.Type.GeneralAttachment)
+                                                        .fileName(report.getFileName().toString())
+                                                        .stream(Base64.getEncoder().encodeToString(Files.readAllBytes(report)))
+                                        ).toString())
+                                        .pathParam("runId", run.id())
+                                        .postAsync(project() + "/test/Runs/{runId}/attachments");
+                            } catch (IOException e) {
+                                throw new WakamitiException("Error creating attachment", e);
+                            }
+                        }
+                ).toArray(CompletableFuture[]::new)).join();
+    }
+
+    public List<TestResult> createResults(TestRun run, List<TestResult> results) {
+        List<CompletableFuture<HttpResponse<Optional<JsonNode>>>> futures =
+                ListUtils.partition(results, MAX_LIST).stream()
+                        .map(result -> newRequest().body(json(result).toString())
+                                .pathParam("runId", run.id())
+                                .postAsync(project() + "/test/Runs/{runId}/results"))
+                        .collect(toList());
+        List<TestResult> aux = new LinkedList<>();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenAccept(v -> futures.forEach(future -> {
                     try {
-                        future.get();
+                        future.get().body().map(json -> read(json, new TypeRef<List<TestResult>>() {
+                                }))
+                                .ifPresentOrElse(aux::addAll, () -> {
+                                    throw new NoSuchElementException("Something went wrong: empty body");
+                                });
                     } catch (Exception e) {
-                        throw new WakamitiException("Error updating Test Case", e);
+                        throw new WakamitiException("Error creating Test Suite", e);
                     }
                 })).join();
+        return aux;
+    }
 
-        return testCases.stream().map(p -> p.key().merge(p.value())).collect(toList());
+    public void updateResults(List<TestResult> results) {
+
     }
 
     @Override

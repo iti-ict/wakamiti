@@ -11,13 +11,10 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.TestPlanApi;
-import es.iti.wakamiti.azure.api.model.TestCase;
-import es.iti.wakamiti.azure.api.model.TestPlan;
-import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.*;
 import es.iti.wakamiti.azure.internal.Mapper;
 import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
@@ -27,6 +24,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,6 +33,7 @@ import java.util.stream.Stream;
 
 import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 
 @Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.6", priority = 10)
@@ -61,6 +60,9 @@ public class AzureSynchronizer implements EventObserver {
     private String configuration;
 
     private TestPlanApi api;
+
+    private TestRun run;
+    private List<TestResult> testResults;
 
     private Consumer<BaseApi<?>> authenticator = (client) -> {
         throw new WakamitiException("Authentication is needed");
@@ -162,8 +164,8 @@ public class AzureSynchronizer implements EventObserver {
 
         if (Event.PLAN_CREATED.equals(event.type())) {
             try {
-                LOGGER.info("Synchronise test plan with Azure...");
-                sync(data);
+                LOGGER.info("Synchronising test plan with Azure...");
+                syncAndStart(data);
             } catch (Exception e) {
                 throw new WakamitiException("The test plan could not be synchronized. " +
                         "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
@@ -172,7 +174,8 @@ public class AzureSynchronizer implements EventObserver {
 
         if (Event.PLAN_RUN_FINISHED.equals(event.type())) {
             try {
-                // Upload runs...
+                LOGGER.info("Uploading test plan results to Azure...");
+                uploadExecution(data);
             } catch (Exception e) {
                 throw new WakamitiException("The result of the execution could not be uploaded.", e);
             }
@@ -189,59 +192,67 @@ public class AzureSynchronizer implements EventObserver {
      *
      * @param plan
      */
-    private void sync(PlanNodeSnapshot plan) {
-        TestPlan remotePlan = api().getTestPlan(testPlan, createItemsIfAbsent);
-        LOGGER.debug("Remote plan #{} ready to sync", remotePlan.id());
+    private void syncAndStart(PlanNodeSnapshot plan) {
+        testPlan = api().getTestPlan(testPlan, createItemsIfAbsent);
+        LOGGER.debug("Remote plan #{} ready to sync", testPlan.id());
 
-        String gherkinType = testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO;
-        Mapper mapper = Mapper.ofType(gherkinType).instance(suiteBase);
-
-        List<TestCase> tests = mapper.map(plan)
+        Mapper mapper = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
+                .instance(suiteBase);
+        List<TestCase> tests = mapper.mapTests(plan)
                 .filter(t -> isBlank(tag) || t.metadata().getTags().contains(tag))
                 .peek(t -> LOGGER.trace("Load test case: {}", t))
                 .collect(Collectors.toList());
         LOGGER.debug("{} local test cases ready to sync", tests.size());
 
         List<TestSuite> suites = tests.stream().map(TestCase::suite).flatMap(Util::flatten).collect(Collectors.toList());
-        List<TestSuite> remoteSuites = api().searchTestSuites(remotePlan)
-                .flatMap(Util::flatten).collect(Collectors.toList());
-        List<TestSuite> newSuites = suites.stream().filter(s -> !remoteSuites.contains(s)).collect(Collectors.toList());
 
-        if (!newSuites.isEmpty()) {
-            remoteSuites.addAll(api().createTestSuites(remotePlan, newSuites));
-            LOGGER.debug("{} remote test suites created", newSuites.size());
+        List<TestSuite> remoteSuites = api().getTestSuites(testPlan, suites, createItemsIfAbsent);
+        LOGGER.debug("{} remote suites ready to sync", remoteSuites.size());
+
+        List<TestCase> testCases = api().getTestCases(testPlan, remoteSuites, tests, createItemsIfAbsent);
+        LOGGER.debug("{} remote tests ready to sync", testCases.size());
+
+        if (removeOrphans) {
+            List<TestSuite> removeSuites = remoteSuites.stream()
+                    .filter(s -> !suites.contains(s))
+                    .collect(Collectors.toList());
+
         }
 
-        List<TestCase> remoteTests = remoteSuites.stream().parallel()
-                .flatMap(suite -> api().getTestCases(remotePlan, suite))
-                .collect(Collectors.toList());
-        List<TestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t)).collect(Collectors.toList());
-        List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
-                .filter(t -> tests.stream().anyMatch(c -> hasChanged(t, c)))
-                .map(t -> new Pair<>(t, tests.stream().filter(x -> x.tag().equals(t.tag())).findFirst().get()))
-                .collect(Collectors.toList());
+        run = new TestRun()
+                .startDate(plan.getStartInstant())
+                .plan(testPlan)
+                .name(testPlan.name() + " - run by Wakamiti")
+                .state(TestRun.Status.InProgress)
+                .pointIds(testCases.stream().flatMap(t -> t.pointAssignments().stream().map(PointAssignment::id))
+                        .collect(Collectors.toList()));
+        Optional.ofNullable(plan.getDescription()).map(d -> join(d, System.lineSeparator())).ifPresent(run::comment);
+        Optional.ofNullable(tag).map(Tag::new).map(List::of).ifPresent(run::tags);
+        run = api().createRun(run);
 
-        if (!modSuiteTests.isEmpty()) {
-            api().updateTestCases(remotePlan, modSuiteTests);
-            LOGGER.debug("{} test cases updated", modSuiteTests.size());
-        }
-
-        if (!newTests.isEmpty()) {
-            remoteTests.addAll(api().createTestCases(remotePlan, newTests));
-            LOGGER.debug("{} remote test cases created", newTests.size());
-        }
-
-
-        List<TestSuite> nonSuites = remoteSuites.stream().filter(s -> !suites.contains(s)).collect(Collectors.toList());
-        // azure contiene suites que no constan en local
-        remoteSuites.removeAll(nonSuites);
+        Function<String, TestCase> findTestCase = tag -> testCases.stream()
+                .filter(t -> t.tag().equals(tag)).findFirst()
+                .orElseThrow(() -> new WakamitiAzureException("No such test case '{}'", tag));
+        testResults = api().createResults(run, mapper.mapResults(plan)
+                .map(r -> r.testCase(r.testCase().merge(findTestCase.apply(r.testCase().tag()))))
+                .collect(Collectors.toList()));
     }
 
-    private boolean hasChanged(TestCase test, TestCase newTest) {
-        return test.tag().equals(newTest.tag()) && test.isDifferent(newTest);
-    }
+    private void uploadExecution(PlanNodeSnapshot plan) {
+        run.errorMessage(plan.getErrorMessage())
+                .state(TestRun.Status.Completed)
+                .completeDate(plan.getFinishInstant());
 
-//    private TestCase getTest(List<TestCase> tests, TestCase test) {
+        api().updateRun(run);
+        api().attachFile(run, attachments);
+
+        Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
+                .instance(suiteBase)
+                .mapResults(plan);
+//        List<TestCase> tests = getTests(plan);
+//        LOGGER.debug("{} local test cases ready to sync", tests.size());
 //
-//    }
+//        api().createRun(remotePlan, tests);
+    }
+
 }

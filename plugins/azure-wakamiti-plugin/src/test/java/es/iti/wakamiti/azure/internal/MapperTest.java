@@ -43,9 +43,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenFeatureWithSuccess() {
+    public void testMapTestsWhenFeatureWithSuccess() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance(null)
-                .map(plan).collect(Collectors.toList());
+                .mapTests(plan).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)
@@ -57,9 +57,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenFeatureAndSourceBasedWithSuccess() {
+    public void testMapTestsWhenFeatureAndSourceBasedWithSuccess() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-                .map(plan).collect(Collectors.toList());
+                .mapTests(plan).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)
@@ -71,9 +71,9 @@ public class MapperTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testMapWhenFeatureAndInvalidSourceBaseWithError() {
+    public void testMapTestsWhenFeatureAndInvalidSourceBaseWithError() {
         try {
-            Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("feature").map(plan);
+            Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("feature").mapTests(plan);
         } catch (WakamitiException e) {
             assertThat(e).hasMessageContaining("Invalid suiteBase: feature");
             throw e;
@@ -81,9 +81,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenFeatureAndSourceBasedAndAzureSuite() {
+    public void testMapTestsWhenFeatureAndSourceBasedAndAzureSuite() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-                .map(planSuite).collect(Collectors.toList());
+                .mapTests(planSuite).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)
@@ -95,9 +95,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenScenario() {
+    public void testMapTestsWhenScenario() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance(null)
-                .map(plan).collect(Collectors.toList());
+                .mapTests(plan).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)
@@ -114,9 +114,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenScenarioAndSourceBased() {
+    public void testMapTestsWhenScenarioAndSourceBased() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .map(plan).collect(Collectors.toList());
+                .mapTests(plan).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)
@@ -133,9 +133,9 @@ public class MapperTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testMapWhenScenarioAndInvalidSourceBaseWithError() {
+    public void testMapTestsWhenScenarioAndInvalidSourceBaseWithError() {
         try {
-            Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("feature").map(plan);
+            Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("feature").mapTests(plan);
         } catch (WakamitiException e) {
             assertThat(e).hasMessageContaining("Invalid suiteBase: feature");
             throw e;
@@ -143,9 +143,9 @@ public class MapperTest {
     }
 
     @Test
-    public void testMapWhenScenarioAndSourceBasedAndAzureSuite() {
+    public void testMapTestsWhenScenarioAndSourceBasedAndAzureSuite() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .map(planSuite).collect(Collectors.toList());
+                .mapTests(planSuite).collect(Collectors.toList());
         logResult(tests);
 
         assertThat(tests)

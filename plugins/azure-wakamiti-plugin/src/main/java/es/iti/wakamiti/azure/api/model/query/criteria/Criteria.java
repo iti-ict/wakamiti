@@ -7,11 +7,13 @@ package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
 import es.iti.wakamiti.azure.api.model.query.Field;
+import es.iti.wakamiti.azure.internal.Util;
 
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.azure.internal.Util.path;
 import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 
@@ -88,7 +90,7 @@ public class Criteria implements Expression {
 
     public Predicate isIn(Path... value) {
         return isIn(Stream.of(value)
-                .map(this::path)
+                .map(Util::path)
                 .toArray(String[]::new)
         );
     }
@@ -102,7 +104,7 @@ public class Criteria implements Expression {
 
     public Predicate isNotIn(Path... value) {
         return isNotIn(Stream.of(value)
-                .map(this::path)
+                .map(Util::path)
                 .toArray(String[]::new)
         );
     }
@@ -174,10 +176,6 @@ public class Criteria implements Expression {
         } else {
             return String.format("'%s'", escapeEcmaScript(value));
         }
-    }
-
-    private String path(Path path) {
-        return path.toString().replace("/", "\\");
     }
 
     enum Operator {

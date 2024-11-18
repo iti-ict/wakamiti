@@ -10,5 +10,6 @@ module es.iti.wakamiti.azure {
     requires com.fasterxml.jackson.databind;
     requires org.apache.commons.lang3;
     requires org.apache.commons.text;
+    requires org.apache.commons.collections4;
 
 }

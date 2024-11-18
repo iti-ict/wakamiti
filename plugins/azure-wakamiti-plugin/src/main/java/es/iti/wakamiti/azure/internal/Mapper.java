@@ -10,11 +10,11 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.MapUtils;
 import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.azure.api.model.TestCase;
-import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.*;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,15 +85,35 @@ public abstract class Mapper {
                 .metadata(target);
     }
 
-    public Stream<TestCase> map(PlanNodeSnapshot plan) {
-        return plan
-                .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
-                .flatMap(this::suiteMap)
-                .collect(groupingBy(Pair::value, mapping(Pair::key, toList())))
+    protected TestResult resultMap(int i, TestSuite suite, PlanNodeSnapshot target) {
+        return new TestResult()
+                .testSuite(suite)
+            ;
+    }
+
+    public Stream<TestCase> mapTests(PlanNodeSnapshot plan) {
+        return getSuites(plan)
                 .entrySet().stream().flatMap(e ->
                     IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(i, e.getKey(), e.getValue().get(i)))
                 );
 
+    }
+
+    public Stream<TestResult> mapResults(PlanNodeSnapshot plan) {
+        return getSuites(plan)
+                .entrySet().stream().flatMap(e ->
+                        IntStream.range(0, e.getValue().size()).mapToObj(i ->
+                                resultMap(i, e.getKey(), e.getValue().get(i))
+                                        .testCase(caseMap(i, e.getKey(), e.getValue().get(i)))
+                        )
+                );
+    }
+
+    private Map<TestSuite, List<PlanNodeSnapshot>> getSuites(PlanNodeSnapshot plan) {
+        return plan
+                .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
+                .flatMap(this::suiteMap)
+                .collect(groupingBy(Pair::value, mapping(Pair::key, toList())));
     }
 
     public abstract String type();

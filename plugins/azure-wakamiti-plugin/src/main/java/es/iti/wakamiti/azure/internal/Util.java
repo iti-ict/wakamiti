@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -53,16 +54,19 @@ public abstract class Util {
     }
 
     public static List<TestSuite> readTree(List<TestSuiteTree> suites) {
-        return suites.stream().flatMap(it -> {
-            if (isEmpty(it.children())) {
-                return Stream.of(it.hasChildren(false));
-            } else {
-                List<TestSuiteTree> children = it.children().stream()
-                        .map(child -> (TestSuiteTree) child.parent(it.hasChildren(true)))
-                        .collect(Collectors.toList());
-                return readTree(children).stream();
-            }
-        }).collect(Collectors.toList());
+        List<TestSuite> result = new LinkedList<>();
+        if (!isEmpty(suites)) {
+            suites.forEach(it -> {
+                TestSuite parent = new TestSuite().id(it.id()).name(it.name()).parent(it.parent())
+                        .suiteType(it.suiteType()).hasChildren(!isEmpty(it.children()));
+                result.add(parent);
+                if (parent.hasChildren()) {
+                    result.addAll(readTree(it.children().stream().peek(t -> t.parent(parent))
+                            .collect(Collectors.toList())));
+                }
+            });
+        }
+        return result;
     }
 
     public static List<TestSuite> filterHasChildren(List<TestSuite> suites) {
@@ -79,6 +83,10 @@ public abstract class Util {
         } else {
             return Stream.concat(flatten(suite.parent()), Stream.of(suite));
         }
+    }
+
+    public static String path(Path path) {
+        return path.toString().replace("/", "\\");
     }
 
     //TODO: revisar

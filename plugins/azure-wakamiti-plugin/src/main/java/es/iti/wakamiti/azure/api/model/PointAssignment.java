@@ -6,10 +6,18 @@
 package es.iti.wakamiti.azure.api.model;
 
 
-public class PointAssignment {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PointAssignment extends BaseModel {
+
+    @JsonProperty
     private String id;
+    @JsonProperty
     private String configurationId;
+    @JsonProperty
     private String configurationName;
 
     public PointAssignment() {
