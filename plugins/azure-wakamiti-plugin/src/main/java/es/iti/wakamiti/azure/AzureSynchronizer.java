@@ -11,6 +11,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.TestPlanApi;
@@ -162,7 +163,7 @@ public class AzureSynchronizer implements EventObserver {
         }
         PlanNodeSnapshot data = (PlanNodeSnapshot) event.data();
 
-        if (Event.PLAN_CREATED.equals(event.type())) {
+        if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Synchronising test plan with Azure...");
                 syncAndStart(data);
@@ -184,7 +185,7 @@ public class AzureSynchronizer implements EventObserver {
 
     @Override
     public boolean acceptType(String eventType) {
-        return List.of(Event.PLAN_CREATED, Event.PLAN_RUN_FINISHED).contains(eventType);
+        return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED).contains(eventType);
     }
 
     /**
@@ -216,11 +217,13 @@ public class AzureSynchronizer implements EventObserver {
             List<TestSuite> removeSuites = remoteSuites.stream()
                     .filter(s -> !suites.contains(s))
                     .collect(Collectors.toList());
-
         }
 
+        Function<String, TestCase> findTestCase = id -> testCases.stream()
+                .filter(t -> t.id().equals(id)).findFirst()
+                .orElseThrow(() -> new WakamitiAzureException("No such test case '{}'", id));
+
         run = new TestRun()
-                .startDate(plan.getStartInstant())
                 .plan(testPlan)
                 .name(testPlan.name() + " - run by Wakamiti")
                 .state(TestRun.Status.InProgress)
@@ -228,31 +231,25 @@ public class AzureSynchronizer implements EventObserver {
                         .collect(Collectors.toList()));
         Optional.ofNullable(plan.getDescription()).map(d -> join(d, System.lineSeparator())).ifPresent(run::comment);
         Optional.ofNullable(tag).map(Tag::new).map(List::of).ifPresent(run::tags);
-        run = api().createRun(run);
-
-        Function<String, TestCase> findTestCase = tag -> testCases.stream()
-                .filter(t -> t.tag().equals(tag)).findFirst()
-                .orElseThrow(() -> new WakamitiAzureException("No such test case '{}'", tag));
-        testResults = api().createResults(run, mapper.mapResults(plan)
-                .map(r -> r.testCase(r.testCase().merge(findTestCase.apply(r.testCase().tag()))))
-                .collect(Collectors.toList()));
+        api().createRun(run);
+        testResults = api().getResults(run)
+                .peek(r -> r.testCase(findTestCase.apply(r.testCase().id())))
+                .collect(Collectors.toList());
     }
 
     private void uploadExecution(PlanNodeSnapshot plan) {
-        run.errorMessage(plan.getErrorMessage())
-                .state(TestRun.Status.Completed)
-                .completeDate(plan.getFinishInstant());
-
-        api().updateRun(run);
-        api().attachFile(run, attachments);
-
-        Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
+        Function<String, TestResult> findResult = tag -> testResults.stream()
+                .filter(e -> e.testCase().tag().equals(tag)).findFirst()
+                .orElseThrow(() -> new WakamitiAzureException("No such test result '{}'", tag));
+        testResults = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase)
-                .mapResults(plan);
-//        List<TestCase> tests = getTests(plan);
-//        LOGGER.debug("{} local test cases ready to sync", tests.size());
-//
-//        api().createRun(remotePlan, tests);
+                .mapResults(plan)
+                .map(r -> findResult.apply(r.testCase().tag()).merge(r))
+                .collect(Collectors.toList());
+
+        api().updateResults(run, testResults);
+        api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.Completed));
+        api().attachFile(run, attachments);
     }
 
 }

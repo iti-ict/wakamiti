@@ -5,22 +5,33 @@
  */
 package es.iti.wakamiti.azure.api.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import es.iti.wakamiti.api.plan.Result;
 
 import static es.iti.wakamiti.api.plan.Result.*;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestResult extends BaseModel {
 
+    @JsonProperty
     private String id;
-    private TestRun.Status state;
+    @JsonProperty
     private String createdDate;
+    @JsonProperty
     private String completedDate;
+    @JsonProperty
     private Type outcome;
+    @JsonProperty
     private String comment;
-    private TestPlan testPlan;
-    private TestSuite testSuite;
+    @JsonProperty
     private TestCase testCase;
-    private TestRun testRun;
+    @JsonProperty
+    private TestRun.Status state;
+    @JsonProperty
+    private String errorMessage;
 
     public TestResult id(String id) {
         this.id = id;
@@ -29,15 +40,6 @@ public class TestResult extends BaseModel {
 
     public String id() {
         return id;
-    }
-
-    public TestResult state(TestRun.Status state) {
-        this.state = state;
-        return this;
-    }
-
-    public TestRun.Status state() {
-        return state;
     }
 
     public TestResult createdDate(String createdDate) {
@@ -68,22 +70,13 @@ public class TestResult extends BaseModel {
         return outcome;
     }
 
-    public TestResult testPlan(TestPlan testPlan) {
-        this.testPlan = testPlan;
+    public TestResult comment(String comment) {
+        this.comment = comment;
         return this;
     }
 
-    public TestPlan testPlan() {
-        return testPlan;
-    }
-
-    public TestResult testSuite(TestSuite testSuite) {
-        this.testSuite = testSuite;
-        return this;
-    }
-
-    public TestSuite testSuite() {
-        return testSuite;
+    public String comment() {
+        return comment;
     }
 
     public TestResult testCase(TestCase testCase) {
@@ -95,13 +88,30 @@ public class TestResult extends BaseModel {
         return testCase;
     }
 
-    public TestResult testRun(TestRun testRun) {
-        this.testRun = testRun;
+    public TestResult state(TestRun.Status state) {
+        this.state = state;
         return this;
     }
 
-    public TestRun testRun() {
-        return testRun;
+    public TestRun.Status state() {
+        return state;
+    }
+
+    public TestResult errorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+        return this;
+    }
+
+    public String errorMessage() {
+        return errorMessage;
+    }
+
+    public TestResult merge(TestResult other) {
+        return this.createdDate(other.createdDate())
+                .completedDate(other.completedDate())
+                .outcome(other.outcome())
+                .comment(other.comment())
+                .errorMessage(other.errorMessage());
     }
 
     public enum Type {
@@ -110,7 +120,7 @@ public class TestResult extends BaseModel {
         Failed(FAILED, "Execution failed"),
         Error(ERROR, "Execution error"),
         NotApplicable(NOT_IMPLEMENTED, "Execution not implemented"),
-        NotExecuted(SKIPPED, "Execution skipped"),;
+        NotExecuted(SKIPPED, "Execution skipped");
 
         private final Result result;
         private final String comment;

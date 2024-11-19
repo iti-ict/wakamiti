@@ -6,16 +6,20 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 
 import java.util.List;
 import java.util.Objects;
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestCase extends BaseModel {
 
     public static final String CATEGORY = "Microsoft.TestCaseCategory";
 
+    @JsonProperty
     private String id;
     private String name;
     private String description;

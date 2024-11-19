@@ -6,21 +6,32 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestRun extends BaseModel {
 
+    @JsonProperty
     private String id;
+    @JsonProperty
     private String name;
+    @JsonProperty
     private TestPlan plan;
+    @JsonProperty
     private List<String> pointIds;
+    @JsonProperty
     private List<Tag> tags;
+    @JsonProperty
     private Status state;
-    private String startDate;
-    private String completeDate;
+    @JsonProperty
     private String comment;
+    @JsonProperty
     private String errorMessage;
+    @JsonProperty
     private final boolean automated = true;
 
     public TestRun id(String id) {
@@ -75,24 +86,6 @@ public class TestRun extends BaseModel {
 
     public Status state() {
         return state;
-    }
-
-    public TestRun startDate(String startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
-    public String startDate() {
-        return startDate;
-    }
-
-    public TestRun completeDate(String completeDate) {
-        this.completeDate = completeDate;
-        return this;
-    }
-
-    public String completeDate() {
-        return completeDate;
     }
 
     public TestRun comment(String comment) {

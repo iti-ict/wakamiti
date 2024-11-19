@@ -7,6 +7,7 @@ package es.iti.wakamiti.azure;
 
 
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
@@ -51,7 +52,6 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
 
     public static final String DEFAULT_AZURE_API_VERSION = "6.0-preview";
 
-
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
@@ -89,7 +89,8 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         });
         requiredProperty(configuration, AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.class, synchronizer::createItemsIfAbsent);
         configuration.getList(AZURE_ATTACHMENTS, String.class).stream()
-                .map((ThrowableFunction<String, Set<Path>>) Util::findFiles)
+                .map((ThrowableFunction<String, Set<Path>>) p ->
+                        Util.findFiles(WakamitiAPI.instance().workingDir(configuration), p))
                 .forEach(synchronizer::attachments);
         requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
     }
