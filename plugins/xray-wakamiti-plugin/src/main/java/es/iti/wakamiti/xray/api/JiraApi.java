@@ -92,13 +92,13 @@ public class JiraApi extends BaseApi {
             XRayTestCase oldTest = p.key();
             XRayTestCase newTest = p.value();
 
-            updateIssue(oldTest.getIssueId(), newTest.getIssue().getSummary(), newTest.getIssue().getDescription(), newTest.getIssue().getLabels());
+            updateIssue(oldTest.getIssueId(), newTest.getJira().getSummary(), newTest.getJira().getDescription(), newTest.getJira().getLabels());
         });
     }
 
     public List<String> createTestCases(XRayPlan remotePlan, List<XRayTestCase> newTests) {
         return newTests.stream().map(test -> {
-            JiraIssue created = createIssue(test.getIssue().getSummary(), test.getIssue().getDescription(), JiraType.TEST.getName());
+            JiraIssue created = createIssue(test.getJira().getSummary(), test.getJira().getDescription(), JiraType.TEST.getName());
             return created.getKey();
         }).collect(Collectors.toList());
     }

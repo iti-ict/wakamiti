@@ -108,7 +108,7 @@ public class XRaySynchronizer implements EventObserver {
         xRayApi = new XRayApi(baseURL, xRayclientId, xRayclientSecret, project, LOGGER);
         jiraApi = new JiraApi(baseURL, jiraCredentials, project, LOGGER);
 
-        if (Event.PLAN_CREATED.equals(event.type())) {
+        if (Event.PLAN_RUN_FINISHED.equals(event.type())) {
             try {
                 LOGGER.info("Sync plan to XRay...");
                 sync(data);
@@ -151,11 +151,11 @@ public class XRaySynchronizer implements EventObserver {
         Mapper mapper = Mapper.ofType(gherkinType).instance(testSet);
 
         List<XRayTestCase> tests = mapper.map(plan)
-                .filter(t -> isBlank(tag) || t.getIssue().getLabels().contains(tag))
+                .filter(t -> isBlank(tag) || t.getJira().getLabels().contains(tag))
                 .collect(Collectors.toList());
 
         List<XRayTestSet> testSets = tests.stream().map(XRayTestCase::getTestSetList).flatMap(List::stream).collect(Collectors.toList());
-        List<XRayTestSet> remoteTestSets = xRayApi.getTestSets(remotePlan);
+        List<XRayTestSet> remoteTestSets = xRayApi.getTestSets();
         List<XRayTestSet> newTestSets = testSets.stream().filter(s -> !remoteTestSets.contains(s)).collect(Collectors.toList());
 
         if (!newTestSets.isEmpty()) {
