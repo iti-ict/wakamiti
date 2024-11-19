@@ -1,79 +1,357 @@
 {
-  "executionID" : "1171a230-3711-4060-9561-624736173935",
-  "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+  "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+  "snapshotInstant" : "2024-11-18T16:20:01.952907743",
   "nodeType" : "AGGREGATOR",
   "displayName" : "Test Plan",
+  "startInstant" : "2024-11-18T16:18:51.796308784",
+  "finishInstant" : "2024-11-18T16:18:51.799107184",
+  "duration" : 0,
   "result" : "ERROR",
+  "testCaseResults" : {
+    "NOT_IMPLEMENTED" : 3
+  },
   "childrenResults" : {
-    "ERROR" : 1
+    "ERROR" : 1,
+    "NOT_IMPLEMENTED" : 1
   },
   "children" : [ {
-    "executionID" : "1171a230-3711-4060-9561-624736173935",
-    "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+    "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+    "snapshotInstant" : "2024-11-18T16:20:01.952907743",
     "nodeType" : "AGGREGATOR",
-    "id" : "#zdda0e",
-    "name" : "xray",
+    "id" : "ID-s1",
+    "name" : "XRay integration feature",
     "keyword" : "Feature",
     "language" : "en",
-    "source" : "xray.feature[4,1]",
-    "displayName" : "Feature: xray",
+    "source" : "features/suite1/xray.feature[4,1]",
+    "displayName" : "Feature: XRay integration feature",
+    "tags" : [ "definition", "ID-s1" ],
     "properties" : {
-      "gherkinType" : "feature"
+      "gherkinType" : "feature",
+      "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
     },
     "result" : "ERROR",
     "children" : [ {
-      "executionID" : "1171a230-3711-4060-9561-624736173935",
-      "snapshotInstant" : "2024-10-21T12:28:52.903959157",
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
       "nodeType" : "TEST_CASE",
-      "id" : "#d9b0a0",
-      "name" : "Scenario 1",
+      "id" : "ID-s1-1",
+      "name" : "Scenario B",
       "keyword" : "Scenario",
       "language" : "en",
-      "source" : "xray.feature[7,1]",
-      "displayName" : "[#d9b0a0] Scenario: Scenario 1",
+      "source" : "features/suite1/xray.feature[8,3]",
+      "displayName" : "[ID-s1-1] Scenario: Scenario B",
+      "tags" : [ "ID-s1-1", "definition", "ID-s1" ],
       "properties" : {
         "gherkinType" : "scenario",
-        "featureName" : "xray"
+        "featureName" : "XRay integration feature",
+        "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
       },
       "children" : [ {
-        "executionID" : "1171a230-3711-4060-9561-624736173935",
-        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
-        "nodeType" : "STEP",
-        "id" : "#d101d0",
-        "name" : "Step 1",
-        "keyword" : "Given",
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "STEP_AGGREGATOR",
+        "id" : "#k71da2",
+        "name" : "Def this step fails",
+        "keyword" : "*",
         "language" : "en",
-        "source" : "xray.feature[8,4]",
-        "displayName" : "Given Step 1",
+        "source" : "features/suite1/xray.feature[9,5]",
+        "displayName" : "* Def this step fails",
         "properties" : {
-          "gherkinType" : "step"
-        }
-      }, {
-        "executionID" : "1171a230-3711-4060-9561-624736173935",
-        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
-        "nodeType" : "STEP",
-        "id" : "#v8d85c",
-        "name" : "Step 2",
-        "keyword" : "When",
+          "gherkinType" : "step",
+          "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
+        },
+        "children" : [ {
+          "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+          "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+          "nodeType" : "STEP",
+          "id" : "#ef1010",
+          "name" : "this step fails",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "features/suite1/xray-imp.feature[8,5]",
+          "displayName" : "* this step fails",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
+      } ]
+    }, {
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-s1-2",
+      "name" : "Scenario C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "features/suite1/xray.feature[13,3]",
+      "displayName" : "[ID-s1-2] Scenario: Scenario C",
+      "tags" : [ "ID-s1-2", "definition", "ID-s1" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "XRay integration feature",
+        "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
+      },
+      "children" : [ {
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "STEP_AGGREGATOR",
+        "id" : "#xc31fa",
+        "name" : "Def this step fails",
+        "keyword" : "*",
         "language" : "en",
-        "source" : "xray.feature[9,4]",
-        "displayName" : "When Step 2",
+        "source" : "features/suite1/xray.feature[14,5]",
+        "displayName" : "* Def this step fails",
         "properties" : {
-          "gherkinType" : "step"
-        }
-      }, {
-        "executionID" : "1171a230-3711-4060-9561-624736173935",
-        "snapshotInstant" : "2024-10-21T12:28:52.903959157",
-        "nodeType" : "STEP",
-        "id" : "#y3a04a",
-        "name" : "Step 3",
-        "keyword" : "Then",
+          "gherkinType" : "step",
+          "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
+        },
+        "children" : [ {
+          "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+          "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+          "nodeType" : "STEP",
+          "id" : "#ae3545",
+          "name" : "this step fails",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "features/suite1/xray-imp.feature[13,5]",
+          "displayName" : "* this step fails",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
+      } ]
+    }, {
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-s1-3",
+      "name" : "Scenario A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "features/suite1/xray.feature[18,3]",
+      "displayName" : "[ID-s1-3] Scenario: Scenario A",
+      "tags" : [ "ID-s1-3", "definition", "ID-s1" ],
+      "properties" : {
+        "gherkinType" : "scenario",
+        "featureName" : "XRay integration feature",
+        "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
+      },
+      "children" : [ {
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "STEP_AGGREGATOR",
+        "id" : "#t85e7f",
+        "name" : "Def this step do nothing",
+        "keyword" : "*",
         "language" : "en",
-        "source" : "xray.feature[10,4]",
-        "displayName" : "Then Step 3",
+        "source" : "features/suite1/xray.feature[19,5]",
+        "displayName" : "* Def this step do nothing",
         "properties" : {
-          "gherkinType" : "step"
-        }
+          "gherkinType" : "step",
+          "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
+        },
+        "children" : [ {
+          "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+          "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+          "nodeType" : "STEP",
+          "id" : "#oe0dad",
+          "name" : "this step do nothing",
+          "keyword" : "*",
+          "language" : "en",
+          "source" : "features/suite1/xray-imp.feature[18,5]",
+          "displayName" : "* this step do nothing",
+          "properties" : {
+            "gherkinType" : "step"
+          }
+        } ]
+      } ]
+    } ]
+  }, {
+    "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+    "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+    "nodeType" : "AGGREGATOR",
+    "id" : "ID-1",
+    "name" : "XRay integration feature",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "features/xray.feature[7,1]",
+    "displayName" : "Feature: XRay integration feature",
+    "tags" : [ "XRay", "definition", "ID-1" ],
+    "properties" : {
+      "xrayIteration" : "ACS\\\\Iteración 1",
+      "gherkinType" : "feature",
+      "xrayPlan" : "Wakamiti Test Plan",
+      "xrayArea" : "ACS",
+      "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+    },
+    "startInstant" : "2024-11-18T16:18:51.796308784",
+    "finishInstant" : "2024-11-18T16:18:51.799107184",
+    "duration" : 0,
+    "result" : "NOT_IMPLEMENTED",
+    "testCaseResults" : {
+      "NOT_IMPLEMENTED" : 3
+    },
+    "childrenResults" : {
+      "NOT_IMPLEMENTED" : 3
+    },
+    "children" : [ {
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-1",
+      "name" : "Wakamiti Scenario B - Fail cambio",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "features/xray.feature[12,3]",
+      "displayName" : "[ID-1] Scenario: Wakamiti Scenario B - Fail cambio",
+      "tags" : [ "ID-1", "XRay", "definition" ],
+      "properties" : {
+        "xrayIteration" : "ACS\\\\Iteración 1",
+        "gherkinType" : "scenario",
+        "xrayPlan" : "Wakamiti Test Plan",
+        "featureName" : "XRay integration feature",
+        "xrayArea" : "ACS",
+        "xrayTest" : "Wakamiti Scenario B - Fail cambio",
+        "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+      },
+      "startInstant" : "2024-11-18T16:18:51.796308784",
+      "finishInstant" : "2024-11-18T16:18:51.796308784",
+      "duration" : 0,
+      "result" : "NOT_IMPLEMENTED",
+      "testCaseResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "childrenResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "children" : [ {
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "VIRTUAL_STEP",
+        "id" : "#fcbb03",
+        "name" : "Def this step fails",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "features/xray.feature[13,5]",
+        "displayName" : "* Def this step fails",
+        "properties" : {
+          "xrayIteration" : "ACS\\\\Iteración 1",
+          "gherkinType" : "step",
+          "xrayPlan" : "Wakamiti Test Plan",
+          "xrayArea" : "ACS",
+          "xrayTest" : "Wakamiti Scenario B - Fail cambio",
+          "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+        },
+        "startInstant" : "2024-11-18T16:18:51.796308784",
+        "finishInstant" : "2024-11-18T16:18:51.796308784",
+        "duration" : 0,
+        "result" : "NOT_IMPLEMENTED"
+      } ]
+    }, {
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-2",
+      "name" : "Def Test Case C",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "features/xray.feature[18,3]",
+      "displayName" : "[ID-2] Scenario: Def Test Case C",
+      "tags" : [ "ID-2", "XRay", "definition", "ID-1" ],
+      "properties" : {
+        "xrayIteration" : "ACS\\\\Iteración 1",
+        "gherkinType" : "scenario",
+        "xrayPlan" : "Wakamiti Test Plan",
+        "featureName" : "XRay integration feature",
+        "xrayArea" : "ACS",
+        "xrayTest" : "Wakamiti Scenario C - Fail",
+        "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+      },
+      "startInstant" : "2024-11-18T16:18:51.798026934",
+      "finishInstant" : "2024-11-18T16:18:51.798026934",
+      "duration" : 0,
+      "result" : "NOT_IMPLEMENTED",
+      "testCaseResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "childrenResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "children" : [ {
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "VIRTUAL_STEP",
+        "id" : "#if6955",
+        "name" : "Def this step fails",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "features/xray.feature[19,5]",
+        "displayName" : "* Def this step fails",
+        "properties" : {
+          "xrayIteration" : "ACS\\\\Iteración 1",
+          "gherkinType" : "step",
+          "xrayPlan" : "Wakamiti Test Plan",
+          "xrayArea" : "ACS",
+          "xrayTest" : "Wakamiti Scenario C - Fail",
+          "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+        },
+        "startInstant" : "2024-11-18T16:18:51.798026934",
+        "finishInstant" : "2024-11-18T16:18:51.798026934",
+        "duration" : 0,
+        "result" : "NOT_IMPLEMENTED"
+      } ]
+    }, {
+      "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+      "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-3",
+      "name" : "Def Test Case A",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "features/xray.feature[24,3]",
+      "displayName" : "[ID-3] Scenario: Def Test Case A",
+      "tags" : [ "ID-3", "XRay", "definition", "ID-1" ],
+      "properties" : {
+        "xrayIteration" : "ACS\\\\Iteración 1",
+        "gherkinType" : "scenario",
+        "xrayPlan" : "Wakamiti Test Plan",
+        "featureName" : "XRay integration feature",
+        "xrayArea" : "ACS",
+        "xrayTest" : "Wakamiti Scenario A - Fail",
+        "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+      },
+      "startInstant" : "2024-11-18T16:18:51.799107184",
+      "finishInstant" : "2024-11-18T16:18:51.799107184",
+      "duration" : 0,
+      "result" : "NOT_IMPLEMENTED",
+      "testCaseResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "childrenResults" : {
+        "NOT_IMPLEMENTED" : 1
+      },
+      "children" : [ {
+        "executionID" : "cf37ff8c-b8bb-4b99-a966-83d4cbe11e85",
+        "snapshotInstant" : "2024-11-18T16:20:01.952907743",
+        "nodeType" : "VIRTUAL_STEP",
+        "id" : "#i4a007",
+        "name" : "Def this step do nothing",
+        "keyword" : "*",
+        "language" : "en",
+        "source" : "features/xray.feature[25,5]",
+        "displayName" : "* Def this step do nothing",
+        "properties" : {
+          "xrayIteration" : "ACS\\\\Iteración 1",
+          "gherkinType" : "step",
+          "xrayPlan" : "Wakamiti Test Plan",
+          "xrayArea" : "ACS",
+          "xrayTest" : "Wakamiti Scenario A - Fail",
+          "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
+        },
+        "startInstant" : "2024-11-18T16:18:51.799107184",
+        "finishInstant" : "2024-11-18T16:18:51.799107184",
+        "duration" : 0,
+        "result" : "NOT_IMPLEMENTED"
       } ]
     } ]
   } ]

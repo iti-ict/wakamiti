@@ -12,12 +12,12 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.xray.model.XRayPlan;
 
 import java.net.URL;
 import java.util.function.Consumer;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
-import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
 
 
 @Extension(
@@ -34,6 +34,9 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     public static final String XRAY_CREDENTIALS_CLIENT_ID = "xray.auth.credentials.client-id";
     public static final String XRAY_CREDENTIALS_CLIENT_SECRET = "xray.auth.credentials.client-secret";
     public static final String JIRA_CREDENTIALS = "jira.auth.credentials";
+    public static final String XRAY_PLAN = "xray.plan";
+    public static final String XRAY_PLAN_ID = "xray.plan.id";
+    public static final String XRAY_PLAN_SUMMARY = "xray.plan.summary";
     public static final String XRAY_TAG = "xray.tag";
     public static final String XRAY_CREATE_ITEMS_IF_ABSENT = "xray.createItemsIfAbsent";
     public static final String XRAY_TEST_CASE_PER_FEATURE = "xray.testCasePerFeature";
@@ -71,16 +74,29 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         requiredProperty(configuration, XRAY_CREDENTIALS_CLIENT_ID, String.class, synchronizer::xRayclientId);
         requiredProperty(configuration, XRAY_CREDENTIALS_CLIENT_SECRET, String.class, synchronizer::xRayclientSecret);
         requiredProperty(configuration, JIRA_CREDENTIALS, String.class, synchronizer::jiraCredentials);
+
+        synchronizer.testPlan(plan(configuration));
+
         configuration.get(XRAY_SUITE_BASE, String.class).ifPresent(synchronizer::testSet);
         requiredProperty(configuration, XRAY_TEST_CASE_PER_FEATURE, Boolean.class, v -> {
-            if (Boolean.TRUE.equals(v) && !configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(false)) {
-                throw new WakamitiException("The property '{}' must be enabled", STRICT_TEST_CASE_ID);
-            }
+//            if (Boolean.TRUE.equals(v) && !configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(false)) {
+//                throw new WakamitiException("The property '{}' must be enabled", STRICT_TEST_CASE_ID);
+//            }
             synchronizer.testCasePerFeature(v);
         });
 
         configuration.get(XRAY_TAG, String.class).ifPresent(synchronizer::tag);
         configuration.get(XRAY_CREATE_ITEMS_IF_ABSENT, Boolean.class).ifPresent(synchronizer::createItemsIfAbsent);
+    }
+
+    private XRayPlan plan(Configuration configuration) {
+        if (configuration.inner(XRAY_PLAN).asMap().isEmpty()) {
+            throw new WakamitiException("Property '{}' is required", XRAY_PLAN);
+        }
+        XRayPlan plan = new XRayPlan();
+        requiredProperty(configuration, XRAY_PLAN_ID, String.class, plan::id);
+        requiredProperty(configuration, XRAY_PLAN_SUMMARY, String.class, plan::summary);
+        return plan;
     }
 
     private <T> void requiredProperty(Configuration config, String property, Class<T> type, Consumer<T> setter) {
