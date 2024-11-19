@@ -6,13 +6,13 @@ import java.util.List;
 public class XRayTestCase {
 
     private String issueId;
-    private JiraIssue issue;
+    private JiraIssue jira;
     private String gherkin;
     private List<XRayTestSet> testSetList;
 
-    public XRayTestCase(String issueId, JiraIssue issue, String gherkin) {
+    public XRayTestCase(String issueId, JiraIssue jira, String gherkin) {
         this.issueId = issueId;
-        this.issue = issue;
+        this.jira = jira;
         this.gherkin = gherkin;
     }
 
@@ -25,7 +25,7 @@ public class XRayTestCase {
     }
 
     public XRayTestCase issue(JiraIssue issue) {
-        this.issue = issue;
+        this.jira = issue;
         return this;
     }
 
@@ -43,8 +43,8 @@ public class XRayTestCase {
         return issueId;
     }
 
-    public JiraIssue getIssue() {
-        return issue;
+    public JiraIssue getJira() {
+        return jira;
     }
 
     public String getGherkin() {
@@ -56,13 +56,13 @@ public class XRayTestCase {
     }
 
     public boolean isDifferent(XRayTestCase testCase) {
-        return !this.getGherkin().equals(testCase.getGherkin()) || !this.getIssue().getSummary().equals(testCase.getIssue().getSummary())
-                || !this.getIssue().getDescription().equals(testCase.getIssue().getDescription());
+        return !this.getGherkin().equals(testCase.getGherkin()) || !this.getJira().getSummary().equals(testCase.getJira().getSummary())
+                || !this.getJira().getDescription().equals(testCase.getJira().getDescription());
     }
 
 
     public boolean hasSameLabels(XRayTestCase testCase) {
-        return new HashSet<>(this.getIssue().getLabels()).containsAll(testCase.getIssue().getLabels());
+        return new HashSet<>(this.getJira().getLabels()).containsAll(testCase.getJira().getLabels());
     }
 
 }

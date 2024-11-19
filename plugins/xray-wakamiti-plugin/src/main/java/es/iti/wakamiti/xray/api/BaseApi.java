@@ -40,17 +40,18 @@ public class BaseApi {
     }
 
     public BaseApi(URL baseURL, String authURL, String clientId, String clientSecret, Logger logger) {
-        String payload = toJSON(Map.of("client_id", clientId, "client_secret", clientSecret));
-        this.baseURL = baseURL;
-        String response = send(authRequest(authURL, payload), payload);
-        this.authorization = "Bearer " + extract(response, "$");
         this.logger = logger;
-
+        this.baseURL = baseURL;
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .connectTimeout(Duration.ofSeconds(20))
                 .build();
+
+        String payload = toJSON(Map.of("client_id", clientId, "client_secret", clientSecret));
+        String response = send(authRequest(authURL, payload), payload);
+        this.authorization = "Bearer " + extract(response, "$");
+
     }
 
 

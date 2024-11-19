@@ -5,12 +5,12 @@ import java.util.List;
 public class XRayTestSet {
 
     private String issueId;
-    private JiraIssue issue;
+    private JiraIssue jira;
     private List<XRayTestCase> testCases;
 
-    public XRayTestSet(String issueId, JiraIssue issue, List<XRayTestCase> testCases) {
+    public XRayTestSet(String issueId, JiraIssue jira, List<XRayTestCase> testCases) {
         this.issueId = issueId;
-        this.issue = issue;
+        this.jira = jira;
         this.testCases = testCases;
     }
 
@@ -24,7 +24,7 @@ public class XRayTestSet {
     }
 
     public XRayTestSet issue(JiraIssue issue) {
-        this.issue = issue;
+        this.jira = issue;
         return this;
     }
 
@@ -37,8 +37,8 @@ public class XRayTestSet {
         return issueId;
     }
 
-    public JiraIssue getIssue() {
-        return issue;
+    public JiraIssue getJira() {
+        return jira;
     }
 
     public List<XRayTestCase> getTestCases() {
