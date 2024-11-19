@@ -85,9 +85,12 @@ public abstract class Mapper {
                 .metadata(target);
     }
 
-    protected TestResult resultMap(int i, TestSuite suite, PlanNodeSnapshot target) {
+    protected TestResult resultMap(PlanNodeSnapshot target) {
         return new TestResult()
-                .testSuite(suite)
+                .outcome(TestResult.Type.valueOf(target.getResult()))
+                .createdDate(target.getStartInstant())
+                .completedDate(target.getFinishInstant())
+                .errorMessage(target.getErrorMessage())
             ;
     }
 
@@ -103,7 +106,7 @@ public abstract class Mapper {
         return getSuites(plan)
                 .entrySet().stream().flatMap(e ->
                         IntStream.range(0, e.getValue().size()).mapToObj(i ->
-                                resultMap(i, e.getKey(), e.getValue().get(i))
+                                resultMap(e.getValue().get(i))
                                         .testCase(caseMap(i, e.getKey(), e.getValue().get(i)))
                         )
                 );

@@ -37,6 +37,8 @@ import java.util.stream.Stream;
 import static es.iti.wakamiti.api.util.JsonUtils.*;
 import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.TestRun.Status.Completed;
+import static es.iti.wakamiti.azure.api.model.TestRun.Status.InProgress;
 import static es.iti.wakamiti.azure.api.model.query.Field.*;
 import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
 import static es.iti.wakamiti.azure.internal.Util.path;
@@ -248,11 +250,6 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
         return remoteSuites;
     }
 
-    public void removeOrphans(List<TestSuite> suites) {
-
-    }
-
-
     public Stream<TestCase> searchTestCases(TestPlan plan, TestSuite suite) {
         return newRequest()
                 .pathParam("planId", plan.id())
@@ -410,15 +407,14 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
         return testCases.stream().map(p -> p.key().merge(p.value())).collect(toList());
     }
 
-    public TestRun createRun(TestRun run) {
-        run.startDate(Util.toZoneId(run.startDate(), settings().zoneId()));
-        return newRequest().body(json(run).toString()).post(project() + "/test/runs").body()
-                .map(json -> read(json, TestRun.class))
+    public void createRun(TestRun run) {
+        newRequest().body(json(run).toString()).post(project() + "/test/runs").body()
+                .map(json -> readStringValue(json, "id"))
+                .map(run::id)
                 .orElseThrow(() -> new WakamitiAzureException("Cannot create test run for plan '{}'", run.plan().id()));
     }
 
     public void updateRun(TestRun run) {
-        run.completeDate(Util.toZoneId(run.completeDate(), settings().zoneId()));
         newRequest().body(json(run).toString())
                 .pathParam("runId", run.id())
                 .patch(project() + "/test/runs/{runId}");
@@ -443,31 +439,25 @@ public class TestPlanApi extends BaseApi<TestPlanApi> {
                 ).toArray(CompletableFuture[]::new)).join();
     }
 
-    public List<TestResult> createResults(TestRun run, List<TestResult> results) {
-        List<CompletableFuture<HttpResponse<Optional<JsonNode>>>> futures =
-                ListUtils.partition(results, MAX_LIST).stream()
-                        .map(result -> newRequest().body(json(result).toString())
-                                .pathParam("runId", run.id())
-                                .postAsync(project() + "/test/Runs/{runId}/results"))
-                        .collect(toList());
-        List<TestResult> aux = new LinkedList<>();
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenAccept(v -> futures.forEach(future -> {
-                    try {
-                        future.get().body().map(json -> read(json, new TypeRef<List<TestResult>>() {
-                                }))
-                                .ifPresentOrElse(aux::addAll, () -> {
-                                    throw new NoSuchElementException("Something went wrong: empty body");
-                                });
-                    } catch (Exception e) {
-                        throw new WakamitiException("Error creating Test Suite", e);
-                    }
-                })).join();
-        return aux;
+    public Stream<TestResult> getResults(TestRun run) {
+        return newRequest().pathParam("runId", run.id())
+                .getAllPages(project() + "/test/Runs/{runId}/results", new TypeRef<>() {});
     }
 
-    public void updateResults(List<TestResult> results) {
+    public void updateResults(TestRun run, List<TestResult> results) {
+        results.forEach(r -> r.createdDate(Util.toZoneId(r.createdDate(), settings().zoneId()))
+                .completedDate(Util.toZoneId(r.completedDate(), settings().zoneId()))
+                .state(Completed));
+        CompletableFuture.allOf(ListUtils.partition(results, MAX_LIST).stream()
+                .map(res ->
+                        newRequest().pathParam("runId", run.id())
+                                .body(json(res).toString())
+                                .patchAsync(project() + "/test/Runs/{runId}/results")
+                ).toArray(CompletableFuture[]::new)).join();
+    }
 
+    public TestPlanApi newRequest() {
+        return super.newRequest();
     }
 
     @Override

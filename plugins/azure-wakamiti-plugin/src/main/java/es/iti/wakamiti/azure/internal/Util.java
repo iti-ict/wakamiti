@@ -21,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +48,13 @@ public abstract class Util {
     }
 
     public static String toZoneId(String datetime, ZoneId zoneId) {
-        return toZoneId(LocalDateTime.parse(datetime), zoneId).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        try {
+            return ZonedDateTime.parse(datetime).withZoneSameInstant(zoneId).toLocalDateTime()
+                    .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (DateTimeParseException e) {
+            return toZoneId(LocalDateTime.parse(datetime), zoneId)
+                    .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
     }
 
     public static LocalDateTime toZoneId(LocalDateTime dateTime, ZoneId zoneId) {
@@ -89,10 +97,9 @@ public abstract class Util {
         return path.toString().replace("/", "\\");
     }
 
-    //TODO: revisar
-    public static Set<Path> findFiles(String path) throws IOException {
+    public static Set<Path> findFiles(Path base, String path) throws IOException {
         var pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + path);
-        try (Stream<Path> walker = Files.walk(Path.of("")).filter(pathMatcher::matches)) {
+        try (Stream<Path> walker = Files.walk(base).filter(pathMatcher::matches)) {
             return walker.collect(Collectors.toSet());
         }
     }
