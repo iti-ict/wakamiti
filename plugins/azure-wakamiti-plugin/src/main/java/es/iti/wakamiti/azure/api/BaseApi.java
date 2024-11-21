@@ -18,7 +18,6 @@ import java.net.http.HttpResponse;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -26,6 +25,13 @@ import static es.iti.wakamiti.api.util.JsonUtils.read;
 import static es.iti.wakamiti.api.util.StringUtils.format;
 
 
+/**
+ * Abstract base class for interacting with Azure APIs.
+ * Provides common functionality for configuring API requests, handling authentication,
+ * and paginated responses.
+ *
+ * @param <SELF> A self-referential type parameter to support method chaining in subclasses.
+ */
 public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<SELF> {
 
     protected static final String API_VERSION = "api-version";
@@ -34,9 +40,11 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
 
     private static final String CONTINUATION_HEADER = "x-ms-continuationtoken";
 
-    private static final String ORGANIZATION_BASE = String.format("/{%s}/_apis", ORGANIZATION);
-    private static final String PROJECT_BASE = String.format("/{%s}/{%s}/_apis", ORGANIZATION, PROJECT);
-
+    /**
+     * Constructs a new instance of the API client with the specified base URL.
+     *
+     * @param baseUrl The base URL for the Azure API.
+     */
     public BaseApi(URL baseUrl) {
         super(baseUrl);
         postCall(response -> {
@@ -46,33 +54,66 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
         });
     }
 
+    /**
+     * Sets the API version as a query parameter for requests.
+     *
+     * @param version The API version to use.
+     * @return The current instance for method chaining.
+     */
     public SELF version(String version) {
         this.finalQueryParams.put(API_VERSION, version);
         return self();
     }
 
+    /**
+     * Sets the organization path parameter for requests.
+     *
+     * @param organization The organization name.
+     * @return The current instance for method chaining.
+     */
     public SELF organization(String organization) {
         this.finalPathParams.put(ORGANIZATION, organization);
         return self();
     }
 
+    /**
+     * Sets the project path parameter for requests.
+     *
+     * @param project The project name.
+     * @return The current instance for method chaining.
+     */
     public SELF project(String project) {
         this.finalPathParams.put(PROJECT, project);
         return self();
     }
 
+    /**
+     * Configures the client to use token-based authentication.
+     *
+     * @param token The authentication token.
+     * @return The current instance for method chaining.
+     */
     public SELF tokenAuth(String token) {
         return basicAuth("", token);
     }
 
-    protected String organization() {
-        return ORGANIZATION_BASE;
-    }
-
+    /**
+     * Builds the base project-specific API path.
+     *
+     * @return The project path with placeholders for organization and project.
+     */
     protected String project() {
-        return PROJECT_BASE;
+        return String.format("/{%s}/{%s}/_apis", ORGANIZATION, PROJECT);
     }
 
+    /**
+     * Retrieves all pages of results from a paginated API endpoint.
+     *
+     * @param <T>    The type of the items in the result.
+     * @param uri    The API endpoint URI.
+     * @param mapper A function to map the JSON response to a list of items.
+     * @return A stream of all items across pages.
+     */
     protected <T> Stream<T> getAllPages(String uri, Function<JsonNode, List<T>> mapper) {
         final Function<HttpResponse<Optional<JsonNode>>, Optional<List<T>>> listGetter = response ->
                 response.body().map(mapper);
@@ -89,14 +130,24 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
         return pages.stream();
     }
 
+    /**
+     * Retrieves all pages of results from a paginated API endpoint, using a JSON path type reference.
+     *
+     * @param <T>  The type of the items in the result.
+     * @param uri  The API endpoint URI.
+     * @param type The type reference for mapping the JSON response.
+     * @return A stream of all items across pages.
+     */
     protected <T> Stream<T> getAllPages(String uri, TypeRef<List<T>> type) {
         return getAllPages(uri, json -> read(json, "$.value", type));
     }
 
-    protected Stream<JsonNode> getAllPages(String uri) {
-        return getAllPages(uri, new TypeRef<>() {});
-    }
-
+    /**
+     * Executes a WIQL query against the Azure API and retrieves the matching work items.
+     *
+     * @param query The query to execute.
+     * @return An optional ArrayNode containing the matching work items.
+     */
     protected Optional<ArrayNode> doQuery(Query query) {
         return newRequest()
                 .body(format("{\"query\": \"{}\"}", query))

@@ -9,23 +9,33 @@ package es.iti.wakamiti.azure;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.core.JsonPlanSerializer;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestAzureReporter {
 
-//    @Test
+    @Test
     public void test() throws IOException {
         AzureSynchronizer reporter = new AzureSynchronizer();
         configure(reporter, "wakamiti.yaml");
 
-        Event event = event(Event.PLAN_CREATED, new JsonPlanSerializer().read(resource("wakamiti.json")));
-        reporter.eventReceived(event);
-
+        assertThat(reporter)
+                .hasFieldOrPropertyWithValue("enabled", true)
+                .hasFieldOrPropertyWithValue("baseURL", new URL("http://localhost:8888/"))
+                .hasFieldOrPropertyWithValue("organization", "ST")
+                .hasFieldOrPropertyWithValue("project", "ACS")
+                .hasFieldOrPropertyWithValue("version", "6.0-preview")
+                .hasFieldOrPropertyWithValue("tag", "Azure")
+                .hasFieldOrPropertyWithValue("testCasePerFeature", false)
+                .hasFieldOrPropertyWithValue("createItemsIfAbsent", true)
+                .hasFieldOrPropertyWithValue("idTagPattern", "ID([\\w-]+)");
     }
 
     private void configure(AzureSynchronizer reporter, String resource) {

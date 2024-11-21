@@ -1,9 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.azure;
 
-import es.iti.wakamiti.api.util.Pair;
+
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.internal.Util;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -15,6 +19,7 @@ import java.time.ZoneId;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestUtil {
 
@@ -44,20 +49,6 @@ public class TestUtil {
         LOGGER.debug("Results: {}", paths);
         assertThat(paths).hasSize(1)
                 .anyMatch(p -> p.getFileName().toString().endsWith("wakamiti.html"));
-    }
-
-    @Test
-    public void testParseNameWithoutId() {
-        Pair<String, String> parsed = Util.parseNameAndId("Wakamiti test plan");
-        Assert.assertTrue(parsed.key().equals("Wakamiti test plan"));
-        Assert.assertTrue(parsed.value() == null);
-    }
-
-    @Test
-    public void testParseNameWithId() {
-        Pair<String, String> parsed = Util.parseNameAndId("[423423] Wakamiti test plan");
-        Assert.assertTrue(parsed.key().equals("Wakamiti test plan"));
-        Assert.assertTrue(parsed.value().equals("423423"));
     }
 
     private URI resource(String path) throws URISyntaxException {

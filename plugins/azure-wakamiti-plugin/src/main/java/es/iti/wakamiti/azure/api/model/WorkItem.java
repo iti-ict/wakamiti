@@ -29,23 +29,23 @@ public class WorkItem {
         return this;
     }
 
+    public String id() {
+        return id;
+    }
+
     public WorkItem name(String name) {
         this.name = name;
         return this;
+    }
+
+    public String name() {
+        return name;
     }
 
     @JsonProperty
     public WorkItem workItemFields(List<Map<String, String>> workItemFields) {
         this.workItemFields = workItemFields.stream().flatMap(m -> m.entrySet().stream()).collect(toMap());
         return this;
-    }
-
-    public String id() {
-        return id;
-    }
-
-    public String name() {
-        return name;
     }
 
     public Map<String, String> workItemFields() {

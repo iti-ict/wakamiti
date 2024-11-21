@@ -11,13 +11,11 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.api.BaseApi;
-import es.iti.wakamiti.azure.api.TestPlanApi;
+import es.iti.wakamiti.azure.api.AzureApi;
 import es.iti.wakamiti.azure.api.model.*;
 import es.iti.wakamiti.azure.internal.Mapper;
-import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 import org.slf4j.Logger;
 
@@ -33,18 +31,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.6", priority = 10)
+@Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.7", priority = 10)
 public class AzureSynchronizer implements EventObserver {
-
-    private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
 
     public static final String GHERKIN_TYPE_FEATURE = "feature";
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
-
+    private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
     private final Set<Path> attachments = new LinkedHashSet<>();
     private boolean enabled;
     private URL baseURL;
@@ -60,7 +57,7 @@ public class AzureSynchronizer implements EventObserver {
     private String idTagPattern;
     private String configuration;
 
-    private TestPlanApi api;
+    private AzureApi api;
 
     private TestRun run;
     private List<TestResult> testResults;
@@ -133,11 +130,10 @@ public class AzureSynchronizer implements EventObserver {
         this.idTagPattern = idTagPattern;
     }
 
-    private TestPlanApi api() {
+    private AzureApi api() {
         if (api == null) {
             Function<String, String> tagIdExtractor = tags -> {
-                List<String> t = Stream.of(tags.split(";"))
-                        .map(String::trim)
+                List<String> t = Stream.of(tags.split(";")).map(String::trim)
                         .filter(tag -> tag.matches(idTagPattern)).collect(Collectors.toList());
                 if (t.size() > 1) {
                     throw new WakamitiAzureException("Too many tags match the id pattern. ");
@@ -146,8 +142,7 @@ public class AzureSynchronizer implements EventObserver {
                 }
                 return t.get(0);
             };
-
-            api = new TestPlanApi(baseURL, tagIdExtractor, configuration)
+            api = new AzureApi(baseURL, tagIdExtractor, configuration)
                     .organization(organization).project(project).version(version);
             authenticator.accept(api);
         }
@@ -157,16 +152,11 @@ public class AzureSynchronizer implements EventObserver {
     @Override
     public void eventReceived(Event event) {
         if (!enabled) return;
-        if (!(event.data() instanceof PlanNodeSnapshot)) {
-            LOGGER.warn("No event data found");
-            return;
-        }
-        PlanNodeSnapshot data = (PlanNodeSnapshot) event.data();
 
         if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Synchronising test plan with Azure...");
-                syncAndStart(data);
+                syncAndStart((PlanNodeSnapshot) event.data());
             } catch (Exception e) {
                 throw new WakamitiException("The test plan could not be synchronized. " +
                         "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
@@ -176,23 +166,30 @@ public class AzureSynchronizer implements EventObserver {
         if (Event.PLAN_RUN_FINISHED.equals(event.type())) {
             try {
                 LOGGER.info("Uploading test plan results to Azure...");
-                uploadExecution(data);
+                uploadExecution((PlanNodeSnapshot) event.data());
             } catch (Exception e) {
                 throw new WakamitiException("The result of the execution could not be uploaded.", e);
+            }
+        }
+
+        if (Event.REPORT_OUTPUT_FILE_WRITTEN.equals(event.type())
+                && ((Path) event.data()).toString().endsWith(".html")) {
+            try {
+                LOGGER.info("Uploading attachments to Azure...");
+                uploadAttachment((Path) event.data());
+            } catch (Exception e) {
+                LOGGER.error("Cannot upload attachment '{}'", event.data(), e);
             }
         }
     }
 
     @Override
     public boolean acceptType(String eventType) {
-        return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED).contains(eventType);
+        return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED, Event.REPORT_OUTPUT_FILE_WRITTEN)
+                .contains(eventType);
     }
 
-    /**
-     *
-     *
-     * @param plan
-     */
+
     private void syncAndStart(PlanNodeSnapshot plan) {
         testPlan = api().getTestPlan(testPlan, createItemsIfAbsent);
         LOGGER.debug("Remote plan #{} ready to sync", testPlan.id());
@@ -202,22 +199,17 @@ public class AzureSynchronizer implements EventObserver {
         List<TestCase> tests = mapper.mapTests(plan)
                 .filter(t -> isBlank(tag) || t.metadata().getTags().contains(tag))
                 .peek(t -> LOGGER.trace("Load test case: {}", t))
+                .peek(t -> t.suite().root(testPlan.rootSuite()))
                 .collect(Collectors.toList());
         LOGGER.debug("{} local test cases ready to sync", tests.size());
 
-        List<TestSuite> suites = tests.stream().map(TestCase::suite).flatMap(Util::flatten).collect(Collectors.toList());
+        List<TestSuite> suites = tests.stream().map(TestCase::suite).distinct().collect(Collectors.toList());
 
         List<TestSuite> remoteSuites = api().getTestSuites(testPlan, suites, createItemsIfAbsent);
         LOGGER.debug("{} remote suites ready to sync", remoteSuites.size());
 
         List<TestCase> testCases = api().getTestCases(testPlan, remoteSuites, tests, createItemsIfAbsent);
         LOGGER.debug("{} remote tests ready to sync", testCases.size());
-
-        if (removeOrphans) {
-            List<TestSuite> removeSuites = remoteSuites.stream()
-                    .filter(s -> !suites.contains(s))
-                    .collect(Collectors.toList());
-        }
 
         Function<String, TestCase> findTestCase = id -> testCases.stream()
                 .filter(t -> t.id().equals(id)).findFirst()
@@ -238,6 +230,9 @@ public class AzureSynchronizer implements EventObserver {
     }
 
     private void uploadExecution(PlanNodeSnapshot plan) {
+        if (isEmpty(testResults)) {
+            return;
+        }
         Function<String, TestResult> findResult = tag -> testResults.stream()
                 .filter(e -> e.testCase().tag().equals(tag)).findFirst()
                 .orElseThrow(() -> new WakamitiAzureException("No such test result '{}'", tag));
@@ -249,7 +244,10 @@ public class AzureSynchronizer implements EventObserver {
 
         api().updateResults(run, testResults);
         api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.Completed));
-        api().attachFile(run, attachments);
+    }
+
+    private void uploadAttachment(Path file) {
+        api().attachFile(run, Set.of(file));
     }
 
 }

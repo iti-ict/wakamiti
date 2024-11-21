@@ -8,6 +8,8 @@ package es.iti.wakamiti.azure;
 
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
+import org.junit.runner.RunWith;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.azure.AzureConfigContributor.*;
@@ -25,10 +27,12 @@ import static es.iti.wakamiti.azure.AzureConfigContributor.*;
         @Property(key = AZURE_PLAN_ITERATION, value = "ACS/Iteración 1"),
         @Property(key = AZURE_AUTH_TOKEN, value = "XXX"),
         @Property(key = AZURE_API_VERSION, value = "6.0-preview"),
-        @Property(key = AZURE_ATTACHMENTS, value = "wakamiti.html")
+        @Property(key = AZURE_CONFIGURATION, value = "Wakamiti"),
+        @Property(key = AZURE_SUITE_BASE, value = "features")
 })
 //@RunWith(WakamitiJUnitRunner.class)
 public class TestRunConfig {
+
 
 }
 

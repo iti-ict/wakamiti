@@ -23,22 +23,22 @@ public class WorkItemOp {
         return this;
     }
 
+    public Operation op() {
+        return op;
+    }
+
     public WorkItemOp path(String path) {
         this.path = path;
         return this;
     }
 
+    public String path() {
+        return path;
+    }
+
     public WorkItemOp value(String value) {
         this.value = value;
         return this;
-    }
-
-    public Operation op() {
-        return op;
-    }
-
-    public String path() {
-        return path;
     }
 
     public String value() {

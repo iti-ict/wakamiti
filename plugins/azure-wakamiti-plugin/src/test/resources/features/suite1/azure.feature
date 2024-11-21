@@ -6,12 +6,12 @@ Feature: Azure integration feature
 
   @ID-s1-1
   Scenario: Scenario B
-    * Def this step fails
+    * Def this step do nothing
 
 
   @ID-s1-2
   Scenario: Scenario C
-    * Def this step fails
+    * Def this step do nothing
 
 
   @ID-s1-3
