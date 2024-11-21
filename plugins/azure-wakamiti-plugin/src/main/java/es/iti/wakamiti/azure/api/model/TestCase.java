@@ -34,9 +34,17 @@ public class TestCase extends BaseModel {
         return this;
     }
 
+    public String id() {
+        return id;
+    }
+
     public TestCase name(String name) {
         this.name = name;
         return this;
+    }
+
+    public String name() {
+        return name;
     }
 
     public TestCase description(String description) {
@@ -44,9 +52,17 @@ public class TestCase extends BaseModel {
         return this;
     }
 
+    public String description() {
+        return description;
+    }
+
     public TestCase tag(String tag) {
         this.tag = tag;
         return this;
+    }
+
+    public String tag() {
+        return tag;
     }
 
     public TestCase order(int order) {
@@ -54,9 +70,17 @@ public class TestCase extends BaseModel {
         return this;
     }
 
+    public int order() {
+        return order;
+    }
+
     public TestCase suite(TestSuite suite) {
         this.suite = suite;
         return this;
+    }
+
+    public TestSuite suite() {
+        return suite;
     }
 
     public TestCase pointAssignments(List<PointAssignment> pointAssignments) {
@@ -64,37 +88,13 @@ public class TestCase extends BaseModel {
         return this;
     }
 
+    public List<PointAssignment> pointAssignments() {
+        return pointAssignments;
+    }
+
     public TestCase metadata(PlanNodeSnapshot metadata) {
         this.metadata = metadata;
         return this;
-    }
-
-    public String id() {
-        return id;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String description() {
-        return description;
-    }
-
-    public String tag() {
-        return tag;
-    }
-
-    public int order() {
-        return order;
-    }
-
-    public TestSuite suite() {
-        return suite;
-    }
-
-    public List<PointAssignment> pointAssignments() {
-        return pointAssignments;
     }
 
     public PlanNodeSnapshot metadata() {

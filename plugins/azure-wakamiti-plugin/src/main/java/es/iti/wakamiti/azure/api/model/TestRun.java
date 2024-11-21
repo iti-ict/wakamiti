@@ -109,6 +109,7 @@ public class TestRun extends BaseModel {
     public enum Status {
         Unspecified,
         NotStarted,
+        Pending,
         InProgress,
         Completed,
         Waiting,

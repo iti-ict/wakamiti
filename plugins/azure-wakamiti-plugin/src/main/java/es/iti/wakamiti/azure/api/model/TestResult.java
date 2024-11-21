@@ -19,7 +19,7 @@ public class TestResult extends BaseModel {
     @JsonProperty
     private String id;
     @JsonProperty
-    private String createdDate;
+    private String startedDate;
     @JsonProperty
     private String completedDate;
     @JsonProperty
@@ -42,13 +42,13 @@ public class TestResult extends BaseModel {
         return id;
     }
 
-    public TestResult createdDate(String createdDate) {
-        this.createdDate = createdDate;
+    public TestResult startedDate(String startedDate) {
+        this.startedDate = startedDate;
         return this;
     }
 
-    public String createdDate() {
-        return createdDate;
+    public String startedDate() {
+        return startedDate;
     }
 
     public TestResult completedDate(String completedDate) {
@@ -107,7 +107,7 @@ public class TestResult extends BaseModel {
     }
 
     public TestResult merge(TestResult other) {
-        return this.createdDate(other.createdDate())
+        return this.startedDate(other.startedDate())
                 .completedDate(other.completedDate())
                 .outcome(other.outcome())
                 .comment(other.comment())
@@ -135,6 +135,7 @@ public class TestResult extends BaseModel {
         }
 
         public static Type valueOf(Result result) {
+            if (result == null) return null;
             for (Type type : Type.values()) {
                 if (type.result == result) {
                     return type;

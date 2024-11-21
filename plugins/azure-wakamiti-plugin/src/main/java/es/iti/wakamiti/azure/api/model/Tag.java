@@ -13,7 +13,6 @@ public class Tag extends BaseModel {
 
     private final String name;
 
-
     public Tag(String name) {
         this.name = name;
     }

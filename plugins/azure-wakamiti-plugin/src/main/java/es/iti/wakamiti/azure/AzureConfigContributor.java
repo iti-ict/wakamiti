@@ -7,20 +7,16 @@ package es.iti.wakamiti.azure;
 
 
 import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.azure.api.model.TestPlan;
-import es.iti.wakamiti.azure.internal.Util;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
@@ -46,7 +42,6 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
     public static final String AZURE_PLAN_ITERATION = "azure.plan.iteration";
     public static final String AZURE_SUITE_BASE = "azure.suiteBase";
     public static final String AZURE_TAG = "azure.tag";
-    public static final String AZURE_ATTACHMENTS = "azure.attachments";
     public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
     public static final String AZURE_CREATE_ITEMS_IF_ABSENT = "azure.createItemsIfAbsent";
 
@@ -88,10 +83,6 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
             synchronizer.testCasePerFeature(v);
         });
         requiredProperty(configuration, AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.class, synchronizer::createItemsIfAbsent);
-        configuration.getList(AZURE_ATTACHMENTS, String.class).stream()
-                .map((ThrowableFunction<String, Set<Path>>) p ->
-                        Util.findFiles(WakamitiAPI.instance().workingDir(configuration), p))
-                .forEach(synchronizer::attachments);
         requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
     }
 

@@ -5,12 +5,12 @@ Feature: Azure integration feature
 
   @ID-s1-1
   Scenario: Scenario B
-    * this step fails
+    * this step do nothing
 
 
   @ID-s1-2
   Scenario: Scenario C
-    * this step fails
+    * this step do nothing
 
 
   @ID-s1-3

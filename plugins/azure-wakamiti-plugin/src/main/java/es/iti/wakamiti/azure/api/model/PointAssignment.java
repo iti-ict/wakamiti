@@ -20,9 +20,7 @@ public class PointAssignment extends BaseModel {
     @JsonProperty
     private String configurationName;
 
-    public PointAssignment() {
-
-    }
+    public PointAssignment() { }
 
     public PointAssignment(String id, String configurationId, String configurationName) {
         this.id = id;

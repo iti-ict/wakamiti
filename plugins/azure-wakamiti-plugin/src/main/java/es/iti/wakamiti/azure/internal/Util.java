@@ -6,14 +6,8 @@
 package es.iti.wakamiti.azure.internal;
 
 
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.AzureReporter;
-import es.iti.wakamiti.azure.api.model.TestCase;
 import es.iti.wakamiti.azure.api.model.TestSuite;
 import es.iti.wakamiti.azure.api.model.TestSuiteTree;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -28,25 +22,33 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 
+/**
+ * Utility class providing static helper methods for common operations related to test suites,
+ * file system paths, and date-time conversions.
+ * <p>
+ * This class is designed to be non-instantiable and offers functionality such as formatting dates,
+ * reading and processing hierarchical test suite structures, and performing file searches.
+ * </p>
+ */
 public abstract class Util {
-
-    private static final Logger LOGGER = WakamitiLogger.forClass(AzureReporter.class);
-    private static final Pattern ID_AND_NAME = Pattern.compile("\\[([^]]++)]\\s++(.++)");
-    private static final String SEPARATOR = Pattern.quote("\\\\");
-    private static final String PROPERTY_NOT_PRESENT_IN_TEST_CASE = "Property {} not present in test case {}";
 
     private Util() {
         // prevent instantiation
     }
 
+    /**
+     * Converts a datetime string to a {@link LocalDateTime} in the specified {@link ZoneId}.
+     *
+     * @param datetime the datetime string to convert.
+     * @param zoneId   the target time zone.
+     * @return the formatted datetime string in ISO local date-time format.
+     */
     public static String toZoneId(String datetime, ZoneId zoneId) {
         try {
             return ZonedDateTime.parse(datetime).withZoneSameInstant(zoneId).toLocalDateTime()
@@ -57,10 +59,23 @@ public abstract class Util {
         }
     }
 
+    /**
+     * Converts a {@link LocalDateTime} to another {@link ZoneId}.
+     *
+     * @param dateTime the local date-time to convert.
+     * @param zoneId   the target time zone.
+     * @return the converted {@link LocalDateTime}.
+     */
     public static LocalDateTime toZoneId(LocalDateTime dateTime, ZoneId zoneId) {
         return dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(zoneId).toLocalDateTime();
     }
 
+    /**
+     * Converts a list of {@link TestSuiteTree} objects into a flat list of {@link TestSuite} objects.
+     *
+     * @param suites the hierarchical list of test suite trees.
+     * @return a flat list of {@link TestSuite} objects.
+     */
     public static List<TestSuite> readTree(List<TestSuiteTree> suites) {
         List<TestSuite> result = new LinkedList<>();
         if (!isEmpty(suites)) {
@@ -77,14 +92,26 @@ public abstract class Util {
         return result;
     }
 
+    /**
+     * Updates the {@code hasChildren} property of parent test suites based on their children.
+     *
+     * @param suites the list of test suites to process.
+     * @return the updated list of test suites.
+     */
     public static List<TestSuite> filterHasChildren(List<TestSuite> suites) {
         return suites.stream().peek(suite -> {
-                    if (Objects.nonNull(suite.parent())) {
-                        suite.parent().hasChildren(true);
-                    }
-                }).collect(Collectors.toList());
+            if (Objects.nonNull(suite.parent())) {
+                suite.parent().hasChildren(true);
+            }
+        }).collect(Collectors.toList());
     }
 
+    /**
+     * Flattens a test suite hierarchy into a stream of test suites, starting from the root.
+     *
+     * @param suite the test suite to flatten.
+     * @return a stream of {@link TestSuite} objects from the hierarchy.
+     */
     public static Stream<TestSuite> flatten(TestSuite suite) {
         if (suite.parent() == null) {
             return Stream.of(suite);
@@ -93,91 +120,28 @@ public abstract class Util {
         }
     }
 
+    /**
+     * Converts a {@link Path} to a string with backslashes as the separator.
+     *
+     * @param path the path to convert.
+     * @return the path string with backslashes.
+     */
     public static String path(Path path) {
         return path.toString().replace("/", "\\");
     }
 
+    /**
+     * Searches for files in a directory tree that match a given glob pattern.
+     *
+     * @param base the base directory to search from.
+     * @param path the glob pattern to match files against.
+     * @return a set of matching file paths.
+     * @throws IOException if an I/O error occurs while accessing the file system.
+     */
     public static Set<Path> findFiles(Path base, String path) throws IOException {
         var pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + path);
         try (Stream<Path> walker = Files.walk(base).filter(pathMatcher::matches)) {
             return walker.collect(Collectors.toSet());
-        }
-    }
-
-    public static String getPropertyValue(PlanNodeSnapshot node, String property) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            LOGGER.warn(PROPERTY_NOT_PRESENT_IN_TEST_CASE, property, node.getDisplayName());
-            return null;
-        }
-        return node.getProperties().get(property);
-    }
-
-
-
-    public static String getPropertyValue(PlanNodeSnapshot node, String property, String defaultValue) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            return defaultValue;
-        }
-        return node.getProperties().get(property);
-    }
-
-
-
-    public static Pair<String,String> getPropertyIdAndName(PlanNodeSnapshot node, String property) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            LOGGER.warn(PROPERTY_NOT_PRESENT_IN_TEST_CASE, property, node.getDisplayName());
-            return null;
-        }
-        return parseNameAndId(node.getProperties().get(property));
-    }
-
-
-
-    public static Pair<String,String> getPropertyValueIdAndName(PlanNodeSnapshot node, String property, String defaultValue) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            return new Pair<>(defaultValue,null);
-        }
-        return parseNameAndId(node.getProperties().get(property));
-    }
-
-
-    public static List<Pair<String,String>> getListPropertyIdAndName(PlanNodeSnapshot node, String property) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            LOGGER.warn(PROPERTY_NOT_PRESENT_IN_TEST_CASE, property, node.getDisplayName());
-            return null;
-        }
-        return Stream.of(node.getProperties().get(property).split(SEPARATOR))
-            .map(Util::parseNameAndId)
-            .collect(Collectors.toList());
-    }
-
-
-    public static String property(PlanNodeSnapshot node, String property) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            LOGGER.warn(PROPERTY_NOT_PRESENT_IN_TEST_CASE, property, node.getDisplayName());
-            return null;
-        }
-        return node.getProperties().get(property);
-    }
-
-
-
-    public static String property(PlanNodeSnapshot node, String property, String defaultValue) {
-        if (node.getProperties() == null || !node.getProperties().containsKey(property)) {
-            return defaultValue;
-        }
-        return node.getProperties().get(property);
-    }
-
-
-
-    public static Pair<String,String> parseNameAndId(String value) {
-        String stripped = value.strip();
-        Matcher matcher = ID_AND_NAME.matcher(stripped);
-        if (matcher.matches()) {
-            return new Pair<>(matcher.group(2), matcher.group(1));
-        } else {
-            return new Pair<>(stripped,null);
         }
     }
 

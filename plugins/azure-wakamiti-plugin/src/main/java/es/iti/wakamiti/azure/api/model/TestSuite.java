@@ -35,9 +35,17 @@ public class TestSuite extends BaseModel {
         return this;
     }
 
+    public String id() {
+        return id;
+    }
+
     public TestSuite name(String name) {
         this.name = name;
         return this;
+    }
+
+    public String name() {
+        return name;
     }
 
     public TestSuite suiteType(Type suiteType) {
@@ -45,9 +53,17 @@ public class TestSuite extends BaseModel {
         return this;
     }
 
+    public Type suiteType() {
+        return suiteType;
+    }
+
     public TestSuite parent(TestSuite parent) {
         this.parent = parent;
         return this;
+    }
+
+    public TestSuite parent() {
+        return parent;
     }
 
     public TestSuite hasChildren(boolean hasChildren) {
@@ -55,29 +71,13 @@ public class TestSuite extends BaseModel {
         return this;
     }
 
+    public boolean hasChildren() {
+        return hasChildren;
+    }
+
     public TestSuite order(int order) {
         this.order = order;
         return this;
-    }
-
-    public String id() {
-        return id;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public Type suiteType() {
-        return suiteType;
-    }
-
-    public TestSuite parent() {
-        return parent;
-    }
-
-    public boolean hasChildren() {
-        return hasChildren;
     }
 
     public int order() {
@@ -89,7 +89,8 @@ public class TestSuite extends BaseModel {
     }
 
     public TestSuite root(TestSuite root) {
-        root().parent(root);
+        if (!root().equals(root))
+            root().parent(root);
         return this;
     }
 
