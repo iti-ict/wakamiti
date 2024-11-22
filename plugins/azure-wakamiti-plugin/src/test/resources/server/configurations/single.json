@@ -1,0 +1,14 @@
+{
+  "value" : [ {
+    "id" : 13,
+    "name" : "Windows 10",
+    "description" : "Sistema operativo predeterminado para las pruebas",
+    "isDefault" : true,
+    "values" : [ {
+      "name" : "Sistema operativo",
+      "value" : "Windows 10"
+    } ],
+    "state" : "active"
+  }],
+  "count" : 1
+}

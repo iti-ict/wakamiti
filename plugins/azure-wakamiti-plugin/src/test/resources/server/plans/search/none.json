@@ -1,0 +1,11 @@
+{
+  "queryType" : "flat",
+  "queryResultType" : "workItem",
+  "asOf" : "2024-09-03T10:20:29.993Z",
+  "columns" : [ {
+    "referenceName" : "System.Id",
+    "name" : "Id",
+    "url" : "https://azure-devops.iti.upv.es/ST/_apis/wit/fields/System.Id"
+  } ],
+  "workItems" : [ ]
+}

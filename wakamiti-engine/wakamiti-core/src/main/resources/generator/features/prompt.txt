@@ -1,0 +1,90 @@
+<CONTEXTO>
+Objetivo: Generar la definición de casos de prueba para asegurar que el API cumpla con todas sus especificaciones y manejar todos los casos de posibles.
+Público: Product owners.
+Flujo de trabajo: Parte del flujo de desarrollo ágil, donde se integran pruebas automáticas como parte de la CI/CD.
+Finalización exitosa: Obtener un conjunto completo de escenarios de prueba exhaustivo y específico para cada endpoint y comportamiento del API. Debes incluir tantos escenarios como sea posible y cada uno contendrá en formato gherkin. Se debe seguir todos los pasos y cumplir con el formato y restricciones indicadas para que el resultado sea válido.
+
+<PASOS>
+1. Analiza detalladamente el schema que te indicaré como input para identificar la ruta y su método HTTP, sus parámetros de entrada y salida, tipos de parámetros (query, path, body), validaciones asociadas (requeridos, formatos, etc.), códigos de respuesta de éxito y error (excepto 5xx), tipos de datos y modelos definidos en los esquemas de entrada y salida.
+2. Diseña todos los posibles casos de prueba funcionales:
+- Caso feliz (smoke) que incluya la información mínima para asegurar que la operación funciona.
+- Si la información disponible lo permite, valora posibles casos funcionales exploratorios y/o hipotéticos que puedan ser de interés.
+- Casos que validen todos los caminos lógicos de la operación que terminen en éxito, jugando con las posibles combinaciones de parámetros y cuerpos de solicitud (parámetros opcionales ausentes, límites, valores extremos, máximos, mínimos, longitudes máximas y mínimas, etc).
+3. Casos de validación de entradas inválidas o mal formadas (parámetros omitidos, tipos de datos incorrectos, valores fuera de rango, pruebas límite de máximos y mínimos, etc).
+4. Pruebas funcionales inválidos (recursos no encontrados, autenticación inválida, etc.)
+5. Valida que las pruebas diseñadas cubran todos los escenarios prosibles y si hay algún vacío en la cobertura.
+6. Haz un listado de tantas dudas como sea posible que se te ocurran sobre el comportamiento funcional de la operación que se le puedab plantear al product owner.
+
+<RESTRICCIONES>
+Es extremamente importante que cumplas estos puntos:
+- Incluye todos los casos encontrados y, si y sólo si la operación lo permite, es obligatorio que lleguen a 20.
+- No incluir escenarios que no aporten valor, como por ejemplo no indicar un path parameter en la url o que se repita una funcionalidad que ya se prueba en otro escenario.
+- No incluir valores de ejemplo o datos ficticios (salvo en los casos límite de validación de datos), sólo la descripción de cómo serán los datos. Hay que limitarse a indicar los pasos necesarios de una forma genérica y breve para que perfiles no técnicos entiendan el funcionamiento del escenario.
+- Guíate siempre por las buenas prácticas de gherkin e ISTQB. Nunca me escribas los pasos en primera persona. No acabes los pasos con punto o coma.
+- No debe haber referencias al valor de parámetros en los pasos (indicados con '{}').
+- Prioriza los casos principales (escenario de éxito y errores más comunes) antes de considerar casos exploratorios o hipotéticos, pero incluye alguno si encuentras.
+- Cuando interpretes el comportamiento de los parámetros del contrato, o alguno de sus valores, justifícamelo en la descripción del escenario.
+- Los escenarios deben ser generados en el siguiente orden: 1-Caso feliz (smoke), 2-Casos funcionales que terminen en éxito, 3-Validaciones de entradas válidas, 4-Validaciones de entradas inválidas, 5-Casos funcionales que terminen en error.
+
+<FORMATO>
+Quiero que me generes una respuesta única en la que se incluya el feature descrito en formato gherkin, en el idioma que te indique en el input.
+- Si el idioma no es el inglés, deberás indicarlo al principio del feature, expresado como un comentario, de la forma '#language: xx', si es inglés no incluyas esta línea.
+- El feature debe contener una serie de tags: siempre el tag '@definition', y el input indicaré opcionalmente un 'apiId' (si no está, no incluir ese tag) y un 'operationId' (siempre se deberá informar).
+- Cada escenario deberá contener un tag identificativo y único para todos los escenario que generes con el patrón '@ID-*'.
+- Los escenarios que prueben casos de error (con codigos 4xx), deben contener siempre el tag '@error' y se colocarán al final, el caso principal (caso feliz) el tag '@smoke' y solo habrá 1 por feature, el primero.
+
+<ESQUEMA>
+#language: {lenguaje}
+@definition @{apiId} @{operationId}
+Característica: {descripción breve de la característica, máximo 10 palabras}
+  {descripción funcional detallada de la característica}
+
+  @ID-{operationId}-01 @smoke
+  Escenario: {descripción breve del escenario, máximo 10 palabras}
+   {descripción funcional detallada del escenario, razon de ser}
+   {pasos Dado, Y, Cuando, Entonces, O, *, máximo 15 palabras}
+
+  {resto de escenarios}
+
+  @ID-{operationId}-XX @error
+  Escenario: {descripción breve del escenario erroneo (codigo 4xx), máximo 10 palabras}
+
+# {dudas}
+
+<EJEMPLO>
+input:
+language=es
+operationId=something
+
+resultado:
+```gherkin
+#language: es
+@definition @something
+Característica: Una descripción de ejemplo
+  Una descripción del comportamiento funcional detallada del escenario
+
+  @ID-something-01 @smoke
+  Escenario: Descripción breve del caso feliz
+    Una descripción detallada del comporamiento y razón de ser del escenario
+	Dado un paso de ejemplo
+
+  @ID-something-02
+  Escenario: Decripción breve de un caso funcional
+    Una descripción detallada del comporamiento y razón de ser del escenario
+    Cuando un paso de ejemplo
+
+  @ID-something-03 @error
+  Esquema del escenario: Descripción breve casos de error validación de datos
+    Una descripción detallada del comporamiento y razón de ser del escenario
+    Entonces un paso de ejemplo parametro <param1>
+    * resto de pasos <param2>
+
+    Ejemplos:
+      | param1 | param2 |
+
+# Dudas:
+# Una duda sobre al comportamiento funcional del contrato
+# Otra duda
+```
+
+<INPUT>

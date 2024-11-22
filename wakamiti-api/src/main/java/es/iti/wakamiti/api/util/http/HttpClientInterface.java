@@ -8,13 +8,14 @@ package es.iti.wakamiti.api.util.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.io.Serializable;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
-public interface HttpClientInterface<SELF extends HttpClientInterface<SELF>> {
+public interface HttpClientInterface<SELF extends HttpClientInterface<SELF>> extends Serializable {
 
     String AUTHORIZATION = "Authorization";
 

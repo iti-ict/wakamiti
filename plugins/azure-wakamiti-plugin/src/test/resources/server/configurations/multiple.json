@@ -1,0 +1,19 @@
+{
+  "value" : [ {
+    "id" : 13,
+    "name" : "Windows 10",
+    "description" : "Sistema operativo predeterminado para las pruebas",
+    "isDefault" : true,
+    "values" : [ {
+      "name" : "Sistema operativo",
+      "value" : "Windows 10"
+    } ],
+    "state" : "active"
+  }, {
+    "id" : 29,
+    "name" : "Wakamiti",
+    "description" : "Pruebas con wakamiti",
+    "state" : "active"
+  } ],
+  "count" : 2
+}
