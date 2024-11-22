@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Set;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,12 +41,12 @@ public class TestUtil {
     public void testDateTimeToZonedDateTime() {
         int hour = 5;
         int sum = 8;
-        int diff = ZoneOffset.ofHours(8).getTotalSeconds()/100/60;
+        int diff = TimeZone.getDefault().getRawOffset()/1000/60/60;
         String date = String.format("2024-11-11T%02d:00:00.000", hour);
         ZoneId zone = ZoneId.of(String.format("UTC+%02d", sum));
         String result = Util.toZoneId(date, zone);
         LOGGER.debug("Result: {}", result);
-        assertThat(result).isEqualTo(String.format("2024-11-11T%02d:00:00", diff+sum));
+        assertThat(result).isEqualTo(String.format("2024-11-11T%02d:00:00", hour+sum-diff));
     }
 
     @Test
