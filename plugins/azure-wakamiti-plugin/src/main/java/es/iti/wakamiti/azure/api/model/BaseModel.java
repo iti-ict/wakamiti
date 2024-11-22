@@ -10,9 +10,10 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
-public class BaseModel implements Serializable {
+public abstract class BaseModel implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
@@ -20,6 +21,13 @@ public class BaseModel implements Serializable {
                 (this.getClass().isAssignableFrom(obj.getClass()) || obj.getClass().isAssignableFrom(this.getClass()))
                 && this.hashCode() == obj.hashCode();
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hashValues());
+    }
+
+    protected abstract Object[] hashValues();
 
     @Override
     public String toString() {

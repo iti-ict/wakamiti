@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.nio.file.Path;
-import java.util.Objects;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -94,8 +93,8 @@ public class TestPlan extends BaseModel {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name, area, iteration);
+    protected Object[] hashValues() {
+        return new Object[]{name, area, iteration};
     }
 
 }

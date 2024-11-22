@@ -45,11 +45,11 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
 
-    private static ExecutorService EXECUTOR = executor();
+    private static ExecutorService executor = executor();
     private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_VERSION =
             entry(java.net.http.HttpClient.Version.HTTP_2, "HTTP/2");
     private static final java.net.http.HttpClient.Builder CLIENT = java.net.http.HttpClient.newBuilder()
-            .executor(EXECUTOR)
+            .executor(executor)
             .version(HTTP_VERSION.getKey())
             .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(20));
@@ -224,9 +224,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP call => {} ", stringify(request));
             }
-            if (EXECUTOR.isShutdown()) {
-                EXECUTOR = executor();
-                CLIENT.executor(EXECUTOR);
+            if (executor.isShutdown()) {
+                executor = executor();
+                CLIENT.executor(executor);
             }
             HttpResponse<Optional<JsonNode>> response = CLIENT.build().send(request, asJSON());
             if (LOGGER.isTraceEnabled()) {
@@ -288,9 +288,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
-        if (EXECUTOR.isShutdown()) {
-            EXECUTOR = executor();
-            CLIENT.executor(EXECUTOR);
+        if (executor.isShutdown()) {
+            executor = executor();
+            CLIENT.executor(executor);
         }
         CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
                 .sendAsync(request, asJSON());
@@ -364,7 +364,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     public void close() {
-        EXECUTOR.shutdown();
+        executor.shutdown();
     }
 
     private static ExecutorService executor() {

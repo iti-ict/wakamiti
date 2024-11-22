@@ -122,7 +122,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
         List<T> pages = listGetter.apply(response).orElseGet(LinkedList::new);
 
         while (pages.isEmpty() && response.headers().firstValue(CONTINUATION_HEADER).isPresent()) {
-            response = queryParam("continuationToken", response.headers().firstValue(CONTINUATION_HEADER).get())
+            response = queryParam("continuationToken", response.headers().firstValue(CONTINUATION_HEADER).orElseThrow())
                     .get(uri);
             listGetter.apply(response).ifPresent(pages::addAll);
         }

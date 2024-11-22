@@ -106,6 +106,11 @@ public class TestRun extends BaseModel {
         return errorMessage;
     }
 
+    @Override
+    protected Object[] hashValues() {
+        return new Object[]{id};
+    }
+
     public enum Status {
         @JsonProperty("Unspecified")
         UNSPECIFIED,
