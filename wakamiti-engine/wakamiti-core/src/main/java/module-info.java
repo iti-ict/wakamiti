@@ -23,6 +23,7 @@ open module es.iti.wakamiti.core {
     exports es.iti.wakamiti.core;
     exports es.iti.wakamiti.core.maven;
     exports es.iti.wakamiti.core.gherkin.parser;
+    exports es.iti.wakamiti.core.generator.features;
 
     requires transitive es.iti.wakamiti.api;
     requires transitive iti.commons.jext;
@@ -46,6 +47,14 @@ open module es.iti.wakamiti.core {
     requires java.instrument;
     requires org.apache.xmlbeans;
     requires org.apache.commons.lang3;
+    requires java.net.http;
+    requires json.path;
+    requires org.apache.commons.io;
+
+    requires swagger.parser.core;
+    requires swagger.parser;
+    requires io.swagger.v3.oas.models;
+    requires org.apache.logging.log4j;
 
     provides WakamitiAPI with DefaultWakamitiAPI;
 
