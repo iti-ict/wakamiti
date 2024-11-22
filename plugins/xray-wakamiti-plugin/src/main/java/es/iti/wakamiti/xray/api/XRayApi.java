@@ -128,6 +128,27 @@ public class XRayApi extends BaseApi {
         post(API_GRAPHQL, mutation);
     }
 
+    public void addTestsToSets(List<XRayTestCase> tests) {
+        tests.forEach(xRayTestCase -> {
+
+            if (!xRayTestCase.getTestSetList().isEmpty()) {
+                String mutation = query(
+                        "mutation {" +
+                                "    addTestsToTestPlan(" +
+                                "        issueId: \"" + xRayTestCase.getTestSetList().get(0).getIssueId() + "\", " +
+                                "        testIssueIds: [\"" + xRayTestCase.getIssueId() + "\"]" +
+                                "    ) {" +
+                                "        addedTests" +
+                                "        warning" +
+                                "    }" +
+                                "}");
+
+                post(API_GRAPHQL, mutation);
+            }
+
+        });
+    }
+
     public List<XRayTestSet> getTestSets() {
         String query = query("query { " +
                 "   getTestSets(limit: 100) {" +
@@ -186,7 +207,7 @@ public class XRayApi extends BaseApi {
 
             JsonNode response = post(API_GRAPHQL, mutation);
 
-            return read(response, "$.data.getTest", XRayTestSet.class);
+            return read(response, "$.data.createTestSet.testSet", XRayTestSet.class);
 
         }).collect(Collectors.toList());
     }
@@ -200,8 +221,8 @@ public class XRayApi extends BaseApi {
 
             String mutation = query("mutation {" +
                     "    createTest(" +
-                    "        testType: { name: \"Generic\" }," +
-                    "        unstructured: \"Perform exploratory tests on calculator.\"," +
+                    "        testType: { name: \"Cucumber\" }," +
+//                    "        unstructured: \"Perform exploratory tests on calculator.\"," +
                     "        jira: {" +
                     "            fields: { summary:\"" + test.getJira().getSummary() + "\", project: {key: \"" + project + "\"} }" +
                     "        }" +

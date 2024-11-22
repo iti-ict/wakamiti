@@ -114,7 +114,7 @@ public class XRaySynchronizer implements EventObserver {
         xRayApi = new XRayApi(xRayBaseURL, xRayclientId, xRayclientSecret, project, LOGGER);
         jiraApi = new JiraApi(jiraBaseURL, jiraCredentials, project, LOGGER);
 
-        if (Event.PLAN_RUN_FINISHED.equals(event.type())) {
+        if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Sync plan to XRay...");
                 sync(data);
@@ -136,7 +136,7 @@ public class XRaySynchronizer implements EventObserver {
 
     @Override
     public boolean acceptType(String eventType) {
-        return List.of(Event.PLAN_CREATED, Event.PLAN_RUN_FINISHED).contains(eventType);
+        return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED).contains(eventType);
     }
 
     private void sync(PlanNodeSnapshot plan) {
@@ -199,6 +199,7 @@ public class XRaySynchronizer implements EventObserver {
         if (!newTests.isEmpty()) {
             List<String> createdIssues = xRayApi.createTestCases(remotePlan, newTests, project);
             xRayApi.addTestsToPlan(createdIssues, remotePlan);
+            xRayApi.addTestsToSets(newTests);
             LOGGER.debug("{} remote test cases created", newTests.size());
         }
 
