@@ -1,0 +1,57 @@
+{
+  "value" : [ {
+    "workItem" : {
+      "id" : 56980,
+      "name" : "Scenario X",
+      "workItemFields" : [ {
+        "System.Id" : 56980
+      }, {
+        "System.Title" : "Scenario X"
+      }, {
+        "System.Tags" : "ID-1A"
+      } ]
+    },
+    "pointAssignments" : [ {
+      "id" : 18884,
+      "configurationName" : "Wakamiti",
+      "configurationId" : 29
+    } ]
+  }, {
+    "workItem" : {
+      "id" : 56981,
+      "name" : "Scenario Y",
+      "workItemFields" : [ {
+        "System.Id" : 56981
+      }, {
+        "System.Title" : "Scenario Y"
+      }, {
+        "System.Tags" : "ID-2A"
+      } ]
+    },
+    "order" : 1,
+    "pointAssignments" : [ {
+      "id" : 18885,
+      "configurationName" : "Wakamiti",
+      "configurationId" : 29
+    } ]
+  }, {
+    "workItem" : {
+      "id" : 56982,
+      "name" : "Scenario Z",
+      "workItemFields" : [ {
+        "System.Id" : 56982
+      }, {
+        "System.Title" : "Scenario Z"
+      }, {
+        "System.Tags" : "ID-3A"
+      } ]
+    },
+    "order" : 2,
+    "pointAssignments" : [ {
+      "id" : 18886,
+      "configurationName" : "Wakamiti",
+      "configurationId" : 29
+    } ]
+  } ],
+  "count" : 3
+}

@@ -1,85 +1,111 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.azure;
+
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.azure.api.model.TestPlan;
 
-import java.util.function.BiConsumer;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.Consumer;
 
-@Extension(
-    provider =  "es.iti.wakamiti",
-    name = "azure-config",
-    version = "2.6",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor"
-)
-public class AzureConfigContributor implements ConfigContributor<AzureReporter> {
+import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
+import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
 
 
-    public static final String AZURE_DISABLED = "azure.disabled";
-    public static final String AZURE_HOST = "azure.host";
-    public static final String AZURE_CREDENTIALS_USER = "azure.credentials.user";
-    public static final String AZURE_CREDENTIALS_PASSWORD = "azure.credentials.password";
+@Extension(provider = "es.iti.wakamiti", name = "azure-config", version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+public class AzureConfigContributor implements ConfigContributor<AzureSynchronizer> {
+
+    public static final String AZURE_ENABLED = "azure.enabled";
+    public static final String AZURE_BASE_URL = "azure.baseURL";
+    public static final String AZURE_AUTH_USERNAME = "azure.auth.username";
+    public static final String AZURE_AUTH_PASSWORD = "azure.auth.password";
+    public static final String AZURE_AUTH_TOKEN = "azure.auth.token";
     public static final String AZURE_API_VERSION = "azure.apiVersion";
     public static final String AZURE_ORGANIZATION = "azure.organization";
     public static final String AZURE_PROJECT = "azure.project";
+    public static final String AZURE_CONFIGURATION = "azure.configuration";
+    public static final String AZURE_PLAN = "azure.plan";
+    public static final String AZURE_PLAN_NAME = "azure.plan.name";
+    public static final String AZURE_PLAN_AREA = "azure.plan.area";
+    public static final String AZURE_PLAN_ITERATION = "azure.plan.iteration";
+    public static final String AZURE_SUITE_BASE = "azure.suiteBase";
     public static final String AZURE_TAG = "azure.tag";
-    public static final String AZURE_ATTACHMENTS = "azure.attachments";
     public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
-    public static final String AZURE_WORK_ITEM_TEST_CASE_TYPE = "azure.workItemTestCaseType";
     public static final String AZURE_CREATE_ITEMS_IF_ABSENT = "azure.createItemsIfAbsent";
-    public static final String AZURE_TIME_ZONE_ADJUSTMENT = "azure.timeZoneAdjustment";
-    public static final String DEFAULT_AZURE_TAG = "Azure";
-    public static final String DEFAULT_AZURE_API_VERSION = "6.0-preview";
 
+    public static final String DEFAULT_AZURE_API_VERSION = "6.0-preview";
 
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
-            AZURE_DISABLED, "false",
-            AZURE_CREDENTIALS_USER, "",
-            AZURE_CREDENTIALS_PASSWORD, "",
-            AZURE_TAG, DEFAULT_AZURE_TAG,
-            AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION,
-            AZURE_TEST_CASE_PER_FEATURE, "false",
-            AZURE_CREATE_ITEMS_IF_ABSENT, "true",
-            AZURE_TIME_ZONE_ADJUSTMENT, "0"
+                AZURE_ENABLED, Boolean.TRUE.toString(),
+                AZURE_API_VERSION, DEFAULT_AZURE_API_VERSION,
+                AZURE_TEST_CASE_PER_FEATURE, Boolean.FALSE.toString(),
+                AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.TRUE.toString()
         );
     }
 
-
-
     @Override
-    public Configurer<AzureReporter> configurer() {
+    public Configurer<AzureSynchronizer> configurer() {
         return this::configure;
     }
 
+    private void configure(AzureSynchronizer synchronizer, Configuration configuration) {
+        requiredProperty(configuration, AZURE_ENABLED, Boolean.class, synchronizer::enabled);
+        requiredProperty(configuration, AZURE_BASE_URL, URL.class, synchronizer::baseURL);
 
+        credentials(configuration).ifPresent(c -> synchronizer.setCredentialsAuthenticator(c.key(), c.value()));
+        configuration.get(AZURE_AUTH_TOKEN, String.class).ifPresent(synchronizer::setTokenAuthenticator);
 
-    private void configure(AzureReporter azureReporter, Configuration configuration) {
-        azureReporter.setDisabled(configuration.get(AZURE_DISABLED,Boolean.class).orElse(Boolean.FALSE));
-        requiredProperty(configuration,azureReporter,AZURE_HOST, AzureReporter::setHost);
-        requiredProperty(configuration,azureReporter,AZURE_ORGANIZATION,AzureReporter::setOrganization);
-        requiredProperty(configuration,azureReporter,AZURE_PROJECT,AzureReporter::setProject);
-        azureReporter.setAzureTag(configuration.get(AZURE_TAG,String.class).orElse(DEFAULT_AZURE_TAG));
-        azureReporter.setCredentialsUser(configuration.get(AZURE_CREDENTIALS_USER,String.class).orElse(""));
-        azureReporter.setCredentialsPassword(configuration.get(AZURE_CREDENTIALS_PASSWORD,String.class).orElse(""));
-        requiredProperty(configuration,azureReporter,AZURE_API_VERSION,AzureReporter::setApiVersion);
-        azureReporter.setAttachments(configuration.getList(AZURE_ATTACHMENTS,String.class));
-        azureReporter.setTestCasePerFeature(configuration.get(AZURE_TEST_CASE_PER_FEATURE,Boolean.class).orElse(Boolean.FALSE));
-        requiredProperty(configuration,azureReporter,AZURE_WORK_ITEM_TEST_CASE_TYPE, AzureReporter::setTestCaseType);
-        azureReporter.setCreateItemsIfAbsent(configuration.get(AZURE_CREATE_ITEMS_IF_ABSENT,Boolean.class).orElse(Boolean.TRUE));
-        azureReporter.setTimeZoneAdjustment(configuration.get(AZURE_TIME_ZONE_ADJUSTMENT,Integer.class).orElse(0));
+        requiredProperty(configuration, AZURE_ORGANIZATION, String.class, synchronizer::organization);
+        requiredProperty(configuration, AZURE_PROJECT, String.class, synchronizer::project);
+        requiredProperty(configuration, AZURE_API_VERSION, String.class, synchronizer::version);
+        configuration.get(AZURE_CONFIGURATION, String.class).ifPresent(synchronizer::configuration);
+        synchronizer.testPlan(plan(configuration));
+        configuration.get(AZURE_SUITE_BASE, String.class).ifPresent(synchronizer::suiteBase);
+        configuration.get(AZURE_TAG, String.class).ifPresent(synchronizer::tag);
+        requiredProperty(configuration, AZURE_TEST_CASE_PER_FEATURE, Boolean.class, v -> {
+            if (v && !configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(false)) {
+                throw new WakamitiException("The property '{}' must be enabled", STRICT_TEST_CASE_ID);
+            }
+            synchronizer.testCasePerFeature(v);
+        });
+        requiredProperty(configuration, AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.class, synchronizer::createItemsIfAbsent);
+        requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
     }
 
-
-
-
-    private void requiredProperty(Configuration config, AzureReporter reporter, String property, BiConsumer<AzureReporter,String> setter) {
-        String value = config.get(property,String.class).orElseThrow(()->new WakamitiException("Property {} is required",property));
-        setter.accept(reporter,value);
+    private Optional<Pair<String, String>> credentials(Configuration configuration) {
+        String password = configuration.get(AZURE_AUTH_PASSWORD, String.class).orElse("");
+        return configuration.get(AZURE_AUTH_USERNAME, String.class).map(user -> new Pair<>(user, password));
     }
 
+    private TestPlan plan(Configuration configuration) {
+        if (configuration.inner(AZURE_PLAN).asMap().isEmpty()) {
+            throw new WakamitiException("Property '{}' is required", AZURE_PLAN);
+        }
+        TestPlan plan = new TestPlan();
+        requiredProperty(configuration, AZURE_PLAN_NAME, String.class, plan::name);
+        requiredProperty(configuration, AZURE_PLAN_AREA, Path.class, plan::area);
+        requiredProperty(configuration, AZURE_PLAN_ITERATION, Path.class, plan::iteration);
+        return plan;
+    }
+
+    private <T> void requiredProperty(Configuration config, String property, Class<T> type, Consumer<T> setter) {
+        T value = config.get(property, type)
+                .orElseThrow(() -> new WakamitiException("Property '{}' is required", property));
+        setter.accept(value);
+    }
 
 }

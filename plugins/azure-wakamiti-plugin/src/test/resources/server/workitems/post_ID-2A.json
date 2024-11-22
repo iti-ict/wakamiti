@@ -1,0 +1,17 @@
+{
+  "id" : 56981,
+  "rev" : 1,
+  "fields" : {
+    "System.AreaPath" : "ACS",
+    "System.TeamProject" : "ACS",
+    "System.IterationPath" : "ACS\\\\Iteración 1",
+    "System.WorkItemType" : "Caso de prueba",
+    "System.State" : "Diseño",
+    "System.Reason" : "Nueva",
+    "System.CommentCount" : 0,
+    "System.Title" : "Scenario Y",
+    "Microsoft.VSTS.Common.Priority" : 2,
+    "Microsoft.VSTS.TCM.AutomationStatus" : "No automatizado",
+    "System.Tags" : "ID-2A"
+  }
+}
