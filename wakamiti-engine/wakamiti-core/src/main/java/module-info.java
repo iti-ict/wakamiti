@@ -28,7 +28,6 @@ open module es.iti.wakamiti.core {
     requires transitive es.iti.wakamiti.api;
     requires transitive iti.commons.jext;
     requires transitive slf4jansi;
-    requires plexus.utils;
     requires maven.resolver.provider;
     requires org.apache.maven.resolver;
     requires org.apache.maven.resolver.util;

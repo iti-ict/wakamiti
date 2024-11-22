@@ -1,0 +1,62 @@
+{
+  "value" : [ {
+    "id" : 56984,
+    "revision" : 4,
+    "plan" : {
+      "id" : 56983,
+      "name" : "Wakamiti Test Plan"
+    },
+    "children" : [ {
+      "id" : 56985,
+      "revision" : 3,
+      "plan" : {
+        "id" : 56983,
+        "name" : "Wakamiti Test Plan"
+      },
+      "suiteType" : "staticTestSuite",
+      "name" : "Feature 1",
+      "parentSuite" : {
+        "id" : 56984,
+        "name" : "Wakamiti Test Plan"
+      },
+      "hasChildren" : true,
+      "children" : [ {
+        "id" : 56986,
+        "revision" : 3,
+        "plan" : {
+          "id" : 56983,
+          "name" : "Wakamiti Test Plan"
+        },
+        "suiteType" : "staticTestSuite",
+        "name" : "AAA",
+        "parentSuite" : {
+          "id" : 56985,
+          "name" : "Feature 1"
+        }
+      }, {
+        "id" : 56987,
+        "revision" : 3,
+        "plan" : {
+          "id" : 56983,
+          "name" : "Wakamiti Test Plan"
+        },
+        "suiteType" : "staticTestSuite",
+        "name" : "BBB",
+        "parentSuite" : {
+          "id" : 56985,
+          "name" : "Feature 1"
+        }
+      } ],
+      "inheritDefaultConfigurations" : true
+    } ],
+    "hasChildren" : true,
+    "suiteType" : "staticTestSuite",
+    "name" : "Wakamiti Test Plan",
+    "inheritDefaultConfigurations" : false,
+    "defaultConfigurations" : [ {
+      "id" : 13,
+      "name" : "Windows 10"
+    } ]
+  } ],
+  "count" : 1
+}
