@@ -96,7 +96,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
             throw new WakamitiException("Property '{}' is required", XRAY_PLAN);
         }
         XRayPlan plan = new XRayPlan();
-        requiredProperty(configuration, XRAY_PLAN_ID, String.class, plan::id);
+//        requiredProperty(configuration, XRAY_PLAN_ID, String.class, plan::id);
         requiredProperty(configuration, XRAY_PLAN_SUMMARY, String.class, s -> plan.getJira().summary(s));
         return plan;
     }

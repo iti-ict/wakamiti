@@ -17,7 +17,7 @@ import static es.iti.wakamiti.xray.XrayConfigContributor.*;
         @Property(key = JIRA_BASE_URL, value = "https://coliva-jira-1.atlassian.net"),
         @Property(key = XRAY_PROJECT, value = "W1"),
         @Property(key = XRAY_PLAN, value = ""),
-        @Property(key = XRAY_PLAN_ID, value = "10035"),
+        @Property(key = XRAY_PLAN_ID, value = ""),
         @Property(key = XRAY_PLAN_SUMMARY, value = "Sincronización con plugin Wakamiti"),
         @Property(key = XRAY_TEST_CASE_PER_FEATURE, value = "true"),
         @Property(key = XRAY_CREATE_ITEMS_IF_ABSENT, value = "true"),
