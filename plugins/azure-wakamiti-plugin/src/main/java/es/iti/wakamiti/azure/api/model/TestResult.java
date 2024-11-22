@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import es.iti.wakamiti.api.plan.Result;
 
-import static es.iti.wakamiti.api.plan.Result.*;
-
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestResult extends BaseModel {
@@ -115,12 +113,18 @@ public class TestResult extends BaseModel {
     }
 
     public enum Type {
-        Unspecified(UNDEFINED, "Execution undefined"),
-        Passed(PASSED, "Execution successful"),
-        Failed(FAILED, "Execution failed"),
-        Error(ERROR, "Execution error"),
-        NotApplicable(NOT_IMPLEMENTED, "Execution not implemented"),
-        NotExecuted(SKIPPED, "Execution skipped");
+        @JsonProperty("Unspecified")
+        UNSPECIFIED(Result.UNDEFINED, "Execution undefined"),
+        @JsonProperty("Passed")
+        PASSED(Result.PASSED, "Execution successful"),
+        @JsonProperty("Failed")
+        FAILED(Result.FAILED, "Execution failed"),
+        @JsonProperty("Error")
+        ERROR(Result.ERROR, "Execution error"),
+        @JsonProperty("NotApplicable")
+        NOT_APPLICABLE(Result.NOT_IMPLEMENTED, "Execution not implemented"),
+        @JsonProperty("NotExecuted")
+        NOT_EXECUTED(Result.SKIPPED, "Execution skipped");
 
         private final Result result;
         private final String comment;

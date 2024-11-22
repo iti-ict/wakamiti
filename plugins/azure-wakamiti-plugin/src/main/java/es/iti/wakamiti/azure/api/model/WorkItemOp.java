@@ -46,8 +46,8 @@ public class WorkItemOp {
     }
 
     public enum Operation {
-        add,
-        remove,
+        ADD,
+        REMOVE,
         replace
     }
 

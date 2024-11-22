@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,7 +63,7 @@ public class AzureSynchronizer implements EventObserver {
     private TestRun run;
     private List<TestResult> testResults;
 
-    private Consumer<BaseApi<?>> authenticator = (client) -> {
+    private Consumer<BaseApi<?>> authenticator = client -> {
         throw new WakamitiException("Authentication is needed");
     };
 
@@ -132,18 +133,18 @@ public class AzureSynchronizer implements EventObserver {
 
     private AzureApi api() {
         if (api == null) {
-            Function<String, String> tagIdExtractor = tags -> {
-                List<String> t = Stream.of(tags.split(";")).map(String::trim)
-                        .filter(tag -> tag.matches(idTagPattern)).collect(Collectors.toList());
-                if (t.size() > 1) {
+            UnaryOperator<String> tagIdExtractor = tags -> {
+                List<String> aux = Stream.of(tags.split(";")).map(String::trim)
+                        .filter(t -> t.matches(idTagPattern)).collect(Collectors.toList());
+                if (aux.size() > 1) {
                     throw new WakamitiAzureException("Too many tags match the id pattern. ");
-                } else if (t.isEmpty()) {
+                } else if (aux.isEmpty()) {
                     throw new WakamitiAzureException("No tag matches the id pattern. ");
                 }
-                return t.get(0);
+                return aux.get(0);
             };
             api = new AzureApi(baseURL, tagIdExtractor, configuration)
-                    .organization(organization).project(project).version(version);
+                    .organization(organization).projectBase(project).version(version);
             authenticator.accept(api);
         }
         return api;
@@ -181,6 +182,7 @@ public class AzureSynchronizer implements EventObserver {
                 LOGGER.error("Cannot upload attachment '{}'", event.data(), e);
             }
         }
+        api().close();
     }
 
     @Override
@@ -218,24 +220,26 @@ public class AzureSynchronizer implements EventObserver {
         run = new TestRun()
                 .plan(testPlan)
                 .name(testPlan.name() + " - run by Wakamiti")
-                .state(TestRun.Status.InProgress)
+                .state(TestRun.Status.IN_PROGRESS)
                 .pointIds(testCases.stream().flatMap(t -> t.pointAssignments().stream().map(PointAssignment::id))
                         .collect(Collectors.toList()));
         Optional.ofNullable(plan.getDescription()).map(d -> join(d, System.lineSeparator())).ifPresent(run::comment);
         Optional.ofNullable(tag).map(Tag::new).map(List::of).ifPresent(run::tags);
         api().createRun(run);
+        LOGGER.debug("Test run #{} ready to sync", run.id());
         testResults = api().getResults(run)
                 .peek(r -> r.testCase(findTestCase.apply(r.testCase().id())))
                 .collect(Collectors.toList());
+        LOGGER.debug("{} remote test results ready to sync", testResults.size());
     }
 
     private void uploadExecution(PlanNodeSnapshot plan) {
         if (isEmpty(testResults)) {
             return;
         }
-        Function<String, TestResult> findResult = tag -> testResults.stream()
-                .filter(e -> e.testCase().tag().equals(tag)).findFirst()
-                .orElseThrow(() -> new WakamitiAzureException("No such test result '{}'", tag));
+        Function<String, TestResult> findResult = t -> testResults.stream()
+                .filter(e -> e.testCase().tag().equals(t)).findFirst()
+                .orElseThrow(() -> new WakamitiAzureException("No such test result '{}'", t));
         testResults = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase)
                 .mapResults(plan)
@@ -243,11 +247,12 @@ public class AzureSynchronizer implements EventObserver {
                 .collect(Collectors.toList());
 
         api().updateResults(run, testResults);
-        api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.Completed));
+        api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.COMPLETED));
     }
 
     private void uploadAttachment(Path file) {
         api().attachFile(run, Set.of(file));
+        LOGGER.debug("Attachment '{}' uploaded", file.getFileName());
     }
 
 }

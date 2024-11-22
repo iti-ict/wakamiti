@@ -6,21 +6,18 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Attachment {
 
-    public Type attachmentType;
-    public String comment;
-    public String fileName;
-    public String stream;
-
-    public Attachment attachmentType(Type attachmentType) {
-        this.attachmentType = attachmentType;
-        return this;
-    }
-
-    public Type attachmentType() {
-        return attachmentType;
-    }
+    @JsonProperty
+    private final String attachmentType = "GeneralAttachment";
+    @JsonProperty
+    private String comment;
+    @JsonProperty
+    private String fileName;
+    @JsonProperty
+    private String stream;
 
     public Attachment comment(String comment) {
         this.comment = comment;
@@ -47,19 +44,5 @@ public class Attachment {
 
     public String stream() {
         return stream;
-    }
-
-    public enum Type {
-        GeneralAttachment,
-        AfnStrip,
-        BugFilingData,
-        CodeCoverage,
-        IntermediateCollectorData,
-        RunConfig,
-        TestImpactDetails,
-        TmiTestRunDeploymentFiles,
-        TmiTestRunReverseDeploymentFiles,
-        TmiTestResultDetail,
-        TmiTestRunSummary;
     }
 }

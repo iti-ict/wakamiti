@@ -58,7 +58,7 @@ public class TestPlan extends BaseModel {
     }
 
     public TestPlan area(Path area) {
-        this.area = area.toString().replaceAll("/", "\\");
+        this.area = area.toString().replace("/", "\\");
         return this;
     }
 
@@ -67,7 +67,7 @@ public class TestPlan extends BaseModel {
     }
 
     public TestPlan iteration(Path iteration) {
-        this.iteration = iteration.toString().replaceAll("/", "\\");
+        this.iteration = iteration.toString().replace("/", "\\");
         return this;
     }
 

@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -44,10 +45,11 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
 
+    private static ExecutorService EXECUTOR = executor();
     private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_VERSION =
             entry(java.net.http.HttpClient.Version.HTTP_2, "HTTP/2");
     private static final java.net.http.HttpClient.Builder CLIENT = java.net.http.HttpClient.newBuilder()
-            .executor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10))
+            .executor(EXECUTOR)
             .version(HTTP_VERSION.getKey())
             .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(20));
@@ -222,6 +224,10 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP call => {} ", stringify(request));
             }
+            if (EXECUTOR.isShutdown()) {
+                EXECUTOR = executor();
+                CLIENT.executor(EXECUTOR);
+            }
             HttpResponse<Optional<JsonNode>> response = CLIENT.build().send(request, asJSON());
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP response => {}", stringify(response));
@@ -282,6 +288,10 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
+        if (EXECUTOR.isShutdown()) {
+            EXECUTOR = executor();
+            CLIENT.executor(EXECUTOR);
+        }
         CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
                 .sendAsync(request, asJSON());
         return completable.thenApply(response -> {
@@ -351,6 +361,14 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         SELF clone = SerializationUtils.clone(self()).postCall(postCall);
         Optional.ofNullable(body).map(Objects::toString).ifPresent(clone::body);
         return clone;
+    }
+
+    public void close() {
+        EXECUTOR.shutdown();
+    }
+
+    private static ExecutorService executor() {
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
     }
 
 }

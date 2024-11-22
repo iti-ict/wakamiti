@@ -52,12 +52,4 @@ public class TestAzureReporter {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    private InputStream resource(String resource) {
-        return classLoader().getResourceAsStream(resource);
-    }
-
-    private Event event(String type, Object data) {
-        return new Event(type, Instant.now(), data);
-    }
-
 }

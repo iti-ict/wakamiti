@@ -44,7 +44,7 @@ public abstract class Mapper {
      *
      * @param suiteBase the base directory for mapping test suites.
      */
-    public Mapper(final String suiteBase) {
+    protected Mapper(final String suiteBase) {
         this.suiteBase = suiteBase;
     }
 
@@ -89,7 +89,7 @@ public abstract class Mapper {
                 });
 
         TestSuite suite = Stream.of(suitePath.toString().split(escapeEcmaScript(File.separator)))
-                .map(dir -> new TestSuite().name(dir).suiteType(TestSuite.Type.staticTestSuite))
+                .map(dir -> new TestSuite().name(dir).suiteType(TestSuite.Type.STATIC_TEST_SUITE))
                 .reduce((a, b) -> b.parent(a.hasChildren(true)))
                 .orElseThrow();
 

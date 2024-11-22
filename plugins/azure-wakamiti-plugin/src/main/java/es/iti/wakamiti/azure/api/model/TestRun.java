@@ -107,13 +107,21 @@ public class TestRun extends BaseModel {
     }
 
     public enum Status {
-        Unspecified,
-        NotStarted,
-        Pending,
-        InProgress,
-        Completed,
-        Waiting,
-        Aborted,
-        NeedsInvestigation;
+        @JsonProperty("Unspecified")
+        UNSPECIFIED,
+        @JsonProperty("NotStarted")
+        NOT_STARTED,
+        @JsonProperty("Pending")
+        PENDING,
+        @JsonProperty("InProgress")
+        IN_PROGRESS,
+        @JsonProperty("Completed")
+        COMPLETED,
+        @JsonProperty("Waiting")
+        WAITING,
+        @JsonProperty("Aborted")
+        ABORTED,
+        @JsonProperty("NeedsInvestigation")
+        NEEDS_INVESTIGATION;
     }
 }

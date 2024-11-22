@@ -21,7 +21,6 @@ import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.io.IOUtils;
-//import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -41,7 +40,7 @@ import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
  * @see RestSupport
  * @see StepContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.7")
 @I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
 

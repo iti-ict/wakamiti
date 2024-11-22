@@ -27,7 +27,7 @@ public class TestCase extends BaseModel {
     private int order;
     private TestSuite suite;
     private List<PointAssignment> pointAssignments;
-    private PlanNodeSnapshot metadata;
+    private transient PlanNodeSnapshot metadata;
 
     public TestCase id(String id) {
         this.id = id;
