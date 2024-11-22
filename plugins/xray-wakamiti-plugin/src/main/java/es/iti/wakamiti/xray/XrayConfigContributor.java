@@ -34,6 +34,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     public static final String XRAY_CREDENTIALS_CLIENT_ID = "xray.auth.credentials.client-id";
     public static final String XRAY_CREDENTIALS_CLIENT_SECRET = "xray.auth.credentials.client-secret";
     public static final String JIRA_CREDENTIALS = "jira.auth.credentials";
+    public static final String JIRA_BASE_URL = "jira.baseURL";
     public static final String XRAY_PLAN = "xray.plan";
     public static final String XRAY_PLAN_ID = "xray.plan.id";
     public static final String XRAY_PLAN_SUMMARY = "xray.plan.summary";
@@ -42,7 +43,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     public static final String XRAY_TEST_CASE_PER_FEATURE = "xray.testCasePerFeature";
     public static final String XRAY_SUITE_BASE = "xray.suiteBase";
 
-    public static final String DEFAULT_XRAY_TAG = "XRay";
+    public static final String DEFAULT_XRAY_TAG = "ID-1";
 
     @Override
     public boolean accepts(Object contributor) {
@@ -68,7 +69,8 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
 
     private void configure(XRaySynchronizer synchronizer, Configuration configuration) {
         requiredProperty(configuration, XRAY_ENABLED, Boolean.class, synchronizer::enabled);
-        requiredProperty(configuration, XRAY_BASE_URL, URL.class, synchronizer::baseURL);
+        requiredProperty(configuration, XRAY_BASE_URL, URL.class, synchronizer::xRayBaseURL);
+        requiredProperty(configuration, JIRA_BASE_URL, URL.class, synchronizer::jiraBaseURL);
         requiredProperty(configuration, XRAY_PROJECT, String.class, synchronizer::project);
         requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
         requiredProperty(configuration, XRAY_CREDENTIALS_CLIENT_ID, String.class, synchronizer::xRayclientId);
@@ -95,7 +97,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         }
         XRayPlan plan = new XRayPlan();
         requiredProperty(configuration, XRAY_PLAN_ID, String.class, plan::id);
-        requiredProperty(configuration, XRAY_PLAN_SUMMARY, String.class, plan::summary);
+        requiredProperty(configuration, XRAY_PLAN_SUMMARY, String.class, s -> plan.getJira().summary(s));
         return plan;
     }
 
