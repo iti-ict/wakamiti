@@ -1,10 +1,10 @@
 {
-  "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-  "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+  "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+  "snapshotInstant" : "2024-11-22T11:27:57.186091259",
   "nodeType" : "AGGREGATOR",
   "displayName" : "Test Plan",
-  "startInstant" : "2024-11-22T09:35:50.358411968",
-  "finishInstant" : "2024-11-22T09:35:50.360551666",
+  "startInstant" : "2024-11-22T11:27:56.922829360",
+  "finishInstant" : "2024-11-22T11:27:56.925509727",
   "duration" : 0,
   "result" : "ERROR",
   "testCaseResults" : {
@@ -15,8 +15,8 @@
     "NOT_IMPLEMENTED" : 1
   },
   "children" : [ {
-    "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-    "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+    "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+    "snapshotInstant" : "2024-11-22T11:27:57.186091259",
     "nodeType" : "AGGREGATOR",
     "id" : "ID-s1",
     "name" : "XRay integration feature",
@@ -31,8 +31,8 @@
     },
     "result" : "ERROR",
     "children" : [ {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-s1-1",
       "name" : "Scenario B",
@@ -47,10 +47,10 @@
         "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "STEP_AGGREGATOR",
-        "id" : "#f81ff4",
+        "id" : "#n84e88",
         "name" : "Def this step fails",
         "keyword" : "*",
         "language" : "en",
@@ -61,10 +61,10 @@
           "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
         },
         "children" : [ {
-          "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-          "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+          "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+          "snapshotInstant" : "2024-11-22T11:27:57.186091259",
           "nodeType" : "STEP",
-          "id" : "#pe74e4",
+          "id" : "#u8ed2d",
           "name" : "this step fails",
           "keyword" : "*",
           "language" : "en",
@@ -76,8 +76,8 @@
         } ]
       } ]
     }, {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-s1-2",
       "name" : "Scenario C",
@@ -92,10 +92,10 @@
         "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "STEP_AGGREGATOR",
-        "id" : "#t70ad0",
+        "id" : "#gbed68",
         "name" : "Def this step fails",
         "keyword" : "*",
         "language" : "en",
@@ -106,10 +106,10 @@
           "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
         },
         "children" : [ {
-          "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-          "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+          "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+          "snapshotInstant" : "2024-11-22T11:27:57.186091259",
           "nodeType" : "STEP",
-          "id" : "#be06bb",
+          "id" : "#l2007f",
           "name" : "this step fails",
           "keyword" : "*",
           "language" : "en",
@@ -121,8 +121,8 @@
         } ]
       } ]
     }, {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-s1-3",
       "name" : "Scenario A",
@@ -137,10 +137,10 @@
         "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "STEP_AGGREGATOR",
-        "id" : "#yb6d18",
+        "id" : "#h9abe6",
         "name" : "Def this step do nothing",
         "keyword" : "*",
         "language" : "en",
@@ -151,10 +151,10 @@
           "xraySuite" : "Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11"
         },
         "children" : [ {
-          "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-          "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+          "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+          "snapshotInstant" : "2024-11-22T11:27:57.186091259",
           "nodeType" : "STEP",
-          "id" : "#u8fdc8",
+          "id" : "#wb3cd6",
           "name" : "this step do nothing",
           "keyword" : "*",
           "language" : "en",
@@ -167,8 +167,8 @@
       } ]
     } ]
   }, {
-    "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-    "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+    "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+    "snapshotInstant" : "2024-11-22T11:27:57.186091259",
     "nodeType" : "AGGREGATOR",
     "id" : "ID-1",
     "name" : "XRay integration feature",
@@ -184,8 +184,8 @@
       "xrayArea" : "ACS",
       "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
     },
-    "startInstant" : "2024-11-22T09:35:50.358411968",
-    "finishInstant" : "2024-11-22T09:35:50.360551666",
+    "startInstant" : "2024-11-22T11:27:56.922829360",
+    "finishInstant" : "2024-11-22T11:27:56.925509727",
     "duration" : 0,
     "result" : "NOT_IMPLEMENTED",
     "testCaseResults" : {
@@ -195,8 +195,8 @@
       "NOT_IMPLEMENTED" : 3
     },
     "children" : [ {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-1",
       "name" : "Wakamiti Scenario B - Fail cambio",
@@ -214,8 +214,8 @@
         "xrayTest" : "Wakamiti Scenario B - Fail cambio",
         "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
       },
-      "startInstant" : "2024-11-22T09:35:50.358411968",
-      "finishInstant" : "2024-11-22T09:35:50.358411968",
+      "startInstant" : "2024-11-22T11:27:56.922829360",
+      "finishInstant" : "2024-11-22T11:27:56.922829360",
       "duration" : 0,
       "result" : "NOT_IMPLEMENTED",
       "testCaseResults" : {
@@ -225,10 +225,10 @@
         "NOT_IMPLEMENTED" : 1
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "VIRTUAL_STEP",
-        "id" : "#kc26b4",
+        "id" : "#f6064a",
         "name" : "Def this step fails",
         "keyword" : "*",
         "language" : "en",
@@ -242,14 +242,14 @@
           "xrayTest" : "Wakamiti Scenario B - Fail cambio",
           "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
         },
-        "startInstant" : "2024-11-22T09:35:50.358411968",
-        "finishInstant" : "2024-11-22T09:35:50.358411968",
+        "startInstant" : "2024-11-22T11:27:56.922829360",
+        "finishInstant" : "2024-11-22T11:27:56.922829360",
         "duration" : 0,
         "result" : "NOT_IMPLEMENTED"
       } ]
     }, {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-2",
       "name" : "Def Test Case C",
@@ -267,8 +267,8 @@
         "xrayTest" : "Wakamiti Scenario C - Fail",
         "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
       },
-      "startInstant" : "2024-11-22T09:35:50.359711685",
-      "finishInstant" : "2024-11-22T09:35:50.359711685",
+      "startInstant" : "2024-11-22T11:27:56.924028269",
+      "finishInstant" : "2024-11-22T11:27:56.924028269",
       "duration" : 0,
       "result" : "NOT_IMPLEMENTED",
       "testCaseResults" : {
@@ -278,10 +278,10 @@
         "NOT_IMPLEMENTED" : 1
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "VIRTUAL_STEP",
-        "id" : "#q258cd",
+        "id" : "#mf753d",
         "name" : "Def this step fails",
         "keyword" : "*",
         "language" : "en",
@@ -295,14 +295,14 @@
           "xrayTest" : "Wakamiti Scenario C - Fail",
           "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
         },
-        "startInstant" : "2024-11-22T09:35:50.359711685",
-        "finishInstant" : "2024-11-22T09:35:50.359711685",
+        "startInstant" : "2024-11-22T11:27:56.924028269",
+        "finishInstant" : "2024-11-22T11:27:56.924028269",
         "duration" : 0,
         "result" : "NOT_IMPLEMENTED"
       } ]
     }, {
-      "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-      "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+      "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+      "snapshotInstant" : "2024-11-22T11:27:57.186091259",
       "nodeType" : "TEST_CASE",
       "id" : "ID-3",
       "name" : "Def Test Case A",
@@ -320,8 +320,8 @@
         "xrayTest" : "Wakamiti Scenario A - Fail",
         "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
       },
-      "startInstant" : "2024-11-22T09:35:50.360551666",
-      "finishInstant" : "2024-11-22T09:35:50.360551666",
+      "startInstant" : "2024-11-22T11:27:56.925509727",
+      "finishInstant" : "2024-11-22T11:27:56.925509727",
       "duration" : 0,
       "result" : "NOT_IMPLEMENTED",
       "testCaseResults" : {
@@ -331,10 +331,10 @@
         "NOT_IMPLEMENTED" : 1
       },
       "children" : [ {
-        "executionID" : "1d340f2a-def3-4104-b1e2-5cb143097240",
-        "snapshotInstant" : "2024-11-22T09:35:55.421503236",
+        "executionID" : "3f25fd58-a054-4d94-9299-3a1b54863fc0",
+        "snapshotInstant" : "2024-11-22T11:27:57.186091259",
         "nodeType" : "VIRTUAL_STEP",
-        "id" : "#ye7743",
+        "id" : "#y26356",
         "name" : "Def this step do nothing",
         "keyword" : "*",
         "language" : "en",
@@ -348,8 +348,8 @@
           "xrayTest" : "Wakamiti Scenario A - Fail",
           "xraySuite" : "Wakamiti Test Suite A \\\\ Wakamiti Test Suite A1 \\\\ Wakamiti Test Suite A11"
         },
-        "startInstant" : "2024-11-22T09:35:50.360551666",
-        "finishInstant" : "2024-11-22T09:35:50.360551666",
+        "startInstant" : "2024-11-22T11:27:56.925509727",
+        "finishInstant" : "2024-11-22T11:27:56.925509727",
         "duration" : 0,
         "result" : "NOT_IMPLEMENTED"
       } ]

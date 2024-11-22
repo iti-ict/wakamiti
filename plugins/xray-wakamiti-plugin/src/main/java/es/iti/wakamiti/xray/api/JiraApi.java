@@ -2,9 +2,7 @@ package es.iti.wakamiti.xray.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.xray.internal.JiraType;
 import es.iti.wakamiti.xray.model.JiraIssue;
-import es.iti.wakamiti.xray.model.XRayPlan;
 import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
@@ -28,37 +26,6 @@ public class JiraApi extends BaseApi {
         this.logger = logger;
     }
 
-    public JiraIssue createIssue(String summary, String description, String type) {
-        String payload = toJSON(Map.of(
-                "fields", Map.of(
-                        "project", Map.of(
-                                "key", project)),
-                "issueType", Map.of(
-                        "name", type),
-                "summary", summary,
-                "description", Map.of(
-                        "type", "doc",
-                        "version", 1,
-                        "content", List.of(Map.of(
-                                "type", "paragraph",
-                                "content", List.of(Map.of(
-                                        "text", description,
-                                        "type", "text"
-                                ))
-                        ))
-                )
-        ));
-
-        JsonNode response = post(API_ISSUE, payload);
-
-        return extractJiraIssue(response);
-    }
-
-    public JiraIssue getIssue(String id) {
-        JsonNode response = get(API_ISSUE + "/" + id);
-
-        return extractJiraIssue(response);
-    }
 
     public JiraIssue updateIssue(String id, String newSummary, String newDescription, List<String> newLabels) {
 
@@ -100,10 +67,4 @@ public class JiraApi extends BaseApi {
         });
     }
 
-    public List<String> createTestCases(XRayPlan remotePlan, List<XRayTestCase> newTests) {
-        return newTests.stream().map(test -> {
-            JiraIssue created = createIssue(test.getJira().getSummary(), test.getJira().getDescription(), JiraType.TEST.getName());
-            return created.getKey();
-        }).collect(Collectors.toList());
-    }
 }
