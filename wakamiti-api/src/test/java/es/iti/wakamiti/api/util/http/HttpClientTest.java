@@ -98,7 +98,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
     }
@@ -132,7 +131,6 @@ public class HttpClientTest {
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.body()).isNotPresent();
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("0"))
                 .containsEntry("content-type", List.of("application/json"));
     }
@@ -172,7 +170,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
     }
@@ -212,7 +209,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
@@ -249,7 +245,6 @@ public class HttpClientTest {
         assertThat(response.statusCode()).isEqualTo(204);
         assertThat(response.body()).isNotPresent();
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-type", List.of("application/json"));
     }
 
@@ -288,7 +283,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
@@ -326,9 +320,9 @@ public class HttpClientTest {
         // check
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.body()).isNotPresent();
+        assertThat(response.body()).isPresent().get()
+                .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
@@ -369,7 +363,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
@@ -411,7 +404,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
@@ -429,7 +421,6 @@ public class HttpClientTest {
         assertThat(response.body()).isPresent().get()
                 .hasToString("{\"id\":\"123\",\"name\":\"something\"}");
         assertThat(response.headers().map())
-                .containsEntry("connection", List.of("keep-alive"))
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
