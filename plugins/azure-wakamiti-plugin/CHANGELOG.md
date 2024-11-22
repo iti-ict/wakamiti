@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [unreleased] 
+
+### Fixed
+- Escaping double quotes in Azure names. (#218)
+- Error messages without error detail. (#233)
+
+### Changed
+- Plugin refactor
+
+
 ## [1.9.0] - 2024-09-09
 
 ### Changed
@@ -30,7 +40,7 @@ and this project adheres to [Semantic Versioning][2].
 - Add configuration `azure.disabled` in order to disabled entirely the plugin
 - Add property `azureTestId` to bound a feature/scenario to an existing test case in Azure
 
-### Modified
+### Changed
 - Test case names in Azure are updated if modified in Wakamamiti
 
 
@@ -41,8 +51,6 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Changed
 - All test suites are notified as a single run instead of multiples
-
-
 
 
 ## [1.4.1] - 2023-09-14
@@ -57,7 +65,6 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 - Creation of test plans, suites, and test cases in the Azure instance when absent
 - Fill run data regarding start, finish, and execution time.
-
 
 
 ## [1.3.2] - 2023-09-11
@@ -77,16 +84,16 @@ and this project adheres to [Semantic Versioning][2].
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `es.iti.wakamiti:wakamiti-core`
 
+
 ## [1.2.1] - 2023-07-27
 
 ### Fixed
-
 - Api Groovy dependencies compatibility
+
 
 ## [1.2.0] - 2023-07-18
 
-### Modified
-
+### Changed
 - Change plugin nomenclature
 
 

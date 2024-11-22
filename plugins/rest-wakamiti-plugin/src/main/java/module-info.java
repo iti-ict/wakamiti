@@ -20,13 +20,13 @@ module es.iti.wakamiti.rest {
     requires org.hamcrest;
     requires rest.assured;
     requires rest.assured.common;
-//    requires plexus.utils;
     requires json.schema.validator;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.xmlbeans;
     requires xml.path;
     requires org.apache.commons.lang3;
+    requires org.apache.commons.io;
 
     uses ConfigContributor;
     uses StepContributor;

@@ -1,0 +1,20 @@
+{
+  "value" : [ {
+    "id" : 56984,
+    "revision" : 4,
+    "plan" : {
+      "id" : 56983,
+      "name" : "Wakamiti Test Plan"
+    },
+    "children" : [ ],
+    "hasChildren" : false,
+    "suiteType" : "staticTestSuite",
+    "name" : "Wakamiti Test Plan",
+    "inheritDefaultConfigurations" : false,
+    "defaultConfigurations" : [ {
+      "id" : 13,
+      "name" : "Windows 10"
+    } ]
+  } ],
+  "count" : 1
+}
