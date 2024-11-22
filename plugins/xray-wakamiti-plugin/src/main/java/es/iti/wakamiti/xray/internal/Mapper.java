@@ -8,12 +8,9 @@ import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.XRayTestCase;
 import es.iti.wakamiti.xray.model.XRayTestSet;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -22,12 +19,10 @@ import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 
 public abstract class Mapper {
 
-    private static final String AZURE_SUITE = "azureSuite";
     private final String suiteBase;
 
     protected Mapper(final String suiteBase) {
@@ -42,25 +37,13 @@ public abstract class Mapper {
     }
 
     protected Stream<Pair<PlanNodeSnapshot, XRayTestSet>> suiteMap(PlanNodeSnapshot target) {
-        Path suitePath = target.getProperties().entrySet().stream()
-                .filter(k -> k.getKey().equals(AZURE_SUITE))
-                .map(Map.Entry::getValue)
-                .map(v -> v.split(escapeEcmaScript("[/\\]")))
-                .map(s -> Stream.of(s).map(String::trim).collect(Collectors.joining("/")))
-                .map(Path::of)
-                .findFirst().orElseGet(() -> {
-                    Path path = Path.of(target.getSource()
-                            .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
-                    if (!isBlank(suiteBase)) {
-                        path = path.relativize(Path.of(suiteBase));
-                    }
-                    return path;
-                });
+        Path suitePath = Path.of(target.getSource()
+                .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
+        if (!isBlank(suiteBase)) {
+            suitePath = Path.of(suiteBase).relativize(suitePath);
+        }
 
-        XRayTestSet suite = Stream.of(suitePath.toString().split(escapeEcmaScript(File.separator)))
-                .map(dir -> new XRayTestSet().issue(new JiraIssue().summary(dir)))
-                .findFirst()
-                .orElseThrow();
+        XRayTestSet suite = new XRayTestSet().issue(new JiraIssue().summary(suitePath.toString()));
 
         return Stream.of(new Pair<>(target, suite));
     }
@@ -75,7 +58,7 @@ public abstract class Mapper {
                                         .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
                         ))
                 )
-                .testSetList(Collections.singletonList(suite));
+                .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
 
     public Stream<XRayTestCase> map(PlanNodeSnapshot plan) {

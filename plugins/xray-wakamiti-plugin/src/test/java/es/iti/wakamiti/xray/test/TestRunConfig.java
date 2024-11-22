@@ -2,14 +2,14 @@ package es.iti.wakamiti.xray.test;
 
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.runner.RunWith;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.xray.XrayConfigContributor.*;
 
 @AnnotatedConfiguration({
-        @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.azure.MockSteps"),
+        @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.xray.test.MockSteps"),
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources"),
         @Property(key = XRAY_ENABLED, value = "true"),
@@ -19,6 +19,7 @@ import static es.iti.wakamiti.xray.XrayConfigContributor.*;
         @Property(key = XRAY_PLAN, value = ""),
         @Property(key = XRAY_PLAN_ID, value = ""),
         @Property(key = XRAY_PLAN_SUMMARY, value = "Sincronización con plugin Wakamiti"),
+        @Property(key = XRAY_SUITE_BASE, value = "features"),
         @Property(key = XRAY_TEST_CASE_PER_FEATURE, value = "true"),
         @Property(key = XRAY_CREATE_ITEMS_IF_ABSENT, value = "true"),
         @Property(key = XRAY_CREDENTIALS_CLIENT_ID, value = "50767A593E434541BD78A82431F177AA"),
