@@ -8,9 +8,9 @@ package es.iti.wakamiti.launcher;
 
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.generator.features.OpenAIService;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,13 @@ public class WakamitiLauncher {
         } catch (ParseException e) {
             arguments.printUsage();
             System.exit(1);
+        }
+
+        if (arguments.isFeatureGeneratorEnabled()) {
+            OpenAIService openAIService = new OpenAIService();
+            FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments, openAIService);
+            featureGeneratorRunner.run();
+            return;
         }
 
         boolean debugMode = arguments.isDebugActive();

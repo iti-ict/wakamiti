@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New command to export reports without running the tests. [#243]
 - X11 server mode. [#298]
+- ChatGPT-based Feature generator.
 
 ### Fixed
 - The log file was not being generated.
