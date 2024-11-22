@@ -6,10 +6,11 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import java.io.Serializable;
 import java.time.ZoneId;
 
 
-public class Settings {
+public class Settings implements Serializable {
 
     private ZoneId zoneId;
     private String configuration;
