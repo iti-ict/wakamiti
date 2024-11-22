@@ -39,14 +39,12 @@ public class TestUtil {
 
     @Test
     public void testDateTimeToZonedDateTime() {
-        int hour = 5;
-        int sum = 8;
-        int diff = TimeZone.getDefault().getRawOffset()/1000/60/60;
-        String date = String.format("2024-11-11T%02d:00:00.000", hour);
-        ZoneId zone = ZoneId.of(String.format("UTC+%02d", sum));
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        String date = "2024-11-11T05:00:00.000";
+        ZoneId zone = ZoneId.of("UTC+08:00");
         String result = Util.toZoneId(date, zone);
         LOGGER.debug("Result: {}", result);
-        assertThat(result).isEqualTo(String.format("2024-11-11T%02d:00:00", hour+sum-diff));
+        assertThat(result).isEqualTo("2024-11-11T13:00:00");
     }
 
     @Test
