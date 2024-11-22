@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-core</artifactId>
+            <artifactId>wakamiti-junit</artifactId>
             <version>${wakamiti-engine.version}</version>
             <scope>test</scope>
         </dependency>

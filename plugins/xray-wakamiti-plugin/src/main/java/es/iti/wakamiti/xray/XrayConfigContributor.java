@@ -43,8 +43,6 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     public static final String XRAY_TEST_CASE_PER_FEATURE = "xray.testCasePerFeature";
     public static final String XRAY_SUITE_BASE = "xray.suiteBase";
 
-    public static final String DEFAULT_XRAY_TAG = "ID-1";
-
     @Override
     public boolean accepts(Object contributor) {
         return contributor instanceof XRaySynchronizer;
@@ -58,7 +56,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
                 XRAY_PROJECT, "",
                 XRAY_CREDENTIALS_CLIENT_ID, "",
                 XRAY_CREDENTIALS_CLIENT_SECRET, "",
-                XRAY_TAG, DEFAULT_XRAY_TAG
+                XRAY_TAG, ""
         );
     }
 
