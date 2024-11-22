@@ -1,8 +1,11 @@
 package es.iti.wakamiti.xray.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.HashSet;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class XRayTestCase {
 
     private String issueId;

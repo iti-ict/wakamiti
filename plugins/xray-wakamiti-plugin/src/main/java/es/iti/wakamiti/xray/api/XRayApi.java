@@ -1,12 +1,7 @@
 package es.iti.wakamiti.xray.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.xray.internal.WakamitiXRayException;
-import es.iti.wakamiti.xray.internal.XRayRequestType;
-import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.XRayPlan;
 import es.iti.wakamiti.xray.model.XRayTestCase;
 import es.iti.wakamiti.xray.model.XRayTestSet;
@@ -23,14 +18,12 @@ import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 public class XRayApi extends BaseApi {
 
-    private static final String BEARER = "Bearer ";
     private static final String API_GRAPHQL = "/api/v2/graphql";
     private static final String AUTH_URL = "/api/v1/authenticate";
+    private static final String QUERY = "query";
 
     private final String project;
     private final Logger logger;
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     public XRayApi(URL baseURL, String clientId, String clientSecret, String project, Logger logger) {
         super(baseURL, AUTH_URL, clientId, clientSecret, logger);
@@ -40,7 +33,7 @@ public class XRayApi extends BaseApi {
 
     public Optional<XRayPlan> getTestPlan(String issueId) {
 
-        String query = request(XRayRequestType.QUERY, "query { " +
+        String query = query("query { " +
                 "   getTestPlan(issueId: \"" + issueId + "\" ) {" +
                 "        issueId" +
                 "        projectId" +
@@ -48,23 +41,35 @@ public class XRayApi extends BaseApi {
                 "        }" +
                 "    }");
 
-        String response = post(API_GRAPHQL, query);
+        JsonNode response = post(API_GRAPHQL, query);
 
-        String isPresent = extract(response, "$.data.getTestPlan", "Cannot find the test plan");
-        if (isPresent == null) {
-            return Optional.empty();
-        }
+        XRayPlan testPlan = read(response, "$.data.getTestPlan", XRayPlan.class);
 
-        String key = extract(response, "$.data.getTestPlan.issueId", "Cannot find the attribute 'id' of the test plan");
-        String summary = extract(response, "$.data.getTestPlan.jira.summary", "Cannot find the attribute 'summary' of the test plan");
-        String projectId = extract(response, "$.data.getTestPlan.projectId", "Cannot find the attribute 'projectId' of the test plan");
-//        List<XRayTestCase> tests = extractList(response, "$.data.getTestPlan.tests.results[*]", "Cannot find the attribute 'tests' of the test plan");
+        return Optional.ofNullable(testPlan);
+    }
 
-        return Optional.of(new XRayPlan(key, summary, projectId, Collections.emptyList()));
+    public List<XRayPlan> getTestPlans() {
+
+        String query = query("query {" +
+                "    getTestPlans( limit: 100) {" +
+                "        total" +
+                "        start" +
+                "        limit" +
+                "        results {" +
+                "            issueId" +
+                "            jira(fields: [\"key\", \"summary\"])" +
+                "        }" +
+                "    }" +
+                "}");
+
+        JsonNode response = post(API_GRAPHQL, query);
+
+        return read(response, "$.data.getTestPlans.results", new TypeRef<>() {
+        });
     }
 
     public XRayPlan createTestPlan(String title) {
-        String mutation = request(XRayRequestType.MUTATION,
+        String mutation = query(
                 "mutation {" +
                         "    createTestPlan(" +
                         "        jira: {" +
@@ -80,19 +85,13 @@ public class XRayApi extends BaseApi {
                         "    }" +
                         "}");
 
-        String response = post(API_GRAPHQL, mutation);
+        JsonNode response = post(API_GRAPHQL, mutation);
 
-        String key = extract(response, "$.data.createTestPlan.testPlan.issueId", "Cannot find the attribute 'id' of the test plan");
-        String summary = extract(response, "$.data.createTestPlan.testPlan.jira.summary", "Cannot find the attribute 'summary' of the test plan");
-        String projectId = extract(response, "$.data.createTestPlan.testPlan.projectId", "Cannot find the attribute 'projectId' of the test plan");
-//        List<XRayTestCase> tests = extractList(response, "$.data.getTestPlan.tests.results[*]", "Cannot find the attribute 'tests' of the test plan");
-
-        return new XRayPlan(key, summary, projectId, Collections.emptyList());
-
+        return read(response, "$.data.createTestPlan.testPlan", XRayPlan.class);
     }
 
     public Optional<XRayTestCase> getTestCase(String issueId) {
-        String query = request(XRayRequestType.QUERY, "query { " +
+        String query = query("query { " +
                 "   getTest(issueId: \"" + issueId + "\") {" +
                 "        issueId" +
                 "        jira(fields: [\"key\", \"summary\", \"labels\"])" +
@@ -107,25 +106,19 @@ public class XRayApi extends BaseApi {
                 "    }" +
                 "}");
 
-        String response = post(API_GRAPHQL, query);
+        JsonNode response = post(API_GRAPHQL, query);
 
-        try {
-            JsonNode node = mapper.readTree(response);
+        XRayTestCase testCase = read(response, "$.data.getTest", XRayTestCase.class);
 
-            XRayTestCase testCase = read(node, "$.data.getTest", XRayTestCase.class);
-
-            return Optional.ofNullable(testCase);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return Optional.ofNullable(testCase);
     }
 
     public void addTestsToPlan(List<String> createdIssues, XRayPlan remotePlan) {
-        String mutation = request(XRayRequestType.MUTATION,
+        String mutation = query(
                 "mutation {" +
                         "    addTestsToTestPlan(" +
-                        "        issueId: " + remotePlan.getId() + "," +
-                        "        testIssueIds: [" + String.join(",", createdIssues) + "]" +
+                        "        issueId: \"" + remotePlan.getIssueId() + "\", " +
+                        "        testIssueIds: [\"" + String.join("\",\"", createdIssues) + "\"]" +
                         "    ) {" +
                         "        addedTests" +
                         "        warning" +
@@ -136,7 +129,7 @@ public class XRayApi extends BaseApi {
     }
 
     public List<XRayTestSet> getTestSets() {
-        String query = request(XRayRequestType.QUERY, "query { " +
+        String query = query("query { " +
                 "   getTestSets(limit: 100) {" +
                 "        total" +
                 "        start" +
@@ -144,29 +137,38 @@ public class XRayApi extends BaseApi {
                 "        results {" +
                 "            issueId" +
                 "            jira(fields: [\"key\", \"summary\", \"labels\"])" +
+                "            tests(limit: 100) {" +
+                "              total" +
+                "              results {" +
+                "                issueId" +
+                "                jira(fields: [\"key\", \"summary\", \"labels\"])" +
+                "              }" +
+                "            }" +
                 "        }" +
                 "    }" +
                 "}");
 
-        String response = post(API_GRAPHQL, query);
+        JsonNode response = post(API_GRAPHQL, query);
 
-        String isPresent = extract(response, "$.data.getTestSets", "Cannot find the test");
-        if (isPresent == null) {
+        if (response == null) {
             return Collections.emptyList();
         }
 
+        List<XRayTestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
+        });
 
-        try {
-            return read(mapper.readTree(response), "$.data.getTestSets.results", new TypeRef<>() {
+        for (int i = 0; i < list.size(); i++) {
+            List<XRayTestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
             });
-        } catch (JsonProcessingException e) {
-            throw new WakamitiXRayException(e.getMessage());
+            list.get(i).testCases(testCases);
         }
+
+        return list;
     }
 
     public List<XRayTestSet> createTestSets(List<XRayTestSet> newTestSets) {
         return newTestSets.stream().map(xrayTestSet -> {
-            String mutation = request(XRayRequestType.MUTATION,
+            String mutation = query(
                     "mutation {" +
                             "    createTestSet(" +
 //                            "        testIssueIds: [\"54321\"]" +
@@ -182,21 +184,45 @@ public class XRayApi extends BaseApi {
                             "    }" +
                             "}");
 
-            String response = post(API_GRAPHQL, mutation);
+            JsonNode response = post(API_GRAPHQL, mutation);
 
-            String issueId = extract(response, "$.data.getTest.issueId", "Cannot find the attribute 'id' of the test plan");
-            JiraIssue issue = extractList(response, "$.data.getTest.jira", "Cannot find the attribute 'jira' of the test plan");
-
-            return new XRayTestSet()
-                    .issueId(issueId)
-                    .issue(issue);
+            return read(response, "$.data.getTest", XRayTestSet.class);
 
         }).collect(Collectors.toList());
     }
 
-    private String request(XRayRequestType type, String query) {
-        logger.debug("Sending {} with request:\n {}", type.getName(), query);
-        return toJSON(Map.of(type.getName(), query));
+    private String query(String query) {
+        return toJSON(Map.of(QUERY, query));
     }
 
+    public List<String> createTestCases(XRayPlan remotePlan, List<XRayTestCase> newTests, String project) {
+        return newTests.stream().map(test -> {
+
+            String mutation = query("mutation {" +
+                    "    createTest(" +
+                    "        testType: { name: \"Generic\" }," +
+                    "        unstructured: \"Perform exploratory tests on calculator.\"," +
+                    "        jira: {" +
+                    "            fields: { summary:\"" + test.getJira().getSummary() + "\", project: {key: \"" + project + "\"} }" +
+                    "        }" +
+                    "    ) {" +
+                    "        test {" +
+                    "            issueId" +
+                    "            testType {" +
+                    "                name" +
+                    "            }" +
+                    "            unstructured" +
+                    "            jira(fields: [\"key\"])" +
+                    "        }" +
+                    "        warnings" +
+                    "    }" +
+                    "}");
+
+            JsonNode response = post(API_GRAPHQL, mutation);
+
+            XRayTestCase xRayTestCase = read(response, "$.data.createTest.test", XRayTestCase.class);
+
+            return xRayTestCase.getIssueId();
+        }).collect(Collectors.toList());
+    }
 }

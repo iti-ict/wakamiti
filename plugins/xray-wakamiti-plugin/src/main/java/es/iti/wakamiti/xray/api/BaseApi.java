@@ -1,9 +1,11 @@
 package es.iti.wakamiti.xray.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.xray.internal.WakamitiXRayException;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -26,6 +28,8 @@ public class BaseApi {
     private final String authorization;
     private final HttpClient httpClient;
     private final Logger logger;
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public BaseApi(URL baseURL, String authorization, Logger logger) {
         this.baseURL = baseURL;
@@ -90,17 +94,29 @@ public class BaseApi {
     }
 
 
-    protected String get(String uri) {
-        return send(request("GET", uri), "");
+    protected JsonNode get(String uri) {
+        try {
+            return mapper.readTree(send(request("GET", uri), ""));
+        } catch (JsonProcessingException e) {
+            throw new WakamitiXRayException(e.getMessage());
+        }
     }
 
 
-    protected String post(String uri, String payload) {
-        return post(uri, payload, APPLICATION_JSON);
+    protected JsonNode post(String uri, String payload) {
+        try {
+            return mapper.readTree(post(uri, payload, APPLICATION_JSON));
+        } catch (JsonProcessingException e) {
+            throw new WakamitiXRayException(e.getMessage());
+        }
     }
 
-    protected String put(String uri, String payload) {
-        return put(uri, payload, APPLICATION_JSON);
+    protected JsonNode put(String uri, String payload) {
+        try {
+            return mapper.readTree(put(uri, payload, APPLICATION_JSON));
+        } catch (JsonProcessingException e) {
+            throw new WakamitiXRayException(e.getMessage());
+        }
     }
 
 
