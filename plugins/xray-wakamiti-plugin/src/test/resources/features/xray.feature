@@ -1,28 +1,20 @@
-@XRay
-@definition @ID-1
-# xrayPlan: Wakamiti Test Plan
-# xrayArea: ACS
-# xrayIteration: ACS\\Iteración 1
-# xraySuite: Wakamiti Test Suite A \\ Wakamiti Test Suite A1 \\ Wakamiti Test Suite A11
+
+@definition @ID-s1
 Feature: XRay integration feature
 
 
-  @ID-1
-  # xrayTest: Wakamiti Scenario B - Fail cambio
-  Scenario: Wakamiti Scenario B - Fail cambio
+  @ID-s1-1
+  Scenario: Scenario B
     * Def this step fails
 
 
-  @ID-2
-  # xrayTest: Wakamiti Scenario C - Fail
-  Scenario: Def Test Case C
+  @ID-s1-2
+  Scenario: Scenario C
     * Def this step fails
 
 
-  @ID-3
-  # xrayTest: Wakamiti Scenario A - Fail
-  Scenario: Def Test Case A
+  @ID-s1-3
+  Scenario: Scenario A
     * Def this step do nothing
-
 
 
