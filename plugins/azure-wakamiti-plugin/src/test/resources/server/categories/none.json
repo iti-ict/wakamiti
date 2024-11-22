@@ -1,0 +1,7 @@
+{
+  "name" : "Categoría de caso de prueba",
+  "referenceName" : "Microsoft.TestCaseCategory",
+  "workItemTypes" : [ {
+    "name" : "Caso de prueba"
+  } ]
+}

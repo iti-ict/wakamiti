@@ -35,12 +35,12 @@ module es.iti.wakamiti.api {
     requires java.net.http;
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
-    requires plexus.utils;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.apache.groovy.xml;
     requires org.apache.commons.codec;
     requires org.apache.commons.text;
+    requires org.apache.commons.io;
 
     uses PropertyEvaluator;
     uses WakamitiAPI;

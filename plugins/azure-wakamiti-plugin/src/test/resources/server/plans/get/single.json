@@ -1,0 +1,14 @@
+{
+  "id" : 56983,
+  "rootSuite" : {
+    "id" : 56984,
+    "name" : "Wakamiti Test Plan"
+  },
+  "revision" : 1,
+  "name" : "Wakamiti Test Plan",
+  "areaPath" : "ACS",
+  "startDate" : "2024-08-31T12:02:33.767Z",
+  "endDate" : "2024-09-07T12:02:33.767Z",
+  "iteration" : "ACS\\Iteración 1",
+  "state" : "Activo"
+}

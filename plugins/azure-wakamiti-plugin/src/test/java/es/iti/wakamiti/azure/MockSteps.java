@@ -5,9 +5,12 @@
  */
 package es.iti.wakamiti.azure;
 
+
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
+
+import java.util.Random;
 
 
 @I18nResource("mock-steps")
@@ -21,11 +24,12 @@ public class MockSteps implements StepContributor {
 
     @Step(value = "step.ok")
     public void ok() {
-
+        pause();
     }
 
     @Step(value = "step.fail")
     public void fail() {
+        pause();
         throw new AssertionError("\"The expected and actual responses have differences:\n" +
                 "\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n" +
                 " expected:<{\n" +
@@ -45,5 +49,11 @@ public class MockSteps implements StepContributor {
                 "}>\"");
     }
 
-
+    private void pause() {
+        try {
+            Thread.sleep(new Random().nextInt(1000 - 100 + 1) + 100);
+        } catch (InterruptedException ignore) {
+            // ignored
+        }
+    }
 }

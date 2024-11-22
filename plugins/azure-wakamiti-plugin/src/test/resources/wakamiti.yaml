@@ -1,0 +1,18 @@
+wakamiti:
+  resourceTypes: gherkin
+  outputFilePath: target/wakamiti.json
+  log:
+    level: off
+
+  azure:
+    baseURL: http://localhost:8888/
+    auth:
+      token: XXX
+    organization: ST
+    project: ACS
+    plan:
+      name: Wakamiti Test Plan
+      area: ACS
+      iteration: ACS/Iteratión 1
+#    testCasePerFeature: true
+    tag: Azure
