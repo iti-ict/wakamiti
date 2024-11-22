@@ -1,12 +1,16 @@
 package es.iti.wakamiti.xray.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class XRayTestSet {
 
     private String issueId;
     private JiraIssue jira;
-    private List<XRayTestCase> testCases;
+    private List<XRayTestCase> testCases = new ArrayList<>();
 
     public XRayTestSet(String issueId, JiraIssue jira, List<XRayTestCase> testCases) {
         this.issueId = issueId;

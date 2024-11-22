@@ -1,5 +1,6 @@
 package es.iti.wakamiti.xray.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.internal.JiraType;
 import es.iti.wakamiti.xray.model.JiraIssue;
@@ -8,11 +9,12 @@ import es.iti.wakamiti.xray.model.XRayTestCase;
 import org.slf4j.Logger;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 public class JiraApi extends BaseApi {
 
@@ -47,13 +49,13 @@ public class JiraApi extends BaseApi {
                 )
         ));
 
-        String response = post(API_ISSUE, payload);
+        JsonNode response = post(API_ISSUE, payload);
 
         return extractJiraIssue(response);
     }
 
     public JiraIssue getIssue(String id) {
-        String response = get(API_ISSUE + "/" + id);
+        JsonNode response = get(API_ISSUE + "/" + id);
 
         return extractJiraIssue(response);
     }
@@ -71,20 +73,22 @@ public class JiraApi extends BaseApi {
                         "labels", newLabels.stream().map(label -> Map.of("add", label)).collect(Collectors.toList())
                 )));
 
-        String response = put(API_ISSUE + "/" + id, payload);
+        JsonNode response = put(API_ISSUE + "/" + id, payload);
 
         return extractJiraIssue(response);
     }
 
-    private JiraIssue extractJiraIssue(String response) {
-        String key = extract(response, "$.id", "Cannot find the attribute 'id' of the issue");
-        String self = extract(response, "$.self", "Cannot find the attribute 'self' of the issue");
-        String summary = extract(response, "$.fields.summary", "Cannot find the attribute 'summary' of the issue");
-        String description = extract(response, "$.fields.description.content[0].content[0].text", "Cannot find the attribute 'description' of the issue");
-        String type = extract(response, "$.fields.issuetype.name", "Cannot find the attribute 'name' of the issue");
-        String labels = extract(response, "$.fields.labels", "Cannot find the attribute 'labels' of the issue");
+    private JiraIssue extractJiraIssue(JsonNode response) {
+        JiraIssue jiraIssue = read(response, "$", JiraIssue.class);
 
-        return new JiraIssue(key, self, summary, description, type, labels == null ? Collections.emptyList() : Arrays.asList(labels.split(",")));
+//        String key = extract(response, "$.id", "Cannot find the attribute 'id' of the issue");
+//        String self = extract(response, "$.self", "Cannot find the attribute 'self' of the issue");
+//        String summary = extract(response, "$.fields.summary", "Cannot find the attribute 'summary' of the issue");
+//        String description = extract(response, "$.fields.description.content[0].content[0].text", "Cannot find the attribute 'description' of the issue");
+//        String type = extract(response, "$.fields.issuetype.name", "Cannot find the attribute 'name' of the issue");
+//        String labels = extract(response, "$.fields.labels", "Cannot find the attribute 'labels' of the issue");
+
+        return jiraIssue;
     }
 
     public void updateTestCases(List<Pair<XRayTestCase, XRayTestCase>> testCases) {

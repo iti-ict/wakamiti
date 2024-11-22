@@ -1,19 +1,22 @@
 package es.iti.wakamiti.xray.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class XRayPlan {
 
-    private String id;
+    private String issueId;
 
-    private String summary;
+    private JiraIssue jira = new JiraIssue();
     private String projectId;
     private List<XRayTestCase> testCases;
 
 
-    public XRayPlan(String id, String summary, String projectId, List<XRayTestCase> testCases) {
-        this.id = id;
-        this.summary = summary;
+    public XRayPlan(String issueId, JiraIssue jira, String projectId, List<XRayTestCase> testCases) {
+        this.issueId = issueId;
+        this.jira = jira;
         this.projectId = projectId;
         this.testCases = testCases;
     }
@@ -23,12 +26,12 @@ public class XRayPlan {
     }
 
     public XRayPlan id(String id) {
-        this.id = id;
+        this.issueId = id;
         return this;
     }
 
-    public XRayPlan summary(String summary) {
-        this.summary = summary;
+    public XRayPlan jira(JiraIssue jira) {
+        this.jira = jira;
         return this;
     }
 
@@ -42,12 +45,12 @@ public class XRayPlan {
         return this;
     }
 
-    public String getId() {
-        return id;
+    public String getIssueId() {
+        return issueId;
     }
 
-    public String getSummary() {
-        return summary;
+    public JiraIssue getJira() {
+        return jira;
     }
 
     public String getProjectId() {
