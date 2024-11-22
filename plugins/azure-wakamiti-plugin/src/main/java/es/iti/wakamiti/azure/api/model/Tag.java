@@ -6,9 +6,6 @@
 package es.iti.wakamiti.azure.api.model;
 
 
-import java.util.Objects;
-
-
 public class Tag extends BaseModel {
 
     private final String name;
@@ -18,8 +15,8 @@ public class Tag extends BaseModel {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
+    protected Object[] hashValues() {
+        return new Object[]{name};
     }
 
     @Override

@@ -459,7 +459,7 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public List<TestCase> updateTestCases(TestPlan plan, List<Pair<TestCase, TestCase>> testCases) {
         BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
-                .op(WorkItemOp.Operation.replace).path(format("/fields/{}", field)).value(value);
+                .op(WorkItemOp.Operation.REPLACE).path(format("/fields/{}", field)).value(value);
 
         List<TestCase> remove = new LinkedList<>();
         List<TestCase> add = new LinkedList<>();

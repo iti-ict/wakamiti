@@ -9,8 +9,6 @@ package es.iti.wakamiti.azure.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PointAssignment extends BaseModel {
@@ -58,7 +56,7 @@ public class PointAssignment extends BaseModel {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    protected Object[] hashValues() {
+        return new Object[]{id};
     }
 }

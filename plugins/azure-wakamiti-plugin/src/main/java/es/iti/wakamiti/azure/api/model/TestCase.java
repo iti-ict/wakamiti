@@ -102,8 +102,8 @@ public class TestCase extends BaseModel {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(tag);
+    protected Object[] hashValues() {
+        return new Object[]{tag};
     }
 
     public boolean isDifferent(TestCase testCase) {

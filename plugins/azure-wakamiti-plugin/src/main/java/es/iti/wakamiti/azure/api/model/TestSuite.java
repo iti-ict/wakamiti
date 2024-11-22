@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -97,10 +96,9 @@ public class TestSuite extends BaseModel {
     public Path asPath() {
         return Optional.ofNullable(parent).map(TestSuite::asPath).map(p -> p.resolve(name)).orElse(Path.of(name));
     }
-
     @Override
-    public int hashCode() {
-        return Objects.hash(asPath());
+    protected Object[] hashValues() {
+        return new Object[]{asPath()};
     }
 
     @Override

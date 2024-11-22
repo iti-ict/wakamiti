@@ -9,7 +9,7 @@ package es.iti.wakamiti.azure.api.model;
 import java.time.ZoneId;
 
 
-public class Settings extends BaseModel {
+public class Settings {
 
     private ZoneId zoneId;
     private String configuration;
@@ -41,4 +41,5 @@ public class Settings extends BaseModel {
     public String testCaseType() {
         return testCaseType;
     }
+
 }

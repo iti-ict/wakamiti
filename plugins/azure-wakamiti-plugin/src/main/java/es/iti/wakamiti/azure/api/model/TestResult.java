@@ -112,6 +112,11 @@ public class TestResult extends BaseModel {
                 .errorMessage(other.errorMessage());
     }
 
+    @Override
+    protected Object[] hashValues() {
+        return new Object[]{id};
+    }
+
     public enum Type {
         @JsonProperty("Unspecified")
         UNSPECIFIED(Result.UNDEFINED, "Execution undefined"),
