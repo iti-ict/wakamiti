@@ -224,10 +224,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP call => {} ", stringify(request));
             }
-            if (executor.isShutdown()) {
-                executor = executor();
-                CLIENT.executor(executor);
-            }
+            renewExecutor();
             HttpResponse<Optional<JsonNode>> response = CLIENT.build().send(request, asJSON());
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP response => {}", stringify(response));
@@ -288,10 +285,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
-        if (executor.isShutdown()) {
-            executor = executor();
-            CLIENT.executor(executor);
-        }
+        renewExecutor();
         CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
                 .sendAsync(request, asJSON());
         return completable.thenApply(response -> {
@@ -361,6 +355,13 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         SELF clone = SerializationUtils.clone(self()).postCall(postCall);
         Optional.ofNullable(body).map(Objects::toString).ifPresent(clone::body);
         return clone;
+    }
+
+    private static void renewExecutor() {
+        if (executor.isShutdown()) {
+            executor = executor();
+            CLIENT.executor(executor);
+        }
     }
 
     public void close() {
