@@ -45,7 +45,7 @@ public class WorkItemsQueryTest {
 
         for (Map.Entry<String, BiFunction<Criteria, String, Expression>> entry : criterias.entrySet()) {
             String value = "A";
-            query.where(entry.getValue().apply(field(type()), value));
+            query.where(entry.getValue().apply(field(TYPE), value));
             String result = String.format(entry.getKey(), value);
             assertThat(query.toString())
                     .isEqualTo("SELECT [System.Id] FROM WorkItems WHERE [System.Type] " + result);
@@ -57,10 +57,10 @@ public class WorkItemsQueryTest {
         );
 
         for (Map.Entry<String, Function<Criteria, Expression>> entry : criterias2.entrySet()) {
-            query.where(entry.getValue().apply(field(type())));
+            query.where(entry.getValue().apply(field(TYPE)));
             String result = entry.getKey();
-            assertThat(query.toString())
-                    .isEqualTo("SELECT [System.Id] FROM WorkItems WHERE [System.Type] " + result);
+            assertThat(query)
+                    .hasToString("SELECT [System.Id] FROM WorkItems WHERE [System.Type] " + result);
         }
     }
 
@@ -68,14 +68,14 @@ public class WorkItemsQueryTest {
     public void testQueryWhenGroupWhereWithSuccess() {
         WorkItemsQuery query = new WorkItemsQuery();
         query.select("System.Id", "System.State")
-                .where(field(type()).isEqualsTo("A").and(
+                .where(field(TYPE).isEqualsTo("A").and(
                         field("System.State").isEqualsTo("Y")
-                                .or(field(state()).isEqualsTo("@project"))
-                ).andEver(field(title()).isEqualsTo("Y"))
-                        .orEver(field(description()).isEqualsTo("@project")))
+                                .or(field(STATE).isEqualsTo("@project"))
+                ).andEver(field(TITLE).isEqualsTo("Y"))
+                        .orEver(field(DESCRIPTION).isEqualsTo("@project")))
                 .asof("2024-05-03");
 
-        assertThat(query.toString()).isEqualTo(
+        assertThat(query).hasToString(
                 "SELECT [System.Id], [System.State] FROM WorkItems"
                         + " WHERE [System.Type] = 'A'"
                         + " AND ([System.State] = 'Y' OR [System.State] = @project)"
@@ -90,21 +90,21 @@ public class WorkItemsQueryTest {
         query.select();
 
         query.orderBy(asc("System.Id"), desc("System.Type"));
-        assertThat(query.toString()).isEqualTo(
+        assertThat(query).hasToString(
                 "SELECT [System.Id] FROM WorkItemLinks "
                         + "ORDER BY [System.Id] ASC, [System.Type] DESC "
                         + "MODE (Recursive)"
         );
 
-        query.orderBy(id(), type());
-        assertThat(query.toString()).isEqualTo(
+        query.orderBy(ID, TYPE);
+        assertThat(query).hasToString(
                 "SELECT [System.Id] FROM WorkItemLinks "
                         + "ORDER BY [System.Id], [System.Type] "
                         + "MODE (Recursive)"
         );
 
         query.orderBy("System.Id", "System.Type");
-        assertThat(query.toString()).isEqualTo(
+        assertThat(query).hasToString(
                 "SELECT [System.Id] FROM WorkItemLinks "
                         + "ORDER BY [System.Id], [System.Type] "
                         + "MODE (Recursive)"

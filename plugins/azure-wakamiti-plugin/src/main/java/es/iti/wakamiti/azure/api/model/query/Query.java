@@ -105,15 +105,15 @@ public abstract class Query {
         DOES_NOT_CONTAIN("DoesNotContain"),
         RECURSIVE("Recursive");
 
-        private final String mode;
+        private final String name;
 
-        Mode(String mode) {
-            this.mode = mode;
+        Mode(String name) {
+            this.name = name;
         }
 
         @Override
         public String toString() {
-            return mode;
+            return name;
         }
     }
 }

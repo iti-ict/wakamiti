@@ -29,7 +29,6 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Function;
 
 import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.api.util.StringUtils.format;
@@ -111,8 +110,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), "wakamiti")
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, "wakamiti")
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         Settings settings = client.settings();
@@ -154,8 +153,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         Settings settings = client.settings();
@@ -197,8 +196,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         Settings settings = client.settings();
@@ -233,8 +232,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         Settings settings = client.settings();
@@ -276,8 +275,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), "wakamiti")
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, "wakamiti")
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         try {
@@ -320,8 +319,8 @@ public class TestPlanApiTest {
                         .withBody("{}")
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         try {
@@ -370,8 +369,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), "wakamiti")
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, "wakamiti")
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         try {
@@ -412,8 +411,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), "wakamiti")
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, "wakamiti")
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         try {
@@ -449,8 +448,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/get/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
 
@@ -480,8 +479,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/search/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
 
@@ -523,8 +522,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/get/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
 
@@ -554,8 +553,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/search/none.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
 
@@ -600,8 +599,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/suites/tree_list.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
                 .id("56983").rootSuite(new TestSuite().id("56984").name("Wakamiti Test Plan"));
@@ -662,8 +661,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/suites/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
                 .id("56983").rootSuite(new TestSuite().id("56984").name("Wakamiti Test Plan"));
@@ -704,8 +703,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/suites/tree_single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
                 .id("56983").rootSuite(new TestSuite().id("56984").name("Wakamiti Test Plan"));
@@ -745,8 +744,8 @@ public class TestPlanApiTest {
             ).ifPresent(requests::add);
         }
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
 
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
@@ -873,8 +872,8 @@ public class TestPlanApiTest {
         }
 
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
         client.settings();
 
         // act
@@ -940,8 +939,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/testcases/list_56985.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
 
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
@@ -1065,8 +1064,8 @@ public class TestPlanApiTest {
         ).ifPresent(requests::add);
 
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), Function.identity(), null)
-                .organization("ST").project("ACS").version("6.0-preview");
+        AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
+                .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
         List<TestCase> remoteTestCases = client.getTestCases(plan, suites,

@@ -32,58 +32,6 @@ public class Field {
         return new Field(name);
     }
 
-    public static Field id() {
-        return new Field(ID);
-    }
-
-    public static Field title() {
-        return new Field(TITLE);
-    }
-
-    public static Field description() {
-        return new Field(DESCRIPTION);
-    }
-
-    public static Field steps() {
-        return new Field(STEPS);
-    }
-
-    public static Field type() {
-        return new Field(TYPE);
-    }
-
-    public static Field parameters() {
-        return new Field(PARAMETERS);
-    }
-
-    public static Field localDataSource() {
-        return new Field(LOCAL_DATASOURCE);
-    }
-
-    public static Field tags() {
-        return new Field(TAGS);
-    }
-
-    public static Field areaPath() {
-        return new Field(AREA_PATH);
-    }
-
-    public static Field iterationPath() {
-        return new Field(ITERATION_PATH);
-    }
-
-    public static Field state() {
-        return new Field(STATE);
-    }
-
-    public static Field workItemType() {
-        return new Field(WORK_ITEM_TYPE);
-    }
-
-    public static Field teamProject() {
-        return new Field(TEAM_PROJECT);
-    }
-
     @Override
     public String toString() {
         return name;

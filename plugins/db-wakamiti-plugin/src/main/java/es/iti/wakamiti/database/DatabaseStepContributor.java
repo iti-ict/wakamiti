@@ -46,6 +46,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      */
     @TearDown(order = 1)
     public void cleanUp() {
+        this.enableCleanupUponCompletion = false;
         cleanUpOperations.forEach(Runnable::run);
     }
 

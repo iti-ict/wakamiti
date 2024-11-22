@@ -45,7 +45,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
      *
      * @param baseUrl The base URL for the Azure API.
      */
-    public BaseApi(URL baseUrl) {
+    protected BaseApi(URL baseUrl) {
         super(baseUrl);
         postCall(response -> {
             if (response.statusCode() >= 400) {
@@ -82,7 +82,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
      * @param project The project name.
      * @return The current instance for method chaining.
      */
-    public SELF project(String project) {
+    public SELF projectBase(String project) {
         this.finalPathParams.put(PROJECT, project);
         return self();
     }
@@ -102,7 +102,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
      *
      * @return The project path with placeholders for organization and project.
      */
-    protected String project() {
+    protected String projectBase() {
         return String.format("/{%s}/{%s}/_apis", ORGANIZATION, PROJECT);
     }
 
@@ -151,7 +151,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
     protected Optional<ArrayNode> doQuery(Query query) {
         return newRequest()
                 .body(format("{\"query\": \"{}\"}", query))
-                .post(project() + "/wit/wiql")
+                .post(projectBase() + "/wit/wiql")
                 .body()
                 .map(json -> read(json, "$.workItems", ArrayNode.class))
                 .filter(a -> !a.isEmpty());

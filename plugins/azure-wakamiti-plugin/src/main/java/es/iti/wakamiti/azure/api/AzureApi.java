@@ -29,13 +29,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.util.JsonUtils.*;
 import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.api.model.TestRun.Status.Completed;
 import static es.iti.wakamiti.azure.api.model.query.Field.*;
 import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
 import static es.iti.wakamiti.azure.internal.Util.path;
@@ -47,6 +47,10 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class AzureApi extends BaseApi<AzureApi> {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureApi.class);
+    private static final String PLAN_ID = "planId";
+    private static final String SUITE_ID = "suiteId";
+    private static final String RUN_ID = "runId";
+    private static final String VALUE = "value";
     private static final int MAX_LIST = 200;
 
     private final String configuration;
@@ -61,7 +65,7 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param tagExtractor A function to extract tags from strings.
      * @param configuration The name of the test configuration to use.
      */
-    public AzureApi(URL baseUrl, Function<String, String> tagExtractor, String configuration) {
+    public AzureApi(URL baseUrl, UnaryOperator<String> tagExtractor, String configuration) {
         super(baseUrl);
         this.tagExtractor = tagExtractor;
         this.configuration = configuration;
@@ -105,7 +109,7 @@ public class AzureApi extends BaseApi<AzureApi> {
         // Retrieves the default test case type for the project.
         futures.add(newRequest()
                 .pathParam("category", TestCase.CATEGORY)
-                .getAsync(project() + "/wit/workitemtypecategories/{category}")
+                .getAsync(projectBase() + "/wit/workitemtypecategories/{category}")
                 .thenAcceptAsync(response -> response.body()
                         .map(json -> readStringValue(json, "defaultWorkItemType?.name"))
                         .ifPresentOrElse(settings::testCaseType, () -> {
@@ -119,7 +123,7 @@ public class AzureApi extends BaseApi<AzureApi> {
         try {
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
         } catch (InterruptedException e) {
-            throw new WakamitiAzureException("There is no test case category available. ", e);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             throw new WakamitiAzureException("There is no test case category available. ", e.getCause());
         }
@@ -137,8 +141,8 @@ public class AzureApi extends BaseApi<AzureApi> {
      *                                configuration cannot be found.
      */
     private String getConfiguration() {
-        Stream<JsonNode> req = newRequest().getAllPages(project() + "/testplan/configurations",
-                json -> read(json, "$.value", new TypeRef<>() {}));
+        Stream<JsonNode> req = newRequest().getAllPages(projectBase() + "/testplan/configurations",
+                json -> read(json, VALUE, new TypeRef<>() {}));
 
         Function<JsonNode, String> mapper = json -> read(json, "$.id", String.class);
         if (isNotBlank(configuration)) {
@@ -160,8 +164,8 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     private Optional<TestPlan> getTestPlan(String id) {
         return newRequest()
-                .pathParam("planId", id)
-                .get(project() + "/testplan/plans/{planId}")
+                .pathParam(PLAN_ID, id)
+                .get(projectBase() + "/testplan/plans/{planId}")
                 .body().map(json -> read(json, TestPlan.class));
     }
 
@@ -175,7 +179,7 @@ public class AzureApi extends BaseApi<AzureApi> {
     private TestPlan createTestPlan(TestPlan plan) {
         return newRequest()
                 .body(json(plan).toString())
-                .post(project() + "/testplan/plans")
+                .post(projectBase() + "/testplan/plans")
                 .body().map(json -> read(json, TestPlan.class))
                 .orElseThrow(() -> new NoSuchElementException("Empty body"));
     }
@@ -190,11 +194,11 @@ public class AzureApi extends BaseApi<AzureApi> {
     public Optional<String> searchTestPlanId(TestPlan plan) {
         Query query = new WorkItemsQuery()
                 .select().where(
-                        field(teamProject()).isEqualsTo("@project")
-                                .and(field(workItemType()).isInGroup(TestPlan.CATEGORY))
-                                .and(field(title()).isEqualsTo(plan.name()))
-                                .and(field(areaPath()).isEqualsTo(plan.area()))
-                                .and(field(iterationPath()).isEqualsTo(plan.iteration()))
+                        field(TEAM_PROJECT).isEqualsTo("@project")
+                                .and(field(WORK_ITEM_TYPE).isInGroup(TestPlan.CATEGORY))
+                                .and(field(TITLE).isEqualsTo(plan.name()))
+                                .and(field(AREA_PATH).isEqualsTo(plan.area()))
+                                .and(field(ITERATION_PATH).isEqualsTo(plan.iteration()))
                 );
         List<String> ids = doQuery(query)
                 .map(json -> json.findValuesAsText("id"))
@@ -244,11 +248,11 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public Stream<TestSuite> searchTestSuites(TestPlan plan) {
         return newRequest()
-                .pathParam("planId", plan.id())
+                .pathParam(PLAN_ID, plan.id())
                 .queryParam("asTreeView", true)
-                .getAllPages(project() + "/testplan/Plans/{planId}/suites",
+                .getAllPages(projectBase() + "/testplan/Plans/{planId}/suites",
                         json -> {
-                            List<TestSuiteTree> trees = read(json, "$.value", new TypeRef<>() {});
+                            List<TestSuiteTree> trees = read(json, VALUE, new TypeRef<>() {});
                             return Util.readTree(trees);
                         });
     }
@@ -261,14 +265,14 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return A filtered list of created {@link TestSuite} objects.
      */
     public List<TestSuite> createTestSuites(TestPlan plan, List<TestSuite> suites) {
-        Function<TestSuite, TestSuite> newSuite = suite -> new TestSuite().name(suite.name())
-                .suiteType(TestSuite.Type.staticTestSuite)
+        UnaryOperator<TestSuite> newSuite = suite -> new TestSuite().name(suite.name())
+                .suiteType(TestSuite.Type.STATIC_TEST_SUITE)
                 .parent(isNull(suite.parent()) ? null : new TestSuite().id(suite.parent().id()));
         List<TestSuite> result = suites.stream()
                 .map(suite -> newRequest()
-                        .pathParam("planId", plan.id())
+                        .pathParam(PLAN_ID, plan.id())
                         .body(json(newSuite.apply(suite)).toString())
-                        .post(project() + "/testplan/Plans/{planId}/suites")
+                        .post(projectBase() + "/testplan/Plans/{planId}/suites")
                         .body().map(json -> read(json, TestSuite.class))
                         .orElseThrow(() -> new NoSuchElementException("Empty body")))
                 .peek(suite -> suites.stream()
@@ -313,12 +317,12 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public Stream<TestCase> searchTestCases(TestPlan plan, TestSuite suite) {
         return newRequest()
-                .pathParam("planId", plan.id())
-                .pathParam("suiteId", suite.id())
+                .pathParam(PLAN_ID, plan.id())
+                .pathParam(SUITE_ID, suite.id())
                 .queryParam("excludeFlags", 2)
                 .queryParam("expand", true)
                 .queryParam("witFields", join(List.of(TITLE, TAGS), ","))
-                .getAllPages(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase",
+                .getAllPages(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase",
                         new TypeRef<List<JsonNode>>() { })
                 .map(json -> {
                     WorkItem item = read(json, "$.workItem", new TypeRef<>() {});
@@ -381,7 +385,7 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public List<TestCase> createTestCases(TestPlan plan, List<TestCase> testCases) {
         BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
-                .op(WorkItemOp.Operation.add).path(format("/fields/{}", field)).value(value);
+                .op(WorkItemOp.Operation.ADD).path(format("/fields/{}", field)).value(value);
 
         List<CompletableFuture<TestCase>> futures = testCases.stream().map(t -> {
             List<WorkItemOp> ops = new ArrayList<>();
@@ -399,7 +403,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                     .queryParam("validateOnly", false)
                     .header("Content-Type", "application/json-patch+json")
                     .body(json(ops).toString())
-                    .postAsync(project() + "/wit/workitems/${type}")
+                    .postAsync(projectBase() + "/wit/workitems/${type}")
                     .thenApply(response -> response.body().map(json -> readStringValue(json, "id"))
                             .orElseThrow(() -> new WakamitiException("Cannot create test case. ")))
                     .thenApply(t::id);
@@ -417,12 +421,12 @@ public class AzureApi extends BaseApi<AzureApi> {
                     .collect(groupingBy(p -> p.key().suite(), mapping(Pair::value, toList())))
                     .entrySet().stream()
                     .map(e -> newRequest()
-                            .pathParam("planId", plan.id())
-                            .pathParam("suiteId", e.getKey().id())
+                            .pathParam(PLAN_ID, plan.id())
+                            .pathParam(SUITE_ID, e.getKey().id())
                             .body(e.getValue().toString())
-                            .postAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase")
+                            .postAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase")
                             .thenAccept(response -> response.body().stream()
-                                    .flatMap(json -> read(json, "$.value", new TypeRef<List<JsonNode>>() {}).stream())
+                                    .flatMap(json -> read(json, VALUE, new TypeRef<List<JsonNode>>() {}).stream())
                                     .forEach(json -> {
                                         String id = readStringValue(json, "$.workItem.id");
                                         int order = Optional.ofNullable(read(json, "$.order", Integer.class))
@@ -438,7 +442,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                             )
                     ).toArray(CompletableFuture[]::new)).get();
         } catch (InterruptedException e) {
-            throw new WakamitiException(e);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             throw new WakamitiException(e.getCause());
         }
@@ -474,7 +478,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                     .pathParam("id", oldT.id())
                     .body(json(ops).toString())
                     .header("Content-Type", "application/json-patch+json")
-                    .patchAsync(project() + "/wit/workitems/{id}");
+                    .patchAsync(projectBase() + "/wit/workitems/{id}");
         }).toArray(CompletableFuture[]::new)).join();
         testCases.stream().filter(p -> !p.key().suite().equals(p.value().suite())).forEach(p -> {
             remove.add(p.key());
@@ -487,10 +491,10 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .entrySet()
                 .stream()
                 .map(e -> newRequest()
-                        .pathParam("planId", plan.id())
-                        .pathParam("suiteId", e.getKey().id())
+                        .pathParam(PLAN_ID, plan.id())
+                        .pathParam(SUITE_ID, e.getKey().id())
                         .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .deleteAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
+                        .deleteAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
                 .forEach(futures::add);
 
         // add suite relation
@@ -498,16 +502,18 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .entrySet()
                 .stream()
                 .map(e -> newRequest()
-                        .pathParam("planId", plan.id())
-                        .pathParam("suiteId", e.getKey().id())
+                        .pathParam(PLAN_ID, plan.id())
+                        .pathParam(SUITE_ID, e.getKey().id())
                         .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .postAsync(project() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
+                        .postAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
                 .forEach(futures::add);
 
         try {
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new WakamitiException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new WakamitiException(e.getCause());
         }
         return testCases.stream().map(p -> p.key().merge(p.value())).collect(toList());
     }
@@ -517,11 +523,16 @@ public class AzureApi extends BaseApi<AzureApi> {
      *
      * @param run the test run to be created.
      */
-    public void createRun(TestRun run) {
-        newRequest().body(json(run).toString()).post(project() + "/test/runs").body()
+    public TestRun createRun(TestRun run) {
+        return newRequest().body(json(run).toString()).post(projectBase() + "/test/runs").body()
                 .map(json -> readStringValue(json, "id"))
+                .map(id -> {
+                    LOGGER.trace("Remote test run #{} created", id);
+                    return id;
+                })
                 .map(run::id)
                 .orElseThrow(() -> new WakamitiAzureException("Cannot create test run for plan '{}'", run.plan().id()));
+
     }
 
     /**
@@ -531,8 +542,8 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public void updateRun(TestRun run) {
         newRequest().body(json(run).toString())
-                .pathParam("runId", run.id())
-                .patch(project() + "/test/runs/{runId}");
+                .pathParam(RUN_ID, run.id())
+                .patch(projectBase() + "/test/runs/{runId}");
     }
 
     /**
@@ -545,12 +556,16 @@ public class AzureApi extends BaseApi<AzureApi> {
         CompletableFuture.allOf(reports.stream().map(report -> {
                     try {
                         return newRequest().body(json(new Attachment()
-                                        .attachmentType(Attachment.Type.GeneralAttachment)
                                         .fileName(report.getFileName().toString())
                                         .stream(Base64.getEncoder().encodeToString(Files.readAllBytes(report)))
                                 ).toString())
-                                .pathParam("runId", run.id())
-                                .postAsync(project() + "/test/Runs/{runId}/attachments");
+                                .pathParam(RUN_ID, run.id())
+                                .postAsync(projectBase() + "/test/Runs/{runId}/attachments")
+                                .thenApply(response -> response.body()
+                                        .map(json -> readStringValue(json, "id"))
+                                        .orElseThrow(() -> new WakamitiException("Cannot create attached '{}'",
+                                                report.getFileName())))
+                                .thenAccept(id -> LOGGER.trace("Remote attachment #{} created", id));
                     } catch (IOException e) {
                         throw new WakamitiException("Error creating attachment", e);
                     }
@@ -565,8 +580,8 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return a stream of test results.
      */
     public Stream<TestResult> getResults(TestRun run) {
-        return newRequest().pathParam("runId", run.id())
-                .getAllPages(project() + "/test/Runs/{runId}/results", new TypeRef<>() {});
+        return newRequest().pathParam(RUN_ID, run.id())
+                .getAllPages(projectBase() + "/test/Runs/{runId}/results", new TypeRef<>() {});
     }
 
     /**
@@ -578,13 +593,14 @@ public class AzureApi extends BaseApi<AzureApi> {
     public void updateResults(TestRun run, List<TestResult> results) {
         results.forEach(r -> r.startedDate(Util.toZoneId(r.startedDate(), settings().zoneId()))
                 .completedDate(Util.toZoneId(r.completedDate(), settings().zoneId()))
-                .state(Completed));
+                .state(TestRun.Status.COMPLETED));
         CompletableFuture.allOf(ListUtils.partition(results, MAX_LIST).stream()
                 .map(res ->
-                        newRequest().pathParam("runId", run.id())
+                        newRequest().pathParam(RUN_ID, run.id())
                                 .body(json(res).toString())
-                                .patchAsync(project() + "/test/Runs/{runId}/results")
+                                .patchAsync(projectBase() + "/test/Runs/{runId}/results")
                 ).toArray(CompletableFuture[]::new)).join();
+        results.forEach(res -> LOGGER.trace("Remote test result #{} updated", res.id()));
     }
 
     /**
@@ -592,6 +608,7 @@ public class AzureApi extends BaseApi<AzureApi> {
      *
      * @return a new instance of AzureApi.
      */
+    @Override
     public AzureApi newRequest() {
         return super.newRequest();
     }

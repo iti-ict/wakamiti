@@ -203,6 +203,7 @@ public class Criteria implements Expression {
             this.string = string;
         }
 
+        @Override
         public String toString() {
             return string;
         }

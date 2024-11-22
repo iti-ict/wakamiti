@@ -46,8 +46,8 @@ public class Predicate implements Expression {
             return left.toString();
         }
 
-        String right = this.right instanceof PredicateGroup ? "(" + this.right + ")" : this.right.toString();
-        return String.format(operator.toString(), left, right);
+        String r = this.right instanceof PredicateGroup ? "(" + this.right + ")" : this.right.toString();
+        return String.format(operator.toString(), left, r);
     }
 
     enum Operator {

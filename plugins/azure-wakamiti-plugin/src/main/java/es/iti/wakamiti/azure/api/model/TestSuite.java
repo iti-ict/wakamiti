@@ -109,9 +109,13 @@ public class TestSuite extends BaseModel {
     }
 
     public enum Type {
-        staticTestSuite,
-        dynamicTestSuite,
-        requirementTestSuite
+        @JsonProperty("staticTestSuite")
+        STATIC_TEST_SUITE,
+        @JsonProperty("dynamicTestSuite")
+        DYNAMIC_TEST_SUITE,
+        @JsonProperty("requirementTestSuite")
+        REQUIREMENT_TEST_SUITE,;
+
     }
 
 }
