@@ -6,21 +6,21 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [2.7.0] - 2024-11-25
 
 ### Fixed
-- Error if the text filter does not find any scenarios. [#292]
+- Error if the text filter does not find any scenarios. (#292)
 
 ### Added
-- Generate reports without execution. [#243]
-- The pagination is changed so that it is fixed at the top of the page. [#301]
-- Filter by feature. [#295]
+- Generate reports without execution. (#243)
+- The pagination is changed so that it is fixed at the top of the page. (#301)
+- Filter by feature. (#295)
 
 
 ## [2.6.0] - 2024-09-09
 
 ### Fixed 
-- ID selector issues. [#275]
+- ID selector issues. (#275)
 
 ### Added
 - Moustache.js template library.
@@ -131,7 +131,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [1.3.3] - 2022-05-06
 
 ### Fixed
-- HTML escaping in descriptions and error messages. [#26]
+- HTML escaping in descriptions and error messages. (#26)
 - Report title was not properly passed to the template engine.
 
 
