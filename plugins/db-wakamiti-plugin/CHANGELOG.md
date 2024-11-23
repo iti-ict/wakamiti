@@ -6,10 +6,10 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [3.2.2] - 2024-11-25
 
 ### Fixed
-- Connection error at startup when no configuration is provided. [#291]
+- Connection error at startup when no configuration is provided. (#291)
 - `ConcurrentModificationException` at cleanup operation.
 
 
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [3.2.0] - 2024-09-09
 
 ### Fixed
-- Row with all values set to null in xls file. [#267]
+- Row with all values set to null in xls file. (#267)
 - DateTime timezone issues.
 
 ### Added

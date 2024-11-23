@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased] 
+## [2.0.0] - 2024-11-25
 
 ### Fixed
 - Escaping double quotes in Azure names. (#218)
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Changed
 - Plugin refactor
+- Upgrade dependencies: `wakamiti-plugin-starter`
 
 
 ## [1.9.0] - 2024-09-09

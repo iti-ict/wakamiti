@@ -24,7 +24,7 @@
     <inceptionYear>2023</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.7.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>
