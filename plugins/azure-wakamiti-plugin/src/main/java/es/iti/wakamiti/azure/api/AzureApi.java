@@ -399,7 +399,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                             .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ", t.tag())))
                     .pathParam("type", settings().testCaseType())
                     .queryParam("$expand", "none")
-                    .queryParam("suppressNotifications", true)
+                    .queryParam("suppressNotifications", false)
                     .queryParam("validateOnly", false)
                     .header("Content-Type", "application/json-patch+json")
                     .body(json(ops).toString())
