@@ -426,6 +426,21 @@ public class Wakamiti {
     }
 
     /**
+     * Processes the specified test plan using the provided configuration without executing it.
+     *
+     * @param plan          The test plan to execute.
+     * @param configuration The configuration for plan execution.
+     */
+    public PlanNode notExecutePlan(PlanNode plan, Configuration configuration) {
+        PlanNode result = new PlanRunner(plan, configuration).noRun();
+        writeOutputFile(plan, configuration);
+        if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
+            generateReports(configuration, new PlanNodeSnapshot(plan));
+        }
+        return result;
+    }
+
+    /**
      * Creates a new {@link BackendFactory} instance using the default backend factory implementation.
      *
      * @return A new {@link BackendFactory} instance.

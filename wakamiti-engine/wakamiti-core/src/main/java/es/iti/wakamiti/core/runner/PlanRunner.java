@@ -78,6 +78,25 @@ public class PlanRunner {
     }
 
     /**
+     * Runs the test plan, without executing each child node using PlanNodeRunners.
+     *
+     * @return The root PlanNode after the execution of the test plan.
+     */
+    public PlanNode noRun() {
+        wakamiti.configureLogger(configuration);
+        wakamiti.configureEventObservers(configuration);
+        plan.assignExecutionID(
+                configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class)
+                        .orElse(UUID.randomUUID().toString())
+        );
+        wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
+        planNodeLogger.logTestPlanHeader(plan);
+        planNodeLogger.logTestPlanResult(plan);
+        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
+        return plan;
+    }
+
+    /**
      * Gets the list of PlanNodeRunners representing the child nodes of the test plan.
      *
      * @return The list of PlanNodeRunners.

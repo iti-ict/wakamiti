@@ -20,11 +20,9 @@ import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.codehaus.plexus.util.IOUtil;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +40,7 @@ import static es.iti.wakamiti.api.matcher.CharSequenceLengthMatcher.length;
  * @see RestSupport
  * @see StepContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.6")
+@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.7")
 @I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
 
@@ -406,7 +404,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
                 RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
         tempFile.deleteOnExit();
         try (FileOutputStream out = new FileOutputStream(tempFile)) {
-            IOUtil.copy(document.getContent().getBytes(StandardCharsets.UTF_8), out);
+            IOUtils.copy(new ByteArrayInputStream(document.getContent().getBytes(StandardCharsets.UTF_8)), out);
         }
 
         specifications.add(request ->

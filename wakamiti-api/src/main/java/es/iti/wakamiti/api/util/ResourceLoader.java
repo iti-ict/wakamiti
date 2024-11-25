@@ -11,9 +11,9 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.extensions.ResourceType;
 import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
-import org.codehaus.plexus.util.FileUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -44,6 +44,10 @@ public class ResourceLoader {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ResourceLoader.class);
     private static final int BUFFER_SIZE = 2048;
+    public static Map<String, ContentType> contentTypeFromExtension = ConfigurationFactory.instance()
+            .fromResource("mime-types.properties", ResourceLoader.class.getClassLoader())
+            .asMap().entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> ContentType.create(e.getValue())));
     private final Charset charset;
     private File workingDir = new File(".");
 
@@ -54,6 +58,13 @@ public class ResourceLoader {
 
     public ResourceLoader() {
         this(StandardCharsets.UTF_8);
+    }
+
+    public static ContentType getContentType(File file) {
+        return Optional.of(file.getName())
+                .map(FilenameUtils::getExtension)
+                .map(ResourceLoader.contentTypeFromExtension::get)
+                .orElse(ContentType.DEFAULT_BINARY);
     }
 
     /**
@@ -573,7 +584,6 @@ public class ResourceLoader {
      * @param classPath   The classpath prefix for which to locate resources.
      * @param classLoader The ClassLoader to use for resource loading.
      * @return A Set of URIs representing the located resources in the classpath.
-     * @throws IOException If an I/O error occurs while loading resources.
      */
     protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
         try {
@@ -590,7 +600,7 @@ public class ResourceLoader {
 
     private String classLoaderFolder(ClassLoader classLoader) throws IOException {
         try {
-            return classLoader.getResource(".").toURI().getPath();
+            return Objects.requireNonNull(classLoader.getResource(".")).toURI().getPath();
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
@@ -621,18 +631,6 @@ public class ResourceLoader {
      */
     public interface Parser<T> {
         T parse(InputStream stream, Charset charset) throws IOException;
-    }
-
-    public static Map<String, ContentType> contentTypeFromExtension = ConfigurationFactory.instance()
-            .fromResource("mime-types.properties", ResourceLoader.class.getClassLoader())
-            .asMap().entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> ContentType.create(e.getValue())));
-
-    public static ContentType getContentType(File file) {
-        return Optional.of(file.getName())
-                .map(FileUtils::getExtension)
-                .map(ResourceLoader.contentTypeFromExtension::get)
-                .orElse(ContentType.DEFAULT_BINARY);
     }
 
 }
