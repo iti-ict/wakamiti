@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static es.iti.wakamiti.azure.api.model.TestSuite.SLASH_CODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -90,7 +91,10 @@ public class MapperTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1)
-                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api/suite/azure")))
+                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api"+SLASH_CODE+"suite/azure"))
+                        && tc.suite().name().equals("azure")
+                        && tc.suite().parent().name().equals("api/suite")
+                )
                 .allMatch(tc -> tc.name().equals("Azure integration feature"));
     }
 
@@ -152,7 +156,10 @@ public class MapperTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(3)
-                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api/suite/azure")));
+                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api"+SLASH_CODE+"suite/azure"))
+                        && tc.suite().name().equals("azure")
+                        && tc.suite().parent().name().equals("api/suite")
+                );
         assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario B");
         assertThat(tests.get(0)).hasFieldOrPropertyWithValue("order", 0);
         assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario A");

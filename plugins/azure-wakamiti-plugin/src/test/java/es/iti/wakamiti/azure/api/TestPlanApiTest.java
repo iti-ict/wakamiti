@@ -652,7 +652,7 @@ public class TestPlanApiTest {
                 request()
                         .withMethod("POST")
                         .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites")
-                        .withBody(regex(".*\"name\":\"Feature 1\".+" +
+                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+" +
                                 "\"suiteType\":\"staticTestSuite\".+" +
                                 "\"parentSuite\":\\{\"id\":\"56984\".*")),
                 response()
@@ -669,7 +669,7 @@ public class TestPlanApiTest {
 
         List<TestSuite> suites = List.of(
                 new TestSuite().name("Wakamiti Test Plan"),
-                new TestSuite().name("Feature 1").parent(new TestSuite().name("Wakamiti Test Plan"))
+                new TestSuite().name("Feature 1/abc").parent(new TestSuite().name("Wakamiti Test Plan"))
         );
 
         // act
