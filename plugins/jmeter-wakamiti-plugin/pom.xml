@@ -29,7 +29,7 @@
         <mockserver.version>5.15.0</mockserver.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.6.3</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.0</wakamiti-engine.version>
     </properties>
 
 

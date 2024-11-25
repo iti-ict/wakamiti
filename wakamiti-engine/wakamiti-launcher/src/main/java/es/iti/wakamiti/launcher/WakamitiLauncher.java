@@ -7,12 +7,15 @@ package es.iti.wakamiti.launcher;
 
 
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.generator.features.OpenAIService;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -59,6 +62,13 @@ public class WakamitiLauncher {
             System.exit(1);
         }
 
+        if (arguments.isFeatureGeneratorEnabled()) {
+            OpenAIService openAIService = new OpenAIService();
+            FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments, openAIService);
+            featureGeneratorRunner.run();
+            return;
+        }
+
         boolean debugMode = arguments.isDebugActive();
         try {
             logger = createLogger(arguments.wakamitiConfiguration().inner("log"), debugMode);
@@ -81,7 +91,7 @@ public class WakamitiLauncher {
                 logger().info("------------------------------------");
             }
 
-            boolean passed = runner.run();
+            boolean passed = runner.run(arguments.isNoExecution());
             if (!passed)
                 System.exit(3);
         } catch (Exception e) {
@@ -102,7 +112,7 @@ public class WakamitiLauncher {
             String filename = path.get() + "/wakamiti-"
                     + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss")) + ".log";
             System.setProperty("path", filename);
-            System.setProperty("log4j.configurationFile", "log4j2_file.xml");
+            Configurator.reconfigure(URI.create("log4j2_file.xml"));
         }
         if (level.isEmpty()) {
             if (debug) {
@@ -114,13 +124,15 @@ public class WakamitiLauncher {
 
         level.ifPresent(l -> {
             Configurator.setLevel(loggerName, l);          //NOSONAR
-//            Configurator.setLevel("es.iti.commons", l);    //NOSONAR
+            if (debug) {
+                Configurator.setLevel("es.iti.commons", l);    //NOSONAR
+            }
         });
 
         conf.inner("loggers").asProperties()
                 .forEach((k, v) -> Configurator.setLevel(k.toString(), Level.toLevel(v.toString())));
 
-        return LoggerFactory.getLogger(loggerName);
+        return WakamitiLogger.of(LoggerFactory.getLogger(loggerName));
     }
 
 }

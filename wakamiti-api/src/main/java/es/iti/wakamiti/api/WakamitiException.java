@@ -29,8 +29,8 @@ public class WakamitiException extends RuntimeException {
     /**
      * Constructs a new WakamitiException with the specified detail message and cause.
      *
-     * @param message The detail message (which is saved for later retrieval by the
-     *                {@link #getMessage()} method).
+     * @param message   The detail message (which is saved for later retrieval by the
+     *                  {@link #getMessage()} method).
      * @param throwable The cause (which is saved for later retrieval by the
      *                  {@link #getCause()} method). (A null value is permitted, and
      *                  indicates that the cause is nonexistent or unknown.)
@@ -53,10 +53,10 @@ public class WakamitiException extends RuntimeException {
      * Constructs a new WakamitiException with a formatted detail message.
      *
      * @param message The detail message format string.
-     * @param args The arguments referenced by the format specifiers in the format
-     *             string. If there are more arguments than format specifiers, the
-     *             extra arguments are ignored. The number of arguments is variable
-     *             and may be zero.
+     * @param args    The arguments referenced by the format specifiers in the format
+     *                string. If there are more arguments than format specifiers, the
+     *                extra arguments are ignored. The number of arguments is variable
+     *                and may be zero.
      */
     public WakamitiException(String message, Object... args) {
         super(format(message, argsWithoutThrowable(args)), throwable(args));
@@ -77,12 +77,12 @@ public class WakamitiException extends RuntimeException {
     }
 
 
-    private static Object[] argsWithoutThrowable(Object[] args) {
+    protected static Object[] argsWithoutThrowable(Object[] args) {
         return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);
     }
 
 
-    private static Throwable throwable(Object... args) {
+    protected static Throwable throwable(Object... args) {
         if (args == null || args.length == 0) {
             return null;
         }

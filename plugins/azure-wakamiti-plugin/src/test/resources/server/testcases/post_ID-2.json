@@ -1,0 +1,32 @@
+{
+  "count" : 1,
+  "value" : [ {
+    "testPlan" : {
+      "id" : 56983,
+      "name" : "Wakamiti Test Plan"
+    },
+    "testSuite" : {
+      "id" : 56985,
+      "name" : "Feature 1"
+    },
+    "workItem" : {
+      "id" : 56978,
+      "name" : "Scenario B",
+      "workItemFields" : [ {
+        "Microsoft.VSTS.TCM.AutomationStatus" : "No automatizado"
+      }, {
+        "System.State" : "Diseño"
+      }, {
+        "Microsoft.VSTS.Common.Priority" : 2
+      }, {
+        "System.WorkItemType" : "Caso de prueba"
+      } ]
+    },
+    "order" : 0,
+    "pointAssignments" : [ {
+      "id" : 18882,
+      "configurationName" : "Wakamiti",
+      "configurationId" : 29
+    } ]
+  } ]
+}

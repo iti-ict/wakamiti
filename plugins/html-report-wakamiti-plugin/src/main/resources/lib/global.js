@@ -61,6 +61,7 @@ function resetUrl() {
     if (window.location.href.includes('#')) {
         window.history.pushState({}, document.title, window.location.href.split('#')[0]);
     }
+    $('html,body').scrollTop(0);
 }
 
 /**
@@ -163,41 +164,44 @@ function statuses() {
  */
 function filtered() {
     // filter by results
-    let aux = JSON.parse(data).c.reduce((rf, f) => {
-        f.c = f.c.reduce((rs, sc) => {
-            if (sc.t === 'AGGREGATOR') {
-                sc.c = sc.c.filter((s) => {return statuses().includes(s.r)});
-                if (sc.c.length > 0) rs.push(sc);
-            } else if (statuses().includes(sc.r)) {
-                rs.push(sc);
-            }
-            return rs;
-        }, []);
-        if (f.c.length > 0) rf.push(f);
-        return rf;
-    }, []);
-
-    // filter by text
-    const text = document.getElementById("search-input").value.toLowerCase();
-    if (text) {
+    let aux = JSON.parse(data).c;
+    if (JSON.parse(data).tr) {
         aux = aux.reduce((rf, f) => {
             f.c = f.c.reduce((rs, sc) => {
-                if (sc.t === "AGGREGATOR") {
+                if (sc.t === 'AGGREGATOR') {
                     sc.c = sc.c.filter((s) => {
-                        return s.n.toLowerCase().includes(text)
-                            || s.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-                            || s.l?.some((it) => it.toLowerCase().includes(text));
+                        return statuses().includes(s.r)
                     });
                     if (sc.c.length > 0) rs.push(sc);
-                } else if (sc.n.toLowerCase().includes(text)
-                    || sc.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-                    || sc.l?.some((it) => it.toLowerCase().includes(text))
-                ) {
+                } else if (statuses().includes(sc.r)) {
                     rs.push(sc);
                 }
                 return rs;
             }, []);
             if (f.c.length > 0) rf.push(f);
+            return rf;
+        }, []);
+    }
+
+    // filter by text
+    const text = document.getElementById("search-input").value.toLowerCase();
+    if (text) {
+        const search = o => o.n.toLowerCase().includes(text)
+            || o.g?.some((it) => ('@' + it).toLowerCase().includes(text))
+            || o.l?.some((it) => it.toLowerCase().includes(text));
+
+        aux = aux.reduce((rf, f) => {
+            const filtered = f.c.reduce((rs, sc) => {
+                if (sc.t === "AGGREGATOR") {
+                    sc.c = sc.c.filter(search);
+                    if (sc.c.length > 0) rs.push(sc);
+                } else if (search(sc)) {
+                    rs.push(sc);
+                }
+                return rs;
+            }, []);
+            if (filtered.length > 0) f.c = filtered;
+            if (filtered.length > 0 || search(f)) rf.push(f);
             return rf;
         }, []);
     }
@@ -230,7 +234,6 @@ function searchPage(id) {
     if ((i + 1) !== getPage()) {
         $('.loader').show(50);
         setPage(i + 1);
-        render();
     }
 }
 
@@ -255,131 +258,6 @@ function toggleGroup(e, c) {
 }
 
 /**
- * Gets the css color of the given result type.
- *
- * @param {string} t The result type
- * @returns {string}
- */
-function getColor(t) {
-    t = '--' + t.toLowerCase().replaceAll(' ', '-') + '-color';
-    return getComputedStyle(document.documentElement).getPropertyValue(t);
-}
-
-/**
- * Gets the css color of the given error classifier.
- *
- * @param {number} i The error index
- * @returns {string}
- */
-function getErrorColor(i){
-    return getComputedStyle(document.documentElement).getPropertyValue('--error-classifier' + i);
-}
-
-/**
- * Generate chart.
- *
- * @param {HTMLElement} e The html element
- * @param l The labels
- * @param {*} d The data
- * @param {string[]} bg The background colors
- */
-function newChart(e, l, d, bg) {
-    new Chart(e, {
-        type: 'doughnut',
-        data: {
-            labels: l,
-            datasets: [
-                {
-                    data: d,
-                    backgroundColor: bg,
-                    hoverOffset: 4,
-                    borderWidth: [0, 0, 0, 0],
-                }
-            ]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: true,
-            layout: {
-                padding: 10
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.data[context.dataIndex];
-                        }
-                    }
-                },
-                htmlLegend: {
-                    container: e.parentElement,
-                },
-                legend: {
-                    display: false,
-                }
-            }
-        },
-        plugins: [{
-            beforeDraw: function (chart, a, b) {
-                let w = chart.width,
-                    h = chart.height,
-                    ctx = chart.ctx;
-
-                ctx.restore();
-                let fs = (h / 100).toFixed(2);
-                ctx.font = fs + "em sans-serif";
-                ctx.textBaseline = "middle";
-
-                let t = d.filter((label, i) => chart.getDataVisibility(i)).reduce((a, b) => a + b, 0).toString(),
-                    tX = Math.round((w - ctx.measureText(t).width) / 2),
-                    tY = h / 2;
-
-                ctx.fillText(t, tX, tY);
-                ctx.save();
-            },
-        },{
-            id: 'htmlLegend',
-            afterUpdate(chart, args, op) {
-                if (op.container.querySelector('ul')) {
-                    op.container.querySelector('ul').remove();
-                }
-
-                const le = document.createElement('ul');
-                le.className = 'chart-legend';
-
-                // Reuse the built-in legendItems generator
-                const its = chart.options.plugins.legend.labels.generateLabels(chart);
-
-                its.forEach(it => {
-                    const li = document.createElement('li');
-                    li.onclick = () => {
-                        chart.toggleDataVisibility(it.index);
-                        chart.update();
-                    };
-
-                    // Color box
-                    const s = document.createElement('span');
-                    s.style.background = it.fillStyle;
-                    s.style.borderColor = it.strokeStyle;
-                    s.style.padding = '8px';
-                    s.style.borderWidth = it.lineWidth + 'px';
-
-                    // Text
-                    const txt = document.createElement('p');
-                    txt.style.textDecoration = it.hidden ? 'line-through' : '';
-                    txt.appendChild(document.createTextNode(it.text));
-
-                    li.appendChild(s);
-                    li.appendChild(txt);
-                    le.appendChild(li);
-                });
-                op.container.appendChild(le);
-            }
-        }]
-    });
-}
-
-/**
  * Retrieves the mustache templates.
  */
 function load() {
@@ -390,12 +268,16 @@ function load() {
         // console.log(`Template '${elem.id}' loaded`)
     }
     makePages();
-    const url = window.location.href;
-    if (url.includes('#')) {
-        searchPage(url.substring(url.indexOf('#') + 1));
-    } else {
-        render();
+
+    if (window.location.href.includes('#')) {
+        searchPage(getUrlId());
     }
+    render();
+}
+
+function getUrlId() {
+    const url = window.location.href;
+    return url.substring(url.indexOf('#') + 1);
 }
 
 /**
@@ -468,41 +350,16 @@ function buttons() {
 
     $('nav a').on('click', function(e) {
         e.stopImmediatePropagation();
-        searchPage($(this).attr('href').replace('#', '').toString());
+        const id = $(this).attr('href').replace('#', '').toString();
+        searchPage(id);
+        render();
     });
 
     // hljs.highlightAll();
 }
 
-/**
- * Create charts.
- */
-function charts() {
-    for (let ch of document.getElementsByClassName('chart')) {
-        const r = JSON.parse(ch.getAttribute("data-result"));
-        const ls = Object.keys(r).map(k => k.replaceAll("_", " "));
-        const c = Object.values(r);
-        const bg = [];
-
-        for (let l of ls) {
-            bg.push(getColor(l));
-        }
-
-        newChart(ch, ls, c, bg);
-    }
-
-    for (let ch of document.getElementsByClassName('chart-error')) {
-        const r = JSON.parse(ch.getAttribute("data-result"));
-        const ls = Object.keys(r).map(k => k.replaceAll("_", " "));
-        const c = Object.values(r);
-        const bg = [];
-
-        for (let i = 0; i < ls.length; i++) {
-            bg.push(getErrorColor(i));
-        }
-
-        newChart(ch, ls, c, bg);
-    }
+function getCssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
 // worker
@@ -517,7 +374,7 @@ function generateContent(e) {
     const el = document.getElementById(e.data.uuid);  // mustache element
     const container = document.createElement("div");
 
-    if (e.data.value.c.length > 0) {
+    if (e.data.value.c?.length > 0) {
         e.data.value.c.forEach((c) => {
             container.innerHTML = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
                 isAggregator: function(){ return this.t === 'AGGREGATOR' },
@@ -568,7 +425,12 @@ function generateContent(e) {
         $(el).find('li:not(.loader):not(.empty)').show(50);
         const url = window.location.href;
         if (url.includes('#')) {
+            const id = getUrlId();
+            $(`li:has(#${id})`).find('.suite--header .test--header-btn').addClass('on');
+            $(`#${id}`).find('.test--header-btn').addClass('on');
             document.getElementById(url.substring(url.indexOf('#') + 1))?.scrollIntoView();
+            const adjust = parseInt(getCssVar('--navbar-height'))+55;
+            window.scrollBy(0, -adjust); // Adjust scrolling with a negative value here
         }
     } else {
         $(el).find('li:not(.loader):not(.empty),button').remove();
@@ -608,8 +470,6 @@ function newWorker() {
 
 $(function () {
     newWorker();
-
     Mustache.tags = ['<%', '%>'];
-    charts();
     load();
 });
