@@ -24,8 +24,6 @@ public class TestRun extends BaseModel {
     @JsonProperty
     private List<String> pointIds;
     @JsonProperty
-    private List<Tag> tags;
-    @JsonProperty
     private Status state;
     @JsonProperty
     private String comment;
@@ -68,15 +66,6 @@ public class TestRun extends BaseModel {
 
     public List<String> pointIds() {
         return pointIds;
-    }
-
-    public TestRun tags(List<Tag> tags) {
-        this.tags = tags;
-        return this;
-    }
-
-    public List<Tag> tags() {
-        return tags;
     }
 
     public TestRun state(Status state) {
