@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.1] - 2024-11-25
+
+### Fixed
+- `WorkItemUnauthorizedSuppressNotificationsException` when creating tests.
+- Test suite path escape.
+
+
 ## [2.0.0] - 2024-11-25
 
 ### Fixed

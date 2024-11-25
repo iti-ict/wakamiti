@@ -17,6 +17,7 @@ import java.util.Optional;
 public class TestSuite extends BaseModel {
 
     public static final String CATEGORY = "Microsoft.TestSuiteCategory";
+    public static final String SLASH_CODE = "&#47;";
 
     @JsonProperty
     private String id;
@@ -94,7 +95,8 @@ public class TestSuite extends BaseModel {
     }
 
     public Path asPath() {
-        return Optional.ofNullable(parent).map(TestSuite::asPath).map(p -> p.resolve(name)).orElse(Path.of(name));
+        String aux = name.replace("/", SLASH_CODE);
+        return Optional.ofNullable(parent).map(TestSuite::asPath).map(p -> p.resolve(aux)).orElse(Path.of(aux));
     }
     @Override
     protected Object[] hashValues() {
