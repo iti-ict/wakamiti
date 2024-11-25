@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.2] - 2024-11-25
+
+### Fixed
+- Run tag issue.
+
+
 ## [2.0.1] - 2024-11-25
 
 ### Fixed
