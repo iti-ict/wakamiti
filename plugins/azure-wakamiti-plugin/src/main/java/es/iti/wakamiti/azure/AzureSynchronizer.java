@@ -21,16 +21,14 @@ import org.slf4j.Logger;
 
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
 import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -223,8 +221,7 @@ public class AzureSynchronizer implements EventObserver {
                 .state(TestRun.Status.IN_PROGRESS)
                 .pointIds(testCases.stream().flatMap(t -> t.pointAssignments().stream().map(PointAssignment::id))
                         .collect(Collectors.toList()));
-        Optional.ofNullable(plan.getDescription()).map(d -> join(d, System.lineSeparator())).ifPresent(run::comment);
-        Optional.ofNullable(tag).map(Tag::new).map(List::of).ifPresent(run::tags);
+        Optional.ofNullable(tag).map(t -> format("Executed '@{}' tagged tests", t)).ifPresent(run::comment);
         api().createRun(run);
         LOGGER.debug("Test run #{} ready to sync", run.id());
         testResults = api().getResults(run)

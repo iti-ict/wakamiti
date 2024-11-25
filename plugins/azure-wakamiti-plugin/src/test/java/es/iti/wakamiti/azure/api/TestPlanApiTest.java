@@ -37,7 +37,6 @@ import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.groupBy;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
