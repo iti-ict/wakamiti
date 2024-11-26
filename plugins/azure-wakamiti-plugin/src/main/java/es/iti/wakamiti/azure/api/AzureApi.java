@@ -346,6 +346,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                                        boolean createItemsIfAbsent) {
         List<TestCase> remoteTests = suites.stream().parallel()
                 .flatMap(suite -> searchTestCases(plan, suite))
+                .filter(tests::contains)
                 .collect(Collectors.toList());
         List<TestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t))
                 .peek(t -> suites.stream().filter(s -> s.equals(t.suite())).findFirst()
