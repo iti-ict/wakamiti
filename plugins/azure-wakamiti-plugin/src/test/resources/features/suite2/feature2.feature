@@ -15,6 +15,11 @@ Feature: Azure integration feature 2
 
 
   @ID-s2-f2-3
-  Scenario: Scenario A
+  Scenario Outline: Scenario A <param>
     * this step fails
     * this step do nothing
+
+    Examples:
+      | param |
+      | aa    |
+      | bb    |

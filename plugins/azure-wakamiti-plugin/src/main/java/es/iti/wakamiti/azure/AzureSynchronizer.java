@@ -240,6 +240,7 @@ public class AzureSynchronizer implements EventObserver {
         testResults = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase)
                 .mapResults(plan)
+                .filter(r -> isBlank(tag) || r.testCase().metadata().getTags().contains(tag))
                 .map(r -> findResult.apply(r.testCase().tag()).merge(r))
                 .collect(Collectors.toList());
 
