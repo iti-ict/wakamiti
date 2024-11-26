@@ -6,6 +6,7 @@
 package es.iti.wakamiti.azure.internal;
 
 
+import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.azure.AzureSynchronizer;
