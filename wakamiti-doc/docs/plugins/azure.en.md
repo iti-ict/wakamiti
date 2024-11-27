@@ -194,15 +194,17 @@ azure:
 ```
 
 
-###  `azure.tag`
-- Type: `string` 
+###  `azure.attachments`
+- Type: `glob[]`
 
-The tag to look for when deciding whether, or not, to integrate with Azure. By default, all tests will be integrated.
+Glob patterns of the reports you want to attach.
 
 Example:
 ```yaml
 azure:
-  tag: Azure
+  attachments: 
+    - '**/*.html'
+    - '**/wakamiti.json'
 ```
 
 
