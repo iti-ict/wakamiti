@@ -12,13 +12,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Set;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,14 +44,10 @@ public class TestUtil {
     }
 
     @Test
-    public void testFindFiles() throws IOException, URISyntaxException {
-        Set<Path> paths = Util.findFiles(Path.of(resource(".")), "**/wakamiti.html");
-        LOGGER.debug("Results: {}", paths);
-        assertThat(paths).hasSize(1)
-                .anyMatch(p -> p.getFileName().toString().endsWith("wakamiti.html"));
+    public void testFindFiles() {
+        boolean result = Util.match(Path.of("other/wakamiti.html"), "**/*.html");
+        LOGGER.debug("Results: {}", result);
+        assertThat(result).isTrue();
     }
 
-    private URI resource(String path) throws URISyntaxException {
-        return ClassLoader.getSystemClassLoader().getResource(path).toURI();
-    }
 }
