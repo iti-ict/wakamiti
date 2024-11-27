@@ -131,18 +131,14 @@ public abstract class Util {
     }
 
     /**
-     * Searches for files in a directory tree that match a given glob pattern.
+     * Matches if file path matches with glob.
      *
-     * @param base the base directory to search from.
-     * @param path the glob pattern to match files against.
-     * @return a set of matching file paths.
-     * @throws IOException if an I/O error occurs while accessing the file system.
+     * @param file the base directory to search from.
+     * @param glob the glob pattern to match files against.
+     * @return {@code true} if the file matches with glob, {@code false} otherwise.
      */
-    public static Set<Path> findFiles(Path base, String path) throws IOException {
-        var pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + path);
-        try (Stream<Path> walker = Files.walk(base).filter(pathMatcher::matches)) {
-            return walker.collect(Collectors.toSet());
-        }
+    public static boolean match(Path file, String glob) {
+        return FileSystems.getDefault().getPathMatcher("glob:" + glob).matches(file);
     }
 
 }

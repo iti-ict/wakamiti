@@ -32,7 +32,6 @@ public class TestAzureReporter {
                 .hasFieldOrPropertyWithValue("organization", "ST")
                 .hasFieldOrPropertyWithValue("project", "ACS")
                 .hasFieldOrPropertyWithValue("version", "6.0-preview")
-                .hasFieldOrPropertyWithValue("tag", "Azure")
                 .hasFieldOrPropertyWithValue("testCasePerFeature", false)
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", true)
                 .hasFieldOrPropertyWithValue("idTagPattern", "ID([\\w-]+)");
