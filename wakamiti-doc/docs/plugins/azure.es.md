@@ -196,16 +196,17 @@ azure:
 ```
 
 
-###  `azure.tag`
-- Tipo: `string` 
+###  `azure.attachments`
+- Tipo: `glob[]` 
 
-La etiqueta que se buscará a la hora de determinar si se debe realizar o no la integración
-con Azure. Por defecto, se integrarán todos los tests.
+Patrones glob de los reports que se deseen adjuntar.
 
 Ejemplo:
 ```yaml
 azure:
-  tag: Azure
+  attachments: 
+    - '**/*.html'
+    - '**/wakamiti.json'
 ```
 
 
