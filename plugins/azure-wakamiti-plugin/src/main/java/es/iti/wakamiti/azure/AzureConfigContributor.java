@@ -7,16 +7,21 @@ package es.iti.wakamiti.azure;
 
 
 import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.internal.Util;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
@@ -41,7 +46,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
     public static final String AZURE_PLAN_AREA = "azure.plan.area";
     public static final String AZURE_PLAN_ITERATION = "azure.plan.iteration";
     public static final String AZURE_SUITE_BASE = "azure.suiteBase";
-    public static final String AZURE_TAG = "azure.tag";
+    public static final String AZURE_ATTACHMENTS = "azure.attachments";
     public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
     public static final String AZURE_CREATE_ITEMS_IF_ABSENT = "azure.createItemsIfAbsent";
 
@@ -75,7 +80,6 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         configuration.get(AZURE_CONFIGURATION, String.class).ifPresent(synchronizer::configuration);
         synchronizer.testPlan(plan(configuration));
         configuration.get(AZURE_SUITE_BASE, String.class).ifPresent(synchronizer::suiteBase);
-        configuration.get(AZURE_TAG, String.class).ifPresent(synchronizer::tag);
         requiredProperty(configuration, AZURE_TEST_CASE_PER_FEATURE, Boolean.class, v -> {
             if (v && !configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(false)) {
                 throw new WakamitiException("The property '{}' must be enabled", STRICT_TEST_CASE_ID);
@@ -83,6 +87,7 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
             synchronizer.testCasePerFeature(v);
         });
         requiredProperty(configuration, AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.class, synchronizer::createItemsIfAbsent);
+        synchronizer.attachments(new HashSet<>(configuration.getList(AZURE_ATTACHMENTS, String.class)));
         requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
     }
 

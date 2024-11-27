@@ -1,5 +1,5 @@
 
-@definition @ID-s1 @Azure
+@definition @ID-s1
 # azureSuite: Wakamiti Test Suite A/Wakamiti Test Suite A1/Wakamiti Test Suite A11
 Feature: Azure integration feature
 

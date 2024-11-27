@@ -548,30 +548,26 @@ public class AzureApi extends BaseApi<AzureApi> {
     }
 
     /**
-     * Attaches files (e.g., test reports) to a test run.
+     * Attach a file (e.g., test reports) to a test run.
      *
-     * @param run     the test run to which the files will be attached.
-     * @param reports a set of file paths representing the reports to be attached.
+     * @param run    the test run to which the files will be attached.
+     * @param report a file path representing the report to be attached.
      */
-    public void attachFile(TestRun run, Set<Path> reports) {
-        CompletableFuture.allOf(reports.stream().map(report -> {
-                    try {
-                        return newRequest().body(json(new Attachment()
-                                        .fileName(report.getFileName().toString())
-                                        .stream(Base64.getEncoder().encodeToString(Files.readAllBytes(report)))
-                                ).toString())
-                                .pathParam(RUN_ID, run.id())
-                                .postAsync(projectBase() + "/test/Runs/{runId}/attachments")
-                                .thenApply(response -> response.body()
-                                        .map(json -> readStringValue(json, "id"))
-                                        .orElseThrow(() -> new WakamitiException("Cannot create attached '{}'",
-                                                report.getFileName())))
-                                .thenAccept(id -> LOGGER.trace("Remote attachment #{} created", id));
-                    } catch (IOException e) {
-                        throw new WakamitiException("Error creating attachment", e);
-                    }
-                }
-        ).toArray(CompletableFuture[]::new)).join();
+    public void attachFile(TestRun run, Path report) {
+        try {
+            newRequest().body(json(new Attachment()
+                            .fileName(report.getFileName().toString())
+                            .stream(Base64.getEncoder().encodeToString(Files.readAllBytes(report)))
+                    ).toString())
+                    .pathParam(RUN_ID, run.id())
+                    .post(projectBase() + "/test/Runs/{runId}/attachments")
+                    .body().map(json -> readStringValue(json, "id"))
+                    .ifPresentOrElse(id -> LOGGER.trace("Remote attachment #{} created", id), () -> {
+                        throw new WakamitiException("Cannot create attached '{}'", report.getFileName());
+                    });
+        } catch (IOException e) {
+            throw new WakamitiException("Error creating attachment", e);
+        }
     }
 
     /**

@@ -25,7 +25,7 @@ import static es.iti.wakamiti.azure.AzureConfigContributor.*;
         @Property(key = AZURE_PLAN_NAME, value = "Wakamiti Test Plan A"),
         @Property(key = AZURE_PLAN_AREA, value = "ACS"),
         @Property(key = AZURE_PLAN_ITERATION, value = "ACS/Iteración 1"),
-        @Property(key = AZURE_TAG, value = "Azure"),
+        @Property(key = AZURE_ATTACHMENTS, value = "*.html"),
         @Property(key = AZURE_AUTH_TOKEN, value = "XXX"),
         @Property(key = AZURE_API_VERSION, value = "6.0-preview"),
         @Property(key = AZURE_CONFIGURATION, value = "Wakamiti"),

@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.4] - 2024-11-27
+
+### Removed
+- Azure tag functionality.
+
+### Added
+- Glob pattern setting functionality for attachments.
+
+
 ## [2.0.3] - 2024-11-26
 
 ### Fixed
