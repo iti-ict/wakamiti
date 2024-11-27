@@ -16,6 +16,7 @@ import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.AzureApi;
 import es.iti.wakamiti.azure.api.model.*;
 import es.iti.wakamiti.azure.internal.Mapper;
+import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 import org.slf4j.Logger;
 
@@ -41,7 +42,7 @@ public class AzureSynchronizer implements EventObserver {
     public static final String GHERKIN_TYPE_FEATURE = "feature";
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
-    private final Set<Path> attachments = new LinkedHashSet<>();
+    private final Set<String> attachments = new LinkedHashSet<>();
     private boolean enabled;
     private URL baseURL;
     private String organization;
@@ -49,7 +50,6 @@ public class AzureSynchronizer implements EventObserver {
     private String version;
     private TestPlan testPlan;
     private String suiteBase;
-    private String tag;
     private boolean testCasePerFeature;
     private boolean createItemsIfAbsent;
     private boolean removeOrphans;
@@ -101,10 +101,6 @@ public class AzureSynchronizer implements EventObserver {
         this.authenticator = client -> client.tokenAuth(token);
     }
 
-    public void tag(String tag) {
-        this.tag = tag;
-    }
-
     public void configuration(String configuration) {
         this.configuration = configuration;
     }
@@ -121,7 +117,7 @@ public class AzureSynchronizer implements EventObserver {
         this.removeOrphans = removeOrphans;
     }
 
-    public void attachments(Set<Path> attachments) {
+    public void attachments(Set<String> attachments) {
         this.attachments.addAll(attachments);
     }
 
@@ -172,7 +168,7 @@ public class AzureSynchronizer implements EventObserver {
         }
 
         if (Event.REPORT_OUTPUT_FILE_WRITTEN.equals(event.type())
-                && ((Path) event.data()).toString().endsWith(".html")) {
+                && attachments.stream().anyMatch(g -> Util.match((Path) event.data(), g))) {
             try {
                 LOGGER.info("Uploading attachments to Azure...");
                 uploadAttachment((Path) event.data());
@@ -197,7 +193,6 @@ public class AzureSynchronizer implements EventObserver {
         Mapper mapper = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase);
         List<TestCase> tests = mapper.mapTests(plan)
-                .filter(t -> isBlank(tag) || t.metadata().getTags().contains(tag))
                 .peek(t -> LOGGER.trace("Load test case: {}", t))
                 .peek(t -> t.suite().root(testPlan.rootSuite()))
                 .collect(Collectors.toList());
@@ -221,7 +216,6 @@ public class AzureSynchronizer implements EventObserver {
                 .state(TestRun.Status.IN_PROGRESS)
                 .pointIds(testCases.stream().flatMap(t -> t.pointAssignments().stream().map(PointAssignment::id))
                         .collect(Collectors.toList()));
-        Optional.ofNullable(tag).map(t -> format("Executed '@{}' tagged tests", t)).ifPresent(run::comment);
         api().createRun(run);
         LOGGER.debug("Test run #{} ready to sync", run.id());
         testResults = api().getResults(run)
@@ -240,7 +234,6 @@ public class AzureSynchronizer implements EventObserver {
         testResults = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase)
                 .mapResults(plan)
-                .filter(r -> isBlank(tag) || r.testCase().metadata().getTags().contains(tag))
                 .map(r -> findResult.apply(r.testCase().tag()).merge(r))
                 .collect(Collectors.toList());
 
@@ -249,7 +242,7 @@ public class AzureSynchronizer implements EventObserver {
     }
 
     private void uploadAttachment(Path file) {
-        api().attachFile(run, Set.of(file));
+        api().attachFile(run, file);
         LOGGER.debug("Attachment '{}' uploaded", file.getFileName());
     }
 

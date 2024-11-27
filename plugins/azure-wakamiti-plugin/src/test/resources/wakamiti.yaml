@@ -15,4 +15,3 @@ wakamiti:
       area: ACS
       iteration: ACS/Iteratión 1
 #    testCasePerFeature: true
-    tag: Azure
