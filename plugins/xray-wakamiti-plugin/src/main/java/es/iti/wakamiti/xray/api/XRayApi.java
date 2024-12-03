@@ -2,9 +2,7 @@ package es.iti.wakamiti.xray.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.xray.model.XRayPlan;
-import es.iti.wakamiti.xray.model.XRayTestCase;
-import es.iti.wakamiti.xray.model.XRayTestSet;
+import es.iti.wakamiti.xray.model.*;
 import org.slf4j.Logger;
 
 import java.net.URL;
@@ -31,7 +29,7 @@ public class XRayApi extends BaseApi {
         this.logger = logger;
     }
 
-    public Optional<XRayPlan> getTestPlan(String issueId) {
+    public Optional<TestPlan> getTestPlan(String issueId) {
 
         String query = query("query { " +
                 "   getTestPlan(issueId: \"" + issueId + "\" ) {" +
@@ -43,12 +41,12 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        XRayPlan testPlan = read(response, "$.data.getTestPlan", XRayPlan.class);
+        TestPlan testPlan = read(response, "$.data.getTestPlan", TestPlan.class);
 
         return Optional.ofNullable(testPlan);
     }
 
-    public List<XRayPlan> getTestPlans() {
+    public List<TestPlan> getTestPlans() {
 
         String query = query("query {" +
                 "    getTestPlans( limit: 100) {" +
@@ -68,7 +66,7 @@ public class XRayApi extends BaseApi {
         });
     }
 
-    public XRayPlan createTestPlan(String title) {
+    public TestPlan createTestPlan(String title) {
         String mutation = query(
                 "mutation {" +
                         "    createTestPlan(" +
@@ -87,10 +85,10 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, mutation);
 
-        return read(response, "$.data.createTestPlan.testPlan", XRayPlan.class);
+        return read(response, "$.data.createTestPlan.testPlan", TestPlan.class);
     }
 
-    public Optional<XRayTestCase> getTestCase(String issueId) {
+    public Optional<TestCase> getTestCase(String issueId) {
         String query = query("query { " +
                 "   getTest(issueId: \"" + issueId + "\") {" +
                 "        issueId" +
@@ -108,12 +106,12 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        XRayTestCase testCase = read(response, "$.data.getTest", XRayTestCase.class);
+        TestCase testCase = read(response, "$.data.getTest", TestCase.class);
 
         return Optional.ofNullable(testCase);
     }
 
-    public void addTestsToPlan(List<String> createdIssues, XRayPlan remotePlan) {
+    public void addTestsToPlan(List<String> createdIssues, TestPlan remotePlan) {
         String mutation = query(
                 "mutation {" +
                         "    addTestsToTestPlan(" +
@@ -128,14 +126,36 @@ public class XRayApi extends BaseApi {
         post(API_GRAPHQL, mutation);
     }
 
-    public void addTestsToSets(List<XRayTestCase> tests) {
+    public void addTestExecutionsToTestPlan(String testExecutionIssue, TestPlan remotePlan) {
+        String mutation = query(
+                "mutation {" +
+                        "    addTestExecutionsToTestPlan(" +
+                        "        issueId: \"" + remotePlan.getIssueId() + "\", " +
+                        "        testExecIssueIds: [\"" + testExecutionIssue + "\"]" +
+                        "    ) {" +
+                        "        addedTestExecutions" +
+                        "        warning" +
+                        "    }" +
+                        "}");
+
+        post(API_GRAPHQL, mutation);
+    }
+
+    public void addTestsToSets(List<TestCase> tests, List<TestSet> remoteTestSets) {
         tests.forEach(xRayTestCase -> {
 
-            if (!xRayTestCase.getTestSetList().isEmpty()) {
+            Optional<TestSet> optionalXRayTestSet = remoteTestSets.stream()
+                    .filter(xRayTestSet -> xRayTestCase.getTestSetList()
+                            .stream().map(TestSet::getJira)
+                            .map(JiraIssue::getSummary)
+                            .anyMatch(s -> s.equals(xRayTestSet.getJira().getSummary())))
+                    .findFirst();
+
+            if (optionalXRayTestSet.isPresent()) {
                 String mutation = query(
                         "mutation {" +
-                                "    addTestsToTestPlan(" +
-                                "        issueId: \"" + xRayTestCase.getTestSetList().get(0).getIssueId() + "\", " +
+                                "    addTestsToTestSet(" +
+                                "        issueId: \"" + optionalXRayTestSet.get().getIssueId() + "\", " +
                                 "        testIssueIds: [\"" + xRayTestCase.getIssueId() + "\"]" +
                                 "    ) {" +
                                 "        addedTests" +
@@ -149,7 +169,7 @@ public class XRayApi extends BaseApi {
         });
     }
 
-    public List<XRayTestSet> getTestSets() {
+    public List<TestSet> getTestSets() {
         String query = query("query { " +
                 "   getTestSets(limit: 100) {" +
                 "        total" +
@@ -175,11 +195,11 @@ public class XRayApi extends BaseApi {
             return Collections.emptyList();
         }
 
-        List<XRayTestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
+        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
         });
 
         for (int i = 0; i < list.size(); i++) {
-            List<XRayTestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
+            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
             });
             list.get(i).testCases(testCases);
         }
@@ -187,7 +207,7 @@ public class XRayApi extends BaseApi {
         return list;
     }
 
-    public List<XRayTestSet> createTestSets(List<XRayTestSet> newTestSets) {
+    public List<TestSet> createTestSets(List<TestSet> newTestSets) {
         return newTestSets.stream().map(xrayTestSet -> {
             String mutation = query(
                     "mutation {" +
@@ -207,7 +227,7 @@ public class XRayApi extends BaseApi {
 
             JsonNode response = post(API_GRAPHQL, mutation);
 
-            return read(response, "$.data.createTestSet.testSet", XRayTestSet.class);
+            return read(response, "$.data.createTestSet.testSet", TestSet.class);
 
         }).collect(Collectors.toList());
     }
@@ -216,7 +236,7 @@ public class XRayApi extends BaseApi {
         return toJSON(Map.of(QUERY, query));
     }
 
-    public List<String> createTestCases(XRayPlan remotePlan, List<XRayTestCase> newTests, String project) {
+    public List<TestCase> createTestCases(TestPlan remotePlan, List<TestCase> newTests, String project) {
         return newTests.stream().map(test -> {
 
             String mutation = query("mutation {" +
@@ -241,9 +261,84 @@ public class XRayApi extends BaseApi {
 
             JsonNode response = post(API_GRAPHQL, mutation);
 
-            XRayTestCase xRayTestCase = read(response, "$.data.createTest.test", XRayTestCase.class);
-
-            return xRayTestCase.getIssueId();
+            TestCase testCase = read(response, "$.data.createTest.test", TestCase.class);
+            testCase.getJira().summary(test.getJira().getSummary());
+            testCase.testSetList(test.getTestSetList());
+            return testCase;
         }).collect(Collectors.toList());
+    }
+
+    public TestExecution createTestExecution(String summary, List<String> createdIssues, String project) {
+        String mutation = query(
+                "mutation {" +
+                        "    createTestExecution(" +
+                        "        testIssueIds: [\"" + String.join("\",\"", createdIssues) + "\"]" +
+                        "        testEnvironments: [\"Wakamiti\"]" +
+                        "        jira: {" +
+                        "            fields: { summary: \"" + summary + "\", project: {key: \"" + project + "\"} }" +
+                        "        }" +
+                        "    ) {" +
+                        "        testExecution {" +
+                        "            issueId" +
+                        "            jira(fields: [\"key\", \"summary\"])" +
+                        "        }" +
+                        "        warnings" +
+                        "        createdTestEnvironments" +
+                        "    }" +
+                        "}");
+
+        JsonNode response = post(API_GRAPHQL, mutation);
+
+        return read(response, "$.data.createTestExecution.testExecution", TestExecution.class);
+
+    }
+
+    public void updateTestRunStatus(List<TestCase> createdIssues) {
+
+        List<String> issues = createdIssues.stream().map(TestCase::getIssueId).collect(Collectors.toList());
+        String query = query(
+                "query {" +
+                        "    getTestRuns( testIssueIds: [\"" + String.join("\",\"", issues) + "\"], limit: 100 ) {" +
+                        "        total" +
+                        "        limit" +
+                        "        start" +
+                        "        results {" +
+                        "            id" +
+                        "            status {" +
+                        "                name" +
+                        "                color" +
+                        "                description" +
+                        "            }" +
+                        "            testExecution {" +
+                        "                issueId" +
+                        "            }" +
+                        "            test {" +
+                        "                issueId" +
+                        "            }" +
+                        "        }" +
+                        "    }" +
+                        "}");
+
+        JsonNode response = post(API_GRAPHQL, query);
+
+        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<>() {
+        });
+
+        createdIssues.forEach(testCase ->
+                testRuns.stream()
+                        .filter(testRun -> testRun.getTest().getIssueId().equals(testCase.getIssueId())
+                                && !testRun.getStatus().getName().equals(testCase.getStatus()))
+                        .findAny()
+                        .ifPresent(testRun -> {
+                            testCase.testRunId(testRun.getId());
+
+                            String mutation = query(
+                                    "mutation {" +
+                                            "    updateTestRunStatus( id: \"" + testCase.getTestRunId() + "\", status: \"" + testCase.getStatus() + "\")" +
+                                            "}");
+
+                            post(API_GRAPHQL, mutation);
+                        })
+        );
     }
 }

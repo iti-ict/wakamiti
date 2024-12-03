@@ -6,33 +6,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class XRayTestSet {
+public class TestSet {
 
     private String issueId;
     private JiraIssue jira;
-    private List<XRayTestCase> testCases = new ArrayList<>();
+    private List<TestCase> testCases = new ArrayList<>();
 
-    public XRayTestSet(String issueId, JiraIssue jira, List<XRayTestCase> testCases) {
+    public TestSet(String issueId, JiraIssue jira, List<TestCase> testCases) {
         this.issueId = issueId;
         this.jira = jira;
         this.testCases = testCases;
     }
 
-    public XRayTestSet() {
+    public TestSet() {
 
     }
 
-    public XRayTestSet issueId(String issueId) {
+    public TestSet issueId(String issueId) {
         this.issueId = issueId;
         return this;
     }
 
-    public XRayTestSet issue(JiraIssue issue) {
+    public TestSet issue(JiraIssue issue) {
         this.jira = issue;
         return this;
     }
 
-    public XRayTestSet testCases(List<XRayTestCase> testCases) {
+    public TestSet testCases(List<TestCase> testCases) {
         this.testCases = testCases;
         return this;
     }
@@ -45,7 +45,7 @@ public class XRayTestSet {
         return jira;
     }
 
-    public List<XRayTestCase> getTestCases() {
+    public List<TestCase> getTestCases() {
         return testCases;
     }
 }
