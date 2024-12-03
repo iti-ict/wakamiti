@@ -12,7 +12,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.wakamiti.xray.model.XRayPlan;
+import es.iti.wakamiti.xray.model.TestPlan;
 
 import java.net.URL;
 import java.util.function.Consumer;
@@ -89,11 +89,11 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         configuration.get(XRAY_CREATE_ITEMS_IF_ABSENT, Boolean.class).ifPresent(synchronizer::createItemsIfAbsent);
     }
 
-    private XRayPlan plan(Configuration configuration) {
+    private TestPlan plan(Configuration configuration) {
         if (configuration.inner(XRAY_PLAN).asMap().isEmpty()) {
             throw new WakamitiException("Property '{}' is required", XRAY_PLAN);
         }
-        XRayPlan plan = new XRayPlan();
+        TestPlan plan = new TestPlan();
 //        requiredProperty(configuration, XRAY_PLAN_ID, String.class, plan::id);
         requiredProperty(configuration, XRAY_PLAN_SUMMARY, String.class, s -> plan.getJira().summary(s));
         return plan;

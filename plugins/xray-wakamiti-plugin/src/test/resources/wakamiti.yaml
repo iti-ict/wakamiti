@@ -12,9 +12,9 @@ wakamiti:
       summary: Sincronización con plugin Wakamiti
     auth:
       credentials:
-        client-id: 50767A593E434541BD78A82431F177AA
-        client-secret: c0cc9f057ab3fc26493b60a133e4b33af016df493081a5356d0ebbb01c3bd672
-    project: W1
+        client-id: FC02F7622A6D4C61A7964467DF5797B5
+        client-secret: 34db0165d6461ce1d6d160fac84249016c44af63c28e4bbe24b602c47c2ec84a
+    project: WAK
     testCasePerFeature: true
     tag: XRay
 
