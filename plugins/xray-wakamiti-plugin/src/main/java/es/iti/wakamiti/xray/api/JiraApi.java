@@ -3,7 +3,7 @@ package es.iti.wakamiti.xray.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.model.JiraIssue;
-import es.iti.wakamiti.xray.model.XRayTestCase;
+import es.iti.wakamiti.xray.model.TestCase;
 import org.slf4j.Logger;
 
 import java.net.URL;
@@ -58,10 +58,10 @@ public class JiraApi extends BaseApi {
         return jiraIssue;
     }
 
-    public void updateTestCases(List<Pair<XRayTestCase, XRayTestCase>> testCases) {
+    public void updateTestCases(List<Pair<TestCase, TestCase>> testCases) {
         testCases.forEach(p -> {
-            XRayTestCase oldTest = p.key();
-            XRayTestCase newTest = p.value();
+            TestCase oldTest = p.key();
+            TestCase newTest = p.value();
 
             updateIssue(oldTest.getIssueId(), newTest.getJira().getSummary(), newTest.getJira().getDescription(), newTest.getJira().getLabels());
         });

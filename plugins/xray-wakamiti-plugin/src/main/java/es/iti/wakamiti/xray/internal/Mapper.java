@@ -5,8 +5,8 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.MapUtils;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.model.JiraIssue;
-import es.iti.wakamiti.xray.model.XRayTestCase;
-import es.iti.wakamiti.xray.model.XRayTestSet;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestSet;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -36,20 +36,20 @@ public abstract class Mapper {
         ).get(type);
     }
 
-    protected Stream<Pair<PlanNodeSnapshot, XRayTestSet>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(PlanNodeSnapshot target) {
         Path suitePath = Path.of(target.getSource()
                 .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
         if (!isBlank(suiteBase)) {
             suitePath = Path.of(suiteBase).relativize(suitePath);
         }
 
-        XRayTestSet suite = new XRayTestSet().issue(new JiraIssue().summary(suitePath.toString()));
+        TestSet suite = new TestSet().issue(new JiraIssue().summary(suitePath.toString()));
 
         return Stream.of(new Pair<>(target, suite));
     }
 
-    protected XRayTestCase caseMap(XRayTestSet suite, PlanNodeSnapshot target) {
-        return new XRayTestCase()
+    protected TestCase caseMap(TestSet suite, PlanNodeSnapshot target) {
+        return new TestCase()
                 .issue(new JiraIssue()
                         .summary(target.getName())
                         .description(join(target.getDescription(), System.lineSeparator()))
@@ -61,7 +61,7 @@ public abstract class Mapper {
                 .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
 
-    public Stream<XRayTestCase> map(PlanNodeSnapshot plan) {
+    public Stream<TestCase> map(PlanNodeSnapshot plan) {
         return plan
                 .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
                 .flatMap(this::suiteMap)
