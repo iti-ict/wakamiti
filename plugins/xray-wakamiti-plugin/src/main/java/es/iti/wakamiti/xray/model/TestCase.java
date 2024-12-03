@@ -6,40 +6,56 @@ import java.util.HashSet;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class XRayTestCase {
+public class TestCase {
 
+    private String testRunId;
     private String issueId;
     private JiraIssue jira;
     private String gherkin;
-    private List<XRayTestSet> testSetList;
+    private String status;
+    private List<TestSet> testSetList;
 
-    public XRayTestCase(String issueId, JiraIssue jira, String gherkin) {
+    public TestCase(String issueId, JiraIssue jira, String gherkin) {
         this.issueId = issueId;
         this.jira = jira;
         this.gherkin = gherkin;
     }
 
-    public XRayTestCase() {
+    public TestCase() {
     }
 
-    public XRayTestCase issueId(String issueId) {
+    public TestCase testRunId(String testRunId) {
+        this.testRunId = testRunId;
+        return this;
+    }
+
+    public TestCase issueId(String issueId) {
         this.issueId = issueId;
         return this;
     }
 
-    public XRayTestCase issue(JiraIssue issue) {
+    public TestCase issue(JiraIssue issue) {
         this.jira = issue;
         return this;
     }
 
-    public XRayTestCase gherkin(String gherkin) {
+    public TestCase gherkin(String gherkin) {
         this.gherkin = gherkin;
         return this;
     }
 
-    public XRayTestCase testSetList(List<XRayTestSet> testSetList) {
+    public TestCase status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public TestCase testSetList(List<TestSet> testSetList) {
         this.testSetList = testSetList;
         return this;
+    }
+
+    public String getTestRunId() {
+        return testRunId;
     }
 
     public String getIssueId() {
@@ -54,17 +70,21 @@ public class XRayTestCase {
         return gherkin;
     }
 
-    public List<XRayTestSet> getTestSetList() {
+    public String getStatus() {
+        return status;
+    }
+
+    public List<TestSet> getTestSetList() {
         return testSetList;
     }
 
-    public boolean isDifferent(XRayTestCase testCase) {
+    public boolean isDifferent(TestCase testCase) {
         return !this.getGherkin().equals(testCase.getGherkin()) || !this.getJira().getSummary().equals(testCase.getJira().getSummary())
                 || !this.getJira().getDescription().equals(testCase.getJira().getDescription());
     }
 
 
-    public boolean hasSameLabels(XRayTestCase testCase) {
+    public boolean hasSameLabels(TestCase testCase) {
         return new HashSet<>(this.getJira().getLabels()).containsAll(testCase.getJira().getLabels());
     }
 

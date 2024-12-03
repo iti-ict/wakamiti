@@ -5,42 +5,42 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class XRayPlan {
+public class TestPlan {
 
     private String issueId;
 
     private JiraIssue jira = new JiraIssue();
     private String projectId;
-    private List<XRayTestCase> testCases;
+    private List<TestCase> testCases;
 
 
-    public XRayPlan(String issueId, JiraIssue jira, String projectId, List<XRayTestCase> testCases) {
+    public TestPlan(String issueId, JiraIssue jira, String projectId, List<TestCase> testCases) {
         this.issueId = issueId;
         this.jira = jira;
         this.projectId = projectId;
         this.testCases = testCases;
     }
 
-    public XRayPlan() {
+    public TestPlan() {
 
     }
 
-    public XRayPlan id(String id) {
+    public TestPlan id(String id) {
         this.issueId = id;
         return this;
     }
 
-    public XRayPlan jira(JiraIssue jira) {
+    public TestPlan jira(JiraIssue jira) {
         this.jira = jira;
         return this;
     }
 
-    public XRayPlan projectId(String projectId) {
+    public TestPlan projectId(String projectId) {
         this.projectId = projectId;
         return this;
     }
 
-    public XRayPlan testCases(List<XRayTestCase> testCases) {
+    public TestPlan testCases(List<TestCase> testCases) {
         this.testCases = testCases;
         return this;
     }
@@ -57,7 +57,7 @@ public class XRayPlan {
         return projectId;
     }
 
-    public List<XRayTestCase> getTestCases() {
+    public List<TestCase> getTestCases() {
         return testCases;
     }
 }
