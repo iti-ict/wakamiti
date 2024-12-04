@@ -191,7 +191,7 @@ database:
 
 ### `database.enableCleanupUponCompletion`
 - Type: `boolean`
-- Default `false`
+- Default: `false`
 
 The default behavior of the plugin does not perform any database cleanup operation after the tests are finished.
 This is to be able to check results manually and debug errors.
@@ -203,6 +203,19 @@ Example:
 ```yaml
 database:
   enableCleanupUponCompletion: "true"
+```
+
+
+### `database.autotrim`
+- Type: `boolean`
+- Default: `false`
+
+Sets whether spaces are ignored in comparisons.
+
+Example:
+```yaml
+database:
+  autotrim: true
 ```
 
 
