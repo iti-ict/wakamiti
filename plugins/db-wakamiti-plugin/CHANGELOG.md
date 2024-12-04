@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.3.0] - 2024-12-02
+
+### Added
+- Auto trim configuration parameter.
+
+
 ## [3.2.2] - 2024-11-25
 
 ### Fixed
