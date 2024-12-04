@@ -173,7 +173,7 @@ function filtered() {
                         return statuses().includes(s.r)
                     });
                     if (sc.c.length > 0) rs.push(sc);
-                } else if (statuses().includes(sc.r)) {
+                } else if (!sc.r || statuses().includes(sc.r)) {
                     rs.push(sc);
                 }
                 return rs;
