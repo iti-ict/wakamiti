@@ -218,7 +218,7 @@ public class DatabaseStepContributorTest {
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
                 .isEqualTo("Melano");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "active")).asText())
-                .isEqualTo("TRUE");
+                .isEqualTo("true");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "birth_date")).asText())
                 .isEqualTo("1980-12-25");
     }
@@ -252,7 +252,7 @@ public class DatabaseStepContributorTest {
 //        assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
 //                .isEqualTo("null");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "active")).asText())
-                .isEqualTo("TRUE");
+                .isEqualTo("true");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "birth_date")).asText())
                 .isEqualTo("1980-12-25");
     }
@@ -372,7 +372,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"2", "Ester", "Colero", "TRUE", "2000-02-01", null}
+                    new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null}
             );
         }
     }
@@ -435,8 +435,8 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"2", "Ester", "Colero", "TRUE", "2000-02-01", null},
-                    new String[]{"3", "Elca", "Puio", "TRUE", null, null}
+                    new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null},
+                    new String[]{"3", "Elca", "Puio", "true", null, null}
             );
         }
     }
@@ -469,8 +469,8 @@ public class DatabaseStepContributorTest {
 
         Database db = Database.from(contributor.connection());
         String table = db.table("client");
-        assertThat(inserted).isInstanceOf(ArrayNode.class);
-        assertThat(inserted).isNotEmpty().hasSize(2);
+        assertThat(inserted).isInstanceOf(ArrayNode.class)
+                .isNotEmpty().hasSize(2);
         assertThat(inserted.get(0).get(db.column(table, "id")).asText())
                 .isEqualTo("2");
         assertThat(inserted.get(0).get(db.column(table, "first_name")).asText())
@@ -478,7 +478,7 @@ public class DatabaseStepContributorTest {
         assertThat(inserted.get(0).get(db.column(table, "second_name")).asText())
                 .isEqualTo("Colero");
         assertThat(inserted.get(0).get(db.column(table, "active")).asText())
-                .isEqualTo("TRUE");
+                .isEqualTo("true");
         assertThat(inserted.get(0).get(db.column(table, "birth_date")).asText())
                 .isEqualTo("2000-02-01");
         assertThat(inserted.get(1).get(db.column(table, "id")).asText())
@@ -488,7 +488,7 @@ public class DatabaseStepContributorTest {
         assertThat(inserted.get(1).get(db.column(table, "second_name")).asText())
                 .isEqualTo("Puio");
         assertThat(inserted.get(1).get(db.column(table, "active")).asText())
-                .isEqualTo("TRUE");
+                .isEqualTo("true");
 //        assertThat(inserted.get(1).get(db.column(table, "birth_date")).asText())
 //                .isEqualTo("null");
 
@@ -496,8 +496,8 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).doesNotContain(
-                    new String[]{"2", "Ester", "Colero", "TRUE", "2000-02-01"},
-                    new String[]{"3", "Elca", "Puio", "TRUE", null});
+                    new String[]{"2", "Ester", "Colero", "true", "2000-02-01"},
+                    new String[]{"3", "Elca", "Puio", "true", null});
         }
     }
 
@@ -634,7 +634,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "TRUE", "1980-12-25", "2024-07-22 12:34:56.000"}
+                    new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -662,7 +662,7 @@ public class DatabaseStepContributorTest {
     }
 
     @Test(expected = SQLRuntimeException.class)
-    public void testDeleteFromDataTableWhenColumnNotExist() throws IOException {
+    public void testDeleteFromDataTableWhenColumnNotExist() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
@@ -735,7 +735,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "TRUE", "1980-12-25", "2024-07-22 12:34:56.000"}
+                    new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -809,7 +809,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "TRUE", "1980-12-25", "2024-07-22 12:34:56.000"}
+                    new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -880,8 +880,8 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
-                    new String[]{"1", "Rosa", "Melano", "FALSE", "1980-12-25", "2024-07-22 12:34:56.000"},
-                    new String[]{"2", "Ester", "Colero", "FALSE", "2000-01-02", null});
+                    new String[]{"1", "Rosa", "Melano", "false", "1980-12-25", "2024-07-22 12:34:56.000"},
+                    new String[]{"2", "Ester", "Colero", "false", "2000-01-02", null});
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
@@ -922,7 +922,7 @@ public class DatabaseStepContributorTest {
                         "INSERT INTO city (id, name, latitude, longitude) " +
                         "SELECT 2, 'Madrid', 40.416775, -3.703790;" +
                         "UPDATE client SET active = 0 WHERE id = 1;" +
-                        "INSERT INTO client_city (clientid, cityid) VALUES (2, 2);" +
+                        "INSERT INTO client_city (clientid, cityid) WITH a AS (SELECT 2 as num) SELECT num, num FROM a;" +
                         "INSERT INTO client_city (clientid, cityid) VALUES (2, 1);";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
@@ -933,7 +933,7 @@ public class DatabaseStepContributorTest {
             List<String[]> result = select.stream().collect(Collectors.toList());
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
-                    new String[]{"1", "Rosa", "Melano", "TRUE", "1980-12-25", "2024-07-22 12:34:56.000"}
+                    new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
         try (Select<String[]> select = Database.from(contributor.connection())
@@ -1012,7 +1012,7 @@ public class DatabaseStepContributorTest {
         createContext(config);
 
         // Act
-        String script = "DELETE FROM other WHERE something = 47";
+        String script = "WITH a AS (SELECT 47 num) DELETE FROM other WHERE something IN (SELECT num FROM a)";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
 
@@ -1034,6 +1034,7 @@ public class DatabaseStepContributorTest {
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
+                "database.autotrim", "true",
                 "database.metadata.healthcheck", "false",
                 "database.enableCleanupUponCompletion", "true"
         );
@@ -1103,6 +1104,7 @@ public class DatabaseStepContributorTest {
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
+                "database.autotrim", "true",
                 "database.metadata.healthcheck", "false",
                 "database.enableCleanupUponCompletion", "true"
         );
@@ -1263,6 +1265,28 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertRowExistsByOneColumnWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano    ' WHERE id = 1"));
+
+        // Act
+        contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnWhenNotExist() {
         // Prepare
@@ -1275,10 +1299,11 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
-            contributor.assertRowExistsByOneColumn("second_name", "Otro", "client");
+            contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
 
             // Check
         } catch (AssertionError e) {
@@ -1286,8 +1311,16 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
-                            db.column(table, "second_name"), table));
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
+                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
+                                    "to contain exactly (and in same order):" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "but some elements were not found:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "and others were not expected:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
+                            db.column(table, "second_name")));
             throw new WakamitiException();
         }
     }
@@ -1352,6 +1385,28 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertRowExistsByOneColumnAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnAsyncWhenNotExists() {
         // Prepare
@@ -1364,10 +1419,11 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
-            contributor.assertRowExistsByOneColumnAsync("second_name", "Otro", "client", Duration.ofSeconds(1));
+            contributor.assertRowExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
 
             // Check
         } catch (AssertionError e) {
@@ -1375,8 +1431,16 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Otro} exist in table %s, but it doesn't",
-                            db.column(table, "second_name"), table));
+                            "[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
+                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
+                                    "to contain exactly (and in same order):" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "but some elements were not found:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "and others were not expected:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
+                            db.column(table, "second_name")));
             throw new WakamitiException();
         }
     }
@@ -1393,9 +1457,10 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         // Act
-        contributor.assertRowNotExistsByOneColumn("second_name", "Otro", "client");
+        contributor.assertRowNotExistsByOneColumn("second_name", "Melano", "client");
 
         // Check
         assertThatNoException();
@@ -1413,6 +1478,37 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+
+        try {
+            // Act
+            contributor.assertRowNotExistsByOneColumn("second_name", "Melano", "client");
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
+                            db.column(table, "second_name"), table));
+            throw new WakamitiException();
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testAssertRowNotExistsByOneColumnWhenExistsAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
@@ -1482,9 +1578,10 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         // Act
-        contributor.assertRowNotExistsByOneColumnAsync("second_name", "Otro", "client", Duration.ofSeconds(1));
+        contributor.assertRowNotExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
 
         // Check
         assertThatNoException();
@@ -1502,6 +1599,37 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+
+        try {
+            // Act
+            contributor.assertRowNotExistsByOneColumnAsync("second_name", "Melano", "client", Duration.ofSeconds(1));
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Melano} exist in table %s, but it does",
+                            db.column(table, "second_name"), table));
+            throw new WakamitiException();
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testAssertRowNotExistsByOneColumnAsyncWhenExistsAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
@@ -1540,6 +1668,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertRowCountByOneColumnWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertRowCountByOneColumn("second_name", "Melano", "client",
+                new MatcherAssertion<>(comparesEqualTo(1L)));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByOneColumnWhenNotExist() {
         // Prepare
@@ -1552,10 +1703,11 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
-            contributor.assertRowCountByOneColumn("second_name", "Otro", "client",
+            contributor.assertRowCountByOneColumn("second_name", "Melano", "client",
                     new MatcherAssertion<>(comparesEqualTo(1L)));
 
             // Check
@@ -1564,7 +1716,7 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Melano} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
         }
@@ -1633,6 +1785,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertRowCountByOneColumnAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertRowCountByOneColumnAsync("second_name", "Melano", "client",
+                new MatcherAssertion<>(comparesEqualTo(1L)), Duration.ofSeconds(1));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertRowCountByOneColumnAsyncWhenNotExists() {
         // Prepare
@@ -1645,10 +1820,11 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
-            contributor.assertRowCountByOneColumnAsync("second_name", "Otro", "client",
+            contributor.assertRowCountByOneColumnAsync("second_name", "Melano", "client",
                     new MatcherAssertion<>(comparesEqualTo(1L)), Duration.ofSeconds(1));
 
             // Check
@@ -1657,7 +1833,7 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Otro} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Melano} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "second_name"), table));
             throw new WakamitiException();
         }
@@ -2104,6 +2280,31 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertDataTableExistsWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertDataTableExists("client", new DataTable(new String[][]{
+                new String[]{"first_name", "second_name", "active", "birth_date", "creation"},
+                new String[]{"Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56"}
+        }));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsWhenNotExist() {
         // Prepare
@@ -2115,12 +2316,13 @@ public class DatabaseStepContributorTest {
                 "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
             contributor.assertDataTableExists("client", new DataTable(new String[][]{
-                    new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                    new String[]{"first_name", "second_name", "active", "birth_date", "creation"},
+                    new String[]{"Rosa", "Melano", "1", "1980-12-25", "2024-07-22 12:34:56"}
             }));
 
             // Check
@@ -2130,20 +2332,22 @@ public class DatabaseStepContributorTest {
             assertThat(e)
                     .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
+                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
+                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation")));
             throw new WakamitiException();
         }
     }
@@ -2252,6 +2456,31 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertDataTableExistsAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
+                new String[]{"first_name", "second_name", "active", "birth_date"},
+                new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+        }));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableExistsAsyncWhenNotExists() {
         // Prepare
@@ -2264,12 +2493,13 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
             contributor.assertDataTableExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                     new String[]{"first_name", "second_name", "active", "birth_date"},
-                    new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                    new String[]{"Rosa", "Melano", "1", "1980-12-25"}
             }));
 
             // Check
@@ -2280,16 +2510,16 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
                                     "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2345,11 +2575,12 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         // Act
         contributor.assertDataTableNotExists("client", new DataTable(new String[][]{
                 new String[]{"first_name", "second_name", "active", "birth_date"},
-                new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                new String[]{"Rosa", "Melano", "1", "1980-12-25"}
         }));
 
         // Check
@@ -2391,6 +2622,43 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testAssertDataTableNotExistsWhenExistAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        try {
+            // Act
+            contributor.assertDataTableNotExists("client", new DataTable(new String[][]{
+                    new String[]{"first_name", "second_name", "active", "birth_date"},
+                    new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+            }));
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"), table));
+            throw new WakamitiException();
+        }
+    }
+
     @Test
     public void testAssertDataTableNotExistsAsync() {
         // Prepare
@@ -2403,11 +2671,12 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         // Act
         contributor.assertDataTableNotExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
                 new String[]{"first_name", "second_name", "active", "birth_date"},
-                new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                new String[]{"Rosa", "Melano", "1", "1980-12-25"}
         }));
 
         // Check
@@ -2426,6 +2695,43 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+
+        try {
+            // Act
+            contributor.assertDataTableNotExistsAsync("client", Duration.ofSeconds(1), new DataTable(new String[][]{
+                    new String[]{"first_name", "second_name", "active", "birth_date"},
+                    new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+            }));
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"), table));
+            throw new WakamitiException();
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testAssertDataTableNotExistsAsyncWhenExistsAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
@@ -2473,6 +2779,32 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertDataTableCountWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertDataTableCount("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+                }));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableCountWhenNotExist() {
         // Prepare
@@ -2485,13 +2817,14 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
             contributor.assertDataTableCount("client", new MatcherAssertion<>(comparesEqualTo(1L)),
                     new DataTable(new String[][]{
                             new String[]{"first_name", "second_name", "active", "birth_date"},
-                            new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                            new String[]{"Rosa", "Melano", "1", "1980-12-25"}
                     }));
 
             // Check
@@ -2500,7 +2833,7 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=false, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2533,6 +2866,32 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertDataTableCountAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        // Act
+        contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
+                Duration.ofSeconds(1), new DataTable(new String[][]{
+                        new String[]{"first_name", "second_name", "active", "birth_date"},
+                        new String[]{"Rosa", "Melano", "1", "1980-12-25"}
+                }));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertDataTableCountAsyncWhenExists() {
         // Prepare
@@ -2545,13 +2904,14 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
         try {
             // Act
             contributor.assertDataTableCountAsync("client", new MatcherAssertion<>(comparesEqualTo(1L)),
                     Duration.ofSeconds(1), new DataTable(new String[][]{
                             new String[]{"first_name", "second_name", "active", "birth_date"},
-                            new String[]{"Rosa", "Melano", "0", "1980-12-25"}
+                            new String[]{"Rosa", "Melano", "1", "1980-12-25"}
                     }));
 
             // Check
@@ -2560,7 +2920,7 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=false, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2590,6 +2950,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertXLSFileExistsWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
+
+        // Act
+        contributor.assertXLSFileExists(file);
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsWhenNotExist() {
         // Prepare
@@ -2602,7 +2985,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.xlsx");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
 
         try {
             // Act
@@ -2616,17 +3000,17 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
                                     "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
                                     "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2690,6 +3074,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertXLSFileExistsAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
+
+        // Act
+        contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertXLSFileExistsAsyncWhenNotExists() {
         // Prepare
@@ -2702,7 +3109,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.xlsx");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
 
         try {
             // Act
@@ -2716,17 +3124,17 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
                                     "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
                                     "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2781,6 +3189,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
         File file = resource("data2.xlsx");
 
         // Act
@@ -2824,6 +3233,42 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testAssertXLSFileNotExistsWhenExistAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
+
+        try {
+            // Act
+            contributor.assertXLSFileNotExists(file);
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
+            throw new WakamitiException();
+        }
+    }
+
     @Test
     public void testAssertXLSFileNotExistsAsync() {
         // Prepare
@@ -2836,6 +3281,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
         File file = resource("data2.xlsx");
 
         // Act
@@ -2879,6 +3326,42 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testAssertXLSFileNotExistsAsyncWhenExistsAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.xlsx");
+
+        try {
+            // Act
+            contributor.assertXLSFileNotExistsAsync(file, Duration.ofSeconds(1));
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
+            throw new WakamitiException();
+        }
+    }
+
     @Test
     public void testAssertCSVFileExists() {
         // Prepare
@@ -2900,6 +3383,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertCSVFileExistsWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
+
+        // Act
+        contributor.assertCSVFileExists(file, "client");
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsWhenNotExist() {
         // Prepare
@@ -2912,7 +3418,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.csv");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
 
         try {
             // Act
@@ -2926,17 +3433,17 @@ public class DatabaseStepContributorTest {
                     .hasMessage(String.format(
                             "[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
                                     "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
                                     "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3000,6 +3507,29 @@ public class DatabaseStepContributorTest {
         assertThatNoException();
     }
 
+    @Test
+    public void testAssertCSVFileExistsAsyncWhenAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
+
+        // Act
+        contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
+
+        // Check
+        assertThatNoException();
+    }
+
     @Test(expected = WakamitiException.class)
     public void testAssertCSVFileExistsAsyncWhenNotExists() {
         // Prepare
@@ -3012,7 +3542,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.csv");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
 
         try {
             // Act
@@ -3025,17 +3556,17 @@ public class DatabaseStepContributorTest {
             assertThat(e)
                     .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"TRUE\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano\"}" + System.lineSeparator() +
+                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
                                     "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"false\"," + System.lineSeparator() +
+                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
                                     "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
                                     "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
                                     "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"false\"]" + System.lineSeparator() +
+                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%3$s\"=\"TRUE\"]" + System.lineSeparator(),
+                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3090,7 +3621,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.csv");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
 
         // Act
         contributor.assertCSVFileNotExists(file, "client");
@@ -3133,6 +3665,42 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testAssertCSVFileNotExistsWhenExistAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
+
+        try {
+            // Act
+            contributor.assertCSVFileNotExists(file, "client");
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
+            throw new WakamitiException();
+        }
+    }
+
     @Test
     public void testAssertCSVFileNotExistsAsync() {
         // Prepare
@@ -3145,7 +3713,8 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data2.csv");
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("data1.csv");
 
         // Act
         contributor.assertCSVFileNotExistsAsync(file, "client", Duration.ofSeconds(1));
@@ -3166,6 +3735,42 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
+        File file = resource("data1.csv");
+
+        try {
+            // Act
+            contributor.assertCSVFileNotExistsAsync(file, "client", Duration.ofSeconds(1));
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage(String.format(
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            db.column(table, "first_name"),
+                            db.column(table, "second_name"),
+                            db.column(table, "active"),
+                            db.column(table, "birth_date"),
+                            db.column(table, "creation"), table));
+            throw new WakamitiException();
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testAssertCSVFileNotExistsAsyncWhenExistsAndAutoTrim() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.autotrim", "true",
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
         File file = resource("data1.csv");
 
         try {

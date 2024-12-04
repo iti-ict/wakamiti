@@ -209,6 +209,19 @@ database:
 ```
 
 
+### `database.autotrim`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si se ignoran los espacios en las comparaciones.
+
+Ejemplo:
+```yaml
+database:
+  autotrim: true
+```
+
+
 ## Pasos
 
 

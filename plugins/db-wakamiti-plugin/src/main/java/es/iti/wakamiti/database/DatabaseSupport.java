@@ -24,6 +24,7 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
 import org.hamcrest.Matchers;
@@ -278,8 +279,7 @@ public class DatabaseSupport {
         if (cleanupUponCompletion) {
             LOGGER.warn("Unable to obtain the clean-up statements of a procedure");
         }
-        try (Call<Map<String, String>> call = Database.from(connection()).call(sql)
-                .get(DatabaseHelper::formatToMap)) {
+        try (Call<Map<String, String>> call = Database.from(connection()).call(sql).get(DatabaseHelper::formatToMap)) {
             return call.map(map -> map.entrySet().stream()
                             .collect(MapUtils.toMap(v -> Optional.ofNullable(v).orElse(nullSymbol))))
                     .execute()
@@ -369,17 +369,17 @@ public class DatabaseSupport {
      */
     protected Optional<Map<String, String>> similarBy(String table, String[] columns, Object[] values) {
         Database db = Database.from(connection());
-        String sql = db.parser().sqlSelectFrom(db.parser().format(db.table(table)),
-                Stream.of(columns).map(c -> db.parser().format(db.column(db.table(table), c)))
-                        .toArray(String[]::new)).toString();
+        columns = Stream.of(columns).map(c -> db.parser().format(db.column(db.table(table), c))).toArray(String[]::new);
+
+        String sql = db.parser().sqlSelectFrom(db.parser().format(db.table(table)), columns).toString();
         try (Select<String[]> select = db.select(sql).get(DatabaseHelper::format)) {
             Optional<Record> result = select.map(row -> new Record(row, IntStream.range(0, values.length)
                             .mapToDouble(i -> {
                                 String expectedValue = Optional.ofNullable(values[i])
-                                        .map(DatabaseHelper::toString).orElse("");
-                                String rowValue = Optional.ofNullable(row[i]).orElse("");
+                                        .map(DatabaseHelper::toString).orElse("").trim().toUpperCase();
+                                String rowValue = Optional.ofNullable(row[i]).orElse("").trim().toUpperCase();
                                 int maxLength = Math.max(expectedValue.length(), rowValue.length());
-                                double distance = new org.apache.commons.text.similarity.LevenshteinDistance()
+                                double distance = new LevenshteinDistance()
                                         .apply(expectedValue, rowValue);
                                 if (maxLength == 0) return 1.0;
                                 return (maxLength - distance) / maxLength;
@@ -724,14 +724,13 @@ public class DatabaseSupport {
      *
      * @param dataSet The data set containing the rows to be updated.
      */
-    protected void updateDataSet(DataSet dataSet, List<UpdateSet> updateSets) {
+    protected void updateDataSet(DataSet dataSet, UpdateSet updateSet) {
         LOGGER.debug("Updating rows in table {} from {}...", dataSet.table(), dataSet.origin());
 
         Database db = Database.from(connection());
         String table = db.table(dataSet.table());
 
-        List<String> setColumns = updateSets.stream()
-                .flatMap(set -> set.getColumns().stream())
+        List<String> setColumns = updateSet.getColumns().stream()
                 .map(Column::getColumnName)
                 .collect(Collectors.toList());
 
@@ -739,13 +738,13 @@ public class DatabaseSupport {
             Map<String, Object> row = db.processData(dataSet.table(),
                     dataSet.rowAsMap().entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)));
             Map<String, Object> sets = row.entrySet().stream()
-                    .filter(e -> setColumns.contains(e.getKey()))
+                    .filter(e -> setColumns.contains(db.parser().format(e.getKey())))
                     .collect(collectToMap());
             Map<String, Object> where = row.entrySet().stream()
-                    .filter(e -> !setColumns.contains(e.getKey()))
+                    .filter(e -> !setColumns.contains(db.parser().format(e.getKey())))
                     .collect(collectToMap());
             List<Expression> whereList = new LinkedList<>();
-            whereList.add(db.parser().toWhere(updateSets));
+            whereList.add(db.parser().toWhere(updateSet));
             if (!where.isEmpty()) whereList.add(db.parser().createWhere(where));
 
             net.sf.jsqlparser.statement.update.Update update = db.parser().toUpdate(table, sets,
@@ -829,10 +828,16 @@ public class DatabaseSupport {
                     .orElse(new EmptyDataSet(table));
             cleanUpOperations.addFirst(() -> {
                 try {
-                    updateDataSet(dataSet, update.getUpdateSets());
-                    dataSet.close();
-                } catch (IOException e) {
-                    LOGGER.error(ERROR_CLOSING_DATASET, e);
+                    if (update.getUpdateSets() == null || update.getUpdateSets().size() != 1) {
+                        throw new WakamitiException("Update must have one update set. {}", update);
+                    }
+                    updateDataSet(dataSet, update.getUpdateSets().get(0));
+                } finally {
+                    try {
+                        dataSet.close();
+                    } catch (IOException e) {
+                        LOGGER.error(ERROR_CLOSING_DATASET, e);
+                    }
                 }
             });
         }

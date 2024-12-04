@@ -165,7 +165,7 @@ function statuses() {
 function filtered() {
     // filter by results
     let aux = JSON.parse(data).c;
-    if (JSON.parse(data).tr) {
+    if (aux) {
         aux = aux.reduce((rf, f) => {
             f.c = f.c.reduce((rs, sc) => {
                 if (sc.t === 'AGGREGATOR') {

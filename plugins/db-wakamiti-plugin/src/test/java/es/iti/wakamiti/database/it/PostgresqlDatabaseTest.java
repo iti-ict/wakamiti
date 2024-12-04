@@ -31,7 +31,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = "database.connection.password", value = "pass"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
-        @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
+        @Property(key = TREAT_STEPS_AS_TESTS, value = "false")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class PostgresqlDatabaseTest {
