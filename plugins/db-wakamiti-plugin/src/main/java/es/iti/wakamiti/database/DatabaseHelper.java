@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -84,13 +83,13 @@ public final class DatabaseHelper {
             ResultSetMetaData metadata = rs.getMetaData();
             String[] row = new String[metadata.getColumnCount()];
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
+                if (rs.wasNull()) {
+                    row[c - 1] = null;
+                    continue;
+                }
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
                     case BOOLEAN:
                         String v = String.valueOf(rs.getBoolean(c));
-                        if (rs.wasNull()) {
-                            row[c - 1] = null;
-                            break;
-                        }
                         row[c - 1] = v;
                         break;
                     case DATE:
@@ -98,10 +97,6 @@ public final class DatabaseHelper {
                         calendar1.setTimeZone(TimeZone.getDefault());
                         calendar1.setLenient(true);
                         Timestamp timestamp1 = rs.getTimestamp(c, calendar1);
-                        if (rs.wasNull()) {
-                            row[c - 1] = null;
-                            break;
-                        }
                         row[c - 1] = DATE_FORMATTER.format(timestamp1.toLocalDateTime());
                         break;
                     case TIMESTAMP:
@@ -112,18 +107,10 @@ public final class DatabaseHelper {
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
                         Timestamp timestamp = rs.getTimestamp(c, calendar);
-                        if (rs.wasNull()) {
-                            row[c - 1] = null;
-                            break;
-                        }
                         row[c - 1] = DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime());
                         break;
                     default:
                         String value = rs.getString(c);
-                        if (rs.wasNull()) {
-                            row[c - 1] = null;
-                            break;
-                        }
                         row[c - 1] = value;
                 }
             }
@@ -146,13 +133,13 @@ public final class DatabaseHelper {
             Map<String, String> row = new LinkedHashMap<>();
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
                 String column = metadata.getColumnName(c);
+                if (rs.wasNull()) {
+                    row.put(column, null);
+                    continue;
+                }
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
                     case BOOLEAN:
                         String v = String.valueOf(rs.getBoolean(c));
-                        if (rs.wasNull()) {
-                            row.put(column, null);
-                            break;
-                        }
                         row.put(column, v);
                         break;
                     case DATE:
@@ -160,10 +147,6 @@ public final class DatabaseHelper {
                         calendar1.setTimeZone(TimeZone.getDefault());
                         calendar1.setLenient(true);
                         Timestamp timestamp1 = rs.getTimestamp(c, calendar1);
-                        if (rs.wasNull()) {
-                            row.put(column, null);
-                            break;
-                        }
                         row.put(column, DATE_FORMATTER.format(timestamp1.toLocalDateTime()));
                         break;
                     case TIMESTAMP:
@@ -174,19 +157,10 @@ public final class DatabaseHelper {
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
                         Timestamp timestamp = rs.getTimestamp(c, calendar);
-                        if (rs.wasNull()) {
-                            row.put(column, null);
-                            break;
-                        }
                         row.put(column, DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime()));
                         break;
-
                     default:
                         String value = rs.getString(c);
-                        if (rs.wasNull()) {
-                            row.put(column, null);
-                            continue;
-                        }
                         row.put(column, value);
                 }
             }

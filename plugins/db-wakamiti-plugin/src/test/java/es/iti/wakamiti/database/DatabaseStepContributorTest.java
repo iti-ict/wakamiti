@@ -469,8 +469,8 @@ public class DatabaseStepContributorTest {
 
         Database db = Database.from(contributor.connection());
         String table = db.table("client");
-        assertThat(inserted).isInstanceOf(ArrayNode.class);
-        assertThat(inserted).isNotEmpty().hasSize(2);
+        assertThat(inserted).isInstanceOf(ArrayNode.class)
+                .isNotEmpty().hasSize(2);
         assertThat(inserted.get(0).get(db.column(table, "id")).asText())
                 .isEqualTo("2");
         assertThat(inserted.get(0).get(db.column(table, "first_name")).asText())
@@ -662,7 +662,7 @@ public class DatabaseStepContributorTest {
     }
 
     @Test(expected = SQLRuntimeException.class)
-    public void testDeleteFromDataTableWhenColumnNotExist() throws IOException {
+    public void testDeleteFromDataTableWhenColumnNotExist() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
