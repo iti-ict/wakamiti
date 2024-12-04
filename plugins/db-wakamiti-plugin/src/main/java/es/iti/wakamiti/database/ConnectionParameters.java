@@ -17,6 +17,7 @@ public class ConnectionParameters {
     private String driver;
     private String schema;
     private String catalog;
+    private boolean autoTrim = false;
 
     /**
      * Retrieves the URL for the database connection.
@@ -135,6 +136,25 @@ public class ConnectionParameters {
      */
     public ConnectionParameters catalog(String catalog) {
         this.catalog = catalog;
+        return this;
+    }
+
+    /**
+     * Retrieve whether to include spaces in comparisons.
+     *
+     * @return {@code true} to enable auto trim, {@code false} otherwise.
+     */
+    public boolean autoTrim() {
+        return autoTrim;
+    }
+
+    /**
+     * Sets whether to include spaces in comparisons.
+     *
+     * @param autoTrim {@code true} to enable auto trim, {@code false} otherwise.
+     */
+    public ConnectionParameters autoTrim(boolean autoTrim) {
+        this.autoTrim = autoTrim;
         return this;
     }
 

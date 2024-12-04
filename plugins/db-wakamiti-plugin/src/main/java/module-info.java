@@ -34,6 +34,7 @@ module es.iti.wakamiti.db {
     requires jchronic;
     requires org.apache.commons.text;
     requires org.apache.commons.lang3;
+    requires org.apache.commons.collections4;
 
     provides StepContributor with DatabaseStepContributor;
     provides ConfigContributor with DatabaseConfigContributor;

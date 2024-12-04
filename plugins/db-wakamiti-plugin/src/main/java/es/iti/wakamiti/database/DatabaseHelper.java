@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -85,6 +84,10 @@ public final class DatabaseHelper {
             String[] row = new String[metadata.getColumnCount()];
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
+                    case BOOLEAN:
+                        String v = processColumn(rs.getBoolean(c), rs.wasNull());
+                        row[c - 1] = v;
+                        break;
                     case DATE:
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTimeZone(TimeZone.getDefault());
@@ -110,13 +113,8 @@ public final class DatabaseHelper {
                         }
                         row[c - 1] = DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime());
                         break;
-
                     default:
-                        String value = rs.getString(c);
-                        if (rs.wasNull()) {
-                            row[c - 1] = null;
-                            continue;
-                        }
+                        String value = processColumn(rs.getString(c), rs.wasNull());
                         row[c - 1] = value;
                 }
             }
@@ -140,6 +138,10 @@ public final class DatabaseHelper {
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
                 String column = metadata.getColumnName(c);
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
+                    case BOOLEAN:
+                        String v = processColumn(rs.getBoolean(c), rs.wasNull());
+                        row.put(column, v);
+                        break;
                     case DATE:
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTimeZone(TimeZone.getDefault());
@@ -165,13 +167,8 @@ public final class DatabaseHelper {
                         }
                         row.put(column, DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime()));
                         break;
-
                     default:
-                        String value = rs.getString(c);
-                        if (rs.wasNull()) {
-                            row.put(column, null);
-                            continue;
-                        }
+                        String value = processColumn(rs.getString(c), rs.wasNull());
                         row.put(column, value);
                 }
             }
@@ -179,6 +176,10 @@ public final class DatabaseHelper {
         } catch (SQLException e) {
             throw new SQLRuntimeException("Cannot read result set", e);
         }
+    }
+
+    private static String processColumn(Object value, boolean wasNull) {
+        return wasNull ? null : Objects.toString(value);
     }
 
     /**

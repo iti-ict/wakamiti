@@ -38,12 +38,14 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     private static final String CONNECTION_DRIVER = "connection.driver";
     private static final String METADATA_SCHEMA = "metadata.schema";
     private static final String METADATA_CATALOG = "metadata.catalog";
+    private static final String AUTO_TRIM = "autotrim";
+
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             DATABASE_XLS_IGNORE_SHEET_PATTERN, "#.*",
             DATABASE_NULL_SYMBOL, "<null>",
             DATABASE_CSV_FORMAT, "DEFAULT",
-            DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, "false",
-            DATABASE_HEALTHCHECK, "true"
+            DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.FALSE.toString(),
+            DATABASE_HEALTHCHECK, Boolean.TRUE.toString()
     );
 
     /**
@@ -110,6 +112,7 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
         configuration.get(CONNECTION_DRIVER, String.class).ifPresent(connectionParameters::driver);
         configuration.get(METADATA_SCHEMA, String.class).ifPresent(connectionParameters::schema);
         configuration.get(METADATA_CATALOG, String.class).ifPresent(connectionParameters::catalog);
+        configuration.get(AUTO_TRIM, Boolean.class).ifPresent(connectionParameters::autoTrim);
         return connectionParameters;
     }
 
