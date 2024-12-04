@@ -85,6 +85,14 @@ public final class DatabaseHelper {
             String[] row = new String[metadata.getColumnCount()];
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
+                    case BOOLEAN:
+                        String v = String.valueOf(rs.getBoolean(c));
+                        if (rs.wasNull()) {
+                            row[c - 1] = null;
+                            break;
+                        }
+                        row[c - 1] = v;
+                        break;
                     case DATE:
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTimeZone(TimeZone.getDefault());
@@ -110,12 +118,11 @@ public final class DatabaseHelper {
                         }
                         row[c - 1] = DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime());
                         break;
-
                     default:
                         String value = rs.getString(c);
                         if (rs.wasNull()) {
                             row[c - 1] = null;
-                            continue;
+                            break;
                         }
                         row[c - 1] = value;
                 }
@@ -140,6 +147,14 @@ public final class DatabaseHelper {
             for (int c = 1; c <= metadata.getColumnCount(); c++) {
                 String column = metadata.getColumnName(c);
                 switch (JDBCType.valueOf(metadata.getColumnType(c))) {
+                    case BOOLEAN:
+                        String v = String.valueOf(rs.getBoolean(c));
+                        if (rs.wasNull()) {
+                            row.put(column, null);
+                            break;
+                        }
+                        row.put(column, v);
+                        break;
                     case DATE:
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTimeZone(TimeZone.getDefault());

@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.3</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -39,6 +39,11 @@
             <artifactId>jchronic</artifactId>
             <version>0.2.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>4.8</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -50,10 +55,10 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-io</groupId>-->
+<!--            <artifactId>commons-io</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
@@ -62,12 +67,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>4.8</version>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
