@@ -209,13 +209,13 @@ public class XRayApi extends BaseApi {
 
     public List<TestSet> createTestSets(List<TestSet> newTestSets) {
         return newTestSets.stream().map(xrayTestSet -> {
+
+            StringBuilder jirafields = getJirafields(project, xrayTestSet.getJira());
+
             String mutation = query(
                     "mutation {" +
                             "    createTestSet(" +
-//                            "        testIssueIds: [\"54321\"]" +
-                            "        jira: {" +
-                            "            fields: { summary: \"" + xrayTestSet.getJira().getSummary() + "\", project: {key: \"" + project + "\" } }" +
-                            "        }" +
+                            "        jira: {" + jirafields + "}" +
                             "    ) {" +
                             "        testSet {" +
                             "            issueId" +
@@ -239,11 +239,7 @@ public class XRayApi extends BaseApi {
     public List<TestCase> createTestCases(TestPlan remotePlan, List<TestCase> newTests, String project) {
         return newTests.stream().map(test -> {
 
-            StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + test.getJira().getSummary() + "\", project: {key: \"" + project + "\"}");
-            if (!test.getJira().getLabels().isEmpty()) {
-                jirafields.append(", labels: [\"").append(test.getJira().getLabels().get(0)).append("\"]");
-            }
-            jirafields.append("}");
+            StringBuilder jirafields = getJirafields(project, test.getJira());
 
             String mutation = query("mutation {" +
                     "    createTest(" +
@@ -271,6 +267,15 @@ public class XRayApi extends BaseApi {
             testCase.testSetList(test.getTestSetList());
             return testCase;
         }).collect(Collectors.toList());
+    }
+
+    private StringBuilder getJirafields(String project, JiraIssue issue) {
+        StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + issue.getSummary() + "\", project: {key: \"" + project + "\"}");
+        if (!issue.getLabels().isEmpty()) {
+            jirafields.append(", labels: [\"").append(issue.getLabels().get(0)).append("\"]");
+        }
+        jirafields.append("}");
+        return jirafields;
     }
 
     public TestExecution createTestExecution(String summary, List<String> createdIssues, String project) {

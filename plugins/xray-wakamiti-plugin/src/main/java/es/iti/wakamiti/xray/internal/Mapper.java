@@ -43,7 +43,9 @@ public abstract class Mapper {
             suitePath = Path.of(suiteBase).relativize(suitePath);
         }
 
-        TestSet suite = new TestSet().issue(new JiraIssue().summary(suitePath.toString()));
+        TestSet suite = new TestSet().issue(new JiraIssue()
+                .summary(suitePath.toString())
+                .labels(Collections.singletonList(target.getId())));
 
         return Stream.of(new Pair<>(target, suite));
     }
