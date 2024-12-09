@@ -111,7 +111,7 @@ public class XRaySynchronizer implements EventObserver {
         PlanNodeSnapshot data = (PlanNodeSnapshot) event.data();
 
         xRayApi = new XRayApi(xRayBaseURL, xRayclientId, xRayclientSecret, project, LOGGER);
-        jiraApi = new JiraApi(jiraBaseURL, jiraCredentials, project, LOGGER);
+        jiraApi = new JiraApi(jiraBaseURL, jiraCredentials, LOGGER);
 
         if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
@@ -208,8 +208,8 @@ public class XRaySynchronizer implements EventObserver {
         testPlan.testCases(remoteTests);
 
         List<TestCase> newTests = tests.stream().filter(t ->
-                !remoteTestsSummaries.contains(t.getJira().getSummary())
-                && modTests.stream().map(Pair::value).noneMatch(testCase -> testCase.getJira().getSummary().equals(t.getJira().getSummary())))
+                        !remoteTestsSummaries.contains(t.getJira().getSummary())
+                                && modTests.stream().map(Pair::value).noneMatch(testCase -> testCase.getJira().getSummary().equals(t.getJira().getSummary())))
                 .collect(Collectors.toList());
 
         if (!newTests.isEmpty()) {

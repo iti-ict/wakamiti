@@ -6,6 +6,7 @@ import es.iti.wakamiti.xray.XRaySynchronizer;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestSet;
 
+import java.util.Collections;
 import java.util.stream.Stream;
 
 
@@ -20,7 +21,10 @@ public class ScenarioMapper extends Mapper {
         return super.suiteMap(target)
                 .flatMap(p ->
                         p.key().flatten(node -> gherkinType(node).equals(type()))
-                                .map(node -> new Pair<>(node, new TestSet().issue(new JiraIssue().summary(p.key().getName()))))
+                                .map(node -> new Pair<>(node, new TestSet().issue(new JiraIssue()
+                                        .summary(p.key().getName())
+                                        .labels(p.value().getJira().getLabels())))
+                                )
                 );
     }
 
