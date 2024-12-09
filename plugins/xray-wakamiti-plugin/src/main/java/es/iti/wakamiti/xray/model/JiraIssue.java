@@ -2,6 +2,7 @@ package es.iti.wakamiti.xray.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,7 +13,7 @@ public class JiraIssue {
     private String summary = "";
     private String description = "";
     private String type;
-    private List<String> labels;
+    private List<String> labels = new ArrayList<>();
 
     public JiraIssue(String key, String self, String summary, String description, String type, List<String> labels) {
         this.key = key;
