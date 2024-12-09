@@ -12,12 +12,12 @@ wakamiti:
       summary: Sincronización con plugin Wakamiti
     auth:
       credentials:
-        client-id: FC02F7622A6D4C61A7964467DF5797B5
-        client-secret: 34db0165d6461ce1d6d160fac84249016c44af63c28e4bbe24b602c47c2ec84a
+        client-id: XXXX
+        client-secret: XXXX
     project: WAK
     testCasePerFeature: true
     tag: XRay
 
   jira:
     auth:
-      credentials: Y29saXZhK2ppcmFAaXRpLmVzOkFUQVRUM3hGZkdGMGNyaThicndxa0d0TGxxdXVkUHdSaXZvbUdsdmRxSDJoeTdnMkdsYm4yb1QwY0hCNlV1MFNUUzFQTldMRjlzSElzdU9EWE5ZRy1XNi1pR2NURUY3XzJ0NnJISzBoVkdQMG1zRU1VemZwcEl6NVpCRmxDRUJzQnhJRFRwb0hXY2E3N2pScEVQSW5KOWF3aUNSZlJja2hpU1VJaFZvalNPMl9SbVBrdHpXSW94RT1FQzk3QkQ0OQ==
+      credentials: XXXX

@@ -1,5 +1,8 @@
 package es.iti.wakamiti.xray.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestStatus {
     String name;
 

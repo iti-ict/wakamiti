@@ -9,8 +9,8 @@ public class JiraIssue {
 
     private String key;
     private String self;
-    private String summary;
-    private String description;
+    private String summary = "";
+    private String description = "";
     private String type;
     private List<String> labels;
 

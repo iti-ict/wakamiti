@@ -239,13 +239,18 @@ public class XRayApi extends BaseApi {
     public List<TestCase> createTestCases(TestPlan remotePlan, List<TestCase> newTests, String project) {
         return newTests.stream().map(test -> {
 
+            StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + test.getJira().getSummary() + "\", project: {key: \"" + project + "\"}");
+            if (!test.getJira().getLabels().isEmpty()) {
+                jirafields.append(", labels: [\"").append(test.getJira().getLabels().get(0)).append("\"]");
+            }
+            jirafields.append("}");
+
             String mutation = query("mutation {" +
                     "    createTest(" +
                     "        testType: { name: \"Cucumber\" }," +
+                    "        gherkin: \"" + test.getGherkin() + "\"," +
 //                    "        unstructured: \"Perform exploratory tests on calculator.\"," +
-                    "        jira: {" +
-                    "            fields: { summary:\"" + test.getJira().getSummary() + "\", project: {key: \"" + project + "\"} }" +
-                    "        }" +
+                    "        jira: {" + jirafields + "}" +
                     "    ) {" +
                     "        test {" +
                     "            issueId" +

@@ -11,7 +11,7 @@ public class TestCase {
     private String testRunId;
     private String issueId;
     private JiraIssue jira;
-    private String gherkin;
+    private String gherkin = "";
     private String status;
     private List<TestSet> testSetList;
 
@@ -79,8 +79,19 @@ public class TestCase {
     }
 
     public boolean isDifferent(TestCase testCase) {
-        return !this.getGherkin().equals(testCase.getGherkin()) || !this.getJira().getSummary().equals(testCase.getJira().getSummary())
-                || !this.getJira().getDescription().equals(testCase.getJira().getDescription());
+        return !hasSameSummary(testCase) || !hasSameGherkin(testCase) || !hasSameDescription(testCase);
+    }
+
+    private boolean hasSameSummary(TestCase testCase) {
+        return this.getJira().getSummary().equals(testCase.getJira().getSummary());
+    }
+
+    private boolean hasSameDescription(TestCase testCase) {
+        return this.getJira().getDescription().equals(testCase.getJira().getDescription());
+    }
+
+    private boolean hasSameGherkin(TestCase testCase) {
+        return this.getGherkin().equals(testCase.getGherkin());
     }
 
 
