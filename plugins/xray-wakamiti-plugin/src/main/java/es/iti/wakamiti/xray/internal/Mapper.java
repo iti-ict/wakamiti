@@ -58,6 +58,7 @@ public abstract class Mapper {
                                         .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
                         ))
                 )
+                .gherkin(target.getChildren().get(0).getChildren().get(0).getDisplayName())
                 .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
 

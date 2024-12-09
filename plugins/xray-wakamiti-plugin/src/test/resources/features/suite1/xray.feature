@@ -18,3 +18,8 @@ Feature: XRay integration feature
     * Def this step do nothing
 
 
+  @ID-s1-4
+  Scenario: Scenario AAAX
+    * Def this step do nothing
+
+
