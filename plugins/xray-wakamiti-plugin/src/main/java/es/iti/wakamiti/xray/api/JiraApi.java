@@ -33,11 +33,13 @@ public class JiraApi extends BaseApi {
                 "update", Map.of(
                         "summary", Collections.singletonList(Map.of(
                                 "set", newSummary
-                        )),
-                        "description", Collections.singletonList(Map.of(
-                                "set", newDescription
-                        )),
-                        "labels", newLabels.stream().map(label -> Map.of("add", label)).collect(Collectors.toList())
+                        ))
+//                        ,
+//                        "description", Collections.singletonList(Map.of(
+//                                "set", newDescription
+//                        ))
+//                        ,
+//                        "labels", newLabels.stream().map(label -> Map.of("add", label)).collect(Collectors.toList())
                 )));
 
         JsonNode response = put(API_ISSUE + "/" + id, payload);
