@@ -41,6 +41,6 @@ public interface ThrowableSupplier<T> extends Supplier<T> {
      *
      * @return The result of the supplier.
      */
-    T getThrowable();
+    T getThrowable() throws Exception;
 
 }

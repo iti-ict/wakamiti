@@ -31,7 +31,7 @@ Quiero que me generes una respuesta única en la que se incluya el feature descr
 - Si el idioma no es el inglés, deberás indicarlo al principio del feature, expresado como un comentario, de la forma '#language: xx', si es inglés no incluyas esta línea.
 - El feature debe contener una serie de tags: siempre el tag '@definition', y el input indicaré opcionalmente un 'apiId' (si no está, no incluir ese tag) y un 'operationId' (siempre se deberá informar).
 - Cada escenario deberá contener un tag identificativo y único para todos los escenario que generes con el patrón '@ID-*'.
-- Los escenarios que prueben casos de error (con codigos 4xx), deben contener siempre el tag '@error' y se colocarán al final, el caso principal (caso feliz) el tag '@smoke' y solo habrá 1 por feature, el primero.
+- Todos los escenarios que prueben casos de error (con codigos 4xx), deben contener siempre el tag '@error' y se colocarán al final, el caso principal (caso feliz) el tag '@smoke' y solo habrá 1 por feature, el primero.
 
 <ESQUEMA>
 #language: {lenguaje}
@@ -57,7 +57,6 @@ language=es
 operationId=something
 
 resultado:
-```gherkin
 #language: es
 @definition @something
 Característica: Una descripción de ejemplo
@@ -85,6 +84,6 @@ Característica: Una descripción de ejemplo
 # Dudas:
 # Una duda sobre al comportamiento funcional del contrato
 # Otra duda
-```
+
 
 <INPUT>

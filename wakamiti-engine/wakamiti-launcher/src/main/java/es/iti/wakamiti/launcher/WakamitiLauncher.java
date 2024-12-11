@@ -62,13 +62,6 @@ public class WakamitiLauncher {
             System.exit(1);
         }
 
-        if (arguments.isFeatureGeneratorEnabled()) {
-            OpenAIService openAIService = new OpenAIService();
-            FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments, openAIService);
-            featureGeneratorRunner.run();
-            return;
-        }
-
         boolean debugMode = arguments.isDebugActive();
         try {
             logger = createLogger(arguments.wakamitiConfiguration().inner("log"), debugMode);
@@ -81,6 +74,13 @@ public class WakamitiLauncher {
         }
 
         try {
+            if (arguments.isFeatureGeneratorEnabled()) {
+                OpenAIService openAIService = new OpenAIService();
+                FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments, openAIService);
+                featureGeneratorRunner.run();
+                return;
+            }
+
             new WakamitiLauncherFetcher(arguments).fetchAndUpdateClasspath();
             WakamitiRunner runner = new WakamitiRunner(arguments);
 
