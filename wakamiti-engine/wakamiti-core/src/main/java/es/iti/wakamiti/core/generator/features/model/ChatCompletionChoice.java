@@ -5,8 +5,10 @@
  */
 package es.iti.wakamiti.core.generator.features.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChatCompletionChoice {

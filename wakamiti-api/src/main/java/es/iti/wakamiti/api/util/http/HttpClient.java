@@ -26,7 +26,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static es.iti.wakamiti.api.util.JsonUtils.json;
@@ -45,28 +48,60 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
 
-    private static ExecutorService executor = executor();
+    /**
+     * Retry on all exceptions that inherits from IOException:
+     * <ul>
+     *     <li>{@link java.net.http.HttpTimeoutException}</li>
+     *     <li>{@link java.net.http.HttpConnectTimeoutException}</li>
+     *     <li>{@link java.nio.channels.ClosedChannelException}</li>
+     * </ul>
+     */
+    private static final Predicate<Throwable> DEFAULT_RETRY_ON_THROWABLE =
+            ex -> ex instanceof IOException;
+
+    /**
+     * A default number of maximum retries on both types <b>on-response</b> and <b>on-throwable</b>
+     */
+    private static final int DEFAULT_MAX_ATTEMPTS = 5;
+
+    /**
+     * When a retry on-response exceeded, then throw an exception by default.
+     */
+    private static final boolean DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED = true;
     private static final Map.Entry<java.net.http.HttpClient.Version, String> HTTP_VERSION =
             entry(java.net.http.HttpClient.Version.HTTP_2, "HTTP/2");
+    private static ExecutorService executor = executor();
     private static final java.net.http.HttpClient.Builder CLIENT = java.net.http.HttpClient.newBuilder()
             .executor(executor)
             .version(HTTP_VERSION.getKey())
             .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(20));
-
-    private final URL baseUrl;
-    protected transient JsonNode body;
     protected final Map<String, Object> finalQueryParams = new LinkedHashMap<>();
     protected final Map<String, Object> finalPathParams = new LinkedHashMap<>();
     protected final Map<String, Object> finalHeaders = new LinkedHashMap<>();
     protected final Map<String, Object> queryParams = new LinkedHashMap<>();
     protected final Map<String, Object> pathParams = new HashMap<>();
     protected final Map<String, Object> headers = new LinkedHashMap<>();
-    private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {};
+    private final URL baseUrl;
+    protected transient JsonNode body;
+    private final AtomicInteger attempts = new AtomicInteger(DEFAULT_MAX_ATTEMPTS);
+    private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
+    };
 
     protected HttpClient(URL baseUrl) {
         this.baseUrl = baseUrl;
         finalHeaders.putAll(map("Content-Type", "application/json", "Accept", "application/json"));
+    }
+
+    private static void renewExecutor() {
+        if (executor.isShutdown()) {
+            executor = executor();
+            CLIENT.executor(executor);
+        }
+    }
+
+    private static ExecutorService executor() {
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
     }
 
     public SELF postCall(Consumer<HttpResponse<Optional<JsonNode>>> postCall) {
@@ -286,16 +321,84 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
 
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
         renewExecutor();
-        CompletableFuture<HttpResponse<Optional<JsonNode>>> completable = CLIENT.build()
-                .sendAsync(request, asJSON());
-        return completable.thenApply(response -> {
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("HTTP call => {} {}HTTP response => {} ", stringify(response.request()),
-                            System.lineSeparator()+System.lineSeparator(), stringify(response));
-                }
-                postCall.accept(response);
-            return response;
-        });
+        attempts.incrementAndGet();
+        return CLIENT.build()
+                .sendAsync(request, asJSON())
+                .thenApply(response -> {
+                    if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace("HTTP call => {} {}HTTP response => {} ", stringify(response.request()),
+                                System.lineSeparator() + System.lineSeparator(), stringify(response));
+                    }
+                    return response;
+                })
+                .thenApply(response -> {
+                    if (response.statusCode() >= 500) {
+                        return attemptRetry(response, null);
+                    } else {
+                        return CompletableFuture.completedFuture(response);
+                    }
+                })
+                .exceptionally(ex -> {
+                    // All internal exceptions are wrapped by `CompletionException`
+                    if (DEFAULT_RETRY_ON_THROWABLE.test(ex.getCause())) {
+                        return attemptRetry(null, ex);
+                    } else {
+                        return CompletableFuture.failedFuture(ex);
+                    }
+                })
+                .thenCompose(Function.identity())
+                .thenApply(response -> {
+                    postCall.accept(response);
+                    return response;
+                });
+    }
+
+    /**
+     * It tries to invoke the request again if there is any remaining attempt, or handle the situation
+     * when a threshold of maximum attempts was exceeded.
+     *
+     * @param response  a failed response or <b>NULL</b>.
+     * @param throwable a thrown exception or <b>NULL</b>.
+     * @return a new completable future with a next attempt, or a failed response/exception in a case
+     * of exceeded attempts.
+     */
+    private CompletableFuture<HttpResponse<Optional<JsonNode>>> attemptRetry(
+            HttpResponse<Optional<JsonNode>> response, Throwable throwable) {
+        if (attempts.get() < DEFAULT_MAX_ATTEMPTS) {
+            LOGGER.warn("Retrying: attempt={} path={}", attempts.get() + 1, response.request().uri());
+            return CompletableFuture.supplyAsync(() -> sendAsync(response.request()), executor)
+                    .thenCompose(Function.identity());
+        } else {
+            return handleRetryExceeded(response, throwable);
+        }
+    }
+
+    /**
+     * Defines the handler for an exceeded retry attempts. If the last attempt failed because of
+     * an exception then throw it immediately. However, if the attempt failed on a regular response and
+     * status code, them there are two possible behaviors based on the property {@link #DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED }.
+     * <ul>
+     *     <li><b>TRUE</b> when {@link #DEFAULT_MAX_ATTEMPTS} is exceeded then an exception is thrown</li>
+     *     <li><b>FALSE</b> when {@link #DEFAULT_MAX_ATTEMPTS} is exceeded then the latest {@link HttpResponse}
+     *     is returned</li>
+     * </ul>
+     *
+     * @param response the very latest response object
+     * @return a new completable future with a completed or failed state
+     * depending on {@link #DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED }
+     */
+    private CompletableFuture<HttpResponse<Optional<JsonNode>>> handleRetryExceeded(
+            HttpResponse<Optional<JsonNode>> response, Throwable throwable) {
+
+        if (throwable != null || DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED) {
+            Throwable ex = throwable == null
+                    ? new RuntimeException("Retries exceeded: status-code=" + response.statusCode())
+                    : throwable;
+
+            return CompletableFuture.failedFuture(ex);
+        } else {
+            return CompletableFuture.completedFuture(response);
+        }
     }
 
     private String stringify(HttpRequest request) {
@@ -344,7 +447,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                         return Optional.of(json(str));
                     } catch (Exception e) {
                         if (!isBlank(str)) {
-                            return Optional.of(json("{\"message\":\""+escapeEcmaScript(str)+"\"}"));
+                            return Optional.of(json("{\"message\":\"" + escapeEcmaScript(str) + "\"}"));
                         }
                         return Optional.empty();
                     }
@@ -357,19 +460,8 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return clone;
     }
 
-    private static void renewExecutor() {
-        if (executor.isShutdown()) {
-            executor = executor();
-            CLIENT.executor(executor);
-        }
-    }
-
     public void close() {
         executor.shutdown();
-    }
-
-    private static ExecutorService executor() {
-        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
     }
 
 }

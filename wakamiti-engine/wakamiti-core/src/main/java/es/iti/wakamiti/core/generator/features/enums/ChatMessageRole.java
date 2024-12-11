@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.core.generator.features.enums;
 
+
 /**
  * see {@link es.iti.wakamiti.core.generator.features.model.ChatMessage} documentation.
  */

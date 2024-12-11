@@ -18,14 +18,14 @@
 
 
     <artifactId>cucumber-exporter-wakamiti-plugin</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
 
     <name>[Wakamiti Plugin] Cucumber Exporter</name>
     <description>Cucumber JSON generator for Wakamiti results</description>
     <inceptionYear>2022</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.7.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.1</wakamiti-engine.version>
     </properties>
 
     <dependencies>

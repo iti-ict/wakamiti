@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [1.5.0] - 2024-12-11
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [1.4.0] - 2024-09-09
 
 ### Added
