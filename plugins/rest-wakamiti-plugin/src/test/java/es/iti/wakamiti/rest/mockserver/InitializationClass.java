@@ -23,7 +23,7 @@ public class InitializationClass implements PluginExpectationInitializer {
     @Override
     public void initializeExpectations(MockServerClient mockServerClient) {
         try {
-            prepare(mockServerClient, "server", mime -> true);
+            prepare(mockServerClient, "wakamiti/server", mime -> true);
             LOGGER.debug("MockServer started in port: {}", mockServerClient.getPort());
         } catch (IOException e) {
             throw new RuntimeException(e);

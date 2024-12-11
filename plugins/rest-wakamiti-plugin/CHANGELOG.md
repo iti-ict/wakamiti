@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.8.1] - 2024-12-12
+
+### Fixed
+- Missing `com.google.guava:failureaccess` runtime dependency in the maven plugin.
+
+
 ## [2.8.0] - 2024-12-11
 
 ### Changed
