@@ -110,6 +110,19 @@ database:
 ```
 
 
+### `database.autotrim`
+- Type: `boolean`
+- Default: `false`
+
+Sets whether spaces are ignored in comparisons.
+
+Example:
+```yaml
+database:
+  autotrim: true
+```
+
+
 ### `database.{alias}...`
 
 Set the JDBC connection parameters and/or metadata of a database identified by an alias. You can establish as many named
@@ -127,6 +140,7 @@ database:
       metadata:
         schema: TESTDB1
         catalog: TESTCAT1
+      autotrim: true
     db2:
       connection:
         url: jdbc:mysql://other.host:3306/test
@@ -203,19 +217,6 @@ Example:
 ```yaml
 database:
   enableCleanupUponCompletion: "true"
-```
-
-
-### `database.autotrim`
-- Type: `boolean`
-- Default: `false`
-
-Sets whether spaces are ignored in comparisons.
-
-Example:
-```yaml
-database:
-  autotrim: true
 ```
 
 

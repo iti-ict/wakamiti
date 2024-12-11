@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -55,7 +54,7 @@ public class DatabaseStepContributorTest {
     @BeforeClass
     public static void setup() throws SQLException, FileNotFoundException {
         h2 = DriverManager.getConnection(URL, USER, PASS);
-        RunScript.execute(h2, new FileReader("src/test/resources/db/create-schema.sql"));
+        RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/create-schema.sql"));
     }
 
     @AfterClass
@@ -68,12 +67,12 @@ public class DatabaseStepContributorTest {
         contributor = new DatabaseStepContributor();
         configContributor = new DatabaseConfigContributor();
 
-        RunScript.execute(h2, new FileReader("src/test/resources/db/dml.sql"));
+        RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/dml.sql"));
     }
 
     @After
     public void finish() throws SQLException, FileNotFoundException {
-        RunScript.execute(h2, new FileReader("src/test/resources/db/clean.sql"));
+        RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/clean.sql"));
         contributor.releaseConnection();
     }
 
@@ -249,8 +248,6 @@ public class DatabaseStepContributorTest {
         assertThat((ArrayNode) result).isNotEmpty().hasSize(1);
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "first_name")).asText())
                 .isEqualTo("Rosa");
-//        assertThat(((ArrayNode) result).get(0).get(db.column(table, "second_name")).asText())
-//                .isEqualTo("null");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "active")).asText())
                 .isEqualTo("true");
         assertThat(((ArrayNode) result).get(0).get(db.column(table, "birth_date")).asText())
@@ -489,8 +486,6 @@ public class DatabaseStepContributorTest {
                 .isEqualTo("Puio");
         assertThat(inserted.get(1).get(db.column(table, "active")).asText())
                 .isEqualTo("true");
-//        assertThat(inserted.get(1).get(db.column(table, "birth_date")).asText())
-//                .isEqualTo("null");
 
         try (Select<String[]> select = db.select("SELECT * FROM client").get(DatabaseHelper::format)) {
             List<String[]> result = select.stream().collect(Collectors.toList());
@@ -1310,8 +1305,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -1320,7 +1314,7 @@ public class DatabaseStepContributorTest {
                                     "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
-                            db.column(table, "second_name")));
+                            db.column(table, "second_name"));
             throw new WakamitiException();
         }
     }
@@ -1430,8 +1424,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -1440,7 +1433,7 @@ public class DatabaseStepContributorTest {
                                     "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
                                     "and others were not expected:" + System.lineSeparator() +
                                     "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
-                            db.column(table, "second_name")));
+                            db.column(table, "second_name"));
             throw new WakamitiException();
         }
     }
@@ -2330,7 +2323,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -2347,7 +2340,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "second_name"),
                             db.column(table, "active"),
                             db.column(table, "birth_date"),
-                            db.column(table, "creation")));
+                            db.column(table, "creation"));
             throw new WakamitiException();
         }
     }
@@ -2507,8 +2500,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -2523,7 +2515,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
-                            db.column(table, "birth_date")));
+                            db.column(table, "birth_date"));
             throw new WakamitiException();
         }
     }
@@ -2941,7 +2933,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         // Act
         contributor.assertXLSFileExists(file);
@@ -2964,7 +2956,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         // Act
         contributor.assertXLSFileExists(file);
@@ -2986,7 +2978,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -2997,8 +2989,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -3015,7 +3006,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "second_name"),
                             db.column(table, "active"),
                             db.column(table, "birth_date"),
-                            db.column(table, "creation")));
+                            db.column(table, "creation"));
             throw new WakamitiException();
         }
     }
@@ -3032,7 +3023,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data3.xlsx");
+        File file = resource("wakamiti/data3.xlsx");
 
         try {
             // Act
@@ -3065,7 +3056,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         // Act
         contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
@@ -3088,7 +3079,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         // Act
         contributor.assertXLSFileExistsAsync(file, Duration.ofSeconds(1));
@@ -3110,7 +3101,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -3121,8 +3112,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -3139,7 +3129,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "second_name"),
                             db.column(table, "active"),
                             db.column(table, "birth_date"),
-                            db.column(table, "creation")));
+                            db.column(table, "creation"));
             throw new WakamitiException();
         }
     }
@@ -3156,7 +3146,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data3.xlsx");
+        File file = resource("wakamiti/data3.xlsx");
 
         try {
             // Act
@@ -3190,7 +3180,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data2.xlsx");
+        File file = resource("wakamiti/data2.xlsx");
 
         // Act
         contributor.assertXLSFileNotExists(file);
@@ -3211,7 +3201,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -3247,7 +3237,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -3283,7 +3273,7 @@ public class DatabaseStepContributorTest {
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
 
-        File file = resource("data2.xlsx");
+        File file = resource("wakamiti/data2.xlsx");
 
         // Act
         contributor.assertXLSFileNotExistsAsync(file, Duration.ofSeconds(1));
@@ -3304,7 +3294,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -3340,7 +3330,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.xlsx");
+        File file = resource("wakamiti/data1.xlsx");
 
         try {
             // Act
@@ -3374,7 +3364,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileExists(file, "client");
@@ -3397,7 +3387,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileExists(file, "client");
@@ -3419,7 +3409,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act
@@ -3430,8 +3420,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format(
-                            "[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -3448,7 +3437,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "second_name"),
                             db.column(table, "active"),
                             db.column(table, "birth_date"),
-                            db.column(table, "creation")));
+                            db.column(table, "creation"));
             throw new WakamitiException();
         }
     }
@@ -3465,7 +3454,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data3.csv");
+        File file = resource("wakamiti/data3.csv");
 
         try {
             // Act
@@ -3498,7 +3487,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
@@ -3521,7 +3510,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileExistsAsync(file, "client", Duration.ofSeconds(1));
@@ -3543,7 +3532,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act
@@ -3554,7 +3543,7 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage(String.format("[The closest record] " + System.lineSeparator() +
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
                                     "Expecting actual:" + System.lineSeparator() +
                                     "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
                                     "to contain exactly (and in same order):" + System.lineSeparator() +
@@ -3571,7 +3560,7 @@ public class DatabaseStepContributorTest {
                             db.column(table, "second_name"),
                             db.column(table, "active"),
                             db.column(table, "birth_date"),
-                            db.column(table, "creation")));
+                            db.column(table, "creation"));
             throw new WakamitiException();
         }
     }
@@ -3588,7 +3577,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data3.csv");
+        File file = resource("wakamiti/data3.csv");
 
         try {
             // Act
@@ -3622,7 +3611,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileNotExists(file, "client");
@@ -3643,7 +3632,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act
@@ -3679,7 +3668,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act
@@ -3714,7 +3703,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         // Act
         contributor.assertCSVFileNotExistsAsync(file, "client", Duration.ofSeconds(1));
@@ -3735,7 +3724,7 @@ public class DatabaseStepContributorTest {
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act
@@ -3771,7 +3760,7 @@ public class DatabaseStepContributorTest {
         configContributor.configurer().configure(contributor, config);
         createContext(config);
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-        File file = resource("data1.csv");
+        File file = resource("wakamiti/data1.csv");
 
         try {
             // Act

@@ -19,9 +19,9 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 
 @AnnotatedConfiguration({
         @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
+        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/wakamiti/features"),
         @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti.json"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = JMeterConfigContributor.JTL_PATH, value = "target/wakamiti-it.jtl"),
         @Property(key = JMeterConfigContributor.BASE_URL, value = "http://localhost:8888/api"),
         @Property(key = "jmeter.host", value = "http://localhost:8888"),
@@ -42,7 +42,7 @@ public class JMeterTest {
     @BeforeClass
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
-        prepare(client, "server", media -> true);
+        prepare(client, "wakamiti/server", media -> true);
     }
 
 
