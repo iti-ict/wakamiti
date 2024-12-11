@@ -24,8 +24,8 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-postgres.feature"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/database-postgres.feature"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = "database.connection.url", value = "jdbc:postgresql://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),
         @Property(key = "database.connection.password", value = "pass"),
@@ -40,7 +40,7 @@ public class PostgresqlDatabaseTest {
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
-            .withInitScript("db/create-schema-postgres.sql")
+            .withInitScript("wakamiti/db/create-schema-postgres.sql")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))

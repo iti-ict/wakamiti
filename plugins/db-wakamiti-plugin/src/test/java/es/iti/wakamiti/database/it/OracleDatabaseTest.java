@@ -29,8 +29,8 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-oracle.feature"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/database-oracle.feature"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = "database.connection.url", value = "jdbc:oracle:thin:@localhost:1234/test"),
         @Property(key = "database.connection.username", value = "tester"),
         @Property(key = "database.connection.password", value = "pass"),
@@ -45,7 +45,7 @@ public class OracleDatabaseTest {
             .withDatabaseName("test")
             .withUsername("tester")
             .withPassword("pass")
-            .withInitScript("db/create-schema-oracle.sql")
+            .withInitScript("wakamiti/db/create-schema-oracle.sql")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(freePort()), new ExposedPort(8080, InternetProtocol.TCP)),

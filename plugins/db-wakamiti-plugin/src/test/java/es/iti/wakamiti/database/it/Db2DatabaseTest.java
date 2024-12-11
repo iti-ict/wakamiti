@@ -24,8 +24,8 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-db2.feature"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/database-db2.feature"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = "database.connection.url", value = "jdbc:db2://localhost:1234/test"),
         @Property(key = "database.connection.username", value = "user"),
         @Property(key = "database.connection.password", value = "pass"),
@@ -45,7 +45,7 @@ public class Db2DatabaseTest {
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
-            .withInitScript("db/create-schema-db2.sql")
+            .withInitScript("wakamiti/db/create-schema-db2.sql")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
