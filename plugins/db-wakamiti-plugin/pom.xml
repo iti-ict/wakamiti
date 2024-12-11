@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.3.0</version>
+    <version>3.4.0</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -29,7 +29,7 @@
         <h2.version>2.2.224</h2.version>
         <test.containers>1.19.5</test.containers>
 
-        <wakamiti-engine.version>2.7.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.1</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -55,10 +55,6 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>commons-io</groupId>-->
-<!--            <artifactId>commons-io</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
