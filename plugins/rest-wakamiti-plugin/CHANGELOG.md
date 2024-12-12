@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.8.2] - 2024-12-13
+
+### Fixed
+- Comparing different scaled numerical json elements.
+
+
 ## [2.8.1] - 2024-12-12
 
 ### Fixed

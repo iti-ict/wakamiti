@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.github.fge.jackson.JsonNumEquivalence;
 import io.restassured.http.ContentType;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.rest.MatchMode;
@@ -122,7 +123,7 @@ public class JsonXmlDiff {
             compareJsonArray(matchMode, expectedNode, actualNode, prefix, errors);
         } else if (expectedNode.isContainerNode()) {
             compareJsonObject(matchMode, expectedNode, actualNode, prefix, errors);
-        } else if (expectedNode.isValueNode() && !expectedNode.equals(actualNode)) {
+        } else if (expectedNode.isValueNode() && !new JsonNumEquivalence().equivalent(expectedNode, actualNode)) {
             errors.add(
                     segmentExpected + ": '" + expectedNode.asText() +
                             "', actual: '" + actualNode.asText() + "'"
