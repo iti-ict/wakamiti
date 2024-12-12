@@ -27,6 +27,8 @@ module es.iti.wakamiti.rest {
     requires xml.path;
     requires org.apache.commons.lang3;
     requires org.apache.commons.io;
+    requires com.google.common;
+    requires jackson.coreutils.equivalence;
 
     uses ConfigContributor;
     uses StepContributor;
