@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.4.1] - 2024-12-13
+
+### Fixed
+- Prevent trim when column is a date.
+
+
 ## [3.4.0] - 2024-12-11
 
 ### Changed

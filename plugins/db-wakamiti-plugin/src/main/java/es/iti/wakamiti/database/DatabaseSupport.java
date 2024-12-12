@@ -330,7 +330,8 @@ public class DatabaseSupport {
     protected long countBy(String table, String[] columns, Object[] values) {
         Database db = Database.from(connection());
         return countBy(db, db.parser().sqlSelectCountFrom(db.table(table),
-                Stream.of(columns).map(c -> db.column(db.table(table), c)).toArray(String[]::new), values).toString());
+                Stream.of(columns).parallel().map(c -> db.column(db.table(table), c))
+                        .toArray(String[]::new), values).toString());
     }
 
     /**
@@ -369,7 +370,8 @@ public class DatabaseSupport {
      */
     protected Optional<Map<String, String>> similarBy(String table, String[] columns, Object[] values) {
         Database db = Database.from(connection());
-        columns = Stream.of(columns).map(c -> db.parser().format(db.column(db.table(table), c))).toArray(String[]::new);
+        columns = Stream.of(columns).parallel().map(c -> db.parser().format(db.column(db.table(table), c)))
+                .toArray(String[]::new);
 
         String sql = db.parser().sqlSelectFrom(db.parser().format(db.table(table)), columns).toString();
         try (Select<String[]> select = db.select(sql).get(DatabaseHelper::format)) {
@@ -770,6 +772,11 @@ public class DatabaseSupport {
         }
     }
 
+    private String format(String table, String column) {
+        Database db = Database.from(connection());
+        return db.parser().format(db.column(table, column));
+    }
+
     /**
      * An adapter class for pre-cleanup operations in SQL statements.
      */
@@ -790,7 +797,7 @@ public class DatabaseSupport {
             Database db = Database.from(connection());
             String table = db.table(delete.getTable().getName());
             delete.setTable(new Table(db.parser().format(table)));
-            db.parser().formatColumns(delete.getWhere(), column -> db.parser().format(db.column(table, column)));
+            db.parser().formatColumns(delete.getWhere(), column -> format(table, column));
 
             DataSet dataSet = db.parser()
                     .toSelect(delete)
@@ -812,13 +819,13 @@ public class DatabaseSupport {
             Database db = Database.from(connection());
             String table = db.table(update.getTable().getName());
             update.setTable(new Table(db.parser().format(table)));
-            db.parser().formatColumns(update.getWhere(), column -> db.parser().format(db.column(table, column)));
+            db.parser().formatColumns(update.getWhere(), column -> format(table, column));
 
             update.getUpdateSets().stream().flatMap(set -> set.getColumns().stream()).forEach(c ->
-                    db.parser().formatColumns(c, column -> db.parser().format(db.column(table, column)))
+                    db.parser().formatColumns(c, column -> format(table, column))
             );
             update.getUpdateSets().stream().flatMap(set -> set.getValues().stream()).forEach(v ->
-                    db.parser().formatColumns(v, column -> db.parser().format(db.column(table, column)))
+                    db.parser().formatColumns(v, column -> format(table, column))
             );
 
             DataSet dataSet = db.parser()
@@ -860,8 +867,7 @@ public class DatabaseSupport {
             Database db = Database.from(connection());
             String table = db.table(insert.getTable().getName());
             insert.setTable(new Table(db.parser().format(table)));
-            db.parser().formatColumns(insert.getColumns(),
-                    column -> db.parser().format(db.column(table, column)));
+            db.parser().formatColumns(insert.getColumns(), column -> format(table, column));
 
             String[] columns;
             Object[][] values;

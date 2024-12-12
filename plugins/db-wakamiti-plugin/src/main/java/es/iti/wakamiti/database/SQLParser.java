@@ -331,10 +331,10 @@ public class SQLParser {
      */
     private EqualsTo equalsTo(Column column, Expression expression) {
         EqualsTo exp = new EqualsTo();
-        exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
         if (expression instanceof StringValue && isDateOrDateTime(((StringValue) expression).getValue())) {
             expression = dateCast(((StringValue) expression).getValue());
         }
+        exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
         exp.setRightExpression(expression);
         return exp;
     }
