@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 - Prevent trim when column is a date.
+- Ignore comments in sql scripts. (#333)
 
 
 ## [3.4.0] - 2024-12-11

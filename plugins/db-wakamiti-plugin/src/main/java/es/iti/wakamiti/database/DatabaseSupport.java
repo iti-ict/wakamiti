@@ -202,48 +202,38 @@ public class DatabaseSupport {
      */
     protected List<Map<String, String>> executeScript(String script, boolean cleanupUponCompletion) {
         List<Map<String, String>> results = new LinkedList<>();
-        Stream.of(script.split(unquotedRegex(";+")))  // split unquoted ';'
-                .map(String::trim).filter(s -> !s.isEmpty())
-                .forEach(sentence -> {
-                    try {
-                        if (cleanupUponCompletion) {
-                            SQLParser.parseStatement(sentence).accept(new PreCleanUpStatementVisitorAdapter());
-                        }
-                        Database db = Database.from(connection());
-                        try (Update update = db.update(sentence).execute()) {
-                            Statement statement = SQLParser.parseStatement(sentence);
+        try {
+            SQLParser.parseStatements(script).forEach(statement -> {
+                if (cleanupUponCompletion) {
+                    statement.accept(new PreCleanUpStatementVisitorAdapter());
+                }
+                Database db = Database.from(connection());
+                try (Update update = db.update(statement.toString()).execute()) {
+                    PostCleanUpStatementVisitorAdapter adapter = new PostCleanUpStatementVisitorAdapter();
+                    statement.accept(adapter);
+                    Optional<DataSet> result = adapter.getResult();
 
-                            PostCleanUpStatementVisitorAdapter adapter = new PostCleanUpStatementVisitorAdapter();
-                            statement.accept(adapter);
-                            Optional<DataSet> result = adapter.getResult();
-
-                            if (result.isPresent() && cleanupUponCompletion
-                                    && statement instanceof net.sf.jsqlparser.statement.insert.Insert) {
-                                cleanUpOperations.addFirst(() -> {
-                                    try (DataSet dataSet = result.get().copy()) {
-                                        deleteDataSet(dataSet, false);
-                                    } catch (IOException e) {
-                                        LOGGER.error(ERROR_CLOSING_DATASET, e);
-                                    }
-                                });
+                    if (result.isPresent() && cleanupUponCompletion
+                            && statement instanceof net.sf.jsqlparser.statement.insert.Insert) {
+                        cleanUpOperations.addFirst(() -> {
+                            try (DataSet dataSet = result.get().copy()) {
+                                deleteDataSet(dataSet, false);
+                            } catch (IOException e) {
+                                LOGGER.error(ERROR_CLOSING_DATASET, e);
                             }
-                            result.map(DatabaseHelper::read).ifPresent(list ->
-                                    results.addAll(
-                                            list.stream().map(m -> m.entrySet().stream().collect(
-                                                            MapUtils.toMap(DatabaseHelper::toString)))
-                                                    .collect(Collectors.toList())
-                                    ));
-                        }
-                    } catch (JSQLParserException e) {
-                        if (enableCleanupUponCompletion) {
-                            throw new WakamitiException(
-                                    message("Cannot parse script. Please, disable the '{}' property",
-                                            DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION), e);
-                        } else {
-                            LOGGER.error("Cannot retrieve statement results", e);
-                        }
+                        });
                     }
-                });
+                    result.map(DatabaseHelper::read).ifPresent(list ->
+                            results.addAll(
+                                    list.stream().map(m -> m.entrySet().stream().collect(
+                                                    MapUtils.toMap(DatabaseHelper::toString)))
+                                            .collect(Collectors.toList())
+                            ));
+                }
+            });
+        } catch (JSQLParserException e) {
+            throw new WakamitiException("Cannot retrieve statement results", e);
+        }
         return results;
     }
 
