@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.4.2] - 2024-12-17
+
+### Fixed
+- Each time it is checked in an asynchronous step, the number of records is set rather than incremented. (#335)
+
+
 ## [3.4.1] - 2024-12-13
 
 ### Fixed

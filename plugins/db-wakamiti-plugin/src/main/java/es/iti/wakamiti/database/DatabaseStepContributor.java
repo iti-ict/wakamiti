@@ -1616,8 +1616,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             args = {"table:word", "matcher:long-assertion", "duration:duration"})
     public void assertRowCountByClauseAsync(String table, Assertion<Long> matcher, Duration duration, Document clause) {
         AtomicLong result = new AtomicLong(0);
-        assertAsync(() -> matcher.test(result.addAndGet(countBy(table, clause.getContent()))), duration, () ->
-                Assertions.fail(message(
+        assertAsync(() -> matcher.test(result.updateAndGet(x -> countBy(table, clause.getContent()))), duration,
+                () -> Assertions.fail(message(
                         ERROR_ASSERT_SOME_RECORD_EXPECTED,
                         GIVEN_WHERE_CLAUSE,
                         Database.from(connection()).table(table),
