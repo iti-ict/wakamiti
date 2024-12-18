@@ -288,6 +288,34 @@ public class TestPlanFactory {
         );
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testScenarioOutlineWhenNoExamplesTableWithError() {
+        try {
+            runPlan(
+                    "src/test/resources/features/failure/outline.feature",
+                    "error.json"
+            );
+        } catch (Exception e) {
+            assertThat(e).hasMessage("Example table is needed at scenario: src/test/resources/features/failure/outline.feature[7,3].");
+            throw e;
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testPlanWhenParserError() {
+        try {
+            runPlan(
+                    "src/test/resources/features/failure/parse.feature",
+                    "error.json"
+            );
+        } catch (Exception e) {
+            assertThat(e)
+                    .hasMessageContaining("parse.feature': Parser errors:")
+                    .hasMessageContaining("(1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got '```gherkin'");
+            throw e;
+        }
+    }
+
     private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
         StringBuilder leading = new StringBuilder();
         for (int i = 0; i < level; i++) {

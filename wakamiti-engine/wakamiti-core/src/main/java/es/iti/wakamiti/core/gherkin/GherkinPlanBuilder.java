@@ -214,6 +214,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     ) {
         PlanNodeBuilder node = newScenarioOutlineNode(scenarioOutline, location, parentNode);
         Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
+        if (scenarioOutline.getExamples().isEmpty()) {
+            throw new WakamitiException("Example table is needed at scenario: {}.", node.source());
+        }
         for (Examples examples : scenarioOutline.getExamples()) {
             List<PlanNodeBuilder> scenarios = createScenariosFromExamples(
                     scenarioOutline,
