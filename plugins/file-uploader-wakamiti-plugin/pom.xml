@@ -16,7 +16,7 @@
     <name>[Wakamiti Plugin] File Uploader</name>
 
     <properties>
-        <wakamiti-engine.version>2.7.1</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
     </properties>
 
     <dependencies>
