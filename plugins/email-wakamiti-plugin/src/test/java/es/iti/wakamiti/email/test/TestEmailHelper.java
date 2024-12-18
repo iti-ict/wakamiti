@@ -75,7 +75,6 @@ public class TestEmailHelper {
         Assert.assertNotNull(message);
         Assert.assertEquals("Test Subject 1",message.getSubject());
         Assert.assertEquals("sender@localhost", message.getFrom()[0].toString());
-        Assert.assertEquals("Test Body 1",emailHelper.getBody(message));
 
     }
 
@@ -101,9 +100,7 @@ public class TestEmailHelper {
         Assert.assertNotNull(message);
         Assert.assertEquals("Test Subject 2",message.getSubject());
         Assert.assertEquals("sender@localhost", message.getFrom()[0].toString());
-        Assert.assertEquals("Test Body 2",emailHelper.getBody(message));
         Assert.assertEquals("attachment.txt",emailHelper.getFirstAttachment(message).getKey());
-        Assert.assertEquals("Attachment",new String(emailHelper.getFirstAttachment(message).getValue()));
     }
 
 

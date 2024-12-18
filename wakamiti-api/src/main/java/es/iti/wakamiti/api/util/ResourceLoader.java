@@ -460,8 +460,8 @@ public class ResourceLoader {
                                 uri.toString(), relative(startPath, uri.toString()), parser.parse(uri.toURL().openStream(), charset)
                         )
                 );
-            } catch (IOException e) {
-                LOGGER.debug("{!error} Error discovering resource: {}", e.getMessage(), e);
+            } catch (Exception e) {
+                throw new WakamitiException("Error discovering resource '{}': {}", uri, e.getMessage(), e);
             }
         }
     }
@@ -512,8 +512,8 @@ public class ResourceLoader {
                                 parser.parse(stream, charset)
                         )
                 );
-            } catch (IOException e) {
-                LOGGER.error(e.toString(), e);
+            } catch (Exception e) {
+                throw new WakamitiException("Error discovering resource '{}': {}", file, e.getMessage(), e);
             }
         }
 
@@ -592,9 +592,8 @@ public class ResourceLoader {
                     .filter(it -> !it.endsWith("/"))
                     .map(URI::create)
                     .collect(Collectors.toSet());
-        } catch (IOException e) {
-            LOGGER.error("{error}", e.getMessage(), e);
-            return Collections.emptySet();
+        } catch (Exception e) {
+            throw new WakamitiException("Error loading resource '{}': {}", classPath, e.getMessage(), e);
         }
     }
 
