@@ -8,21 +8,22 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.xray.internal.WakamitiXRayException;
 import org.slf4j.Logger;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
 import java.time.Duration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class BaseApi {
 
     public static final String APPLICATION_JSON = "application/json";
+    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
     private final URL baseURL;
     private final String authorization;
@@ -102,7 +103,6 @@ public class BaseApi {
         }
     }
 
-
     protected JsonNode post(String uri, String payload) {
         try {
             return mapper.readTree(post(uri, payload, APPLICATION_JSON));
@@ -124,6 +124,10 @@ public class BaseApi {
         return patch(uri, payload, APPLICATION_JSON);
     }
 
+
+    protected void post(String uri, File file) {
+        send(request(uri, file), "");
+    }
 
     protected String post(String uri, String payload, String contentType) {
         return send(request("POST", uri, payload, contentType), payload);
@@ -154,6 +158,26 @@ public class BaseApi {
                 .header("Authorization", authorization)
                 .header("Content-Type", contentType)
                 .header("Accept", APPLICATION_JSON)
+                .build();
+    }
+
+    private HttpRequest request(String uri, File file) {
+        String boundary = "----WebKitFormBoundary" + UUID.randomUUID().toString().substring(0, 16);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        try {
+            writeFormData(outputStream, boundary, file, Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return HttpRequest.newBuilder()
+                .uri(url(uri))
+                .header("Authorization", authorization)
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .header("Accept", APPLICATION_JSON)
+                .header("X-Atlassian-Token", "no-check")
+                .POST(HttpRequest.BodyPublishers.ofByteArray(outputStream.toByteArray()))
                 .build();
     }
 
@@ -205,5 +229,22 @@ public class BaseApi {
             criteria.add("@." + args[i] + "=='" + args[i + 1] + "'");
         }
         return "$.value[?(" + String.join(" && ", criteria) + ")]";
+    }
+
+
+    private static void writeFormData(ByteArrayOutputStream outputStream, String boundary, File file, byte[] fileContent) throws IOException {
+        String fileName = file.getName();
+
+        outputStream.write(("--" + boundary + "\r\n").getBytes());
+        outputStream.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName + "\"\r\n").getBytes());
+        outputStream.write(("Content-Type: application/octet-stream\r\n").getBytes());
+        outputStream.write(("Content-Transfer-Encoding: binary\r\n").getBytes());
+        outputStream.write(("\r\n").getBytes());  // Línea en blanco
+
+        outputStream.write(fileContent);
+
+        outputStream.write(("\r\n").getBytes());
+
+        outputStream.write(("--" + boundary + "--\r\n").getBytes());
     }
 }
