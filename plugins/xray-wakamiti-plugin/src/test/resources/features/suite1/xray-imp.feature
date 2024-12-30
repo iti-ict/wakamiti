@@ -19,6 +19,6 @@ Feature: XRay integration feature
 
 
   @ID-s1-4
-  Scenario: Scenario AAAX
+  Scenario: Scenario AAAXX
     * this step do nothing
 
