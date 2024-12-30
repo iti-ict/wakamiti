@@ -16,21 +16,20 @@ import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.AzureApi;
 import es.iti.wakamiti.azure.api.model.*;
 import es.iti.wakamiti.azure.internal.Mapper;
+import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 import org.slf4j.Logger;
 
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
 import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -43,7 +42,7 @@ public class AzureSynchronizer implements EventObserver {
     public static final String GHERKIN_TYPE_FEATURE = "feature";
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
-    private final Set<Path> attachments = new LinkedHashSet<>();
+    private final Set<String> attachments = new LinkedHashSet<>();
     private boolean enabled;
     private URL baseURL;
     private String organization;
@@ -51,7 +50,6 @@ public class AzureSynchronizer implements EventObserver {
     private String version;
     private TestPlan testPlan;
     private String suiteBase;
-    private String tag;
     private boolean testCasePerFeature;
     private boolean createItemsIfAbsent;
     private boolean removeOrphans;
@@ -103,10 +101,6 @@ public class AzureSynchronizer implements EventObserver {
         this.authenticator = client -> client.tokenAuth(token);
     }
 
-    public void tag(String tag) {
-        this.tag = tag;
-    }
-
     public void configuration(String configuration) {
         this.configuration = configuration;
     }
@@ -123,7 +117,7 @@ public class AzureSynchronizer implements EventObserver {
         this.removeOrphans = removeOrphans;
     }
 
-    public void attachments(Set<Path> attachments) {
+    public void attachments(Set<String> attachments) {
         this.attachments.addAll(attachments);
     }
 
@@ -174,7 +168,7 @@ public class AzureSynchronizer implements EventObserver {
         }
 
         if (Event.REPORT_OUTPUT_FILE_WRITTEN.equals(event.type())
-                && ((Path) event.data()).toString().endsWith(".html")) {
+                && attachments.stream().anyMatch(g -> Util.match((Path) event.data(), g))) {
             try {
                 LOGGER.info("Uploading attachments to Azure...");
                 uploadAttachment((Path) event.data());
@@ -199,7 +193,6 @@ public class AzureSynchronizer implements EventObserver {
         Mapper mapper = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase);
         List<TestCase> tests = mapper.mapTests(plan)
-                .filter(t -> isBlank(tag) || t.metadata().getTags().contains(tag))
                 .peek(t -> LOGGER.trace("Load test case: {}", t))
                 .peek(t -> t.suite().root(testPlan.rootSuite()))
                 .collect(Collectors.toList());
@@ -223,8 +216,6 @@ public class AzureSynchronizer implements EventObserver {
                 .state(TestRun.Status.IN_PROGRESS)
                 .pointIds(testCases.stream().flatMap(t -> t.pointAssignments().stream().map(PointAssignment::id))
                         .collect(Collectors.toList()));
-        Optional.ofNullable(plan.getDescription()).map(d -> join(d, System.lineSeparator())).ifPresent(run::comment);
-        Optional.ofNullable(tag).map(Tag::new).map(List::of).ifPresent(run::tags);
         api().createRun(run);
         LOGGER.debug("Test run #{} ready to sync", run.id());
         testResults = api().getResults(run)
@@ -251,7 +242,7 @@ public class AzureSynchronizer implements EventObserver {
     }
 
     private void uploadAttachment(Path file) {
-        api().attachFile(run, Set.of(file));
+        api().attachFile(run, file);
         LOGGER.debug("Attachment '{}' uploaded", file.getFileName());
     }
 

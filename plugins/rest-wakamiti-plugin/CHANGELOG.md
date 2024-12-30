@@ -6,7 +6,25 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [2.8.2] - 2024-12-13
+
+### Fixed
+- Comparing different scaled numerical json elements.
+
+
+## [2.8.1] - 2024-12-12
+
+### Fixed
+- Missing `com.google.guava:failureaccess` runtime dependency in the maven plugin.
+
+
+## [2.8.0] - 2024-12-11
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
+## [2.7.0] - 2024-11-25
 
 ### Changed
 - Upgrade dependencies: `wakamiti-plugin-starter`

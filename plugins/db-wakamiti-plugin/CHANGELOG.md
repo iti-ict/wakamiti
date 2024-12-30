@@ -6,10 +6,35 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [3.4.2] - 2024-12-17
 
 ### Fixed
-- Connection error at startup when no configuration is provided. [#291]
+- Each time it is checked in an asynchronous step, the number of records is set rather than incremented. (#335)
+
+
+## [3.4.1] - 2024-12-13
+
+### Fixed
+- Prevent trim when column is a date.
+- Ignore comments in sql scripts. (#333)
+
+
+## [3.4.0] - 2024-12-11
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
+## [3.3.0] - 2024-12-02
+
+### Added
+- Auto trim configuration parameter.
+
+
+## [3.2.2] - 2024-11-25
+
+### Fixed
+- Connection error at startup when no configuration is provided. (#291)
 - `ConcurrentModificationException` at cleanup operation.
 
 
@@ -22,7 +47,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [3.2.0] - 2024-09-09
 
 ### Fixed
-- Row with all values set to null in xls file. [#267]
+- Row with all values set to null in xls file. (#267)
 - DateTime timezone issues.
 
 ### Added

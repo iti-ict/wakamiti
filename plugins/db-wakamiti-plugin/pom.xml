@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.2.2-SNAPSHOT</version>
+    <version>3.4.2</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -29,7 +29,7 @@
         <h2.version>2.2.224</h2.version>
         <test.containers>1.19.5</test.containers>
 
-        <wakamiti-engine.version>2.7.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -38,6 +38,11 @@
             <groupId>com.rubiconproject.oss</groupId>
             <artifactId>jchronic</artifactId>
             <version>0.2.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>4.8</version>
         </dependency>
 
         <dependency>
@@ -51,10 +56,6 @@
             <version>5.2.3</version>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.7</version>
@@ -62,12 +63,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>4.8</version>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -240,10 +235,8 @@
                             <arguments>
                                 <argument>run</argument>
                                 <argument>--rm</argument>
-                                <argument>-w</argument>
-                                <argument>/wakamiti/test-classes</argument>
                                 <argument>-v</argument>
-                                <argument>${project.build.directory}:/wakamiti</argument>
+                                <argument>${project.build.directory}/test-classes/wakamiti:/wakamiti</argument>
                                 <argument>-v</argument>
                                 <argument>${user.home}/.m2/repository:/repository</argument>
                                 <argument>--add-host=host.docker.internal:host-gateway</argument>
@@ -290,7 +283,7 @@
                                         <volumes>
                                             <bind>
                                                 <volume>
-                                                    ${project.build.directory}/test-classes/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql
+                                                    ${project.build.directory}/test-classes/wakamiti/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql
                                                 </volume>
                                             </bind>
                                         </volumes>
@@ -337,13 +330,12 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml
+                            <configurationFiles>${project.build.directory}/test-classes/wakamiti/wakamiti.yaml
                             </configurationFiles>
                             <logLevel>off</logLevel>
                             <properties>
-                                <workingDir>${project.build.directory}/test-classes</workingDir>
-                                <resourcePath>${project.build.directory}/test-classes</resourcePath>
+                                <workingDir>${project.build.directory}/test-classes/wakamiti</workingDir>
+                                <resourcePath>${project.build.directory}/test-classes/wakamiti</resourcePath>
                                 <tagFilter>launcher</tagFilter>
                                 <database.connection.url>jdbc:mysql://localhost:${database.port}/${database.name}
                                 </database.connection.url>
@@ -356,6 +348,11 @@
                         </configuration>
                         <dependencies>
                             <!-- Wakamiti plugins -->
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
                             <dependency>
                                 <groupId>mysql</groupId>
                                 <artifactId>mysql-connector-java</artifactId>

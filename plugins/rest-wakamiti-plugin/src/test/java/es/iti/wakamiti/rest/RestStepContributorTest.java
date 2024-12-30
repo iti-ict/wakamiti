@@ -4,14 +4,14 @@ package es.iti.wakamiti.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import io.restassured.RestAssured;
 import org.apache.xmlbeans.XmlObject;
 import org.junit.AfterClass;
@@ -65,7 +65,7 @@ public class RestStepContributorTest {
 
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
-    private static final String TOKEN_PATH = "data/token.txt";
+    private static final String TOKEN_PATH = "wakamiti/data/token.txt";
 
     private static final ClientAndServer client = startClientAndServer(PORT);
 
@@ -102,7 +102,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testWhenDefaultsWithSuccess() throws JsonProcessingException {
+    public void testWhenDefaultsWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -128,7 +128,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#setContentType(String)}
      */
     @Test
-    public void testSetContentTypeWithSuccess() throws JsonProcessingException {
+    public void testSetContentTypeWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -168,7 +168,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testJsonResponseWithSuccess() throws JsonProcessingException {
+    public void testJsonResponseWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -198,7 +198,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeGetSubject()} json response
      */
     @Test
-    public void testJsonResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
+    public void testJsonResponseWhenNullBodyWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -276,7 +276,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeGetSubject()} text response
      */
     @Test
-    public void testTextResponseWithSuccess() throws JsonProcessingException {
+    public void testTextResponseWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -306,7 +306,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeGetSubject()} text null response
      */
     @Test
-    public void testTextResponseWhenNullBodyWithSuccess() throws JsonProcessingException {
+    public void testTextResponseWhenNullBodyWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -331,7 +331,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testRequestParametersWithSuccess() throws JsonProcessingException {
+    public void testRequestParametersWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -360,7 +360,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testRequestParameterListWithSuccess() throws JsonProcessingException {
+    public void testRequestParameterListWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -389,7 +389,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testQueryParametersWithSuccess() throws JsonProcessingException {
+    public void testQueryParametersWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -419,7 +419,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testQueryParameterListWithSuccess() throws JsonProcessingException {
+    public void testQueryParameterListWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -449,7 +449,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testPathParametersWithSuccess() throws JsonProcessingException {
+    public void testPathParametersWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -477,7 +477,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testPathParameterListWithSuccess() throws JsonProcessingException {
+    public void testPathParameterListWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -531,7 +531,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testHeadersWithSuccess() throws JsonProcessingException {
+    public void testHeadersWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -561,7 +561,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testHeaderListWithSuccess() throws JsonProcessingException {
+    public void testHeaderListWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -660,7 +660,7 @@ public class RestStepContributorTest {
      */
     @Test
     public void testSetBearerAuthClientWithSuccess()
-            throws NoSuchFieldException, IllegalAccessException, JsonProcessingException, MalformedURLException {
+            throws NoSuchFieldException, IllegalAccessException, MalformedURLException {
         // prepare
         String token = "1234567890";
 
@@ -698,7 +698,7 @@ public class RestStepContributorTest {
      */
     @Test
     public void testSetBearerAuthClientWhenScopeWithSuccess()
-            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
@@ -776,7 +776,7 @@ public class RestStepContributorTest {
      */
     @Test
     public void testSetBearerAuthPasswordWithSuccess()
-            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
@@ -817,7 +817,7 @@ public class RestStepContributorTest {
      */
     @Test
     public void testSetBearerAuthPasswordWhenScopeWithSuccess()
-            throws MalformedURLException, NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+            throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         // prepare
         String token = "1234567890";
 
@@ -898,10 +898,8 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testSetNoneAuthWithSuccess() throws MalformedURLException, JsonProcessingException {
+    public void testSetNoneAuthWithSuccess() throws MalformedURLException {
         // prepare
-        String token = "1234567890";
-
         contributor.oauth2Provider.configuration().url(new URL(BASE_URL.concat("/token")));
         contributor.oauth2Provider.configuration().clientId("WEB_APP");
         contributor.oauth2Provider.configuration().clientSecret("ytv8923yy9234y96");
@@ -918,7 +916,6 @@ public class RestStepContributorTest {
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
-        //contributor.setBearerAuth(token);
         contributor.setHeader("Authorization", "loquesea");
 
         // act
@@ -1083,7 +1080,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testWhenAuthHeaderWithSuccess() throws JsonProcessingException {
+    public void testWhenAuthHeaderWithSuccess() {
         // prepare
         String token = "1234567890";
 
@@ -1267,7 +1264,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testSetAttachedFileWhenFileWithSuccess() throws JsonProcessingException {
+    public void testSetAttachedFileWhenFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1321,7 +1318,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testWithFormParametersWithSuccess() throws JsonProcessingException {
+    public void testWithFormParametersWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1355,7 +1352,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executeGetSubject()}
      */
     @Test
-    public void testWithFormParametersListWithSuccess() throws JsonProcessingException {
+    public void testWithFormParametersListWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1383,37 +1380,11 @@ public class RestStepContributorTest {
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
     }
 
-//    /**
-//     * Test {@link RestStepContributor#setSubject(String)} and
-//     * {@link RestStepContributor#executeDeleteSubject()}
-//     */
-//    @Test
-//    public void testDeleteSubjectWithSuccess() {
-//        // prepare
-//        mockServer(
-//                request()
-//                        .withMethod("DELETE")
-//                        .withPath("/10")
-//                ,
-//                response()
-//                        .withStatusCode(204)
-//                        .withContentType(MediaType.APPLICATION_XML)
-//        );
-//
-//        // act
-//        contributor.setSubject("/10");
-//        XmlObject result = (XmlObject) contributor.executeDeleteSubject();
-//
-//        // check
-//        assertThat(result).isNotNull();
-//        assertThat(XmlUtils.readStringValue(result, "statusCode")).isEqualTo("204");
-//    }
-
     /**
      * Test {@link RestStepContributor#executeDeleteDataUsingDocument(Document)}
      */
     @Test
-    public void testDeleteDataWhenDocumentWithSuccess() throws JsonProcessingException {
+    public void testDeleteDataWhenDocumentWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1438,7 +1409,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)}
      */
     @Test
-    public void testDeleteDataWhenFileWithSuccess() throws JsonProcessingException {
+    public void testDeleteDataWhenFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1462,7 +1433,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePutSubjectUsingDocument(Document)}
      */
     @Test
-    public void testWhenPutSubjectDocumentWithSuccess() throws JsonProcessingException {
+    public void testWhenPutSubjectDocumentWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1488,7 +1459,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePutSubjectUsingFile(File)}
      */
     @Test
-    public void testWhenPutSubjectFileWithSuccess() throws JsonProcessingException {
+    public void testWhenPutSubjectFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1514,7 +1485,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executePutSubject()}
      */
     @Test
-    public void testWhenPutSubjectAndParamsWithSuccess() throws JsonProcessingException {
+    public void testWhenPutSubjectAndParamsWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1544,7 +1515,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePutSubject()}
      */
     @Test
-    public void testWhenPutSubjectWithSuccess() throws JsonProcessingException {
+    public void testWhenPutSubjectWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1571,7 +1542,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePutSubjectUsingDocument(Document)}
      */
     @Test
-    public void testWhenPatchSubjectDocumentWithSuccess() throws JsonProcessingException {
+    public void testWhenPatchSubjectDocumentWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1597,7 +1568,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePutSubjectUsingFile(File)}
      */
     @Test
-    public void testWhenPatchSubjectFileWithSuccess() throws JsonProcessingException {
+    public void testWhenPatchSubjectFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1623,7 +1594,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executePatchSubject()}
      */
     @Test
-    public void testWhenPatchSubjectAndParamsWithSuccess() throws JsonProcessingException {
+    public void testWhenPatchSubjectAndParamsWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1652,7 +1623,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePatchSubject()}
      */
     @Test
-    public void testWhenPatchSubjectWithSuccess() throws JsonProcessingException {
+    public void testWhenPatchSubjectWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1680,7 +1651,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePatchSubjectUsingDocument(Document)}
      */
     @Test
-    public void testWhenPostSubjectDocumentWithSuccess() throws JsonProcessingException {
+    public void testWhenPostSubjectDocumentWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1707,7 +1678,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePatchSubjectUsingFile(File)}
      */
     @Test
-    public void testWhenPostSubjectFileWithSuccess() throws JsonProcessingException {
+    public void testWhenPostSubjectFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1733,7 +1704,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executePostSubject()}
      */
     @Test
-    public void testWhenPostSubjectAndParamWithSuccess() throws JsonProcessingException {
+    public void testWhenPostSubjectAndParamWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1761,7 +1732,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePostSubject()}
      */
     @Test
-    public void testWhenPostSubjectWithSuccess() throws JsonProcessingException {
+    public void testWhenPostSubjectWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1788,7 +1759,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePostSubjectUsingDocument(Document)}
      */
     @Test
-    public void testWhenPostDataDocumentWithSuccess() throws JsonProcessingException {
+    public void testWhenPostDataDocumentWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1814,7 +1785,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePostSubjectUsingFile(File)}
      */
     @Test
-    public void testWhenPostDataFileWithSuccess() throws JsonProcessingException {
+    public void testWhenPostDataFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1839,7 +1810,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executeDeleteDataUsingFile(File)}
      */
     @Test
-    public void testWhenDeleteDataFileWithSuccess() throws JsonProcessingException {
+    public void testWhenDeleteDataFileWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1865,7 +1836,7 @@ public class RestStepContributorTest {
      * {@link RestStepContributor#executePostData()}
      */
     @Test
-    public void testWhenPostDataAndParamWithSuccess() throws JsonProcessingException {
+    public void testWhenPostDataAndParamWithSuccess() {
         // prepare
         mockServer(
                 request()
@@ -1893,7 +1864,7 @@ public class RestStepContributorTest {
      * Test {@link RestStepContributor#executePostData()}
      */
     @Test
-    public void testWhenPostDataWithSuccess() throws JsonProcessingException {
+    public void testWhenPostDataWithSuccess() {
         // prepare
         mockServer(
                 request()

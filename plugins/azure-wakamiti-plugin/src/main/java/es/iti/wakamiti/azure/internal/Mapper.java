@@ -73,8 +73,8 @@ public abstract class Mapper {
         Path suitePath = target.getProperties().entrySet().stream()
                 .filter(k -> k.getKey().equals(AZURE_SUITE))
                 .map(Map.Entry::getValue)
-                .map(v -> v.split(escapeEcmaScript("[/\\]")))
-                .map(s -> Stream.of(s).map(String::trim).collect(Collectors.joining("/")))
+                .map(v -> v.replaceAll(escapeEcmaScript("[\\][/\\]"), TestSuite.SLASH_CODE))
+                .map(v -> v.replaceAll(escapeEcmaScript("[/\\]"), "/"))
                 .map(Path::of)
                 .findFirst().orElseGet(() -> {
                     Path path = Path.of(target.getSource()
@@ -89,7 +89,8 @@ public abstract class Mapper {
                 });
 
         TestSuite suite = Stream.of(suitePath.toString().split(escapeEcmaScript(File.separator)))
-                .map(dir -> new TestSuite().name(dir).suiteType(TestSuite.Type.STATIC_TEST_SUITE))
+                .map(dir -> new TestSuite().name(dir.replace(TestSuite.SLASH_CODE, "/"))
+                        .suiteType(TestSuite.Type.STATIC_TEST_SUITE))
                 .reduce((a, b) -> b.parent(a.hasChildren(true)))
                 .orElseThrow();
 

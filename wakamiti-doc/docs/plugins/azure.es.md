@@ -21,14 +21,14 @@ HTML Reporter) en la ejecución.
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:azure-wakamiti-plugin:1.9.0
+es.iti.wakamiti:azure-wakamiti-plugin:2.0.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>
-  <version>1.9.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -36,34 +36,34 @@ es.iti.wakamiti:azure-wakamiti-plugin:1.9.0
 ## Configuración
 
 
-###  `azure.disabled`
+###  `azure.enabled`
 - Tipo: `boolean` 
-- Por defecto: `false`
+- Por defecto: `true`
 
-Desactiva por completo la funcionalidad de este plugin.
+Activa/desactiva por completo la funcionalidad de este plugin.
 
 Example:
 ```yaml
 azure:
-  disabled: true
+  enabled: false
   
 ```
 
 
-###  `azure.host`
-- Tipo: `string` *obligatorio*
+###  `azure.baseURL`
+- Tipo: `url` *obligatorio*
 
-La dirección de la máquina donde está alojado el servidor Azure.
+Establece la URL base de la máquina donde está alojado el servidor Azure.
 
 Ejemplo:
 ```yaml
 azure:
-  host: azure.mycompany.org
+  baseURL: https://azure.mycompany.org
 ```
 
 
-###  `azure.credentials.user`
-- Tipo: `string` *obligatorio*
+###  `azure.auth.username`
+- Tipo: `string` 
 
 El nombre de usuario que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
 Si se usa autenticación por token, no se requiere esta propiedad.
@@ -71,26 +71,39 @@ Si se usa autenticación por token, no se requiere esta propiedad.
 Ejemplo:
 ```yaml
 azure:
-  credentials:
-    user: myuser
+  auth:
+    username: myuser
 ```
 
 
-###  `azure.credentials.password`
-- Tipo: `string` *obligatorio*
+###  `azure.auth.password`
+- Tipo: `string` 
 
-El password o token que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
+El password de usuario que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
+Si se usa autenticación por token, no se requiere esta propiedad.
 
 Ejemplo:
 ```yaml
 azure:
-  credentials:
+  auth:
     password: xKHJFHLKJ7897
 ```
 
 
+### `azure.auth.token`
+- Tipo: `string`
+
+El token que se usará en la API REST de Azure, como parte de la autorización básica HTTP.
+
+Ejemplo:
+```yaml
+azure:
+  auth:
+    token: s3cr3t
+```
+
 ###  `azure.apiVersion`
-- Tipo: `string` *obligatorio*
+- Tipo: `string` 
 - Por defecto: `6.0-preview`
 
 El número de versión de la API REST de Azure que se va a usar para enviar las notificaciones.
@@ -129,37 +142,90 @@ azure:
 ```
 
 
-###  `azure.tag`
+### `azure.plan.name`
 - Tipo: `string` *obligatorio*
-- Por defecto: `Azure`
 
-La etiqueta que se buscará a la hora de determinar si se debe realizar o no la integración
-con Azure.
+Nombre del plan de test en Azure.
 
 Ejemplo:
 ```yaml
 azure:
-  tag: AzureExecution
+  plan: 
+    name: Wakamiti Test Plan
+```
+
+
+### `azure.plan.area`
+- Tipo: `path` *obligatorio*
+
+Ruta del área al que pertenece el plan.
+
+Ejemplo:
+```yaml
+azure:
+  plan: 
+    area: ABC/DE
+```
+
+
+### `azure.plan.iteration`
+- Tipo: `path` *obligatorio*
+
+Ruta de la iteración del plan.
+
+Ejemplo:
+```yaml
+azure:
+  plan: 
+    area: ABC/Iteration 1
+```
+
+
+### `azure.suiteBase`
+- Tipo: `path`
+
+Las suites en azure se establecen en base a la ruta donde se encuentran los features. Con esta propiedad se establece 
+la ruta desde la cual se tendrán en cuenta las rutas para crear las suites.
+
+También está la opción de indicar manualmente la suite del test [desde el feature](#azuresuite).
+
+Ejemplo:
+```yaml
+azure:
+  suiteBase: features
 ```
 
 
 ###  `azure.attachments`
-- Tipo: `string[]` 
+- Tipo: `glob[]` 
 
-Una lista de ficheros, o de patrones de nombre de fichero en formato *glob*, que se adjuntarán a la ejecución Azure.
+Patrones glob de los reports que se deseen adjuntar.
 
 Ejemplo:
 ```yaml
 azure:
-  attachments:
-    - 'wakamiti.html'
-    - '*.json'  
+  attachments: 
+    - '**/*.html'
+    - '**/wakamiti.json'
+```
+
+
+### `azure.testCasePerFeature`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si el mapeo con los casos de test de Azure debe ser a nivel de feature o de escenario.
+
+Ejemplo:
+```yaml
+azure:
+  testCasePerFeature: true
 ```
 
 
 ###  `azure.createItemsIfAbsent`
 - Tipo: `boolean`
-- Por defecto: `false`
+- Por defecto: `true`
 
 Establece si se debe crear automáticamente los elementos (planes, suites y casos de test) que no existan en Azure.
 
@@ -170,61 +236,22 @@ azure:
 ```
 
 
-###  `azure.workItemTestCaseType`
-- Tipo: `string` *obligatorio*
-
-La nomenclatura que usa la instancia de Azure para referirse a los elementos de trabajo clasificados como casos de 
-prueba. 
-
-Ejemplo:
-```yaml
-azure:
-  workItemTestCaseType: "Caso de prueba"
-```
-
-
-###  `azure.timeZoneAdjustment`
-- Tipo: `integer` *obligatorio*
-- Por defecto: `0`
-
-Aplica un ajuste horario a la hora de notificar los instantes de inicio y fin de ejecución, en caso de que la instancia 
-de Azure funcione con una zona horaria distinta.
-
-Ejemplo:
-```yaml
-azure:
-  timezoneAdjustment: -2
-```
-
-
-
 ## Uso
 
-Para que el plugin envíe los resultados, se deben cumplir dos condiciones:
-
-- El escenario/característica debe estar etiquetado con una etiqueta específica (por defecto `@Azure`)
-- El escenario/característica debe tener definidas las siguientes propiedades:
-  - `azurePlan`: nombre del plan de test en Azure.
-  - `azureArea`: nombre del área al que pertenece el plan.
-  - `azureIteration`: ruta de la iteración del plan, separada por `\\`.
-  - `azureTest`: nombre del caso de test (si no se indica, se tomará el nombre de la carácterística/escenario de 
-    Wakamiti)
-  - `azureTestId`: identificador del elemento de trabajo correspondiente al caso de test en Azure
-
-Los casos de test que no tengan esto definido se ignorarán a la hora de hacer la integración.
-
-En caso de que la ejecución de Wakamiti incluya casos de tests de varios planes de Azure distintos, se creará una 
-ejecución Azure distinta por cada uno de ellos.
+La sincronización con azure se realizará antes de la ejecución de los tests. En caso de que haya algún problema, se 
+detendrá la ejecución.
+Al finalizar la ejecución, se procederá a sincronizar los resultados con azure.
 
 
-Ejemplos:
+### `azureSuite`
+- Tipo: `path`
+
+Establece la suite en la que se encontrará el test en azure.
+
+Ejemplo:
 ```gherkin
-@Azure
-# azurePlan: MyPlan
-# azureArea: AAA
-# azureIteration: AAA\\Iteration 1
-# azureSuite: MySuite
-# azureTest: MyTest
+# language: es
+# azureSuite: My Suite/Subsuite a
 Característica: Pruebas de alta de usuario
 
 Escenario: Alta de usuario inexiste
@@ -233,26 +260,3 @@ Escenario: Alta de usuario inexiste
 Escenario: Alta de usuario existente
 ...
 ```
-
-```gherkin
-@Azure
-# azurePlan: MyPlan
-# azureArea: AAA
-# azureIteration: AAA\\Iteration 1
-# azureSuite: MySuite
-Característica: Pruebas de alta de usuario
-
-# azureTest: MyFirstTest
-# azureTestId: 543543
-Escenario: Alta de usuario inexiste
-...
-
-# azureTest: MySecondTest
-Escenario: Alta de usuario existente
-...
-```
-
-Los casos de test que no tengan esto definido se ignorarán a la hora de hacer la integración.
-
-En caso de que la ejecución de Wakamiti incluya casos de tests de varios planes de Azure distintos, se creará una 
-ejecución Azure distinta por cada uno de ellos.

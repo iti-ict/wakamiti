@@ -9,8 +9,6 @@ package es.iti.wakamiti.database;
 import es.iti.wakamiti.database.jdbc.DatabaseType;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
@@ -38,6 +36,7 @@ import java.util.stream.Stream;
 
 import static es.iti.wakamiti.database.DatabaseHelper.isDateOrDateTime;
 import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
 /**
@@ -92,13 +91,11 @@ public class SQLParser {
     );
 
     private final DatabaseType type;
+    private final boolean autoTrim;
 
-    public SQLParser() {
-        this.type = DatabaseType.OTHER;
-    }
-
-    public SQLParser(DatabaseType type) {
+    public SQLParser(DatabaseType type, boolean autoTrim) {
         this.type = type;
+        this.autoTrim = autoTrim;
     }
 
     /**
@@ -169,7 +166,7 @@ public class SQLParser {
      * @param o The object to convert
      * @return The SQL expression representing the object
      */
-    public Expression toExpression(Object o) {
+    private Expression toExpression(Object o) {
         if (o == null) return new NullValue();
         if (o instanceof Number || o instanceof Boolean) {
             return CONVERTER.get(o.getClass()).apply(o);
@@ -191,7 +188,11 @@ public class SQLParser {
         statement.accept(new StatementVisitorAdapter() {
             @Override
             public void visit(Delete delete) {
-                result.set(Optional.of(createSelect(delete.getTable(), delete.getWhere())));
+                Optional<PlainSelect> aux = Optional.of(createSelect(delete.getTable(), delete.getWhere()));
+                if (!isEmpty(delete.getWithItemsList())) {
+                    aux = aux.map(s -> s.addWithItemsList(delete.getWithItemsList()).getPlainSelect());
+                }
+                result.set(aux);
             }
 
             @Override
@@ -201,13 +202,8 @@ public class SQLParser {
 
             @Override
             public void visit(Insert insert) {
-                if (insert.getSelect() instanceof PlainSelect) {
-                    result.set(Optional.of(createSelect(insert.getTable(),
-                            ((PlainSelect) insert.getSelect()).getWhere())));
-                } else {
-                    result.set(Optional.of(createSelect(insert.getTable(),
-                            createWhere(insert.getColumns(), insert.getValues().getExpressions()))));
-                }
+                result.set(Optional.of(createSelect(insert.getTable(),
+                        createWhere(insert.getColumns(), insert.getValues().getExpressions()))));
             }
         });
         return result.get();
@@ -224,17 +220,6 @@ public class SQLParser {
         List<Expression> expressions = Stream.of(values).map(this::toExpression).collect(Collectors.toList());
         result.addExpressions(expressions);
         return result;
-    }
-
-    /**
-     * Converts a list of UpdateSet objects to a single Expression representing the WHERE
-     * clause with AND logical operators.
-     *
-     * @param us The list of UpdateSet objects to convert
-     * @return The Expression representing the WHERE clause with AND logical operators
-     */
-    public Expression toWhere(List<UpdateSet> us) {
-        return new MultiAndExpression(us.stream().map(this::toWhere).collect(Collectors.toList()));
     }
 
     /**
@@ -308,7 +293,7 @@ public class SQLParser {
      * @param values  The list of values corresponding to the columns
      * @return The WHERE clause expression
      */
-    public Expression createWhere(List<Column> columns, ExpressionList<?> values) {
+    private Expression createWhere(List<Column> columns, ExpressionList<?> values) {
         List<Expression> result = new LinkedList<>();
         for (int i = 0; i < values.size(); i++) {
             Expression expression = values.get(i);
@@ -321,36 +306,6 @@ public class SQLParser {
             }
         }
         return new MultiAndExpression(result);
-    }
-
-    /**
-     * Creates a WHERE clause expression using the specified columns with null control.
-     *
-     * @param columns The array of column names
-     * @return The WHERE clause expression
-     */
-    public Expression createWhere(String[] columns) {
-        return createWhere(columns, true);
-    }
-
-    /**
-     * Creates a WHERE clause expression using the specified columns with an optional null control.
-     *
-     * @param columns     The array of column names
-     * @param nullControl Indicates whether null control should be applied
-     * @return The WHERE clause expression
-     */
-    public Expression createWhere(String[] columns, boolean nullControl) {
-        List<Expression> expressions = Stream.of(columns)
-                .map(column -> equalsTo(new Column(column), new JdbcParameter())).map(exp -> {
-                    if (!nullControl) return exp;
-                    IsNullExpression cIsNull = new IsNullExpression();
-                    cIsNull.setLeftExpression(exp.getLeftExpression());
-                    IsNullExpression vIsNull = new IsNullExpression();
-                    vIsNull.setLeftExpression(exp.getRightExpression());
-                    return new Parenthesis(new OrExpression(exp, new Parenthesis(new AndExpression(cIsNull, vIsNull))));
-                }).collect(Collectors.toCollection(LinkedList::new));
-        return new MultiAndExpression(expressions);
     }
 
     /**
@@ -376,10 +331,10 @@ public class SQLParser {
      */
     private EqualsTo equalsTo(Column column, Expression expression) {
         EqualsTo exp = new EqualsTo();
-        exp.setLeftExpression(column);
         if (expression instanceof StringValue && isDateOrDateTime(((StringValue) expression).getValue())) {
             expression = dateCast(((StringValue) expression).getValue());
         }
+        exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
         exp.setRightExpression(expression);
         return exp;
     }
@@ -392,7 +347,8 @@ public class SQLParser {
      * @return The constructed SELECT statement
      */
     public Select sqlSelectFrom(String table, String[] columns) {
-        List<Column> columnList = Stream.of(columns).map(Column::new).collect(Collectors.toCollection(LinkedList::new));
+        List<Expression> columnList = Stream.of(columns).map(Column::new)
+                .collect(Collectors.toCollection(LinkedList::new));
         return createSelect(new Table(table), new SelectItem<>(new ExpressionList<>(columnList)));
     }
 
@@ -432,21 +388,8 @@ public class SQLParser {
      * @return The constructed DELETE statement
      */
     public Delete toDelete(String table) {
-        return toDelete(table, new String[0]);
-    }
-
-    /**
-     * Constructs a DELETE statement for the specified table with the specified conditions
-     * on columns.
-     *
-     * @param table   The name of the table
-     * @param columns An array of column names representing the conditions
-     * @return The constructed DELETE statement
-     */
-    public Delete toDelete(String table, String[] columns) {
         Delete delete = new Delete();
         delete.setTable(new Table(table));
-        if (columns != null && columns.length > 0) delete.setWhere(createWhere(columns));
         return delete;
     }
 
@@ -492,19 +435,6 @@ public class SQLParser {
                 .forEach(update::addUpdateSet);
         update.setWhere(where);
         return update;
-    }
-
-    /**
-     * Constructs an UPDATE statement for the specified table with the given column-value
-     * mappings and conditions.
-     *
-     * @param table The name of the table
-     * @param sets  A map representing column-value pairs to be updated
-     * @param where A map representing conditions for updating records
-     * @return The constructed UPDATE statement
-     */
-    public Update toUpdate(String table, Map<String, Object> sets, Map<String, Object> where) {
-        return toUpdate(table, sets, createWhere(where));
     }
 
     /**

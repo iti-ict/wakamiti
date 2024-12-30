@@ -5,7 +5,9 @@
  */
 package es.iti.wakamiti.core.generator.features.model;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
+
 
 public class ChatFunctionCall {
 

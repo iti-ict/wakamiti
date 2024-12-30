@@ -17,14 +17,14 @@
 
 
     <artifactId>groovy-wakamiti-plugin</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
 
     <name>[Wakamiti Plugin] Groovy Steps</name>
     <description>Groovy steps for Wakamiti</description>
     <inceptionYear>2022</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.7.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
     </properties>
 
     <dependencies>
