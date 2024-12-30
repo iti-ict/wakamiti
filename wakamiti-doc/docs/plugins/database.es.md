@@ -110,6 +110,19 @@ database:
 ```
 
 
+### `database.autotrim`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si se ignoran los espacios en las comparaciones.
+
+Ejemplo:
+```yaml
+database:
+  autotrim: true
+```
+
+
 ### `database.{alias}...`
 
 Establece los prámetros de conexión JDBC y/o los metadatos de una base de datos identificada por un alias. Se pueden
@@ -128,6 +141,7 @@ database:
       metadata:
         schema: TESTDB1
         catalog: TESTCAT1
+      autotrim: true
     db2:
       connection:
         url: jdbc:mysql://other.host:3306/test

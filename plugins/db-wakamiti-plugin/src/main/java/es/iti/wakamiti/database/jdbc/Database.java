@@ -44,7 +44,7 @@ public final class Database {
     private Database(ConnectionProvider connection) {
         this.connection = connection;
         this.type = DatabaseType.fromUrl(connection.parameters().url());
-        this.parser = new SQLParser(type);
+        this.parser = new SQLParser(type, connection.parameters().autoTrim());
         this.schema = CACHED_SCHEMA.computeIfAbsent(connection.parameters().url(), k -> new Schema());
     }
 

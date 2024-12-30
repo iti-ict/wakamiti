@@ -31,14 +31,14 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/database-sqlserver.feature"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/database-sqlserver.feature"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
         @Property(key = "database.connection.username", value = "sa"),
         @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
-        @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
+        @Property(key = TREAT_STEPS_AS_TESTS, value = "false")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {
@@ -48,7 +48,7 @@ public class SQLServerTest {
 //            .withDatabaseName("test")
 //            .withUsername("user")
             .withPassword("$3cr3Tp4s$")
-            .withInitScript("db/create-schema-sqlserver.sql")
+            .withInitScript("wakamiti/db/create-schema-sqlserver.sql")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
@@ -66,7 +66,7 @@ public class SQLServerTest {
         String password = container.getPassword();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(new DriverManagerDataSource(url, user, password));
-        File schemaFile = new File(SQLServerTest.class.getResource("/db/triggers.sql").getFile());
+        File schemaFile = new File(SQLServerTest.class.getResource("/wakamiti/db/triggers.sql").getFile());
         String createSchema = FileUtils.readFileToString(schemaFile, StandardCharsets.UTF_8);
         for (String sentence : createSchema.split("\\sGO\\s")) {
             jdbcTemplate.execute(sentence);

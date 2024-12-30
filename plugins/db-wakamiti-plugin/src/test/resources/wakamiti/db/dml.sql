@@ -5,3 +5,5 @@ INSERT INTO client_city (clientid, cityid) VALUES (1, 1);
 INSERT INTO other (something) VALUES (47);
 
 COMMIT;
+
+/* comment */

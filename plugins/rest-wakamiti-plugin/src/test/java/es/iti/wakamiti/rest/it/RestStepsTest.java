@@ -27,10 +27,10 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 
 @AnnotatedConfiguration({
         @Property(key = RESOURCE_TYPES, value = GherkinResourceType.NAME),
-        @Property(key = RESOURCE_PATH, value = "src/test/resources/features/en"),
+        @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/en"),
         @Property(key = TREAT_STEPS_AS_TESTS, value = "true"),
         @Property(key = BASE_URL, value = "http://localhost:8888"),
-        @Property(key = "data.dir", value = "src/test/resources"),
+        @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
         @Property(key = RestConfigContributor.TIMEOUT, value = "5000")
 })
 @RunWith(WakamitiJUnitRunner.class)
@@ -42,7 +42,7 @@ public class RestStepsTest {
     @BeforeClass
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
-        prepare(client, "server", media -> true);
+        prepare(client, "wakamiti/server", media -> true);
     }
 
 

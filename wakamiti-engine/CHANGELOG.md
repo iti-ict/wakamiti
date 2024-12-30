@@ -6,11 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [unreleased]
+## [2.7.2] - 2024-12-18
+
+### Fixed
+- File parsing error localization. (#332)
+- The table of examples in the outline scenarios is mandatory. (#338)
+
+
+## [2.7.1] - 2024-12-11
+
+### Fixed
+- ChatGPT-based feature generator issues.
+
+
+## [2.7.0] - 2024-11-25
 
 ### Added
-- New command to export reports without running the tests. [#243]
-- X11 server mode. [#298]
+- New command to export reports without running the tests. (#243)
+- X11 server mode. (#298)
 - ChatGPT-based Feature generator.
 
 ### Fixed
@@ -182,7 +195,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Externalize groovy classloader to a new plugin
 
 ### Added
-- Property evaluators to read global properties and the results of previous steps [issue: #66]
+- Property evaluators to read global properties and the results of previous steps. (#66)
 
 
 ## [1.4.3] - 2022-11-10
@@ -200,7 +213,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.1] - 2022-09-12
 
 ### Fixed
-- Update dependency `io.github.luiinge:maven-fetcher` version `1.5.0` to `1.5.1` [issue: #48]
+- Update dependency `io.github.luiinge:maven-fetcher` version `1.5.0` to `1.5.1`. (#48)
 
 
 ## [1.3.2] - 2022-05-03

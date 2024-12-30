@@ -116,6 +116,18 @@ Feature: REST Test Feature
       ]
       """
     And the response is equal to the file '${data.dir}/data/users.json' (in any order)
+    And the response contains:
+    """json
+[
+  {
+    "id": "user2",
+    "name": "User Two",
+    "vegetables": [
+      { "description": "Pickle" }
+    ]
+  }
+]
+    """
     And the response fragment 'find{ it.id == "user1" }.vegetables' is (in any order):
       """json
       [

@@ -5,10 +5,12 @@
  */
 package es.iti.wakamiti.core.generator.features.model;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
+
 
 public class ChatCompletionRequest {
 

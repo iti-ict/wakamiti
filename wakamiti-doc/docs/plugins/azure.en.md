@@ -20,14 +20,14 @@ run, this plugin integrates the results of a Wakamiti execution into an existing
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:azure-wakamiti-plugin:1.9.0
+es.iti.wakamiti:azure-wakamiti-plugin:2.0.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>
-  <version>1.9.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -35,60 +35,73 @@ es.iti.wakamiti:azure-wakamiti-plugin:1.9.0
 ## Options
 
 
-###  `azure.disabled`
+###  `azure.enabled`
 - Type: `boolean`
-- Default `false`
+- Default `true`
 
-Disable entirely this plugin.
+Enable/disable entirely this plugin.
 
 Example:
 ```yaml
 azure:
-  disabled: true
+  enabled: false
   
 ```
 
 
-###  `azure.host`
-- Type: `string` *required*
+###  `azure.baseURL`
+- Tipo: `url` *required*
 
-The host address where the Azure server is located.
+The base url where the Azure server is located.
 
 Example:
 ```yaml
 azure:
-  host: azure.mycompany.org
+  baseURL: https://azure.mycompany.org
 ```
 
 
-###  `azure.credentials.user`
-- Type: `string` *required*
+###  `azure.auth.username`
+- Type: `string` 
 
 Username to be used with the Azure REST API, passed as an HTTP basic authentication.
 
 Example:
 ```yaml
 azure:
-  credentials:
-    user: myuser
+  auth:
+    username: myuser
 ```
 
 
-###  `azure.credentials.password`
+###  `azure.auth.password`
 - Type: `string` *required*
 
-Password to be used with the Azure REST API, passed as a HTTP basic authentication.
+Password to be used with the Azure REST API, passed as an HTTP basic authentication.
 
 Example:
 ```yaml
 azure:
-  credentials:
+  auth:
     password: xKHJFHLKJ7897
 ```
 
 
+### `azure.auth.token`
+- Type: `string`
+
+The token to be used in the Azure REST API, passed as an HTTP basic authentication.
+
+Example:
+```yaml
+azure:
+  auth:
+    token: s3cr3t
+```
+
+
 ###  `azure.apiVersion`
-- Type: `string` *required*
+- Type: `string` 
 - Default: `6.0-preview`
 
 The Azure REST API version to be used to send the notifications.
@@ -126,30 +139,85 @@ azure:
 ```
 
 
-###  `azure.tag`
+### `azure.plan.name`
 - Type: `string` *required*
-- Default: `Azure`
 
-The tag to look for when deciding whether, or not, to integrate with Azure.
+Test plan name in Azure.
 
 Example:
 ```yaml
 azure:
-  tag: AzureExecution
+  plan: 
+    name: Wakamiti Test Plan
+```
+
+
+### `azure.plan.area`
+- Type: `string` *required*
+
+
+The area path to which the plan belongs.
+
+Example:
+```yaml
+azure:
+  plan: 
+    area: ABC/DE
+```
+
+
+### `azure.plan.iteration`
+- Type: `string` *required*
+
+The iteration path of the Plan.
+
+Example:
+```yaml
+azure:
+  plan: 
+    area: ABC/Iteration 1
+```
+
+
+### `azure.suiteBase`
+- Type: `path`
+
+Azure suites are set based on the path where the features are located. This property allows you to set the path from 
+which the routes will be used to create the suites.
+
+You can also manually specify the test suite [from the feature](#azuresuite).
+
+Example:
+```yaml
+azure:
+  suiteBase: features
 ```
 
 
 ###  `azure.attachments`
-- Type: `string[]`
+- Type: `glob[]`
 
-A list of files, o filename patterns in _glob_ format, that would be attached to the Azure run.
+Glob patterns of the reports you want to attach.
 
 Example:
 ```yaml
 azure:
-  attachments:
-    - 'wakamiti.html'
-    - '*.json'  
+  attachments: 
+    - '**/*.html'
+    - '**/wakamiti.json'
+```
+
+
+### `azure.testCasePerFeature`
+- Type: `boolean`
+- Default: `false`
+
+Specifies whether the mapping to Azure test cases should be at feature level or scenario level.
+
+Example:
+```yaml
+azure:
+  testCasePerFeature: true
 ```
 
 
@@ -166,59 +234,21 @@ azure:
 ```
 
 
-###  `azure.workItemTestCaseType`
-- Type: `string` *required*
-
-The nomenclature used by the Azure instance to refer to work items classified as test cases.
-
-Example:
-```yaml
-azure:
-  workItemTestCaseType: "Test Case"
-```
-
-
-###  `azure.timeZoneAdjustment`
-- Type: `integer` *required*
-- Default: `0`
-
-Applies a time adjustment when reporting execution start and end times if the Azure instance is running in a different 
-time zone.
-
-Example:
-```yaml
-azure:
-  timezoneAdjustment: -2
-```
-
 
 ## Usage
 
-In order for the plugin to send the results, two conditions must be met:
-
-- The scenario/feature must be tagged with a specific tag (`@Azure` by default)
-- The scenario/feature must have the following properties defined:
-  - `azurePlan`: name of the test plan in Azure.
-  - `azureArea`: name of the area the plan belongs to.
-  - `azureIteration`: path of the iteration of the plan, separated by `\\`.
-  - `azureTest`: name of the test case (if omitted, the name of the Wakamiti feature/scenario is used).
-  - `azureTestId`: work item identifier corresponding to the test case in Azure.
-
-The test cases that do not have this defined will be ignored during the integration.
-
-If the Wakamiti run contains test cases from several different Azure plans, a separate Azure run will be created for 
-each of them.
+Synchronisation with Azure is performed before the tests are run. If there is a problem, the execution is stopped.
+At the end of the execution, the results are synchronised with azure.
 
 
-Examples:
+### `azureSuite`
+- Type: `path`
 
+Sets the suite in which the test will be located in azure.
+
+Example:
 ```gherkin
-@Azure
-# azurePlan: MyPlan
-# azureArea: AAA
-# azureIteration: AAA\\Iteration 1
-# azureSuite: MySuite
-# azureTest: MyTest
+# azureSuite: My Suite/Subsuite a
 Feature: User creation tests
 
 Scenario: Create a non-existing user
@@ -227,26 +257,3 @@ Scenario: Create a non-existing user
 Scenario: Create an existing user
 ...
 ```
-
-```gherkin
-@Azure
-# azurePlan: MyPlan
-# azureArea: AAA
-# azureIteration: AAA\\Iteration 1
-# azureSuite: MySuite
-Feature: User creation tests
-
-# azureTest: MyFirstTest
-# azureTestId: 432554
-Scenario: Create a non-existing user
-...
-
-# azureTest: MySecondTest
-Scenario: Create an existing use
-...
-```
-
-Test cases that do not have this defined will be ignored during the integration.
-
-If the Wakamiti run contains test cases from several different Azure plans, a separate Azure run must be created for 
-each.

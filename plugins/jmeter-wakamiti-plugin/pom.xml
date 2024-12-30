@@ -18,7 +18,7 @@
 
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 
 
     <name>[Wakamiti Plugin] jmeter</name>
@@ -29,7 +29,7 @@
         <mockserver.version>5.15.0</mockserver.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.7.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
     </properties>
 
 
@@ -195,14 +195,13 @@
             <properties>
                 <rest.port>8888</rest.port>
 
-                <workdir>/wakamiti/test-classes</workdir>
-                <volume>${project.build.directory}:/wakamiti</volume>
+                <volume>${project.build.directory}/test-classes/wakamiti:/wakamiti</volume>
                 <repo>${user.home}/.m2/repository:/repository</repo>
                 <coordinate>${project.groupId}:${project.artifactId}:${project.version}</coordinate>
                 <arguments>-m ${coordinate} -K tagFilter=launcher -K jmeter.baseURL=http://host.docker.internal:${rest.port}/api -K jmeter.host=http://host.docker.internal:${rest.port} -K data.dir=.</arguments>
                 <add.host />
 
-                <run.command>run --rm -w ${workdir} -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
+                <run.command>run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test ${arguments}</run.command>
             </properties>
 
             <build>
@@ -278,12 +277,11 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <configurationFiles>${project.build.directory}/test-classes/wakamiti.yaml</configurationFiles>
+                            <configurationFiles>${project.build.directory}/test-classes/wakamiti/wakamiti.yaml</configurationFiles>
                             <logLevel>off</logLevel>
                             <properties>
-                                <workingDir>${project.build.directory}/test-classes</workingDir>
-                                <resourcePath>${project.build.directory}/test-classes</resourcePath>
+                                <workingDir>${project.build.directory}/test-classes/wakamiti</workingDir>
+                                <resourcePath>${project.build.directory}/test-classes/wakamiti</resourcePath>
                                 <tagFilter>launcher</tagFilter>
                                 <jmeter.baseURL>http://localhost:${rest.port}/api</jmeter.baseURL>
                                 <jmeter.oauth2.url>http://localhost:${rest.port}/token</jmeter.oauth2.url>
@@ -293,6 +291,13 @@
                                 <logs.showStepSource>false</logs.showStepSource>
                             </properties>
                         </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>

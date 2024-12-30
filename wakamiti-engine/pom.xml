@@ -20,7 +20,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>2.7.0-SNAPSHOT</revision>
+        <revision>2.7.2</revision>
     </properties>
 
 
@@ -43,7 +43,7 @@
             <dependency>
                 <groupId>es.iti.wakamiti</groupId>
                 <artifactId>wakamiti-api</artifactId>
-                <version>2.5.1-SNAPSHOT</version>
+                <version>2.5.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>

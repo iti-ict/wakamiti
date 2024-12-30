@@ -127,10 +127,8 @@ public class TestUtil {
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> stringToMap = Map.of(
-                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
-                }),
-                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
-                })
+                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {}),
+                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {})
         );
 
         File root = file(rootPath);
@@ -235,7 +233,7 @@ public class TestUtil {
         expectations.add(
                 new Expectation(request().withPath("/token"))
                         .thenRespond(response().withStatusCode(HttpStatusCode.OK_200.code())
-                                .withBody(read(file("data/token.json"))))
+                                .withBody(read(file("wakamiti/data/token.json"))))
         );
         return expectations.toArray(new Expectation[0]);
     }

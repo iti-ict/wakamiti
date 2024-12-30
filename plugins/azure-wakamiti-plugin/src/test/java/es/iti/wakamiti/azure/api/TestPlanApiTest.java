@@ -37,7 +37,6 @@ import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.groupBy;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -652,7 +651,7 @@ public class TestPlanApiTest {
                 request()
                         .withMethod("POST")
                         .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites")
-                        .withBody(regex(".*\"name\":\"Feature 1\".+" +
+                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+" +
                                 "\"suiteType\":\"staticTestSuite\".+" +
                                 "\"parentSuite\":\\{\"id\":\"56984\".*")),
                 response()
@@ -669,7 +668,7 @@ public class TestPlanApiTest {
 
         List<TestSuite> suites = List.of(
                 new TestSuite().name("Wakamiti Test Plan"),
-                new TestSuite().name("Feature 1").parent(new TestSuite().name("Wakamiti Test Plan"))
+                new TestSuite().name("Feature 1/abc").parent(new TestSuite().name("Wakamiti Test Plan"))
         );
 
         // act

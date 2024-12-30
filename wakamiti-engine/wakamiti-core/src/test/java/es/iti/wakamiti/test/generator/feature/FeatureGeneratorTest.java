@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,8 +72,9 @@ public class FeatureGeneratorTest {
     }
 
     @Before
-    public void beforeEach() throws URISyntaxException, JsonProcessingException {
-        when(openAIService.runPrompt(anyString(), anyString())).thenReturn("Something");
+    public void beforeEach() {
+        when(openAIService.runPrompt(anyString(), anyString()))
+                .thenReturn(CompletableFuture.completedFuture("Something"));
         server.reset();
     }
 
