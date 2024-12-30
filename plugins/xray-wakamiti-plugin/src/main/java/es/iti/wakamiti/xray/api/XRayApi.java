@@ -253,7 +253,7 @@ public class XRayApi extends BaseApi {
                     "            testType {" +
                     "                name" +
                     "            }" +
-                    "            unstructured" +
+//                    "            unstructured" +
                     "            jira(fields: [\"key\"])" +
                     "        }" +
                     "        warnings" +
