@@ -12,6 +12,7 @@ public class TestPlan {
     private JiraIssue jira = new JiraIssue();
     private String projectId;
     private List<TestCase> testCases;
+    private TestExecution testExecution;
 
 
     public TestPlan(String issueId, JiraIssue jira, String projectId, List<TestCase> testCases) {
@@ -45,6 +46,11 @@ public class TestPlan {
         return this;
     }
 
+    public TestPlan testExecution(TestExecution testExecution) {
+        this.testExecution = testExecution;
+        return this;
+    }
+
     public String getIssueId() {
         return issueId;
     }
@@ -59,5 +65,9 @@ public class TestPlan {
 
     public List<TestCase> getTestCases() {
         return testCases;
+    }
+
+    public TestExecution getTestExecution() {
+        return testExecution;
     }
 }
