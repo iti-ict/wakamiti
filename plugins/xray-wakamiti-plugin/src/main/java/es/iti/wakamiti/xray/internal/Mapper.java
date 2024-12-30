@@ -9,8 +9,12 @@ import es.iti.wakamiti.xray.model.TestCase;
 import es.iti.wakamiti.xray.model.TestSet;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,6 +27,11 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 public abstract class Mapper {
 
+    private static final String TABLE_SEPARATOR = "|";
+    private static final String ESCAPED_LINE_BREAK = "\\n";
+    private static final String LINE_BREAK = "\n";
+    private static final String QUOTATION_MARKS = "\"";
+    private static final String ESCAPED_QUOTATION_MARKS = "\\\"";
     private final String suiteBase;
 
     protected Mapper(final String suiteBase) {
@@ -60,9 +69,42 @@ public abstract class Mapper {
                                         .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
                         ))
                 )
-                .gherkin(target.getChildren().get(0).getChildren().get(0).getDisplayName())
+                .gherkin(getDisplayName(target))
                 .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
+
+    private String getDisplayName(PlanNodeSnapshot target) {
+        return target.getChildren().stream()
+                .map(planNodeSnapshot -> planNodeSnapshot.getChildren().stream()
+                        .map(getComposedDisplayName())
+                        .collect(toList()))
+                .flatMap(List::stream)
+                .collect(Collectors.joining(ESCAPED_LINE_BREAK));
+    }
+
+    private Function<PlanNodeSnapshot, String> getComposedDisplayName() {
+        return planNodeSnapshot1 -> {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(planNodeSnapshot1.getDisplayName());
+
+            if (planNodeSnapshot1.getDataTable() != null) {
+                sb.append(ESCAPED_LINE_BREAK).append(Arrays.stream(planNodeSnapshot1.getDataTable())
+                        .map(strings -> TABLE_SEPARATOR.concat(String.join(TABLE_SEPARATOR, strings)).concat(TABLE_SEPARATOR))
+                        .collect(Collectors.joining(ESCAPED_LINE_BREAK)));
+            }
+
+            if (planNodeSnapshot1.getDocument() != null) {
+                sb.append(ESCAPED_LINE_BREAK)
+                        .append(planNodeSnapshot1.getDocument()
+                                .replace(LINE_BREAK, ESCAPED_LINE_BREAK)
+                                .replace(QUOTATION_MARKS, ESCAPED_QUOTATION_MARKS));
+            }
+
+            return sb.toString();
+        };
+    }
+
 
     public Stream<TestCase> map(PlanNodeSnapshot plan) {
         return plan
