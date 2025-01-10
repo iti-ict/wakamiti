@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class TestPlanApiTest {
     private static final Logger LOGGER = WakamitiLogger.forClass(TestPlanApiTest.class);
 
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", PORT.toString());
+    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", String.valueOf(PORT));
 
     private static final ClientAndServer mock = startClientAndServer(PORT);
 
@@ -373,9 +374,117 @@ public class TestPlanApiTest {
         requests.forEach(mock::verify);
     }
 
+    @Test
+    public void testAddTestsToPlanWithSuccess() throws IOException {
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v1/authenticate"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("\"token\"")
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v2/graphql")
+                        .withBody(subString("addTestsToTestPlan")),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/xray/addTestsToTestPlan.json"))
+        ).ifPresent(requests::add);
 
-    private void logResult(Object o) {
-        LOGGER.debug("Result: {}", o);
+        XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
+        assertThat(xRayApi).isNotNull();
+
+        TestPlan testPlan = new TestPlan()
+                .id("10000");
+
+        xRayApi.addTestsToPlan(List.of("10070"), testPlan);
+
+        requests.forEach(mock::verify);
+    }
+
+    @Test
+    public void testAddTestsToTestSetWithSuccess() throws IOException {
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v1/authenticate"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("\"token\"")
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v2/graphql")
+                        .withBody(subString("addTestsToTestSet")),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/xray/addTestsToTestSet.json"))
+        ).ifPresent(requests::add);
+
+        XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
+        assertThat(xRayApi).isNotNull();
+
+        TestSet testSet = new TestSet()
+                .issue(new JiraIssue()
+                        .summary("Test Set Summary"));
+
+        TestCase testCase = new TestCase()
+                .issueId("10070")
+                .status("RUNNING")
+                .issue(new JiraIssue()
+                        .summary("Test Summary")
+                        .labels(List.of("label1", "label2")))
+                .gherkin("Gherkin")
+                .testSetList(List.of(testSet));
+
+
+        xRayApi.addTestsToSets(List.of(testCase), List.of(testSet));
+
+        requests.forEach(mock::verify);
+    }
+
+    @Test
+    public void testAddTestExecutionsToTestPlanWithSuccess() throws IOException {
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v1/authenticate"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("\"token\"")
+        ).ifPresent(requests::add);
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/api/v2/graphql")
+                        .withBody(subString("addTestExecutionsToTestPlan")),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/xray/addTestExecutionsToTestPlan.json"))
+        ).ifPresent(requests::add);
+
+        XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
+        assertThat(xRayApi).isNotNull();
+
+        TestPlan testPlan = new TestPlan()
+                .id("10000");
+
+        xRayApi.addTestExecutionsToTestPlan("12345", testPlan);
+
+        requests.forEach(mock::verify);
     }
 
     private Optional<HttpRequest> mockServer(HttpRequest expected, HttpResponse response) {
@@ -384,6 +493,6 @@ public class TestPlanApiTest {
     }
 
     private String resource(String resource) throws IOException {
-        return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource));
+        return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource), Charset.defaultCharset());
     }
 }
