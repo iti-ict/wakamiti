@@ -1,0 +1,17 @@
+{
+  "data": {
+    "createTest": {
+      "test": {
+        "issueId": "10001",
+        "jira": {
+          "summary": "prueba-test-1",
+          "labels": []
+        },
+        "testType": {
+          "name": "Cucumber"
+        }
+      },
+      "warnings": []
+    }
+  }
+}

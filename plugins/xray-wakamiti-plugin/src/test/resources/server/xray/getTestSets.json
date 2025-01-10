@@ -1,0 +1,22 @@
+{
+  "data": {
+    "getTestSets": {
+      "total": 1,
+      "start": 0,
+      "limit": 100,
+      "results": [
+        {
+          "issueId": "10060",
+          "jira": {
+            "key": "WAK-60",
+            "summary": "Test Set Summary"
+          },
+          "tests": {
+            "total": 0,
+            "results": []
+          }
+        }
+      ]
+    }
+  }
+}
