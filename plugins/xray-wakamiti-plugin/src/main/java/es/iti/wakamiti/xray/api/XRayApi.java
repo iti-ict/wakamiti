@@ -225,7 +225,6 @@ public class XRayApi extends BaseApi {
                     "    createTest(" +
                     "        testType: { name: \"Cucumber\" }," +
                     "        gherkin: \"" + test.getGherkin() + "\"," +
-//                    "        unstructured: \"Perform exploratory tests on calculator.\"," +
                     "        jira: {" + jirafields + "}" +
                     "    ) {" +
                     "        test {" +
@@ -233,7 +232,6 @@ public class XRayApi extends BaseApi {
                     "            testType {" +
                     "                name" +
                     "            }" +
-//                    "            unstructured" +
                     "            jira(fields: [\"key\"])" +
                     "        }" +
                     "        warnings" +
