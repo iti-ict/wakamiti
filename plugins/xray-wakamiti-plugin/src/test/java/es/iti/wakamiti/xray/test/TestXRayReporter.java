@@ -10,7 +10,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestXRayReporter {
 
@@ -19,8 +22,14 @@ public class TestXRayReporter {
         XRaySynchronizer reporter = new XRaySynchronizer();
         configure(reporter, "wakamiti.yaml");
 
-        Event event = event(Event.PLAN_CREATED, new JsonPlanSerializer().read(resource("wakamiti.json")));
-        reporter.eventReceived(event);
+        assertThat(reporter)
+                .hasFieldOrPropertyWithValue("enabled", true)
+                .hasFieldOrPropertyWithValue("xRayBaseURL", new URL("http://localhost:8888/"))
+                .hasFieldOrPropertyWithValue("jiraBaseURL", new URL("http://localhost:8888/"))
+                .hasFieldOrPropertyWithValue("project", "WAK")
+                .hasFieldOrPropertyWithValue("testCasePerFeature", true)
+                .hasFieldOrPropertyWithValue("createItemsIfAbsent", false)
+                .hasFieldOrPropertyWithValue("idTagPattern", "ID([\\w-]+)");
 
     }
 

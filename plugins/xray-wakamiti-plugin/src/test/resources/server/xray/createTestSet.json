@@ -1,0 +1,14 @@
+{
+  "data": {
+    "createTestSet": {
+      "testSet": {
+        "issueId": "10060",
+        "jira": {
+          "key": "W1-60",
+          "summary": "Test Set Summary"
+        }
+      },
+      "warnings": []
+    }
+  }
+}
