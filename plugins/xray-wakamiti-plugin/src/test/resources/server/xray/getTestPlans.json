@@ -1,0 +1,18 @@
+{
+  "data": {
+    "getTestPlans": {
+      "total": 1,
+      "start": 0,
+      "limit": 100,
+      "results": [
+        {
+          "issueId": "10050",
+          "jira": {
+            "key": "W1-50",
+            "summary": "Test Plan Summary"
+          }
+        }
+      ]
+    }
+  }
+}

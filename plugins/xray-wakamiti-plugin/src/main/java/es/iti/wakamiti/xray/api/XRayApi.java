@@ -29,23 +29,6 @@ public class XRayApi extends BaseApi {
         this.logger = logger;
     }
 
-    public Optional<TestPlan> getTestPlan(String issueId) {
-
-        String query = query("query { " +
-                "   getTestPlan(issueId: \"" + issueId + "\" ) {" +
-                "        issueId" +
-                "        projectId" +
-                "        jira(fields: [\"summary\"])" +
-                "        }" +
-                "    }");
-
-        JsonNode response = post(API_GRAPHQL, query);
-
-        TestPlan testPlan = read(response, "$.data.getTestPlan", TestPlan.class);
-
-        return Optional.ofNullable(testPlan);
-    }
-
     public List<TestPlan> getTestPlans() {
 
         String query = query("query {" +
@@ -232,9 +215,6 @@ public class XRayApi extends BaseApi {
         }).collect(Collectors.toList());
     }
 
-    private String query(String query) {
-        return toJSON(Map.of(QUERY, query));
-    }
 
     public List<TestCase> createTestCases(TestPlan remotePlan, List<TestCase> newTests, String project) {
         return newTests.stream().map(test -> {
@@ -267,15 +247,6 @@ public class XRayApi extends BaseApi {
             testCase.testSetList(test.getTestSetList());
             return testCase;
         }).collect(Collectors.toList());
-    }
-
-    private StringBuilder getJirafields(String project, JiraIssue issue) {
-        StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + issue.getSummary() + "\", project: {key: \"" + project + "\"}");
-        if (!issue.getLabels().isEmpty()) {
-            jirafields.append(", labels: [\"").append(issue.getLabels().get(0)).append("\"]");
-        }
-        jirafields.append("}");
-        return jirafields;
     }
 
     public TestExecution createTestExecution(String summary, List<String> createdIssues, String project) {
@@ -351,4 +322,18 @@ public class XRayApi extends BaseApi {
                         })
         );
     }
+
+    private String query(String query) {
+        return toJSON(Map.of(QUERY, query));
+    }
+
+    private StringBuilder getJirafields(String project, JiraIssue issue) {
+        StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + issue.getSummary() + "\", project: {key: \"" + project + "\"}");
+        if (!issue.getLabels().isEmpty()) {
+            jirafields.append(", labels: [\"").append(issue.getLabels().get(0)).append("\"]");
+        }
+        jirafields.append("}");
+        return jirafields;
+    }
+
 }

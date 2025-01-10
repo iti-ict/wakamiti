@@ -1,0 +1,14 @@
+{
+  "data": {
+    "createTestExecution": {
+      "testExecution": {
+        "issueId": "10050",
+        "jira": {
+          "key": "W1-50",
+          "summary": "Test Execution Summary"
+        }
+      },
+      "warnings": []
+    }
+  }
+}
