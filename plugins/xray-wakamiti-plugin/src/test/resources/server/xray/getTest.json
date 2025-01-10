@@ -1,0 +1,24 @@
+{
+  "data": {
+    "getTest": {
+      "issueId": "10070",
+      "jira": {
+        "key": "W1-70",
+        "summary": "Test Case Summary",
+        "labels": []
+      },
+      "folder": {
+        "name": "Test Repository"
+      },
+      "testType": {
+        "name": "Cucumber",
+        "kind": "Gherkin"
+      },
+      "testSets": {
+        "results": []
+      },
+      "steps": [],
+      "gherkin": null
+    }
+  }
+}

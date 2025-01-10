@@ -6,18 +6,19 @@ wakamiti:
 
   xray:
     enabled: true
-    baseURL: https://eu.xray.cloud.getxray.app
+    baseURL: http://localhost:8888/
     plan:
       id: 10035
       summary: Sincronización con plugin Wakamiti
     auth:
       credentials:
-        client-id: XXXX
-        client-secret: XXXX
+        client-id: XXX
+        client-secret: XXX
     project: WAK
     testCasePerFeature: true
     tag: XRay
 
   jira:
+    baseURL: http://localhost:8888/
     auth:
-      credentials: XXXX
+      credentials: XXX
