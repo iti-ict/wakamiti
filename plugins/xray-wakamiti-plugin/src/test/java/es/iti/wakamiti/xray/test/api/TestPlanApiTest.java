@@ -1,6 +1,8 @@
 package es.iti.wakamiti.xray.test.api;
 
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.xray.api.JiraApi;
 import es.iti.wakamiti.xray.api.XRayApi;
 import es.iti.wakamiti.xray.model.*;
 import org.apache.commons.io.IOUtils;
@@ -18,6 +20,8 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -483,6 +487,56 @@ public class TestPlanApiTest {
                 .id("10000");
 
         xRayApi.addTestExecutionsToTestPlan("12345", testPlan);
+
+        requests.forEach(mock::verify);
+    }
+
+    @Test
+    public void testUpdateTestCasesWithSuccess() throws IOException {
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("PUT")
+                        .withPath("/rest/api/2/issue/10070"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/jira/updateIssue.json"))
+        ).ifPresent(requests::add);
+
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        assertThat(jiraApi).isNotNull();
+
+        TestCase testCase = new TestCase()
+                .issueId("10070")
+                .status("RUNNING")
+                .issue(new JiraIssue()
+                        .summary("Test Summary")
+                        .labels(List.of("label1", "label2")))
+                .gherkin("Gherkin");
+
+        jiraApi.updateTestCases(List.of(new Pair<>(testCase, testCase)));
+
+        requests.forEach(mock::verify);
+    }
+
+    @Test
+    public void testAddAttachmentWithSuccess() throws IOException {
+        List<HttpRequest> requests = new ArrayList<>();
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/rest/api/2/issue/10070/attachments"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(resource("server/jira/addAttachment.json"))
+        ).ifPresent(requests::add);
+
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        assertThat(jiraApi).isNotNull();
+
+        jiraApi.addAttachment("10070", Files.createTempFile("temp", ""));
 
         requests.forEach(mock::verify);
     }
