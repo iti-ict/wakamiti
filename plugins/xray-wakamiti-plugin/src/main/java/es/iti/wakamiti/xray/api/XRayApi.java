@@ -216,7 +216,7 @@ public class XRayApi extends BaseApi {
     }
 
 
-    public List<TestCase> createTestCases(TestPlan remotePlan, List<TestCase> newTests, String project) {
+    public List<TestCase> createTestCases(List<TestCase> newTests, String project) {
         return newTests.stream().map(test -> {
 
             StringBuilder jirafields = getJirafields(project, test.getJira());

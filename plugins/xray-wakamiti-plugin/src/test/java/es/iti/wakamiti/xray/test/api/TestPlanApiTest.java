@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +104,7 @@ public class TestPlanApiTest {
                         .labels(List.of("label1", "label2")))
                 .gherkin("Gherkin");
 
-        xRayApi.createTestCases(new TestPlan(), List.of(testCase), "");
+        xRayApi.createTestCases(List.of(testCase), "");
 
         requests.forEach(mock::verify);
     }
