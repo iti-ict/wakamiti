@@ -86,7 +86,8 @@ public abstract class Mapper {
         return planNodeSnapshot1 -> {
             StringBuilder sb = new StringBuilder();
 
-            sb.append(planNodeSnapshot1.getDisplayName());
+            sb.append(planNodeSnapshot1.getDisplayName()
+                    .replace(QUOTATION_MARKS, ESCAPED_QUOTATION_MARKS));
 
             if (planNodeSnapshot1.getDataTable() != null) {
                 sb.append(ESCAPED_LINE_BREAK).append(Arrays.stream(planNodeSnapshot1.getDataTable())

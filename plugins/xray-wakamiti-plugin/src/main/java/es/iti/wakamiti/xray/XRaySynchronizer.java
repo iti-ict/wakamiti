@@ -186,7 +186,7 @@ public class XRaySynchronizer implements EventObserver {
                 .collect(Collectors.toList());
 
         if (!newTests.isEmpty()) {
-            List<TestCase> createdIssues = xRayApi.createTestCases(testPlan, newTests, project);
+            List<TestCase> createdIssues = xRayApi.createTestCases(newTests, project);
             testPlan.getTestCases().addAll(createdIssues);
 
             List<String> createdIssuesId = createdIssues.stream().map(TestCase::getIssueId).collect(Collectors.toList());
