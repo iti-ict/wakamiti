@@ -24,12 +24,10 @@ public class MapperTest {
     private static final Logger LOGGER = WakamitiLogger.forClass(MapperTest.class);
 
     private static PlanNodeSnapshot plan;
-    private static PlanNodeSnapshot planSuite;
 
     @BeforeClass
     public static void setUp() throws IOException {
         plan = new JsonPlanSerializer().read(resource("wakamiti.json"));
-        planSuite = new JsonPlanSerializer().read(resource("wakamiti.json"));
     }
 
     private static InputStream resource(String resource) {
@@ -62,43 +60,11 @@ public class MapperTest {
                 .allMatch(tc -> tc.getJira().getSummary().equals("XRay integration feature"));
     }
 
-//    @Test(expected = WakamitiException.class)
-//    public void testMapTestsWhenFeatureAndInvalidSourceBaseWithError() {
-//        try {
-//            Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_FEATURE).instance("feature").map(plan);
-//        } catch (WakamitiException e) {
-//            assertThat(e).hasMessageContaining("Invalid suiteBase: feature");
-//            throw e;
-//        }
-//    }
-
-
-//    @Test
-//    public void testMapTestsWhenFeatureAndSourceBasedAndAzureSuite() {
-//        List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-//                .map(planSuite).collect(Collectors.toList());
-//
-//        assertThat(tests)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(1)
-//                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api" + SLASH_CODE + "suite/azure"))
-//                        && tc.suite().name().equals("azure")
-//                        && tc.suite().parent().name().equals("api/suite")
-//                )
-//                .allMatch(tc -> tc.name().equals("Sincronización con plugin Wakamiti"));
-//    }
 
     @Test
     public void testMapTestsWhenScenario() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance(null)
                 .map(plan).collect(Collectors.toList());
-
-//        assertThat(tests)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(3)
-//                .allMatch(tc -> tc.getTestSetList().get(0).getJira().getSummary().equals("features/suite/Sincronización con plugin Wakamiti"));
 
         assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");
@@ -109,42 +75,6 @@ public class MapperTest {
     public void testMapTestsWhenScenarioAndSourceBased() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
                 .map(plan).collect(Collectors.toList());
-
-//        assertThat(tests)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(3)
-//                .allMatch(tc -> tc.suite().asPath().equals(Path.of("suite/Sincronización con plugin Wakamiti")));
-
-        assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
-        assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");
-        assertThat(tests.get(2)).hasFieldOrProperty("jira.summary");
-    }
-
-//    @Test(expected = WakamitiException.class)
-//    public void testMapTestsWhenScenarioAndInvalidSourceBaseWithError() {
-//        try {
-//            Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance("feature").map(plan);
-//        } catch (WakamitiException e) {
-//            assertThat(e).hasMessageContaining("Invalid suiteBase: feature");
-//            throw e;
-//        }
-//    }
-
-
-    @Test
-    public void testMapTestsWhenScenarioAndSourceBasedAndAzureSuite() {
-        List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .map(planSuite).collect(Collectors.toList());
-
-//        assertThat(tests)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(3)
-//                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api" + SLASH_CODE + "suite/azure"))
-//                        && tc.suite().name().equals("azure")
-//                        && tc.suite().parent().name().equals("api/suite")
-//                );
 
         assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");
