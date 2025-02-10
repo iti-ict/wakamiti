@@ -1,7 +1,7 @@
 package es.iti.wakamiti.xray.internal;
 
-import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.MapUtils;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.model.JiraIssue;
@@ -66,7 +66,7 @@ public abstract class Mapper {
                         .description(join(target.getDescription(), System.lineSeparator()))
                         .labels(Collections.singletonList(
                                 Optional.of(target.getId()).filter(id -> !id.startsWith("#"))
-                                        .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
+                                        .orElse("")
                         ))
                 )
                 .gherkin(getDisplayName(target))
