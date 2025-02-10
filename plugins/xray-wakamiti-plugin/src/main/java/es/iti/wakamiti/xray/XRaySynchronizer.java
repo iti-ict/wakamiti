@@ -19,8 +19,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
@@ -45,8 +47,8 @@ public class XRaySynchronizer implements EventObserver {
     private String testSet;
     private String tag;
     private boolean createItemsIfAbsent;
-    private String idTagPattern;
     private boolean testCasePerFeature;
+    private final Set<String> attachments = new LinkedHashSet<>();
 
     private XRayApi xRayApi;
     private JiraApi jiraApi;
@@ -95,30 +97,25 @@ public class XRaySynchronizer implements EventObserver {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
-    public void idTagPattern(String idTagPattern) {
-        this.idTagPattern = idTagPattern;
-    }
-
     public void testCasePerFeature(boolean testCasePerFeature) {
         this.testCasePerFeature = testCasePerFeature;
+    }
+
+    public void attachments(Set<String> attachments) {
+        this.attachments.addAll(attachments);
     }
 
     @Override
     public void eventReceived(Event event) {
         if (!enabled) return;
-        if (!(event.data() instanceof PlanNodeSnapshot)) {
-            LOGGER.warn("No event data found");
-            return;
-        }
-        PlanNodeSnapshot data = (PlanNodeSnapshot) event.data();
 
-        xRayApi = new XRayApi(xRayBaseURL, xRayclientId, xRayclientSecret, project, LOGGER);
-        jiraApi = new JiraApi(jiraBaseURL, jiraCredentials, LOGGER);
+        initializeXRayApi();
+        initializeJiraApi();
 
         if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Sync plan to XRay...");
-                sync(data);
+                sync((PlanNodeSnapshot) event.data());
 
             } catch (Exception e) {
                 throw new WakamitiException("The test plan could not be synchronized. " +
@@ -129,20 +126,32 @@ public class XRaySynchronizer implements EventObserver {
         if (Event.PLAN_RUN_FINISHED.equals(event.type())) {
             try {
                 LOGGER.info("Sync results to XRay...");
-                updateResults(data);
+                updateResults((PlanNodeSnapshot) event.data());
             } catch (Exception e) {
                 throw new WakamitiException("The result of the execution could not be uploaded.", e);
             }
         }
 
         if (Event.REPORT_OUTPUT_FILE_WRITTEN.equals(event.type())
-                && ((Path) event.data()).toString().endsWith(".html")) {
+                && attachments.stream().anyMatch(g -> Util.match((Path) event.data(), g))) {
             try {
-                LOGGER.info("Uploading attachments to Azure...");
+                LOGGER.info("Uploading attachments to XRay...");
                 uploadAttachment((Path) event.data());
             } catch (Exception e) {
                 LOGGER.error("Cannot upload attachment '{}'", event.data(), e);
             }
+        }
+    }
+
+    private void initializeXRayApi() {
+        if (xRayApi == null) {
+            xRayApi = new XRayApi(xRayBaseURL, xRayclientId, xRayclientSecret, project, LOGGER);
+        }
+    }
+
+    private void initializeJiraApi() {
+        if (jiraApi == null) {
+            jiraApi = new JiraApi(jiraBaseURL, jiraCredentials, LOGGER);
         }
     }
 
