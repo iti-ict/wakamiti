@@ -218,7 +218,7 @@ public class AzureSynchronizer implements EventObserver {
                         .collect(Collectors.toList()));
         api().createRun(run);
         LOGGER.debug("Test run #{} ready to sync", run.id());
-        testResults = api().getResults(run)
+        testResults = api().getResults(run, testCases.size())
                 .peek(r -> r.testCase(findTestCase.apply(r.testCase().id())))
                 .collect(Collectors.toList());
         LOGGER.debug("{} remote test results ready to sync", testResults.size());

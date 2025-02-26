@@ -31,6 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.util.JsonUtils.*;
@@ -52,6 +53,7 @@ public class AzureApi extends BaseApi<AzureApi> {
     private static final String RUN_ID = "runId";
     private static final String VALUE = "value";
     private static final int MAX_LIST = 200;
+    private static final int MAX_RESULTS = 1000;
 
     private final String configuration;
     private transient Function<String, String> tagExtractor;
@@ -564,15 +566,24 @@ public class AzureApi extends BaseApi<AzureApi> {
         }
     }
 
+
     /**
      * Retrieves test results from a specified test run.
      *
      * @param run the test run for which results are fetched.
+     * @param total the total number of test results expected.
      * @return a stream of test results.
      */
-    public Stream<TestResult> getResults(TestRun run) {
-        return newRequest().pathParam(RUN_ID, run.id())
-                .getAllPages(projectBase() + "/test/Runs/{runId}/results", new TypeRef<>() {});
+    public Stream<TestResult> getResults(TestRun run, int total) {
+        int times = (int) Math.ceil((double) total / MAX_RESULTS);
+        return IntStream.range(0, times).mapToObj(i ->
+            newRequest().pathParam(RUN_ID, run.id())
+                    .queryParam("$skip", MAX_RESULTS*i)
+                    .get(projectBase() + "/test/Runs/{runId}/results")
+                    .body()
+                    .map(json -> read(json, "$.value", new TypeRef<List<TestResult>>() {}))
+                    .orElseGet(LinkedList::new)
+        ).flatMap(List::stream);
     }
 
     /**
