@@ -29,7 +29,7 @@ public class TestXRayReporter {
                 .hasFieldOrPropertyWithValue("project", "WAK")
                 .hasFieldOrPropertyWithValue("testCasePerFeature", true)
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", false)
-                .hasFieldOrPropertyWithValue("idTagPattern", "ID([\\w-]+)");
+                .hasFieldOrPropertyWithValue("tag", "XRay");
 
     }
 

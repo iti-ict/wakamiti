@@ -1,6 +1,5 @@
 package es.iti.wakamiti.xray.test;
 
-import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.JsonPlanSerializer;
