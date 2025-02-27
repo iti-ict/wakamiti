@@ -10,6 +10,7 @@ public class TestRun {
     private TestCase test;
 
     public TestRun() {
+        // Empty constructor
     }
 
     public String getId() {

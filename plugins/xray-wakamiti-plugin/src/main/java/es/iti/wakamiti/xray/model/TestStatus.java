@@ -7,6 +7,7 @@ public class TestStatus {
     String name;
 
     public TestStatus() {
+        // Empty constructor
     }
 
     public String getName() {

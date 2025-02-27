@@ -23,7 +23,9 @@ import java.util.*;
 public class BaseApi {
 
     public static final String APPLICATION_JSON = "application/json";
-    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+    private static final String ACCEPT_HEADER = "Accept";
 
     private final URL baseURL;
     private final String authorization;
@@ -146,8 +148,8 @@ public class BaseApi {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.noBody())
                 .uri(url(uri))
-                .header("Authorization", authorization)
-                .header("Accept", APPLICATION_JSON)
+                .header(AUTHORIZATION_HEADER, authorization)
+                .header(ACCEPT_HEADER, APPLICATION_JSON)
                 .build();
     }
 
@@ -155,9 +157,9 @@ public class BaseApi {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
-                .header("Authorization", authorization)
-                .header("Content-Type", contentType)
-                .header("Accept", APPLICATION_JSON)
+                .header(AUTHORIZATION_HEADER, authorization)
+                .header(CONTENT_TYPE_HEADER, contentType)
+                .header(ACCEPT_HEADER, APPLICATION_JSON)
                 .build();
     }
 
@@ -173,9 +175,9 @@ public class BaseApi {
 
         return HttpRequest.newBuilder()
                 .uri(url(uri))
-                .header("Authorization", authorization)
-                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .header("Accept", APPLICATION_JSON)
+                .header(AUTHORIZATION_HEADER, authorization)
+                .header(CONTENT_TYPE_HEADER, "multipart/form-data; boundary=" + boundary)
+                .header(ACCEPT_HEADER, APPLICATION_JSON)
                 .header("X-Atlassian-Token", "no-check")
                 .POST(HttpRequest.BodyPublishers.ofByteArray(outputStream.toByteArray()))
                 .build();
@@ -185,7 +187,7 @@ public class BaseApi {
         return HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
-                .header("Content-Type", APPLICATION_JSON)
+                .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
                 .build();
     }
 

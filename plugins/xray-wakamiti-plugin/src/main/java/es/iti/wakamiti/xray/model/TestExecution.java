@@ -6,6 +6,7 @@ public class TestExecution {
     private JiraIssue jira;
 
     public TestExecution() {
+        // Empty constructor
     }
 
     public JiraIssue getJira() {
