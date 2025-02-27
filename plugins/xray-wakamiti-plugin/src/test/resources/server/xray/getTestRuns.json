@@ -1,0 +1,24 @@
+{
+  "data": {
+    "getTestRuns": {
+      "total": 1,
+      "start": 0,
+      "limit": 100,
+      "results": [
+        {
+          "test": {
+            "issueId": "10070",
+            "jira": {
+              "key": "W1-70",
+              "summary": "Test Case Summary",
+              "labels": []
+            }
+          },
+          "status": {
+            "name": "PASSED"
+          }
+        }
+      ]
+    }
+  }
+}
