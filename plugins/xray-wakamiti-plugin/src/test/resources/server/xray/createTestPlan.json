@@ -1,0 +1,15 @@
+{
+  "data": {
+    "createTestPlan": {
+      "testPlan": {
+        "issueId": "10050",
+        "projectId": "10000",
+        "jira": {
+          "key": "W1-50",
+          "summary": "Test Summary"
+        }
+      },
+      "warnings": []
+    }
+  }
+}
