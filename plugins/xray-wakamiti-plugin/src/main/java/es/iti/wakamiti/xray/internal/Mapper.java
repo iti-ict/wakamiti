@@ -53,7 +53,7 @@ public abstract class Mapper {
         }
 
         TestSet suite = new TestSet().issue(new JiraIssue()
-                .summary(suitePath.toString())
+                .summary(suitePath.toString().replace("\\", "/"))
                 .labels(Collections.singletonList(target.getId())));
 
         return Stream.of(new Pair<>(target, suite));
