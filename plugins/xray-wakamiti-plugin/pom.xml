@@ -18,6 +18,7 @@
 
 
     <artifactId>xray-wakamiti-plugin</artifactId>
+    <version>1.0.0</version>
 
     <name>[Wakamiti Plugin] XRay Integration</name>
     <description>XRay plan test integration</description>
