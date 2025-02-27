@@ -19,6 +19,7 @@ public class XRayApi extends BaseApi {
     private static final String API_GRAPHQL = "/api/v2/graphql";
     private static final String AUTH_URL = "/api/v1/authenticate";
     private static final String QUERY = "query";
+    private static final String DELIMITER = "\",\"";
 
     private final String project;
     private final Logger logger;
@@ -54,7 +55,7 @@ public class XRayApi extends BaseApi {
                 "mutation {" +
                         "    createTestPlan(" +
                         "        jira: {" +
-                        "            fields: { summary: \"" + title + "\", project: {key: \"" + project + "\"} }" +
+                        getSummaryAndProject(title, project) +
                         "        }" +
                         "    ) {" +
                         "        testPlan {" +
@@ -99,7 +100,7 @@ public class XRayApi extends BaseApi {
                 "mutation {" +
                         "    addTestsToTestPlan(" +
                         "        issueId: \"" + remotePlan.getIssueId() + "\", " +
-                        "        testIssueIds: [\"" + String.join("\",\"", createdIssues) + "\"]" +
+                        "        testIssueIds: [\"" + String.join(DELIMITER, createdIssues) + "\"]" +
                         "    ) {" +
                         "        addedTests" +
                         "        warning" +
@@ -251,10 +252,10 @@ public class XRayApi extends BaseApi {
         String mutation = query(
                 "mutation {" +
                         "    createTestExecution(" +
-                        "        testIssueIds: [\"" + String.join("\",\"", createdIssues) + "\"]" +
+                        "        testIssueIds: [\"" + String.join(DELIMITER, createdIssues) + "\"]" +
                         "        testEnvironments: [\"Wakamiti\"]" +
                         "        jira: {" +
-                        "            fields: { summary: \"" + summary + "\", project: {key: \"" + project + "\"} }" +
+                        getSummaryAndProject(summary, project) +
                         "        }" +
                         "    ) {" +
                         "        testExecution {" +
@@ -277,7 +278,7 @@ public class XRayApi extends BaseApi {
         List<String> issues = createdIssues.stream().map(TestCase::getIssueId).collect(Collectors.toList());
         String query = query(
                 "query {" +
-                        "    getTestRuns( testIssueIds: [\"" + String.join("\",\"", issues) + "\"], limit: 100 ) {" +
+                        "    getTestRuns( testIssueIds: [\"" + String.join(DELIMITER, issues) + "\"], limit: 100 ) {" +
                         "        total" +
                         "        limit" +
                         "        start" +
@@ -326,12 +327,16 @@ public class XRayApi extends BaseApi {
     }
 
     private StringBuilder getJirafields(String project, JiraIssue issue) {
-        StringBuilder jirafields = new StringBuilder("fields: { summary:\"" + issue.getSummary() + "\", project: {key: \"" + project + "\"}");
+        StringBuilder jirafields = new StringBuilder(getSummaryAndProject(issue.getSummary(), project));
         if (!issue.getLabels().isEmpty()) {
             jirafields.append(", labels: [\"").append(issue.getLabels().get(0)).append("\"]");
         }
         jirafields.append("}");
         return jirafields;
+    }
+
+    private String getSummaryAndProject(String summary, String project) {
+        return "fields: { summary: \"" + summary + "\", project: {key: \"" + project + "\"} }";
     }
 
 }
