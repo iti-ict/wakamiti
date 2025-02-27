@@ -1,0 +1,24 @@
+wakamiti:
+  resourceTypes: gherkin
+  outputFilePath: target/wakamiti.json
+  log:
+    level: off
+
+  xray:
+    enabled: true
+    baseURL: http://localhost:8888/
+    plan:
+      id: 10035
+      summary: Sincronización con plugin Wakamiti
+    auth:
+      credentials:
+        client-id: XXX
+        client-secret: XXX
+    project: WAK
+    testCasePerFeature: true
+    tag: XRay
+
+  jira:
+    baseURL: http://localhost:8888/
+    auth:
+      credentials: XXX
