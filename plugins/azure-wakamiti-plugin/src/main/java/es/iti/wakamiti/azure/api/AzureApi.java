@@ -31,6 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.api.util.JsonUtils.*;
@@ -52,6 +53,7 @@ public class AzureApi extends BaseApi<AzureApi> {
     private static final String RUN_ID = "runId";
     private static final String VALUE = "value";
     private static final int MAX_LIST = 200;
+    private static final int MAX_RESULTS = 1000;
 
     private final String configuration;
     private transient Function<String, String> tagExtractor;
@@ -388,65 +390,54 @@ public class AzureApi extends BaseApi<AzureApi> {
         BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
                 .op(WorkItemOp.Operation.ADD).path(format("/fields/{}", field)).value(value);
 
-        List<CompletableFuture<TestCase>> futures = testCases.stream().map(t -> {
-            List<WorkItemOp> ops = new ArrayList<>();
-            ops.add(newWorkItem.apply(TITLE, t.name()));
-            ops.add(newWorkItem.apply(TAGS, t.tag()));
-            ops.add(newWorkItem.apply(AREA_PATH, path(plan.area())));
-            ops.add(newWorkItem.apply(ITERATION_PATH, path(plan.iteration())));
-            Optional.ofNullable(t.description()).ifPresent(d -> ops.add(newWorkItem.apply(DESCRIPTION, d)));
-            return newRequest()
-                    .postCall(response -> response.body().filter(x -> response.statusCode() < 400)
-                            .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ", t.tag())))
-                    .pathParam("type", settings().testCaseType())
-                    .queryParam("$expand", "none")
-                    .queryParam("suppressNotifications", false)
-                    .queryParam("validateOnly", false)
-                    .header("Content-Type", "application/json-patch+json")
-                    .body(json(ops).toString())
-                    .postAsync(projectBase() + "/wit/workitems/${type}")
-                    .thenApply(response -> response.body().map(json -> readStringValue(json, "id"))
-                            .orElseThrow(() -> new WakamitiException("Cannot create test case. ")))
-                    .thenApply(t::id);
-        }).collect(toList());
-        List<Pair<TestCase, JsonNode>> items = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(x ->
-                        futures.stream().map(CompletableFuture::join).map(t -> new Pair<>(t, json(map(
-                                "workItem", new WorkItem().id(t.id()),
-                                "pointAssignments", List.of(
-                                        new PointAssignment().configurationId(settings().configuration()))))))
-                ).join().collect(toList());
+        testCases.stream().peek(t -> {
+                    List<WorkItemOp> ops = new ArrayList<>();
+                    ops.add(newWorkItem.apply(TITLE, t.name()));
+                    ops.add(newWorkItem.apply(TAGS, t.tag()));
+                    ops.add(newWorkItem.apply(AREA_PATH, path(plan.area())));
+                    ops.add(newWorkItem.apply(ITERATION_PATH, path(plan.iteration())));
+                    Optional.ofNullable(t.description()).ifPresent(d -> ops.add(newWorkItem.apply(DESCRIPTION, d)));
+                    newRequest()
+                            .postCall(response -> response.body()
+                                    .filter(x -> response.statusCode() < 400)
+                                    .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ", t.tag())))
+                            .pathParam("type", settings().testCaseType())
+                            .queryParam("$expand", "none")
+                            .queryParam("suppressNotifications", false)
+                            .queryParam("validateOnly", false)
+                            .header("Content-Type", "application/json-patch+json")
+                            .body(json(ops).toString())
+                            .post(projectBase() + "/wit/workitems/${type}")
+                            .body().map(json -> readStringValue(json, "id"))
+                            .ifPresentOrElse(t::id, () -> {
+                                throw new WakamitiException("Cannot create test case. ");
+                            });
+                }).map(t -> new Pair<>(t, json(map(
+                        "workItem", new WorkItem().id(t.id()),
+                        "pointAssignments", List.of(new PointAssignment().configurationId(settings().configuration())))))
+                ).collect(groupingBy(p -> p.key().suite(), mapping(Pair::value, toList())))
+                .forEach((key, value) -> newRequest()
+                        .pathParam(PLAN_ID, plan.id())
+                        .pathParam(SUITE_ID, key.id())
+                        .body(value.toString())
+                        .post(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase")
+                        .body().stream()
+                        .flatMap(json -> read(json, VALUE, new TypeRef<List<JsonNode>>() {
+                        }).stream())
+                        .forEach(json -> {
+                            String id = readStringValue(json, "$.workItem.id");
+                            int order = Optional.ofNullable(read(json, "$.order", Integer.class))
+                                    .orElse(0);
+                            List<PointAssignment> points = read(json, "$.pointAssignments", new TypeRef<>() {
+                            });
+                            testCases.stream().filter(t -> t.id().equals(id)).findFirst()
+                                    .ifPresentOrElse(t -> t.order(order).pointAssignments(points),
+                                            () -> {
+                                                throw new WakamitiException("Cannot found test case '{}'.", id);
+                                            }
+                                    );
+                        }));
 
-        try {
-            CompletableFuture.allOf(items.stream()
-                    .collect(groupingBy(p -> p.key().suite(), mapping(Pair::value, toList())))
-                    .entrySet().stream()
-                    .map(e -> newRequest()
-                            .pathParam(PLAN_ID, plan.id())
-                            .pathParam(SUITE_ID, e.getKey().id())
-                            .body(e.getValue().toString())
-                            .postAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase")
-                            .thenAccept(response -> response.body().stream()
-                                    .flatMap(json -> read(json, VALUE, new TypeRef<List<JsonNode>>() {}).stream())
-                                    .forEach(json -> {
-                                        String id = readStringValue(json, "$.workItem.id");
-                                        int order = Optional.ofNullable(read(json, "$.order", Integer.class))
-                                                .orElse(0);
-                                        List<PointAssignment> points = read(json, "$.pointAssignments", new TypeRef<>() {});
-                                        testCases.stream().filter(t -> t.id().equals(id)).findFirst()
-                                                .ifPresentOrElse(t -> t.order(order).pointAssignments(points),
-                                                        () -> {
-                                                            throw new WakamitiException("Cannot found test case '{}'.", id);
-                                                        }
-                                                );
-                                    })
-                            )
-                    ).toArray(CompletableFuture[]::new)).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new WakamitiException(e.getCause());
-        }
         return testCases;
     }
 
@@ -465,26 +456,31 @@ public class AzureApi extends BaseApi<AzureApi> {
         List<TestCase> remove = new LinkedList<>();
         List<TestCase> add = new LinkedList<>();
 
-        CompletableFuture.allOf(testCases.stream().filter(p -> p.key().isDifferent(p.value())).map(p -> {
-            List<WorkItemOp> ops = new ArrayList<>();
-            TestCase oldT = p.key();
-            TestCase newT = p.value();
-            if (!oldT.name().equals(newT.name())) {
-                ops.add(newWorkItem.apply(TITLE, newT.name()));
-            }
-            if (!Objects.equals(oldT.description(), newT.description())) {
-                ops.add(newWorkItem.apply(DESCRIPTION, newT.description()));
-            }
-            return newRequest()
-                    .pathParam("id", oldT.id())
-                    .body(json(ops).toString())
-                    .header("Content-Type", "application/json-patch+json")
-                    .patchAsync(projectBase() + "/wit/workitems/{id}");
-        }).toArray(CompletableFuture[]::new)).join();
-        testCases.stream().filter(p -> !p.key().suite().equals(p.value().suite())).forEach(p -> {
-            remove.add(p.key());
-            add.add(p.value());
-        });
+        testCases.stream()
+                .filter(p -> p.key().isDifferent(p.value()))
+                .forEach(p -> {
+                    List<WorkItemOp> ops = new ArrayList<>();
+                    TestCase oldT = p.key();
+                    TestCase newT = p.value();
+                    if (!oldT.name().equals(newT.name())) {
+                        ops.add(newWorkItem.apply(TITLE, newT.name()));
+                    }
+                    if (!Objects.equals(oldT.description(), newT.description())) {
+                        ops.add(newWorkItem.apply(DESCRIPTION, newT.description()));
+                    }
+                    newRequest()
+                            .pathParam("id", oldT.id())
+                            .body(json(ops).toString())
+                            .header("Content-Type", "application/json-patch+json")
+                            .patch(projectBase() + "/wit/workitems/{id}");
+                });
+
+        testCases.stream()
+                .filter(p -> !p.key().suite().equals(p.value().suite()))
+                .forEach(p -> {
+                    remove.add(p.key());
+                    add.add(p.value());
+                });
 
         List<CompletableFuture<?>> futures = new LinkedList<>();
         // remove suite relation
@@ -570,15 +566,24 @@ public class AzureApi extends BaseApi<AzureApi> {
         }
     }
 
+
     /**
      * Retrieves test results from a specified test run.
      *
      * @param run the test run for which results are fetched.
+     * @param total the total number of test results expected.
      * @return a stream of test results.
      */
-    public Stream<TestResult> getResults(TestRun run) {
-        return newRequest().pathParam(RUN_ID, run.id())
-                .getAllPages(projectBase() + "/test/Runs/{runId}/results", new TypeRef<>() {});
+    public Stream<TestResult> getResults(TestRun run, int total) {
+        int times = (int) Math.ceil((double) total / MAX_RESULTS);
+        return IntStream.range(0, times).mapToObj(i ->
+            newRequest().pathParam(RUN_ID, run.id())
+                    .queryParam("$skip", MAX_RESULTS*i)
+                    .get(projectBase() + "/test/Runs/{runId}/results")
+                    .body()
+                    .map(json -> read(json, "$.value", new TypeRef<List<TestResult>>() {}))
+                    .orElseGet(LinkedList::new)
+        ).flatMap(List::stream);
     }
 
     /**

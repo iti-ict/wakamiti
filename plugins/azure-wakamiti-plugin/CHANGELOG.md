@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.1.2] - 2025-02-26
+
+### Fixed
+- The endpoint `/{organization}/{project}/_apis/test/Runs/{runId}/results` 
+  only returns a maximum of 1000 records.
+
+
+## [2.1.1] - 2025-02-24
+
+### Fixed
+- Concurrency limit of 100 every 10,000 milliseconds.
+
+
 ## [2.1.0] - 2024-12-11
 
 ### Changed
