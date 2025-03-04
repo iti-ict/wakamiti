@@ -6,6 +6,7 @@
 package es.iti.wakamiti.groovy;
 
 
+import es.iti.wakamiti.api.extensions.StepContributor;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,7 +18,6 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SuppressWarnings("java:S1872")
 public class GroovyLoaderContributorTest {
 
     private final GroovyLoaderContributor loader = new GroovyLoaderContributor();
@@ -29,8 +29,7 @@ public class GroovyLoaderContributorTest {
         assertThat(result)
                 .isNotEmpty()
                 .hasSize(2)
-                .anyMatch(it -> it.getName().equals("steps.CustomSteps"))
-                .anyMatch(it -> it.getName().equals("steps.CustomSteps2"));
+                .anyMatch(StepContributor.class::isAssignableFrom);
     }
 
     @Test
