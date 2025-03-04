@@ -5,6 +5,7 @@
  */
 package es.iti.wakamiti.groovy;
 
+
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 public class GroovyLoaderContributorTest {
 
     private final GroovyLoaderContributor loader = new GroovyLoaderContributor();
@@ -24,7 +26,9 @@ public class GroovyLoaderContributorTest {
         URI steps = Objects.requireNonNull(this.getClass().getClassLoader().getResource("steps")).toURI();
         Class<?>[] result = loader.load(List.of(new File(steps).getAbsolutePath())).toArray(Class[]::new);
         assertThat(result).isNotEmpty();
-        assertThat(result[0].getName()).isEqualTo("other.CustomSteps");
+        assertThat(result).hasSize(2);
+        assertThat(result).anyMatch(it -> it.getName().equals("steps.CustomSteps"));
+        assertThat(result).anyMatch(it -> it.getName().equals("steps.CustomSteps2"));
     }
 
     @Test
@@ -46,4 +50,5 @@ public class GroovyLoaderContributorTest {
         Class<?>[] result = loader.load(List.of(new File(steps).getAbsolutePath())).toArray(Class[]::new);
         assertThat(result).isEmpty();
     }
+
 }
