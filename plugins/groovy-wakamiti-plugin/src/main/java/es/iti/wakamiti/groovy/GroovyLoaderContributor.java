@@ -6,18 +6,21 @@
 package es.iti.wakamiti.groovy;
 
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.util.ThrowableFunction;
 import groovy.lang.GroovyClassLoader;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.LoaderContributor;
+import groovy.lang.GroovyCodeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,22 +52,37 @@ public class GroovyLoaderContributor implements LoaderContributor {
             groovyPaths.forEach(path -> LOGGER.debug("Groovy file [{}] found", path.getFileName()));
         }
 
-        groovyPaths.stream().map(Path::getParent).map(Objects::toString).distinct()
-                .forEach(groovyClassLoader::addClasspath);
+
+        groovyPaths.stream().map(Path::getParent).map(Path::toUri).distinct()
+                .map((ThrowableFunction<URI, URL>) URI::toURL)
+                .forEach(groovyClassLoader::addURL);
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
         WakamitiAPI.instance().contributors().setClassLoaders(Thread.currentThread().getContextClassLoader());
 
-        return groovyPaths.stream().map(this::loadClass)
-                .filter(Objects::nonNull);
+        return loadClasses(groovyPaths).stream();
     }
 
-    private Class<?> loadClass(Path path) {
-        try {
-            return groovyClassLoader.parseClass(path.toFile());
-        } catch (Exception e) {
-            LOGGER.error("Cannot parse file [{}]", path, e);
-            return null;
+    private List<Class<?>> loadClasses(List<Path> paths) {
+        List<Class<?>> compiled = new LinkedList<>();;
+        List<Path> pending = new ArrayList<>(paths);
+        Map<Path, Exception> failed = new HashMap<>();
+
+        while (!pending.isEmpty()) {
+            failed.clear();
+            for (Path scriptFile : pending) {
+                try {
+                    compiled.add(groovyClassLoader.parseClass(scriptFile.toFile()));
+                } catch (Exception e) {
+                    failed.put(scriptFile, e);
+                }
+            }
+            if (failed.size() == pending.size()) {
+                failed.forEach((k, e) -> LOGGER.error("Cannot parse file [{}]", k, e));
+                break;
+            }
+            pending = new ArrayList<>(failed.keySet());
         }
+        return compiled;
     }
 
     private Stream<Path> listFiles(Path dir) {

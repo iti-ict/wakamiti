@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.7.1] - 2025-03-04
+
+### Fixed
+- Problems loading multiple classes that are dependent on each other.
+
+
 ## [2.7.0] - 2024-12-11
 
 ### Changed
