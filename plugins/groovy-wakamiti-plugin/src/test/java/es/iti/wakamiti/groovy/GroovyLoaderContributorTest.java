@@ -17,6 +17,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@SuppressWarnings("java:S1872")
 public class GroovyLoaderContributorTest {
 
     private final GroovyLoaderContributor loader = new GroovyLoaderContributor();
@@ -25,10 +26,12 @@ public class GroovyLoaderContributorTest {
     public void testLoadWhenThereAreFiles() throws URISyntaxException {
         URI steps = Objects.requireNonNull(this.getClass().getClassLoader().getResource("steps")).toURI();
         Class<?>[] result = loader.load(List.of(new File(steps).getAbsolutePath())).toArray(Class[]::new);
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(2);
-        assertThat(result).anyMatch(it -> it.getName().equals("steps.CustomSteps"));
-        assertThat(result).anyMatch(it -> it.getName().equals("steps.CustomSteps2"));
+        assertThat(result)
+                .isNotEmpty()
+                .hasSize(2)
+                .allMatch(it -> it.getPackage().getName().equals("steps"))
+                .anyMatch(it -> it.getSimpleName().equals("CustomSteps"))
+                .anyMatch(it -> it.getSimpleName().equals("CustomSteps2"));
     }
 
     @Test
