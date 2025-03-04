@@ -15,6 +15,7 @@ exist, but you can also develop your own plugins!
 - [File Uploader](en/plugins/fileuploader)
 - [Appium steps](en/plugins/appium)
 - [Azure Integration](en/plugins/azure)
+- [XRay Integration](en/plugins/xray)
 - [Email steps](en/plugins/email)
 - [JMeter steps](en/plugins/jmeter)
 - [Groovy](en/plugins/groovy)
