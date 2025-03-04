@@ -65,6 +65,11 @@
               "depth": 2
             },
             {
+              "value": "Integración XRay",
+              "anchor": "/xray",
+              "depth": 2
+            },
+            {
               "value": "Pasos Email",
               "anchor": "/email",
               "depth": 2

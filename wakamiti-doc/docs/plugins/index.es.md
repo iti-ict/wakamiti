@@ -15,6 +15,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [File Uploader](plugins/fileuploader)
 - [Pasos Appium](plugins/appium)
 - [Integración Azure](plugins/azure)
+- [Integración XRay](plugins/xray)
 - [Pasos Email](plugins/email)
 - [Pasos JMeter](plugins/jmeter)
 - [Groovy](plugins/groovy)
