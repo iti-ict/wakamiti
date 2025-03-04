@@ -29,9 +29,8 @@ public class GroovyLoaderContributorTest {
         assertThat(result)
                 .isNotEmpty()
                 .hasSize(2)
-                .allMatch(it -> it.getPackage().getName().equals("steps"))
-                .anyMatch(it -> it.getSimpleName().equals("CustomSteps"))
-                .anyMatch(it -> it.getSimpleName().equals("CustomSteps2"));
+                .anyMatch(it -> it.getName().equals("steps.CustomSteps"))
+                .anyMatch(it -> it.getName().equals("steps.CustomSteps2"));
     }
 
     @Test
