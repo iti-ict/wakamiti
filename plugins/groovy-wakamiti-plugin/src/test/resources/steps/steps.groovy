@@ -4,7 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package other
+package steps
+
 
 import groovy.util.logging.Slf4j
 import es.iti.wakamiti.api.annotations.I18nResource
@@ -14,7 +15,7 @@ import es.iti.wakamiti.groovy.GroovyStepContributor
 
 @Slf4j
 @I18nResource("customs")
-class CustomSteps implements StepContributor {
+class CustomSteps extends CustomSteps2 implements StepContributor {
 
 
     @Step(value = "number.addition", args = ["x:int", "y:int"])
@@ -25,7 +26,6 @@ class CustomSteps implements StepContributor {
 
     @Step(value = "something", args = ["name:word"])
     def something(String name) {
-        def contributor = getContributor();
         log.info("Contributor: {}", contributor.info())
         int month = new Date().format('MM') as int
         log.info("Month of year: {}", month)
