@@ -19,7 +19,6 @@ import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
-import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -169,17 +168,7 @@ public class RestSupport {
     }
 
     protected RequestSpecification header(RequestSpecification req, String header, String value) {
-        RequestSpecificationImpl request = (RequestSpecificationImpl) req;
-        String[] aux = value.split(";");
-        if (RestAssured.config().getHeaderConfig().shouldOverwriteHeaderWithName(header)) {
-            request.removeHeader(header);
-        }
-        if (aux.length > 1) {
-            request.header(header, aux[0], (Object[]) Arrays.copyOfRange(aux, 1, aux.length));
-        } else {
-            request.header(header, aux[0]);
-        }
-        return request;
+        return req.headers(Map.of(header, List.of(value.split(";"))));
     }
 
     protected Object parsedResponse() {
@@ -221,6 +210,7 @@ public class RestSupport {
                 }
                 return result;
             } catch (Exception ignored) {
+                // Ignored exception
             }
         }
         return null;

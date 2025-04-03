@@ -184,8 +184,8 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      */
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
-        specifications.add(request ->
-                tableToMap(dataTable).forEach((k, v) -> header(request, k, v)));
+        specifications.add(request -> tableToMap(dataTable)
+                .forEach((k,v) -> header(request, k, v)));
     }
 
     /**
@@ -471,8 +471,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.GET.subject")
     public Object executeGetSubject() {
-        executeRequest(RequestSpecification::get);
-        return parsedResponse();
+        return executeGetQuery();
     }
 
     @Step("rest.execute.DELETE.subject")
@@ -540,8 +539,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.POST.data.from.document")
     public Object executePostDataUsingDocument(Document document) {
-        executeRequest(RequestSpecification::post, document.getContent());
-        return parsedResponse();
+        return executePostSubjectUsingDocument(document);
     }
 
     @Step("rest.execute.POST.data.from.file")
@@ -552,8 +550,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.POST.data.empty")
     public Object executePostData() {
-        executeRequest(RequestSpecification::post);
-        return parsedResponse();
+        return executePostSubject();
     }
 
     @Step("rest.execute.DELETE.data.from.document")
