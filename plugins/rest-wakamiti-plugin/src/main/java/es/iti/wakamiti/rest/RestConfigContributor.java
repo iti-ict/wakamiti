@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.restassured.internal.common.assertion.AssertParameter.notNull;
 
@@ -159,13 +161,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         }
 
         private static Set<Pattern> newHashMapReturningFalseByDefault(final String... headerNamesToOverwrite) {
-            return new HashSet<>() {
-                {
-                    for (String headerName : headerNamesToOverwrite) {
-                        add(Pattern.compile(headerName, Pattern.CASE_INSENSITIVE));
-                    }
-                }
-            };
+            return Stream.of(headerNamesToOverwrite)
+                    .map(it -> Pattern.compile(it, Pattern.CASE_INSENSITIVE))
+                    .collect(Collectors.toSet());
         }
 
         @Override
