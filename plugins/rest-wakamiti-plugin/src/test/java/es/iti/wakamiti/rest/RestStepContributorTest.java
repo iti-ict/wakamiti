@@ -34,7 +34,6 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -62,7 +61,7 @@ import static org.mockserver.model.RegexBody.regex;
 public class RestStepContributorTest {
 
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
+    private static final String BASE_URL = String.format("https://localhost:%s", PORT);
     private static final String TOKEN_PATH = "wakamiti/data/token.txt";
 
     private static final ClientAndServer client = startClientAndServer(PORT);
