@@ -1,7 +1,6 @@
 package es.iti.wakamiti.rest;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockserver.configuration.Configuration;
-import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.matchers.Times;
@@ -75,7 +73,7 @@ public class RestStepContributorTest {
 
     @BeforeClass
     public static void setup() {
-        ConfigurationProperties.logLevel("OFF");
+//        ConfigurationProperties.logLevel("OFF");
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
                 Configuration.configuration(),
                 new MockServerLogger()).sslContext().getSocketFactory());
@@ -537,8 +535,9 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeaders(
-                                header("param1", "value1"),
-                                header("param2", "value2")
+                                header("param1", "value1", "value2"),
+                                header("param2", "value1", "value2"),
+                                header("Accept-Language", "es")
                         )
                 ,
                 response()
@@ -548,7 +547,9 @@ public class RestStepContributorTest {
 
         // act
         contributor.setHeader("param1", "value1");
-        contributor.setHeader("param2", "value2");
+        contributor.setHeader("param1", "value2");
+        contributor.setHeader("param2", "value1;value2");
+        contributor.setHeader("Accept-Language", "es");
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check

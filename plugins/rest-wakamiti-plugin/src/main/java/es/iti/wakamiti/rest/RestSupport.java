@@ -8,17 +8,18 @@ package es.iti.wakamiti.rest;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -74,6 +75,7 @@ public class RestSupport {
         RequestSpecification request = RestAssured.given()
                 .accept(ContentType.ANY)
                 .header("Accept-Language", "*");
+
         specifications.forEach(specification -> specification.accept(request));
         authSpecification.ifPresent(specification -> specification.accept(request));
         return attachLogger(request);
@@ -164,6 +166,20 @@ public class RestSupport {
             map.put(dataTable.value(i, 0), dataTable.value(i, 1));
         }
         return map;
+    }
+
+    protected RequestSpecification header(RequestSpecification req, String header, String value) {
+        RequestSpecificationImpl request = (RequestSpecificationImpl) req;
+        String[] aux = value.split(";");
+        if (RestAssured.config().getHeaderConfig().shouldOverwriteHeaderWithName(header)) {
+            request.removeHeader(header);
+        }
+        if (aux.length > 1) {
+            request.header(header, aux[0], (Object[]) Arrays.copyOfRange(aux, 1, aux.length));
+        } else {
+            request.header(header, aux[0]);
+        }
+        return request;
     }
 
     protected Object parsedResponse() {
