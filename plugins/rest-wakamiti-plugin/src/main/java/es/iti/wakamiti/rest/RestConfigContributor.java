@@ -142,6 +142,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
 
     static class HeaderConfig extends io.restassured.config.HeaderConfig {
 
+        private static final String HEADER_NAME = "Header name";
         private static final String ACCEPT_HEADER_NAME = "accept";
         private static final String CONTENT_TYPE_HEADER_NAME = "content-type";
 
@@ -169,7 +170,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
 
         @Override
         public HeaderConfig overwriteHeadersWithName(String headerName, String... additionalHeaderNames) {
-            notNull(headerName, "Header name");
+            notNull(headerName, HEADER_NAME);
             Set<Pattern> map = newHashMapReturningFalseByDefault(headerName);
             if (additionalHeaderNames != null) {
                 for (String additionalHeaderName : additionalHeaderNames) {
@@ -180,16 +181,8 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         }
 
         @Override
-        public HeaderConfig mergeHeadersWithName(String headerName, String... additionalHeaderNames) {
-            notNull(headerName, "Header name");
-//            Set<String> map = newHashMapReturningFalseByDefault();
-//            return new HeaderConfig(map, true);
-            return this;
-        }
-
-        @Override
         public boolean shouldOverwriteHeaderWithName(String headerName) {
-            notNull(headerName, "Header name");
+            notNull(headerName, HEADER_NAME);
             return headersToOverwrite.stream().anyMatch(it -> it.matcher(headerName).matches());
         }
 
