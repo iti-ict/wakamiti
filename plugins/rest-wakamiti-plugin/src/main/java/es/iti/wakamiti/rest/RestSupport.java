@@ -8,11 +8,11 @@ package es.iti.wakamiti.rest;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
@@ -74,6 +74,7 @@ public class RestSupport {
         RequestSpecification request = RestAssured.given()
                 .accept(ContentType.ANY)
                 .header("Accept-Language", "*");
+
         specifications.forEach(specification -> specification.accept(request));
         authSpecification.ifPresent(specification -> specification.accept(request));
         return attachLogger(request);
@@ -166,6 +167,10 @@ public class RestSupport {
         return map;
     }
 
+    protected RequestSpecification header(RequestSpecification req, String header, String value) {
+        return req.headers(Map.of(header, List.of(value.split(";"))));
+    }
+
     protected Object parsedResponse() {
         Object body = doTry(
                 () -> XmlUtils.xml(response.body().asString()),
@@ -205,6 +210,7 @@ public class RestSupport {
                 }
                 return result;
             } catch (Exception ignored) {
+                // Ignored exception
             }
         }
         return null;

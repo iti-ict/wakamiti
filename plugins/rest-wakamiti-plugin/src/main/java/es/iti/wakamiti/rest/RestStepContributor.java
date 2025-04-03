@@ -14,15 +14,18 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -62,6 +65,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * </ul>
      *
      * @param contentType the content type to be set.
+     *
      * @see ContentType
      */
     @Step(value = "rest.define.contentType", args = "word")
@@ -95,6 +99,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * Concatenates the subject to the service path.
      *
      * @param subject The entity identification
+     *
      * @deprecated Use {@link
      * RestStepContributor#setPathParameter(String, String)} and {@link
      * RestStepContributor#setPathParameters(DataTable)} instead.
@@ -179,7 +184,8 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      */
     @Step("rest.define.headers")
     public void setHeaders(DataTable dataTable) {
-        specifications.add(request -> request.headers(tableToMap(dataTable)));
+        specifications.add(request -> tableToMap(dataTable)
+                .forEach((k,v) -> header(request, k, v)));
     }
 
     /**
@@ -190,7 +196,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      */
     @Step(value = "rest.define.header", args = {"name:text", "value:text"})
     public void setHeader(String name, String value) {
-        specifications.add(request -> request.header(name, value));
+        specifications.add(request -> header(request, name, value));
     }
 
     /**
@@ -335,7 +341,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * Additional parameters supported by {@code Oauth2} can also be added using
      * a two-column table in name-value format.
      *
-     * @param params   additional parameters for authentication.
+     * @param params additional parameters for authentication.
      */
     @Step("rest.define.auth.bearer.client.parameters")
     public void setBearerAuthClient(DataTable params) {
@@ -392,6 +398,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      *
      * @param name     the name of the multipart field
      * @param document the content to be attached
+     *
      * @throws IOException if an I/O error occurs
      */
     @Step(value = "rest.define.attached.data", args = "name:text")
@@ -424,8 +431,9 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
 
+        resourceLoader();
         ContentType mimeType = ContentType.fromContentType(
-                resourceLoader().getContentType(file).getMimeType());
+                ResourceLoader.getContentType(file).getMimeType());
 
         specifications.add(request ->
                 request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
@@ -463,8 +471,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.GET.subject")
     public Object executeGetSubject() {
-        executeRequest(RequestSpecification::get);
-        return parsedResponse();
+        return executeGetQuery();
     }
 
     @Step("rest.execute.DELETE.subject")
@@ -532,8 +539,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.POST.data.from.document")
     public Object executePostDataUsingDocument(Document document) {
-        executeRequest(RequestSpecification::post, document.getContent());
-        return parsedResponse();
+        return executePostSubjectUsingDocument(document);
     }
 
     @Step("rest.execute.POST.data.from.file")
@@ -544,8 +550,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
 
     @Step("rest.execute.POST.data.empty")
     public Object executePostData() {
-        executeRequest(RequestSpecification::post);
-        return parsedResponse();
+        return executePostSubject();
     }
 
     @Step("rest.execute.DELETE.data.from.document")

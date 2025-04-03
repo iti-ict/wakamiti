@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.8.3] - 2025-04-03
+
+### Fixed
+- Prevent duplicated headers.
+
+
 ## [2.8.2] - 2024-12-13
 
 ### Fixed

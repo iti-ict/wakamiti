@@ -1,7 +1,6 @@
 package es.iti.wakamiti.rest;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockserver.configuration.Configuration;
-import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.matchers.Times;
@@ -36,7 +34,6 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -64,7 +61,7 @@ import static org.mockserver.model.RegexBody.regex;
 public class RestStepContributorTest {
 
     private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
+    private static final String BASE_URL = String.format("https://localhost:%s", PORT);
     private static final String TOKEN_PATH = "wakamiti/data/token.txt";
 
     private static final ClientAndServer client = startClientAndServer(PORT);
@@ -75,7 +72,6 @@ public class RestStepContributorTest {
 
     @BeforeClass
     public static void setup() {
-        ConfigurationProperties.logLevel("OFF");
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
                 Configuration.configuration(),
                 new MockServerLogger()).sslContext().getSocketFactory());
@@ -537,8 +533,9 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeaders(
-                                header("param1", "value1"),
-                                header("param2", "value2")
+                                header("param1", "value1", "value2"),
+                                header("param2", "value1", "value2"),
+                                header("Accept-Language", "es")
                         )
                 ,
                 response()
@@ -548,7 +545,9 @@ public class RestStepContributorTest {
 
         // act
         contributor.setHeader("param1", "value1");
-        contributor.setHeader("param2", "value2");
+        contributor.setHeader("param1", "value2");
+        contributor.setHeader("param2", "value1;value2");
+        contributor.setHeader("Accept-Language", "es");
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
@@ -567,8 +566,9 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeaders(
-                                header("param1", "value1"),
-                                header("param2", "value2")
+                                header("param1", "value1", "value2"),
+                                header("param2", "value2"),
+                                header("Accept-Language", "*")
                         )
                 ,
                 response()
@@ -577,7 +577,7 @@ public class RestStepContributorTest {
         );
 
         // act
-        contributor.setHeaders(dataTable("param1", "value1", "param2", "value2"));
+        contributor.setHeaders(dataTable("param1", "value1;value2", "param2", "value2"));
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check

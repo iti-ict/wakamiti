@@ -9,12 +9,12 @@ package es.iti.wakamiti.rest;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.rest.log.RestAssuredLogger;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
 import io.restassured.config.Config;
 import io.restassured.config.LogConfig;
@@ -24,7 +24,14 @@ import org.hamcrest.Matchers;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.restassured.internal.common.assertion.AssertParameter.notNull;
 
 
 /**
@@ -109,6 +116,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(REDIRECT_MAX, Integer.class)
                 .map(RestAssured.config().getRedirectConfig()::maxRedirects)
                 .ifPresent(this::config);
+
+        config(io.restassured.config.HeaderConfig.class,
+                new HeaderConfig().overwriteHeadersWithName("Accept.*", "Content-Type"));
     }
 
     private void restassuredConfigure() {
@@ -117,14 +127,66 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         RestAssured.useRelaxedHTTPSValidation();
     }
 
-    @SuppressWarnings(value = "unchecked")
     private void config(Config config) {
+        config(config.getClass(), config);
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    private void config(Class<? extends Config> cls, Config config) {
         try {
             Field field = RestAssuredConfig.class.getDeclaredField("configs");
             field.setAccessible(true);
-            ((Map<Class<? extends Config>, Config>) field.get(RestAssured.config)).put(config.getClass(), config);
+            ((Map<Class<? extends Config>, Config>) field.get(RestAssured.config)).put(cls, config);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new WakamitiException("Error configuring RestAssured", e);
+        }
+    }
+
+    static class HeaderConfig extends io.restassured.config.HeaderConfig {
+
+        private static final String HEADER_NAME = "Header name";
+        private static final String ACCEPT_HEADER_NAME = "accept";
+        private static final String CONTENT_TYPE_HEADER_NAME = "content-type";
+
+        private final Set<Pattern> headersToOverwrite;
+        private final boolean isUserDefined;
+
+        public HeaderConfig() {
+            this(newHashMapReturningFalseByDefault(CONTENT_TYPE_HEADER_NAME, ACCEPT_HEADER_NAME), false);
+        }
+
+        private HeaderConfig(Set<Pattern> headersToOverwrite, boolean isUserDefined) {
+            this.headersToOverwrite = headersToOverwrite;
+            this.isUserDefined = isUserDefined;
+        }
+
+        private static Set<Pattern> newHashMapReturningFalseByDefault(final String... headerNamesToOverwrite) {
+            return Stream.of(headerNamesToOverwrite)
+                    .map(it -> Pattern.compile(it, Pattern.CASE_INSENSITIVE))
+                    .collect(Collectors.toSet());
+        }
+
+        @Override
+        public HeaderConfig overwriteHeadersWithName(String headerName, String... additionalHeaderNames) {
+            notNull(headerName, HEADER_NAME);
+            Set<Pattern> map = newHashMapReturningFalseByDefault(headerName);
+            if (additionalHeaderNames != null) {
+                for (String additionalHeaderName : additionalHeaderNames) {
+                    map.add(Pattern.compile(additionalHeaderName, Pattern.CASE_INSENSITIVE));
+                }
+            }
+            return new HeaderConfig(map, true);
+        }
+
+        @Override
+        public boolean shouldOverwriteHeaderWithName(String headerName) {
+            notNull(headerName, HEADER_NAME);
+            return headersToOverwrite.stream().anyMatch(it -> it.matcher(headerName).matches());
+        }
+
+        @Override
+        public boolean isUserConfigured() {
+            return isUserDefined;
         }
     }
 }
