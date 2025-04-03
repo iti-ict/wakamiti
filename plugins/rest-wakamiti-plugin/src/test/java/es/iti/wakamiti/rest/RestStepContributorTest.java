@@ -73,7 +73,6 @@ public class RestStepContributorTest {
 
     @BeforeClass
     public static void setup() {
-//        ConfigurationProperties.logLevel("OFF");
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
                 Configuration.configuration(),
                 new MockServerLogger()).sslContext().getSocketFactory());
@@ -568,8 +567,9 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeaders(
-                                header("param1", "value1"),
-                                header("param2", "value2")
+                                header("param1", "value1", "value2"),
+                                header("param2", "value2"),
+                                header("Accept-Language", "*")
                         )
                 ,
                 response()
@@ -578,7 +578,7 @@ public class RestStepContributorTest {
         );
 
         // act
-        contributor.setHeaders(dataTable("param1", "value1", "param2", "value2"));
+        contributor.setHeaders(dataTable("param1", "value1;value2", "param2", "value2"));
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
