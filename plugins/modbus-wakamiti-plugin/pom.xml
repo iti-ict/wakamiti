@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>es.iti.wakamiti</groupId>
+        <artifactId>wakamiti-plugin-starter</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../wakamiti-plugin-starter</relativePath>
+    </parent>
+
+
+    <artifactId>modbus-wakamiti-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>[Wakamiti Plugin] Modbus</name>
+    <description>modbus</description>
+    <inceptionYear>2025</inceptionYear>
+
+    <properties>
+        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.intelligt.modbus</groupId>
+            <artifactId>jlibmodbus</artifactId>
+            <version>1.2.9.11</version>
+        </dependency>
+
+
+        <!-- test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>es.iti.wakamiti</groupId>
+            <artifactId>wakamiti-junit</artifactId>
+            <version>${wakamiti-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+
+</project>
