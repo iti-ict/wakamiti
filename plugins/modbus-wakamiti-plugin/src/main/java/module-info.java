@@ -6,6 +6,8 @@
 
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.modbus.ModbusConfigContributor;
+import es.iti.wakamiti.modbus.ModbusStepContributor;
 
 open module es.iti.wakamiti.modbus {
 
