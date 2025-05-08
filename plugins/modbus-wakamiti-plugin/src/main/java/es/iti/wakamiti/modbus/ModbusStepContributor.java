@@ -43,6 +43,7 @@ public class ModbusStepContributor implements StepContributor {
     @SetUp
     public void createClient() {
         try {
+            logger.info("Creating Modbus client with base URL: {}", baseURL);
             TcpParameters tcpParameters = new TcpParameters();
             tcpParameters.setHost(InetAddress.getByName(baseURL.getHost()));
             tcpParameters.setPort(baseURL.getPort());
@@ -83,13 +84,13 @@ public class ModbusStepContributor implements StepContributor {
      *
      * @param slaveId the slave id to be set.
      */
-    @Step(value = "modbus.define.slaveId", args = "slaveId")
+    @Step(value = "modbus.define.slaveId", args = "slaveId:text")
     public void setSlaveId(String slaveId) {
         this.slaveId = Integer.parseInt(slaveId);
     }
 
-    @Step(value = "modbus.execute.read", args = {"quantity", "address"})
-    public void executeRead(int quantity, int address) {
+    @Step(value = "modbus.execute.read", args = {"quantity:int", "address:int"})
+    public void executeRead(Integer quantity, Integer address) {
         try {
             registersRead = master.readHoldingRegisters(slaveId, address, quantity);
         } catch (Exception e) {
@@ -97,8 +98,8 @@ public class ModbusStepContributor implements StepContributor {
         }
     }
 
-    @Step(value = "modbus.execute.write", args = {"value", "address"})
-    public void executeWrite(int value, int address) {
+    @Step(value = "modbus.execute.write", args = {"value:int", "address:int"})
+    public void executeWrite(Integer value, Integer address) {
         try {
             master.writeSingleRegister(slaveId, address, value);
         } catch (Exception e) {
@@ -106,8 +107,8 @@ public class ModbusStepContributor implements StepContributor {
         }
     }
 
-    @Step(value = "modbus.assert.read.value", args =  {"value", "address"})
-    public void assertReadValue(int value, int address) {
+    @Step(value = "modbus.assert.read.value", args = {"value:int"})
+    public void assertReadValue(Integer value) {
         assertRegistersRead();
         Arrays.stream(registersRead).filter(v -> v == value).findAny()
                 .orElseThrow(() -> new WakamitiException("Register {} not found", value));
