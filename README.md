@@ -11,6 +11,8 @@
 [![Docker Image Version](https://img.shields.io/docker/v/wakamiti/wakamiti?label=docker&logo=docker)](https://hub.docker.com/r/wakamiti/wakamiti) 
 [![Maven Central Version](https://img.shields.io/maven-central/v/es.iti.wakamiti/wakamiti-engine?logo=circle&logoColor=red)](https://mvnrepository.com/search?q=wakamiti)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/iti-ict/wakamiti)
+
 
 
 > Please check the [site version](https://iti-ict.github.io/wakamiti/) in case you are reading this document directly 
