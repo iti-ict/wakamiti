@@ -224,9 +224,8 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 Authors
 ----------------------------------------------------------------------------------------------------
 
-- **Luis Iñesta Gelabert** - linesta@iti.es 
 - **María Galbis Calomarde** - mgalbis@iti.es 
-- **Adrián Martínez Gil** - amartinezgil@iti.es
+- **Carlos Oliva Miñana** - coliva@iti.es
     
 
 
