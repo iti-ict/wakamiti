@@ -31,22 +31,30 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @I18nResource("es_iti_wakamiti_modbus")
 public class ModbusStepContributor implements StepContributor {
 
-    private final Logger logger = WakamitiLogger.forClass(ModbusStepContributor.class);
+    private static final Logger LOGGER = WakamitiLogger.forClass(ModbusStepContributor.class);
 
-    protected URL baseURL;
+    protected String host;
+    protected int port;
     protected int slaveId;
 
     protected ModbusMaster master;
     int[] registersRead = null;
 
+    protected void setHost(String host) {
+        this.host = host;
+    }
+
+    protected void setPort(Integer port) {
+        this.port = port;
+    }
 
     @SetUp
     public void createClient() {
         try {
-            logger.info("Creating Modbus client with base URL: {}", baseURL);
+            LOGGER.debug("Creating Modbus client {}:{}", host, port);
             TcpParameters tcpParameters = new TcpParameters();
-            tcpParameters.setHost(InetAddress.getByName(baseURL.getHost()));
-            tcpParameters.setPort(baseURL.getPort());
+            tcpParameters.setHost(InetAddress.getByName(host));
+            tcpParameters.setPort(port);
             tcpParameters.setKeepAlive(true);
 
             master = new ModbusMasterTCP(tcpParameters);
@@ -54,7 +62,7 @@ public class ModbusStepContributor implements StepContributor {
         } catch (ModbusIOException e) {
             throw new WakamitiException("Cannot connect to modbus server", e);
         } catch (UnknownHostException e) {
-            throw new WakamitiException("Cannot locate host {}", baseURL);
+            throw new WakamitiException("Cannot locate host {}", host, e);
         }
 
     }
@@ -71,12 +79,13 @@ public class ModbusStepContributor implements StepContributor {
     /**
      * Sets the base URL for the connection.
      *
-     * @param url the base URL to be set.
+     * @param host the base host to be set.
+     * @param port the base port to be set.
      */
-    @Step(value = "modbus.define.baseURL", args = "url")
-    public void setBaseURL(URL url) {
-        checkURL(url);
-        this.baseURL = url;
+    @Step(value = "modbus.define.baseURL", args = {"host:word", "port:int"})
+    public void setBaseURL(String host, Integer port) {
+        this.host = host;
+        this.port = port;
     }
 
     /**
