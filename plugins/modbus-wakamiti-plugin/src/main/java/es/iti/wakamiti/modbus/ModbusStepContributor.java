@@ -52,7 +52,7 @@ public class ModbusStepContributor implements StepContributor {
             master = new ModbusMasterTCP(tcpParameters);
             master.connect();
         } catch (ModbusIOException e) {
-            throw new WakamitiException("Cannot connect to modbus server");
+            throw new WakamitiException("Cannot connect to modbus server", e);
         } catch (UnknownHostException e) {
             throw new WakamitiException("Cannot locate host {}", baseURL);
         }
