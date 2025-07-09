@@ -24,6 +24,7 @@
     <module>file-uploader-wakamiti-plugin</module>
     <module>email-wakamiti-plugin</module>
     <module>xray-wakamiti-plugin</module>
+    <module>modbus-wakamiti-plugin</module>
   </modules>
   <build>
     <plugins>
