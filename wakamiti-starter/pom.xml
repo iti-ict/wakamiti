@@ -441,6 +441,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <autoPublish>true</autoPublish>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
                         </configuration>
                         <executions>
                             <execution>
