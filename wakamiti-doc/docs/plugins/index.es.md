@@ -19,6 +19,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Pasos Email](plugins/email)
 - [Pasos JMeter](plugins/jmeter)
 - [Groovy](plugins/groovy)
+- [Pasos Modbus](plugins/modbus)
 
 
 

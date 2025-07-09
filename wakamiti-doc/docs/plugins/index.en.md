@@ -19,3 +19,4 @@ exist, but you can also develop your own plugins!
 - [Email steps](en/plugins/email)
 - [JMeter steps](en/plugins/jmeter)
 - [Groovy](en/plugins/groovy)
+- [Modbus steps](en/plugins/modbus)
