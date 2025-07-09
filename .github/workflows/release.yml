@@ -82,65 +82,65 @@ jobs:
             -Dsonar.organization=iti-ict \
             -Dsonar.host.url=https://sonarcloud.io
 
-      - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@master
-        if: ${{ success() }}
-        with:
-          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
-          raw: >-
-            {
-              "type": "message",
-              "attachments": [
-                {
-                  "contentType": "application/vnd.microsoft.card.adaptive",
-                  "content": {
-                    "type": "AdaptiveCard",
-                    "body": [
-                      {
-                        "type": "ColumnSet",
-                        "columns": [
-                          {
-                            "type": "Column",
-                            "width": "auto",
-                            "items": [
-                              {
-                                "type": "Image",
-                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.png ",
-                                "size": "medium"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "Column",
-                            "items": [
-                              {
-                                "type": "TextBlock",
-                                "size": "extraLarge",
-                                "weight": "bolder",
-                                "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
-                                "wrap": true
-                              },
-                              {
-                                "type": "TextBlock",
-                                "spacing": "none",
-                                "text": "Publicada por [${{ needs.get-env.outputs.AUTHOR }}](https://github.com/${{ needs.get-env.outputs.AUTHOR }})",
-                                "isSubtle": true,
-                                "wrap": true
-                              }
-                            ],
-                            "width": "stretch"
-                          }
-                        ]
-                      }
-                    ],
-                    "actions": [
-                      {
-                        "type": "Action.OpenUrl",
-                        "title": "Ver detalles",
-                        "url": "${{ needs.get-env.outputs.URL }}"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
+#      - name: Microsoft Teams Notification
+#        uses: skitionek/notify-microsoft-teams@master
+#        if: ${{ success() }}
+#        with:
+#          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
+#          raw: >-
+#            {
+#              "type": "message",
+#              "attachments": [
+#                {
+#                  "contentType": "application/vnd.microsoft.card.adaptive",
+#                  "content": {
+#                    "type": "AdaptiveCard",
+#                    "body": [
+#                      {
+#                        "type": "ColumnSet",
+#                        "columns": [
+#                          {
+#                            "type": "Column",
+#                            "width": "auto",
+#                            "items": [
+#                              {
+#                                "type": "Image",
+#                                "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/images/wakamiti-icon.png ",
+#                                "size": "medium"
+#                              }
+#                            ]
+#                          },
+#                          {
+#                            "type": "Column",
+#                            "items": [
+#                              {
+#                                "type": "TextBlock",
+#                                "size": "extraLarge",
+#                                "weight": "bolder",
+#                                "text": "Nueva versión ${{ needs.get-env.outputs.TITLE }}! 🎉",
+#                                "wrap": true
+#                              },
+#                              {
+#                                "type": "TextBlock",
+#                                "spacing": "none",
+#                                "text": "Publicada por [${{ needs.get-env.outputs.AUTHOR }}](https://github.com/${{ needs.get-env.outputs.AUTHOR }})",
+#                                "isSubtle": true,
+#                                "wrap": true
+#                              }
+#                            ],
+#                            "width": "stretch"
+#                          }
+#                        ]
+#                      }
+#                    ],
+#                    "actions": [
+#                      {
+#                        "type": "Action.OpenUrl",
+#                        "title": "Ver detalles",
+#                        "url": "${{ needs.get-env.outputs.URL }}"
+#                      }
+#                    ]
+#                  }
+#                }
+#              ]
+#            }
