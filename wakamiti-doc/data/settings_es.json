@@ -83,6 +83,11 @@
               "value": "Groovy",
               "anchor": "/groovy",
               "depth": 2
+            },
+            {
+              "value": "Pasos Modbus",
+              "anchor": "/modbus",
+              "depth": 2
             }
           ]
         }
