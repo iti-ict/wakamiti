@@ -1,7 +1,7 @@
 wakamiti:
   resourceTypes:
     - gherkin
-    
+
   log:
     level: trace
     
