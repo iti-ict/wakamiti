@@ -54,7 +54,7 @@ public class MapperTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .allMatch(tc -> tc.suite().asPath().equals(Path.of("features/suite")))
-                .allMatch(tc -> tc.name().equals("Azure integration feature"));
+                .allMatch(tc -> tc.name().equals("[ID-azure-1] Azure integration feature"));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class MapperTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .allMatch(tc -> tc.suite().asPath().equals(Path.of("suite")))
-                .allMatch(tc -> tc.name().equals("Azure integration feature"));
+                .allMatch(tc -> tc.name().equals("[ID-azure-1] Azure integration feature"));
     }
 
     @Test(expected = WakamitiException.class)
@@ -95,7 +95,7 @@ public class MapperTest {
                         && tc.suite().name().equals("azure")
                         && tc.suite().parent().name().equals("api/suite")
                 )
-                .allMatch(tc -> tc.name().equals("Azure integration feature"));
+                .allMatch(tc -> tc.name().equals("[ID-azure-1] Azure integration feature"));
     }
 
     @Test
@@ -109,11 +109,11 @@ public class MapperTest {
                 .isNotEmpty()
                 .hasSize(3)
                 .allMatch(tc -> tc.suite().asPath().equals(Path.of("features/suite/Azure integration feature")));
-        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario B");
+        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-1] Wakamiti Scenario B");
         assertThat(tests.get(0)).hasFieldOrPropertyWithValue("order", 0);
-        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario A");
+        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-2] Wakamiti Scenario A");
         assertThat(tests.get(1)).hasFieldOrPropertyWithValue("order", 1);
-        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario C");
+        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-3] Wakamiti Scenario C");
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("order", 2);
     }
 
@@ -128,11 +128,11 @@ public class MapperTest {
                 .isNotEmpty()
                 .hasSize(3)
                 .allMatch(tc -> tc.suite().asPath().equals(Path.of("suite/Azure integration feature")));
-        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario B");
+        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-1] Wakamiti Scenario B");
         assertThat(tests.get(0)).hasFieldOrPropertyWithValue("order", 0);
-        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario A");
+        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-2] Wakamiti Scenario A");
         assertThat(tests.get(1)).hasFieldOrPropertyWithValue("order", 1);
-        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario C");
+        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-3] Wakamiti Scenario C");
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("order", 2);
     }
 
@@ -160,11 +160,11 @@ public class MapperTest {
                         && tc.suite().name().equals("azure")
                         && tc.suite().parent().name().equals("api/suite")
                 );
-        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario B");
+        assertThat(tests.get(0)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-1] Wakamiti Scenario B");
         assertThat(tests.get(0)).hasFieldOrPropertyWithValue("order", 0);
-        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario A");
+        assertThat(tests.get(1)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-2] Wakamiti Scenario A");
         assertThat(tests.get(1)).hasFieldOrPropertyWithValue("order", 1);
-        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "Wakamiti Scenario C");
+        assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-3] Wakamiti Scenario C");
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("order", 2);
     }
 
