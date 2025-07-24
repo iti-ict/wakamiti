@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static es.iti.wakamiti.api.util.MapUtils.map;
 import static es.iti.wakamiti.api.util.StringUtils.format;
@@ -754,9 +755,9 @@ public class TestPlanApiTest {
         List<TestSuite> suites = List.of(root, new TestSuite().id("56985").name("Feature 1").parent(root));
 
         List<TestCase> testCases = List.of(
-                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
-                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
-                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3")
+                new TestCase().name("[ID-1] Scenario A").suite(suites.get(1)).order(0).tag("wakamiti"),
+                new TestCase().name("[ID-2] Scenario B").suite(suites.get(1)).order(1).tag("wakamiti"),
+                new TestCase().name("[ID-3] Scenario C").suite(suites.get(1)).order(2).tag("wakamiti")
         );
 
         // act
@@ -768,13 +769,13 @@ public class TestPlanApiTest {
         assertThat(remoteTestCases).hasSize(3);
         assertThat(remoteTestCases.get(0))
                 .hasFieldOrPropertyWithValue("id", "56977")
-                .hasFieldOrPropertyWithValue("name", "Scenario A");
+                .hasFieldOrPropertyWithValue("name", "[ID-1] Scenario A");
         assertThat(remoteTestCases.get(1))
                 .hasFieldOrPropertyWithValue("id", "56978")
-                .hasFieldOrPropertyWithValue("name", "Scenario B");
+                .hasFieldOrPropertyWithValue("name", "[ID-2] Scenario B");
         assertThat(remoteTestCases.get(2))
                 .hasFieldOrPropertyWithValue("id", "56979")
-                .hasFieldOrPropertyWithValue("name", "Scenario C");
+                .hasFieldOrPropertyWithValue("name", "[ID-3] Scenario C");
         remoteTestCases.forEach(t -> {
             assertThat(t.pointAssignments()).hasSize(1);
             assertThat(t.pointAssignments().get(0))
@@ -824,12 +825,12 @@ public class TestPlanApiTest {
                 new TestSuite().id("56986").name("Feature 2").parent(root)
         );
         List<TestCase> testCases = List.of(
-                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
-                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
-                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3"),
-                new TestCase().name("Scenario X").suite(suites.get(2)).order(0).tag("ID-1A"),
-                new TestCase().name("Scenario Y").suite(suites.get(2)).order(1).tag("ID-2A"),
-                new TestCase().name("Scenario Z").suite(suites.get(2)).order(2).tag("ID-3A")
+                new TestCase().name("[ID-1] Scenario A").suite(suites.get(1)).order(0).tag("wakamiti"),
+                new TestCase().name("[ID-2] Scenario B").suite(suites.get(1)).order(1).tag("wakamiti"),
+                new TestCase().name("[ID-3] Scenario C").suite(suites.get(1)).order(2).tag("wakamiti"),
+                new TestCase().name("[ID-1A] Scenario X").suite(suites.get(2)).order(0).tag("wakamiti"),
+                new TestCase().name("[ID-2A] Scenario Y").suite(suites.get(2)).order(1).tag("wakamiti"),
+                new TestCase().name("[ID-3A] Scenario Z").suite(suites.get(2)).order(2).tag("wakamiti")
         );
 
         for (TestCase t : testCases) {
@@ -843,11 +844,11 @@ public class TestPlanApiTest {
                                             "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
                                             "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
                                             "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
-                                    t.name(), t.tag()))),
+                                    Pattern.quote(t.name()), t.tag()))),
                     response()
                             .withStatusCode(200)
                             .withContentType(MediaType.APPLICATION_JSON)
-                            .withBody(resource(format("server/workitems/post_{}.json", t.tag())))
+                            .withBody(resource(format("server/workitems/post_{}.json", t.identifier())))
             ).ifPresent(requests::add);
         }
 
@@ -884,28 +885,28 @@ public class TestPlanApiTest {
         assertThat(remoteTestCases).hasSize(6);
         assertThat(remoteTestCases.get(0))
                 .hasFieldOrPropertyWithValue("id", "56977")
-                .hasFieldOrPropertyWithValue("name", "Scenario A")
-                .hasFieldOrPropertyWithValue("tag", "ID-1");
+                .hasFieldOrPropertyWithValue("name", "[ID-1] Scenario A")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         assertThat(remoteTestCases.get(1))
                 .hasFieldOrPropertyWithValue("id", "56978")
-                .hasFieldOrPropertyWithValue("name", "Scenario B")
-                .hasFieldOrPropertyWithValue("tag", "ID-2");
+                .hasFieldOrPropertyWithValue("name", "[ID-2] Scenario B")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         assertThat(remoteTestCases.get(2))
                 .hasFieldOrPropertyWithValue("id", "56979")
-                .hasFieldOrPropertyWithValue("name", "Scenario C")
-                .hasFieldOrPropertyWithValue("tag", "ID-3");
+                .hasFieldOrPropertyWithValue("name", "[ID-3] Scenario C")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         assertThat(remoteTestCases.get(3))
                 .hasFieldOrPropertyWithValue("id", "56980")
-                .hasFieldOrPropertyWithValue("name", "Scenario X")
-                .hasFieldOrPropertyWithValue("tag", "ID-1A");
+                .hasFieldOrPropertyWithValue("name", "[ID-1A] Scenario X")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         assertThat(remoteTestCases.get(4))
                 .hasFieldOrPropertyWithValue("id", "56981")
-                .hasFieldOrPropertyWithValue("name", "Scenario Y")
-                .hasFieldOrPropertyWithValue("tag", "ID-2A");
+                .hasFieldOrPropertyWithValue("name", "[ID-2A] Scenario Y")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         assertThat(remoteTestCases.get(5))
                 .hasFieldOrPropertyWithValue("id", "56982")
-                .hasFieldOrPropertyWithValue("name", "Scenario Z")
-                .hasFieldOrPropertyWithValue("tag", "ID-3A");
+                .hasFieldOrPropertyWithValue("name", "[ID-3A] Scenario Z")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti");
         remoteTestCases.forEach(t -> {
             assertThat(t.pointAssignments()).hasSize(1);
             assertThat(t.pointAssignments().get(0))
@@ -949,10 +950,10 @@ public class TestPlanApiTest {
         List<TestSuite> suites = List.of(root, new TestSuite().id("56985").name("Feature 1").parent(root));
 
         List<TestCase> testCases = List.of(
-                new TestCase().name("Scenario A").suite(suites.get(1)).order(0).tag("ID-1"),
-                new TestCase().name("Scenario B").suite(suites.get(1)).order(1).tag("ID-2"),
-                new TestCase().name("Scenario C").suite(suites.get(1)).order(2).tag("ID-3"),
-                new TestCase().name("Scenario D").suite(suites.get(1)).order(3).tag("ID-4")
+                new TestCase().name("[ID-1] Scenario A").suite(suites.get(1)).order(0).tag("wakamiti"),
+                new TestCase().name("[ID-2] Scenario B").suite(suites.get(1)).order(1).tag("wakamiti"),
+                new TestCase().name("[ID-3] Scenario C").suite(suites.get(1)).order(2).tag("wakamiti"),
+                new TestCase().name("[ID-4] Scenario D").suite(suites.get(1)).order(3).tag("wakamiti")
         );
 
         // act
@@ -964,13 +965,13 @@ public class TestPlanApiTest {
         assertThat(remoteTestCases).hasSize(3);
         assertThat(remoteTestCases.get(0))
                 .hasFieldOrPropertyWithValue("id", "56977")
-                .hasFieldOrPropertyWithValue("name", "Scenario A");
+                .hasFieldOrPropertyWithValue("name", "[ID-1] Scenario A");
         assertThat(remoteTestCases.get(1))
                 .hasFieldOrPropertyWithValue("id", "56978")
-                .hasFieldOrPropertyWithValue("name", "Scenario B");
+                .hasFieldOrPropertyWithValue("name", "[ID-2] Scenario B");
         assertThat(remoteTestCases.get(2))
                 .hasFieldOrPropertyWithValue("id", "56979")
-                .hasFieldOrPropertyWithValue("name", "Scenario C");
+                .hasFieldOrPropertyWithValue("name", "[ID-3] Scenario C");
     }
 
     @Test
@@ -1000,12 +1001,12 @@ public class TestPlanApiTest {
                 new TestSuite().id("56986").name("Feature 2").parent(root)
         );
         List<Pair<String, TestCase>> testCases = List.of(
-                new Pair<>("56977", new TestCase().name("Scenario AA").suite(suites.get(2)).order(0).tag("ID-1")),
-                new Pair<>("56978", new TestCase().name("Scenario BB").suite(suites.get(2)).order(1).tag("ID-2")),
-                new Pair<>("56979", new TestCase().name("Scenario CC").suite(suites.get(2)).order(4).tag("ID-3")),
-                new Pair<>("56980", new TestCase().name("Scenario XX").suite(suites.get(1)).order(0).tag("ID-1A")),
-                new Pair<>("56981", new TestCase().name("Scenario YY").suite(suites.get(1)).order(1).tag("ID-2A")),
-                new Pair<>("56982", new TestCase().name("Scenario ZZ").suite(suites.get(1)).order(2).tag("ID-3A"))
+                new Pair<>("56977", new TestCase().name("[ID-1] Scenario AA").suite(suites.get(2)).order(0).tag("wakamiti")),
+                new Pair<>("56978", new TestCase().name("[ID-2] Scenario BB").suite(suites.get(2)).order(1).tag("wakamiti")),
+                new Pair<>("56979", new TestCase().name("[ID-3] Scenario CC").suite(suites.get(2)).order(4).tag("wakamiti")),
+                new Pair<>("56980", new TestCase().name("[ID-1A] Scenario XX").suite(suites.get(1)).order(0).tag("wakamiti")),
+                new Pair<>("56981", new TestCase().name("[ID-2A] Scenario YY").suite(suites.get(1)).order(1).tag("wakamiti")),
+                new Pair<>("56982", new TestCase().name("[ID-3A] Scenario ZZ").suite(suites.get(1)).order(2).tag("wakamiti"))
         );
 
         for (Pair<String, TestCase> p : testCases) {
@@ -1016,11 +1017,11 @@ public class TestPlanApiTest {
                             .withPath(format("/ST/ACS/_apis/wit/workitems/{}", p.key()))
                             .withBody(regex(format(".+" +
                                             "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
-                                    p.value().name()))),
+                                    Pattern.quote(p.value().name())))),
                     response()
                             .withStatusCode(200)
                             .withContentType(MediaType.APPLICATION_JSON)
-                            .withBody(resource(format("server/workitems/patch_{}.json", p.value().tag())))
+                            .withBody(resource(format("server/workitems/patch_{}.json", p.value().identifier())))
             ).ifPresent(requests::add);
         }
 
@@ -1076,33 +1077,33 @@ public class TestPlanApiTest {
         assertThat(remoteTestCases).hasSize(6);
         assertThat(remoteTestCases.get(0))
                 .hasFieldOrPropertyWithValue("id", "56977")
-                .hasFieldOrPropertyWithValue("name", "Scenario AA")
-                .hasFieldOrPropertyWithValue("tag", "ID-1")
+                .hasFieldOrPropertyWithValue("name", "[ID-1] Scenario AA")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56986");
         assertThat(remoteTestCases.get(1))
                 .hasFieldOrPropertyWithValue("id", "56978")
-                .hasFieldOrPropertyWithValue("name", "Scenario BB")
-                .hasFieldOrPropertyWithValue("tag", "ID-2")
+                .hasFieldOrPropertyWithValue("name", "[ID-2] Scenario BB")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56986");
         assertThat(remoteTestCases.get(2))
                 .hasFieldOrPropertyWithValue("id", "56979")
-                .hasFieldOrPropertyWithValue("name", "Scenario CC")
-                .hasFieldOrPropertyWithValue("tag", "ID-3")
+                .hasFieldOrPropertyWithValue("name", "[ID-3] Scenario CC")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56986");
         assertThat(remoteTestCases.get(3))
                 .hasFieldOrPropertyWithValue("id", "56980")
-                .hasFieldOrPropertyWithValue("name", "Scenario XX")
-                .hasFieldOrPropertyWithValue("tag", "ID-1A")
+                .hasFieldOrPropertyWithValue("name", "[ID-1A] Scenario XX")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56985");
         assertThat(remoteTestCases.get(4))
                 .hasFieldOrPropertyWithValue("id", "56981")
-                .hasFieldOrPropertyWithValue("name", "Scenario YY")
-                .hasFieldOrPropertyWithValue("tag", "ID-2A")
+                .hasFieldOrPropertyWithValue("name", "[ID-2A] Scenario YY")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56985");
         assertThat(remoteTestCases.get(5))
                 .hasFieldOrPropertyWithValue("id", "56982")
-                .hasFieldOrPropertyWithValue("name", "Scenario ZZ")
-                .hasFieldOrPropertyWithValue("tag", "ID-3A")
+                .hasFieldOrPropertyWithValue("name", "[ID-3A] Scenario ZZ")
+                .hasFieldOrPropertyWithValue("tag", "wakamiti")
                 .extracting(t -> t.suite().id()).isEqualTo("56985");
     }
 
