@@ -106,6 +106,10 @@ public class TestCase extends BaseModel {
         return new Object[]{tag};
     }
 
+    public String identifier() {
+        return this.name.replaceAll("^\\[([^]]+)].+$", "$1");
+    }
+
     public boolean isDifferent(TestCase testCase) {
         return Objects.nonNull(testCase) &&
                 (!this.name.equals(testCase.name) || !Objects.equals(this.description, testCase.description)
