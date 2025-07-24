@@ -27,9 +27,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -358,8 +356,10 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .collect(Collectors.toList());
         List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
                 .filter(t -> tests.stream()
-                        .anyMatch(c -> t.tag().equals(c.tag()) && (t.isDifferent(c) || !t.suite().equals(c.suite()))))
-                .map(t -> new Pair<>(t, tests.stream().filter(x -> x.tag().equals(t.tag()))
+                        .anyMatch(c -> t.identifier().equals(c.identifier())
+                                && (t.isDifferent(c) || !t.suite().equals(c.suite()))))
+                .map(t -> new Pair<>(t, tests.stream()
+                        .filter(x -> x.identifier().equals(t.identifier()))
                         .map(x -> x.id(t.id())).findFirst().orElseThrow()))
                 .collect(Collectors.toList());
 
