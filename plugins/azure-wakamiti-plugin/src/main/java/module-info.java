@@ -12,4 +12,6 @@ module es.iti.wakamiti.azure {
     requires org.apache.commons.text;
     requires org.apache.commons.collections4;
 
+    opens es.iti.wakamiti.azure.api.model to com.fasterxml.jackson.databind;
+
 }
