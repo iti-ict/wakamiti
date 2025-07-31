@@ -53,6 +53,8 @@ public class AzureApi extends BaseApi<AzureApi> {
     private static final int MAX_LIST = 200;
     private static final int MAX_RESULTS = 1000;
 
+    private static final String JSON_PATCH = "application/json-patch+json";
+
     private final String configuration;
     private transient Function<String, String> tagExtractor;
     private Settings settings;
@@ -69,6 +71,10 @@ public class AzureApi extends BaseApi<AzureApi> {
         super(baseUrl);
         this.tagExtractor = tagExtractor;
         this.configuration = configuration;
+    }
+
+    private WorkItemOp workItemOp(WorkItemOp.Operation op, String field, String value) {
+        return new WorkItemOp().op(op).path(format("/fields/{}", field)).value(value);
     }
 
     /**
@@ -177,11 +183,21 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @throws NoSuchElementException If the response body is empty.
      */
     private TestPlan createTestPlan(TestPlan plan) {
-        return newRequest()
+        TestPlan newPlan = newRequest()
                 .body(json(plan).toString())
                 .post(projectBase() + "/testplan/plans")
                 .body().map(json -> read(json, TestPlan.class))
                 .orElseThrow(() -> new NoSuchElementException("Empty body"));
+        List<WorkItemOp> ops = new ArrayList<>();
+        ops.add(workItemOp(WorkItemOp.Operation.ADD, TAGS, "wakamiti"));
+        newRequest()
+                .pathParam("id", newPlan.id())
+                .contentType(JSON_PATCH)
+                .body(json(ops).toString())
+                .patch(projectBase() + "/wit/workitems/{id}")
+                .body()
+                .orElseThrow(() -> new WakamitiException("Cannot tag test plan."));
+        return newPlan;
     }
 
     /**
@@ -387,16 +403,14 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return the created test cases, populated with IDs and other metadata.
      */
     public List<TestCase> createTestCases(TestPlan plan, List<TestCase> testCases) {
-        BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
-                .op(WorkItemOp.Operation.ADD).path(format("/fields/{}", field)).value(value);
-
         testCases.stream().peek(t -> {
                     List<WorkItemOp> ops = new ArrayList<>();
-                    ops.add(newWorkItem.apply(TITLE, t.name()));
-                    ops.add(newWorkItem.apply(TAGS, t.tag()));
-                    ops.add(newWorkItem.apply(AREA_PATH, path(plan.area())));
-                    ops.add(newWorkItem.apply(ITERATION_PATH, path(plan.iteration())));
-                    Optional.ofNullable(t.description()).ifPresent(d -> ops.add(newWorkItem.apply(DESCRIPTION, d)));
+                    ops.add(workItemOp(WorkItemOp.Operation.ADD, TITLE, t.name()));
+                    ops.add(workItemOp(WorkItemOp.Operation.ADD, TAGS, t.tag()));
+                    ops.add(workItemOp(WorkItemOp.Operation.ADD, AREA_PATH, path(plan.area())));
+                    ops.add(workItemOp(WorkItemOp.Operation.ADD, ITERATION_PATH, path(plan.iteration())));
+                    Optional.ofNullable(t.description())
+                            .ifPresent(d -> ops.add(workItemOp(WorkItemOp.Operation.ADD, DESCRIPTION, d)));
                     newRequest()
                             .postCall(response -> response.body()
                                     .filter(x -> response.statusCode() < 400)
@@ -406,7 +420,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                             .queryParam("$expand", "none")
                             .queryParam("suppressNotifications", false)
                             .queryParam("validateOnly", false)
-                            .header("Content-Type", "application/json-patch+json")
+                            .contentType(JSON_PATCH)
                             .body(json(ops).toString())
                             .post(projectBase() + "/wit/workitems/${type}")
                             .body().map(json -> readStringValue(json, "id"))
@@ -451,9 +465,6 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return the updated test cases.
      */
     public List<TestCase> updateTestCases(TestPlan plan, List<Pair<TestCase, TestCase>> testCases) {
-        BiFunction<String, String, WorkItemOp> newWorkItem = (field, value) -> new WorkItemOp()
-                .op(WorkItemOp.Operation.REPLACE).path(format("/fields/{}", field)).value(value);
-
         List<TestCase> remove = new LinkedList<>();
         List<TestCase> add = new LinkedList<>();
 
@@ -464,15 +475,15 @@ public class AzureApi extends BaseApi<AzureApi> {
                     TestCase oldT = p.key();
                     TestCase newT = p.value();
                     if (!oldT.name().equals(newT.name())) {
-                        ops.add(newWorkItem.apply(TITLE, newT.name()));
+                        ops.add(workItemOp(WorkItemOp.Operation.REPLACE, TITLE, newT.name()));
                     }
                     if (!Objects.equals(oldT.description(), newT.description())) {
-                        ops.add(newWorkItem.apply(DESCRIPTION, newT.description()));
+                        ops.add(workItemOp(WorkItemOp.Operation.REPLACE, DESCRIPTION, newT.description()));
                     }
                     newRequest()
                             .pathParam("id", oldT.id())
                             .body(json(ops).toString())
-                            .header("Content-Type", "application/json-patch+json")
+                            .contentType(JSON_PATCH)
                             .patch(projectBase() + "/wit/workitems/{id}");
                 });
 
