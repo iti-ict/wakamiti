@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning][2].
 - The identifier is now incorporated into the name of the test case, in the 
   format `[ID-XX] Scenario Name`.
 
+### Added
+- The tag `wakamiti` is included in both test cases and test plans.
+
 
 ## [2.1.2] - 2025-02-26
 
