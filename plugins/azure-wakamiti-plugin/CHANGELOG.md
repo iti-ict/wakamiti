@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.0.0] - 2025-07-31
+
+### Changed
+- The identifier is now incorporated into the name of the test case, in the 
+  format `[ID-XX] Scenario Name`.
+
+### Added
+- The tag `wakamiti` is included in both test cases and test plans.
+
+
 ## [2.1.2] - 2025-02-26
 
 ### Fixed
