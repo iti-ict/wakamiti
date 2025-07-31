@@ -106,6 +106,12 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
         return String.format("/{%s}/{%s}/_apis", ORGANIZATION, PROJECT);
     }
 
+    /**
+     * Sets the `Content-Type` header for the request.
+     *
+     * @param contentType The value of the `Content-Type` header.
+     * @return The current instance for method chaining.
+     */
     protected SELF contentType(String contentType) {
         return header("Content-Type", contentType);
     }
