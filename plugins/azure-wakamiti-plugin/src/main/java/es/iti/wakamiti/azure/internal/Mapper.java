@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
 import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_FEATURE;
 import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_SCENARIO;
 import static java.util.stream.Collectors.*;
@@ -100,20 +101,19 @@ public abstract class Mapper {
     /**
      * Maps a single plan node snapshot to a test case.
      *
-     * @param i      the order of the test case within its suite.
+     * @param idx      the order of the test case within its suite.
      * @param suite  the test suite to which the test case belongs.
      * @param target the plan node snapshot to map.
      * @return a test case representing the mapped plan node snapshot.
      */
-    protected TestCase caseMap(int i, TestSuite suite, PlanNodeSnapshot target) {
+    protected TestCase caseMap(int idx, TestSuite suite, PlanNodeSnapshot target) {
+        String id = Optional.of(target.getId()).filter(i -> !i.startsWith("#"))
+                .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)));
         return new TestCase()
-                .name(target.getName())
+                .name(format("[{}] {}", id, target.getName()))
                 .description(join(target.getDescription(), System.lineSeparator()))
-                .tag(
-                        Optional.of(target.getId()).filter(id -> !id.startsWith("#"))
-                                .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)))
-                )
-                .order(i)
+                .tag("wakamiti")
+                .order(idx)
                 .suite(suite.hasChildren(true))
                 .metadata(target);
     }

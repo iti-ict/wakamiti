@@ -11,7 +11,7 @@
     },
     "workItem" : {
       "id" : 56978,
-      "name" : "Scenario B",
+      "name" : "[ID-2] Scenario B",
       "workItemFields" : [ {
         "Microsoft.VSTS.TCM.AutomationStatus" : "No automatizado"
       }, {
