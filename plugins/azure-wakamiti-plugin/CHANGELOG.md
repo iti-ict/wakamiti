@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [3.0.0] - 2025-07-31
 
 ### Changed
 - The identifier is now incorporated into the name of the test case, in the 
