@@ -521,6 +521,17 @@ public class TestPlanApiTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(resource("server/plans/get/single.json"))
         ).ifPresent(requests::add);
+        mockServer(
+                request().withBody("PATCH").withPath("/ST/ACS/_apis/wit/workitems/56983")
+                        .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
+                        .withBody(json("[" +
+                                "{\"op\":\"add\",\"path\":\"/fields/System.Tags\",\"value\":\"wakamiti\"}" +
+                                "]", MatchType.ONLY_MATCHING_FIELDS )),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("{}")
+        ).ifPresent(requests::add);
 
         AzureApi client = new AzureApi(new URL(BASE_URL), x -> x, null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");

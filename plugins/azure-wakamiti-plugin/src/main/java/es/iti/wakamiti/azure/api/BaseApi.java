@@ -106,6 +106,10 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
         return String.format("/{%s}/{%s}/_apis", ORGANIZATION, PROJECT);
     }
 
+    protected SELF contentType(String contentType) {
+        return header("Content-Type", contentType);
+    }
+
     /**
      * Retrieves all pages of results from a paginated API endpoint.
      *
