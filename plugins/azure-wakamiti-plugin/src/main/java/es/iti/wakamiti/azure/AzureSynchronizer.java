@@ -229,12 +229,12 @@ public class AzureSynchronizer implements EventObserver {
             return;
         }
         Function<String, TestResult> findResult = t -> testResults.stream()
-                .filter(e -> e.testCase().tag().equals(t)).findFirst()
+                .filter(e -> e.testCase().identifier().equals(t)).findFirst()
                 .orElseThrow(() -> new WakamitiAzureException("No such test result '{}'", t));
         testResults = Mapper.ofType(testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO)
                 .instance(suiteBase)
                 .mapResults(plan)
-                .map(r -> findResult.apply(r.testCase().tag()).merge(r))
+                .map(r -> findResult.apply(r.testCase().identifier()).merge(r))
                 .collect(Collectors.toList());
 
         api().updateResults(run, testResults);

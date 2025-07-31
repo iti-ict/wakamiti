@@ -107,6 +107,16 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
     }
 
     /**
+     * Sets the `Content-Type` header for the request.
+     *
+     * @param contentType The value of the `Content-Type` header.
+     * @return The current instance for method chaining.
+     */
+    protected SELF contentType(String contentType) {
+        return header("Content-Type", contentType);
+    }
+
+    /**
      * Retrieves all pages of results from a paginated API endpoint.
      *
      * @param <T>    The type of the items in the result.
