@@ -73,6 +73,14 @@ public class AzureApi extends BaseApi<AzureApi> {
         this.configuration = configuration;
     }
 
+    /**
+     * Constructs a WorkItemOp instance by setting the operation, path, and value.
+     *
+     * @param op    The operation to be performed.
+     * @param field The field name on which the operation is to be performed.
+     * @param value The value associated with the field.
+     * @return A configured WorkItemOp instance with the specified operation, path, and value.
+     */
     private WorkItemOp workItemOp(WorkItemOp.Operation op, String field, String value) {
         return new WorkItemOp().op(op).path(format("/fields/{}", field)).value(value);
     }
@@ -176,7 +184,7 @@ public class AzureApi extends BaseApi<AzureApi> {
     }
 
     /**
-     * Creates a new test plan.
+     * Creates a new test plan and tag it with {@code wakamiti}.
      *
      * @param plan The {@link TestPlan} to create.
      * @return The created {@link TestPlan}.
