@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.0.1] - 2025-08-28
+
+### Fixed
+- The tag ID extractor has been removed.
+
+
 ## [3.0.0] - 2025-07-31
 
 ### Changed
