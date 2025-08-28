@@ -56,7 +56,6 @@ public class AzureApi extends BaseApi<AzureApi> {
     private static final String JSON_PATCH = "application/json-patch+json";
 
     private final String configuration;
-    private transient Function<String, String> tagExtractor;
     private Settings settings;
 
     /**
@@ -64,12 +63,10 @@ public class AzureApi extends BaseApi<AzureApi> {
      * tag extractor function, and configuration.
      *
      * @param baseUrl      The base URL for Azure API requests.
-     * @param tagExtractor A function to extract tags from strings.
      * @param configuration The name of the test configuration to use.
      */
-    public AzureApi(URL baseUrl, UnaryOperator<String> tagExtractor, String configuration) {
+    public AzureApi(URL baseUrl, String configuration) {
         super(baseUrl);
-        this.tagExtractor = tagExtractor;
         this.configuration = configuration;
     }
 
@@ -351,7 +348,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .map(json -> {
                     WorkItem item = read(json, "$.workItem", new TypeRef<>() {});
                     return new TestCase().id(item.id()).name(item.name()).suite(suite)
-                            .tag(tagExtractor.apply(item.workItemFields().get(TAGS)))
+                            .tag(item.workItemFields().get(TAGS))
                             .order(Optional.ofNullable(read(json, "$.order", Integer.class)).orElse(0))
                             .pointAssignments(read(json, "$.pointAssignments", new TypeRef<>() { }));
                 });
@@ -635,15 +632,4 @@ public class AzureApi extends BaseApi<AzureApi> {
         return super.newRequest();
     }
 
-    /**
-     * Creates a copy of the current TestPlanService, including configuration and state.
-     *
-     * @return a copy of this service instance.
-     */
-    @Override
-    public AzureApi copy() {
-        AzureApi clone = super.copy();
-        clone.tagExtractor = tagExtractor;
-        return clone;
-    }
 }
