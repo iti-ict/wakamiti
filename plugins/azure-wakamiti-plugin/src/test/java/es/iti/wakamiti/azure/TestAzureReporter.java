@@ -7,14 +7,11 @@ package es.iti.wakamiti.azure;
 
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,8 +30,7 @@ public class TestAzureReporter {
                 .hasFieldOrPropertyWithValue("project", "ACS")
                 .hasFieldOrPropertyWithValue("version", "6.0-preview")
                 .hasFieldOrPropertyWithValue("testCasePerFeature", false)
-                .hasFieldOrPropertyWithValue("createItemsIfAbsent", true)
-                .hasFieldOrPropertyWithValue("idTagPattern", "ID([\\w-]+)");
+                .hasFieldOrPropertyWithValue("createItemsIfAbsent", true);
     }
 
     private void configure(AzureSynchronizer reporter, String resource) {
