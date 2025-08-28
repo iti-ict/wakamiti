@@ -88,7 +88,6 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         });
         requiredProperty(configuration, AZURE_CREATE_ITEMS_IF_ABSENT, Boolean.class, synchronizer::createItemsIfAbsent);
         synchronizer.attachments(new HashSet<>(configuration.getList(AZURE_ATTACHMENTS, String.class)));
-        requiredProperty(configuration, ID_TAG_PATTERN, String.class, synchronizer::idTagPattern);
     }
 
     private Optional<Pair<String, String>> credentials(Configuration configuration) {

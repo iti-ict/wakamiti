@@ -25,15 +25,10 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.StringUtils.format;
 import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.join;
 
 
 @Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.7", priority = 10)
@@ -53,7 +48,6 @@ public class AzureSynchronizer implements EventObserver {
     private boolean testCasePerFeature;
     private boolean createItemsIfAbsent;
     private boolean removeOrphans;
-    private String idTagPattern;
     private String configuration;
 
     private AzureApi api;
@@ -121,23 +115,9 @@ public class AzureSynchronizer implements EventObserver {
         this.attachments.addAll(attachments);
     }
 
-    public void idTagPattern(String idTagPattern) {
-        this.idTagPattern = idTagPattern;
-    }
-
     private AzureApi api() {
         if (api == null) {
-            UnaryOperator<String> tagIdExtractor = tags -> {
-                List<String> aux = Stream.of(tags.split(";")).map(String::trim)
-                        .filter(t -> t.matches(idTagPattern)).collect(Collectors.toList());
-                if (aux.size() > 1) {
-                    throw new WakamitiAzureException("Too many tags match the id pattern. ");
-                } else if (aux.isEmpty()) {
-                    throw new WakamitiAzureException("No tag matches the id pattern. ");
-                }
-                return aux.get(0);
-            };
-            api = new AzureApi(baseURL, tagIdExtractor, configuration)
+            api = new AzureApi(baseURL, configuration)
                     .organization(organization).projectBase(project).version(version);
             authenticator.accept(api);
         }
