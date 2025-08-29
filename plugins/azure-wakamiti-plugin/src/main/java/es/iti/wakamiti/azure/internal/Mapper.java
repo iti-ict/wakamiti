@@ -111,7 +111,7 @@ public abstract class Mapper {
                 .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)));
         return new TestCase()
                 .name(format("[{}] {}", id, target.getName()))
-                .description(join(target.getDescription(), System.lineSeparator()))
+//                .description(join(target.getDescription(), System.lineSeparator()))
                 .tag("wakamiti")
                 .order(idx)
                 .suite(suite.hasChildren(true))

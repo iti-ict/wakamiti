@@ -103,7 +103,7 @@ public class TestCase extends BaseModel {
 
     @Override
     protected Object[] hashValues() {
-        return new Object[]{tag};
+        return new Object[]{identifier()};
     }
 
     public String identifier() {

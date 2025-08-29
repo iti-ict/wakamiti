@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.0.2] - 2025-08-29
+
+### Fixed
+- Currently, when searching for a test case, it is expected to be associated 
+  with the same test suite as the one that is currently being executed.
+  However, this may not always be the case.
+- Issues related to modification of test cases.
+
+
 ## [3.0.1] - 2025-08-28
 
 ### Fixed

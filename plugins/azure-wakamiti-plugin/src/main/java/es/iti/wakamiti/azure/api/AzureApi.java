@@ -315,7 +315,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     public List<TestSuite> getTestSuites(TestPlan plan, List<TestSuite> suites, boolean createItemsIfAbsent) {
         List<TestSuite> remoteSuites = searchTestSuites(plan)
-                .flatMap(Util::flatten).distinct().collect(Collectors.toList());
+                .flatMap(Util::flatten).distinct()
+                .peek(s -> LOGGER.trace("Remote suite #{} loaded", s.id()))
+                .collect(Collectors.toList());
         List<TestSuite> newSuites = suites.stream()
                 .flatMap(Util::flatten).distinct()
                 .filter(s -> !remoteSuites.contains(s))
@@ -369,24 +371,37 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .flatMap(suite -> searchTestCases(plan, suite))
                 .filter(tests::contains)
                 .collect(Collectors.toList());
-        List<TestCase> newTests = tests.stream().filter(t -> !remoteTests.contains(t))
-                .peek(t -> suites.stream().filter(s -> s.equals(t.suite())).findFirst()
-                        .ifPresentOrElse(t::suite, () -> {
-                            throw new WakamitiAzureException("Suite '{}' not found", t.suite());
-                        }))
+
+        List<TestCase> newTests = tests.stream()
+                .filter(t -> !remoteTests.contains(t) || remoteTests.stream()
+                        .anyMatch(c -> t.identifier().equals(c.identifier()) && !t.suite().equals(c.suite())))
+                .map(x -> x.suite(suites.stream()
+                        .filter(suite -> x.suite().asPath().endsWith(suite.asPath())).findFirst()
+                        .orElseThrow(() -> new NoSuchElementException("Suite not found: " + x.suite().asPath())))
+                        .id(null))
                 .collect(Collectors.toList());
-        List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
+        List<TestCase> toRemove = remoteTests.stream()
                 .filter(t -> tests.stream()
                         .anyMatch(c -> t.identifier().equals(c.identifier())
-                                && (t.isDifferent(c) || !t.suite().equals(c.suite()))))
+                                && (!t.suite().equals(c.suite()))))
+                .collect(Collectors.toList());
+        List<Pair<TestCase, TestCase>> modSuiteTests = remoteTests.stream()
+                .filter(t -> !toRemove.contains(t) && tests.stream()
+                        .anyMatch(c -> t.identifier().equals(c.identifier()) && t.isDifferent(c)))
                 .map(t -> new Pair<>(t, tests.stream()
                         .filter(x -> x.identifier().equals(t.identifier()))
-                        .map(x -> x.id(t.id())).findFirst().orElseThrow()))
+                        .map(x -> x.id(t.id())).findFirst()
+                        .orElseThrow()))
                 .collect(Collectors.toList());
 
         if (!modSuiteTests.isEmpty()) {
-            updateTestCases(plan, modSuiteTests)
+            updateTestCases(modSuiteTests)
                     .forEach(t -> LOGGER.trace("Remote test #{} updated", t.id()));
+        }
+
+        if (!toRemove.isEmpty()) {
+            removeTestCases(toRemove);
+            remoteTests.removeAll(toRemove);
         }
 
         if (!newTests.isEmpty() && createItemsIfAbsent) {
@@ -462,17 +477,36 @@ public class AzureApi extends BaseApi<AzureApi> {
     }
 
     /**
+     * Deletes a list of test cases asynchronously grouped by test suite.
+     *
+     * @param testCases a list of test cases.
+     */
+    public void removeTestCases(List<TestCase> testCases) {
+        List<CompletableFuture<?>> futures = new LinkedList<>();
+        testCases.stream().collect(groupingBy(TestCase::suite, mapping(Function.identity(), toList())))
+                .forEach((suite, tests) -> {
+                    var future = CompletableFuture.runAsync(() -> tests.forEach(t -> newRequest()
+                            .pathParam("id", t.id())
+                            .delete(projectBase() + "/test/TestCases/{id}")));
+                    futures.add(future);
+                });
+        try {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new WakamitiException(e.getCause());
+        }
+    }
+
+    /**
      * Updates a list of test cases with new information.
      *
-     * @param plan      the test plan associated with the test cases.
      * @param testCases a list of pairs, where each pair contains the
      *                  current test case and its updated version.
      * @return the updated test cases.
      */
-    public List<TestCase> updateTestCases(TestPlan plan, List<Pair<TestCase, TestCase>> testCases) {
-        List<TestCase> remove = new LinkedList<>();
-        List<TestCase> add = new LinkedList<>();
-
+    public List<TestCase> updateTestCases(List<Pair<TestCase, TestCase>> testCases) {
         testCases.stream()
                 .filter(p -> p.key().isDifferent(p.value()))
                 .forEach(p -> {
@@ -491,44 +525,6 @@ public class AzureApi extends BaseApi<AzureApi> {
                             .contentType(JSON_PATCH)
                             .patch(projectBase() + "/wit/workitems/{id}");
                 });
-
-        testCases.stream()
-                .filter(p -> !p.key().suite().equals(p.value().suite()))
-                .forEach(p -> {
-                    remove.add(p.key());
-                    add.add(p.value());
-                });
-
-        List<CompletableFuture<?>> futures = new LinkedList<>();
-        // remove suite relation
-        remove.stream().collect(groupingBy(TestCase::suite, mapping(TestCase::id, toList())))
-                .entrySet()
-                .stream()
-                .map(e -> newRequest()
-                        .pathParam(PLAN_ID, plan.id())
-                        .pathParam(SUITE_ID, e.getKey().id())
-                        .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .deleteAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
-                .forEach(futures::add);
-
-        // add suite relation
-        add.stream().collect(groupingBy(TestCase::suite, mapping(TestCase::id, toList())))
-                .entrySet()
-                .stream()
-                .map(e -> newRequest()
-                        .pathParam(PLAN_ID, plan.id())
-                        .pathParam(SUITE_ID, e.getKey().id())
-                        .pathParam("testCaseIds", join(e.getValue(), ","))
-                        .postAsync(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase/{testCaseIds}"))
-                .forEach(futures::add);
-
-        try {
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new WakamitiException(e.getCause());
-        }
         return testCases.stream().map(p -> p.key().merge(p.value())).collect(toList());
     }
 
