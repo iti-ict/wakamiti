@@ -1,5 +1,5 @@
 
-Feature: Azure integration feature 2
+Feature: Azure integration feature
 
 
   @ID-s2-f2-1
