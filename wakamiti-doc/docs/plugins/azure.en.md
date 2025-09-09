@@ -20,14 +20,14 @@ run, this plugin integrates the results of a Wakamiti execution into an existing
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:azure-wakamiti-plugin:2.0.0
+es.iti.wakamiti:azure-wakamiti-plugin:3.0.2
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>azure-wakamiti-plugin</artifactId>
-  <version>2.0.0</version>
+  <version>3.0.2</version>
 </dependency>
 ```
 
