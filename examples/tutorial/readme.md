@@ -25,12 +25,17 @@ docker logs -f app-petclinic
 
 * Windows:
 ```Shell
-docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
+docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti
+```
+
+> Generador de features con chatgpt: 
+> ```shell
+docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti -a -D http://host.docker.internal:9966/petclinic/v2/api-docs -p testgen -L es -t %TOKEN%
 ```
 
 * Linux:
 ```Shell
-docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
+docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 
 ## Eliminar contenedores:
