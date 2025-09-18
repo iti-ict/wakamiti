@@ -20,22 +20,22 @@ password=petclinic
 docker logs -f app-petclinic
 ```
 
+## Crear imagen extendida de Wakamiti
+
+```shell
+docker build -t wakamiti-jacoco wakamiti
+```
 
 ## Lanzar Wakamiti:
 
 * Windows:
 ```Shell
-docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti
+docker run --rm -v "%cd%/wakamiti:/wakamiti" -v "tutorial-jacoco_app-data:/app/classes" --network wakamiti-net wakamiti-jacoco
 ```
-
-> Generador de features con chatgpt: 
-> ```shell
-> docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti -a -D http://host.docker.internal:9966/petclinic/v2/api-docs -p testgen -L es -t %TOKEN%
-> ```
 
 * Linux:
 ```Shell
-docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
+docker run --rm -v "$(pwd):/wakamiti" --network wakamiti-net wakamiti/wakamiti
 ```
 
 ## Eliminar contenedores:

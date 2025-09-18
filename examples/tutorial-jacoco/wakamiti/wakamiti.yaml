@@ -1,0 +1,38 @@
+wakamiti:
+  resourceTypes:
+    - gherkin
+
+  log:
+    level: trace
+    
+  launcher:
+    modules:
+      - mysql:mysql-connector-java:8.0.28
+      - es.iti.wakamiti:rest-wakamiti-plugin
+      - es.iti.wakamiti:db-wakamiti-plugin
+      - es.iti.wakamiti:html-report-wakamiti-plugin
+      - es.iti.wakamiti:groovy-wakamiti-plugin
+      
+  outputFilePath: result/report-petclinic.json
+  htmlReport:
+    title: Pruebas Pet Clinic
+    output: result/report-petclinic.html
+    
+  database:
+    connection:
+      url: jdbc:mysql://database:3306/petclinic?useUnicode=true
+      username: root
+      password: petclinic
+      driver: com.mysql.cj.jdbc.Driver
+    enableCleanupUponCompletion: "true" 
+  rest:
+    baseURL: http://app:9966/petclinic/api
+
+  nonRegisteredStepProviders:
+    - es.iti.wakamiti.steps.CustomSteps
+
+  jacoco:
+    host: app
+    port: 6300
+    output: result/jacoco
+    retries: 3
