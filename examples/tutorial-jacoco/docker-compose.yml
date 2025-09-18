@@ -1,0 +1,37 @@
+services:
+
+  app:
+    container_name: app-petclinic
+    build:
+      context: app
+    ports:
+      - "9966:9966"
+      - "6300:6300"
+    environment:
+      - JAVA_TOOL_OPTIONS="-Dspring.profiles.active=wakamiti,spring-data-jpa"
+    volumes:
+      - "./app/application-wakamiti.properties:/app/classes/application-wakamiti.properties"
+      - "./app/target:/target"
+      - "app-data:/app/classes"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    container_name: mysql-petclinic
+    image: mysql:5.7.44
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p$$MYSQL_ROOT_PASSWORD","--protocol","tcp"]
+      interval: 1s
+      retries: 30
+
+networks:
+  default:
+    name: wakamiti-net
+volumes:
+  app-data:
