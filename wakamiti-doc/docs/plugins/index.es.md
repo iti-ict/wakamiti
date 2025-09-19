@@ -21,5 +21,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Groovy](plugins/groovy)
 - [Pasos Modbus](plugins/modbus)
 
+[//]: # (- [Informe Jacoco]&#40;plugins/jacoco&#41;)
+
 
 
