@@ -17,6 +17,7 @@
     <module>azure-wakamiti-plugin</module>
     <module>db-wakamiti-plugin</module>
     <module>cucumber-exporter-wakamiti-plugin</module>
+    <module>jacoco-wakamiti-plugin</module>
     <module>groovy-wakamiti-plugin</module>
     <module>html-report-wakamiti-plugin</module>
     <module>spring-wakamiti-plugin</module>
