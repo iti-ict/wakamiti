@@ -88,6 +88,11 @@
               "value": "Modbus steps",
               "anchor": "/modbus",
               "depth": 2
+            },
+            {
+              "value": "Jacoco coverage",
+              "anchor": "/jacoco",
+              "depth": 2
             }
           ]
         }

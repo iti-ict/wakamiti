@@ -36,6 +36,7 @@
 | `es.iti.wakamiti:email-wakamiti-plugin`             | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/email-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/email-wakamiti-plugin/latest)                         |
 | `es.iti.wakamiti:io-wakamiti-plugin`                | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/io-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/io-wakamiti-plugin/latest)                               |
 | `es.iti.wakamiti:jmeter-wakamiti-plugin`            | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/jmeter-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/jmeter-wakamiti-plugin/latest)                       |
+| `es.iti.wakamiti:jacoco-wakamiti-plugin`            | [![Maven Central](https://img.shields.io/maven-central/v/es.iti.wakamiti/jacoco-wakamiti-plugin?label=%20&color=white)](https://mvnrepository.com/artifact/es.iti.wakamiti/jacoco-wakamiti-plugin/latest)                       |
 
 ---
 

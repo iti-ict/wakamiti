@@ -20,5 +20,4 @@ exist, but you can also develop your own plugins!
 - [JMeter steps](en/plugins/jmeter)
 - [Groovy](en/plugins/groovy)
 - [Modbus steps](en/plugins/modbus)
-
-[//]: # (- [Jacoco report]&#40;en/plugins/jacoco&#41;)
+- [Jacoco report](en/plugins/jacoco)

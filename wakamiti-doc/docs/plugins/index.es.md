@@ -20,8 +20,7 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Pasos JMeter](plugins/jmeter)
 - [Groovy](plugins/groovy)
 - [Pasos Modbus](plugins/modbus)
-
-[//]: # (- [Informe Jacoco]&#40;plugins/jacoco&#41;)
+- [Informe Jacoco](plugins/jacoco)
 
 
 
