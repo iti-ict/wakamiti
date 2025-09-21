@@ -88,6 +88,11 @@
               "value": "Pasos Modbus",
               "anchor": "/modbus",
               "depth": 2
+            },
+            {
+              "value": "Cobertura Jacoco",
+              "anchor": "/jacoco",
+              "depth": 2
             }
           ]
         }
