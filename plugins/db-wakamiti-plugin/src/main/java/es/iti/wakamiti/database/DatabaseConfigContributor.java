@@ -39,6 +39,7 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     private static final String METADATA_SCHEMA = "metadata.schema";
     private static final String METADATA_CATALOG = "metadata.catalog";
     private static final String AUTO_TRIM = "autotrim";
+    private static final String AUTO_COMMIT = "autocommit";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             DATABASE_XLS_IGNORE_SHEET_PATTERN, "#.*",
@@ -113,6 +114,7 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
         configuration.get(METADATA_SCHEMA, String.class).ifPresent(connectionParameters::schema);
         configuration.get(METADATA_CATALOG, String.class).ifPresent(connectionParameters::catalog);
         configuration.get(AUTO_TRIM, Boolean.class).ifPresent(connectionParameters::autoTrim);
+        configuration.get(AUTO_COMMIT, Boolean.class).ifPresent(connectionParameters::autoCommit);
         return connectionParameters;
     }
 
