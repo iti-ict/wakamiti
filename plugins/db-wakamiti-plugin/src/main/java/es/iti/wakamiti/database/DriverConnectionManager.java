@@ -9,6 +9,7 @@ package es.iti.wakamiti.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import es.iti.commons.jext.Extension;
 
@@ -38,7 +39,15 @@ public class DriverConnectionManager implements ConnectionManager {
         } else {
             parameters.driver(DriverManager.getDriver(parameters.url()).getClass().getName());
         }
-        return DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password());
+        return init(DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password()),  parameters);
+    }
+
+    private Connection init(Connection connection, ConnectionParameters parameters) throws SQLException {
+        Optional<Boolean> autoCommit = Optional.ofNullable(parameters.autoCommit());
+        if (autoCommit.isPresent()) {
+            connection.setAutoCommit(autoCommit.get());
+        }
+        return connection;
     }
 
     /**
