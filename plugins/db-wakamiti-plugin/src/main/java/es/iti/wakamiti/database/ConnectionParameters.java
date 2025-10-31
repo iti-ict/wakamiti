@@ -18,6 +18,7 @@ public class ConnectionParameters {
     private String schema;
     private String catalog;
     private boolean autoTrim = false;
+    private Boolean autoCommit;
 
     /**
      * Retrieves the URL for the database connection.
@@ -155,6 +156,15 @@ public class ConnectionParameters {
      */
     public ConnectionParameters autoTrim(boolean autoTrim) {
         this.autoTrim = autoTrim;
+        return this;
+    }
+
+    public Boolean autoCommit() {
+        return autoCommit;
+    }
+
+    public ConnectionParameters autoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
         return this;
     }
 
