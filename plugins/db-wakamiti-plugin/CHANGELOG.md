@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.5.0] - 2025-10-31
+
+### Added
+- Auto commit configuration.
+
+
 ## [3.4.2] - 2024-12-17
 
 ### Fixed
