@@ -406,19 +406,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
         ContentType mimeType = ContentType.fromContentType(
                 ResourceLoader.contentTypeFromExtension.get(ext).getMimeType());
-
-        File tempFile = new File(System.getProperty("java.io.tmpdir"),
-                RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
-        tempFile.deleteOnExit();
-        try (FileOutputStream out = new FileOutputStream(tempFile)) {
-            IOUtils.copy(new ByteArrayInputStream(document.getContent().getBytes(StandardCharsets.UTF_8)), out);
-        }
-
-        specifications.add(request ->
-                request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
-        specifications.add(request ->
-                request.multiPart(name, tempFile, mimeType.getContentTypeStrings()[0])
-        );
+        setAttachedFile(name, mimeType.getContentTypeStrings()[0], document);
     }
 
     /**
@@ -431,14 +419,53 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
 
-        resourceLoader();
         ContentType mimeType = ContentType.fromContentType(
                 ResourceLoader.getContentType(file).getMimeType());
+        setAttachedFile(name, mimeType.getContentTypeStrings()[0], file);
+    }
+
+    /**
+     * Attaches the document content as a file to the multipart {@code form-data}
+     * request.
+     *
+     * @param name     the name of the multipart field
+     * @param mimeType the mime type of the attached file
+     * @param document the content to be attached
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    @Step(value = "rest.define.attached.type.file", args = {"name:text", "type:text"})
+    public void setAttachedFile(String name, String mimeType, Document document) throws IOException {
+        String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
+
+        File tempFile = new File(System.getProperty("java.io.tmpdir"),
+                                 RestAssured.config().getMultiPartConfig().defaultFileName() + "." + ext);
+        tempFile.deleteOnExit();
+        try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            IOUtils.copy(new ByteArrayInputStream(document.getContent().getBytes(StandardCharsets.UTF_8)), out);
+        }
 
         specifications.add(request ->
-                request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
+                                   request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
         specifications.add(request ->
-                request.multiPart(name, file, mimeType.getContentTypeStrings()[0])
+                                   request.multiPart(name, tempFile, mimeType)
+        );
+    }
+
+    /**
+     * Attaches a file to the multipart {@code form-data} request.
+     *
+     * @param name the name of the multipart field
+     * @param file the file to attach
+     */
+    @Step(value = "rest.define.attached.type.data", args = {"name:text", "type:text", "file"})
+    public void setAttachedFile(String name, String mimeType, File file) {
+        assertFileExists(file);
+
+        specifications.add(request ->
+                                   request.contentType("multipart/" + RestAssured.config().getMultiPartConfig().defaultSubtype()));
+        specifications.add(request ->
+                                   request.multiPart(name, file, mimeType)
         );
     }
 
