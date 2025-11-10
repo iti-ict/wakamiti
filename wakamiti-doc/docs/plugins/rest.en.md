@@ -680,7 +680,7 @@ Given 'other_name' as attached file name
 
 ### Define attached file
 ```text copy=true
-the attached file is included with the following data:
+the attached file {name} (of type {type}) is included with the following data:
     {data}
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
@@ -688,6 +688,8 @@ Sets a multipart form-data including an attachment from the given in-document co
 ##### Parameters:
 | Name   | Wakamiti type         | Description            |
 |--------|-----------------------|------------------------|
+| `name` | `text` *required*     | The control name       |
+| `type` | `text`                | The MimeType of file   |
 | `data` | `document` *required* | Content to be attached |
 
 ##### Examples:
@@ -701,14 +703,16 @@ Given the attached file is included with the following data:
 
 ### Define attached file (file)
 ```text copy=true
-the attached file {file} is included
+the attached file {name} (of type {type}) is included with the file {file}
 ```
 Sets a multipart form-data including an attachment from the given in-document content.
 
 ##### Parameters:
-| Name   | Wakamiti type     | Description       |
-|--------|-------------------|-------------------|
-| `file` | `file` *required* | File to be attach |
+| Name   | Wakamiti type     | Description          |
+|--------|-------------------|----------------------|
+| `name` | `text` *required* | The control name     |
+| `type` | `text`            | The MimeType of file |
+| `file` | `file` *required* | File to be attach    |
 
 ##### Examples:
 ```gherkin
