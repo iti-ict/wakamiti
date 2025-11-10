@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.0] - 2025-11-10
+
+### Added
+- New steps have been introduced to specify the MimeType of an attachment.
+
+
 ## [2.8.3] - 2025-04-03
 
 ### Fixed

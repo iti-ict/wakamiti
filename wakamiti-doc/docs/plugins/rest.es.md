@@ -689,16 +689,17 @@ Dado 'otro_nombre' como nombre de fichero adjunto
 
 ### Definir archivo adjunto
 ```text copy=true
-(que) se incluye el fichero adjunto {name} con los siguientes datos:
+(que) se incluye el fichero adjunto {name} (de tipo {type}) con los siguientes datos:
     {data}
 ```
 Indica el texto que se incluirá como fichero adjunto en datos de formulario.
 
 #### Parámetros:
-| Nombre | Wakamiti type            | Descripción          |
-|--------|--------------------------|----------------------|
-| `name` | `text` *obligatorio*     | Nombre de control    |
-| `data` | `document` *obligatorio* | Contenido a adjuntar |
+| Nombre | Wakamiti type            | Descripción           |
+|--------|--------------------------|-----------------------|
+| `name` | `text` *obligatorio*     | Nombre de control     |
+| `type` | `text`                   | Tipo Mime del fichero |
+| `data` | `document` *obligatorio* | Contenido a adjuntar  |
 
 #### Ejemplos:
 ```gherkin
@@ -707,22 +708,34 @@ Dado que se incluye el fichero adjunto 'fichero' con los siguientes datos:
   Contenido del fichero
   """
 ```
+```gherkin
+Dado que se incluye el fichero adjunto 'fichero' de tipo 'text/csv' con los siguientes datos:
+  """
+  Contenido,del,fichero
+  0,56,26
+  """
+```
 
 
 ### Definir archivo adjunto (fichero)
 ```text copy=true
-(que) se incluye el fichero adjunto {name} con el contenido del fichero {file}
+(que) se incluye el fichero adjunto {name} (de tipo {type}) con el contenido del fichero {file}
 ```
 Indica el fichero cuyo contenido se incluirá como fichero adjunto en datos de formulario.
 
 #### Parámetros:
 | Nombre | Wakamiti type        | Descripción                         |
 |--------|----------------------|-------------------------------------|
+| `name` | `text` *obligatorio* | Nombre de control                   |
+| `type` | `text`               | Tipo Mime del fichero               |
 | `file` | `file` *obligatorio* | Fichero con el contenido a adjuntar |
 
 #### Ejemplos:
 ```gherkin
 Dado que se incluye el fichero adjunto 'fichero' con el contenido del fichero 'data.txt'
+```
+```gherkin
+Dado que se incluye el fichero adjunto 'fichero' de tipo 'image/png' con el contenido del fichero 'img.png'
 ```
 
 

@@ -1260,6 +1260,54 @@ public class RestStepContributorTest {
     }
 
     /**
+     * Test {@link RestStepContributor#setAttachedFile(String, String, Document)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testSetAttachedFileWhenTypeWithSuccess() throws IOException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader("Content-Type",
+                                    MediaType.MULTIPART_FORM_DATA + "; boundary="
+                                            + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                        .withBody(
+                                attached(
+                                        file(
+                                                RestAssured.config().getMultiPartConfig().defaultSubtype(),
+                                                MediaType.TEXT_XML.toString(),
+                                                RestAssured.config().getMultiPartConfig().defaultControlName(),
+                                                "<a>something</a>"
+                                        ),
+                                        file(
+                                                RestAssured.config().getMultiPartConfig().defaultSubtype(),
+                                                MediaType.TEXT_XML.toString(),
+                                                RestAssured.config().getMultiPartConfig().defaultControlName(),
+                                                "<b>something else</b>"
+                                        )
+                                )
+                        )
+                        .withBody(
+                                regex(".*file\\.txt.*")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setAttachedFile("file", "text/xml", new Document("<a>something</a>"));
+        contributor.setAttachedFile("file", "text/xml", new Document("<b>something else</b>"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
      * Test {@link RestStepContributor#setAttachedFile(String, File)}  and
      * {@link RestStepContributor#executeGetSubject()}
      */
@@ -1308,6 +1356,60 @@ public class RestStepContributorTest {
     public void testSetAttachedFileWhenFileNotFoundWithError() {
         // act
         contributor.setAttachedFile("file", new File("file.tmp"));
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test
+    public void testSetAttachedFileWhenFileAndTypeWithSuccess() throws IOException {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader("Content-Type",
+                                    MediaType.MULTIPART_FORM_DATA
+                                            + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                        .withBody(
+                                attached(
+                                        file(
+                                                RestAssured.config().getMultiPartConfig().defaultSubtype(),
+                                                MediaType.TEXT_XML.toString(),
+                                                RestAssured.config().getMultiPartConfig().defaultControlName(),
+                                                file("wakamiti/data/schema.xml").getCanonicalPath()
+                                        )
+                                )
+                        )
+                        .withBody(
+                                regex(".*schema\\.xml.*")
+                        )
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setAttachedFile("file", "text/xml", file("wakamiti/data/schema.xml"));
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setAttachedFile(String, String, File)}  and
+     * {@link RestStepContributor#executeGetSubject()}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetAttachedFileWhenFileNotFoundAndTypeWithError() {
+        // act
+        contributor.setAttachedFile("file", "text/plain", new File("file.tmp"));
 
         // check
         // An error should be thrown
