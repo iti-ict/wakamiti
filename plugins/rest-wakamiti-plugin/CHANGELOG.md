@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.1] - 2025-11-11
+
+### Fixed
+- The type of all arguments must be specified in the definition of the new steps.
+
+
 ## [2.9.0] - 2025-11-10
 
 ### Added
