@@ -23,6 +23,8 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.rest.RestConfigContributor.BASE_URL;
 import static es.iti.wakamiti.rest.TestUtil.prepare;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 
 @AnnotatedConfiguration({
@@ -43,6 +45,8 @@ public class RestStepsTest {
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
         prepare(client, "wakamiti/server", media -> true);
+
+        client.when(request().withMethod("POST").withPath("/users")).respond(response().withStatusCode(204));
     }
 
 
