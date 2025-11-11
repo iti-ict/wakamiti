@@ -434,7 +434,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      *
      * @throws IOException if an I/O error occurs
      */
-    @Step(value = "rest.define.attached.type.file", args = {"name:text", "type:text"})
+    @Step(value = "rest.define.attached.type.data", args = {"name:text", "type:text"})
     public void setAttachedFile(String name, String mimeType, Document document) throws IOException {
         String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
 
@@ -458,7 +458,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * @param name the name of the multipart field
      * @param file the file to attach
      */
-    @Step(value = "rest.define.attached.type.data", args = {"name:text", "type:text", "file:file"})
+    @Step(value = "rest.define.attached.type.file", args = {"name:text", "type:text", "file:file"})
     public void setAttachedFile(String name, String mimeType, File file) {
         assertFileExists(file);
 
