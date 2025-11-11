@@ -158,7 +158,6 @@ public class TestUtil {
         for (Expectation expectation : expectations) {
             client.when(expectation.getHttpRequest()).respond(expectation.getHttpResponse());
         }
-
     }
 
     @SuppressWarnings("unchecked")
@@ -269,6 +268,10 @@ public class TestUtil {
         expectations.add(
                 new Expectation(request().withPath("/bad"))
                         .thenRespond(response().withStatusCode(HttpStatusCode.BAD_REQUEST_400.code()))
+        );
+        expectations.add(
+                new Expectation(request().withMethod("POST").withPath("/users"))
+                        .thenRespond(response().withStatusCode(204))
         );
         return expectations.toArray(new Expectation[0]);
     }
