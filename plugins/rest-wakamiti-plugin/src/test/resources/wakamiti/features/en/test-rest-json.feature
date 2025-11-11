@@ -194,3 +194,13 @@ Feature: REST Test Feature
     Given the REST service '/bad'
     When the subject is queried
     Then the response HTTP code is 400
+
+  @ID-test-1-7
+  Scenario: Attached files
+    Given the attached file 'file' of type 'text/json' is included with the following data:
+        """
+        { "id": 1, "description": "test data" }
+        """
+    And the attached file 'file2' of type 'text/xml' is included with the file '${data.dir}/data/schema.xml'
+    When user is created
+    Then the response HTTP code is 204
