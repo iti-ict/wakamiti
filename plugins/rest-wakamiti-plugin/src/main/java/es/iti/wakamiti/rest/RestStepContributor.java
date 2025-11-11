@@ -415,7 +415,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * @param name the name of the multipart field
      * @param file the file to attach
      */
-    @Step(value = "rest.define.attached.file", args = {"name:text", "file"})
+    @Step(value = "rest.define.attached.file", args = {"name:text", "file:file"})
     public void setAttachedFile(String name, File file) {
         assertFileExists(file);
 
@@ -458,7 +458,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      * @param name the name of the multipart field
      * @param file the file to attach
      */
-    @Step(value = "rest.define.attached.type.data", args = {"name:text", "type:text", "file"})
+    @Step(value = "rest.define.attached.type.data", args = {"name:text", "type:text", "file:file"})
     public void setAttachedFile(String name, String mimeType, File file) {
         assertFileExists(file);
 
