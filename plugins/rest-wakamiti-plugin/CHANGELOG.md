@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.3] - 2025-11-11
+
+### Fixed
+- Key definition of the new steps.
+
+
 ## [2.9.2] - 2025-11-11
 
 ### Fixed
