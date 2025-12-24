@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
+FROM eclipse-temurin:11-jre-alpine
 LABEL maintainer="mgalbis@iti.es"
 
 # Wakamiti runtime distribution filename.
