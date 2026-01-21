@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -338,6 +339,9 @@ public class ResourceLoader {
         for (String path : paths) {
             discovered.addAll(discoverResources(path, filenameFilter, parser));
         }
+        discovered = discovered.stream()
+                .sorted(Comparator.comparing(Resource::relativePath, Comparator.naturalOrder()))
+                .collect(Collectors.toCollection(LinkedList::new));
         if (LOGGER.isInfoEnabled()) {
             discovered.forEach(
                     resource -> LOGGER.info(
