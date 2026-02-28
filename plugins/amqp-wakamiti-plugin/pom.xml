@@ -26,9 +26,11 @@
     <inceptionYear>2021</inceptionYear>
 
     <properties>
-        <qpid-broker.version>9.2.0</qpid-broker.version>
+        <qpid-broker.version>10.0.1</qpid-broker.version>
+        <rabbitmq-client.version>5.28.0</rabbitmq-client.version>
+        <jackson-annotations.version>2.20</jackson-annotations.version>
 
-        <wakamiti-engine.version>2.7.2</wakamiti-engine.version>
+        <wakamiti-engine.version>2.8.1</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -38,9 +40,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-jms-client</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>5.20.0</version>
+            <version>${rabbitmq-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -74,8 +81,20 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.qpid</groupId>
             <artifactId>qpid-broker-plugins-amqp-0-8-protocol</artifactId>
+            <version>${qpid-broker.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-broker-plugins-amqp-1-0-protocol</artifactId>
             <version>${qpid-broker.version}</version>
             <scope>test</scope>
         </dependency>
@@ -92,6 +111,17 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.2.7.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
 </project>
