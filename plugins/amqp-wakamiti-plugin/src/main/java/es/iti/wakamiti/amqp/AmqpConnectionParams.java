@@ -7,35 +7,60 @@
 package es.iti.wakamiti.amqp;
 
 
+import java.net.URI;
 
+
+/**
+ * Immutable value object with the minimum information required to open an AMQP connection.
+ * <p>
+ * The class is intentionally simple:
+ * <ul>
+ *   <li>{@code uri}: broker endpoint plus optional query parameters (for example vhost settings).</li>
+ *   <li>{@code username}/{@code password}: credentials used when the broker requires authentication.</li>
+ * </ul>
+ */
 public class AmqpConnectionParams {
 
+    /**
+     * Creates a new immutable set of connection parameters.
+     *
+     * @param uri broker URI
+     * @param username optional username (can be {@code null})
+     * @param password optional password (can be {@code null})
+     */
     public AmqpConnectionParams(
-        String host,
+        URI uri,
         String username,
         String password
     ) {
-        this.host = host;
+        this.uri = uri;
         this.username = username;
         this.password = password;
     }
 
-    private String host;
-    private String username;
-    private String password;
+    private final URI uri;
+    private final String username;
+    private final String password;
 
-
-    public String host() {
-        return host;
+    /**
+     * @return broker URI used by protocol-specific clients
+     */
+    public URI uri() {
+        return uri;
     }
 
+    /**
+     * @return configured username, or {@code null} when anonymous/default auth is used
+     */
     public String username() {
         return username;
     }
 
+    /**
+     * @return configured password, or {@code null}
+     */
     public String password() {
         return password;
     }
-
 
 }
