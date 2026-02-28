@@ -3,233 +3,259 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+
 package es.iti.wakamiti.amqp;
 
-import com.rabbitmq.client.*;
+
 import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.awaitility.Durations;
-import org.awaitility.core.ConditionTimeoutException;
-import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
+import java.net.URI;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 import static org.awaitility.Awaitility.await;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "amqp-steps", version = "2.6")
+/**
+ * Wakamiti step contributor that exposes AMQP steps to feature files.
+ * <p>
+ * This class is the public API layer of the plugin:
+ * <ul>
+ *   <li>step annotations map Gherkin sentences to Java methods,</li>
+ *   <li>each method delegates to reusable logic in {@link AmqpSupport},</li>
+ *   <li>teardown methods guarantee cleanup and connection release.</li>
+ * </ul>
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "amqp-steps",
+        version = "2.6"
+)
 @I18nResource("iti_wakamiti_wakamiti-amqp")
-public class AmqpStepContributor implements StepContributor {
+public class AmqpStepContributor extends AmqpSupport implements StepContributor {
 
-    private final Logger logger = WakamitiLogger.forClass(AmqpStepContributor.class);
-
-    private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
-
-    private AmqpConnectionParams connectionParams;
-    private Connection connection;
-    private Channel channel;
-    private final Map<String, List<String>> receivedMessages = new HashMap<>();
-    private String destination;
-
-    private boolean durable;
-    private boolean exclusive;
-    private boolean autoDelete;
+    private static final AmqpProtocol DEFAULT_PROTOCOL = AmqpProtocol.AMQP_1_0;
 
 
-    public void setConnectionParams(AmqpConnectionParams connectionParams) {
-        this.connectionParams = connectionParams;
+    /**
+     * Executes deferred cleanup operations registered during scenario execution.
+     */
+    @TearDown(order = 1)
+    public void cleanUp() {
+        cleanUpOperations.forEach(Runnable::run);
+        cleanUpOperations.clear();
     }
 
-
-    protected Channel channel() {
-        if (this.channel == null) {
-            try {
-                var connectionFactory = new ConnectionFactory();
-                connectionFactory.setUri(connectionParams.host());
-                connectionFactory.setUsername(connectionParams.username());
-                connectionFactory.setPassword(connectionParams.password());
-                this.connection = connectionFactory.newConnection();
-                this.channel = connection.createChannel();
-            } catch (URISyntaxException | GeneralSecurityException | IOException | TimeoutException e) {
-                throw new WakamitiException("Error connecting to AMQP server: {}", e.getMessage(), e);
-            }
-        }
-        return channel;
-    }
-
-    public void setDurable(boolean durable) {
-        this.durable = durable;
-    }
-
-    public void setExclusive(boolean exclusive) {
-        this.exclusive = exclusive;
-    }
-
-    public void setAutoDelete(boolean autoDelete) {
-        this.autoDelete = autoDelete;
-    }
-
-
-    @TearDown
+    /**
+     * Releases runtime resources used by this contributor instance.
+     */
+    @TearDown(order = 2)
     public void releaseConnection() {
+        receivedMessages.clear();
+        closeClient();
+    }
+
+
+    /**
+     * Registers a queue purge operation that will run at teardown.
+     *
+     * @param queue queue to purge after scenario ends
+     */
+    @Step(
+            value = "amqp.define.cleanup.purge.queue",
+            args = { "word" }
+    )
+    public void setCleanupQueue(
+            String queue
+    ) {
+        cleanUpOperations.add(() -> purgeQueue(queue));
+    }
+
+
+    /**
+     * Defines broker URL and credentials.
+     *
+     * @param url broker URI
+     * @param username broker username (optional)
+     * @param password broker password (optional)
+     */
+    @Step(
+            value = "amqp.define.connection.parameters",
+            args = { "url:text", "username:text", "password:text" }
+    )
+    public void defineConnectionParameters(
+            String url,
+            String username,
+            String password
+    ) {
+        this.connectionParams = new AmqpConnectionParams(
+                URI.create(url),
+                username,
+                password
+        );
+        closeClient();
+    }
+
+
+    /**
+     * Defines protocol to use for future operations.
+     *
+     * @param protocol protocol name or alias
+     */
+    @Step(
+            value = "amqp.define.connection.protocol",
+            args = { "protocol:word" }
+    )
+    public void defineProtocol(
+        String protocol
+    ) {
         try {
-            if (this.channel != null) {
-                this.channel.close();
-            }
-            if (this.connection != null) {
-                this.connection.close();
-            }
-        } catch (IOException | TimeoutException e) {
-            logger.warn("There were problems releasing the connection: {}", e.getMessage());
-            logger.debug(e.toString(), e);
+            this.protocol = AmqpProtocol.parseOrDefault(protocol, DEFAULT_PROTOCOL);
+        } catch (RuntimeException e) {
+            throw new WakamitiException("Unsupported AMQP protocol '{}'", protocol, e);
         }
+        closeClient();
     }
 
 
-    void sendJsonMessageToQueue(String queueName, String text) {
-        sendTextMessageToQueue(queueName, text, "application/json");
-    }
-
-
-    void sendTextMessageToQueue(String queueName, String text, String contentType) {
-        try {
-            declareQueue(queueName);
-            var bytes = text.getBytes(StandardCharsets.UTF_8);
-            AMQP.BasicProperties props = new AMQP.BasicProperties(
-                    contentType,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-            channel().basicPublish("", queueName, props, bytes);
-        } catch (IOException e) {
-            throw new WakamitiException(e);
-        }
-    }
-
-
-    void consumeQueue(String queueName) {
-        try {
-            declareQueue(queueName);
-            boolean ack = false;
-            Consumer callback = new DefaultConsumer(channel()) {
-                @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    receivedMessages
-                            .computeIfAbsent(queueName, x -> new ArrayList<>())
-                            .add(new String(body, StandardCharsets.UTF_8))
-                    ;
-                    channel().basicAck(envelope.getDeliveryTag(), true);
-                }
-            };
-            channel().basicConsume(queueName, ack, callback);
-        } catch (IOException e) {
-            throw new WakamitiException(e);
-        }
-    }
-
-
-    private boolean messageExistsInReceived(String message) {
-        Objects.requireNonNull(destination, "Destination queue is not defined");
-        return receivedMessages
-                .computeIfAbsent(destination, x -> new ArrayList<>())
-                .stream()
-                .anyMatch(receivedMessage -> receivedMessage.equals(message));
-    }
-
-
-    private void checkMessageExistsInReceived(String message, Duration duration) {
-        try {
-            await()
-                    .atMost(duration)
-                    .pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS)
-                    .until(() -> messageExistsInReceived(message));
-        } catch (ConditionTimeoutException e) {
-            throw new AssertionError("Message not received in " + formatDuration(duration.toMillis(), FORMAT));
-        }
-    }
-
-
-    private void declareQueue(String queueName) throws IOException {
-        Map<String, Object> arguments = Map.of();
-        channel().queueDeclare(queueName, durable, exclusive, autoDelete, arguments);
-    }
-
-
-    private String readFile(File file) {
-        return WakamitiAPI.instance().resourceLoader().readFileAsString(file);
-    }
-
-
-    @Step(value = "amqp.define.connection.parameters", args = {"url:text", "username:text", "password:text"})
-    public void defineConnectionParameters(String url, String username, String password) {
-        this.connectionParams = new AmqpConnectionParams(url, username, password);
-    }
-
-
-    @Step(value = "amqp.define.destination.queue", args = {"word"})
-    public void defineDestinationQueue(String queueName) {
+    /**
+     * Sets destination queue used by assertion steps and subscribes to it.
+     *
+     * @param queueName queue to observe
+     */
+    @Step(
+            value = "amqp.define.destination.queue",
+            args = { "word" }
+    )
+    public void defineDestinationQueue(
+            String queueName
+    ) {
         this.destination = queueName;
         consumeQueue(queueName);
     }
 
 
-    @Step(value = "amqp.send.json.from.string", args = {"word"})
-    public void sendJSONFromString(String queueName, Document document) {
-        sendJsonMessageToQueue(queueName, document.getContent());
+    /**
+     * Sends inline JSON document content to queue.
+     *
+     * @param queueName target queue
+     * @param document inline JSON document
+     */
+    @Step(
+            value = "amqp.send.json.from.string",
+            args = { "word" }
+    )
+    public void sendJSONFromString(
+            String queueName,
+            Document document
+    ) {
+        sendTextMessageToQueue(queueName, document.getContent());
     }
 
 
-    @Step(value = "amqp.send.json.from.file", args = {"queue:word", "file:file"})
-    public void sendJSONFromFile(String queueName, File file) {
-        sendJsonMessageToQueue(queueName, readFile(file));
+    /**
+     * Sends JSON content loaded from file.
+     *
+     * @param queueName target queue
+     * @param file JSON file
+     */
+    @Step(
+            value = "amqp.send.json.from.file",
+            args = { "queue:word", "file:file" }
+    )
+    public void sendJSONFromFile(
+            String queueName,
+            File file
+    ) {
+        assertFileExists(file);
+        sendTextMessageToQueue(queueName, readFile(file));
+    }
+
+    /**
+     * Purges all pending messages from queue.
+     *
+     * @param queueName queue to purge
+     */
+    @Step(
+            value = "amqp.purge.queue",
+            args = { "word" }
+    )
+    public void purgeQueueStep(
+            String queueName
+    ) {
+        purgeQueue(queueName);
     }
 
 
+    /**
+     * Adds a deterministic delay in a scenario.
+     *
+     * @param duration amount of time to wait
+     */
     @Step("amqp.send.await")
-    public void awaitFor(Duration duration) {
+    public void awaitFor(
+            Duration duration
+    ) {
         await().timeout(duration.plusSeconds(1))
                 .pollDelay(duration).until(() -> true);
     }
 
 
-    @Step(value = "amqp.check.received.json.from.string", args = {"duration:duration"})
-    public void checkReceivedJSONFromString(Duration duration, Document json) {
+    /**
+     * Validates that a JSON message appears within timeout.
+     *
+     * @param duration timeout window
+     * @param json expected JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.from.string",
+            args = { "duration:duration" }
+    )
+    public void checkReceivedJSONFromString(
+            Duration duration,
+            Document json
+    ) {
         checkMessageExistsInReceived(json.getContent(), duration);
     }
 
 
-    @Step(value = "amqp.check.received.json.from.file", args = {"duration:duration", "file:file"})
-    public void checkReceivedJSONFromString(Duration duration, File file) {
+    /**
+     * Validates that expected JSON from file appears within timeout.
+     *
+     * @param duration timeout window
+     * @param file file containing expected JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.from.file",
+            args = { "duration:duration", "file:file" }
+    )
+    public void checkReceivedJSONFromFile(
+            Duration duration,
+            File file
+    ) {
+        assertFileExists(file);
         checkMessageExistsInReceived(readFile(file), duration);
     }
 
+    /**
+     * Validates that no message is received during the timeout window.
+     *
+     * @param duration timeout window
+     */
+    @Step(
+            value = "amqp.check.received.none",
+            args = { "duration:duration" }
+    )
+    public void checkNoMessageReceived(
+            Duration duration
+    ) {
+        checkNoMessageInReceived(duration);
+    }
 
 }
