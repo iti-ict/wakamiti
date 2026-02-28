@@ -18,9 +18,11 @@ import org.junit.runner.RunWith;
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
     @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
-    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features")
+    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
+    @Property(key = "test.data", value = "src/test/resources/data"),
+    @Property(key = AmqpConfigContributor.AMQP_MESSAGE_PERSISTENT, value = "false")
 })
-public class AmqpTest {
+public class AmqpIT {
 
     static EmbeddedInMemoryQpidBroker broker = new EmbeddedInMemoryQpidBroker();
 
