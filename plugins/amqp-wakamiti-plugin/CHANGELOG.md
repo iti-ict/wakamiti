@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [2.8.0] - 2026-03-03
 
 ### Added
 - AMQP protocol selection support (`AMQP_1_0` / `AMQP_0_9_1`) through `amqp.connection.protocol`.
