@@ -5,13 +5,10 @@ slug: /plugins/amqp
 ---
 
 
-Este plugin proporciona una serie de pasos para interactuar con una aplicación vía 
-[Advanced Message Queuing Protocol](https://amqp.org). La implementación subyacente se basa en 
-[RabbitMQ](https://rabbitmq.com), aunque podría cambiar en futuras versiones.
-
-> **AVISO**
->
-> Actualmente, esta librería proporciona una funcionalidad muy limitada y existe como prueba de concepto.
+Este plugin proporciona una serie de pasos para interactuar con brokers AMQP vía
+[Advanced Message Queuing Protocol](https://amqp.org). Admite conexiones AMQP 1.0 y AMQP 0.9.1,
+configuración de colas y persistencia de mensajes, además de pasos para enviar y validar mensajes
+JSON, purgar colas y comprobar que no se reciben mensajes.
 
 
 ---
@@ -26,14 +23,14 @@ Este plugin proporciona una serie de pasos para interactuar con una aplicación 
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.6.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.8.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.6.0</version>
+  <version>2.8.0</version>
 </dependency>
 ```
 
@@ -80,6 +77,37 @@ Ejemplo:
 amqp:
   connection:
     password: guest
+```
+
+
+###  `amqp.connection.protocol`
+- Tipo: `string`
+- Por defecto: `AMQP_1_0`
+
+Selecciona el protocolo AMQP que se utilizará. Se aceptan `AMQP_1_0` y `AMQP_0_9_1` (también alias como
+`amqp-1.0`, `amqp-0.9.1`, `1_0`, `0_9_1`).
+
+Ejemplo:
+
+```yaml
+amqp:
+  connection:
+    protocol: AMQP_0_9_1
+```
+
+
+###  `amqp.message.persistent`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Establece si los mensajes se envían como persistentes.
+
+Ejemplo:
+
+```yaml
+amqp:
+  message:
+    persistent: "false"
 ```
 
 
@@ -136,8 +164,8 @@ amqp:
 la conexión AMQP con URL {url} usando el usuario {username} y la contraseña {password}
 ```
 
-Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las 
-propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername), 
+Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las
+propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername),
 [`amqp.connection.password`](#amqpconnectionpassword).
 
 #### Parámetros:
@@ -150,6 +178,25 @@ propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.usern
 #### Ejemplos:
 ```gherkin
 Dada la conexión AMQP con URL 'amqp://127.0.0.1:5671' usando el usuario 'guest' y la contraseña 'guest'
+```
+
+
+### Definir protocolo
+```text copy=true
+el protocolo AMQP {protocol}
+```
+
+Define el protocolo AMQP que se utilizará. Esta es la forma descriptiva de establecer la propiedad
+[`amqp.connection.protocol`](#amqpconnectionprotocol).
+
+#### Parámetros:
+| Nombre     | Wakamiti type        | Descripción        |
+|------------|----------------------|--------------------|
+| `protocol` | `word` *obligatorio* | Nombre del protocolo |
+
+#### Ejemplos:
+```gherkin
+Dado el protocolo AMQP AMQP_0_9_1
 ```
 
 
@@ -168,6 +215,25 @@ Establece el nombre de la cola que se observará.
 #### Ejemplos:
 ```gherkin
 Dada la cola de destino TEST
+```
+
+
+### Purgar cola
+```text copy=true
+(que) se vacía la cola {word}
+```
+- [Modo post-ejecución][2]
+
+Purga todos los mensajes pendientes de la cola indicada.
+
+#### Parámetros:
+| Nombre | Wakamiti type        | Descripción       |
+|--------|----------------------|-------------------|
+| `word` | `word` *obligatorio* | Nombre de la cola |
+
+#### Ejemplos:
+```gherkin
+Cuando se vacía la cola TEST
 ```
 
 
@@ -241,7 +307,7 @@ el siguiente mensaje JSON se recibe en {duration}:
     {data}
 ```
 
-Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo 
+Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo
 después del tiempo de espera indicado.
 
 #### Parámetros:
@@ -268,7 +334,7 @@ Cuando el siguiente mensaje JSON se recibe en 5 segundos:
 el mensaje del fichero JSON {file} se recibe en {duration}
 ```
 
-Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino), 
+Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino),
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
@@ -283,4 +349,41 @@ Cuando el mensaje del fichero JSON 'data/message.json' se recibe en 5 segundos
 ```
 
 
+### Validar ausencia de mensajes
+```text copy=true
+no se recibe ningún mensaje durante {duration}
+```
+
+Valida que no se reciba ningún mensaje en la cola de destino durante el tiempo de espera.
+
+#### Parámetros:
+| Nombre     | Wakamiti type               | Descripción        |
+|------------|-----------------------------|--------------------|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo |
+
+#### Ejemplos:
+```gherkin
+Entonces no se recibe ningún mensaje durante 10 segundos
+```
+
+
+## Modos especiales
+
+
+Algunos pasos pueden ejecutarse con un comportamiento diferente si se definen de las siguientes maneras:
+
+### Modo post-ejecución
+```text copy=true
+Al finalizar, *
+```
+
+El paso se ejecutará una vez finalice el escenario, independientemente del resultado de la ejecución.
+
+#### Ejemplos:
+```gherkin
+* Al finalizar, se vacía la cola TEST
+```
+
+
 [1]: wakamiti/architecture#duration
+[2]: #modo-post-ejecución
