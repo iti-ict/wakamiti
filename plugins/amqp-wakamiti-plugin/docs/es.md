@@ -1,20 +1,7 @@
----
-title: Pasos AMQP
-date: 2022-09-20
-slug: /plugins/amqp
----
-
-
 Este plugin proporciona una serie de pasos para interactuar con brokers AMQP vía
 [Advanced Message Queuing Protocol](https://amqp.org). Admite conexiones AMQP 1.0 y AMQP 0.9.1,
 configuración de colas y persistencia de mensajes, además de pasos para enviar y validar mensajes
 JSON, purgar colas y comprobar que no se reciben mensajes.
-
-
----
-## Tabla de contenido
-
----
 
 
 ## Instalación
@@ -164,8 +151,8 @@ amqp:
 la conexión AMQP con URL {url} usando el usuario {username} y la contraseña {password}
 ```
 
-Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las
-propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername),
+Establece la URL y las credenciales que utilizará el agente AMQP. Esta es la forma descriptiva de establecer las 
+propiedades [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername), 
 [`amqp.connection.password`](#amqpconnectionpassword).
 
 #### Parámetros:
@@ -307,7 +294,7 @@ el siguiente mensaje JSON se recibe en {duration}:
     {data}
 ```
 
-Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo
+Valida que se reciba un mensaje JSON específico en la [cola observada](#definir-cola-destino), produciéndose un fallo 
 después del tiempo de espera indicado.
 
 #### Parámetros:
@@ -334,7 +321,7 @@ Cuando el siguiente mensaje JSON se recibe en 5 segundos:
 el mensaje del fichero JSON {file} se recibe en {duration}
 ```
 
-Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino),
+Valida que se reciba el contenido de un fichero JSON específico en la [cola observada](#definir-cola-destino), 
 produciéndose un fallo después del tiempo de espera indicado.
 
 #### Parámetros:
@@ -374,7 +361,7 @@ Algunos pasos pueden ejecutarse con un comportamiento diferente si se definen de
 
 ### Modo post-ejecución
 ```text copy=true
-Al finalizar, *
+Al finalizar, * 
 ```
 
 El paso se ejecutará una vez finalice el escenario, independientemente del resultado de la ejecución.

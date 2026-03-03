@@ -1,20 +1,8 @@
----
-title: AMQP steps
-date: 2022-09-20
-slug: /en/plugins/amqp
----
-
 
 This plugin provides a set of steps to interact with AMQP brokers via the
 [Advanced Message Queuing Protocol](https://amqp.org). It supports AMQP 1.0 and AMQP 0.9.1
 connections, configurable queue declarations and message persistence, plus steps to send and
 assert JSON messages, purge queues, and validate that no messages are received.
-
-
----
-## Tabla de contenido
-
----
 
 
 ## Install
@@ -33,7 +21,6 @@ es.iti.wakamiti:amqp-wakamiti-plugin:2.8.0
   <version>2.8.0</version>
 </dependency>
 ```
-
 
 
 ## Options
@@ -113,7 +100,7 @@ amqp:
 
 
 ###  `amqp.queue.durable`
-- Type: `boolean`
+- Type: `boolean` 
 - Default `false`
 
 Sets whether the queue will be durable or not (the queue will survive a server reboot).
@@ -164,7 +151,7 @@ amqp:
 the AMQP connection URL {url} using the user {username} and the password {password}
 ```
 
-Sets the URL and credentials to be used by the AMQP broker. This is the descriptive way of setting the configuration
+Sets the URL and credentials to be used by the AMQP broker. This is the descriptive way of setting the configuration 
 properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername),
 [`amqp.connection.password`](#amqpconnectionpassword).
 
@@ -371,7 +358,7 @@ Some steps may be executed with a different behavior if they are defined in the 
 
 ### Post-execution mode
 ```text copy=true
-On completion, *
+On completion, * 
 ```
 
 The step shall be executed once the scenario has finished, regardless of the outcome of the execution.
