@@ -21,9 +21,9 @@ import org.testcontainers.utility.MountableFile;
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
 })
 @RunWith(WakamitiJUnitRunner.class)
-public class ModbusTest {
+public class ModbusIT {
 
-    public static final GenericContainer<?> CONTAINER = new GenericContainer<>("oitc/modbus-server:latest")
+    public static final GenericContainer<?> CONTAINER = new GenericContainer<>("oitc/modbus-server:1.4.1")
             .withCommand("-f /server_config.json")
             .withCreateContainerCmdModifier(cmd ->
                     cmd.getHostConfig().withPortBindings(
