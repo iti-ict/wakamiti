@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
+
+## [Unreleased]
+
+### Added
+- AMQP protocol selection support (`AMQP_1_0` / `AMQP_0_9_1`) through `amqp.connection.protocol`.
+- New step to define connection protocol.
+- New step to purge a queue.
+- New validation step to assert queue emptiness.
+
+
 ## [2.7.0] - 2024-12-11
 
 ### Changed
