@@ -5,13 +5,10 @@ slug: /en/plugins/amqp
 ---
 
 
-This plugin provides a set of steps to interact with an application via the 
-[Advanced Message Queuing Protocol](https://amqp.org). The underlying implementation is based on 
-[RabbitMQ](https://rabbitmq.com), although it might change in further versions.
-
-> **DISCLAIMER**
->
-> Currently, this library provides very limited functionality and exists mostly as a proof of concept.
+This plugin provides a set of steps to interact with AMQP brokers via the
+[Advanced Message Queuing Protocol](https://amqp.org). It supports AMQP 1.0 and AMQP 0.9.1
+connections, configurable queue declarations and message persistence, plus steps to send and
+assert JSON messages, purge queues, and validate that no messages are received.
 
 
 ---
@@ -26,16 +23,17 @@ This plugin provides a set of steps to interact with an application via the
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.6.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.8.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.6.0</version>
+  <version>2.8.0</version>
 </dependency>
 ```
+
 
 
 ## Options
@@ -83,8 +81,39 @@ amqp:
 ```
 
 
+###  `amqp.connection.protocol`
+- Type: `string`
+- Default `AMQP_1_0`
+
+Selects the AMQP wire protocol to use. Accepted values include `AMQP_1_0` and `AMQP_0_9_1` (aliases such as
+`amqp-1.0`, `amqp-0.9.1`, `1_0`, `0_9_1` are also supported).
+
+Example:
+
+```yaml
+amqp:
+  connection:
+    protocol: AMQP_0_9_1
+```
+
+
+###  `amqp.message.persistent`
+- Type: `boolean`
+- Default `true`
+
+Sets whether messages are sent as persistent.
+
+Example:
+
+```yaml
+amqp:
+  message:
+    persistent: "false"
+```
+
+
 ###  `amqp.queue.durable`
-- Type: `boolean` 
+- Type: `boolean`
 - Default `false`
 
 Sets whether the queue will be durable or not (the queue will survive a server reboot).
@@ -135,7 +164,7 @@ amqp:
 the AMQP connection URL {url} using the user {username} and the password {password}
 ```
 
-Sets the URL and credentials to be used by the AMQP broker. This is the descriptive way of setting the configuration 
+Sets the URL and credentials to be used by the AMQP broker. This is the descriptive way of setting the configuration
 properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.username`](#amqpconnectionusername),
 [`amqp.connection.password`](#amqpconnectionpassword).
 
@@ -149,6 +178,25 @@ properties [`amqp.connection.url`](#amqpconnectionurl), [`amqp.connection.userna
 #### Examples:
 ```gherkin
 Given the AMQP connection URL 'amqp://127.0.0.1:5671' using the user 'guest' and the password 'guest'
+```
+
+
+### Define protocol
+```text copy=true
+the AMQP protocol {protocol}
+```
+
+Defines the AMQP protocol to use. This is the descriptive way of setting the configuration property
+[`amqp.connection.protocol`](#amqpconnectionprotocol).
+
+#### Parameters
+| Name       | Wakamiti type     | Description        |
+|------------|-------------------|--------------------|
+| `protocol` | `word` *required* | The protocol name  |
+
+#### Examples:
+```gherkin
+Given the AMQP protocol AMQP_0_9_1
 ```
 
 
@@ -169,9 +217,25 @@ Sets the name of the queue to watch.
   Given the destination queue TEST
 ```
 
-<br />
 
----
+### Purge queue
+```text copy=true
+(that) the queue {word} is emptied
+```
+- [Post-execution mode][2]
+
+Purges all pending messages from the given queue.
+
+#### Parameters
+| Name   | Wakamiti type     | Description  |
+|--------|-------------------|--------------|
+| `word` | `word` *required* | A queue name |
+
+#### Examples:
+```gherkin
+When the queue TEST is emptied
+```
+
 
 
 ### Send message to queue
@@ -282,4 +346,43 @@ Then the message from the JSON file 'data/message.json' is received within 5 sec
 ```
 
 
+### Validate no message
+```text copy=true
+no message is received within {duration}
+```
+
+Validates that no message is received in the destination queue within the timeout window.
+
+#### Parameters
+| Name       | Wakamiti type            | Description    |
+|------------|--------------------------|----------------|
+| `duration` | [duration][1] *required* | Amount of time |
+
+#### Examples:
+```gherkin
+Then no message is received within 10 seconds
+```
+
+
+## Special modes
+
+
+Some steps may be executed with a different behavior if they are defined in the following ways:
+
+### Post-execution mode
+```text copy=true
+On completion, *
+```
+
+The step shall be executed once the scenario has finished, regardless of the outcome of the execution.
+
+
+#### Examples:
+```gherkin
+* On completion, the queue TEST is emptied
+```
+
+
+
 [1]: en/wakamiti/architecture#duration
+[2]: #post-execution-mode
