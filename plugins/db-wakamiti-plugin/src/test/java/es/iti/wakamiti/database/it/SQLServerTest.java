@@ -33,7 +33,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
         @Property(key = RESOURCE_TYPES, value = "gherkin"),
         @Property(key = RESOURCE_PATH, value = "src/test/resources/wakamiti/features/database-sqlserver.feature"),
         @Property(key = "data.dir", value = "src/test/resources/wakamiti"),
-        @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234"),
+        @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234;encrypt=false"),
         @Property(key = "database.connection.username", value = "sa"),
         @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
