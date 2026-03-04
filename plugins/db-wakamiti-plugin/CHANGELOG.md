@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [3.6.0] - 2026-03-04
 
 ### Added
 - Optional Lucene-based similar-record search with configurable top-k and index storage.
