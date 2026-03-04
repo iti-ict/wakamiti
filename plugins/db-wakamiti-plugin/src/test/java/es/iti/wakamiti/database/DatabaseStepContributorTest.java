@@ -1319,6 +1319,135 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testAssertRowExistsByOneColumnWhenNotExistWithLucene() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true",
+                "database.similarSearch.lucene.enabled", "true",
+                "database.similarSearch.lucene.topK", "5"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+
+        try {
+            // Act
+            contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
+
+            // Check
+        } catch (AssertionError e) {
+            Database db = Database.from(contributor.connection());
+            String table = db.table("client");
+            assertThat(e)
+                    .hasMessage("[The closest record] " + System.lineSeparator() +
+                                    "Expecting actual:" + System.lineSeparator() +
+                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
+                                    "to contain exactly (and in same order):" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "but some elements were not found:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
+                                    "and others were not expected:" + System.lineSeparator() +
+                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
+                            db.column(table, "second_name"));
+            throw new WakamitiException();
+        }
+    }
+
+    @Test
+    public void testSimilarByRebuildsLuceneIndexAfterToggle() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.similarSearch.lucene.enabled", "true",
+                "database.similarSearch.lucene.topK", "5"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        assertThat(contributor.similarBy(
+                "client",
+                new String[]{"second_name"},
+                new Object[]{"Melano"}
+        )).isPresent();
+
+        // Disable Lucene and modify data
+        configContributor.configurer().configure(contributor, config.appendFromPairs(
+                "database.similarSearch.lucene.enabled", "false"
+        ));
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'ZZZZZZ' WHERE id = 1"));
+
+        // Re-enable Lucene and verify stale values are not returned
+        configContributor.configurer().configure(contributor, config.appendFromPairs(
+                "database.similarSearch.lucene.enabled", "true"
+        ));
+        assertThat(contributor.similarBy(
+                "client",
+                new String[]{"second_name"},
+                new Object[]{"Melano"}
+        )).isEmpty();
+    }
+
+    @Test
+    public void testSimilarByRebuildsLuceneIndexAfterExternalDatabaseChange() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.similarSearch.lucene.enabled", "true",
+                "database.similarSearch.lucene.topK", "5"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        assertThat(contributor.similarBy(
+                "client",
+                new String[]{"second_name"},
+                new Object[]{"Melano"}
+        )).isPresent();
+
+        // External update bypassing contributor methods (simulates SUT changing DB).
+        Database db = Database.from(contributor.connection());
+        db.update("UPDATE client SET second_name = 'ZZZZZZ' WHERE id = 1").execute().close();
+
+        // The result must reflect latest DB state, not stale index data.
+        assertThat(contributor.similarBy(
+                "client",
+                new String[]{"second_name"},
+                new Object[]{"Melano"}
+        )).isEmpty();
+    }
+
+    @Test
+    public void testSimilarByWithLuceneEscapesSpecialQueryCharacters() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.similarSearch.lucene.enabled", "true",
+                "database.similarSearch.lucene.topK", "5"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'abc(' WHERE id = 1"));
+
+        // Act / Assert
+        assertThat(contributor.similarBy(
+                "client",
+                new String[]{"second_name"},
+                new Object[]{"abc("}
+        )).isPresent();
+    }
+
     @Test(expected = SQLRuntimeException.class)
     public void testAssertRowExistsByOneColumnWhenTableNotExist() {
         // Prepare
