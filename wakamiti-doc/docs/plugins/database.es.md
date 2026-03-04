@@ -26,14 +26,14 @@ validación de datos.
 Incluye el módulo y el controlador(es) JDBC en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.2.0
+es.iti.wakamiti:db-wakamiti-plugin:3.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.2.0</version>
+  <version>3.6.0</version>
 </dependency>
 ```
 
@@ -223,6 +223,68 @@ database:
 ```
 
 
+### `database.similarSearch.timeout`
+- Tipo: `long`
+- Por defecto `10000`
+
+Tiempo máximo permitido para una búsqueda de registro similar en milisegundos. Si se supera, la búsqueda de similitud
+no devuelve registro más cercano para esa comprobación. Usa valores `<= 0` para deshabilitar este timeout.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    timeout: 1500
+```
+
+
+### `database.similarSearch.lucene.enabled`
+- Tipo: `boolean`
+- Por defecto `false`
+
+Activa la búsqueda de registros similares mediante Lucene. Cuando está habilitada, se construye un índice para la tabla
+y se recuperan candidatos `top-k` antes de calcular la similitud final. El índice se refresca antes de cada búsqueda
+de similitud para reflejar cambios externos en la base de datos.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      enabled: true
+```
+
+
+### `database.similarSearch.lucene.topK`
+- Tipo: `int`
+- Por defecto `10`
+
+Número de candidatos recuperados por Lucene para evaluar la similitud final.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      topK: 20
+```
+
+
+### `database.similarSearch.lucene.indexDir`
+- Tipo: `string`
+- Por defecto *(en memoria)*
+
+Ruta base donde se almacenan los índices de Lucene. Si no se especifica, el índice se crea en memoria.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      indexDir: "/var/wakamiti/lucene"
+```
+
+
 ## Pasos
 
 
@@ -304,7 +366,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -363,7 +425,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -411,7 +473,7 @@ Inserta las filas indicadas en la tabla y recupera los datos insertados como un 
 #### Ejemplos:
 ```gherkin
 Cuando se inserta lo siguiente en la tabla de BBDD USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -420,7 +482,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -453,10 +515,10 @@ deberá indicar el nombre de la tabla en la que se insertarán los datos.
 #### Ejemplos:
 ```gherkin
 Cuando se inserta el contenido del fichero XLS 'data/users.xls' en la BBDD
-``` 
+```
 ```gherkin
 Cuando se ha insertado el contenido del fichero CSV 'data/users.csv' en la tabla USER
-``` 
+```
 
 
 ### Eliminar datos
@@ -477,7 +539,7 @@ Elimina las filas indicadas en la tabla.
 #### Ejemplos:
 ```gherkin
 Cuando se eliminan los siguientes usuarios de la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -500,7 +562,7 @@ Elimina de la tabla las filas que satisfagan la comparación indicada.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se eliminan los usuarios con STATE = '2' de la tabla USER 
+  Cuando se eliminan los usuarios con STATE = '2' de la tabla USER
 ```
 
 
@@ -594,12 +656,12 @@ Comprueba que todas las filas siguientes existen, o no, en la tabla indicada.
 #### Ejemplos:
 ```gherkin
 Entonces el siguiente registro existe en la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
 Entonces los siguientes registros no existen en la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -736,12 +798,12 @@ indicada.
 #### Ejemplos:
 ```gherkin
 Entonces el número de usuarios que satisfacen lo siguiente en la tabla de BBDD USER es 0:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
 ```
 ```gherkin
 Entonces el número de registros que satisfacen la siguiente información en la tabla USER es mayor que 0:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
 ```
 
