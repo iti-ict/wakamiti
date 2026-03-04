@@ -18,6 +18,7 @@ module es.iti.wakamiti.db {
     exports es.iti.wakamiti.database.jdbc;
     exports es.iti.wakamiti.database.jdbc.format;
     exports es.iti.wakamiti.database.exception;
+    opens es.iti.wakamiti.database.lucene to junit;
 
     requires es.iti.wakamiti.api;
     requires java.sql;
@@ -35,6 +36,8 @@ module es.iti.wakamiti.db {
     requires org.apache.commons.text;
     requires org.apache.commons.lang3;
     requires org.apache.commons.collections4;
+    requires lucene.core;
+    requires lucene.queryparser;
 
     provides StepContributor with DatabaseStepContributor;
     provides ConfigContributor with DatabaseConfigContributor;

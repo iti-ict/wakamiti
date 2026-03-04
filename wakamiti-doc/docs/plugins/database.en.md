@@ -26,14 +26,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.2.0
+es.iti.wakamiti:db-wakamiti-plugin:3.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.2.0</version>
+  <version>3.6.0</version>
 </dependency>
 ```
 
@@ -220,6 +220,68 @@ database:
 ```
 
 
+### `database.similarSearch.timeout`
+- Type: `long`
+- Default `10000`
+
+Maximum time allowed for a similar-record search in milliseconds. If exceeded, similar search returns no closest
+record for that check. Use values `<= 0` to disable this timeout.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    timeout: 1500
+```
+
+
+### `database.similarSearch.lucene.enabled`
+- Type: `boolean`
+- Default `false`
+
+Enables Lucene-based similar search. When enabled, an index is built for the table and `top-k` candidates are retrieved
+before evaluating the final similarity. The index is refreshed before each similar search so external database changes
+are reflected in the result.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      enabled: true
+```
+
+
+### `database.similarSearch.lucene.topK`
+- Type: `int`
+- Default `10`
+
+Number of candidates retrieved by Lucene to evaluate the final similarity.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      topK: 20
+```
+
+
+### `database.similarSearch.lucene.indexDir`
+- Type: `string`
+- Default *(in-memory)*
+
+Base path where Lucene indexes are stored. If not specified, the index is created in memory.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      indexDir: "/var/wakamiti/.lucene"
+```
+
+
 ## Steps
 
 
@@ -301,7 +363,7 @@ It could return the following result:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -356,7 +418,7 @@ It could return the following result:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -403,7 +465,7 @@ Insert rows from the provided DataTable into the specified table and retrieve th
 #### Examples:
 ```gherkin
 When the following users are inserted into the table USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -412,7 +474,7 @@ It could return the following result:
 ```json
 [
   {
-    "USER": "user1", 
+    "USER": "user1",
     "STATE": "2",
     "BLOCKING_DATE": null
   },
@@ -447,7 +509,7 @@ where the data shall be inserted shall be indicated.
 #### Examples:
 ```gherkin
 When the content of the XLS file 'data/users.xls' is inserted into the database
-``` 
+```
 ```gherkin
 When the content of the CSV file 'data/users.csv' is inserted into the table USER
 ```
@@ -471,7 +533,7 @@ Delete the rows in the given table that match the specified values.
 #### Examples:
 ```gherkin
 When the following users are deleted from the table USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -494,7 +556,7 @@ Delete the rows in the given table that match the specified value.
 
 #### Examples:
 ```gherkin
-When users having STATE = '2' are deleted from the table USER 
+When users having STATE = '2' are deleted from the table USER
 ```
 
 
@@ -863,4 +925,4 @@ Then a user identified by '1' exists in the table USERS in 10 seconds
 [2]: en/wakamiti/architecture#comparador
 [3]: #post-execution-mode
 [4]: #async-mode
-[5]: en/wakamiti/architecture#duration 
+[5]: en/wakamiti/architecture#duration

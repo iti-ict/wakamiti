@@ -16,14 +16,14 @@ validación de datos.
 Incluye el módulo y el controlador(es) JDBC en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.1.0
+es.iti.wakamiti:db-wakamiti-plugin:3.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.1.0</version>
+  <version>3.6.0</version>
 </dependency>
 ```
 
@@ -35,7 +35,7 @@ es.iti.wakamiti:db-wakamiti-plugin:3.1.0
 ### `database.connection.url`
 - Tipo: `string` *requerido*
 
-Establece la URL de conexión a la base de datos por defecto con esquema JDBC. El driver usado para acceder a la base de 
+Establece la URL de conexión a la base de datos por defecto con esquema JDBC. El driver usado para acceder a la base de
 datos se determinará a partir del formato de URL indicado.
 
 Ejemplo:
@@ -73,7 +73,7 @@ database:
 
 
 ### `database.metadata.schema`
-- Tipo: `string` 
+- Tipo: `string`
 
 Establece manualmente el esquema de base de datos que se usará para recuperar metadatos como claves privadas y/o
 nulabilidad. Si no se indica, se usará el esquema por defecto que retorne la conexión.
@@ -100,31 +100,46 @@ database:
 ```
 
 
+### `database.autotrim`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si se ignoran los espacios en las comparaciones.
+
+Ejemplo:
+```yaml
+database:
+  autotrim: true
+```
+
+
 ### `database.{alias}...`
 
 Establece los prámetros de conexión JDBC y/o los metadatos de una base de datos identificada por un alias. Se pueden
-establecer tantas conexiones como se desée. La primera base de datos configurada será tomada como la configuración por 
+establecer tantas conexiones como se desée. La primera base de datos configurada será tomada como la configuración por
 defecto.
 
 Ejemplo:
 ```yaml
 database:
-  db1:
-    connection:
-      url: jdbc:h2:tcp://localhost:9092/~/test
-      username: test1
-      password: test1
-    metadata:
-      schema: TESTDB1
-      catalog: TESTCAT1
-  db2:
-    connection:
-      url: jdbc:mysql://other.host:3306/test
-      username: test2
-      password: test2
-    metadata:
-      schema: TESTDB2
-      catalog: TESTCAT2
+  datasource:
+    db1:
+      connection:
+        url: jdbc:h2:tcp://localhost:9092/~/test
+        username: test1
+        password: test1
+      metadata:
+        schema: TESTDB1
+        catalog: TESTCAT1
+      autotrim: true
+    db2:
+      connection:
+        url: jdbc:mysql://other.host:3306/test
+        username: test2
+        password: test2
+      metadata:
+        schema: TESTDB2
+        catalog: TESTCAT2
 ```
 
 
@@ -186,7 +201,7 @@ database:
 - Por defecto `false`
 
 El comportamiento por defecto del plugin no realiza ninguna operación de limpieza de la base de datos al acabar la
-ejecución de los tests. Esto es así para poder comprobar resultados manualmente y depurar errores. 
+ejecución de los tests. Esto es así para poder comprobar resultados manualmente y depurar errores.
 Los posibles valores son:
 - `false`: no se realizará ninguna acción de limpieza.
 - `true`: se forzará a limpiar la base de datos borrando los datos de prueba introducidos durante la ejecución.
@@ -198,10 +213,69 @@ database:
 ```
 
 
-## Usos
+### `database.similarSearch.timeout`
+- Tipo: `long`
+- Por defecto `10000`
+
+Tiempo máximo permitido para una búsqueda de registro similar en milisegundos. Si se supera, la búsqueda de similitud
+no devuelve registro más cercano para esa comprobación. Usa valores `<= 0` para deshabilitar este timeout.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    timeout: 1500
+```
 
 
-Este plugin proporciona los siguientes pasos:
+### `database.similarSearch.lucene.enabled`
+- Tipo: `boolean`
+- Por defecto `false`
+
+Activa la búsqueda de registros similares mediante Lucene. Cuando está habilitada, se construye un índice para la tabla
+y se recuperan candidatos `top-k` antes de calcular la similitud final. El índice se refresca antes de cada búsqueda
+de similitud para reflejar cambios externos en la base de datos.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      enabled: true
+```
+
+
+### `database.similarSearch.lucene.topK`
+- Tipo: `int`
+- Por defecto `10`
+
+Número de candidatos recuperados por Lucene para evaluar la similitud final.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      topK: 20
+```
+
+
+### `database.similarSearch.lucene.indexDir`
+- Tipo: `string`
+- Por defecto *(en memoria)*
+
+Ruta base donde se almacenan los índices de Lucene. Si no se especifica, el índice se crea en memoria.
+
+Ejemplo:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      indexDir: "/var/wakamiti/lucene"
+```
+
+
+## Pasos
 
 
 ### Definir conexión
@@ -209,11 +283,11 @@ Este plugin proporciona los siguientes pasos:
 la URL de conexión a BBDD {url} usando el usuario {username} y la contraseña {password} (como {alias})
 ```
 
-Configura los parámetros de conexión a la base de datos con el alias especificado. Si no se incluye `como {alias}`, se 
+Configura los parámetros de conexión a la base de datos con el alias especificado. Si no se incluye `como {alias}`, se
 establecerá como conexión por defecto.
 
-Este paso es equivalente a configurar las propiedades 
-[`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername), 
+Este paso es equivalente a configurar las propiedades
+[`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername),
 [`database.connection.password`](#databaseconnectionpassword), [`database.{alias}...`](#databasealias).
 
 #### Parámetros:
@@ -261,7 +335,7 @@ Cuando se usa la conexión 'db1'
 ```
 - [Modo post-ejecución][3]
 
-Ejecuta las sentencias SQL o el procedimiento indicado y recupera los datos insertados o seleccionados como un objeto 
+Ejecuta las sentencias SQL o el procedimiento indicado y recupera los datos insertados o seleccionados como un objeto
 JSON.
 
 #### Parámetros:
@@ -271,7 +345,7 @@ JSON.
 
 #### Ejemplos:
 ```gherkin
-When se ejecuta el siguiente script SQL:
+Cuando se ejecuta el siguiente script SQL:
 """sql
   INSERT INTO users (id, first_name) VALUES (1, 'Rosa');
   INSERT INTO users (id, first_name) VALUES (2, 'Pepe');
@@ -282,7 +356,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -293,7 +367,7 @@ Podría devolver el siguiente resultado:
 ```
 
 
-## Ejecutar script (fichero)
+### Ejecutar script (fichero)
 ```text copy=true
 (que) se (ha) ejecuta(do) el (script|procedimiento) SQL del fichero {script}
 ```
@@ -310,6 +384,9 @@ JSON.
 #### Ejemplos:
 ```gherkin
 Cuando se ejecuta el script SQL del fichero 'data/script.sql'
+```
+```gherkin
+Cuando se ejecuta el procedimiento SQL del fichero 'data/procedure.sql'
 ```
 
 
@@ -338,7 +415,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -367,7 +444,7 @@ Dado los valores de la consulta SQL del fichero 'data/select-users.sql'
 ```
 
 
-### Insertar datos 
+### Insertar datos
 ```text copy=true
 se (ha) inserta(do) (lo|el|la|los|las) siguiente(s) * en la tabla de BBDD {word}:
     {data}
@@ -386,7 +463,7 @@ Inserta las filas indicadas en la tabla y recupera los datos insertados como un 
 #### Ejemplos:
 ```gherkin
 Cuando se inserta lo siguiente en la tabla de BBDD USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -395,7 +472,7 @@ Podría devolver el siguiente resultado:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -415,8 +492,8 @@ se (ha) inserta(do) el contenido del fichero CSV {file} en la tabla (de BBDD) {t
 ```
 - [Modo post-ejecución][3]
 
-Inserta las filas contenidas en el fichero XLS o CSV indicado y recupera los datos insertados como un objeto JSON. Si se 
-trata de un fichero XLS, cada hoja representará una tabla y deberá llamarse como tal. Si se trata de un fichero CSV, se 
+Inserta las filas contenidas en el fichero XLS o CSV indicado y recupera los datos insertados como un objeto JSON. Si se
+trata de un fichero XLS, cada hoja representará una tabla y deberá llamarse como tal. Si se trata de un fichero CSV, se
 deberá indicar el nombre de la tabla en la que se insertarán los datos.
 
 #### Parámetros:
@@ -428,13 +505,13 @@ deberá indicar el nombre de la tabla en la que se insertarán los datos.
 #### Ejemplos:
 ```gherkin
 Cuando se inserta el contenido del fichero XLS 'data/users.xls' en la BBDD
-``` 
+```
 ```gherkin
 Cuando se ha insertado el contenido del fichero CSV 'data/users.csv' en la tabla USER
-``` 
+```
 
 
-### Eliminar datos 
+### Eliminar datos
 ```text copy=true
 se (ha) elimina(n|do) (lo|el|la|los|las) siguiente(s) * de la tabla (de BBDD) {table}:
     {data}
@@ -452,7 +529,7 @@ Elimina las filas indicadas en la tabla.
 #### Ejemplos:
 ```gherkin
 Cuando se eliminan los siguientes usuarios de la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -475,7 +552,7 @@ Elimina de la tabla las filas que satisfagan la comparación indicada.
 
 #### Ejemplos:
 ```gherkin
-  Cuando se eliminan los usuarios con STATE = '2' de la tabla USER 
+  Cuando se eliminan los usuarios con STATE = '2' de la tabla USER
 ```
 
 
@@ -512,8 +589,8 @@ se (ha) elimina(do) el contenido del fichero CSV {file} de la tabla (de BBDD) {t
 ```
 - [Modo post-ejecución][3]
 
-Elimina las filas contenidas en el fichero XLS o CSV indicado. Si se trata de un fichero XLS, cada hoja representará una 
-tabla y deberá llamarse como tal. Si se trata de un fichero CSV, se deberá indicar el nombre de la tabla en la que se 
+Elimina las filas contenidas en el fichero XLS o CSV indicado. Si se trata de un fichero XLS, cada hoja representará una
+tabla y deberá llamarse como tal. Si se trata de un fichero CSV, se deberá indicar el nombre de la tabla en la que se
 eliminarán los datos.
 
 #### Parámetros:
@@ -550,7 +627,7 @@ Cuando se limpia la tabla USERS
 ```
 
 
-### Comprobar existencia de datos 
+### Comprobar existencia de datos
 ```text copy=true
 (el|los) siguiente(s) registro(s) (no) existe(n) en la tabla (de BBDD) {table}:
     {data}
@@ -568,13 +645,13 @@ Comprueba que todas las filas siguientes existen, o no, en la tabla indicada.
 
 #### Ejemplos:
 ```gherkin
-Entonces el siguiente usuario existe en la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+Entonces el siguiente registro existe en la tabla USER:
+    | USER  | STATE | BLOCKING_DATE |
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
-Entonces los siguientes usuarios no existen en la tabla USER:
-    | USER  | STATE | BLOCKING_DATE |   
+Entonces los siguientes registros no existen en la tabla USER:
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -587,7 +664,7 @@ Entonces los siguientes usuarios no existen en la tabla USER:
 - [Modo post-ejecucion][3]
 - [Modo async][4]
 
-Comprueba que una fila de la tabla indicada tiene, o no, una clave primaria que coincide con el valor especificado. La 
+Comprueba que una fila de la tabla indicada tiene, o no, una clave primaria que coincide con el valor especificado. La
 tabla debe tener una clave primaria de una sola columna accesible desde los metadatos de la base de datos.
 
 #### Parámetros:
@@ -672,7 +749,7 @@ el contenido del fichero CSV {file} existe en la table (de BBDD) {table}
 - [Modo async][4]
 
 Comprueba que las filas del archivo XLS o CSV proporcionado existen, o no, en la base de datos. Si se trata de un
-fichero XLS, cada hoja representará una tabla y deberá nombrarse como tal. Si se trata de un fichero CSV, se indicará el 
+fichero XLS, cada hoja representará una tabla y deberá nombrarse como tal. Si se trata de un fichero CSV, se indicará el
 nombre de la tabla donde se comprobarán los datos.
 
 #### Parámetros:
@@ -698,7 +775,7 @@ el número de * que satisfacen (lo|la) siguiente (información) en la tabla de B
 - [Modo post-ejecucion][3]
 - [Modo async][4]
 
-Comprueba que el número de filas que satisfacen los valores indicados en la tabla cumple la comparación numérica 
+Comprueba que el número de filas que satisfacen los valores indicados en la tabla cumple la comparación numérica
 indicada.
 
 #### Parámetros:
@@ -711,12 +788,12 @@ indicada.
 #### Ejemplos:
 ```gherkin
 Entonces el número de usuarios que satisfacen lo siguiente en la tabla de BBDD USER es 0:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
 ```
 ```gherkin
 Entonces el número de registros que satisfacen la siguiente información en la tabla USER es mayor que 0:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
 ```
 
@@ -803,7 +880,7 @@ Algunos pasos pueden ejecutarse con un comportamiento diferente si se definen de
 Al finalizar, * (usando la conexión {alias})
 ```
 
-El paso se ejecutará una vez finalizado el escenario, independientemente del resultado de la ejecución. Si no se incluye 
+El paso se ejecutará una vez finalizado el escenario, independientemente del resultado de la ejecución. Si no se incluye
 el alias, se utilizará la conexión por defecto.
 
 #### Parámetros:
@@ -826,15 +903,15 @@ Al finalizar, se ejecuta el siguiente script SQL usando la conexión 'db1':
 
 ### Modo async
 ```text copy=true
-* en {time} segundos
+* en {duration}
 ```
 
-El paso espera un máximo de los segundos indicados hasta que se cumple la condición indicada en el paso para continuar.
+El paso espera un máximo de la duración indicada hasta que se cumple la condición indicada en el paso para continuar.
 
 #### Parámetros:
-| Nombre | Wakamiti type       | Descripción   |
-|--------|---------------------|---------------|
-| `time` | `int` *obligatorio* | Tiempo máximo |
+| Nombre     | Wakamiti type               | Descripción   |
+|------------|-----------------------------|---------------|
+| `duration` | [duration][5] *obligatorio* | Tiempo máximo |
 
 #### Ejemplos:
 ```gherkin
@@ -844,5 +921,6 @@ Entonces un usuario identificado por '1' existe en la tabla USERS en 10 segundos
 
 [1]: https://commons.apache.org/proper/commons-csv/
 [2]: wakamiti/architecture#comparador
-[3]: #modopostejecución
-[4]: #modoasync
+[3]: #modo-post-ejecución
+[4]: #modo-async
+[5]: wakamiti/architecture#duration

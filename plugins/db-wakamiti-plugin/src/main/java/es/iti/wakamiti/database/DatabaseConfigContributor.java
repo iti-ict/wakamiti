@@ -30,6 +30,17 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     /* The CSV format name as specified at {@link CSVFormat} */
     public static final String DATABASE_CSV_FORMAT = "database.csv.format";
     public static final String DATABASE_HEALTHCHECK = "database.healthcheck";
+    /**
+     * Max duration (milliseconds) allowed for similar-record lookup.
+     * Values &lt;= 0 disable timeout.
+     */
+    public static final String DATABASE_SIMILAR_SEARCH_TIMEOUT_MS = "database.similarSearch.timeout";
+    /** Enables Lucene candidate preselection for similar-record lookup. */
+    public static final String DATABASE_SIMILAR_SEARCH_LUCENE_ENABLED = "database.similarSearch.lucene.enabled";
+    /** Number of Lucene candidates to evaluate with final Levenshtein scoring. */
+    public static final String DATABASE_SIMILAR_SEARCH_LUCENE_TOPK = "database.similarSearch.lucene.topK";
+    /** Optional filesystem base directory for Lucene indexes. */
+    public static final String DATABASE_SIMILAR_SEARCH_LUCENE_INDEX_DIR = "database.similarSearch.lucene.indexDir";
     private static final String PROPERTY_BASE = "database";
     private static final String DATASOURCE_BASE = "datasource";
     private static final String CONNECTION_URL = "connection.url";
@@ -46,7 +57,10 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
             DATABASE_NULL_SYMBOL, "<null>",
             DATABASE_CSV_FORMAT, "DEFAULT",
             DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.FALSE.toString(),
-            DATABASE_HEALTHCHECK, Boolean.TRUE.toString()
+            DATABASE_HEALTHCHECK, Boolean.TRUE.toString(),
+            DATABASE_SIMILAR_SEARCH_TIMEOUT_MS, Long.toString(10000),
+            DATABASE_SIMILAR_SEARCH_LUCENE_ENABLED, Boolean.FALSE.toString(),
+            DATABASE_SIMILAR_SEARCH_LUCENE_TOPK, Integer.toString(10)
     );
 
     /**
@@ -85,6 +99,14 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
                 .ifPresent(contributor::setEnableCleanupUponCompletion);
         configuration.get(DATABASE_HEALTHCHECK, Boolean.class)
                 .ifPresent(contributor::setHealthcheck);
+        configuration.get(DATABASE_SIMILAR_SEARCH_TIMEOUT_MS, Long.class)
+                .ifPresent(contributor::setSimilarSearchTimeoutMs);
+        configuration.get(DATABASE_SIMILAR_SEARCH_LUCENE_ENABLED, Boolean.class)
+                .ifPresent(contributor::setLuceneSimilarSearchEnabled);
+        configuration.get(DATABASE_SIMILAR_SEARCH_LUCENE_TOPK, Integer.class)
+                .ifPresent(contributor::setLuceneSimilarSearchTopK);
+        configuration.get(DATABASE_SIMILAR_SEARCH_LUCENE_INDEX_DIR, String.class)
+                .ifPresent(contributor::setLuceneSimilarSearchIndexDir);
 
         if (databaseConfig.keyStream().anyMatch(k -> k.startsWith(DATASOURCE_BASE))) {
             Configuration datasourceConfig = databaseConfig.inner(DATASOURCE_BASE);

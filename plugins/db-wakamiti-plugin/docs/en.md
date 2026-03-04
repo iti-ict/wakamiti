@@ -16,14 +16,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.1.0
+es.iti.wakamiti:db-wakamiti-plugin:3.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.1.0</version>
+  <version>3.6.0</version>
 </dependency>
 ```
 
@@ -35,7 +35,7 @@ es.iti.wakamiti:db-wakamiti-plugin:3.1.0
 ### `database.connection.url`
 - Type: `string` *required*
 
-Set the default JDBC connection URL to the database. The URL format will determine the driver used to access the 
+Set the default JDBC connection URL to the database. The URL format will determine the driver used to access the
 database.
 
 Example:
@@ -75,7 +75,7 @@ database:
 ### `database.metadata.schema`
 - Type: `string`
 
-Set the default schema that should be used to retrieve metadata as primary keys and nullability. If not specified, the 
+Set the default schema that should be used to retrieve metadata as primary keys and nullability. If not specified, the
 default schema returned by the connection will be used.
 
 Example:
@@ -89,7 +89,7 @@ database:
 ### `database.metadata.catalog`
 - Type: `string`
 
-Set the default catalog that should be used to retrieve metadata as primary keys and nullability. If not specified, the 
+Set the default catalog that should be used to retrieve metadata as primary keys and nullability. If not specified, the
 default catalog returned by the connection will be used (in case the database system uses one).
 
 Example:
@@ -100,30 +100,45 @@ database:
 ```
 
 
+### `database.autotrim`
+- Type: `boolean`
+- Default: `false`
+
+Sets whether spaces are ignored in comparisons.
+
+Example:
+```yaml
+database:
+  autotrim: true
+```
+
+
 ### `database.{alias}...`
- 
-Set the JDBC connection parameters and/or metadata of a database identified by an alias. You can establish as many named 
+
+Set the JDBC connection parameters and/or metadata of a database identified by an alias. You can establish as many named
 connections as you want. The first database will be taken as the default configuration.
 
 Example:
 ```yaml
 database:
-  db1:
-    connection:
-      url: jdbc:h2:tcp://localhost:9092/~/test
-      username: test1
-      password: test1
-    metadata:
-      schema: TESTDB1
-      catalog: TESTCAT1
-  db2:
-    connection:
-      url: jdbc:mysql://other.host:3306/test
-      username: test2
-      password: test2
-    metadata:
-      schema: TESTDB2
-      catalog: TESTCAT2
+  datasource:
+    db1:
+      connection:
+        url: jdbc:h2:tcp://localhost:9092/~/test
+        username: test1
+        password: test1
+      metadata:
+        schema: TESTDB1
+        catalog: TESTCAT1
+      autotrim: true
+    db2:
+      connection:
+        url: jdbc:mysql://other.host:3306/test
+        username: test2
+        password: test2
+      metadata:
+        schema: TESTDB2
+        catalog: TESTCAT2
 ```
 
 
@@ -180,9 +195,9 @@ database:
 
 ### `database.enableCleanupUponCompletion`
 - Type: `boolean`
-- Default `false`
+- Default: `false`
 
-The default behavior of the plugin does not perform any database cleanup operation after the tests are finished. 
+The default behavior of the plugin does not perform any database cleanup operation after the tests are finished.
 This is to be able to check results manually and debug errors.
 Possible values are:
 - `false`: no cleanup action will be performed.
@@ -195,12 +210,72 @@ database:
 ```
 
 
-## Usage
+### `database.similarSearch.timeout`
+- Type: `long`
+- Default `10000`
+
+Maximum time allowed for a similar-record search in milliseconds. If exceeded, similar search returns no closest
+record for that check. Use values `<= 0` to disable this timeout.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    timeout: 1500
+```
 
 
-This plugin provides the following steps:
+### `database.similarSearch.lucene.enabled`
+- Type: `boolean`
+- Default `false`
 
-### Define connection 
+Enables Lucene-based similar search. When enabled, an index is built for the table and `top-k` candidates are retrieved
+before evaluating the final similarity. The index is refreshed before each similar search so external database changes
+are reflected in the result.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      enabled: true
+```
+
+
+### `database.similarSearch.lucene.topK`
+- Type: `int`
+- Default `10`
+
+Number of candidates retrieved by Lucene to evaluate the final similarity.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      topK: 20
+```
+
+
+### `database.similarSearch.lucene.indexDir`
+- Type: `string`
+- Default *(in-memory)*
+
+Base path where Lucene indexes are stored. If not specified, the index is created in memory.
+
+Example:
+```yaml
+database:
+  similarSearch:
+    lucene:
+      indexDir: "/var/wakamiti/.lucene"
+```
+
+
+## Steps
+
+
+### Define connection
 ```text copy=true
 the database connection URL {url} using the user {username} and the password {password} (as {alias})
 ```
@@ -208,7 +283,7 @@ the database connection URL {url} using the user {username} and the password {pa
 Configure the connection parameters to the database identified by the specified alias.
 If not alias is included, it will be set as the default connection.
 
-This step is the declarative equivalent to set the configuration properties 
+This step is the declarative equivalent to set the configuration properties
 [`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername),
 [`database.connection.password`](#databaseconnectionpassword) or [`database.{alias}...`](#databasealias).
 
@@ -278,7 +353,7 @@ It could return the following result:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -314,7 +389,7 @@ the following SQL query value(s) ((is|are) retrieved):
    {script}
 ```
 
-Retrieve data from the specified SQL SELECT as a JSON object. 
+Retrieve data from the specified SQL SELECT as a JSON object.
 
 #### Parameters:
 | Name     | Wakamiti type         | Description    |
@@ -333,7 +408,7 @@ It could return the following result:
 ```json
 [
   {
-    "id": 1, 
+    "id": 1,
     "first_name": "Rosa"
   },
   {
@@ -380,7 +455,7 @@ Insert rows from the provided DataTable into the specified table and retrieve th
 #### Examples:
 ```gherkin
 When the following users are inserted into the table USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -389,7 +464,7 @@ It could return the following result:
 ```json
 [
   {
-    "USER": "user1", 
+    "USER": "user1",
     "STATE": "2",
     "BLOCKING_DATE": null
   },
@@ -411,8 +486,8 @@ It could return the following result:
 ```
 - [Post-execution mode][3]
 
-Insert rows of the provided XLS or CSV file into the database and retrieve the inserted data as a JSON object. If it is 
-an XLS file, each sheet will represent a table and should be named as such. If it is a CSV file, the name of the table 
+Insert rows of the provided XLS or CSV file into the database and retrieve the inserted data as a JSON object. If it is
+an XLS file, each sheet will represent a table and should be named as such. If it is a CSV file, the name of the table
 where the data shall be inserted shall be indicated.
 
 #### Parameters:
@@ -424,7 +499,7 @@ where the data shall be inserted shall be indicated.
 #### Examples:
 ```gherkin
 When the content of the XLS file 'data/users.xls' is inserted into the database
-``` 
+```
 ```gherkin
 When the content of the CSV file 'data/users.csv' is inserted into the table USER
 ```
@@ -448,7 +523,7 @@ Delete the rows in the given table that match the specified values.
 #### Examples:
 ```gherkin
 When the following users are deleted from the table USER:
-    | USER  | STATE | BLOCKING_DATE |   
+    | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
 ```
@@ -471,7 +546,7 @@ Delete the rows in the given table that match the specified value.
 
 #### Examples:
 ```gherkin
-When users having STATE = '2' are deleted from the table USER 
+When users having STATE = '2' are deleted from the table USER
 ```
 
 
@@ -546,7 +621,7 @@ When the table USER is cleared
 ```
 
 
-### Check data existence 
+### Check data existence
 ```text copy=true
 (that) the following record(s) (not) exist(s) in the (database) table {table}:
     {data}
@@ -564,12 +639,12 @@ Assert that the data provided in the DataTable exists or not in the given table.
 
 #### Examples:
 ```gherkin
-Then the following user exists in the table USER:
+Then the following record exists in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user2 | 3     | 2020-02-13    |
 ```
 ```gherkin
-Then the following users not exist in the table USER:
+Then the following records not exist in the table USER:
     | USER  | STATE | BLOCKING_DATE |
     | user1 | 2     | <null>        |
     | user2 | 3     | 2020-02-13    |
@@ -583,7 +658,7 @@ Then the following users not exist in the table USER:
 - [Post-execution mode][3]
 - [Async mode][4]
 
-Assert that a row in the given table has or not a primary key matching the specified value. The table must have a 
+Assert that a row in the given table has or not a primary key matching the specified value. The table must have a
 single-column primary key accessible from the database metadata.
 
 #### Parameters:
@@ -667,8 +742,8 @@ Then users satisfying the following SQL clause not exist in the database table U
 - [Post-execution mode][3]
 - [Async mode][4]
 
-Assert that rows of the provided XLS or CSV file exist or not in the database. If it is an XLS file, each sheet will 
-represent a table and should be named as such. If it is a CSV file, the name of the table where the data shall be 
+Assert that rows of the provided XLS or CSV file exist or not in the database. If it is an XLS file, each sheet will
+represent a table and should be named as such. If it is a CSV file, the name of the table where the data shall be
 matched shall be indicated.
 
 #### Parameters:
@@ -695,7 +770,7 @@ Then the content of the CSV file 'data/users.csv' not exist in the table USERS
 - [Async mode][4]
 
 Asserts that the number of rows in the given table matching the specified values for every column satisfies a numeric
-expression. 
+expression.
 
 #### Parameters:
 | Name      | Wakamiti type                | Description             |
@@ -811,7 +886,7 @@ If the alias is not included, the default connection will be used.
 ```
 ```gherkin
 * On completion, the following SQL script is executed using 'db1' connection:
-  """
+"""
   UPDATE AAAA SET STATE = 2 WHERE ID = 1;
   DELETE FROM BBBB WHERE ID = 2;
   """
@@ -820,15 +895,15 @@ If the alias is not included, the default connection will be used.
 
 ### Async mode
 ```text copy=true
-* in {time} seconds
+* in {duration}
 ```
 
-The step waits for a maximum of the indicated seconds until the condition indicated in the step is fulfilled.
+The step waits for a maximum of the indicated duration until the condition indicated in the step is fulfilled.
 
 #### Parameters:
-| Name   | Wakamiti type    | Description |
-|--------|------------------|-------------|
-| `time` | `int` *required* | The timeout |
+| Name       | Wakamiti type            | Description |
+|------------|--------------------------|-------------|
+| `duration` | [duration][5] *required* | The timeout |
 
 #### Examples:
 ```gherkin
@@ -838,5 +913,6 @@ Then a user identified by '1' exists in the table USERS in 10 seconds
 
 [1]: https://commons.apache.org/proper/commons-csv/
 [2]: en/wakamiti/architecture#comparador
-[3]: #postexecutionmode
-[4]: #asyncmode
+[3]: #post-execution-mode
+[4]: #async-mode
+[5]: en/wakamiti/architecture#duration

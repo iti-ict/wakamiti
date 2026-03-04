@@ -52,9 +52,17 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Releases database connections after scenario execution.
+     * <p>
+     * Order matters for junior maintainers:
+     * <ol>
+     *   <li>Close Lucene resources first (they may hold file handles).</li>
+     *   <li>Close JDBC connections.</li>
+     *   <li>Clear caches/maps to avoid cross-scenario leaks.</li>
+     * </ol>
      */
     @TearDown(order = 2)
     public void releaseConnection() {
+        closeAllLuceneIndexes();
         connections.values().forEach(ConnectionProvider::close);
         connections.clear();
     }

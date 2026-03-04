@@ -15,8 +15,6 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -180,19 +178,17 @@ public class Select<T> extends Sentence<Statement> {
      */
     public Stream<T> stream() {
         try {
-            ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
             List<T> results = new LinkedList<>();
             while (resultset.next()) {
                 mapper.apply(resultset).ifPresent(row -> {
                     if (reducer != null && !results.isEmpty()) {
-                        es.execute(() -> results.set(0, reducer.apply(results.get(0), row)));
+                        results.set(0, reducer.apply(results.get(0), row));
                     } else {
                         traceResultRow(row);
                         results.add(row);
                     }
                 });
             }
-            es.shutdown();
             return results.stream();
         } catch (SQLException | SQLRuntimeException e) {
             throw new SQLRuntimeException("Error reading result", e);
@@ -206,6 +202,7 @@ public class Select<T> extends Sentence<Statement> {
 
         private final Database db;
         private final String sql;
+        private Integer queryTimeoutSeconds;
 
         /**
          * Constructs a new Builder instance with the specified Database and SQL query.
@@ -219,6 +216,17 @@ public class Select<T> extends Sentence<Statement> {
         }
 
         /**
+         * Sets query timeout in seconds for this SELECT execution.
+         *
+         * @param seconds timeout in seconds; values lower than 1 are clamped to 1
+         * @return this builder
+         */
+        public Builder queryTimeoutSeconds(int seconds) {
+            this.queryTimeoutSeconds = Math.max(1, seconds);
+            return this;
+        }
+
+        /**
          * Executes the SQL query and returns a Select instance with the
          * ResultSet mapped to Object arrays.
          *
@@ -226,12 +234,7 @@ public class Select<T> extends Sentence<Statement> {
          * @throws SQLRuntimeException If an SQL error occurs during execution
          */
         public Select<Object[]> get() {
-            try {
-                Statement statement = db.connection().createStatement();
-                return Select.create(sql, db, statement, statement.executeQuery(sql));
-            } catch (SQLException e) {
-                throw new SQLRuntimeException("Error executing statement", e);
-            }
+            return execute(Select::defaultMap);
         }
 
         /**
@@ -244,12 +247,59 @@ public class Select<T> extends Sentence<Statement> {
          * @throws SQLRuntimeException If an SQL error occurs during execution
          */
         public <R> Select<R> get(Function<ResultSet, R> mapper) {
+            return execute(rs -> Optional.ofNullable(mapper.apply(rs)));
+        }
+
+        /**
+         * Shared execution path for both default mapping and custom mapping.
+         * <p>
+         * It guarantees:
+         * <ul>
+         *   <li>statement timeout is configured before running the query,</li>
+         *   <li>statement is closed on failure to avoid resource leaks.</li>
+         * </ul>
+         *
+         * @param mapper row-mapping function
+         * @param <R> mapped row type
+         * @return open {@link Select} instance containing statement and result set
+         */
+        private <R> Select<R> execute(Function<ResultSet, Optional<R>> mapper) {
+            Statement statement = null;
             try {
-                Statement statement = db.connection().createStatement();
-                return Select.create(sql, db, statement, statement.executeQuery(sql),
-                        rs -> Optional.ofNullable(mapper.apply(rs)));
+                statement = db.connection().createStatement();
+                configureStatement(statement);
+                return Select.create(sql, db, statement, statement.executeQuery(sql), mapper);
             } catch (SQLException e) {
+                closeQuietly(statement);
                 throw new SQLRuntimeException("Error executing statement", e);
+            }
+        }
+
+        /**
+         * Applies optional JDBC query timeout to the statement.
+         *
+         * @param statement JDBC statement to configure
+         * @throws SQLException if JDBC driver rejects timeout configuration
+         */
+        private void configureStatement(Statement statement) throws SQLException {
+            if (queryTimeoutSeconds != null) {
+                statement.setQueryTimeout(queryTimeoutSeconds);
+            }
+        }
+
+        /**
+         * Best-effort cleanup used only on builder execution failures.
+         *
+         * @param statement statement to close
+         */
+        private void closeQuietly(Statement statement) {
+            if (statement == null) {
+                return;
+            }
+            try {
+                statement.close();
+            } catch (SQLException ignored) {
+                // best effort
             }
         }
     }
