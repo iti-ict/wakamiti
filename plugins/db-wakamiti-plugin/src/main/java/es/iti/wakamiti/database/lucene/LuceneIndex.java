@@ -99,7 +99,7 @@ public final class LuceneIndex implements AutoCloseable {
                 builder.queryTimeoutSeconds(queryTimeoutSeconds);
             }
             try (Select<String[]> select = builder.get(DatabaseHelper::format)) {
-                select.stream().forEach(row -> {
+                select.forEachRow(row -> {
                     Document document = new Document();
                     for (int i = 0; i < columns.length; i++) {
                         String value = Optional.ofNullable(row[i]).orElse("");
