@@ -26,14 +26,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.6.0
+es.iti.wakamiti:db-wakamiti-plugin:3.6.1
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.6.0</version>
+  <version>3.6.1</version>
 </dependency>
 ```
 
