@@ -175,4 +175,33 @@ public class LucenePerformanceTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    public void testSimilarSearchTimeoutRespectedInSqlFallback() throws SQLException {
+        int numRows = 10000;
+        String descriptionBase = ("Description for record %d with payload " + "X".repeat(170));
+        insertRows(numRows, descriptionBase);
+
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.similarSearch.maxRows", String.valueOf(numRows + 1),
+                "database.similarSearch.timeout", "100",
+                "database.similarSearch.lucene.enabled", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+
+        long start = System.currentTimeMillis();
+        Optional<Map<String, String>> result = contributor.similarBy(
+                "perf_table",
+                new String[]{"name", "description"},
+                new Object[]{"Name not found", "Description not found " + "Y".repeat(170)}
+        );
+        long elapsed = System.currentTimeMillis() - start;
+
+        LOGGER.debug("Time elapsed: {} ms", elapsed);
+        assertThat(result).isEmpty();
+        assertThat(elapsed).isLessThanOrEqualTo(200L);
+    }
 }

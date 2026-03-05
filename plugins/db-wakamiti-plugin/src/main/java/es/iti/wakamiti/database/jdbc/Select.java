@@ -196,6 +196,28 @@ public class Select<T> extends Sentence<Statement> {
     }
 
     /**
+     * Iterates the {@link ResultSet} lazily and applies the given action to
+     * each mapped row.
+     * <p>
+     * Unlike {@link #stream()}, this method does not materialize all rows first,
+     * so callers can add cooperative cancellation checks between rows.
+     *
+     * @param consumer action executed for each mapped row
+     */
+    public void forEachRow(Consumer<T> consumer) {
+        try {
+            while (resultset.next()) {
+                mapper.apply(resultset).ifPresent(row -> {
+                    traceResultRow(row);
+                    consumer.accept(row);
+                });
+            }
+        } catch (SQLException | SQLRuntimeException e) {
+            throw new SQLRuntimeException("Error reading result", e);
+        }
+    }
+
+    /**
      * Builder class for constructing Select instances.
      */
     public static final class Builder {

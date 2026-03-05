@@ -472,8 +472,7 @@ public class DatabaseSupport {
             throwIfSimilarSearchTimedOut(deadlineNanos);
             String sql = db.parser().sqlSelectFrom(db.parser().format(normalizedTable), formattedColumns).toString();
             try (Select<String[]> select = selectForSimilarSearch(db, sql).get(DatabaseHelper::format)) {
-                Optional<Record> result = bestSimilarRecord(
-                        select.stream().map(row -> scoreRecord(row, values)), deadlineNanos);
+                Optional<Record> result = bestSimilarRecord(select, values, deadlineNanos);
                 result.ifPresent(rec -> LOGGER.trace("Found {}", rec));
                 return result.map(rec -> toMap(formattedColumns, rec.data()));
             }
@@ -625,6 +624,29 @@ public class DatabaseSupport {
             }
         }
         return Optional.ofNullable(best);
+    }
+
+    /**
+     * SQL-backed best-candidate selection that evaluates timeout between fetched
+     * rows, avoiding full in-memory materialization before deadline checks.
+     *
+     * @param select open SELECT cursor with candidate rows
+     * @param values expected values used for score calculation
+     * @param deadlineNanos absolute timeout deadline in nanoseconds
+     * @return best candidate above threshold, or empty if none qualify
+     */
+    private Optional<Record> bestSimilarRecord(Select<String[]> select, Object[] values, long deadlineNanos) {
+        AtomicReference<Record> best = new AtomicReference<>();
+        select.forEachRow(row -> {
+            throwIfSimilarSearchTimedOut(deadlineNanos);
+            Record candidate = scoreRecord(row, values);
+            Record current = best.get();
+            if (candidate.score() > SIMILARITY_THRESHOLD
+                    && (current == null || candidate.score() > current.score())) {
+                best.set(candidate);
+            }
+        });
+        return Optional.ofNullable(best.get());
     }
 
     /**
