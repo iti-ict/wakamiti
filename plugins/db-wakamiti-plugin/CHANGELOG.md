@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.6.1] - 2026-03-05
+
+### Fixed
+- Similar-record timeout is now enforced while iterating SQL result rows (no full pre-materialization before timeout checks).
+- Lucene index rebuild now consumes database rows lazily to avoid loading full result sets up front.
+
+
 ## [3.6.0] - 2026-03-04
 
 ### Added
