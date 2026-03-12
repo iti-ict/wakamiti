@@ -58,7 +58,7 @@ public class SQLServerTest {
     @BeforeClass
     public static void setUp() throws IOException {
         System.out.println("Creating container. Please, be patient... ");
-        container.start();
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
         System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));
         String url = container.getJdbcUrl();
