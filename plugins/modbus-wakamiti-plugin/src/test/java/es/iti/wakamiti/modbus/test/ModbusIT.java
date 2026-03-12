@@ -38,7 +38,7 @@ public class ModbusIT {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        CONTAINER.start();
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println("\rContainer [oitc/modbus-server] started");
     }
 
