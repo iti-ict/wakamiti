@@ -11,6 +11,7 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.ExpressionMatcher;
 
+
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -59,7 +60,7 @@ public abstract class AbstractProvider {
      * @param locale The locale for which the expressions are translated.
      * @return A linked hash map of translated expressions.
      */
-    protected abstract LinkedHashMap<String, Pattern> translatedExpressions(Locale locale);
+    protected abstract Map<String, Pattern> translatedExpressions(Locale locale);
 
     /**
      * Retrieves a linked list of regular expressions for a specific locale.
@@ -67,7 +68,7 @@ public abstract class AbstractProvider {
      * @param locale The locale for which the regular expressions are retrieved.
      * @return A linked list of regular expressions.
      */
-    public abstract LinkedList<String> regex(Locale locale);
+    public abstract List<String> regex(Locale locale);
 
     /**
      * Retrieves a key-value pair from the given expression for a specific locale.
