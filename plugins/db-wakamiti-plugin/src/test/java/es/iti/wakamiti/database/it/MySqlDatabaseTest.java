@@ -49,7 +49,7 @@ public class MySqlDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        container.start();
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
         System.out.println(message("\rContainer [MySQLContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));
     }

@@ -56,7 +56,7 @@ public class WakamitiRunner {
      *
      * @return True if the test plan passes, false otherwise.
      */
-    public boolean run(boolean noExecution) {
+    public boolean run() {
         Configuration configuration;
         Wakamiti wakamiti = Wakamiti.instance();
         try {
@@ -64,9 +64,6 @@ public class WakamitiRunner {
             PlanNode plan = wakamiti.createPlanFromConfiguration(configuration);
             if (!plan.hasChildren()) {
                 WakamitiLauncher.logger().warn("Test Plan is empty!");
-            } else if (noExecution) {
-                wakamiti.notExecutePlan(plan, configuration);
-                return true;
             } else {
                 wakamiti.executePlan(plan, configuration);
             }

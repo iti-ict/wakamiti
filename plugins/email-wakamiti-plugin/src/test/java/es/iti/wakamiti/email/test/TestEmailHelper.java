@@ -59,7 +59,7 @@ public class TestEmailHelper {
 
 
     @Test
-    public void lastSentTextMessageCanBeRead() throws MessagingException, InterruptedException {
+    public void lastSentTextMessageCanBeRead() throws MessagingException {
         emailHelper = emailHelper();
         printCurrentMessages();
         GreenMailUtil.sendTextEmail(
@@ -106,7 +106,7 @@ public class TestEmailHelper {
 
 
     @Test
-    public void messagesCanBeDeleted() throws MessagingException {
+    public void messagesCanBeDeleted() {
         emailHelper = emailHelper();
         GreenMailUtil.sendTextEmail(
             "test@localhost",

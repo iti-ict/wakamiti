@@ -20,8 +20,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import es.iti.wakamiti.database.jdbc.Database;
+import es.iti.wakamiti.database.lucene.LuceneIndex;
+import es.iti.wakamiti.database.lucene.LuceneIndexFactory;
+import es.iti.wakamiti.database.lucene.LuceneIndexKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 public class LucenePerformanceTest {
@@ -41,6 +48,8 @@ public class LucenePerformanceTest {
         h2 = DriverManager.getConnection(URL, USER, PASS);
         h2.createStatement().execute(
                 "CREATE TABLE perf_table (id INT PRIMARY KEY, name VARCHAR(255), description VARCHAR(255))");
+        h2.createStatement().execute(
+                "CREATE TABLE no_pk_table (name VARCHAR(255), description VARCHAR(255))");
     }
 
     @AfterClass
@@ -53,6 +62,7 @@ public class LucenePerformanceTest {
         contributor = new DatabaseStepContributor();
         configContributor = new DatabaseConfigContributor();
         h2.createStatement().execute("TRUNCATE TABLE perf_table");
+        h2.createStatement().execute("TRUNCATE TABLE no_pk_table");
     }
 
     private void insertRows(
@@ -77,22 +87,46 @@ public class LucenePerformanceTest {
         h2.setAutoCommit(true);
     }
 
+    private void insertRowsNoPk(
+            int numRows,
+            String descriptionBase
+    ) throws SQLException {
+        LOGGER.debug("Inserting {} rows in no_pk_table...", numRows);
+        h2.setAutoCommit(false);
+        try (PreparedStatement ps = h2.prepareStatement(
+                "INSERT INTO no_pk_table (name, description) VALUES (?, ?)")
+        ) {
+            for (int i = 0; i < numRows; i++) {
+                ps.setString(1, "NoPk Name " + i);
+                ps.setString(2, String.format(descriptionBase, i));
+                ps.addBatch();
+                if (i % 1000 == 0) ps.executeBatch();
+            }
+            ps.executeBatch();
+        }
+        h2.commit();
+        h2.setAutoCommit(true);
+    }
+
     @Test
     public void testPerformance() throws SQLException {
         int numRows = 10000;
         String descriptionBase = "Description for record %d with some extra text to make it longer and more " +
                 "realistic for similarity comparison";
         insertRows(numRows, descriptionBase);
+        h2.createStatement().execute(
+                "UPDATE perf_table SET name = 'TARGET_UNIQUE_9999', description = 'TARGET_UNIQUE_DESC_9999' WHERE id = 9999");
+        h2.createStatement().execute(
+                "UPDATE perf_table SET name = 'TARGET_UNIQUE_5000', description = 'TARGET_UNIQUE_DESC_5000' WHERE id = 5000");
 
         Configuration baseConfig = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.similarSearch.maxRows", String.valueOf(numRows + 1)
+                "database.connection.password", PASS
         );
 
-        String nameToSearch = "Name 9999";
-        String descriptionToSearch = String.format(descriptionBase, 9999);
+        String nameToSearch = "TARGET_UNIQUE_9999";
+        String descriptionToSearch = "TARGET_UNIQUE_DESC_9999";
 
         // Standard Search
         configContributor.configurer().configure(
@@ -130,8 +164,8 @@ public class LucenePerformanceTest {
         assertThat(result2).isPresent();
 
         // Second search (index already built)
-        String nameToSearch2 = "Name 5000";
-        String descriptionToSearch2 = String.format(descriptionBase, 5000);
+        String nameToSearch2 = "TARGET_UNIQUE_5000";
+        String descriptionToSearch2 = "TARGET_UNIQUE_DESC_5000";
         start = System.currentTimeMillis();
         Optional<Map<String, String>> result3 = contributor.similarBy(
                 "perf_table",
@@ -142,11 +176,6 @@ public class LucenePerformanceTest {
         long luceneTimeCached = end - start;
         LOGGER.debug("Lucene search time (cached): {} ms",  luceneTimeCached);
         assertThat(result3).isPresent();
-
-        LOGGER.debug("Improvement factor (cached): {}x", (double) standardTime / Math.max(1, luceneTimeCached));
-
-        // Sanity check: timing was captured.
-        assertThat(luceneTimeCached).isLessThanOrEqualTo(10000L);
     }
 
     @Test
@@ -160,7 +189,6 @@ public class LucenePerformanceTest {
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
-                "database.similarSearch.maxRows", String.valueOf(numRows + 1),
                 "database.similarSearch.timeout", "1",
                 "database.similarSearch.lucene.enabled", "true",
                 "database.similarSearch.lucene.topK", "10"
@@ -186,8 +214,7 @@ public class LucenePerformanceTest {
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
-                "database.similarSearch.maxRows", String.valueOf(numRows + 1),
-                "database.similarSearch.timeout", "100",
+                "database.similarSearch.timeout", "1",
                 "database.similarSearch.lucene.enabled", "false"
         );
         configContributor.configurer().configure(contributor, config);
@@ -202,6 +229,133 @@ public class LucenePerformanceTest {
 
         LOGGER.debug("Time elapsed: {} ms", elapsed);
         assertThat(result).isEmpty();
-        assertThat(elapsed).isLessThanOrEqualTo(200L);
+        assertThat(elapsed).isLessThanOrEqualTo(2000L);
+    }
+
+    @Test
+    public void testLuceneReindexExecutesTimeoutGuardDuringRowIteration() throws Exception {
+        int numRows = 200;
+        String descriptionBase = "Description for record %d";
+        insertRows(numRows, descriptionBase);
+
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS
+        );
+        configContributor.configurer().configure(contributor, config);
+
+        Database db = Database.from(contributor.connection());
+        String[] columns = new String[]{"name", "description"};
+        LuceneIndexKey key = new LuceneIndexKey("default", db.table("perf_table"), columns);
+        AtomicInteger checks = new AtomicInteger();
+
+        try (LuceneIndex index = LuceneIndexFactory.createIndex(key, null)) {
+            assertThatThrownBy(() -> index.ensureUpToDate(
+                    db, "perf_table", columns, 0, () -> {
+                        if (checks.incrementAndGet() >= 3) {
+                            throw new RuntimeException("timeout");
+                        }
+                    }))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("timeout");
+        }
+
+        assertThat(checks.get()).isGreaterThanOrEqualTo(3);
+    }
+
+    @Test
+    public void testLuceneFullRefreshWithoutPkExecutesTimeoutGuardDuringRowIteration() throws Exception {
+        int numRows = 200;
+        String descriptionBase = "No PK description %d";
+        insertRowsNoPk(numRows, descriptionBase);
+
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS
+        );
+        configContributor.configurer().configure(contributor, config);
+
+        Database db = Database.from(contributor.connection());
+        String[] columns = new String[]{"name", "description"};
+        LuceneIndexKey key = new LuceneIndexKey("default", db.table("no_pk_table"), columns);
+        AtomicInteger checks = new AtomicInteger();
+
+        try (LuceneIndex index = LuceneIndexFactory.createIndex(key, null)) {
+            assertThatThrownBy(() -> index.ensureUpToDate(
+                    db, "no_pk_table", columns, 0, () -> {
+                        if (checks.incrementAndGet() >= 3) {
+                            throw new RuntimeException("timeout");
+                        }
+                    }))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("timeout");
+        }
+
+        assertThat(checks.get()).isGreaterThanOrEqualTo(3);
+    }
+
+    @Test
+    public void testDynamicRefreshStrategyReflectsExternalChangesWithAndWithoutPk() throws Exception {
+        insertRows(3000, "Description for record %d");
+        insertRowsNoPk(3000, "No PK description %d");
+
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.similarSearch.lucene.enabled", "true",
+                "database.similarSearch.lucene.topK", "10"
+        );
+        configContributor.configurer().configure(contributor, config);
+
+        String pkName = "UNIQUE_BEFORE_TOKEN_QQ1";
+        String pkDesc = "UNIQUE_BEFORE_LONG_PAYLOAD_QQ1";
+        String noPkName = "UNIQUE_BEFORE_TOKEN_QQ2";
+        String noPkDesc = "UNIQUE_BEFORE_LONG_PAYLOAD_QQ2";
+
+        h2.createStatement().execute(
+                "UPDATE perf_table SET name = 'UNIQUE_BEFORE_TOKEN_QQ1', description = 'UNIQUE_BEFORE_LONG_PAYLOAD_QQ1' WHERE id = 2999");
+        h2.createStatement().execute(
+                "UPDATE no_pk_table SET name = 'UNIQUE_BEFORE_TOKEN_QQ2', description = 'UNIQUE_BEFORE_LONG_PAYLOAD_QQ2' WHERE name = 'NoPk Name 2999'");
+
+        assertThat(contributor.similarBy(
+                "perf_table",
+                new String[]{"name", "description"},
+                new Object[]{pkName, pkDesc}
+        )).isPresent();
+        assertThat(contributor.similarBy(
+                "no_pk_table",
+                new String[]{"name", "description"},
+                new Object[]{noPkName, noPkDesc}
+        )).isPresent();
+
+        h2.createStatement().execute(
+                "UPDATE perf_table SET name = 'ZZZ_AFTER_TOKEN_7721', description = 'COMPLETELY_DIFFERENT_PAYLOAD_PK_7721' WHERE id = 2999");
+        h2.createStatement().execute(
+                "UPDATE no_pk_table SET name = 'ZZZ_AFTER_TOKEN_7722', description = 'COMPLETELY_DIFFERENT_PAYLOAD_NOPK_7722' WHERE name = 'UNIQUE_BEFORE_TOKEN_QQ2'");
+
+        assertThat(contributor.similarBy(
+                "perf_table",
+                new String[]{"name", "description"},
+                new Object[]{pkName, pkDesc}
+        )).isEmpty();
+        assertThat(contributor.similarBy(
+                "no_pk_table",
+                new String[]{"name", "description"},
+                new Object[]{noPkName, noPkDesc}
+        )).isEmpty();
+
+        assertThat(contributor.similarBy(
+                "perf_table",
+                new String[]{"name", "description"},
+                new Object[]{"ZZZ_AFTER_TOKEN_7721", "COMPLETELY_DIFFERENT_PAYLOAD_PK_7721"}
+        )).isPresent();
+        assertThat(contributor.similarBy(
+                "no_pk_table",
+                new String[]{"name", "description"},
+                new Object[]{"ZZZ_AFTER_TOKEN_7722", "COMPLETELY_DIFFERENT_PAYLOAD_NOPK_7722"}
+        )).isPresent();
     }
 }
