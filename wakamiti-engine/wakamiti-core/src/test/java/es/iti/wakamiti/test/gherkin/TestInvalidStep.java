@@ -24,20 +24,7 @@ public class TestInvalidStep {
 
     @Test
     public void testInvalidStep() {
-
-        Map<String, String> properties = new HashMap<>();
-        properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
-        properties.put(
-                RESOURCE_PATH,
-                "src/test/resources/features/test5_invalidStep.feature"
-        );
-        properties.put(
-                NON_REGISTERED_STEP_PROVIDERS,
-                "es.iti.wakamiti.test.gherkin.WakamitiSteps"
-        );
-        properties.put(OUTPUT_FILE_PATH, "target/wakamiti.json");
-        Configuration configuration = Wakamiti.defaultConfiguration()
-                .appendFromMap(properties);
+        Configuration configuration = invalidStepConfiguration();
         PlanNode plan = Wakamiti.instance().createPlanFromConfiguration(configuration);
         Wakamiti.instance().executePlan(plan, configuration);
 
@@ -54,6 +41,40 @@ public class TestInvalidStep {
             assertThat(steps[3].result()).contains(Result.SKIPPED);
         }
 
+    }
+
+    @Test
+    public void testInvalidStepWhenNoExecution() {
+        Configuration configuration = invalidStepConfiguration();
+        configuration.appendFromPairs(DRY_RUN, "true");
+        PlanNode plan = Wakamiti.instance().createPlanFromConfiguration(configuration);
+        Wakamiti.instance().executePlan(plan, configuration);
+
+        PlanNode feature = plan.children().findFirst().orElse(null);
+        PlanNode scenarioOutline = feature.children().findFirst().orElse(null);
+        PlanNode[] scenarios = scenarioOutline.children().toArray(PlanNode[]::new);
+        for (PlanNode scenario : scenarios) {
+            PlanNode[] steps = scenario.children().toArray(PlanNode[]::new);
+            assertThat(feature.result()).contains(Result.UNDEFINED);
+            assertThat(scenario.result()).contains(Result.UNDEFINED);
+            assertThat(steps[2].result()).contains(Result.UNDEFINED);
+        }
+    }
+
+    private Configuration invalidStepConfiguration() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
+        properties.put(
+                RESOURCE_PATH,
+                "src/test/resources/features/test5_invalidStep.feature"
+        );
+        properties.put(
+                NON_REGISTERED_STEP_PROVIDERS,
+                "es.iti.wakamiti.test.gherkin.WakamitiSteps"
+        );
+        properties.put(OUTPUT_FILE_PATH, "target/wakamiti.json");
+        return Wakamiti.defaultConfiguration()
+                .appendFromMap(properties);
     }
 
 }

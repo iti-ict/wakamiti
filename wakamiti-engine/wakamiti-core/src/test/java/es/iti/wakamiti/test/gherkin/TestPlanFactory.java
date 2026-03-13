@@ -254,11 +254,16 @@ public class TestPlanFactory {
         properties.put(WakamitiConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(WakamitiConfiguration.RESOURCE_PATH, "src/test/resources/features/noExecution.feature");
         properties.put(WakamitiConfiguration.OUTPUT_FILE_PATH, "target/" + Path.of(resultFilename).getFileName());
+        properties.put(
+                WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS,
+                "es.iti.wakamiti.test.gherkin.WakamitiSteps"
+        );
+        properties.put(WakamitiConfiguration.DRY_RUN, "true");
         Configuration configuration = Wakamiti.defaultConfiguration()
                 .appendFromProperties(properties);
         Wakamiti wakamiti = Wakamiti.instance();
         PlanNode testPlan = wakamiti.createPlanFromConfiguration(configuration);
-        testPlan = wakamiti.notExecutePlan(testPlan, configuration);
+        testPlan = wakamiti.executePlan(testPlan, configuration);
         if (LOGGER.isDebugEnabled()) {
             System.out.println(printPlan(testPlan, new StringBuilder(), 0));
         }

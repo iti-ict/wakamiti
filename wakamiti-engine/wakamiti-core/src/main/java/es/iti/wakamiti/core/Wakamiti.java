@@ -417,22 +417,9 @@ public class Wakamiti {
      * @return The result of the test plan execution.
      */
     public PlanNode executePlan(PlanNode plan, Configuration configuration) {
-        PlanNode result = new PlanRunner(plan, configuration).run();
-        writeOutputFile(plan, configuration);
-        if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
-            generateReports(configuration, new PlanNodeSnapshot(plan));
-        }
-        return result;
-    }
-
-    /**
-     * Processes the specified test plan using the provided configuration without executing it.
-     *
-     * @param plan          The test plan to execute.
-     * @param configuration The configuration for plan execution.
-     */
-    public PlanNode notExecutePlan(PlanNode plan, Configuration configuration) {
-        PlanNode result = new PlanRunner(plan, configuration).noRun();
+        PlanRunner runner = new PlanRunner(plan, configuration);
+        PlanNode result = configuration.get(DRY_RUN, Boolean.class).orElse(false)
+                ? runner.noRun() : runner.run();
         writeOutputFile(plan, configuration);
         if (configuration.get(WakamitiConfiguration.REPORT_GENERATION, Boolean.class).orElse(true)) {
             generateReports(configuration, new PlanNodeSnapshot(plan));

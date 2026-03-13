@@ -44,6 +44,7 @@ public class TestWakamitiLauncher {
         assertThat(result.wakamitiConfiguration().asMap()).contains(entry("rest.host", "localhost"));
         assertThat(result.mavenFetcherConfiguration().asMap())
                 .contains(entry("remoteRepositories", "http://maven.com"));
+        assertThat(new CliArguments().parse("--dry-run").isNoExecution()).isTrue();
     }
 
     @Test
@@ -57,14 +58,14 @@ public class TestWakamitiLauncher {
 
     @Test
     public void testLogger() {
-        String args = "--no-execution -KresourceTypes=gherkin -Klog.path=target -Klog.level=info";
+        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=target -Klog.level=info";
         try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
                      Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
                              when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
         ) {
             try (MockedConstruction<WakamitiRunner> mockRunner =
                          Mockito.mockConstruction(WakamitiRunner.class, (mock, context) ->
-                                 when(mock.run(anyBoolean())).thenReturn(true))) {
+                                 when(mock.run()).thenReturn(true))) {
                 WakamitiLauncher.main(args.split(" "));
             }
         }

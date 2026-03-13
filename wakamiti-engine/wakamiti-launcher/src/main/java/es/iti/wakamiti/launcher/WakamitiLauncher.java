@@ -91,7 +91,7 @@ public class WakamitiLauncher {
                 logger().info("------------------------------------");
             }
 
-            boolean passed = runner.run(arguments.isNoExecution());
+            boolean passed = runner.run();
             if (!passed)
                 System.exit(3);
         } catch (Exception e) {
