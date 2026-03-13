@@ -38,7 +38,7 @@ final class TestcontainersWindowsNpipe {
             String message = current.getMessage();
             if (message != null) {
                 String normalizedMessage = message.toLowerCase(Locale.ROOT);
-                if (normalizedMessage.matches(".*[Dd]ocker.*")) {
+                if (normalizedMessage.contains("docker")) {
                     return true;
                 }
             }

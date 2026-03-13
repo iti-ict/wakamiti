@@ -80,6 +80,7 @@ public class DatabaseSupport {
     protected static final String GIVEN_WHERE_CLAUSE = "the given WHERE clause";
     protected static final String ERROR_CLOSING_DATASET = "Error closing dataset";
     protected static final double SIMILARITY_THRESHOLD = 0.7;
+    protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = new LevenshteinDistance();
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     protected final Map<String, ConnectionProvider> connections = new HashMap<>();
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
@@ -89,9 +90,9 @@ public class DatabaseSupport {
     protected String csvFormat;
     protected boolean enableCleanupUponCompletion;
     protected boolean healthcheck;
-    protected Long similarSearchTimeoutMs;
+    protected long similarSearchTimeoutMs = 10_000L;
     protected boolean luceneSimilarSearchEnabled;
-    protected Integer luceneSimilarSearchTopK;
+    protected int luceneSimilarSearchTopK = 10;
     protected String luceneSimilarSearchIndexDir;
     protected final Map<LuceneIndexKey, LuceneIndex> luceneIndexes = new HashMap<>();
     protected UnaryOperator<Map<String, String>> nullSymbolMapper = map ->
@@ -167,7 +168,7 @@ public class DatabaseSupport {
      * @param enabled {@code true} to enable Lucene-based search.
      */
     public void setLuceneSimilarSearchEnabled(boolean enabled) {
-        if (!enabled && this.luceneSimilarSearchEnabled) {
+        if (!enabled) {
             closeAllLuceneIndexes();
         }
         this.luceneSimilarSearchEnabled = enabled;
@@ -208,8 +209,9 @@ public class DatabaseSupport {
      */
     public void addConnection(String alias, ConnectionParameters parameters) {
         LOGGER.debug("Setting '{}' connection parameters {}", alias, parameters);
-        if (connections.containsKey(alias)) {
-            connections.remove(alias).close();
+        ConnectionProvider previous = connections.remove(alias);
+        if (previous != null) {
+            previous.close();
             closeLuceneIndexes(alias);
         }
         ConnectionProvider connectionProvider = new ConnectionProvider(parameters);
@@ -440,7 +442,6 @@ public class DatabaseSupport {
      * <ol>
      *   <li>Normalize table/column names according to the current JDBC dialect.</li>
      *   <li>If Lucene is enabled, try a Lucene preselection first.</li>
-     *   <li>If no Lucene candidate is accepted, optionally enforce {@code maxRows}.</li>
      *   <li>Fallback to full table scan and compute Levenshtein-based score.</li>
      *   <li>Return the best candidate above {@link #SIMILARITY_THRESHOLD}.</li>
      * </ol>
@@ -491,8 +492,8 @@ public class DatabaseSupport {
     /**
      * Executes the Lucene branch of similar search.
      * <p>
-     * In strict mode, the Lucene index is rebuilt before each search so
-     * external database changes are always reflected.
+     * Index contents are refreshed before each search so external database
+     * changes are reflected.
      * Lucene is used only for candidate retrieval; final acceptance still uses
      * the same Levenshtein score as SQL fallback.
      *
@@ -511,7 +512,13 @@ public class DatabaseSupport {
         }
         try {
             throwIfSimilarSearchTimedOut(deadlineNanos);
-            index.ensureUpToDate(db, table, columns, similarSearchTimeoutSeconds());
+            index.ensureUpToDate(
+                    db,
+                    table,
+                    columns,
+                    similarSearchTimeoutSeconds(),
+                    () -> throwIfSimilarSearchTimedOut(deadlineNanos)
+            );
             throwIfSimilarSearchTimedOut(deadlineNanos);
         } catch (IOException e) {
             LOGGER.warn("Unable to rebuild Lucene index for {}", table, e);
@@ -528,7 +535,7 @@ public class DatabaseSupport {
             throwIfSimilarSearchTimedOut(deadlineNanos);
             IndexSearcher searcher = new IndexSearcher(reader);
             Query query = buildLuceneQuery(index.analyzer(), columns, queryText);
-            TopDocs topDocs = searcher.search(query, Math.max(1, luceneSimilarSearchTopK));
+            TopDocs topDocs = searcher.search(query, luceneSimilarSearchTopK);
             if (topDocs.scoreDocs.length == 0) {
                 return Optional.empty();
             }
@@ -585,7 +592,7 @@ public class DatabaseSupport {
             return rowValues;
         } catch (IOException e) {
             LOGGER.warn("Unable to load Lucene document", e);
-            return new String[0];
+            return null;
         }
     }
 
@@ -664,7 +671,7 @@ public class DatabaseSupport {
                 .map(DatabaseHelper::toString).orElse("").trim().toUpperCase();
         String actual = Optional.ofNullable(rowValue).orElse("").trim().toUpperCase();
         int maxLength = Math.max(expected.length(), actual.length());
-        double distance = new LevenshteinDistance().apply(expected, actual);
+        double distance = LEVENSHTEIN_DISTANCE.apply(expected, actual);
         if (maxLength == 0) return 1.0;
         return (maxLength - distance) / maxLength;
     }
@@ -679,9 +686,6 @@ public class DatabaseSupport {
      * @return cached or newly created index, or {@code null} when index cannot be created
      */
     private LuceneIndex luceneIndexFor(Database db, String table, String[] columns) {
-        if (!luceneSimilarSearchEnabled) {
-            return null;
-        }
         String alias = currentConnectionAlias();
         String normalizedTable = db.table(table);
         LuceneIndexKey key = new LuceneIndexKey(alias, normalizedTable, columns);
@@ -827,13 +831,12 @@ public class DatabaseSupport {
      * @param alias connection alias
      */
     protected void closeLuceneIndexes(String alias) {
-        List<LuceneIndexKey> keys = luceneIndexes.keySet().stream()
-                .filter(key -> key.alias().equals(alias))
-                .collect(Collectors.toList());
-        for (LuceneIndexKey key : keys) {
-            LuceneIndex index = luceneIndexes.remove(key);
-            if (index != null) {
-                index.close();
+        Iterator<Map.Entry<LuceneIndexKey, LuceneIndex>> iterator = luceneIndexes.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<LuceneIndexKey, LuceneIndex> entry = iterator.next();
+            if (entry.getKey().alias().equals(alias)) {
+                entry.getValue().close();
+                iterator.remove();
             }
         }
     }
@@ -843,11 +846,7 @@ public class DatabaseSupport {
      * Safe to call multiple times.
      */
     protected void closeAllLuceneIndexes() {
-        luceneIndexes.values().forEach(index -> {
-            if (index != null) {
-                index.close();
-            }
-        });
+        luceneIndexes.values().forEach(LuceneIndex::close);
         luceneIndexes.clear();
     }
 

@@ -37,7 +37,7 @@ public final class LuceneIndexKey {
     public LuceneIndexKey(String alias, String table, String[] columns) {
         this.alias = alias;
         this.table = table;
-        this.columns = Arrays.asList(columns.clone());
+        this.columns = List.copyOf(Arrays.asList(columns.clone()));
     }
 
     /**
