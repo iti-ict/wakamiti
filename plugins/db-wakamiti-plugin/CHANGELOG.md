@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [3.7.0] - 2026-03-13
 
 ### Fixed
 - Executes timeout checks during Lucene row indexing.
