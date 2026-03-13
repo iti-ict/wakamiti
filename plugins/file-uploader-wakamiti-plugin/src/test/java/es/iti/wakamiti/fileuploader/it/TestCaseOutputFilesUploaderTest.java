@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
@@ -76,7 +75,7 @@ public class TestCaseOutputFilesUploaderTest {
     }
 
     private static String today() {
-        return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.from(ZoneOffset.UTC)).format(Instant.now());
+        return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()).format(Instant.now());
     }
 
     /**
