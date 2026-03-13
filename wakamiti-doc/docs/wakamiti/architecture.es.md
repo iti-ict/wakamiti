@@ -134,6 +134,22 @@ wakamiti:
 ```
 
 
+### `wakamiti.dryRun`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si Wakamiti debe ejecutarse en modo dry-run. Si se activa, Wakamiti recorre y valida el plan de ejecución
+sin ejecutar las implementaciones de los pasos.
+
+Los ficheros de salida y los informes se siguen generando según las opciones configuradas.
+
+Ejemplo:
+```yaml
+wakamiti:
+  dryRun: true
+```
+
+
 ### `wakamiti.launcher.modules`
 - Tipo: `string[]`
 
