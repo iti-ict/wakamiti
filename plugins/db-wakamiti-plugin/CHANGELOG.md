@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Fixed
+- Executes timeout checks during Lucene row indexing.
+- Lucene similar-search refresh strategy is now dynamic:
+  tables with PK use incremental `PK+hash`, tables without PK use full refresh.
+- Lucene candidate row loading now ignores unreadable documents safely (no invalid empty-row scoring).
+
+### Changed
+- Upgrade dependencies: `wakamiti-plugin-starter`
+
+
 ## [3.6.1] - 2026-03-05
 
 ### Fixed
