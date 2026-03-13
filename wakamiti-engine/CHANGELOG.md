@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Changed
+- CLI long option for no-execution mode is now `--dry-run`.
+- No-execution mode now traverses and evaluates the plan nodes instead of only generating the report header.
+
+### Fixed
+- Launcher no-execution result now reflects the real plan result instead of always returning success.
+
+
 ## [2.8.1] - 2026-01-21
 
 ## Fixed
