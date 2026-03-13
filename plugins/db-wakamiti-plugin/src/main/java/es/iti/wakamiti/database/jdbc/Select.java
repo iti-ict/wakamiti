@@ -224,7 +224,7 @@ public class Select<T> extends Sentence<Statement> {
 
         private final Database db;
         private final String sql;
-        private Integer queryTimeoutSeconds;
+        private int queryTimeoutSeconds;
 
         /**
          * Constructs a new Builder instance with the specified Database and SQL query.
@@ -304,7 +304,7 @@ public class Select<T> extends Sentence<Statement> {
          * @throws SQLException if JDBC driver rejects timeout configuration
          */
         private void configureStatement(Statement statement) throws SQLException {
-            if (queryTimeoutSeconds != null) {
+            if (queryTimeoutSeconds > 0) {
                 statement.setQueryTimeout(queryTimeoutSeconds);
             }
         }

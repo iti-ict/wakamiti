@@ -58,6 +58,19 @@ public interface Backend {
     void runStep(PlanNode modelStep);
 
     /**
+     * Validates a plan node of type {@link NodeType#STEP} without executing the
+     * underlying step implementation.
+     * <p>
+     * Implementations that do not provide a specific dry-run behavior will
+     * fallback to {@link #runStep(PlanNode)}.
+     *
+     * @param modelStep The step to be validated.
+     */
+    default void dryRunStep(PlanNode modelStep) {
+        runStep(modelStep);
+    }
+
+    /**
      * Exposes information about the type registry used by the backend.
      *
      * @return The data type registry.

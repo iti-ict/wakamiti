@@ -49,7 +49,7 @@ public class PostgresqlDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        container.start();
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
         System.out.println(message("\rContainer [PostgreSQLContainer] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));
     }

@@ -6,6 +6,7 @@
 package es.iti.wakamiti.launcher;
 
 
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import org.apache.commons.cli.*;
 
@@ -55,7 +56,7 @@ public class CliArguments {
         cliOptions.addOption(ARG_CLEAN, "clean", false, "Force any module to be re-gathered");
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
-        cliOptions.addOption(ARG_NO_EXECUTION, "no-execution", false, "Generates report without execution");
+        cliOptions.addOption(ARG_NO_EXECUTION, "dry-run", false, "Generates report without execution");
 
         cliOptions.addOption(ARG_AI, "ai", false, "Activate feature generator mode");
         cliOptions.addOption(ARG_API_DOCS, "apiDocs", true, "Api docs url or json file");
@@ -110,6 +111,7 @@ public class CliArguments {
      */
     public Configuration wakamitiConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_WAKAMITI_PROPERTY);
+        properties.setProperty(WakamitiConfiguration.DRY_RUN, String.valueOf(isNoExecution()));
         String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
         return buildConfiguration(confFile, properties, "wakamiti");
     }

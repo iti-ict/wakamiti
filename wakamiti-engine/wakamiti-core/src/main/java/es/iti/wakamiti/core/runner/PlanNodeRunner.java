@@ -40,6 +40,7 @@ public class PlanNodeRunner {
     private final Configuration configuration;
     private final PlanNodeLogger logger;
     private final BackendFactory backendFactory;
+    private final boolean dryRun;
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
     private State state;
@@ -51,6 +52,17 @@ public class PlanNodeRunner {
             Optional<Backend> backend,
             PlanNodeLogger logger
     ) {
+        this(node, configuration, backendFactory, backend, logger, false);
+    }
+
+    private PlanNodeRunner(
+            PlanNode node,
+            Configuration configuration,
+            BackendFactory backendFactory,
+            Optional<Backend> backend,
+            PlanNodeLogger logger,
+            boolean dryRun
+    ) {
         this.node = node;
         this.configuration = configuration;
         this.uniqueId = UUID.randomUUID().toString();
@@ -58,6 +70,7 @@ public class PlanNodeRunner {
         this.backendFactory = backendFactory;
         this.backend = backend;
         this.logger = logger;
+        this.dryRun = dryRun;
     }
 
     public PlanNodeRunner(
@@ -66,7 +79,17 @@ public class PlanNodeRunner {
             BackendFactory backendFactory,
             PlanNodeLogger logger
     ) {
-        this(node, configuration, backendFactory, Optional.empty(), logger);
+        this(node, configuration, backendFactory, Optional.empty(), logger, false);
+    }
+
+    public PlanNodeRunner(
+            PlanNode node,
+            Configuration configuration,
+            BackendFactory backendFactory,
+            PlanNodeLogger logger,
+            boolean dryRun
+    ) {
+        this(node, configuration, backendFactory, Optional.empty(), logger, dryRun);
     }
 
     /**
@@ -145,19 +168,25 @@ public class PlanNodeRunner {
             doNotImplemented(node, result);
         } else if (!getChildren().isEmpty()) {
             Stream<Pair<Instant, Result>> results = Stream.empty();
-            try {
-                testCasePreExecution(node);
-            } catch (WakamitiException e) {
-                results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                        .collect(Collectors.toList()).stream(); // prevent lazy stream
+            if (dryRun) {
+                logger.logTestCaseHeader(node);
+            } else {
+                try {
+                    testCasePreExecution(node);
+                } catch (WakamitiException e) {
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                }
             }
             results = Stream.concat(results, runChildren())
                     .collect(Collectors.toList()).stream(); // prevent lazy stream
-            try {
-                testCasePostExecution(node);
-            } catch (WakamitiException e) {
-                results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                        .collect(Collectors.toList()).stream(); // prevent lazy stream
+            if (!dryRun) {
+                try {
+                    testCasePostExecution(node);
+                } catch (WakamitiException e) {
+                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                }
             }
             result = aggregatorFinish(results);
         }
@@ -175,7 +204,7 @@ public class PlanNodeRunner {
     }
 
     protected Stream<Pair<Instant, Result>> runChildren() {
-        return children.stream()
+        return getChildren().stream()
                 .map(PlanNodeRunner::runNode)
                 .filter(Objects::nonNull)
                 .map(result -> new Pair<>(Instant.now(), result));
@@ -183,8 +212,21 @@ public class PlanNodeRunner {
 
     protected Result runStep() {
         stepPreExecution(node);
-        getBackend().ifPresent(stepBackend -> stepBackend.runStep(node));
-        stepPostExecution(node);
+        try {
+            getBackend().ifPresent(stepBackend -> {
+                if (dryRun) {
+                    stepBackend.dryRunStep(node);
+                } else {
+                    stepBackend.runStep(node);
+                }
+            });
+        } catch (Throwable error) {
+            Instant now = Instant.now();
+            node.prepareExecution().markStarted(now);
+            node.prepareExecution().markFinished(now, Result.ERROR, error, null);
+        } finally {
+            stepPostExecution(node);
+        }
         return node.executionState().flatMap(ExecutionState::result).orElse(null);
     }
 
@@ -210,7 +252,7 @@ public class PlanNodeRunner {
         return node.children()
                 .map(
                         child -> new PlanNodeRunner(
-                                child, configuration, backendFactory, getBackend(), logger
+                                child, configuration, backendFactory, getBackend(), logger, dryRun
                         )
                 )
                 .collect(Collectors.toList());

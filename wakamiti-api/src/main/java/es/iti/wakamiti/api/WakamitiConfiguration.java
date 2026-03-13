@@ -76,6 +76,8 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     /** Tag Expression filter */
     public static final String TAG_FILTER = "tagFilter";
 
+    public static final String DRY_RUN = "dryRun";
+
     /** Whether filtered tests should be included in the plan, as SKIPPED */
     public static final String INCLUDE_FILTERED_TEST_CASES = "includeFilteredTestCases";
 
@@ -141,7 +143,8 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     OUTPUT_FILE_PER_TEST_CASE, Boolean.FALSE.toString(),
                     REPORT_GENERATION, Boolean.TRUE.toString(),
                     ID_TAG_PATTERN, "ID([\\w-]+)",
-                    INCLUDE_FILTERED_TEST_CASES, "false",
+                    DRY_RUN, Boolean.FALSE.toString(),
+                    INCLUDE_FILTERED_TEST_CASES, Boolean.FALSE.toString(),
                     REDEFINITION_ENABLED, Boolean.TRUE.toString(),
                     REDEFINITION_DEFINITION_TAG, "definition",
                     REDEFINITION_IMPLEMENTATION_TAG, "implementation",

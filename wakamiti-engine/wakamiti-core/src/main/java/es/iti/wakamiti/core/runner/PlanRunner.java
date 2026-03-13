@@ -55,6 +55,20 @@ public class PlanRunner {
      * @return The root PlanNode after the execution of the test plan.
      */
     public PlanNode run() {
+        return runPlan(false);
+    }
+
+    /**
+     * Runs the test plan in validation mode, resolving and checking steps
+     * without invoking step implementations.
+     *
+     * @return The root PlanNode after the validation run.
+     */
+    public PlanNode noRun() {
+        return runPlan(true);
+    }
+
+    private PlanNode runPlan(boolean dryRun) {
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(
@@ -63,7 +77,8 @@ public class PlanRunner {
         );
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
-        for (PlanNodeRunner child : getChildren()) {
+        List<PlanNodeRunner> runners = dryRun ? buildRunners(true) : getChildren();
+        for (PlanNodeRunner child : runners) {
             try {
                 child.runNode();
             } catch (Exception e) {
@@ -78,32 +93,13 @@ public class PlanRunner {
     }
 
     /**
-     * Runs the test plan, without executing each child node using PlanNodeRunners.
-     *
-     * @return The root PlanNode after the execution of the test plan.
-     */
-    public PlanNode noRun() {
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
-        plan.assignExecutionID(
-                configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class)
-                        .orElse(UUID.randomUUID().toString())
-        );
-        wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
-        planNodeLogger.logTestPlanHeader(plan);
-        planNodeLogger.logTestPlanResult(plan);
-        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
-        return plan;
-    }
-
-    /**
      * Gets the list of PlanNodeRunners representing the child nodes of the test plan.
      *
      * @return The list of PlanNodeRunners.
      */
     public List<PlanNodeRunner> getChildren() {
         if (children == null) {
-            children = buildRunners();
+            children = buildRunners(false);
         }
         return children;
     }
@@ -113,13 +109,13 @@ public class PlanRunner {
      *
      * @return The list of PlanNodeRunners.
      */
-    protected List<PlanNodeRunner> buildRunners() {
+    protected List<PlanNodeRunner> buildRunners(boolean dryRun) {
         BackendFactory backendFactory = wakamiti.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(
                     confBuilder.fromMap(feature.properties())
             );
-            return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger);
+            return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger, dryRun);
         }).collect(Collectors.toList());
     }
 

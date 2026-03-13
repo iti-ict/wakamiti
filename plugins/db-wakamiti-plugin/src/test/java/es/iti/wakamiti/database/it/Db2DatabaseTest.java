@@ -55,7 +55,7 @@ public class Db2DatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        container.start();
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
         System.out.println(message("\rContainer [Db2Container] started with [url={}, username={}, password={}]",
                 container.getJdbcUrl(), container.getUsername(), container.getPassword()));
     }

@@ -93,20 +93,48 @@ public class RunnableBackend extends AbstractBackend {
      */
     @Override
     public void runStep(PlanNode step) {
-        validateStepFromTestCase(step);
-        fetchStepBackendData();
-        Instant now = clock.instant();
-        if (step.nodeType() == NodeType.VIRTUAL_STEP) {
-            // virtual steps are not executed, marked as passed directly
-            ExecutionState<Result> executionData = step.prepareExecution();
-            executionData.markStarted(now);
-            executionData.markFinished(now, Result.PASSED);
-        } else if (step.nodeType() == NodeType.STEP) {
+        runStep(step, () -> {
+            Instant now = clock.instant();
             if (otherStepsHasErrors(step)) {
                 skipStep(step, now);
             } else {
                 runStep(step, now);
             }
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     * This implementation validates and resolves the given step without
+     * executing the underlying step method.
+     *
+     * @param step The plan node representing the step to validate.
+     */
+    @Override
+    public void dryRunStep(PlanNode step) {
+        runStep(step, () -> {
+            Instant now = clock.instant();
+            StepBackendData stepBackend = stepBackendData.get(step);
+            step.prepareExecution().markStarted(now);
+            if (stepBackend.exception() != null) {
+                fillErrorState(step, now, stepBackend.exception(), stepBackend.classifier());
+            } else {
+                step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
+            }
+        });
+    }
+
+    private void runStep(PlanNode step, Runnable runnable) {
+        validateStepFromTestCase(step);
+        fetchStepBackendData();
+        if (step.nodeType() == NodeType.VIRTUAL_STEP) {
+            // virtual steps are never executed, but must be accounted as valid.
+            Instant now = clock.instant();
+            ExecutionState<Result> executionData = step.prepareExecution();
+            executionData.markStarted(now);
+            executionData.markFinished(now, Result.PASSED);
+        } else if (step.nodeType() == NodeType.STEP) {
+            runnable.run();
         }
     }
 
