@@ -11,7 +11,7 @@ This plugin provides a set of steps for conducting performance testing using JMe
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 
@@ -1045,4 +1045,3 @@ Accepted values are:
 [1]: #data-types
 [2]: en/wakamiti/architecture#comparators
 [3]: en/wakamiti/architecture#duration
-

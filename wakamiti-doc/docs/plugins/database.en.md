@@ -15,7 +15,7 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

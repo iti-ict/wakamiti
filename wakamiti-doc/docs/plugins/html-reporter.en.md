@@ -9,7 +9,7 @@ A report generator in `HTML` format with the tests results.
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

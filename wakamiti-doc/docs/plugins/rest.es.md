@@ -333,7 +333,7 @@ Dado el servicio REST '/users`
 
 
 ### Definir identificador
-##### Deprecado
+##### Obsoleto
 ```text copy=true
 * identificad(o|a|os|as) por {text}
 ```

@@ -14,7 +14,7 @@ fixed three-level structure. Therefore, the exported Cucumber JSON file may not 
 executed test plan.
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

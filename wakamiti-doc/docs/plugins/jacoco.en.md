@@ -17,7 +17,7 @@ It does the following:
 > Otherwise, it will not be possible to generate a coverage report. 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 
@@ -189,5 +189,4 @@ jacoco:
   report:    
     name: Wakamiti coverage report
 ```
-
 
