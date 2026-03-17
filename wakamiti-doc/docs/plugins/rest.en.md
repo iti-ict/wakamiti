@@ -9,7 +9,7 @@ This plugin provides a set of steps to interact with a RESTful API.
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

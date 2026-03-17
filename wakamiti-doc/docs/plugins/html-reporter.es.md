@@ -14,10 +14,10 @@ Un generador de informes en formato `HTML` con los resultados de las pruebas.
 ---
 
 
-## Install
+## Instalación
 
 
-Include the module in the corresponding section.
+Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
 es.iti.wakamiti:html-reporter-wakamiti-plugin:2.6.0

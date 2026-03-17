@@ -14,7 +14,7 @@ validate that an application is sending mail as a result of another operation su
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

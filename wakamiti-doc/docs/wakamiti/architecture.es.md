@@ -69,8 +69,8 @@ La ruta puede contener las siguientes variables de sustitución:
 | `%ss%`     | segundos                  |
 | `%sss%`    | milisegundos (3 dígitos)  |
 | `%DATE%`   | `%YYYY%%MM%%DD%`          |
-| `%TIME%`   | `%hh%%mm%%ss%%ssss%`      |
-| `%execID%` | ID único de ejecucicón    |
+| `%TIME%`   | `%hh%%mm%%ss%%sss%`       |
+| `%execID%` | ID único de ejecución     |
 
 Ejemplo:
 ```yaml
@@ -417,7 +417,7 @@ implica la siguiente correspondencia:
 | 2          | 2,3            |
 | 3          | 4              |
 
-Esta propiedad se debe definicion en la parte de la implementación, encima del escenario en cuestión. 
+Esta propiedad se debe definir en la parte de la implementación, encima del escenario en cuestión.
 Además, el escenario debe tener un identificador unívoco.
 
 Ejemplo:
@@ -780,6 +780,192 @@ Al ejecutarse, se resolvería como:
 ```gherkin
 Entonces un usuario identificado por '4' existe en la tabla de BBDD USERS
 ```
+
+
+## Dos niveles de abstracción
+
+Wakamiti permite expresar una misma funcionalidad en **dos niveles de abstracción**. Esta separación ayuda a mantener
+una capa funcional legible para perfiles de negocio y otra capa técnica orientada a automatización.
+
+* **Nivel 0: definición**
+* **Nivel 1: implementación**
+
+La idea es separar el **qué** del **cómo**:
+
+* La **definición** describe el comportamiento funcional esperado.
+* La **implementación** describe cómo se expresa y ejecuta ese comportamiento en Wakamiti.
+
+### Cuándo usar dos niveles
+
+Usar ambos niveles es especialmente útil cuando:
+
+* el equipo funcional define escenarios de negocio, pero no quiere mantener pasos técnicos;
+* el equipo técnico necesita pasos reutilizables de bajo nivel para automatizar;
+* quieres mantener trazabilidad entre una expectativa funcional y su ejecución real.
+
+### Nivel 0: definición
+
+En el nivel de definición, los escenarios están orientados a describir el comportamiento de negocio de forma clara y
+legible. Sus pasos pueden escribirse en texto libre y no tienen por qué estar asociados a código.
+
+Este nivel está pensado para perfiles funcionales, como *product owners* o personas que conocen el comportamiento de la
+operación, pero no necesariamente los detalles técnicos de Wakamiti.
+
+### Nivel 1: implementación
+
+En el nivel de implementación, los escenarios ya utilizan pasos concretos que sí deben estar soportados por Wakamiti
+mediante código o plugins.
+
+Este nivel está orientado a quienes conocen la herramienta y necesitan automatizar o mantener la ejecución de los
+escenarios.
+
+### Relación entre ambos niveles
+
+Cuando se usan ambos niveles, un escenario de implementación puede estar asociado a un escenario de definición. Así, una
+misma funcionalidad puede expresarse en dos capas complementarias:
+
+* una capa funcional, más cercana al negocio;
+* una capa técnica, orientada a la automatización.
+
+No obstante, una implementación también puede existir sin definición asociada cuando se necesita una prueba puramente
+técnica.
+
+### Cómo se identifica cada tipo de feature o escenario
+
+Wakamiti distingue ambos niveles mediante tags:
+
+* el tag de **definición** se configura con [`wakamiti.redefinition.definitionTag`](#wakamitiredefinitiondefinitiontag).
+* el tag de **implementación** se configura con
+[`wakamiti.redefinition.implementationTag`](#wakamitiredefinitionimplementationtag).
+
+Si uno de estos tags se declara sobre una **feature**, todos sus escenarios quedan marcados con ese mismo tipo.
+
+Si un escenario no tiene ni tag de definición ni tag de implementación, Wakamiti lo considera **un escenario de
+implementación**.
+
+### Correspondencia entre definición e implementación
+
+Cuando una implementación representa la misma funcionalidad que una definición, ambos escenarios deben compartir el
+mismo identificador (tag de ID), por ejemplo:
+
+```gherkin
+@ID-ejemplo-01
+```
+
+El patrón de ese identificador se controla con [`wakamiti.idTagPattern`](#wakamitiidtagpattern).
+
+En el escenario de implementación, el mapeo entre pasos se declara con [`redefinition.stepMap`](#redefinitionstepmap):
+
+```gherkin
+# language: es
+@implementation
+Característica: Ejemplo de característica en dos niveles
+
+  @ID-ejemplo-01
+  # redefinition.stepMap: 2-1-2
+  Escenario: Ejemplo de escenario en dos niveles
+    Dado paso 1 nivel 1
+    Y paso 2 nivel 1
+    Cuando paso 3 nivel 1
+    Entonces paso 4 nivel 1
+    Y paso 5 nivel 1
+```
+
+Y su definición correspondiente podría ser:
+
+```gherkin
+# language: es
+@definition
+Característica: Ejemplo de característica en dos niveles
+
+  @ID-ejemplo-01
+  Escenario: Ejemplo de escenario en dos niveles
+    Dado paso 1 nivel 0
+    Cuando paso 2 nivel 0
+    Entonces paso 3 nivel 0
+```
+
+En este caso, el escenario de nivel 0 tiene 3 pasos, por lo que [`redefinition.stepMap`](#redefinitionstepmap) también
+tiene 3 elementos: `2-1-2`.
+
+Esto significa:
+
+* el primer paso de nivel 0 se corresponde con 2 pasos de nivel 1;
+* el segundo paso de nivel 0 se corresponde con 1 paso de nivel 1;
+* el tercer paso de nivel 0 se corresponde con 2 pasos de nivel 1.
+
+La relación entre ambos escenarios sería la siguiente:
+
+```text
+Dado paso 1 nivel 0
+  Dado paso 1 nivel 1
+  Y paso 2 nivel 1
+
+Cuando paso 2 nivel 0
+  Cuando paso 3 nivel 1
+
+Entonces paso 3 nivel 0
+  Entonces paso 4 nivel 1
+  Y paso 5 nivel 1
+```
+
+#### Otro ejemplo
+
+Supongamos ahora los siguientes escenarios de nivel 0 y nivel 1:
+
+```gherkin
+@ID-ejemplo-02
+Escenario: Ejemplo de escenario en dos niveles
+  Dado paso 1 nivel 0
+  Cuando paso 2 nivel 0
+  Entonces paso 3 nivel 0
+  Y paso 4 nivel 0
+```
+
+```gherkin
+@ID-ejemplo-02
+# redefinition.stepMap: 2-1-1-1
+Escenario: Ejemplo de escenario en dos niveles
+  Dado paso 1 nivel 1
+  Y paso 2 nivel 1
+  Cuando paso 3 nivel 1
+  Entonces paso 4 nivel 1
+  Y paso 5 nivel 1
+```
+
+Como el escenario de nivel 0 tiene 4 pasos, [`redefinition.stepMap`](#redefinitionstepmap) debe tener también 4
+elementos.
+
+La relación entre los pasos sería esta:
+
+```text
+Dado paso 1 nivel 0
+  Dado paso 1 nivel 1
+  Y paso 2 nivel 1
+
+Cuando paso 2 nivel 0
+  Cuando paso 3 nivel 1
+
+Entonces paso 3 nivel 0
+  Entonces paso 4 nivel 1
+
+Y paso 4 nivel 0
+  Y paso 5 nivel 1
+```
+
+#### Reglas de mapeo (`stepMap`)
+
+* Los pasos definidos en el bloque **Antecedentes** se añaden al principio de cada escenario. Por tanto, también deben
+  tenerse en cuenta al construir `stepMap`.
+* Si defines `stepMap`, el número de elementos debe coincidir con el número total de pasos del escenario de nivel 0,
+  incluyendo pasos heredados de **Antecedentes**.
+* Si defines `stepMap`, la suma de todos sus valores debe coincidir con el número total de pasos del escenario de nivel
+  1.
+* La relación entre pasos es **1..n**, por lo que los valores de `stepMap` deben ser siempre mayores que 0.
+* La palabra reservada al inicio de cada paso (`Dado`, `Cuando`, `Entonces`, `Y`, etc.) no afecta al funcionamiento ni a
+  la relación entre pasos en Wakamiti.
+
+
 
 
 

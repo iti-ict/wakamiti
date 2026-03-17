@@ -12,7 +12,7 @@ Qué hace:
 - Opcionalmente, genera reportes por caso de prueba en XML y/o CSV si se configuran las rutas de salida.
 - Al finalizar la ejecución, puede generar un informe HTML agregado de cobertura si se configura su ruta de salida.
 
-> **NOTE**
+> **NOTA**
 >
 > El agente JaCoCo debe estar iniciado en modo `tcpserver` y escuchando en el `host` y `port` configurados. De lo 
 > contrario no será posible volcar la cobertura. 
@@ -190,5 +190,4 @@ jacoco:
   report:    
     name: Wakamiti coverage report
 ```
-
 
