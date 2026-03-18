@@ -17,7 +17,6 @@ slug: /wakamiti/architecture
 La configuración de Wakamiti se establece mediante un fichero `yaml` ubicado en el directorio de pruebas. Por defecto, 
 Wakamiti buscará el fichero con el nombre `wakamiti.yaml`.
 
-
 ### `wakamiti.resourceTypes`
 - Tipo: `string` *obligatorio*
 
@@ -429,6 +428,120 @@ Feature: ...
 # redefinition.stepMap: 2-1-2  
 @ID-43242   
 Scenario: ...
+```
+
+
+
+## Wakamiti CLI
+
+Sintaxis general:
+```shell copy=true
+wakamiti [opciones]
+```
+
+### `-h`, `--help`
+- Tipo: `boolean` (flag)
+
+Muestra la ayuda del comando y finaliza sin ejecutar pruebas.
+
+Ejemplo:
+```shell copy=true
+wakamiti -h
+```
+
+
+### `-d`, `--debug`
+- Tipo: `boolean` (flag)
+
+Activa trazas de depuración. Si no se ha definido [`wakamiti.log.level`](#wakamitiloglevel), el lanzador usa `debug`.
+
+Ejemplo:
+```shell copy=true
+wakamiti -d
+```
+
+
+### `-c`, `--clean`
+- Tipo: `boolean` (flag)
+
+Limpia la caché local de artefactos antes de descargar módulos.
+
+Ejemplo:
+```shell copy=true
+wakamiti -c
+```
+
+
+### `-f`, `--file`
+- Tipo: `file`
+- Por defecto: `wakamiti.yaml`
+
+Indica el fichero de configuración a cargar (ver [Configuración global](#configuración-global)).
+
+Ejemplo:
+```shell copy=true
+wakamiti -f wakamiti.ci.yaml
+```
+
+
+### `-m`, `--modules`
+- Tipo: `string[]` (separados por coma)
+
+Añade módulos Maven con formato `<groupId>:<artifactId>:<version>` y los concatena con
+[`wakamiti.launcher.modules`](#wakamitilaunchermodules).
+
+Ejemplo:
+```shell copy=true
+wakamiti -m es.iti.wakamiti:rest-wakamiti-plugin:3.0.0,es.iti.wakamiti:html-report-wakamiti-plugin:3.0.0
+```
+
+
+### `-n`, `--dry-run`
+- Tipo: `boolean` (flag)
+
+Activa la ejecución en seco. Corresponde a [`wakamiti.dryRun`](#wakamitidryrun), y su valor final se fuerza desde CLI
+(`true` si se pasa el flag, `false` si no se pasa).
+
+Ejemplo:
+```shell copy=true
+wakamiti -n
+```
+
+
+### `-K clave=valor`
+- Tipo: `key=value` (repetible)
+
+Sobrescribe propiedades de `wakamiti.*` por línea de comandos. Referencia de configuración:
+[`wakamiti.tagFilter`](#wakamititagfilter), [`wakamiti.outputFilePath`](#wakamitioutputfilepath),
+[`wakamiti.log.level`](#wakamitiloglevel).
+
+Ejemplo:
+```shell copy=true
+wakamiti -K tagFilter="@smoke and not @ignore"
+```
+
+
+### `-M clave=valor`
+- Tipo: `key=value` (repetible)
+
+Sobrescribe propiedades de `mavenFetcher.*` por línea de comandos. Referencia de configuración:
+[`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories),
+[`mavenFetcher.localRepository`](#mavenfetcherlocalrepository).
+
+Ejemplo:
+```shell copy=true
+wakamiti -M remoteRepositories="https://repo.maven.apache.org/maven2"
+```
+
+
+### `-l`, `--list`
+- Tipo: `boolean` (flag)
+
+Muestra las contribuciones disponibles cargadas para la ejecución.
+
+Ejemplo:
+```shell copy=true
+wakamiti -l
 ```
 
 

@@ -1,6 +1,6 @@
 ---
 title: Usage
-date: 2022-09-20
+date: 2026-03-18
 slug: /en/setup/usage
 ---
 
@@ -39,6 +39,32 @@ Linux:
 ```shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
+
+## `wakamiti-launcher` CLI usage
+
+If you have the `wakamiti` command installed, you can run it directly with CLI options:
+
+```shell copy=true
+wakamiti [options]
+```
+
+Common examples:
+
+```shell copy=true
+# Run with a specific configuration file
+wakamiti -f wakamiti.ci.yaml
+
+# Add modules from CLI (comma-separated)
+wakamiti -m es.iti.wakamiti:rest-wakamiti-plugin:3.0.0,es.iti.wakamiti:html-report-wakamiti-plugin:3.0.0
+
+# Override configuration properties without editing yaml
+wakamiti -K tagFilter="@smoke and not @ignore" -K outputFilePath=results/wakamiti.json
+
+# Configure Maven repositories inline
+wakamiti -M remoteRepositories="https://repo.maven.apache.org/maven2;file:///C:/Users/user/.m2/repository"
+
+For the full CLI option catalog and configuration mapping, see:
+[Architecture](en/wakamiti/architecture).
 
 ## Understand the result files
 
