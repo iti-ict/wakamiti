@@ -919,7 +919,7 @@ be written in free text and do not need to be associated with code.
 This level is intended for functional profiles, such as *product owners* or people who know operation behavior, but not
 necessarily the technical details of Wakamiti.
 
-## Level 1: implementation
+### Level 1: implementation
 
 At implementation level, scenarios already use concrete steps that must be supported by Wakamiti through code or
 plugins.
@@ -948,7 +948,7 @@ If one of these tags is declared on a **feature**, all its scenarios are marked 
 
 If a scenario has neither definition tag nor implementation tag, Wakamiti considers it an **implementation scenario**.
 
-## Definition-to-implementation correspondence
+### Definition-to-implementation correspondence
 
 When an implementation represents the same functionality as a definition, both scenarios must share the same identifier
 (ID tag), for example:
@@ -1013,7 +1013,7 @@ Then level 0 step 3
   And level 1 step 5
 ```
 
-### Another example
+#### Another example
 
 Now suppose the following level 0 and level 1 scenarios:
 
@@ -1056,7 +1056,7 @@ And level 0 step 4
   And level 1 step 5
 ```
 
-### Mapping rules (`stepMap`)
+#### Mapping rules (`stepMap`)
 
 * Steps defined in the **Background** block are added at the beginning of each scenario. Therefore, they must also be
   considered when building `stepMap`.
