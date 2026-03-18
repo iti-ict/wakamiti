@@ -4,7 +4,7 @@
 module.exports = (options) => {
     return (node) => {
         const result = require('mdast-util-toc')(node, Object.assign({},
-            {heading: "Table of content|Tabla de contenido", maxDepth: 3}
+            {heading: "(Table of content|Tabla de contenido)s?", maxDepth: 3}
         ))
         if (result.endIndex === null || result.index === null || result.index === -1 || !result.map) {
             return
