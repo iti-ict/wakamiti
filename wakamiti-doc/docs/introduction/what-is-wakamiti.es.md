@@ -6,8 +6,8 @@ slug: /introduction/what-is-wakamiti
 
 
 > **Conocimiento básico** <br />
-> Esta guía asume que conoce los conceptos básicos de [Cucumber](https://cucumber.io/docs/guides/overview/), 
-> [Gherkin](https://cucumber.io/docs/gherkin/) y metodología [Behaviour-Driven Development](https://cucumber.io/docs/bdd/).
+> Esta guía asume que conoces los conceptos básicos de [Cucumber](https://cucumber.io/docs/guides/overview/),
+> [Gherkin](https://cucumber.io/docs/gherkin/) y la metodología [Behaviour-Driven Development](https://cucumber.io/docs/bdd/).
 
 
 **Wakamiti** es una herramienta de pruebas automáticas inspirada en Cucumber, escrita en Java y enfocada a pruebas de 
@@ -19,13 +19,13 @@ están vinculados a un código reutilizable de propósito común proporcionado p
 
 Por lo tanto, Wakamiti resulta ser una herramienta conveniente si el objetivo es probar un sistema a través de accesos 
 estandarizados como servicios web REST o conexión JDBC, que tienden a ser un gran porcentaje de las pruebas escritas 
-para la mayoría de las aplicaciones. Además, no es necesario escribir ningún código de prueba, por lo que incluso los 
-no-programadores pueden definir y ejecutar sus propias pruebas.
+para la mayoría de las aplicaciones. Además, no es necesario escribir ningún código de prueba, por lo que incluso las
+personas no programadoras pueden definir y ejecutar sus propias pruebas.
 
 Otras características proporcionadas por Wakamiti son:
 
-- **Gherkin de dos capas**: puedes hacer uso de la gramática Gherkin en dos niveles de abstracción. Uno dirigido a la 
-comunicación con el cliente y otro dirigido a los detalles del sistema.
+- **Gherkin de dos capas**: puedes hacer uso de la gramática Gherkin en dos niveles de abstracción. Uno dirigido a la
+  comunicación con el cliente y otro dirigido a los detalles del sistema. [Ver más](wakamiti/architecture#dos-niveles-de-abstracción)
 - **Totalmente localizable**: puedes usar tu propio idioma siempre que proporcione a Wakamiti un archivo de traducción.
 - **Fácilmente extensible**: escribe tus propios plugins para cualquier punto de extensión (pasos, generador de informes, 
 analizadores de idioma, etc) y compártelos con la comunidad.
@@ -34,5 +34,5 @@ Maven o directamente como un comando de consola.
 
 
 > **RECUERDA** <br />
-> Wakamiti es una herramienta, no un *framework de test*. Úsalo cuando se adapte a las circunstancias. Tampoco es un 
+> Wakamiti es una herramienta, no un *framework de pruebas*. Úsalo cuando se adapte a las circunstancias. Tampoco es un
 > sustituto de Cucumber: según tus necesidades, ¡puedes usar *ambos*! 

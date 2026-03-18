@@ -9,7 +9,7 @@ This plugin provides a `groovy` class compiler and steps for `groovy` code execu
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 
@@ -47,7 +47,7 @@ We create a file called `custom-steps.properties` where we define a new step:
 custom.step=the user's password {name:text} is retrieved
 ```
 
-We create a file called `CustomSteps.goovy` where we develop the new step:
+We create a file called `CustomSteps.groovy` where we develop the new step:
 ```groovy copy=true
 package example
 

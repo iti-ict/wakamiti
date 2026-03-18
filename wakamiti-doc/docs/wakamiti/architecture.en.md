@@ -6,7 +6,7 @@ slug: /en/wakamiti/architecture
 
 
 ---
-## Table of content
+## Table of contents
 
 ---
 
@@ -59,16 +59,16 @@ The output path may contain the following replacement placeholders:
 
 | placeholder | replacement             |
 |-------------|-------------------------|
-| `%YYYY%`    | year (4 dígits)         |
-| `%YY%`      | year (2 dígits)         |
+| `%YYYY%`    | year (4 digits)         |
+| `%YY%`      | year (2 digits)         |
 | `%MM%`      | month                   |
 | `%DD%`      | day of month            |
 | `%hh%`      | hour (24H)              |
 | `%mm%`      | minutes                 |
 | `%ss%`      | seconds                 |
-| `%sss%`     | milliseconds (3 dígits) |
+| `%sss%`     | milliseconds (3 digits) |
 | `%DATE%`    | `%YYYY%%MM%%DD%`        |
-| `%TIME%`    | `%hh%%mm%%ss%%ssss%`    |
+| `%TIME%`    | `%hh%%mm%%ss%%sss%`     |
 | `%execID%`  | unique execution        |
 
 Example:
@@ -429,6 +429,119 @@ Scenario: ...
 ```
 
 
+## Wakamiti CLI
+
+General syntax:
+```shell copy=true
+wakamiti [options]
+```
+
+### `-h`, `--help`
+- Type: `boolean` (flag)
+
+Shows command help and exits without running tests.
+
+Example:
+```shell copy=true
+wakamiti -h
+```
+
+
+### `-d`, `--debug`
+- Type: `boolean` (flag)
+
+Enables debug traces. If [`wakamiti.log.level`](#wakamitiloglevel) is not set, the launcher uses `debug`.
+
+Example:
+```shell copy=true
+wakamiti -d
+```
+
+
+### `-c`, `--clean`
+- Type: `boolean` (flag)
+
+Cleans local artifact cache before downloading modules.
+
+Example:
+```shell copy=true
+wakamiti -c
+```
+
+
+### `-f`, `--file`
+- Type: `file`
+- Default: `wakamiti.yaml`
+
+Specifies the configuration file to load (see [Global options](#global-options)).
+
+Example:
+```shell copy=true
+wakamiti -f wakamiti.ci.yaml
+```
+
+
+### `-m`, `--modules`
+- Type: `string[]` (comma-separated)
+
+Adds Maven modules in `<groupId>:<artifactId>:<version>` format and concatenates them with
+[`wakamiti.launcher.modules`](#wakamitilaunchermodules).
+
+Example:
+```shell copy=true
+wakamiti -m es.iti.wakamiti:rest-wakamiti-plugin:3.0.0,es.iti.wakamiti:html-report-wakamiti-plugin:3.0.0
+```
+
+
+### `-n`, `--dry-run`
+- Type: `boolean` (flag)
+
+Enables dry-run execution. It maps to [`wakamiti.dryRun`](#wakamitidryrun), and its final value is forced by CLI
+(`true` when flag is present, `false` otherwise).
+
+Example:
+```shell copy=true
+wakamiti -n
+```
+
+
+### `-K key=value`
+- Type: `key=value` (repeatable)
+
+Overrides `wakamiti.*` properties from the command line. Configuration references:
+[`wakamiti.tagFilter`](#wakamititagfilter), [`wakamiti.outputFilePath`](#wakamitioutputfilepath),
+[`wakamiti.log.level`](#wakamitiloglevel).
+
+Example:
+```shell copy=true
+wakamiti -K tagFilter="@smoke and not @ignore" -K outputFilePath=results/wakamiti.json
+```
+
+
+### `-M key=value`
+- Type: `key=value` (repeatable)
+
+Overrides `mavenFetcher.*` properties from the command line. Configuration references:
+[`mavenFetcher.remoteRepositories`](#mavenfetcherremoterepositories),
+[`mavenFetcher.localRepository`](#mavenfetcherlocalrepository).
+
+Example:
+```shell copy=true
+wakamiti -M remoteRepositories="https://repo.maven.apache.org/maven2"
+```
+
+
+### `-l`, `--list`
+- Type: `boolean` (flag)
+
+Shows available contributions loaded for execution.
+
+Example:
+```shell copy=true
+wakamiti -l
+```
+
+
 
 ## Data types
 
@@ -436,7 +549,7 @@ Scenario: ...
 ### `text`
 Any text enclosed in quotes with `''`.
 
-Example: `'texto de ejemplo'`.
+Example: `'sample text'`.
 
 
 ### `word`
@@ -775,6 +888,184 @@ When executed, it would resolve as:
 ```gherkin
 Then a user identified by '4' exists in the database table USERS
 ```
+
+
+## Two abstraction levels
+
+Wakamiti allows expressing the same functionality at **two abstraction levels**. This separation helps keep a
+functional layer readable for business profiles and a technical layer oriented to automation.
+
+* **Level 0: definition**
+* **Level 1: implementation**
+
+The idea is to separate **what** from **how**:
+
+* **Definition** describes the expected functional behavior.
+* **Implementation** describes how that behavior is expressed and executed in Wakamiti.
+
+## When to use two levels
+
+Using both levels is especially useful when:
+
+* the functional team defines business scenarios but does not want to maintain technical steps;
+* the technical team needs reusable low-level steps for automation;
+* you want to keep traceability between a functional expectation and its real execution.
+
+## Level 0: definition
+
+At definition level, scenarios are focused on describing business behavior in a clear and readable way. Their steps can
+be written in free text and do not need to be associated with code.
+
+This level is intended for functional profiles, such as *product owners* or people who know operation behavior, but not
+necessarily the technical details of Wakamiti.
+
+## Level 1: implementation
+
+At implementation level, scenarios already use concrete steps that must be supported by Wakamiti through code or
+plugins.
+
+This level is intended for people who know the tool and need to automate or maintain scenario execution.
+
+## Relationship between both levels
+
+When both levels are used, an implementation scenario can be associated with a definition scenario. In this way, the
+same functionality can be expressed in two complementary layers:
+
+* a functional layer, closer to business;
+* a technical layer, oriented to automation.
+
+However, an implementation can also exist without an associated definition when a purely technical test is needed.
+
+## How each feature or scenario type is identified
+
+Wakamiti distinguishes both levels through tags:
+
+* the **definition** tag is configured with [`wakamiti.redefinition.definitionTag`](#wakamitiredefinitiondefinitiontag).
+* the **implementation** tag is configured with
+  [`wakamiti.redefinition.implementationTag`](#wakamitiredefinitionimplementationtag).
+
+If one of these tags is declared on a **feature**, all its scenarios are marked with that same type.
+
+If a scenario has neither definition tag nor implementation tag, Wakamiti considers it an **implementation scenario**.
+
+## Definition-to-implementation correspondence
+
+When an implementation represents the same functionality as a definition, both scenarios must share the same identifier
+(ID tag), for example:
+
+```gherkin
+@ID-example-01
+```
+
+The pattern of that identifier is controlled with [`wakamiti.idTagPattern`](#wakamitiidtagpattern).
+
+In the implementation scenario, the mapping between steps is declared with
+[`redefinition.stepMap`](#redefinitionstepmap):
+
+```gherkin
+@implementation
+Feature: Two-level feature example
+
+  @ID-example-01
+  # redefinition.stepMap: 2-1-2
+  Scenario: Two-level scenario example
+    Given level 1 step 1
+    And level 1 step 2
+    When level 1 step 3
+    Then level 1 step 4
+    And level 1 step 5
+```
+
+Its corresponding definition could be:
+
+```gherkin
+@definition
+Feature: Two-level feature example
+
+  @ID-example-01
+  Scenario: Two-level scenario example
+    Given level 0 step 1
+    When level 0 step 2
+    Then level 0 step 3
+```
+
+In this case, the level 0 scenario has 3 steps, so [`redefinition.stepMap`](#redefinitionstepmap) also has 3 elements:
+`2-1-2`.
+
+This means:
+
+* the first level 0 step corresponds to 2 level 1 steps;
+* the second level 0 step corresponds to 1 level 1 step;
+* the third level 0 step corresponds to 2 level 1 steps.
+
+The relationship between both scenarios would be:
+
+```text
+Given level 0 step 1
+  Given level 1 step 1
+  And level 1 step 2
+
+When level 0 step 2
+  When level 1 step 3
+
+Then level 0 step 3
+  Then level 1 step 4
+  And level 1 step 5
+```
+
+### Another example
+
+Now suppose the following level 0 and level 1 scenarios:
+
+```gherkin
+@ID-example-02
+Scenario: Two-level scenario example
+  Given level 0 step 1
+  When level 0 step 2
+  Then level 0 step 3
+  And level 0 step 4
+```
+
+```gherkin
+@ID-example-02
+# redefinition.stepMap: 2-1-1-1
+Scenario: Two-level scenario example
+  Given level 1 step 1
+  And level 1 step 2
+  When level 1 step 3
+  Then level 1 step 4
+  And level 1 step 5
+```
+
+Since the level 0 scenario has 4 steps, [`redefinition.stepMap`](#redefinitionstepmap) must also have 4 elements.
+
+The relationship between steps would be:
+
+```text
+Given level 0 step 1
+  Given level 1 step 1
+  And level 1 step 2
+
+When level 0 step 2
+  When level 1 step 3
+
+Then level 0 step 3
+  Then level 1 step 4
+
+And level 0 step 4
+  And level 1 step 5
+```
+
+### Mapping rules (`stepMap`)
+
+* Steps defined in the **Background** block are added at the beginning of each scenario. Therefore, they must also be
+  considered when building `stepMap`.
+* If you define `stepMap`, the number of elements must match the total number of steps in the level 0 scenario,
+  including inherited **Background** steps.
+* If you define `stepMap`, the sum of all its values must match the total number of steps in the level 1 scenario.
+* Since the relation between steps is **1..n**, `stepMap` values must always be greater than 0.
+* The reserved keyword at the beginning of each step (`Given`, `When`, `Then`, `And`, etc.) does not affect
+  functionality or step relation in Wakamiti.
 
 
 

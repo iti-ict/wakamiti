@@ -8,7 +8,7 @@ slug: /introduction/getting-started
 En este tutorial rápido aprenderás a:
 - Definir la configuración básica.
 - Definir un escenario.
-- Lanzar wakamiti.
+- Lanzar Wakamiti.
 - Conocer el flujo de trabajo básico.
 
 Ten en cuenta que este tutorial asume que tienes:
@@ -33,8 +33,8 @@ docker compose up -d
 ```
 
 ### 1. Configurar Wakamiti
-La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen los 
-tests (por ejemplo, en el mismo con el código fuente del tutorial):
+La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen las
+pruebas (por ejemplo, el mismo directorio en el que está el código fuente del tutorial):
 ```diff
   tutorial
   ├── application-wakamiti.properties
@@ -42,7 +42,7 @@ tests (por ejemplo, en el mismo con el código fuente del tutorial):
 + └── wakamiti.yaml
 ```
 
-Esta es la configuración básica para poder ejecutar los tests:
+Esta es la configuración básica para poder ejecutar las pruebas:
 ```yml copy=true
 wakamiti:
   resourceTypes:
@@ -69,7 +69,7 @@ wakamiti:
 > También puedes consultar otras opciones de [configuración global](wakamiti/architecture#configuración-global).
 
 
-### 2. Definir escenario
+### 2. Definir un escenario
 Cuando hacemos *Behaviour-Driven Development* utilizamos ejemplos concretos para especificar lo que queremos que haga el 
 software. Los escenarios se escriben antes que el código de producción. Comienzan su vida como una especificación 
 ejecutable. Cuando llega el código a producción, los escenarios adquieren un papel como documentación viva y pruebas 
@@ -115,7 +115,7 @@ Wakamiti ejecutará.
 
 
 ### 3. Lanzar Wakamiti
-Los test se ejecutan con el terminal, desde el directorio de trabajo (el que contiene las características de Wakamiti y
+Las pruebas se ejecutan con el terminal, desde el directorio de trabajo (el que contiene las características de Wakamiti y
 el fichero `.feature` que hemos creado), con el siguiente comando:
 
 * Windows:
@@ -126,27 +126,27 @@ docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```Shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
-Con este comando, se lanzarán todos los tests que haya en el directorio, 
-utilizando la última versión de wakamiti. Para trabajar con una versión 
-específica, se debe de indicar en el comando docker: `wakamiti/wakamiti:version`, 
-se pueden ver las versiones disponibles en el repositorio de 
-[dockerhub de Wakamiti](https://hub.docker.com/r/wakamiti/wakamiti/tags).
+Con este comando, se lanzarán todas las pruebas que haya en el directorio,
+utilizando la última versión de Wakamiti. Para trabajar con una versión
+específica, se debe indicar en el comando Docker: `wakamiti/wakamiti:version`.
+Las versiones disponibles se pueden consultar en el repositorio de
+[Docker Hub de Wakamiti](https://hub.docker.com/r/wakamiti/wakamiti/tags).
 
 
-### 4.Informes
-Una vez ejecutados los tests, se generarán los resultados en dos formatos: `wakamiti.json` y `wakamiti.html`.
+### 4. Informes
+Una vez ejecutadas las pruebas, se generarán los resultados en dos formatos: `wakamiti.json` y `wakamiti.html`.
 
 Los estados que existen actualmente en Wakamiti son:
 
-- <span style="color:#5fc95f">**PASSED**</span>: el caso de test está correcto, se recibe del sistema el mismo resultado 
+- <span style="color:#5fc95f">**PASSED**</span>: el caso de prueba es correcto; se recibe del sistema el mismo resultado
   que se espera.
-- <span style="color:#4fc3f7">**NOT IMPLEMENTED**</span>: existe el caso de test, pero no están definidos sus pasos.
-- <span style="color:#9e9e9e">**SKIPPED**</span>: no se ha ejecutado el caso de test.
+- <span style="color:#4fc3f7">**NOT IMPLEMENTED**</span>: existe el caso de prueba, pero no están definidos sus pasos.
+- <span style="color:#9e9e9e">**SKIPPED**</span>: no se ha ejecutado el caso de prueba.
 - <span style="color:#ffc107">**UNDEFINED**</span>: no existe el paso en Wakamiti.
 - <span style="color:#ff7b7e">**FAILED**</span>: hay un error de comprobación, no coincide lo que se espera de lo que 
   devuelve el sistema.
-- <span style="color:#ff0000">**ERROR**</span>: hay un error no esperado en el sistema (error de conexión, error en base de 
-  datos, error time out...).
+- <span style="color:#ff0000">**ERROR**</span>: hay un error no esperado en el sistema (error de conexión, error en base de
+  datos, error de timeout...).
 
 ### ¡Aquí la demo!
 
