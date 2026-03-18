@@ -12,7 +12,7 @@ assert JSON messages, purge queues, and validate that no messages are received.
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

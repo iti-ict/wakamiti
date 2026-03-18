@@ -695,7 +695,7 @@ Se pueden definir varias llamadas en un escenario.
 #### Parámetros:
 | Nombre    | Wakamiti type      | Descripción                                      |
 |-----------|--------------------|--------------------------------------------------|
-| `method`  | `word` *requerido* | El método de la llamda (`GET`, `PUT`, `POST`...) |
+| `method`  | `word` *requerido* | El método de la llamada (`GET`, `PUT`, `POST`...) |
 | `service` | `text` *requerido* | La ruta del servicio                             |
 
 #### Ejemplos:
@@ -718,7 +718,7 @@ Define el cuerpo del mensaje de la petición en curso.
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda POST al servicio '/users'
+Dado una llamada POST al servicio '/users'
 * con los siguientes datos:
   """json
   {
@@ -744,12 +744,12 @@ Define el cuerpo del mensaje de la petición en curso a partir del contenido del
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda POST al servicio '/users'
+Dado una llamada POST al servicio '/users'
 * con los datos del fichero 'data/user123.json'
 ```
 
 
-### Definir perámetros o cabeceras de la petición
+### Definir parámetros o cabeceras de la petición
 ```text copy=true
 con (el|la) (parámetro|cabecera|parámetro de formulario) {name} con el valor {value}
 ```
@@ -763,20 +763,20 @@ Define una cabecera, parámetro o parámetro de formulario de la petición en cu
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con el parámetro 'id' con el valor '13'
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con el parámetro de formulario 'id' con el valor '13'
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con la cabecera 'Keep-Alive' con el valor '1200'
 ```
 
 
-### Definir perámetros o cabeceras de la petición (tabla)
+### Definir parámetros o cabeceras de la petición (tabla)
 ```text copy=true
 con (los|las) siguientes (parámetros|cabeceras|parámetros de formulario):
     {table}
@@ -790,21 +790,21 @@ Define múltiples cabeceras, parámetros o parámetros de formulario de la petic
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con los siguientes parámetros:
   | Nombre | valor    |
   | id     | 13       |
   | city   | Valencia |
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con los siguientes parámetros de formulario:
 | Nombre | valor    |
 | id     | 13       |
 | city   | Valencia |
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con las siguientes cabeceras:
   | Nombre     | Valor    |
   | Age        | 3600     |
@@ -825,7 +825,7 @@ Define un fichero adjunto de la petición en curso.
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda POST al servicio '/users'
+Dado una llamada POST al servicio '/users'
 * con el fichero adjunto 'data/data.txt' con nombre 'file'
 ```
 
@@ -855,17 +855,17 @@ una ruta json o límites definidos.
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con la expresión regular '"id":\s*"([^"]+)"' extraída en la variable 'id'
 Y una llamada GET al servicio '/users/{id}'
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con el valor json '[0].id' extraído en la variable 'id'
 Y una llamada GET al servicio '/users/{id}'
 ```
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 * con el fragmento entre '"id":"' y '"' extraído en la variable 'id'
 Y una llamada GET al servicio '/users/{id}'
 ```
@@ -884,7 +884,7 @@ Ejecuta un grupo de hilos el número de veces indicado.
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 Cuando se ejecuta 1 hilo
 ```
 
@@ -904,7 +904,7 @@ Ejecuta un grupo de hilos el número de veces indicado, en el tiempo indicado y 
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 Cuando se ejecutan 10 hilos en 10 segundos manteniendo 30 segundos
 ```
 
@@ -927,7 +927,7 @@ Ejecuta un grupo de hilos el número de veces indicado, en el tiempo indicado, e
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 Cuando se ejecutan 10 hilos en 10 segundos 3 veces
 ```
 
@@ -952,7 +952,7 @@ indicado, el número indicado de veces.
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 Cuando se ejecutan 10 hilos en 10 segundos cada 10 segundos 3 veces
 ```
 
@@ -977,7 +977,7 @@ Ejecuta un grupo de hilos en los tramos indicados, incluyendo:
 
 #### Ejemplos:
 ```gherkin
-Dado una llamda GET al servicio '/users'
+Dado una llamada GET al servicio '/users'
 Cuando se ejecuta(n) (el|los) siguiente(s) tramo(s):
   | threads | ramp        | hold        |
   | 10      | 10 segundos | 0 segundos  |

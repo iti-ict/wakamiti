@@ -17,7 +17,7 @@ A running Appium server and an emulated virtual device are required to use this 
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 

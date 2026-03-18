@@ -4,8 +4,8 @@ date: 2022-09-20
 slug: /en/plugins
 ---
 
-Wakamiti does not have defined steps on its own, but they are provided by different plugins. Currently, the following 
-exist, but you can also develop your own plugins!
+Wakamiti does not include built-in steps; they are provided through plugins. The following plugins are currently
+available, and you can also develop your own!
 
 - [REST steps](en/plugins/rest)
 - [Database steps](en/plugins/database)
@@ -20,4 +20,4 @@ exist, but you can also develop your own plugins!
 - [JMeter steps](en/plugins/jmeter)
 - [Groovy](en/plugins/groovy)
 - [Modbus steps](en/plugins/modbus)
-- [Jacoco report](en/plugins/jacoco)
+- [JaCoCo report](en/plugins/jacoco)

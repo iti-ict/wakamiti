@@ -47,7 +47,7 @@ Creamos un fichero llamado `custom-steps_es.properties` donde definimos un nuevo
 custom.step=se recupera la contraseña del usuario {name:text}
 ```
 
-Creamos un fichero llamado `CustomSteps.goovy` donde desarrollamos el nuevo paso:
+Creamos un fichero llamado `CustomSteps.groovy` donde desarrollamos el nuevo paso:
 ```groovy copy=true
 package example
 

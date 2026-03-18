@@ -12,7 +12,7 @@ it reacts to the events of type `STANDARD_OUTPUT_FILE_WRITTEN`, `TEST_CASE_OUTPU
 
 
 ---
-## Tabla de contenido
+## Table of contents
 
 ---
 
@@ -122,7 +122,7 @@ fileUploader:
 ### `fileUploader.identity`
 - Type: `file` 
 
-Path of the identity file used to authentication. 
+Path of the identity file used for authentication.
 
 Example:
 ```yaml
