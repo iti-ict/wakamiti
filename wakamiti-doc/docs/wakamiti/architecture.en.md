@@ -903,7 +903,7 @@ The idea is to separate **what** from **how**:
 * **Definition** describes the expected functional behavior.
 * **Implementation** describes how that behavior is expressed and executed in Wakamiti.
 
-## When to use two levels
+### When to use two levels
 
 Using both levels is especially useful when:
 
@@ -911,7 +911,7 @@ Using both levels is especially useful when:
 * the technical team needs reusable low-level steps for automation;
 * you want to keep traceability between a functional expectation and its real execution.
 
-## Level 0: definition
+### Level 0: definition
 
 At definition level, scenarios are focused on describing business behavior in a clear and readable way. Their steps can
 be written in free text and do not need to be associated with code.
@@ -926,7 +926,7 @@ plugins.
 
 This level is intended for people who know the tool and need to automate or maintain scenario execution.
 
-## Relationship between both levels
+### Relationship between both levels
 
 When both levels are used, an implementation scenario can be associated with a definition scenario. In this way, the
 same functionality can be expressed in two complementary layers:
@@ -936,7 +936,7 @@ same functionality can be expressed in two complementary layers:
 
 However, an implementation can also exist without an associated definition when a purely technical test is needed.
 
-## How each feature or scenario type is identified
+### How each feature or scenario type is identified
 
 Wakamiti distinguishes both levels through tags:
 
