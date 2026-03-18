@@ -40,6 +40,32 @@ Linux:
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 
+## Uso del CLI `wakamiti-launcher`
+
+Si tienes instalado el comando `wakamiti`, puedes ejecutarlo directamente con opciones CLI:
+
+```shell copy=true
+wakamiti [opciones]
+```
+
+Ejemplos habituales:
+
+```shell copy=true
+# Ejecutar usando un fichero de configuración concreto
+wakamiti -f wakamiti.ci.yaml
+
+# Añadir módulos desde CLI (separados por coma)
+wakamiti -m es.iti.wakamiti:rest-wakamiti-plugin:3.0.0,es.iti.wakamiti:html-report-wakamiti-plugin:3.0.0
+
+# Sobrescribir propiedades de configuración sin tocar el yaml
+wakamiti -K tagFilter="@smoke and not @ignore" -K outputFilePath=results/wakamiti.json
+
+# Configurar repositorios Maven en línea
+wakamiti -M remoteRepositories="https://repo.maven.apache.org/maven2;file:///C:/Users/usuario/.m2/repository"
+
+Para ver el catálogo completo de opciones CLI y su correspondencia con configuración:
+[Arquitectura](wakamiti/architecture).
+
 ## Entender los ficheros de resultado
 
 - `wakamiti.json`: resultado de ejecución en formato legible por máquinas, útil para automatización.
