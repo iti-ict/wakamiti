@@ -1072,8 +1072,7 @@ Y paso 4 nivel 0
   tenerse en cuenta al construir `stepMap`.
 * Si defines `stepMap`, el número de elementos debe coincidir con el número total de pasos del escenario de nivel 0,
   incluyendo pasos heredados de **Antecedentes**.
-* Si defines `stepMap`, la suma de todos sus valores debe coincidir con el número total de pasos del escenario de nivel
-  1.
+* Si defines `stepMap`, la suma de todos sus valores debe coincidir con el número total de pasos del escenario de nivel 1.
 * La relación entre pasos es **1..n**, por lo que los valores de `stepMap` deben ser siempre mayores que 0.
 * La palabra reservada al inicio de cada paso (`Dado`, `Cuando`, `Entonces`, `Y`, etc.) no afecta al funcionamiento ni a
   la relación entre pasos en Wakamiti.
