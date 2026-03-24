@@ -1068,8 +1068,7 @@ Y paso 4 nivel 0
 
 #### Reglas de mapeo (`stepMap`)
 
-* Los pasos definidos en el bloque **Antecedentes** se añaden al principio de cada escenario. Por tanto, también deben
-  tenerse en cuenta al construir `stepMap`.
+* Los pasos definidos en el bloque **Antecedentes** NO deben tenerse en cuenta al construir `stepMap`.
 * Si defines `stepMap`, el número de elementos debe coincidir con el número total de pasos del escenario de nivel 0,
   incluyendo pasos heredados de **Antecedentes**.
 * Si defines `stepMap`, la suma de todos sus valores debe coincidir con el número total de pasos del escenario de nivel 1.

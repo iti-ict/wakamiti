@@ -1058,8 +1058,7 @@ And level 0 step 4
 
 #### Mapping rules (`stepMap`)
 
-* Steps defined in the **Background** block are added at the beginning of each scenario. Therefore, they must also be
-  considered when building `stepMap`.
+* Steps defined in the **Background** block must not be considered when building `stepMap`.
 * If you define `stepMap`, the number of elements must match the total number of steps in the level 0 scenario,
   including inherited **Background** steps.
 * If you define `stepMap`, the sum of all its values must match the total number of steps in the level 1 scenario.
