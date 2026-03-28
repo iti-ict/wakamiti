@@ -44,6 +44,11 @@
               "depth": 2
             },
             {
+              "value": "I/O files steps",
+              "anchor": "/files",
+              "depth": 2
+            },
+            {
               "value": "HTML reporter",
               "anchor": "/html-reporter",
               "depth": 2
