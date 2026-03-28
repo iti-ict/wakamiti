@@ -7,11 +7,10 @@ test plan built according to the received configuration. In order to do this, cr
 Java class annotated with `@RunWith` in order to use the Wakamiti runner instead of the by-default 
 JUnit runner.
 
-Also, you should provide a configuration using the annotation `@Configuration` (see the Wakamiti tool 
-`Configurer` for further explanation of this mechanism).   
+Also, you should provide a configuration using the annotation `@AnnotatedConfiguration`.   
   
 ```java
-@Configurator(properties = {
+@AnnotatedConfiguration({
    @Property(key="resourceTypes",value="gherkin"),
    @Property(key="resourcePath", value="src/test/resources/features"),
    @Property(key="outputFilePath", value="target/wakamiti.json"),
@@ -27,7 +26,7 @@ example would be equivalent to the one shown above.
 
 ### WakamitiTestPlan.java
 ```java
-@Configurator(path = "classpath:wakamiti.yaml", pathPrefix = "wakamiti")
+@AnnotatedConfiguration(path = "classpath:wakamiti.yaml", pathPrefix = "wakamiti")
 @RunWith(WakamitiJUnitRunner.class)
 public class WakamitiTestPlan {
     
@@ -71,6 +70,44 @@ but keep it disabled for normal executions.
 | Key | Accepted values | Default value | Comments
 |---|---|---|---
 |`junit.treatStepsAsTests`|`true`,`false`|`false`| When enabled, any step will be notified to JUnit as an individual test case 
+
+## Profile-based execution
+
+You can associate a JUnit class with one or more execution profiles:
+
+```java
+@Profile("A")
+@RunWith(WakamitiJUnitRunner.class)
+@AnnotatedConfiguration(path = "classpath:wakamiti-a.yaml", pathPrefix = "wakamiti")
+public class WakamitiProfileATest {}
+```
+
+```java
+@Profile({"B", "B-legacy"})
+@RunWith(WakamitiJUnitRunner.class)
+@AnnotatedConfiguration(path = "classpath:wakamiti-b.yaml", pathPrefix = "wakamiti")
+public class WakamitiProfileBTest {}
+```
+
+Active profile system properties:
+
+- `wakamiti.junit.profile` (preferred)
+- `wakamiti.profile` (fallback)
+
+You can pass one or more values separated by comma, for example:
+`-Dwakamiti.junit.profile=A,B`
+
+Default mode:
+
+- Tests with `@Profile` run only when they match the active profile.
+- Tests without `@Profile` always run.
+
+Strict mode:
+
+- Enable with `-Dwakamiti.junit.profile.strict=true`
+  (or fallback `-Dwakamiti.profile.strict=true`).
+- When strict is enabled and there is an active profile, tests without `@Profile` are skipped.
+- When strict is enabled and no profile is active, tests with `@Profile` are skipped.
 
 ---
 

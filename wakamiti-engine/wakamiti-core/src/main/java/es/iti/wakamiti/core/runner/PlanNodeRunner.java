@@ -19,9 +19,11 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.api.imconfig.Configuration;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -37,6 +39,7 @@ public class PlanNodeRunner {
 
     private final PlanNode node;
     private final String uniqueId;
+    private final String nodePath;
     private final Configuration configuration;
     private final PlanNodeLogger logger;
     private final BackendFactory backendFactory;
@@ -52,20 +55,22 @@ public class PlanNodeRunner {
             Optional<Backend> backend,
             PlanNodeLogger logger
     ) {
-        this(node, configuration, backendFactory, backend, logger, false);
+        this(node, configuration, backendFactory, backend, logger, false, "0");
     }
 
-    private PlanNodeRunner(
+    protected PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            boolean dryRun
+            boolean dryRun,
+            String nodePath
     ) {
         this.node = node;
         this.configuration = configuration;
-        this.uniqueId = UUID.randomUUID().toString();
+        this.nodePath = nodePath;
+        this.uniqueId = stableUniqueId(nodePath, node);
         this.state = State.PREPARED;
         this.backendFactory = backendFactory;
         this.backend = backend;
@@ -79,7 +84,7 @@ public class PlanNodeRunner {
             BackendFactory backendFactory,
             PlanNodeLogger logger
     ) {
-        this(node, configuration, backendFactory, Optional.empty(), logger, false);
+        this(node, configuration, backendFactory, Optional.empty(), logger, false, "0");
     }
 
     public PlanNodeRunner(
@@ -89,7 +94,7 @@ public class PlanNodeRunner {
             PlanNodeLogger logger,
             boolean dryRun
     ) {
-        this(node, configuration, backendFactory, Optional.empty(), logger, dryRun);
+        this(node, configuration, backendFactory, Optional.empty(), logger, dryRun, "0");
     }
 
     /**
@@ -111,6 +116,14 @@ public class PlanNodeRunner {
      */
     public String getUniqueId() {
         return uniqueId;
+    }
+
+    protected String getNodePath() {
+        return nodePath;
+    }
+
+    protected String childNodePath(int childIndex) {
+        return String.format("%s/%d", nodePath, childIndex);
     }
 
     protected Optional<Backend> getBackend() {
@@ -249,12 +262,17 @@ public class PlanNodeRunner {
     }
 
     protected List<PlanNodeRunner> createChildren() {
-        return node.children()
-                .map(
-                        child -> new PlanNodeRunner(
-                                child, configuration, backendFactory, getBackend(), logger, dryRun
-                        )
-                )
+        List<PlanNode> childNodes = node.children().collect(Collectors.toList());
+        return IntStream.range(0, childNodes.size())
+                .mapToObj(index -> new PlanNodeRunner(
+                        childNodes.get(index),
+                        configuration,
+                        backendFactory,
+                        getBackend(),
+                        logger,
+                        dryRun,
+                        childNodePath(index)
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -281,6 +299,18 @@ public class PlanNodeRunner {
 
     protected enum State {
         PREPARED, RUNNING, FINISHED
+    }
+
+    private static String stableUniqueId(String nodePath, PlanNode node) {
+        String stableKey = String.join("|",
+                nodePath,
+                Objects.toString(node.nodeType(), ""),
+                Objects.toString(node.id(), ""),
+                Objects.toString(node.source(), ""),
+                Objects.toString(node.displayName(), ""),
+                Objects.toString(node.name(), "")
+        );
+        return UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8)).toString();
     }
 
 }

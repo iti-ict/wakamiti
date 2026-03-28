@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -55,18 +56,20 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             Configuration configuration,
             BackendFactory backendFactory,
             Optional<Backend> backend,
-            PlanNodeLogger logger
+            PlanNodeLogger logger,
+            String nodePath
     ) {
-        super(node, configuration, backendFactory, backend, logger);
+        super(node, configuration, backendFactory, backend, logger, false, nodePath);
     }
 
     PlanNodeJUnitRunner(
             PlanNode node,
             Configuration configuration,
             BackendFactory backendFactory,
-            PlanNodeLogger logger
+            PlanNodeLogger logger,
+            String nodePath
     ) {
-        super(node, configuration, backendFactory, logger);
+        super(node, configuration, backendFactory, Optional.empty(), logger, false, nodePath);
     }
 
     /**
@@ -130,10 +133,29 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      */
     @Override
     protected List<PlanNodeRunner> createChildren() {
-        return getNode().children()
-                .map(child -> child.nodeType().isAnyOf(target()) ?
-                        new PlanNodeTargetRunner(child, configuration(), backendFactory(), getBackend(), getLogger())
-                        : new PlanNodeJUnitRunner(child, configuration(), backendFactory(), getBackend(), getLogger()))
+        List<PlanNode> childNodes = getNode().children().collect(Collectors.toList());
+        return IntStream.range(0, childNodes.size())
+                .mapToObj(index -> {
+                    PlanNode child = childNodes.get(index);
+                    String childPath = childNodePath(index);
+                    return child.nodeType().isAnyOf(target())
+                            ? new PlanNodeTargetRunner(
+                                    child,
+                                    configuration(),
+                                    backendFactory(),
+                                    getBackend(),
+                                    getLogger(),
+                                    childPath
+                            )
+                            : new PlanNodeJUnitRunner(
+                                    child,
+                                    configuration(),
+                                    backendFactory(),
+                                    getBackend(),
+                                    getLogger(),
+                                    childPath
+                            );
+                })
                 .collect(Collectors.toList());
     }
 
