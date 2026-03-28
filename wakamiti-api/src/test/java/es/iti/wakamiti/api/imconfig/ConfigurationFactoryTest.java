@@ -45,8 +45,10 @@ public class ConfigurationFactoryTest {
     private static final String KEY_BIGDECIMALS = "properties.test.key.bigdecimals";
     private static final String KEY_BIGINTEGER = "properties.test.key.biginteger";
     private static final String KEY_BIGINTEGERS = "properties.test.key.bigintegers";
+    private static final String KEY_CUSTOM = "custom.property";
 
     private static final String VAL_STRING = "Properties Test String Value";
+    private static final String VAL_STRING_OVERRIDDEN = "Overridden String Value";
     private static final String VAL_STRINGS_1 = "Properties Array Value 1";
     private static final String VAL_STRINGS_2 = "Properties Array Value 2";
     private static final String VAL_STRING_NUMBER = "0543";
@@ -78,6 +80,7 @@ public class ConfigurationFactoryTest {
     private static final String VAL_BIGINTEGERS_1 = "123456789";
     private static final String VAL_BIGINTEGERS_2 = "543987532";
     private static final String VAL_BIGINTEGERS_3 = "549874348";
+    private static final String VAL_CUSTOM = "Custom Value";
 
 
     @Rule
@@ -140,6 +143,27 @@ public class ConfigurationFactoryTest {
     public void createConfigurationFromAnnotatedClass() throws ConfigurationException {
         Configuration conf = factory.fromAnnotation(ConfAnnotatedProps.class);
         assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFile() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFile.class);
+        assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFileAndPrefix() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFileWithPrefix.class);
+        assertExpectedPropertiesExist(conf.withPrefix("properties"));
+        assertThat(conf.get(KEY_STRING, String.class)).isEmpty();
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFileAndOverrides() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFileWithOverrides.class);
+        assertThat(conf.get(KEY_STRING, String.class)).contains(VAL_STRING_OVERRIDDEN);
+        assertThat(conf.get(KEY_INTEGER, Integer.class)).contains(77);
+        assertThat(conf.get(KEY_CUSTOM, String.class)).contains(VAL_CUSTOM);
     }
 
     @Test
@@ -418,6 +442,24 @@ public class ConfigurationFactoryTest {
             @Property(key = "properties2.test2.key.string", value = VAL_STRING)
     })
     public static class ConfAnnotatedProps {
+    }
+
+    @AnnotatedConfiguration(path = "classpath:test-conf.yaml")
+    public static class ConfAnnotatedFile {
+    }
+
+    @AnnotatedConfiguration(path = "classpath:test-conf.yaml", pathPrefix = "properties")
+    public static class ConfAnnotatedFileWithPrefix {
+    }
+
+    @AnnotatedConfiguration(
+            path = "classpath:test-conf.yaml",
+            value = {
+                    @Property(key = KEY_STRING, value = VAL_STRING_OVERRIDDEN),
+                    @Property(key = KEY_CUSTOM, value = VAL_CUSTOM)
+            }
+    )
+    public static class ConfAnnotatedFileWithOverrides {
     }
 
 }
