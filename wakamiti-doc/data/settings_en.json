@@ -21,6 +21,10 @@
           "slug": "en/wakamiti/architecture"
         },
         {
+          "title": "Launchers",
+          "slug": "en/wakamiti/launchers"
+        },
+        {
           "title": "Plugins",
           "slug": "en/plugins",
           "headings": [
@@ -100,4 +104,3 @@
     }
   ]
 }
-
