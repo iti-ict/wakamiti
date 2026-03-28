@@ -44,6 +44,11 @@
               "depth": 2
             },
             {
+              "value": "Pasos I/O ficheros",
+              "anchor": "/files",
+              "depth": 2
+            },
+            {
               "value": "Informe HTML",
               "anchor": "/html-reporter",
               "depth": 2
