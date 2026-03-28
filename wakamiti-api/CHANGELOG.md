@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@AnnotatedConfiguration` now supports loading external configuration files via `path`.
 - `@AnnotatedConfiguration` now supports importing a subsection from external files via `pathPrefix`.
 
+### Fixed
+- Core and contributor versions are now compared by numeric major/minor components.
+
 
 ## [2.6.0] - 2026-03-13
 
