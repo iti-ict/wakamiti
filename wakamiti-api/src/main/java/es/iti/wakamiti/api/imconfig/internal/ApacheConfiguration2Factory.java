@@ -153,7 +153,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
     private URI annotationPathToURI(String path) {
         if (path.startsWith("classpath:")) {
             String resource = path.substring("classpath:".length()).replaceFirst("^/+", "");
-            return URI.create("classpath:///" + resource);
+            return classpathResource(resource);
         }
         if (path.startsWith("file:") || path.startsWith("http:") || path.startsWith("https:")
                 || path.startsWith("jar:")) {
@@ -225,7 +225,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration fromResource(String resource, ClassLoader classLoader) {
-        return fromURI(URI.create("classpath:///"+resource),classLoader);
+        return fromURI(classpathResource(resource),classLoader);
     }
 
 
@@ -278,11 +278,13 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration accordingDefinitionsFromResource(String resource,ClassLoader classLoader) {
-        return accordingDefinitionsFromURI(URI.create("classpath:///"+resource),classLoader);
+        return accordingDefinitionsFromURI(classpathResource(resource),classLoader);
     }
 
 
-
+    private URI classpathResource(String resource) {
+        return URI.create(String.format("classpath:///%s", resource));
+    }
 
 
     private Configuration buildFromURL(URL url) {
