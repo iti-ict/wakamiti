@@ -13,8 +13,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -45,8 +48,10 @@ public class ConfigurationFactoryTest {
     private static final String KEY_BIGDECIMALS = "properties.test.key.bigdecimals";
     private static final String KEY_BIGINTEGER = "properties.test.key.biginteger";
     private static final String KEY_BIGINTEGERS = "properties.test.key.bigintegers";
+    private static final String KEY_CUSTOM = "custom.property";
 
     private static final String VAL_STRING = "Properties Test String Value";
+    private static final String VAL_STRING_OVERRIDDEN = "Overridden String Value";
     private static final String VAL_STRINGS_1 = "Properties Array Value 1";
     private static final String VAL_STRINGS_2 = "Properties Array Value 2";
     private static final String VAL_STRING_NUMBER = "0543";
@@ -78,6 +83,7 @@ public class ConfigurationFactoryTest {
     private static final String VAL_BIGINTEGERS_1 = "123456789";
     private static final String VAL_BIGINTEGERS_2 = "543987532";
     private static final String VAL_BIGINTEGERS_3 = "549874348";
+    private static final String VAL_CUSTOM = "Custom Value";
 
 
     @Rule
@@ -98,33 +104,19 @@ public class ConfigurationFactoryTest {
     }
 
     @Test
-    public void createConfigurationFromYAMLFile() {
-        Configuration conf = factory.fromResource("test-conf.yaml", CLASS_LOADER);
-        assertExpectedPropertiesExist(conf);
-    }
+    public void createConfigurationFromSupportedResourceFiles() {
+        List<String> resourceFiles = List.of(
+                "test-conf.yaml",
+                "test-conf.yml",
+                "test-conf.properties",
+                "test-conf.json",
+                "test-conf.xml"
+        );
 
-    @Test
-    public void createConfigurationFromYMLFile() {
-        Configuration conf = factory.fromResource("test-conf.yml", CLASS_LOADER);
-        assertExpectedPropertiesExist(conf);
-    }
-
-    @Test
-    public void createConfigurationFromPropertiesFile() throws ConfigurationException {
-        Configuration conf = factory.fromResource("test-conf.properties", CLASS_LOADER);
-        assertExpectedPropertiesExist(conf);
-    }
-
-    @Test
-    public void createConfigurationFromJSONFile() throws ConfigurationException {
-        Configuration conf = factory.fromResource("test-conf.json", CLASS_LOADER);
-        assertExpectedPropertiesExist(conf);
-    }
-
-    @Test
-    public void createConfigurationFromXMLFile() throws ConfigurationException {
-        Configuration conf = factory.fromResource("test-conf.xml", CLASS_LOADER);
-        assertExpectedPropertiesExist(conf);
+        for (String resourceFile : resourceFiles) {
+            Configuration conf = factory.fromResource(resourceFile, CLASS_LOADER);
+            assertExpectedPropertiesExist(conf);
+        }
     }
 
     @Test
@@ -140,6 +132,60 @@ public class ConfigurationFactoryTest {
     public void createConfigurationFromAnnotatedClass() throws ConfigurationException {
         Configuration conf = factory.fromAnnotation(ConfAnnotatedProps.class);
         assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFile() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFile.class);
+        assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFileAndPrefix() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFileWithPrefix.class);
+        assertExpectedPropertiesExist(conf.withPrefix("properties"));
+        assertThat(conf.get(KEY_STRING, String.class)).isEmpty();
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalFileAndOverrides() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedFileWithOverrides.class);
+        assertThat(conf.get(KEY_STRING, String.class)).contains(VAL_STRING_OVERRIDDEN);
+        assertThat(conf.get(KEY_INTEGER, Integer.class)).contains(77);
+        assertThat(conf.get(KEY_CUSTOM, String.class)).contains(VAL_CUSTOM);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotatedClassWithExternalRelativeFilePath() {
+        Configuration conf = factory.fromAnnotation(ConfAnnotatedRelativeFile.class);
+        assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotationWithExternalFileUriPath() {
+        String filePath = Path.of("src/test/resources/test-conf.yaml").toAbsolutePath().toUri().toString();
+        Configuration conf = factory.fromAnnotation(annotationWithPath(filePath));
+        assertExpectedPropertiesExist(conf);
+    }
+
+    @Test
+    public void createConfigurationFromAnnotationWhenContextClassLoaderIsNull() {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            AnnotatedConfiguration annotation = ConfAnnotatedFile.class.getAnnotation(AnnotatedConfiguration.class);
+            Configuration conf = factory.fromAnnotation(annotation);
+            assertExpectedPropertiesExist(conf);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
+    public void cannotCreateConfigurationFromNonAnnotatedClass() {
+        Assertions.assertThatThrownBy(() -> factory.fromAnnotation(ConfNotAnnotated.class))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessageContaining("@AnnotatedConfiguration");
     }
 
     @Test
@@ -164,6 +210,75 @@ public class ConfigurationFactoryTest {
     @Test(expected = ConfigurationException.class)
     public void cannotCreateConfigurationFromNonExistingFile() throws ConfigurationException {
         factory.fromResource("unexisting-file", CLASS_LOADER);
+    }
+
+    @Test
+    public void cannotCreateConfigurationFromUnsupportedSources() {
+        URI unsupportedUri = URI.create("foo:bar");
+        List<Map.Entry<String, Runnable>> cases = List.of(
+                Map.entry("non existing json", () -> factory.fromResource("unexisting-file.json", CLASS_LOADER)),
+                Map.entry("non existing yaml", () -> factory.fromResource("unexisting-file.yaml", CLASS_LOADER)),
+                Map.entry("non existing properties", () -> factory.fromResource("unexisting-file.properties", CLASS_LOADER)),
+                Map.entry("unsupported URI scheme", () -> factory.fromURI(unsupportedUri)),
+                Map.entry("unsupported URI scheme for definitions", () -> factory.accordingDefinitionsFromURI(unsupportedUri))
+        );
+
+        for (Map.Entry<String, Runnable> testCase : cases) {
+            Assertions.assertThatThrownBy(testCase.getValue()::run)
+                    .as(testCase.getKey())
+                    .isInstanceOf(ConfigurationException.class);
+        }
+    }
+
+    @Test
+    public void cannotSetZeroAsMultiValueSeparator() {
+        Assertions.assertThatThrownBy(() -> factory.multiValueSeparator((char) 0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid separator symbol");
+    }
+
+    @Test
+    public void createConfigurationFromSystemProperties() {
+        String original = System.getProperty("wakamiti.test.system.key");
+        try {
+            System.setProperty("wakamiti.test.system.key", "systemValue");
+            Configuration conf = factory.fromSystem();
+            assertThat(conf.get("wakamiti.test.system.key", String.class)).contains("systemValue");
+        } finally {
+            if (original == null) {
+                System.clearProperty("wakamiti.test.system.key");
+            } else {
+                System.setProperty("wakamiti.test.system.key", original);
+            }
+        }
+    }
+
+    @Test
+    public void createConfigurationFromPathAndUri() {
+        Path path = Path.of("src/test/resources/test-conf.yaml");
+        Configuration confFromPath = factory.fromPath(path);
+        Configuration confFromUri = factory.fromURI(path.toUri());
+        assertExpectedPropertiesExist(confFromPath);
+        assertExpectedPropertiesExist(confFromUri);
+    }
+
+    @Test
+    public void composeConfigurationsKeepingExplicitEmptyWhenBothValuesAreEmpty() {
+        Configuration base = factory.fromMap(Map.of("property.empty", ""));
+        Configuration delta = factory.fromMap(Map.of("property.empty", ""));
+
+        Configuration composed = base.append(delta);
+
+        assertThat(composed.hasProperty("property.empty")).isTrue();
+        assertThat(composed.get("property.empty", String.class)).isEmpty();
+        assertThat(composed.getList("property.empty", String.class)).isEmpty();
+    }
+
+    @Test
+    public void createConfigurationFromDefinitionsResource() {
+        Configuration conf = factory.accordingDefinitionsFromResource("definition.yaml", CLASS_LOADER);
+        assertThat(conf.get("defined.property.with-default-value", Integer.class)).contains(5);
+        assertThat(conf.get("defined.property.required", String.class)).isEmpty();
     }
 
     @Test
@@ -418,6 +533,55 @@ public class ConfigurationFactoryTest {
             @Property(key = "properties2.test2.key.string", value = VAL_STRING)
     })
     public static class ConfAnnotatedProps {
+    }
+
+    @AnnotatedConfiguration(path = "classpath:test-conf.yaml")
+    public static class ConfAnnotatedFile {
+    }
+
+    @AnnotatedConfiguration(path = "src/test/resources/test-conf.yaml")
+    public static class ConfAnnotatedRelativeFile {
+    }
+
+    @AnnotatedConfiguration(path = "classpath:test-conf.yaml", pathPrefix = "properties")
+    public static class ConfAnnotatedFileWithPrefix {
+    }
+
+    @AnnotatedConfiguration(
+            path = "classpath:test-conf.yaml",
+            value = {
+                    @Property(key = KEY_STRING, value = VAL_STRING_OVERRIDDEN),
+                    @Property(key = KEY_CUSTOM, value = VAL_CUSTOM)
+            }
+    )
+    public static class ConfAnnotatedFileWithOverrides {
+    }
+
+    public static class ConfNotAnnotated {
+    }
+
+    private static AnnotatedConfiguration annotationWithPath(String path) {
+        return new AnnotatedConfiguration() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return AnnotatedConfiguration.class;
+            }
+
+            @Override
+            public Property[] value() {
+                return new Property[0];
+            }
+
+            @Override
+            public String path() {
+                return path;
+            }
+
+            @Override
+            public String pathPrefix() {
+                return "";
+            }
+        };
     }
 
 }

@@ -94,18 +94,34 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration fromAnnotation(Class<?> configuredClass) {
-        return Optional.ofNullable(configuredClass.getAnnotation(AnnotatedConfiguration.class))
-            .map(this::fromAnnotation)
-            .orElseThrow(
-                () -> new ConfigurationException(
-                    configuredClass + " is not annotated with @Configurator"
-                )
-            );
+        AnnotatedConfiguration annotation = Optional.ofNullable(configuredClass.getAnnotation(AnnotatedConfiguration.class))
+                .orElseThrow(
+                        () -> new ConfigurationException(
+                                configuredClass + " is not annotated with @AnnotatedConfiguration"
+                        )
+                );
+        return fromAnnotation(annotation, configuredClass.getClassLoader());
     }
 
 
     @Override
     public Configuration fromAnnotation(AnnotatedConfiguration annotation) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader == null) {
+            classLoader = this.getClass().getClassLoader();
+        }
+        return fromAnnotation(annotation, classLoader);
+    }
+
+
+    private Configuration fromAnnotation(AnnotatedConfiguration annotation, ClassLoader classLoader) {
+        Configuration fileConfiguration = fromAnnotationPath(annotation, classLoader).orElseGet(this::empty);
+        Configuration annotatedPropertiesConfiguration = fromAnnotationProperties(annotation);
+        return fileConfiguration.append(annotatedPropertiesConfiguration);
+    }
+
+
+    private Configuration fromAnnotationProperties(AnnotatedConfiguration annotation) {
         BaseConfiguration configuration = configure(new BaseConfiguration());
         for (Property property : annotation.value()) {
             String[] value = property.value();
@@ -116,6 +132,34 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
             }
         }
         return new ApacheConfiguration2(this, configuration);
+    }
+
+
+    private Optional<Configuration> fromAnnotationPath(AnnotatedConfiguration annotation, ClassLoader classLoader) {
+        String path = annotation.path().strip();
+        if (path.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Configuration confFromPath = fromURI(annotationPathToURI(path), classLoader);
+        String pathPrefix = annotation.pathPrefix().strip();
+        if (!pathPrefix.isEmpty()) {
+            confFromPath = confFromPath.inner(pathPrefix);
+        }
+        return Optional.of(confFromPath);
+    }
+
+
+    private URI annotationPathToURI(String path) {
+        if (path.startsWith("classpath:")) {
+            String resource = path.substring("classpath:".length()).replaceFirst("^/+", "");
+            return classpathResource(resource);
+        }
+        if (path.startsWith("file:") || path.startsWith("http:") || path.startsWith("https:")
+                || path.startsWith("jar:")) {
+            return URI.create(path);
+        }
+        return Path.of(path).toUri();
 
     }
 
@@ -181,7 +225,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration fromResource(String resource, ClassLoader classLoader) {
-        return fromURI(URI.create("classpath:///"+resource),classLoader);
+        return fromURI(classpathResource(resource),classLoader);
     }
 
 
@@ -234,11 +278,13 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration accordingDefinitionsFromResource(String resource,ClassLoader classLoader) {
-        return accordingDefinitionsFromURI(URI.create("classpath:///"+resource),classLoader);
+        return accordingDefinitionsFromURI(classpathResource(resource),classLoader);
     }
 
 
-
+    private URI classpathResource(String resource) {
+        return URI.create(String.format("classpath:///%s", resource));
+    }
 
 
     private Configuration buildFromURL(URL url) {

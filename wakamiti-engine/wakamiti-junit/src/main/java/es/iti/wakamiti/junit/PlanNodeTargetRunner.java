@@ -19,6 +19,7 @@ import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -45,9 +46,10 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
             Configuration configuration,
             BackendFactory backendFactory,
             Optional<Backend> backend,
-            PlanNodeLogger logger
+            PlanNodeLogger logger,
+            String nodePath
     ) {
-        super(node, configuration, backendFactory, backend, logger);
+        super(node, configuration, backendFactory, backend, logger, false, nodePath);
     }
 
     /**
@@ -60,7 +62,7 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         Optional<Result> result = getNode().result();
         if (result.isPresent()) {
             if (result.get() == Result.SKIPPED) {
-                notifier.addFailure(new WakamitiSkippedException("Test case skipped"));
+                notifier.fireTestIgnored();
             } else if (result.get() != Result.PASSED) {
                 Throwable error = getNode().errors().findFirst().orElse(notExecuted);
                 if (error instanceof WakamitiSkippedException) {
@@ -83,14 +85,24 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
      */
     public Result run(RunNotifier notifier) {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
-        testNotifier.fireTestStarted();
         Result result;
         try {
             result = super.runNode();
-            notifyResult(testNotifier);
         } catch (Throwable e) {
+            testNotifier.fireTestStarted();
             testNotifier.addFailure(e);
-            result = Result.ERROR;
+            testNotifier.fireTestFinished();
+            return Result.ERROR;
+        }
+
+        if (isSkippedExecution(result)) {
+            testNotifier.fireTestIgnored();
+            return result;
+        }
+
+        testNotifier.fireTestStarted();
+        try {
+            notifyResult(testNotifier);
         } finally {
             testNotifier.fireTestFinished();
         }
@@ -105,9 +117,22 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
     @Override
     public Description getDescription() {
         if (description == null) {
-            description = Description.createTestDescription("", getNode().displayName(), getUniqueId());
+            description = Description.createTestDescription("", junitDisplayName());
         }
         return description;
+    }
+
+    private String junitDisplayName() {
+        String displayName = Objects.toString(getNode().displayName(), getNode().name());
+        String source = getNode().source();
+        String discriminator = (source == null || source.isBlank())
+                ? getNodePath()
+                : source + " | " + getNodePath();
+        return String.format("%s [%s]", displayName, discriminator);
+    }
+
+    private boolean isSkippedExecution(Result result) {
+        return result == Result.SKIPPED || getNode().errors().anyMatch(WakamitiSkippedException.class::isInstance);
     }
 
 }

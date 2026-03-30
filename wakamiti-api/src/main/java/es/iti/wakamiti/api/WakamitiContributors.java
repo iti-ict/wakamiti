@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 public class WakamitiContributors {
 
     private static final AtomicBoolean VERSION_WARNED = new AtomicBoolean(false);
+    private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d+)\\.(\\d+)(?:\\.\\d+.*)?$");
     private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
@@ -282,16 +283,18 @@ public class WakamitiContributors {
      */
     private void checkVersion(Contributor contributor) {
         String coreVersion = WakamitiAPI.instance().version();
-        Optional<Double> coreVersionOptional = Optional.ofNullable(coreVersion)
+        Optional<Pair<Integer, Integer>> coreVersionOptional = Optional.ofNullable(coreVersion)
                 .flatMap(this::extractVersion);
-        coreVersionOptional.ifPresentOrElse(v ->
+        coreVersionOptional.ifPresentOrElse(core ->
                         Optional.ofNullable(contributor.extensionMetadata().version())
                                 .flatMap(this::extractVersion)
-                                .filter(version -> v < version)
-                                .ifPresent(version -> {
+                                .filter(minimalCore -> compareVersions(core, minimalCore) < 0)
+                                .ifPresent(minimalCore -> {
                                     String message = String.format(
                                             "Contributor '%s' is compatible with the minimal core version %s, but it is %s",
-                                            contributor.extensionMetadata().name(), version, v);
+                                            contributor.extensionMetadata().name(),
+                                            formatVersion(minimalCore),
+                                            formatVersion(core));
                                     throw new UnsupportedClassVersionError(message);
                                 }),
                 () -> {
@@ -302,11 +305,26 @@ public class WakamitiContributors {
         );
     }
 
-    private Optional<Double> extractVersion(String version) {
-        Matcher matcher = Pattern.compile("^(\\d++\\.\\d++)(\\.\\d++.*+)?$").matcher(version);
-        if (matcher.find()) {
-            return Optional.of(Double.valueOf(matcher.group(1)));
+    private Optional<Pair<Integer, Integer>> extractVersion(String version) {
+        Matcher matcher = VERSION_PATTERN.matcher(version);
+        if (matcher.matches()) {
+            return Optional.of(new Pair<>(
+                    Integer.parseInt(matcher.group(1)),
+                    Integer.parseInt(matcher.group(2))
+            ));
         }
         return Optional.empty();
+    }
+
+    private int compareVersions(Pair<Integer, Integer> left, Pair<Integer, Integer> right) {
+        int majorComparison = Integer.compare(left.key(), right.key());
+        if (majorComparison != 0) {
+            return majorComparison;
+        }
+        return Integer.compare(left.value(), right.value());
+    }
+
+    private String formatVersion(Pair<Integer, Integer> version) {
+        return version.key() + "." + version.value();
     }
 }

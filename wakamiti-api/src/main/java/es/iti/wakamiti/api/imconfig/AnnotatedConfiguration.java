@@ -22,4 +22,27 @@ public @interface AnnotatedConfiguration {
     /** Pairs of [key,value] that defines the configuration */
     Property[] value() default {};
 
+    /**
+     * Optional path/URI to an external configuration resource.
+     * <p>
+     * Supported formats are the same than in {@link ConfigurationFactory},
+     * such as {@code .yaml}, {@code .yml}, {@code .json}, {@code .xml}
+     * and {@code .properties}.
+     * <p>
+     * Examples:
+     * <ul>
+     *     <li>{@code classpath:test-conf.yaml}</li>
+     *     <li>{@code src/test/resources/wakamiti.yaml}</li>
+     *     <li>{@code file:/opt/wakamiti/wakamiti.yaml}</li>
+     * </ul>
+     */
+    String path() default "";
+
+    /**
+     * Optional prefix to apply over the external file loaded via {@link #path()}.
+     * <p>
+     * If set, only the inner section is imported (equivalent to {@link Configuration#inner(String)}).
+     */
+    String pathPrefix() default "";
+
 }

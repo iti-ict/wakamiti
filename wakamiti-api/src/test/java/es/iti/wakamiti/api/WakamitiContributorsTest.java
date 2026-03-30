@@ -6,12 +6,16 @@
 package es.iti.wakamiti.api;
 
 
+import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.extensions.*;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -32,6 +36,21 @@ public class WakamitiContributorsTest {
         assertTrue(allContributors.containsKey(Reporter.class));
         assertTrue(allContributors.containsKey(ResourceType.class));
         assertTrue(allContributors.containsKey(StepContributor.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void extractVersionHandlesTwoDigitMinorValues() throws Exception {
+        WakamitiContributors wakamitiContributors = new WakamitiContributors();
+        Method extractVersion = WakamitiContributors.class.getDeclaredMethod("extractVersion", String.class);
+        extractVersion.setAccessible(true);
+
+        Optional<Pair<Integer, Integer>> parsed = (Optional<Pair<Integer, Integer>>) extractVersion.invoke(
+                wakamitiContributors, "2.10.0-SNAPSHOT");
+
+        assertTrue(parsed.isPresent());
+        assertEquals(Integer.valueOf(2), parsed.get().key());
+        assertEquals(Integer.valueOf(10), parsed.get().value());
     }
 
 

@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.10.0] - 2026-03-30
+
+### Added
+- Profile-based execution in `wakamiti-junit` with new `@Profile` annotation.
+- Profile selection via system properties: `wakamiti.junit.profile` (preferred) and `wakamiti.profile` (fallback).
+- Strict profile mode via `wakamiti.junit.profile.strict` and `wakamiti.profile.strict`.
+
+### Changed
+- JUnit plan-node runners now propagate deterministic node paths to improve uniqueness for repeated scenarios/steps.
+
+### Fixed
+- `beforeClass` and `afterClass` execution/reporting are isolated in dedicated lifecycle entries to avoid being
+attributed to the previous/last test.
+
+
 ## [2.9.0] - 2026-03-13
 
 ### Changed

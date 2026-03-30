@@ -30,7 +30,7 @@
         <rabbitmq-client.version>5.28.0</rabbitmq-client.version>
         <jackson-annotations.version>2.20</jackson-annotations.version>
 
-        <wakamiti-engine.version>2.8.1</wakamiti-engine.version>
+        <wakamiti-engine.version>2.10.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>
