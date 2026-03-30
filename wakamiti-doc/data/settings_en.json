@@ -29,6 +29,11 @@
           "slug": "en/plugins",
           "headings": [
             {
+              "value": "Plugin development",
+              "anchor": "/development",
+              "depth": 2
+            },
+            {
               "value": "REST steps",
               "anchor": "/rest",
               "depth": 2

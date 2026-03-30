@@ -22,4 +22,6 @@ los siguientes, ¡pero también puedes desarrollar tus propios plugins!
 - [Pasos Modbus](plugins/modbus)
 - [Informe JaCoCo](plugins/jacoco)
 
+---
 
+- [Desarrollo de plugins](plugins/development)
