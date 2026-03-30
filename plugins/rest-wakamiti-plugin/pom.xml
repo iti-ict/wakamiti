@@ -30,7 +30,7 @@
         <rest-assured.version>5.4.0</rest-assured.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <wakamiti-engine.version>2.10.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>2.10.0</wakamiti-engine.version>
     </properties>
 
 
