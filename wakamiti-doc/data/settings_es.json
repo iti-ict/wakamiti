@@ -21,6 +21,10 @@
           "slug": "wakamiti/architecture"
         },
         {
+          "title": "Launchers",
+          "slug": "wakamiti/launchers"
+        },
+        {
           "title": "Plugins",
           "slug": "plugins",
           "headings": [
@@ -37,6 +41,11 @@
             {
               "value": "Pasos AMQP",
               "anchor": "/amqp",
+              "depth": 2
+            },
+            {
+              "value": "Pasos I/O ficheros",
+              "anchor": "/files",
               "depth": 2
             },
             {
@@ -100,4 +109,3 @@
     }
   ]
 }
-

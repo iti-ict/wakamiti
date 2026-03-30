@@ -18,6 +18,7 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 import org.junit.*;
+import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runner.Description;
@@ -32,9 +33,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
@@ -60,12 +63,20 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
 
     protected static final Logger LOGGER = es.iti.wakamiti.core.Wakamiti.LOGGER;
     protected static final ConfigurationFactory CONF_BUILDER = ConfigurationFactory.instance();
+    protected final boolean profileEnabled;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
     protected final es.iti.wakamiti.core.Wakamiti wakamiti;
     protected final Configuration configuration;
+    private static final Statement NO_OP_STATEMENT = new Statement() {
+        @Override
+        public void evaluate() {
+            // no-op
+        }
+    };
     private final PlanNode plan;
     private List<PlanNodeJUnitRunner> children;
+    private RunNotifier lifecycleNotifier;
 
     /**
      * Constructs a WakamitiJUnitRunner for the specified test class.
@@ -78,11 +89,25 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      */
     public WakamitiJUnitRunner(Class<?> configurationClass) throws InitializationError {
         super(configurationClass);
-        this.wakamiti = es.iti.wakamiti.core.Wakamiti.instance();
-        this.configuration = retrieveConfiguration(configurationClass);
-        this.plan = wakamiti.createPlanFromConfiguration(configuration);
-        this.planNodeLogger = new PlanNodeLogger(LOGGER, configuration, plan);
-        this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class).orElse(Boolean.FALSE);
+        this.profileEnabled = ProfileSelector.isEnabled(configurationClass);
+        if (!profileEnabled) {
+            LOGGER.info(
+                    "Skipping {} because it does not match active profile(s): {}",
+                    configurationClass.getName(),
+                    ProfileSelector.activeProfilesDescription()
+            );
+            this.wakamiti = null;
+            this.configuration = Configuration.factory().empty();
+            this.plan = null;
+            this.planNodeLogger = null;
+            this.treatStepsAsTests = false;
+        } else {
+            this.wakamiti = es.iti.wakamiti.core.Wakamiti.instance();
+            this.configuration = retrieveConfiguration(configurationClass);
+            this.plan = wakamiti.createPlanFromConfiguration(configuration);
+            this.planNodeLogger = new PlanNodeLogger(LOGGER, configuration, plan);
+            this.treatStepsAsTests = configuration.get(TREAT_STEPS_AS_TESTS, Boolean.class).orElse(Boolean.FALSE);
+        }
     }
 
     /**
@@ -134,10 +159,28 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      */
     @Override
     protected List<PlanNodeJUnitRunner> getChildren() {
+        if (!profileEnabled) {
+            return List.of();
+        }
         if (children == null) {
             children = createChildren();
         }
         return children;
+    }
+
+    @Override
+    public void run(RunNotifier notifier) {
+        lifecycleNotifier = notifier;
+        if (!profileEnabled) {
+            notifier.fireTestIgnored(profileSkipDescription());
+            lifecycleNotifier = null;
+            return;
+        }
+        try {
+            super.run(notifier);
+        } finally {
+            lifecycleNotifier = null;
+        }
     }
 
     /**
@@ -188,14 +231,25 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return The list of child runners.
      */
     protected List<PlanNodeJUnitRunner> createChildren() {
+        if (!profileEnabled) {
+            return List.of();
+        }
         BackendFactory backendFactory = wakamiti.newBackendFactory();
-        return plan.children().map(node -> {
+        List<PlanNode> planChildren = plan.children().collect(Collectors.toCollection(ArrayList::new));
+        return IntStream.range(0, planChildren.size()).mapToObj(index -> {
+            PlanNode node = planChildren.get(index);
             Configuration featureConfiguration = configuration.append(
                     CONF_BUILDER.fromMap(node.properties())
             );
-            return treatStepsAsTests ? new PlanNodeStepJUnitRunner(
-                    node, featureConfiguration, backendFactory, planNodeLogger
-            ) : new PlanNodeJUnitRunner(node, featureConfiguration, backendFactory, planNodeLogger);
+            String nodePath = String.format("0/%d", index);
+            if (treatStepsAsTests) {
+                return new PlanNodeStepJUnitRunner(
+                        node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+                );
+            }
+            return new PlanNodeJUnitRunner(
+                    node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+            );
         }).collect(Collectors.toList());
     }
 
@@ -203,24 +257,20 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * Initializes Wakamiti before the test plan execution.
      */
     public void initWakamiti() {
-        LOGGER.debug("{}", configuration);
-        Wakamiti.contributors().propertyResolvers(configuration);
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
-        plan.assignExecutionID(configuration.get(EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString()));
-        wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
-        planNodeLogger.logTestPlanHeader(plan);
+        if (!profileEnabled) {
+            return;
+        }
+        doInitWakamiti();
     }
 
     /**
      * Finalizes Wakamiti after the test plan execution.
      */
     public void finalizeWakamiti() {
-        planNodeLogger.logTestPlanResult(plan);
-        var snapshot = new PlanNodeSnapshot(plan);
-        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);
-        wakamiti.writeOutputFile(plan, configuration);
-        wakamiti.generateReports(configuration, snapshot);
+        if (!profileEnabled) {
+            return;
+        }
+        doFinalizeWakamiti();
     }
 
     /**
@@ -237,14 +287,18 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     @Override
     protected Statement withBeforeClasses(Statement statement) {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(BeforeClass.class);
-        try {
-            Method initWakamiti = this.getClass().getDeclaredMethod("initWakamiti");
-            initWakamiti.setAccessible(true);
-            statement = new RunBefores(statement, List.of(new FrameworkMethod(initWakamiti)), this);
-        } catch (NoSuchMethodException e) {
-            throw new WakamitiException("Cannot initialize wakamiti runner", e);
-        }
-        return (befores.isEmpty() ? statement : new RunBefores(statement, befores, null));
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                runLifecyclePhase("beforeClass", () -> {
+                    initWakamiti();
+                    if (!befores.isEmpty()) {
+                        new RunBefores(NO_OP_STATEMENT, befores, null).evaluate();
+                    }
+                });
+                statement.evaluate();
+            }
+        };
     }
 
     /**
@@ -261,14 +315,38 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     @Override
     protected Statement withAfterClasses(Statement statement) {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(AfterClass.class);
-        try {
-            Method finalizeWakamiti = this.getClass().getDeclaredMethod("finalizeWakamiti");
-            finalizeWakamiti.setAccessible(true);
-            statement = new RunAfters(statement, List.of(new FrameworkMethod(finalizeWakamiti)), this);
-        } catch (NoSuchMethodException e) {
-            throw new WakamitiException("Cannot finalize wakamiti runner", e);
-        }
-        return (afters.isEmpty() ? statement : new RunAfters(statement, afters, null));
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                Throwable statementFailure = null;
+                try {
+                    statement.evaluate();
+                } catch (Throwable t) {
+                    statementFailure = t;
+                }
+
+                try {
+                    runLifecyclePhase("afterClass", () ->
+                            new RunAfters(new Statement() {
+                                @Override
+                                public void evaluate() {
+                                    finalizeWakamiti();
+                                }
+                            }, afters, null).evaluate()
+                    );
+                } catch (Throwable afterFailure) {
+                    if (statementFailure == null) {
+                        statementFailure = afterFailure;
+                    } else {
+                        statementFailure.addSuppressed(afterFailure);
+                    }
+                }
+
+                if (statementFailure != null) {
+                    throw statementFailure;
+                }
+            }
+        };
     }
 
     /**
@@ -290,6 +368,62 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
                 errors.add(new InitializationError(message));
             }
         }
+    }
+
+    private String profileSkipReason() {
+        return String.format(
+                "Skipping %s because it does not match active profile(s): %s",
+                getTestClass().getJavaClass().getName(),
+                ProfileSelector.activeProfilesDescription()
+        );
+    }
+
+    private Description profileSkipDescription() {
+        return Description.createTestDescription(
+                getTestClass().getJavaClass(),
+                profileSkipReason()
+        );
+    }
+
+    private void doInitWakamiti() {
+        LOGGER.debug("{}", configuration);
+        Wakamiti.contributors().propertyResolvers(configuration);
+        wakamiti.configureLogger(configuration);
+        wakamiti.configureEventObservers(configuration);
+        plan.assignExecutionID(configuration.get(EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString()));
+        wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
+        planNodeLogger.logTestPlanHeader(plan);
+    }
+
+    private void doFinalizeWakamiti() {
+        planNodeLogger.logTestPlanResult(plan);
+        var snapshot = new PlanNodeSnapshot(plan);
+        wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, snapshot);
+        wakamiti.writeOutputFile(plan, configuration);
+        wakamiti.generateReports(configuration, snapshot);
+    }
+
+    private void runLifecyclePhase(String phaseName, LifecycleAction action) throws Throwable {
+        if (lifecycleNotifier == null) {
+            action.run();
+            return;
+        }
+        Description description = Description.createTestDescription(getTestClass().getJavaClass(), phaseName);
+        EachTestNotifier notifier = new EachTestNotifier(lifecycleNotifier, description);
+        notifier.fireTestStarted();
+        try {
+            action.run();
+        } catch (Throwable error) {
+            notifier.addFailure(error);
+            throw error;
+        } finally {
+            notifier.fireTestFinished();
+        }
+    }
+
+    @FunctionalInterface
+    private interface LifecycleAction {
+        void run() throws Throwable;
     }
 
 }
