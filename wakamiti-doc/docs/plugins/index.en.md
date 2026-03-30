@@ -21,3 +21,7 @@ available, and you can also develop your own!
 - [Groovy](en/plugins/groovy)
 - [Modbus steps](en/plugins/modbus)
 - [JaCoCo report](en/plugins/jacoco)
+
+---
+
+- [Plugin development](en/plugins/development)

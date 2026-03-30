@@ -29,6 +29,11 @@
           "slug": "plugins",
           "headings": [
             {
+              "value": "Desarrollo de plugins",
+              "anchor": "/development",
+              "depth": 2
+            },
+            {
               "value": "Pasos REST",
               "anchor": "/rest",
               "depth": 2
