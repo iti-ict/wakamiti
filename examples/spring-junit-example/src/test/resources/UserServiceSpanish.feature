@@ -6,10 +6,10 @@ Característica: Operaciones del servicio de usuarios
      Dado el servicio REST '/users'
 
    Escenario: Se consulta un usuario existente
-      Dado un usuario identificado por '3'
+      Dado un usuario identificado por '4'
       Y que se ha insertado los siguientes datos en la tabla de BBDD USERR:
         | ID | FIRST_NAME | LAST_NAME |
-        | 3  | Samuel L.  | Jackson   |
+        | 4  | Samuel L.  | Jackson   |
       Cuando se consulta el usuario
       Entonces el código de respuesta HTTP es 200
       Y la respuesta es parcialmente:

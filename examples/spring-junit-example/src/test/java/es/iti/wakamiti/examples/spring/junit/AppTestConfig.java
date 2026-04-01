@@ -3,22 +3,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.examples.spring.junit;
 
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.ComponentScan;
+import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.sql.SQLException;
 
 
-@TestConfiguration
-@ComponentScan(basePackages = {
-        "es.iti.commons.jext.spring", // include jExt Spring integration
-        "es.iti.wakamiti.spring", // include Wakamiti Spring integration
-})
+@Configuration
 public class AppTestConfig {
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public Server h2TcpServer(@Value("${h2.tcp.port}") int h2TcpPort) throws SQLException {
+        return Server.createTcpServer(
+                "-tcp",
+                "-ifNotExists",
+                "-tcpPort", String.valueOf(h2TcpPort)
+        );
+    }
 
 }
