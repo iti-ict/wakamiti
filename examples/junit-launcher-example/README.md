@@ -1,32 +1,31 @@
-# JUnit launcher example (without Spring)
+# JUnit launcher example
 
-Este ejemplo muestra como ejecutar Wakamiti con el launcher `wakamiti-junit` en un proyecto Maven sin Spring.
+This example shows how to run Wakamiti with the `wakamiti-junit` launcher in a Maven project.
 
-## Que incluye
+## What it includes
 
-- Clase de test vacia con `@RunWith(WakamitiJUnitRunner.class)`.
-- Configuracion en `src/test/resources/wakamiti-test.yaml`.
-- Un `.feature` con pasos `groovy-steps` para validar el launcher.
-- Un ejemplo de pasos custom Java (`CustomJavaSteps`) registrados con `wakamiti.nonRegisteredStepProviders`.
-- Un paso custom de post-ejecucion con formato `Al finalizar, ...` que encola acciones y las ejecuta en `@TearDown`.
+- Empty test class with `@RunWith(WakamitiJUnitRunner.class)`.
+- Configuration in `src/test/resources/wakamiti-test.yaml`.
+- An example of custom Java steps (`CustomJavaSteps`) registered with `wakamiti.nonRegisteredStepProviders`.
 
-## Estructura del ejemplo custom Java
+## Custom Java example structure
 
 - Step contributor:
   `src/test/java/es/iti/wakamiti/examples/junit/launcher/CustomJavaSteps.java`
-- Textos de pasos:
-  `src/test/resources/steps/custom-java-steps_en.properties`
+- Step texts:
+  `src/test/resources/steps/custom-java-steps.properties`
+  `src/test/resources/steps/custom-java-steps_es.properties`
 - Feature:
   `src/test/resources/features/custom-java.feature`
 
-## Ejecutar
+## Run
 
-Desde este directorio:
+From this directory:
 
 ```bash
 mvn test
 ```
 
-Al finalizar, el resultado de la ejecucion se genera en:
+After execution, the result is generated at:
 
 `target/wakamiti/wakamiti.json`
