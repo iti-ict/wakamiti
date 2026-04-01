@@ -1,0 +1,13 @@
+wakamiti:
+  resourceTypes:
+    - gherkin
+  resourcePath: src/test/resources/features
+  nonRegisteredStepProviders:
+    - es.iti.wakamiti.examples.junit.launcher.CustomJavaSteps
+  outputFilePath: target/wakamiti/wakamiti.json
+  log:
+    level: debug
+  logs:
+    showStepSource: false
+  junit:
+    treatStepsAsTests: true
