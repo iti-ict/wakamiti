@@ -151,6 +151,48 @@ public class AmqpStepContributorTest {
                 contributor.checkNoMessageReceived(duration));
     }
 
+    @Test
+    public void checkReceivedJsonLooseFromStringShouldMatchSubset() {
+        AmqpStepContributor contributor = new AmqpStepContributor();
+        contributor.destination = "DEST";
+        contributor.receivedMessages.put("DEST", new ArrayList<>(List.of(
+                "{\"data\":{\"message\":\"ok\",\"code\":200},\"meta\":{\"trace\":\"abc\"}}"
+        )));
+
+        contributor.checkReceivedJSONLooseFromString(
+                Duration.ofSeconds(1),
+                new Document("{\"data\":{\"message\":\"ok\"}}")
+        );
+    }
+
+    @Test
+    public void checkReceivedJsonFromStringAnyOrderShouldIgnoreArrayOrder() {
+        AmqpStepContributor contributor = new AmqpStepContributor();
+        contributor.destination = "DEST";
+        contributor.receivedMessages.put("DEST", new ArrayList<>(List.of(
+                "{\"items\":[{\"id\":1},{\"id\":2}]}"
+        )));
+
+        contributor.checkReceivedJSONFromStringAnyOrder(
+                Duration.ofSeconds(1),
+                new Document("{\"items\":[{\"id\":2},{\"id\":1}]}")
+        );
+    }
+
+    @Test
+    public void checkReceivedJsonLooseFromStringShouldFailWhenSubsetIsNotPresent() {
+        AmqpStepContributor contributor = new AmqpStepContributor();
+        contributor.destination = "DEST";
+        contributor.receivedMessages.put("DEST", new ArrayList<>(List.of(
+                "{\"data\":{\"message\":\"ok\",\"code\":200}}"
+        )));
+        Duration duration = Duration.ofSeconds(1);
+        Document expectedSubset = new Document("{\"data\":{\"message\":\"missing\"}}");
+
+        assertThrows(AssertionError.class, () ->
+                contributor.checkReceivedJSONLooseFromString(duration, expectedSubset));
+    }
+
     private static void setClient(AmqpStepContributor steps, AmqpClient client) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
