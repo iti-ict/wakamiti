@@ -1,4 +1,11 @@
-local.server.port: 0
+server:
+  port: 9191
+
+h2:
+  tcp:
+    port: 9092
+
+
 wakamiti:
   resourceTypes: gherkin
   resourcePath: src/test/resources
@@ -8,10 +15,12 @@ wakamiti:
   logs:
     showStepSource: false
   database:
-    useSpringDataSource: true
+    connection:
+      url: jdbc:h2:tcp://localhost:9092/mem:test
+      username: sa
+      password:
   rest:
-    useSpringLocalServerPort: true
-
+    baseURL: http://localhost:9191/
 
 logging:
   level:
