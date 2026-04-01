@@ -46,11 +46,13 @@ public class AmqpSupport {
 
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
     private static final String CONTENT_TYPE = "application/json";
+    private static final String DESTINATION_QUEUE_NOT_DEFINED = "Destination queue is not defined";
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     protected final Map<String, List<String>> receivedMessages = new ConcurrentHashMap<>();
     protected AmqpConnectionParams connectionParams;
     protected AmqpProtocol protocol = AmqpProtocol.AMQP_1_0;
     protected String destination;
+    private final AmqpJsonDiff jsonDiff = new AmqpJsonDiff();
     private AmqpClient client;
     private boolean durable;
     private boolean exclusive;
@@ -209,16 +211,28 @@ public class AmqpSupport {
     protected boolean messageExistsInReceived(
             String message
     ) {
-        Objects.requireNonNull(destination, "Destination queue is not defined");
+        Objects.requireNonNull(destination, DESTINATION_QUEUE_NOT_DEFINED);
         return receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>()).stream().anyMatch(
                 receivedMessage -> receivedMessage.equals(message));
+    }
+
+    /**
+     * Checks if at least one received message matches expected JSON using mode.
+     */
+    protected boolean messageExistsInReceived(
+            String message,
+            MatchMode matchMode
+    ) {
+        Objects.requireNonNull(destination, DESTINATION_QUEUE_NOT_DEFINED);
+        return receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>()).stream().anyMatch(
+                receivedMessage -> jsonDiff.matches(message, receivedMessage, matchMode));
     }
 
     /**
      * Checks if at least one message arrived for current destination queue.
      */
     protected boolean anyMessageReceivedInDestination() {
-        Objects.requireNonNull(destination, "Destination queue is not defined");
+        Objects.requireNonNull(destination, DESTINATION_QUEUE_NOT_DEFINED);
         return !receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>()).isEmpty();
     }
 
@@ -235,6 +249,23 @@ public class AmqpSupport {
                     () -> messageExistsInReceived(message));
         } catch (ConditionTimeoutException e) {
             throw new AssertionError("Message not received in " + format(duration));
+        }
+    }
+
+    /**
+     * Waits until expected message appears according to JSON match mode.
+     */
+    protected void checkMessageExistsInReceived(
+            String message,
+            Duration duration,
+            MatchMode matchMode
+    ) {
+        jsonDiff.assertValidExpected(message);
+        try {
+            await().atMost(duration).pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS).until(
+                    () -> messageExistsInReceived(message, matchMode));
+        } catch (ConditionTimeoutException e) {
+            throw new AssertionError("Message not received in " + format(duration) + " using " + matchMode + " mode");
         }
     }
 
