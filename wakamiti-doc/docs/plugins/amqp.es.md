@@ -23,14 +23,14 @@ JSON, purgar colas y comprobar que no se reciben mensajes.
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.8.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.9.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.8.0</version>
+  <version>2.9.0</version>
 </dependency>
 ```
 
@@ -346,6 +346,81 @@ produciéndose un fallo después del tiempo de espera indicado.
 #### Ejemplos:
 ```gherkin
 Cuando el mensaje del fichero JSON 'data/message.json' se recibe en 5 segundos
+```
+
+
+### Validar mensaje (en cualquier orden)
+```text copy=true
+el siguiente mensaje JSON se recibe en {duration} (en cualquier orden):
+    {data}
+```
+
+Valida que se reciba un mensaje JSON en la cola observada, permitiendo que el orden de los campos
+y de los elementos de arrays sea diferente.
+
+#### Parámetros:
+| Nombre     | Wakamiti type               | Descripción        |
+|------------|-----------------------------|--------------------|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo |
+| `data`     | `document` *obligatorio*    | Mensaje JSON       |
+
+#### Ejemplos:
+```gherkin
+Cuando el siguiente mensaje JSON se recibe en 5 segundos (en cualquier orden):
+    """json
+    {
+      "items": [
+        { "id": 2 },
+        { "id": 1 }
+      ]
+    }
+    """
+```
+
+
+### Validar fragmento de mensaje
+```text copy=true
+el siguiente fragmento JSON se recibe en {duration}:
+    {data}
+```
+
+Valida que al menos uno de los mensajes JSON recibidos contenga el fragmento esperado como subconjunto.
+
+#### Parámetros:
+| Nombre     | Wakamiti type               | Descripción            |
+|------------|-----------------------------|------------------------|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo     |
+| `data`     | `document` *obligatorio*    | Fragmento JSON esperado|
+
+#### Ejemplos:
+```gherkin
+Cuando el siguiente fragmento JSON se recibe en 5 segundos:
+    """json
+    {
+      "data": {
+        "message": "Test message sent"
+      }
+    }
+    """
+```
+
+
+### Validar fragmento de mensaje (fichero)
+```text copy=true
+el fragmento JSON del fichero {file} se recibe en {duration}
+```
+
+Valida que al menos uno de los mensajes JSON recibidos contenga el fragmento cargado desde fichero.
+
+#### Parámetros:
+| Nombre     | Wakamiti type               | Descripción               |
+|------------|-----------------------------|---------------------------|
+| `file`     | `file` *obligatorio*        | Fichero con fragmento JSON|
+| `duration` | [duration][1] *obligatorio* | Cantidad de tiempo        |
+
+#### Ejemplos:
+```gherkin
+Cuando el fragmento JSON del fichero 'data/message-fragment.json' se recibe en 5 segundos
 ```
 
 
