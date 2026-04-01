@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Added
+- New JSON assertion steps for partial comparison (`LOOSE`) from inline document and file.
+- New JSON assertion steps for strict comparison in any order (`STRICT_ANY_ORDER`) from inline document and file.
+
+
 ## [2.8.0] - 2026-03-03
 
 ### Added
