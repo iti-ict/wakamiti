@@ -15,6 +15,7 @@ module es.iti.wakamiti.amqp {
     requires jakarta.messaging;
     requires qpid.jms.client;
     requires com.rabbitmq.client;
+    requires com.fasterxml.jackson.databind;
 
     provides StepContributor with AmqpStepContributor;
     provides ConfigContributor with AmqpConfigContributor;

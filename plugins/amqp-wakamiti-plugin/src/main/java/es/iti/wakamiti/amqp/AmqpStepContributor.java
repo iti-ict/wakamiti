@@ -244,6 +244,76 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
     }
 
     /**
+     * Validates that a JSON message appears within timeout ignoring element order.
+     *
+     * @param duration timeout window
+     * @param json expected JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.from.string.any-order",
+            args = { "duration:duration" }
+    )
+    public void checkReceivedJSONFromStringAnyOrder(
+            Duration duration,
+            Document json
+    ) {
+        checkMessageExistsInReceived(json.getContent(), duration, MatchMode.STRICT_ANY_ORDER);
+    }
+
+    /**
+     * Validates that expected JSON from file appears within timeout ignoring order.
+     *
+     * @param duration timeout window
+     * @param file file containing expected JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.from.file.any-order",
+            args = { "duration:duration", "file:file" }
+    )
+    public void checkReceivedJSONFromFileAnyOrder(
+            Duration duration,
+            File file
+    ) {
+        assertFileExists(file);
+        checkMessageExistsInReceived(readFile(file), duration, MatchMode.STRICT_ANY_ORDER);
+    }
+
+    /**
+     * Validates that a JSON fragment appears within timeout in a received message.
+     *
+     * @param duration timeout window
+     * @param json expected partial JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.loose.from.string",
+            args = { "duration:duration" }
+    )
+    public void checkReceivedJSONLooseFromString(
+            Duration duration,
+            Document json
+    ) {
+        checkMessageExistsInReceived(json.getContent(), duration, MatchMode.LOOSE);
+    }
+
+    /**
+     * Validates that expected JSON fragment from file appears within timeout.
+     *
+     * @param duration timeout window
+     * @param file file containing expected partial JSON payload
+     */
+    @Step(
+            value = "amqp.check.received.json.loose.from.file",
+            args = { "duration:duration", "file:file" }
+    )
+    public void checkReceivedJSONLooseFromFile(
+            Duration duration,
+            File file
+    ) {
+        assertFileExists(file);
+        checkMessageExistsInReceived(readFile(file), duration, MatchMode.LOOSE);
+    }
+
+    /**
      * Validates that no message is received during the timeout window.
      *
      * @param duration timeout window
