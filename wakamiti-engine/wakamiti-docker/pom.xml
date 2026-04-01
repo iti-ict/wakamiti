@@ -234,6 +234,7 @@
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>${io.fabric8.version}</version>
                         <configuration>
+                            <skip>${docker.tag.exists}</skip>
                             <skipPush>${docker.tag.exists}</skipPush>
                             <authConfig>
                                 <username>wakamiti</username>
