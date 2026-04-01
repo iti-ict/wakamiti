@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [2.9.0] - 2026-04-01
 
 ### Added
 - New JSON assertion steps for partial comparison (`LOOSE`) from inline document and file.
