@@ -205,10 +205,36 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>check-docker-tag</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <target>
+                                        <condition property="docker.tag.exists" value="true" else="false">
+                                            <http url="https://hub.docker.com/v2/repositories/wakamiti/wakamiti/tags/${project.version}"
+                                                  errorsBeginAt="400"
+                                                  requestMethod="GET"/>
+                                        </condition>
+                                        <echo message="Docker tag wakamiti/wakamiti:${project.version} exists=${docker.tag.exists}"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>${io.fabric8.version}</version>
                         <configuration>
+                            <skipPush>${docker.tag.exists}</skipPush>
                             <authConfig>
                                 <username>wakamiti</username>
                                 <!--suppress UnresolvedMavenProperty -->
