@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.1] - 2024-04-02
+
+### Fixed
+- Debug logging for AMQP received messages and buffered queue contents when message assertions time out.
+
+
 ## [2.9.0] - 2026-04-01
 
 ### Added
