@@ -12,8 +12,10 @@ import es.iti.wakamiti.amqp.client.QpidAmqp10Client;
 import es.iti.wakamiti.amqp.client.RabbitMqAmqp091Client;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.time.Duration;
@@ -44,6 +46,7 @@ import static org.awaitility.Awaitility.await;
  */
 public class AmqpSupport {
 
+    private static final Logger LOGGER = WakamitiLogger.forClass(AmqpSupport.class);
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
     private static final String CONTENT_TYPE = "application/json";
     private static final String DESTINATION_QUEUE_NOT_DEFINED = "Destination queue is not defined";
@@ -188,8 +191,12 @@ public class AmqpSupport {
         declareQueue(queueName);
             client().subscribe(
                     queueName,
-                    message -> receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(
-                            message)
+                    message -> {
+                        receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(message);
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Received AMQP message in queue '{}': {}", queueName, message);
+                        }
+                    }
             );
     }
 
@@ -248,6 +255,7 @@ public class AmqpSupport {
             await().atMost(duration).pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS).until(
                     () -> messageExistsInReceived(message));
         } catch (ConditionTimeoutException e) {
+            logBufferedMessagesAtDebug();
             throw new AssertionError("Message not received in " + format(duration));
         }
     }
@@ -265,7 +273,30 @@ public class AmqpSupport {
             await().atMost(duration).pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS).until(
                     () -> messageExistsInReceived(message, matchMode));
         } catch (ConditionTimeoutException e) {
+            logBufferedMessagesAtDebug();
             throw new AssertionError("Message not received in " + format(duration) + " using " + matchMode + " mode");
+        }
+    }
+
+    /**
+     * Logs buffered messages for current destination queue to help debug assertion failures.
+     */
+    protected void logBufferedMessagesAtDebug() {
+        if (!LOGGER.isDebugEnabled()) {
+            return;
+        }
+        if (destination == null) {
+            LOGGER.debug("No destination queue configured. No buffered AMQP messages to log");
+            return;
+        }
+        List<String> buffered = receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>());
+        if (buffered.isEmpty()) {
+            LOGGER.debug("No buffered AMQP messages found in queue '{}'", destination);
+            return;
+        }
+        LOGGER.debug("Buffered AMQP messages in queue '{}': {}", destination, buffered.size());
+        for (int i = 0; i < buffered.size(); i++) {
+            LOGGER.debug("AMQP buffered message [{}] in queue '{}': {}", i + 1, destination, buffered.get(i));
         }
     }
 
