@@ -118,7 +118,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      */
     @Step("rest.define.request.parameters")
     public void setRequestParameters(DataTable dataTable) {
-        specifications.add(request -> request.params(tableToMap(dataTable)));
+        specifications.add(request -> request.queryParams(tableToMap(dataTable)));
     }
 
     /**
@@ -129,7 +129,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      */
     @Step(value = "rest.define.request.parameter", args = {"name:text", "value:text"})
     public void setRequestParameter(String name, String value) {
-        specifications.add(request -> request.param(name, value));
+        specifications.add(request -> request.queryParam(name, value));
     }
 
     /**
