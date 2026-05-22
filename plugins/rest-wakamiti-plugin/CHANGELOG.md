@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.4] - 2026-05-22
+
+### Fixed
+- Fixed `POST` requests failing when combining a request parameter and a body.
+  Request parameters are now sent as query parameters, so `POST` requests can
+  include both body payload and parameters at the same time.
+
+
 ## [2.9.3] - 2025-11-11
 
 ### Fixed
