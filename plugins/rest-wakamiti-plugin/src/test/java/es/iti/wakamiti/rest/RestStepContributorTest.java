@@ -1777,6 +1777,35 @@ public class RestStepContributorTest {
     }
 
     /**
+     * Test {@link RestStepContributor#setRequestParameter(String, String)} and
+     * {@link RestStepContributor#executePostSubjectUsingDocument(Document)}
+     */
+    @Test
+    public void testWhenPostSubjectDocumentAndParamWithSuccess() {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/")
+                        .withQueryStringParameter("param1", "value1")
+                        .withBody(json(map("user", "Pepe")))
+                ,
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setRequestParameter("param1", "value1");
+        JsonNode result = (JsonNode) contributor
+                .executePostSubjectUsingDocument(new Document(json(map("user", "Pepe"))));
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
      * Test {@link RestStepContributor#executePatchSubjectUsingFile(File)}
      */
     @Test
@@ -1812,9 +1841,8 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody(
-                                params(param("param1", "value1"))
-                        )
+                        .withQueryStringParameter("param1", "value1")
+                        .withBody(Not.not(regex(".+")))
                 ,
                 response()
                         .withStatusCode(200)
@@ -1944,9 +1972,8 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody(
-                                params(param("param1", "value1"))
-                        )
+                        .withQueryStringParameter("param1", "value1")
+                        .withBody(Not.not(regex(".+")))
                 ,
                 response()
                         .withStatusCode(200)
