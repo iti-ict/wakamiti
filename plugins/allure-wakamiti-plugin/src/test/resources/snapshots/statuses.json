@@ -1,0 +1,52 @@
+{
+  "nodeType": "AGGREGATOR",
+  "children": [
+    {
+      "executionID": "run-1",
+      "nodeType": "TEST_CASE",
+      "id": "SKIP-1",
+      "displayName": "[SKIP-1] Scenario: skipped case",
+      "source": "features/sample.feature[1]",
+      "tags": [
+        "SKIP-1",
+        "definition",
+        "implementation",
+        "focus"
+      ],
+      "result": "SKIPPED",
+      "children": [
+        {
+          "nodeType": "STEP_AGGREGATOR",
+          "keyword": "Given",
+          "name": "setup group",
+          "result": "SKIPPED",
+          "children": [
+            {
+              "nodeType": "VIRTUAL_STEP",
+              "keyword": "And",
+              "name": "embedded action",
+              "source": "features/sample.feature:10",
+              "document": "first line\nsecond line",
+              "documentType": "text/plain",
+              "dataTable": [
+                [
+                  "a",
+                  "b"
+                ],
+                [
+                  "1",
+                  "2"
+                ]
+              ],
+              "result": "SKIPPED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nodeType": "TEST_CASE",
+      "result": null
+    }
+  ]
+}
