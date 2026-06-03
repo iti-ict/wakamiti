@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.8.0] - 2026-06-03
+
+### Fixed
+- Similar-record lookup now enforces `database.similarSearch.timeout` and returns no closest record when the timeout is exceeded.
+- Similar-record lookup no longer logs every processed candidate row during closest-record search.
+
+### Changed
+- Removed Lucene-based similar-record search and its related configuration and dependencies.
+- Simplified closest-record search to use SQL row scanning with Levenshtein scoring and timeout control.
+- Upgrade dependency: `jsqlparser`
+
+
 ## [3.7.1] - 2026-05-27
 
 ### Fixed

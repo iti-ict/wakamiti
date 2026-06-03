@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.7.1</version>
+    <version>3.8.0</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -30,7 +30,6 @@
         <test.containers>1.21.4</test.containers>
 
         <wakamiti-engine.version>2.10.0</wakamiti-engine.version>
-        <lucene.version>8.11.2</lucene.version>
     </properties>
 
     <dependencies>
@@ -43,7 +42,7 @@
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>4.8</version>
+            <version>4.9</version>
         </dependency>
 
         <dependency>
@@ -62,16 +61,6 @@
             <version>1.7</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>

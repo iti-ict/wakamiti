@@ -1320,16 +1320,14 @@ public class DatabaseStepContributorTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testAssertRowExistsByOneColumnWhenNotExistWithLucene() {
+    public void testAssertRowExistsByOneColumnWhenNotExistWithClosestRecord() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
                 "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true",
-                "database.similarSearch.lucene.enabled", "true",
-                "database.similarSearch.lucene.topK", "5"
+                "database.enableCleanupUponCompletion", "true"
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
@@ -1359,15 +1357,13 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
-    public void testSimilarByRebuildsLuceneIndexAfterToggle() {
+    public void testSimilarByReflectsContributorUpdate() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.similarSearch.lucene.enabled", "true",
-                "database.similarSearch.lucene.topK", "5"
+                "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
@@ -1377,16 +1373,9 @@ public class DatabaseStepContributorTest {
                 new Object[]{"Melano"}
         )).isPresent();
 
-        // Disable Lucene and modify data
-        configContributor.configurer().configure(contributor, config.appendFromPairs(
-                "database.similarSearch.lucene.enabled", "false"
-        ));
+        // Modify data through contributor path and verify search reflects latest state.
         contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'ZZZZZZ' WHERE id = 1"));
 
-        // Re-enable Lucene and verify stale values are not returned
-        configContributor.configurer().configure(contributor, config.appendFromPairs(
-                "database.similarSearch.lucene.enabled", "true"
-        ));
         assertThat(contributor.similarBy(
                 "client",
                 new String[]{"second_name"},
@@ -1395,15 +1384,13 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
-    public void testSimilarByRebuildsLuceneIndexAfterExternalDatabaseChange() {
+    public void testSimilarByReflectsExternalDatabaseChange() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.similarSearch.lucene.enabled", "true",
-                "database.similarSearch.lucene.topK", "5"
+                "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
@@ -1417,7 +1404,7 @@ public class DatabaseStepContributorTest {
         Database db = Database.from(contributor.connection());
         db.update("UPDATE client SET second_name = 'ZZZZZZ' WHERE id = 1").execute().close();
 
-        // The result must reflect latest DB state, not stale index data.
+        // The result must reflect latest DB state.
         assertThat(contributor.similarBy(
                 "client",
                 new String[]{"second_name"},
@@ -1426,15 +1413,13 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
-    public void testSimilarByWithLuceneEscapesSpecialQueryCharacters() {
+    public void testSimilarByWithSpecialCharacters() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
                 "database.connection.url", URL,
                 "database.connection.username", USER,
                 "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.similarSearch.lucene.enabled", "true",
-                "database.similarSearch.lucene.topK", "5"
+                "database.metadata.healthcheck", "false"
         );
         configContributor.configurer().configure(contributor, config);
         createContext(config);
