@@ -225,53 +225,6 @@ database:
 ```
 
 
-### `database.similarSearch.lucene.enabled`
-- Type: `boolean`
-- Default `false`
-
-Enables Lucene-based similar search. When enabled, an index is built for the table and `top-k` candidates are retrieved
-before evaluating the final similarity. The index is refreshed before each similar search so external database changes
-are reflected in the result.
-
-Example:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      enabled: true
-```
-
-
-### `database.similarSearch.lucene.topK`
-- Type: `int`
-- Default `10`
-
-Number of candidates retrieved by Lucene to evaluate the final similarity.
-
-Example:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      topK: 20
-```
-
-
-### `database.similarSearch.lucene.indexDir`
-- Type: `string`
-- Default *(in-memory)*
-
-Base path where Lucene indexes are stored. If not specified, the index is created in memory.
-
-Example:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      indexDir: "/var/wakamiti/.lucene"
-```
-
-
 ## Steps
 
 
