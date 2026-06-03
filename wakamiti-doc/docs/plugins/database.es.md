@@ -238,53 +238,6 @@ database:
 ```
 
 
-### `database.similarSearch.lucene.enabled`
-- Tipo: `boolean`
-- Por defecto `false`
-
-Activa la búsqueda de registros similares mediante Lucene. Cuando está habilitada, se construye un índice para la tabla
-y se recuperan candidatos `top-k` antes de calcular la similitud final. El índice se refresca antes de cada búsqueda
-de similitud para reflejar cambios externos en la base de datos.
-
-Ejemplo:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      enabled: true
-```
-
-
-### `database.similarSearch.lucene.topK`
-- Tipo: `int`
-- Por defecto `10`
-
-Número de candidatos recuperados por Lucene para evaluar la similitud final.
-
-Ejemplo:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      topK: 20
-```
-
-
-### `database.similarSearch.lucene.indexDir`
-- Tipo: `string`
-- Por defecto *(en memoria)*
-
-Ruta base donde se almacenan los índices de Lucene. Si no se especifica, el índice se crea en memoria.
-
-Ejemplo:
-```yaml
-database:
-  similarSearch:
-    lucene:
-      indexDir: "/var/wakamiti/lucene"
-```
-
-
 ## Pasos
 
 
