@@ -31,10 +31,10 @@ This plugin is implemented as three Wakamiti extensions:
 - Supported dataset sources are in-memory tables (`DataTableDataSet`), CSV (`CsvDataSet`), and XLSX (`OoxmlDataSet` via Apache POI).
 - A configurable `nullSymbol` is converted to SQL `NULL` consistently across all dataset types.
 - Assertions can run synchronously or asynchronously (Awaitility). Async steps poll until timeout and then fail with detailed diagnostics.
-- For mismatch diagnostics, the plugin computes a “closest record” using Levenshtein similarity; optional Lucene preselection (`database.similarSearch.lucene.*`) reduces candidate search cost.
+- For mismatch diagnostics, the plugin computes a “closest record” using Levenshtein similarity with a configurable timeout (`database.similarSearch.timeout`).
 
 ### Cleanup and lifecycle
 
 - Cleanup actions are stored as a stack of deferred operations and executed in teardown (`@TearDown(order = 1)`), allowing rollback-like behavior after scenario completion.
 - SQL statement visitors capture pre/post images of changed rows to build compensating actions for `INSERT`, `UPDATE`, `DELETE`, and `TRUNCATE` flows.
-- Resource cleanup is explicit: Lucene indexes and JDBC connections are closed in teardown (`@TearDown(order = 2)`), then internal caches/maps are cleared to avoid scenario leakage.
+- Resource cleanup is explicit: JDBC connections are closed in teardown (`@TearDown(order = 2)`), then internal caches/maps are cleared to avoid scenario leakage.

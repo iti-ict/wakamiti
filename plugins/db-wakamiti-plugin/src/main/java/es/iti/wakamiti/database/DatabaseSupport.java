@@ -16,9 +16,6 @@ import es.iti.wakamiti.database.dataset.MapDataSet;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Record;
 import es.iti.wakamiti.database.jdbc.*;
-import es.iti.wakamiti.database.lucene.LuceneIndex;
-import es.iti.wakamiti.database.lucene.LuceneIndexFactory;
-import es.iti.wakamiti.database.lucene.LuceneIndexKey;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -27,18 +24,6 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.queryparser.classic.QueryParserBase;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.awaitility.Durations;
 import org.awaitility.core.ConditionTimeoutException;
@@ -57,7 +42,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static es.iti.wakamiti.database.DatabaseHelper.*;
@@ -91,10 +75,6 @@ public class DatabaseSupport {
     protected boolean enableCleanupUponCompletion;
     protected boolean healthcheck;
     protected long similarSearchTimeoutMs = 10_000L;
-    protected boolean luceneSimilarSearchEnabled;
-    protected int luceneSimilarSearchTopK = 10;
-    protected String luceneSimilarSearchIndexDir;
-    protected final Map<LuceneIndexKey, LuceneIndex> luceneIndexes = new HashMap<>();
     protected UnaryOperator<Map<String, String>> nullSymbolMapper = map ->
             map.entrySet().stream().collect(MapUtils.toMap(v -> v.equals(nullSymbol) ? null : v));
 
@@ -161,47 +141,6 @@ public class DatabaseSupport {
     }
 
     /**
-     * Enables or disables Lucene-based similar search.
-     * <p>
-     * Disabling Lucene also closes current Lucene resources immediately.
-     *
-     * @param enabled {@code true} to enable Lucene-based search.
-     */
-    public void setLuceneSimilarSearchEnabled(boolean enabled) {
-        if (!enabled) {
-            closeAllLuceneIndexes();
-        }
-        this.luceneSimilarSearchEnabled = enabled;
-    }
-
-    /**
-     * Sets the number of Lucene candidates evaluated by final Levenshtein score.
-     * <p>
-     * Higher values can improve nearest-match quality but increase CPU time.
-     *
-     * @param topK requested candidate count; values lower than 1 are clamped to 1
-     */
-    public void setLuceneSimilarSearchTopK(int topK) {
-        this.luceneSimilarSearchTopK = Math.max(1, topK);
-    }
-
-    /**
-     * Sets the base directory for Lucene indexes.
-     * <p>
-     * When directory changes, previous Lucene instances are closed so no stale
-     * resources remain attached to old paths.
-     *
-     * @param indexDir directory path to store indexes; {@code null} or blank for in-memory
-     */
-    public void setLuceneSimilarSearchIndexDir(String indexDir) {
-        boolean hasChanged = !Objects.equals(this.luceneSimilarSearchIndexDir, indexDir);
-        if (hasChanged) {
-            closeAllLuceneIndexes();
-        }
-        this.luceneSimilarSearchIndexDir = indexDir;
-    }
-
-    /**
      * Adds a database connection with the specified alias and parameters.
      *
      * @param alias      The alias for the connection.
@@ -212,7 +151,6 @@ public class DatabaseSupport {
         ConnectionProvider previous = connections.remove(alias);
         if (previous != null) {
             previous.close();
-            closeLuceneIndexes(alias);
         }
         ConnectionProvider connectionProvider = new ConnectionProvider(parameters);
         if (healthcheck) {
@@ -441,8 +379,8 @@ public class DatabaseSupport {
      * Search flow:
      * <ol>
      *   <li>Normalize table/column names according to the current JDBC dialect.</li>
-     *   <li>If Lucene is enabled, try a Lucene preselection first.</li>
-     *   <li>Fallback to full table scan and compute Levenshtein-based score.</li>
+     *   <li>Perform a full table scan.</li>
+     *   <li>Compute Levenshtein-based score for each row.</li>
      *   <li>Return the best candidate above {@link #SIMILARITY_THRESHOLD}.</li>
      * </ol>
      * Timeout and SQL timeout are honored in every stage. If timeout is reached,
@@ -463,17 +401,25 @@ public class DatabaseSupport {
         long deadlineNanos = similarSearchDeadlineNanos();
 
         try {
-            if (luceneSimilarSearchEnabled) {
-                Optional<Map<String, String>> luceneResult = similarByLucene(db, table, formattedColumns, values, deadlineNanos);
-                if (luceneResult.isPresent()) {
-                    return luceneResult;
-                }
-            }
-
             throwIfSimilarSearchTimedOut(deadlineNanos);
             String sql = db.parser().sqlSelectFrom(db.parser().format(normalizedTable), formattedColumns).toString();
             try (Select<String[]> select = selectForSimilarSearch(db, sql).get(DatabaseHelper::format)) {
-                Optional<Record> result = bestSimilarRecord(select, values, deadlineNanos);
+                Optional<Record> result = select
+                        .map(row -> {
+                            throwIfSimilarSearchTimedOut(deadlineNanos);
+                            Record candidate = scoreRecord(row, values);
+                            throwIfSimilarSearchTimedOut(deadlineNanos);
+                            return candidate;
+                        })
+                        .filter(candidate -> {
+                            throwIfSimilarSearchTimedOut(deadlineNanos);
+                            return candidate.score() > SIMILARITY_THRESHOLD;
+                        })
+                        .reduce((rec1, rec2) -> {
+                            throwIfSimilarSearchTimedOut(deadlineNanos);
+                            return rec1.score() > rec2.score() ? rec1 : rec2;
+                        });
+                throwIfSimilarSearchTimedOut(deadlineNanos);
                 result.ifPresent(rec -> LOGGER.trace("Found {}", rec));
                 return result.map(rec -> toMap(formattedColumns, rec.data()));
             }
@@ -490,170 +436,19 @@ public class DatabaseSupport {
     }
 
     /**
-     * Executes the Lucene branch of similar search.
-     * <p>
-     * Index contents are refreshed before each search so external database
-     * changes are reflected.
-     * Lucene is used only for candidate retrieval; final acceptance still uses
-     * the same Levenshtein score as SQL fallback.
-     *
-     * @param db active database wrapper
-     * @param table table name (for logs only)
-     * @param columns normalized/formatted columns to read from Lucene documents
-     * @param values expected values to score against each candidate
-     * @param deadlineNanos absolute timeout deadline in nanoseconds
-     * @return closest candidate from Lucene branch, or empty when no valid candidate exists
-     */
-    private Optional<Map<String, String>> similarByLucene(
-            Database db, String table, String[] columns, Object[] values, long deadlineNanos) {
-        LuceneIndex index = luceneIndexFor(db, table, columns);
-        if (index == null) {
-            return Optional.empty();
-        }
-        try {
-            throwIfSimilarSearchTimedOut(deadlineNanos);
-            index.ensureUpToDate(
-                    db,
-                    table,
-                    columns,
-                    similarSearchTimeoutSeconds(),
-                    () -> throwIfSimilarSearchTimedOut(deadlineNanos)
-            );
-            throwIfSimilarSearchTimedOut(deadlineNanos);
-        } catch (IOException e) {
-            LOGGER.warn("Unable to rebuild Lucene index for {}", table, e);
-            return Optional.empty();
-        }
-
-        String queryText = Stream.of(values)
-                .map(v -> Optional.ofNullable(v).map(DatabaseHelper::toString).orElse(""))
-                .map(String::trim)
-                .filter(value -> !value.isBlank())
-                .collect(Collectors.joining(" "));
-
-        try (DirectoryReader reader = DirectoryReader.open(index.directory())) {
-            throwIfSimilarSearchTimedOut(deadlineNanos);
-            IndexSearcher searcher = new IndexSearcher(reader);
-            Query query = buildLuceneQuery(index.analyzer(), columns, queryText);
-            TopDocs topDocs = searcher.search(query, luceneSimilarSearchTopK);
-            if (topDocs.scoreDocs.length == 0) {
-                return Optional.empty();
-            }
-            Optional<Record> result = bestSimilarRecord(Stream.of(topDocs.scoreDocs)
-                    .map(scoreDoc -> toRow(searcher, scoreDoc, columns))
-                    .filter(Objects::nonNull)
-                    .map(row -> scoreRecord(row, values)), deadlineNanos);
-            result.ifPresent(rec -> LOGGER.trace("Found {}", rec));
-            return result.map(rec -> toMap(columns, rec.data()));
-        } catch (IOException | ParseException e) {
-            LOGGER.warn("Lucene similar search failed for {}", table, e);
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Builds a Lucene query for multi-column candidate retrieval.
-     * <p>
-     * User values are escaped to avoid syntax issues with Lucene special
-     * characters (for example: {@code (}, {@code :}, {@code +}).
-     * If all values are blank, a {@link MatchAllDocsQuery} is used.
-     *
-     * @param analyzer analyzer used by Lucene parser
-     * @param columns fields to query
-     * @param queryText plain text created from expected values
-     * @return Lucene query ready to run with {@link IndexSearcher}
-     * @throws ParseException if Lucene parser cannot parse the escaped expression
-     */
-    private Query buildLuceneQuery(Analyzer analyzer, String[] columns, String queryText) throws ParseException {
-        if (queryText.isBlank()) {
-            return new MatchAllDocsQuery();
-        }
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(columns, analyzer);
-        parser.setDefaultOperator(QueryParser.Operator.OR);
-        return parser.parse(QueryParserBase.escape(queryText));
-    }
-
-    /**
-     * Loads one Lucene document and maps it to row-like array aligned with
-     * provided columns.
-     *
-     * @param searcher Lucene searcher for current directory reader
-     * @param scoreDoc Lucene hit descriptor
-     * @param columns ordered field list
-     * @return row values aligned with {@code columns}, or {@code null} if document cannot be read
-     */
-    private String[] toRow(IndexSearcher searcher, ScoreDoc scoreDoc, String[] columns) {
-        try {
-            Document document = searcher.doc(scoreDoc.doc);
-            String[] rowValues = new String[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                rowValues[i] = document.get(columns[i]);
-            }
-            return rowValues;
-        } catch (IOException e) {
-            LOGGER.warn("Unable to load Lucene document", e);
-            return null;
-        }
-    }
-
-    /**
      * Calculates average similarity score for one candidate row.
      *
-     * @param rowValues actual values read from DB/Lucene candidate
+     * @param rowValues actual values read from DB candidate
      * @param values expected values from assertion context
      * @return {@link Record} carrying original data and computed score
      */
     private Record scoreRecord(String[] rowValues, Object[] values) {
-        double score = IntStream.range(0, values.length)
-                .mapToDouble(i -> similarityScore(values[i], rowValues[i]))
-                .sum() / values.length;
-        return new Record(rowValues, score);
-    }
-
-    /**
-     * Selects best candidate above the configured similarity threshold.
-     * <p>
-     * Iteration is manual (instead of {@code stream().reduce(...)}) to check timeout
-     * between elements and fail fast when deadline is exceeded.
-     *
-     * @param records candidate records to evaluate
-     * @param deadlineNanos absolute timeout deadline in nanoseconds
-     * @return best candidate above threshold, or empty if none qualify
-     */
-    private Optional<Record> bestSimilarRecord(Stream<Record> records, long deadlineNanos) {
-        Record best = null;
-        Iterator<Record> iterator = records.iterator();
-        while (iterator.hasNext()) {
-            throwIfSimilarSearchTimedOut(deadlineNanos);
-            Record next = iterator.next();
-            if (next.score() > SIMILARITY_THRESHOLD && (best == null || next.score() > best.score())) {
-                best = next;
-            }
+        double score = 0;
+        for (int i = 0; i < values.length; i++) {
+            score += similarityScore(values[i], rowValues[i]);
         }
-        return Optional.ofNullable(best);
-    }
-
-    /**
-     * SQL-backed best-candidate selection that evaluates timeout between fetched
-     * rows, avoiding full in-memory materialization before deadline checks.
-     *
-     * @param select open SELECT cursor with candidate rows
-     * @param values expected values used for score calculation
-     * @param deadlineNanos absolute timeout deadline in nanoseconds
-     * @return best candidate above threshold, or empty if none qualify
-     */
-    private Optional<Record> bestSimilarRecord(Select<String[]> select, Object[] values, long deadlineNanos) {
-        AtomicReference<Record> best = new AtomicReference<>();
-        select.forEachRow(row -> {
-            throwIfSimilarSearchTimedOut(deadlineNanos);
-            Record candidate = scoreRecord(row, values);
-            Record current = best.get();
-            if (candidate.score() > SIMILARITY_THRESHOLD
-                    && (current == null || candidate.score() > current.score())) {
-                best.set(candidate);
-            }
-        });
-        return Optional.ofNullable(best.get());
+        score /= values.length;
+        return new Record(rowValues, score);
     }
 
     /**
@@ -667,60 +462,16 @@ public class DatabaseSupport {
      * @return similarity where {@code 1.0} means exact match after normalization
      */
     private double similarityScore(Object expectedValue, String rowValue) {
-        String expected = Optional.ofNullable(expectedValue)
-                .map(DatabaseHelper::toString).orElse("").trim().toUpperCase();
-        String actual = Optional.ofNullable(rowValue).orElse("").trim().toUpperCase();
+        String expected = normalizeSimilarityValue(expectedValue == null ? null : DatabaseHelper.toString(expectedValue));
+        String actual = normalizeSimilarityValue(rowValue);
         int maxLength = Math.max(expected.length(), actual.length());
         double distance = LEVENSHTEIN_DISTANCE.apply(expected, actual);
         if (maxLength == 0) return 1.0;
         return (maxLength - distance) / maxLength;
     }
 
-    /**
-     * Returns cached Lucene index instance for the current
-     * connection/table/column-set tuple.
-     *
-     * @param db active database wrapper
-     * @param table table name
-     * @param columns normalized/formatted column names
-     * @return cached or newly created index, or {@code null} when index cannot be created
-     */
-    private LuceneIndex luceneIndexFor(Database db, String table, String[] columns) {
-        String alias = currentConnectionAlias();
-        String normalizedTable = db.table(table);
-        LuceneIndexKey key = new LuceneIndexKey(alias, normalizedTable, columns);
-        return luceneIndexes.computeIfAbsent(key, this::createLuceneIndex);
-    }
-
-    /**
-     * Creates a Lucene index from key and current index directory configuration.
-     * Any I/O error is converted to warning and caller receives {@code null}
-     * so similar search can gracefully fallback.
-     *
-     * @param key index identity key
-     * @return created index, or {@code null} on failure
-     */
-    private LuceneIndex createLuceneIndex(LuceneIndexKey key) {
-        try {
-            return LuceneIndexFactory.createIndex(key, luceneSimilarSearchIndexDir);
-        } catch (IOException e) {
-            LOGGER.warn("Unable to initialize Lucene directory for {}", key.table(), e);
-            return null;
-        }
-    }
-
-    /**
-     * Resolves currently active connection alias.
-     * <p>
-     * If no explicit alias is selected, it falls back to first available one.
-     *
-     * @return connection alias used for cache keying
-     */
-    private String currentConnectionAlias() {
-        return Optional.ofNullable(currentConnection.get()).orElse(
-                connections.keySet().stream().findFirst()
-                        .orElseThrow(() -> new WakamitiException("There is no default connection"))
-        );
+    private String normalizeSimilarityValue(String value) {
+        return value == null ? "" : value.trim().toUpperCase();
     }
 
     /**
@@ -823,32 +574,6 @@ public class DatabaseSupport {
     private static final class SimilarSearchTimeoutException extends RuntimeException {
     }
 
-
-    /**
-     * Closes all Lucene indexes associated to given connection alias.
-     * This is used when a connection is replaced.
-     *
-     * @param alias connection alias
-     */
-    protected void closeLuceneIndexes(String alias) {
-        Iterator<Map.Entry<LuceneIndexKey, LuceneIndex>> iterator = luceneIndexes.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<LuceneIndexKey, LuceneIndex> entry = iterator.next();
-            if (entry.getKey().alias().equals(alias)) {
-                entry.getValue().close();
-                iterator.remove();
-            }
-        }
-    }
-
-    /**
-     * Closes and removes all cached Lucene indexes.
-     * Safe to call multiple times.
-     */
-    protected void closeAllLuceneIndexes() {
-        luceneIndexes.values().forEach(LuceneIndex::close);
-        luceneIndexes.clear();
-    }
 
 
     /**

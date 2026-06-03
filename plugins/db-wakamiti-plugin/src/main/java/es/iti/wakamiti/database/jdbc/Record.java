@@ -6,6 +6,8 @@
 package es.iti.wakamiti.database.jdbc;
 
 
+import groovy.transform.Generated;
+
 import java.util.Arrays;
 
 
@@ -18,16 +20,7 @@ import java.util.Arrays;
 public class Record {
 
     private final String[] data;
-    private double score = 0;
-
-    /**
-     * Constructs a new Record instance with the specified data.
-     *
-     * @param data The array of data retrieved from the query
-     */
-    public Record(String[] data) {
-        this.data = data;
-    }
+    private final double score;
 
     /**
      * Constructs a new Record instance with the specified data and score.
@@ -50,17 +43,6 @@ public class Record {
     }
 
     /**
-     * Sets the score for the record.
-     *
-     * @param score The score indicating the similarity of the data with predefined criteria
-     * @return The modified Record instance
-     */
-    public Record score(double score) {
-        this.score = score;
-        return this;
-    }
-
-    /**
      * Retrieves the score associated with the record.
      *
      * @return The score indicating the similarity of the data with predefined criteria
@@ -74,6 +56,8 @@ public class Record {
      *
      * @return A string representing the Record
      */
+    @Override
+    @Generated
     public String toString() {
         StringBuilder builder = new StringBuilder("Record[");
         if (score > 0) {
