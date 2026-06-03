@@ -27,7 +27,7 @@ module es.iti.wakamiti.db {
     requires commons.csv;
     requires org.assertj.core;
     requires org.hamcrest;
-    requires jsqlparser;
+    requires net.sf.jsqlparser;
     requires org.apache.commons.io;
     requires slf4jansi;
     requires awaitility;
@@ -42,4 +42,3 @@ module es.iti.wakamiti.db {
     provides ConnectionManager with DriverConnectionManager;
 
 }
-
