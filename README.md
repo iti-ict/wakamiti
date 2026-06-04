@@ -223,7 +223,7 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
 
-See the [LICENSE](LICENSE) file for the full license text.
+See the [LICENSE](LICENSE.md) file for the full license text.
 
 
 Maintainers
