@@ -64,6 +64,11 @@
               "depth": 2
             },
             {
+              "value": "Allure reporter",
+              "anchor": "/allure",
+              "depth": 2
+            },
+            {
               "value": "File Uploader",
               "anchor": "/fileuploader",
               "depth": 2
