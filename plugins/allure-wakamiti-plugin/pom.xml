@@ -17,7 +17,7 @@
     </parent>
 
     <artifactId>allure-wakamiti-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Allure Report</name>
     <description>Allure results exporter for Wakamiti executions</description>
