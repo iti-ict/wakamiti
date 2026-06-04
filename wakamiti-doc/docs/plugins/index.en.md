@@ -12,6 +12,7 @@ available, and you can also develop your own!
 - [AMQP steps](en/plugins/amqp)
 - [HTML report](en/plugins/html-reporter)
 - [Cucumber report](en/plugins/cucumber-exporter)
+- [Allure report](en/plugins/allure)
 - [File Uploader](en/plugins/fileuploader)
 - [Appium steps](en/plugins/appium)
 - [Azure Integration](en/plugins/azure)
