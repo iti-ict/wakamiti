@@ -41,6 +41,7 @@ public class AllureReporter implements Reporter {
     private static final Logger LOGGER = WakamitiLogger.forClass(AllureReporter.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT);
+    private static final String WAKAMITI = "wakamiti";
 
     private Path outputDir = Path.of("allure-results");
 
@@ -212,10 +213,10 @@ public class AllureReporter implements Reporter {
             TestCaseContext context
     ) {
         List<Map<String, String>> labels = new ArrayList<>();
-        addLabel(labels, "framework", "wakamiti");
+        addLabel(labels, "framework", WAKAMITI);
         addLabel(labels, "language", Optional.ofNullable(context.testCase.getLanguage()).orElse("gherkin"));
         addLabel(labels, "host", hostName());
-        addLabel(labels, "thread", Optional.ofNullable(context.testCase.getExecutionID()).orElse("wakamiti"));
+        addLabel(labels, "thread", Optional.ofNullable(context.testCase.getExecutionID()).orElse(WAKAMITI));
         addLabel(labels, "feature", context.feature == null ? null : context.feature.getName());
         addLabel(labels, "suite", context.feature == null ? null : context.feature.getName());
         addLabel(labels, "package", packageName(context.feature, context.testCase));
@@ -265,7 +266,7 @@ public class AllureReporter implements Reporter {
             PlanNodeSnapshot node
     ) {
         if (node.getErrorMessage() == null && node.getErrorTrace() == null) {
-            return null;
+            return Map.of();
         }
         Map<String, Object> details = new LinkedHashMap<>();
         putIfNotNull(details, "message", node.getErrorMessage());
@@ -328,7 +329,7 @@ public class AllureReporter implements Reporter {
                 .map(PlanNodeSnapshot::getSource)
                 .orElse(testCase.getSource());
         if (source == null || source.isBlank()) {
-            return "wakamiti";
+            return WAKAMITI;
         }
 
         String normalized = source.replace('\\', '/');
@@ -341,7 +342,7 @@ public class AllureReporter implements Reporter {
             normalized = normalized.substring(0, dotIndex);
         }
         normalized = normalized.replace('/', '.').replace(' ', '_');
-        return normalized.isBlank() ? "wakamiti" : normalized;
+        return normalized.isBlank() ? WAKAMITI : normalized;
     }
 
     private String serializeDataTable(

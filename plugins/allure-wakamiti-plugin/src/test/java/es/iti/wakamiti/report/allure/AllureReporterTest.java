@@ -10,11 +10,13 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.JsonPlanSerializer;
+import org.awaitility.Awaitility;
 import org.junit.AssumptionViolatedException;
 import org.junit.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.utility.DockerImageName;
 
@@ -26,6 +28,7 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -79,15 +82,11 @@ public class AllureReporterTest {
     @Test
     public void shouldRenderGeneratedResultsWithAllure() throws IOException {
         Path resultsDir = moduleDir().resolve("target/allure-render-results");
-        Path reportDir = moduleDir().resolve("target/allure-render-report");
         Path outputFile = moduleDir().resolve("target/allure-render-wakamiti.json");
 
         runFeature(moduleDir().resolve("src/test/resources/features/allure.feature").toString(), resultsDir, outputFile);
 
-        verifyRenderedReport(
-                resultsDir,
-                reportDir
-        );
+        verifyRenderedReport(resultsDir);
     }
 
     @Test
@@ -206,39 +205,31 @@ public class AllureReporterTest {
     }
 
     private void verifyRenderedReport(
-            Path resultsDir,
-            Path reportDir
+            Path resultsDir
     ) throws IOException {
-        cleanDirectory(reportDir);
-        Files.createDirectories(reportDir);
         skipWhenDockerUnavailable();
 
-        try (GenericContainer<?> container = new GenericContainer<>(ALLURE_DOCKER_SERVICE)
+        GenericContainer<?> container = new GenericContainer<>(ALLURE_DOCKER_SERVICE)
                 .withExposedPorts(5050)
                 .withEnv("CHECK_RESULTS_EVERY_SECONDS", "1")
                 .withEnv("KEEP_HISTORY", "1")
-                .withFileSystemBind(resultsDir.toAbsolutePath().toString(), "/app/allure-results")
-                .withFileSystemBind(reportDir.toAbsolutePath().toString(), "/app/default-reports")
                 .waitingFor(Wait.forLogMessage(".*Report successfully generated.*", 1))
-                .withStartupTimeout(Duration.ofMinutes(2))) {
+                .withStartupTimeout(Duration.ofMinutes(2));
+        copyDirectoryToContainer(container, resultsDir, "/app/allure-results");
 
+        try (container) {
             startOrSkipWhenDockerUnavailable(container);
 
-            Path summaryFile = reportDir.resolve("latest/widgets/summary.json");
-            Path suitesFile = reportDir.resolve("latest/widgets/suites.json");
-            Path statusChartFile = reportDir.resolve("latest/widgets/status-chart.json");
-
-            waitForFile(summaryFile, Duration.ofSeconds(30));
-            waitForFile(suitesFile, Duration.ofSeconds(30));
-            waitForFile(statusChartFile, Duration.ofSeconds(30));
-
-            JsonNode summary = OBJECT_MAPPER.readTree(summaryFile.toFile());
-            JsonNode suites = OBJECT_MAPPER.readTree(suitesFile.toFile());
-            JsonNode statusChart = OBJECT_MAPPER.readTree(statusChartFile.toFile());
+            JsonNode summary = readJsonFromContainer(container,
+                    "/app/default-reports/latest/widgets/summary.json", Duration.ofSeconds(30));
+            JsonNode suites = readJsonFromContainer(container,
+                    "/app/default-reports/latest/widgets/suites.json", Duration.ofSeconds(30));
+            JsonNode statusChart = readJsonFromContainer(container,
+                    "/app/default-reports/latest/widgets/status-chart.json", Duration.ofSeconds(30));
 
             assertThat(summary.path("statistic").path("failed").asInt()).isEqualTo(1);
-            assertThat(summary.path("statistic").path("broken").asInt()).isEqualTo(0);
-            assertThat(summary.path("statistic").path("skipped").asInt()).isEqualTo(0);
+            assertThat(summary.path("statistic").path("broken").asInt()).isZero();
+            assertThat(summary.path("statistic").path("skipped").asInt()).isZero();
             assertThat(summary.path("statistic").path("passed").asInt()).isEqualTo(1);
             assertThat(summary.path("statistic").path("total").asInt()).isEqualTo(2);
 
@@ -249,6 +240,36 @@ public class AllureReporterTest {
                     .map(node -> node.path("name").asText()))
                     .contains("[ID-2] Scenario: failing scenario");
         }
+    }
+
+    private void copyDirectoryToContainer(
+            GenericContainer<?> container,
+            Path sourceDir,
+            String targetDir
+    ) throws IOException {
+        try (Stream<Path> paths = Files.walk(sourceDir)) {
+            for (Path file : paths.filter(Files::isRegularFile).collect(Collectors.toList())) {
+                byte[] content = Files.readAllBytes(file);
+                String targetPath = targetDir + "/" + sourceDir.relativize(file).toString().replace('\\', '/');
+                container.withCopyToContainer(Transferable.of(content), targetPath);
+            }
+        }
+    }
+
+    private JsonNode readJsonFromContainer(
+            GenericContainer<?> container,
+            String containerPath,
+            Duration timeout
+    ) {
+        AtomicReference<JsonNode> json = new AtomicReference<>();
+        Awaitility.await()
+                .atMost(timeout)
+                .ignoreExceptions()
+                .until(() -> {
+                    json.set(container.copyFileFromContainer(containerPath, OBJECT_MAPPER::readTree));
+                    return json.get() != null;
+                });
+        return json.get();
     }
 
     private List<JsonNode> readResults(
@@ -322,25 +343,6 @@ public class AllureReporterTest {
                 .map(parameter -> parameter.path("value").asText())
                 .findFirst()
                 .orElse(null);
-    }
-
-    private void waitForFile(
-            Path file,
-            Duration timeout
-    ) {
-        long deadline = System.nanoTime() + timeout.toNanos();
-        while (System.nanoTime() < deadline) {
-            if (Files.isRegularFile(file)) {
-                return;
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException("Interrupted waiting for " + file, e);
-            }
-        }
-        throw new AssertionError("Expected file was not generated: " + file);
     }
 
     private void cleanDirectory(
