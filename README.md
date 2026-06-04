@@ -213,21 +213,21 @@ the results of conducted researches, and driving knowledge transfer among compan
 License
 ----------------------------------------------------------------------------------------------------
 
-```
-Mozilla Public License 2.0
+Wakamiti is licensed under the Mozilla Public License 2.0.
 
+Copyright © 2022 Instituto Tecnológico de Informática (ITI).
+
+```
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
 
+See the [LICENSE](LICENSE) file for the full license text.
 
 
-Authors
+Maintainers
 ----------------------------------------------------------------------------------------------------
 
-- **María Galbis Calomarde** - mgalbis@iti.es 
-- **Carlos Oliva Miñana** - coliva@iti.es
-    
-
+- **María Galbis Calomarde** - mgalbis@iti.es
 
