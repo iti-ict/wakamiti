@@ -3,8 +3,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths-ignore:
-       - 'wakamiti-doc/**'
-       - 'wakamiti-vscode-extension/**'
+      - 'wakamiti-doc/**'
+      - 'wakamiti-vscode-extension/**'
+      - '.github/workflows/**'
+      - '**.md'
 
 jobs:
   build:
