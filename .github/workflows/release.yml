@@ -64,6 +64,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: ./mvnw -B install -DskipTests -ntp
 
+      - name: Upload launcher zip to GitHub release
+        if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ZIP_FILE=$(find wakamiti-engine/wakamiti-launcher/target -maxdepth 1 -type f -name 'wakamiti-bin-*.zip' | head -n 1)
+          test -n "$ZIP_FILE"
+          gh release upload "${{ needs.get-env.outputs.TAG_NAME }}" "$ZIP_FILE" --clobber
+
       - name: Publish Docker tagged version and latest version
         if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') }}
         run: |
