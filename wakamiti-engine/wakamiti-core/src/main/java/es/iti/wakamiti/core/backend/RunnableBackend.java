@@ -322,7 +322,13 @@ public class RunnableBackend extends AbstractBackend {
             Object result = stepBackend.runnableStep().run(arguments);
             ((Map<String, Object>) extraProperties.get(ContextMap.RESULTS_PROP))
                     .put(step.properties().getOrDefault("id", step.id()), result);
-            step.prepareExecution().markFinished(clock.instant(), Result.PASSED);
+            step.prepareExecution().markFinished(
+                    clock.instant(),
+                    Result.PASSED,
+                    null,
+                    null,
+                    result == null ? null : result.toString()
+            );
         } catch (Throwable e) {
             fillErrorState(step, instant, e, stepBackend.classifier());
         } finally {
