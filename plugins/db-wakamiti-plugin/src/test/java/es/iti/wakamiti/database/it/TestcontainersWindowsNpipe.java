@@ -12,6 +12,16 @@ import java.util.Locale;
 
 final class TestcontainersWindowsNpipe {
 
+    private static final String[] WINDOWS_NPIPE_ERROR_MARKERS = {
+            "npipe://",
+            "\\\\.\\pipe\\",
+            "//./pipe/",
+            "named pipe",
+            "docker_engine",
+            "dockerdesktoplinuxengine",
+            "dockerdesktopwindowsengine"
+    };
+
     private TestcontainersWindowsNpipe() {
     }
 
@@ -19,7 +29,7 @@ final class TestcontainersWindowsNpipe {
         try {
             container.start();
         } catch (RuntimeException e) {
-            if (isWindows() && hasNpipeConnectionError(e)) {
+            if (isWindows() && isWindowsNpipeConnectionError(e)) {
                 throw new AssumptionViolatedException(
                         "Skipping Testcontainers test: Docker npipe is not reachable on Windows", e);
             }
@@ -32,14 +42,16 @@ final class TestcontainersWindowsNpipe {
         return osName.toLowerCase(Locale.ROOT).contains("win");
     }
 
-    private static boolean hasNpipeConnectionError(Throwable throwable) {
+    static boolean isWindowsNpipeConnectionError(Throwable throwable) {
         Throwable current = throwable;
         while (current != null) {
             String message = current.getMessage();
             if (message != null) {
                 String normalizedMessage = message.toLowerCase(Locale.ROOT);
-                if (normalizedMessage.contains("docker")) {
-                    return true;
+                for (String marker : WINDOWS_NPIPE_ERROR_MARKERS) {
+                    if (normalizedMessage.contains(marker)) {
+                        return true;
+                    }
                 }
             }
             current = current.getCause();
