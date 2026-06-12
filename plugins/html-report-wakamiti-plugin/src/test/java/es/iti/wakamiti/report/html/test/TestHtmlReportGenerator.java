@@ -172,7 +172,7 @@ public class TestHtmlReportGenerator {
                 .contains("step--body-heading\">Response</div>")
                 .contains("class=\"step--format-button\"")
                 .contains("data-action=\"toggle-response-format\"")
-                .contains(">{}</button>")
+                .contains(">{ }</button>")
                 .contains("class=\"step--response\"");
         org.assertj.core.api.Assertions.assertThat(html_2)
                 .contains("class=\"step--response\"");
