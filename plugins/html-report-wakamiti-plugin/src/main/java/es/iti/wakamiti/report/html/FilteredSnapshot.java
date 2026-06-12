@@ -33,6 +33,7 @@ public class FilteredSnapshot {
     private String p;
     private String o;
     private String[][] d;
+    private String response;
     private String m;
     private String e;
     private Result r;
@@ -53,6 +54,7 @@ public class FilteredSnapshot {
         filteredSnapshot.p = snapshot.getDocument();
         filteredSnapshot.o = snapshot.getDocumentType();
         filteredSnapshot.d = snapshot.getDataTable();
+        filteredSnapshot.response = snapshot.getResponse();
         filteredSnapshot.m = snapshot.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP) ?
                 snapshot.getErrorMessage() : null;
         filteredSnapshot.e = snapshot.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)
@@ -107,6 +109,10 @@ public class FilteredSnapshot {
 
     public String[][] getD() {
         return d;
+    }
+
+    public String getResponse() {
+        return response;
     }
 
     public String getM() {
