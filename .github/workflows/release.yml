@@ -65,7 +65,7 @@ jobs:
         run: ./mvnw -B install -DskipTests -ntp
 
       - name: Upload launcher zip to GitHub release
-        if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') }}
+        if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') && !contains(needs.get-env.outputs.TAG_NAME, '-plugin-v') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
