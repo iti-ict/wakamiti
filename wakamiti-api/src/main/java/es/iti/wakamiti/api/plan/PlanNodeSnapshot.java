@@ -56,6 +56,7 @@ public class PlanNodeSnapshot {
     private String errorMessage;
     private String errorTrace;
     private String errorClassifier;
+    private String response;
     private Map<String, Long> errorClassifiers;
     private Result result;
     private Map<Result, Long> testCaseResults;
@@ -95,6 +96,7 @@ public class PlanNodeSnapshot {
         this.errorMessage = node.errors().findFirst().map(Throwable::getLocalizedMessage)
                 .orElse(null);
         this.errorTrace = node.errors().findFirst().map(this::errorTrace).orElse(null);
+        this.response = node.executionState().flatMap(ExecutionState::response).orElse(null);
         if (node.nodeType == NodeType.STEP && node.executionState().flatMap(ExecutionState::errorClassifier).isPresent()) {
             this.errorClassifier = node.executionState().flatMap(ExecutionState::errorClassifier).orElse(null);
         } else if (node.nodeType == NodeType.STEP_AGGREGATOR || node.nodeType == NodeType.TEST_CASE) {
@@ -240,6 +242,7 @@ public class PlanNodeSnapshot {
         copy.dataTable = this.dataTable;
         copy.errorMessage = this.errorMessage;
         copy.errorTrace = this.errorTrace;
+        copy.response = this.response;
         copy.testCaseResults = this.testCaseResults;
         copy.childrenResults = this.childrenResults;
         copy.errorClassifiers = this.errorClassifiers;
@@ -349,6 +352,10 @@ public class PlanNodeSnapshot {
 
     public String getErrorClassifier() {
         return errorClassifier;
+    }
+
+    public String getResponse() {
+        return response;
     }
 
 
