@@ -8,6 +8,7 @@ package es.iti.wakamiti.report.html.test;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.report.html.FilteredSnapshot;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
 import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
 import org.custommonkey.xmlunit.HTMLDocumentBuilder;
@@ -34,6 +35,9 @@ public class TestHtmlReportGenerator {
     private static Document xml_2;
     private static Document xml_3;
     private static Document xml_noExecution;
+    private static String html_2;
+    private static String templateSource;
+    private static String scriptSource;
 
     @BeforeClass
     public static void setup() throws IOException, ParserConfigurationException, SAXException {
@@ -45,6 +49,9 @@ public class TestHtmlReportGenerator {
         xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
         xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
         xml_noExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
+        html_2 = Files.readString(Path.of("target/wakamiti_2.html"));
+        templateSource = Files.readString(Path.of("src/main/resources/report.ftl"));
+        scriptSource = Files.readString(Path.of("src/main/resources/lib/global.js"));
     }
 
     private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
@@ -142,6 +149,44 @@ public class TestHtmlReportGenerator {
         assertThat(xml_2)
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .doNotExist();
+    }
+
+    @Test
+    public void testFilteredSnapshotIncludesReturnedValue() throws IOException {
+        try (Reader reader = Files
+                .newBufferedReader(Paths.get("src/test/resources/wakamiti_2.json"), StandardCharsets.UTF_8)
+        ) {
+            PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
+            FilteredSnapshot snapshot = FilteredSnapshot.of(plan.getChildren().get(0).getChildren().get(0)
+                    .getChildren().get(2).getChildren().get(0));
+
+            assertThat(snapshot.getResponse()).isEqualTo("{\"alpha\":1,\"nested\":{\"beta\":2}}");
+        }
+    }
+
+    @Test
+    public void testReportTemplateIncludesPrettyToggleForStructuredResponses() {
+        org.assertj.core.api.Assertions.assertThat(templateSource)
+                .contains("<%#response%>")
+                .contains("<%#prettyResponse%>")
+                .contains("step--body-heading\">Response</div>")
+                .contains("class=\"step--format-button\"")
+                .contains("data-action=\"toggle-response-format\"")
+                .contains(">{ }</button>")
+                .contains("class=\"step--response\"");
+        org.assertj.core.api.Assertions.assertThat(html_2)
+                .contains("class=\"step--response\"");
+    }
+
+    @Test
+    public void testPrettyResponseIsOnlyEnabledForStructuredResponses() {
+        org.assertj.core.api.Assertions.assertThat(scriptSource)
+                .contains("function canPrettifyResponse(text)")
+                .contains("function decorateNode(node)")
+                .contains("node.prettyResponse = canPrettifyResponse(node.response);")
+                .contains("aux?.forEach(decorateNode);")
+                .contains("$(document).on('click', '.step--format-button[data-action=\"toggle-response-format\"]'")
+                .contains("$(document).on('change', '.nav-menu--control input[type=\"checkbox\"]'");
     }
 
     private String uri(String resource) {

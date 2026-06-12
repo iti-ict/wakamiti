@@ -292,14 +292,28 @@
                 </table>
             </div>
             <%/hasDataTable%>
+            <%#response%>
+            <div class="step--body-heading-wrap">
+                <div class="step--body-heading">Response</div>
+                <%#prettyResponse%>
+                <button class="step--format-button" data-action="toggle-response-format" data-mode="raw" title="Pretty format" type="button">{ }</button>
+                <%/prettyResponse%>
+            </div>
+            <div class="step--body">
+                <pre class="step--code-snippet text hljs"><code class="step--response"><%response%></code></pre>
+            </div>
+            <%/response%>
             <%#m%>
+            <div class="step--body-heading-wrap">
+                <div class="step--body-heading">Response</div>
+            </div>
             <div class="step--body">
                 <pre class="step--code-snippet text hljs"><code class="step--<#if plan.testCaseResults?has_content><%#r%><%toHTML%><%/r%>-</#if>message"><%#e%><%e%><%/e%><%^e%><%m%><%/e%></code></pre>
-                        </div>
-                        <%/m%>
-                    </div>
-                <%/hasDoc%>
-            </li>
+            </div>
+            <%/m%>
+        </div>
+        <%/hasDoc%>
+    </li>
         </script>
         <script id="scenario" type="x-tmpl-mustache">
             <li id="<%i%>">

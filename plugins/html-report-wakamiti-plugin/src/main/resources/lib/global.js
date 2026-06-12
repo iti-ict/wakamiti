@@ -15,6 +15,78 @@ function toHTML(s) {
     return s?.toLowerCase().replace('_', '-');
 }
 
+function looksLikeJson(text) {
+    const trimmed = text?.trim();
+    if (!trimmed || !['{', '['].includes(trimmed[0])) {
+        return false;
+    }
+    try {
+        JSON.parse(trimmed);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function parseXml(text) {
+    const trimmed = text?.trim();
+    if (!trimmed || !trimmed.startsWith('<')) {
+        return null;
+    }
+    const xml = new DOMParser().parseFromString(trimmed, 'application/xml');
+    return xml.querySelector('parsererror') ? null : xml;
+}
+
+function looksLikeXml(text) {
+    return !!parseXml(text);
+}
+
+function canPrettifyResponse(text) {
+    return looksLikeJson(text) || looksLikeXml(text);
+}
+
+function decorateNode(node) {
+    if (!node) {
+        return node;
+    }
+    node.prettyResponse = canPrettifyResponse(node.response);
+    node.c?.forEach(decorateNode);
+    return node;
+}
+
+function formatXml(text) {
+    const xml = parseXml(text);
+    if (!xml) {
+        return text;
+    }
+    const serialized = new XMLSerializer().serializeToString(xml);
+    const formatted = serialized.replace(/(>)(<)(\/*)/g, '$1\n$2$3');
+    let indent = 0;
+    return formatted.split('\n').map((line) => {
+        let currentIndent = indent;
+        if (line.match(/^<\//)) {
+            currentIndent = Math.max(indent - 1, 0);
+        }
+        const output = `${'  '.repeat(currentIndent)}${line}`;
+        if (line.match(/^<[^!?/][^>]*[^/]>/) && !line.includes('</')) {
+            indent += 1;
+        } else if (line.match(/^<\//)) {
+            indent = currentIndent;
+        }
+        return output;
+    }).join('\n');
+}
+
+function prettifyResponse(text) {
+    if (looksLikeJson(text)) {
+        return JSON.stringify(JSON.parse(text), null, 2);
+    }
+    if (looksLikeXml(text)) {
+        return formatXml(text);
+    }
+    return text;
+}
+
 /**
  * Flattens a nested array to a single depth level.
  *
@@ -206,6 +278,7 @@ function filtered() {
         }, []);
     }
 
+    aux?.forEach(decorateNode);
     return aux;
 }
 
@@ -312,7 +385,7 @@ function buttons() {
     $('input[type="checkbox"],select').change(function(e) {
         $('.loader').show(50);
     });
-    $(document).on('change', 'input[type="checkbox"]', function(e){
+    $(document).on('change', '.nav-menu--control input[type="checkbox"]', function(e){
         e.stopImmediatePropagation();
         setPage(1);
         makePages();
@@ -346,6 +419,29 @@ function buttons() {
         resetUrl();
         setPage($(this).attr('data-page'));
         render();
+    });
+
+    $(document).on('click', '.step--format-button[data-action="toggle-response-format"]', function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const button = this;
+        const responseBody = button.closest('.step--body-heading-wrap')?.nextElementSibling;
+        const code = responseBody?.querySelector('code.step--response');
+        if (!code) {
+            return;
+        }
+        const raw = code.dataset.raw || code.textContent;
+        code.dataset.raw = raw;
+        if ((button.dataset.mode || 'raw') === 'raw' && canPrettifyResponse(raw)) {
+            code.dataset.pretty = code.dataset.pretty || prettifyResponse(raw);
+            code.textContent = code.dataset.pretty;
+            button.dataset.mode = 'pretty';
+            button.classList.add('on');
+        } else {
+            code.textContent = raw;
+            button.dataset.mode = 'raw';
+            button.classList.remove('on');
+        }
     });
 
     $('nav a').on('click', function(e) {
@@ -399,7 +495,7 @@ function generateContent(e) {
                         .reduce((r, it) => { (r[it.r] = (r[it.r] || [])).push(it); return r }, {}))
                         .map((it)=> { return {key: it[0], value: it[1].length} })
                 },
-                hasDoc: function(){ return !!this.m || !!this.p || !!this.d },
+                hasDoc: function(){ return !!this.m || !!this.p || !!this.d || !!this.response },
                 hasDataTable: function(){ return !!this.d },
                 getHeader: function(){ return this.d[0] },
                 getBody: function(){ return this.d.slice(1) },

@@ -609,6 +609,39 @@ ul {
 .step--body table thead td {
     border-bottom-width: 1px !important;
 }
+.step--body-heading-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 16px 4px;
+}
+.step--body-heading {
+    margin: 0;
+    color: var(--grey700);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+}
+.step--format-button {
+    border: 1px solid var(--grey300);
+    background-color: var(--card-bg);
+    color: var(--grey700);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: var(--link-transition);
+}
+.step--format-button:hover {
+    border-color: var(--grey400);
+}
+.step--format-button.on {
+    border-color: #a5d6a7;
+    background-color: #edf7ee;
+    color: #2e7d32;
+}
 .step--message {
     font-size: 12px;
     margin: 10px 0 0;

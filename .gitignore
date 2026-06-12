@@ -1,5 +1,6 @@
 .project
 .idea
+.aiassistant
 .settings
 .vscode
 .factorypath
