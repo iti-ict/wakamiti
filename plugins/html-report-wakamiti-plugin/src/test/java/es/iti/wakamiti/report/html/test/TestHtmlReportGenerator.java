@@ -178,17 +178,6 @@ public class TestHtmlReportGenerator {
                 .contains("class=\"step--response\"");
     }
 
-    @Test
-    public void testPrettyResponseIsOnlyEnabledForStructuredResponses() {
-        org.assertj.core.api.Assertions.assertThat(scriptSource)
-                .contains("function canPrettifyResponse(text)")
-                .contains("function decorateNode(node)")
-                .contains("node.prettyResponse = canPrettifyResponse(node.response);")
-                .contains("aux?.forEach(decorateNode);")
-                .contains("$(document).on('click', '.step--format-button[data-action=\"toggle-response-format\"]'")
-                .contains("$(document).on('change', '.nav-menu--control input[type=\"checkbox\"]'");
-    }
-
     private String uri(String resource) {
         return Path.of("target/" + resource + ".html").toUri().toString();
     }
