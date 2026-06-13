@@ -1,9 +1,36 @@
-/**
- * The current filtered pages.
- *
- * @type {*[]}
- */
-let cp = [];
+let sourceData = [];
+let filteredData = [];
+let currentPages = [];
+let handlersInitialized = false;
+let pageIndex = new Map();
+
+const NON_PASSED_RESULTS = new Set(['ERROR', 'FAILED', 'UNDEFINED']);
+const TEMPLATE_VIEW_HELPERS = {
+    isAggregator: function () { return this.t === 'AGGREGATOR'; },
+    toHTML: function () { return toHTML(this); },
+    toView: function () {
+        return toHTML(this).split('-')
+            .map((word) => word[0].toUpperCase() + word.substring(1))
+            .join(' ');
+    },
+    isPassed: function () { return this._isPassed; },
+    hasChildren: function () { return this._hasChildren; },
+    hasTags: function () { return this._hasTags; },
+    cResults: function () { return this._cResults; },
+    sum: function () { return this._sum; },
+    cFResults: function () { return this._cFResults; },
+    hasDoc: function () { return this._hasDoc; },
+    hasDataTable: function () { return this._hasDataTable; },
+    getHeader: function () { return this.d?.[0] || []; },
+    getBody: function () { return this.d?.slice(1) || []; },
+    count: function () { return this._count; },
+    isNum: function () { return !isNaN(this); },
+    isFirst: function () { return this.current === 1; },
+    isLast: function () { return this.current === this.total; },
+    prev: function () { return this.current - 1; },
+    next: function () { return this.current + 1; },
+    isCurrent: function () { return this === getPage(); }
+};
 
 /**
  * Replace some values to display correctly in HTML.
@@ -13,6 +40,14 @@ let cp = [];
  */
 function toHTML(s) {
     return s?.toLowerCase().replace('_', '-');
+}
+
+function debounce(fn, wait) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => fn.apply(this, args), wait);
+    };
 }
 
 function looksLikeJson(text) {
@@ -45,12 +80,59 @@ function canPrettifyResponse(text) {
     return looksLikeJson(text) || looksLikeXml(text);
 }
 
+function formatResultSummary(entries) {
+    return Object.entries(entries || {}).map((entry) => ({key: entry[0], value: entry[1]}));
+}
+
+/**
+ * Flattens a nested array to a single depth level.
+ *
+ * @param {Array} c The array to be flattened.
+ * @returns {Array}
+ */
+function flatten(c) {
+    return c.map((it) => it.t !== 'STEP' && it.t !== 'VIRTUAL_STEP' && it.c ? flatten(it.c) : it)
+        .flat(Infinity);
+}
+
+function buildSearchText(node) {
+    return [
+        node.n,
+        ...(node.g || []).map((tag) => `@${tag}`),
+        ...(node.l || [])
+    ]
+        .filter(Boolean)
+        .join('\n')
+        .toLowerCase();
+}
+
 function decorateNode(node) {
     if (!node) {
         return node;
     }
-    node.prettyResponse = canPrettifyResponse(node.response);
+
     node.c?.forEach(decorateNode);
+
+    const flattenedChildren = node.c?.length ? flatten(node.c) : [];
+    const resultCounts = flattenedChildren.reduce((result, entry) => {
+        if (entry?.r) {
+            result[entry.r] = (result[entry.r] || 0) + 1;
+        }
+        return result;
+    }, {});
+
+    node.prettyResponse = canPrettifyResponse(node.response);
+    node._searchText = buildSearchText(node);
+    node._isPassed = !NON_PASSED_RESULTS.has(node.r);
+    node._hasChildren = !!node.c?.length;
+    node._hasTags = !!node.g?.length;
+    node._cResults = formatResultSummary(node.tr);
+    node._sum = Object.values(node.tr || {}).reduce((result, value) => result + value, 0);
+    node._cFResults = formatResultSummary(resultCounts);
+    node._hasDoc = !!node.m || !!node.p || !!node.d || !!node.response;
+    node._hasDataTable = !!node.d;
+    node._count = flattenedChildren.length;
+
     return node;
 }
 
@@ -88,24 +170,12 @@ function prettifyResponse(text) {
 }
 
 /**
- * Flattens a nested array to a single depth level.
- *
- * @param {Array} c - The array to be flattened.
- * @returns {Array} - The flattened array.
- */
-function flatten(c) {
-    return c.map((it) => it.t !== 'STEP' && it.t !== 'VIRTUAL_STEP' && it.c ? flatten(it.c) : it)
-        .flat(Infinity);
-}
-
-/**
  * Sets the given value as the current page.
  *
- * @param {number} n The current page number
+ * @param {number|string} n The current page number
  */
 function setPage(n) {
     document.getElementById('current-page').value = n;
-    // console.log('Page set to ' + n);
 }
 
 /**
@@ -114,7 +184,7 @@ function setPage(n) {
  * @returns {number}
  */
 function getPage() {
-    return parseInt(document.getElementById('current-page').value);
+    return parseInt(document.getElementById('current-page').value, 10);
 }
 
 /**
@@ -123,110 +193,182 @@ function getPage() {
  * @returns {number}
  */
 function getPageSize() {
-    return parseInt(document.getElementById('numElements').value);
+    return parseInt(document.getElementById('numElements').value, 10);
 }
 
 /**
  * Removes the hash part from the URL.
+ *
+ * @param {boolean} resetScroll Whether to scroll to the top after clearing the hash.
  */
-function resetUrl() {
+function resetUrl(resetScroll = true) {
     if (window.location.href.includes('#')) {
         window.history.pushState({}, document.title, window.location.href.split('#')[0]);
     }
-    $('html,body').scrollTop(0);
+    if (resetScroll) {
+        $('html,body').scrollTop(0);
+    }
+}
+
+function buildTemplateView(item) {
+    return Object.assign(Object.create(TEMPLATE_VIEW_HELPERS), item || {});
+}
+
+function clearRenderedPanel(element) {
+    $(element).find('li:not(.loader):not(.empty),button').remove();
+    $(element).find('.empty').hide(50);
+}
+
+function renderPanel(element, templateId, items) {
+    const fragment = new DocumentFragment();
+    const container = document.createElement('div');
+
+    if (items?.length > 0) {
+        items.forEach((item) => {
+            container.innerHTML = Mustache.render(window.templates[templateId], buildTemplateView(item), window.templates);
+            fragment.appendChild(container.firstElementChild);
+        });
+        clearRenderedPanel(element);
+        $(fragment).hide(0);
+        element.appendChild(fragment);
+        $(element).find('button').show(0);
+        $(element).find('.loader').hide(50);
+        $(element).find('.empty').hide(50);
+        $(element).find('li:not(.loader):not(.empty)').show(50);
+    } else {
+        clearRenderedPanel(element);
+        $(element).find('.loader').hide(50);
+        $(element).find('.empty').show(50);
+    }
 }
 
 /**
  * Renders the content of mustache templates.
  */
 function render() {
-    // clean the mustache panels
-    for (let e of document.getElementsByClassName('mustache')) {
-        $(e).find('li:not(.loader):not(.empty)').remove();
-        $(e).find('.empty').hide(50);
+    for (const element of document.getElementsByClassName('mustache')) {
+        if (!element.id) {
+            element.id = Math.random().toString().replace('0.', '');
+        }
+        const templateId = element.getAttribute('data-template');
+        const projector = element.getAttribute('data-prev');
+        const items = projector ? window[projector](filteredData) : filteredData;
+        renderPanel(element, templateId, items);
     }
-    const data = filtered();
-    // send data to mustache panels
-    for (let e of document.getElementsByClassName('mustache')) {
-        if (!e.id) e.id = Math.random().toString().replace("0.", "");
-        const id = e.getAttribute("data-template");
-        const func = e.getAttribute("data-prev");
-        const aux = func ? this[func](data) : data;
-        window.worker.postMessage({uuid: e.id, id, value: {c: aux}});
-    }
+
+    focusAnchor();
+}
+
+function indexNodes(nodes, pageNumber) {
+    nodes?.forEach((node) => {
+        if (node.i) {
+            pageIndex.set(node.i, pageNumber);
+        }
+        indexNodes(node.c, pageNumber);
+    });
 }
 
 /**
  * Sets the pages according to the applied filters and selected settings.
  */
 function makePages() {
-    const d = filtered();
-    const ps = getPageSize();
-    // console.log('Page size: ' + pageSize);
-    cp = Array.from({length: Math.ceil(d.length / ps)}, (v, i) => {
-        const f = ps * i;
-        return d.slice(f, f + ps);
+    const pageSize = getPageSize();
+    currentPages = Array.from({length: Math.ceil(filteredData.length / pageSize)}, (_, index) => {
+        const first = pageSize * index;
+        return filteredData.slice(first, first + pageSize);
     });
+
+    pageIndex = new Map();
+    currentPages.forEach((pageEntries, index) => indexNodes(pageEntries, index + 1));
 }
 
 /**
  * Returns the current page.
  *
- * @param data Unused parameter
- * @returns {*}
+ * @returns {*[]}
  */
-function page(data) {
-    return cp[getPage() - 1]
+function page() {
+    return currentPages[getPage() - 1] || [];
 }
 
 /**
- * Generates the paging elements from the given data and the paging
- * configuration.
+ * Generates the paging elements from the given data and the paging configuration.
  *
  * @param data {*[]} The data
- * @returns {[{current: number, total: number, pages: string[]}]}
+ * @returns {[{current: number, total: number, pages: string[]}]}.
  */
 function pages(data) {
-    const p = getPage();
-    const t = Math.ceil(data.length / getPageSize());
-    const s = Math.min(t, 7);
-    const h = Math.ceil(s * .5);
-    // console.log('page: ' + p);
-    // console.log('total: ' + t);
-    // console.log('size: ' + s);
-    // console.log('half: ' + h);
-    let pages = Array.from({length: s}, (v, i) => {
-        if (p < h) {
-            return 1 + i;
-        } else if (p > (t - h)) {
-            return t - s + 1 + i;
-        } else {
-            return p - h + 1 + i;
+    const total = Math.ceil(data.length / getPageSize());
+    if (total === 0) {
+        return [];
+    }
+    const current = Math.min(getPage(), total);
+    const size = Math.min(total, 7);
+    const half = Math.ceil(size * 0.5);
+    let result = Array.from({length: size}, (_, index) => {
+        if (current < half) {
+            return 1 + index;
         }
+        if (current > (total - half)) {
+            return total - size + 1 + index;
+        }
+        return current - half + 1 + index;
     });
-    if (pages.length < t) {
-        if (pages[0] > 1) {
-            pages[0] = '...';
+    if (result.length < total) {
+        if (result[0] > 1) {
+            result[0] = '...';
         }
-        if (pages.at(-1) < t) {
-            pages[pages.length - 1] = '...';
+        if (result.at(-1) < total) {
+            result[result.length - 1] = '...';
         }
     }
-    // console.log("Pages: " + pages);
-    return [{current: p, total: t, pages}];
+    return [{
+        current,
+        total,
+        pages: result.map((value) => ({
+            value,
+            isNum: !isNaN(value),
+            isCurrent: value === current
+        }))
+    }];
 }
 
 /**
  * Gets the checked status list.
  *
- * @returns {string[]}
+ * @returns {Set<string>}
  */
 function statuses() {
-    const a = [];
-    for (let e of document.querySelectorAll('.nav-menu--control input')) {
-        if (e.checked) a.push(e.value);
+    const result = new Set();
+    for (const element of document.querySelectorAll('.nav-menu--control input')) {
+        if (element.checked) {
+            result.add(element.value);
+        }
     }
-    return a;
+    return result;
+}
+
+function matchesText(node, text) {
+    return node._searchText?.includes(text);
+}
+
+function filterScenario(node, allowedStatuses, text) {
+    if (node.t === 'AGGREGATOR') {
+        const children = (node.c || [])
+            .map((child) => filterScenario(child, allowedStatuses, text))
+            .filter(Boolean);
+        return children.length > 0 ? {...node, c: children} : null;
+    }
+
+    if (node.r && !allowedStatuses.has(node.r)) {
+        return null;
+    }
+
+    if (!text || matchesText(node, text)) {
+        return node;
+    }
+
+    return null;
 }
 
 /**
@@ -235,51 +377,22 @@ function statuses() {
  * @returns {*[]}
  */
 function filtered() {
-    // filter by results
-    let aux = JSON.parse(data).c;
-    if (aux) {
-        aux = aux.reduce((rf, f) => {
-            f.c = f.c.reduce((rs, sc) => {
-                if (sc.t === 'AGGREGATOR') {
-                    sc.c = sc.c.filter((s) => {
-                        return statuses().includes(s.r)
-                    });
-                    if (sc.c.length > 0) rs.push(sc);
-                } else if (!sc.r || statuses().includes(sc.r)) {
-                    rs.push(sc);
-                }
-                return rs;
-            }, []);
-            if (f.c.length > 0) rf.push(f);
-            return rf;
-        }, []);
-    }
+    const allowedStatuses = statuses();
+    const text = document.getElementById('search-input').value.trim().toLowerCase();
 
-    // filter by text
-    const text = document.getElementById("search-input").value.toLowerCase();
-    if (text) {
-        const search = o => o.n.toLowerCase().includes(text)
-            || o.g?.some((it) => ('@' + it).toLowerCase().includes(text))
-            || o.l?.some((it) => it.toLowerCase().includes(text));
+    return sourceData.reduce((features, feature) => {
+        const children = (feature.c || [])
+            .map((scenario) => filterScenario(scenario, allowedStatuses, text))
+            .filter(Boolean);
 
-        aux = aux.reduce((rf, f) => {
-            const filtered = f.c.reduce((rs, sc) => {
-                if (sc.t === "AGGREGATOR") {
-                    sc.c = sc.c.filter(search);
-                    if (sc.c.length > 0) rs.push(sc);
-                } else if (search(sc)) {
-                    rs.push(sc);
-                }
-                return rs;
-            }, []);
-            if (filtered.length > 0) f.c = filtered;
-            if (filtered.length > 0 || search(f)) rf.push(f);
-            return rf;
-        }, []);
-    }
+        const featureMatches = !text || matchesText(feature, text);
+        if (children.length === 0 && !featureMatches) {
+            return features;
+        }
 
-    aux?.forEach(decorateNode);
-    return aux;
+        features.push({...feature, c: children});
+        return features;
+    }, []);
 }
 
 /**
@@ -288,64 +401,35 @@ function filtered() {
  * @param {string} id The feature or scenario id.
  */
 function searchPage(id) {
-    // console.log('Searching id ' + id);
-    // console.log('Current pages: ' + JSON.stringify(cp));
-    const i = cp.findIndex((p) => {
-        return p.some((f) => {
-            return f.i === id || f.c?.some((sc) => {
-                if (sc.t === "AGGREGATOR") {
-                    return sc.c?.some((s) => s.i === id);
-                } else {
-                    return sc.i === id;
-                }
-            });
-        })
-    });
-    if (i === -1) {
-        throw new Error('Id \'' + id + '\' not found');
+    const pageNumber = pageIndex.get(id);
+
+    if (!pageNumber) {
+        throw new Error(`Id '${id}' not found`);
     }
-    if ((i + 1) !== getPage()) {
+    if (pageNumber !== getPage()) {
         $('.loader').show(50);
-        setPage(i + 1);
+        setPage(pageNumber);
     }
 }
 
 /**
  * Toggles a class on a specific element within a group of elements.
  *
- * @param {HTMLElement} e The HTML element to toggle the class on.
- * @param {string} c The class name to be toggled.
+ * @param {HTMLElement} element The HTML element to toggle the class on.
+ * @param {string} className The class name to be toggled.
  */
-function toggleGroup(e, c) {
-    let p = e.parentElement;
-    while (p.nodeName.toLowerCase() !== 'li') {
-        p = p.parentElement;
+function toggleGroup(element, className) {
+    let parent = element.parentElement;
+    while (parent.nodeName.toLowerCase() !== 'li') {
+        parent = parent.parentElement;
     }
-    const on = $(e).hasClass(c);
-    for (let t of p.getElementsByClassName('toggle')) {
-        $(t).removeClass(c);
+    const alreadyOn = $(element).hasClass(className);
+    for (const target of parent.getElementsByClassName('toggle')) {
+        $(target).removeClass(className);
     }
-    if (!on) {
-        $(e).toggleClass(c);
+    if (!alreadyOn) {
+        $(element).toggleClass(className);
     }
-}
-
-/**
- * Retrieves the mustache templates.
- */
-function load() {
-    // Mustache
-    window.templates = {};
-    for (let e of document.querySelectorAll('script[type="x-tmpl-mustache"]')) {
-        window.templates[e.id] = e.innerHTML;
-        // console.log(`Template '${elem.id}' loaded`)
-    }
-    makePages();
-
-    if (window.location.href.includes('#')) {
-        searchPage(getUrlId());
-    }
-    render();
 }
 
 function getUrlId() {
@@ -353,77 +437,124 @@ function getUrlId() {
     return url.substring(url.indexOf('#') + 1);
 }
 
+function focusAnchor() {
+    const url = window.location.href;
+    if (!url.includes('#')) {
+        return;
+    }
+    const id = getUrlId();
+    $(`li:has(#${id})`).find('.suite--header .test--header-btn').addClass('on');
+    $(`#${id}`).find('.test--header-btn').addClass('on');
+    document.getElementById(id)?.scrollIntoView();
+    const adjust = parseInt(getCssVar('--navbar-height'), 10) + 55;
+    window.scrollBy(0, -adjust);
+}
+
+function refresh(shouldRender = true) {
+    filteredData = filtered();
+    makePages();
+
+    const totalPages = currentPages.length;
+    if (totalPages === 0) {
+        setPage(1);
+    } else if (getPage() > totalPages) {
+        setPage(totalPages);
+    } else if (getPage() < 1 || Number.isNaN(getPage())) {
+        setPage(1);
+    }
+
+    if (shouldRender) {
+        render();
+    }
+}
+
+/**
+ * Retrieves the mustache templates.
+ */
+function load() {
+    window.templates = {};
+    for (const element of document.querySelectorAll('script[type="x-tmpl-mustache"]')) {
+        window.templates[element.id] = element.innerHTML;
+    }
+
+    const embeddedData = document.getElementById('report-data')?.textContent || '{"c":[]}';
+    sourceData = (JSON.parse(embeddedData).c || []).map(decorateNode);
+
+    refresh(false);
+    if (window.location.href.includes('#')) {
+        searchPage(getUrlId());
+    }
+    render();
+}
+
 /**
  * Create buttons.
  */
 function buttons() {
-    for (let e of document.getElementsByClassName('toggle')) {
-        e.onclick = function () {
-            $(this).toggleClass('on');
-            return false;
-        }
+    if (handlersInitialized) {
+        return;
     }
+    handlersInitialized = true;
 
-    document.addEventListener('click', (e) => {
-        if (!e.composedPath().includes(document.querySelector('nav.collapsable'))
-                && !e.composedPath().includes(document.querySelector('.menu-button'))) {
+    const refreshSearch = debounce(() => {
+        resetUrl();
+        setPage(1);
+        refresh();
+    }, 200);
+
+    $(document).on('click', '.toggle:not(.toggle-group)', function () {
+        $(this).toggleClass('on');
+        return false;
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.composedPath().includes(document.querySelector('nav.collapsable'))
+                && !event.composedPath().includes(document.querySelector('.menu-button'))) {
             $('.menu-button.on').removeClass('on');
         }
     });
 
-    $('nav.collapsable a').on('click', function() {
+    $(document).on('click', 'nav.collapsable a', function () {
         $('.menu-button.on').removeClass('on');
     });
 
-    for (let e of document.getElementsByClassName('toggle-group')) {
-        e.onclick = function () {
-            toggleGroup(this, 'on');
-            return false;
-        }
-    }
-
-    $('input[type="checkbox"],select').change(function(e) {
-        $('.loader').show(50);
-    });
-    $(document).on('change', '.nav-menu--control input[type="checkbox"]', function(e){
-        e.stopImmediatePropagation();
-        setPage(1);
-        makePages();
-        render();
-    });
-    $(document).on('change', 'select', function(e){
-        e.stopImmediatePropagation();
-        resetUrl();
-        $('.simple-pagination button').remove();
-        setPage(1);
-        makePages();
-        render();
+    $(document).on('click', '.toggle-group', function () {
+        toggleGroup(this, 'on');
+        return false;
     });
 
-    $('input[type="search"]').on('input', function(e) {
+    $(document).on('change', '.nav-menu--control input[type="checkbox"]', function (event) {
+        event.stopImmediatePropagation();
         $('.loader').show(50);
-    });
-    $(document).on('input', 'input[type="search"]', function(e){
-        e.stopImmediatePropagation();
-        resetUrl();
         setPage(1);
-        makePages();
-        render();
+        refresh();
     });
 
-    $('.simple-pagination button').on('click', function(e){
+    $(document).on('change', 'select', function (event) {
+        event.stopImmediatePropagation();
         $('.loader').show(50);
+        resetUrl(false);
+        setPage(1);
+        refresh();
     });
-    $(document).on('click', '.simple-pagination button', function(e){
-        e.stopImmediatePropagation();
-        resetUrl();
+
+    $(document).on('input', 'input[type="search"]', function (event) {
+        event.stopImmediatePropagation();
+        $('.loader').show(50);
+        refreshSearch();
+    });
+
+    $(document).on('click', '.simple-pagination button', function (event) {
+        event.stopImmediatePropagation();
+        $('.loader').show(50);
+        resetUrl(false);
         setPage($(this).attr('data-page'));
         render();
     });
 
-    $(document).on('click', '.step--format-button[data-action="toggle-response-format"]', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
+    $(document).on('click', '.step--format-button[data-action="toggle-response-format"]', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         const button = this;
         const responseBody = button.closest('.step--body-heading-wrap')?.nextElementSibling;
         const code = responseBody?.querySelector('code.step--response');
@@ -444,128 +575,20 @@ function buttons() {
         }
     });
 
-    $('nav a').on('click', function(e) {
-        e.stopImmediatePropagation();
+    $(document).on('click', 'nav a', function (event) {
+        event.stopImmediatePropagation();
         const id = $(this).attr('href').replace('#', '').toString();
         searchPage(id);
         render();
     });
-
-    // hljs.highlightAll();
 }
 
 function getCssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
-// worker
-
-/**
- * Generate template content.
- *
- * @param {MessageEvent} e The message event
- */
-function generateContent(e) {
-    const frag = new DocumentFragment();
-    const el = document.getElementById(e.data.uuid);  // mustache element
-    const container = document.createElement("div");
-
-    if (e.data.value.c?.length > 0) {
-        e.data.value.c.forEach((c) => {
-            container.innerHTML = Mustache.render(window.templates[e.data.id], Object.assign(c || {}, {
-                isAggregator: function(){ return this.t === 'AGGREGATOR' },
-                toHTML: function () { return toHTML(this) },
-                toView: function () {
-                    return toHTML(this).split('-')
-                        .map((word) => { return word[0].toUpperCase() + word.substring(1) })
-                        .join(" ")
-                },
-                isPassed: function () { return !['ERROR', 'FAILED', 'UNDEFINED'].includes(this.r) },
-                hasChildren: function(){ return this.c?.length > 0 },
-                hasTags: function(){ return this.g?.length > 0 },
-                cResults: function(){
-                    return Object.entries(this.tr)
-                        .map((it)=>{ return {key: it[0], value: it[1]} })
-                },
-                sum: function(){
-                    return Object.values(this.tr).reduce((r, v) =>  r + v, 0)
-                },
-                cFResults: function(){
-                    return Object.entries(flatten(this.c)
-                        .reduce((r, it) => { (r[it.r] = (r[it.r] || [])).push(it); return r }, {}))
-                        .map((it)=> { return {key: it[0], value: it[1].length} })
-                },
-                hasDoc: function(){ return !!this.m || !!this.p || !!this.d || !!this.response },
-                hasDataTable: function(){ return !!this.d },
-                getHeader: function(){ return this.d[0] },
-                getBody: function(){ return this.d.slice(1) },
-                count: function(){ return flatten(this.c).length },
-                isNum: function(){ return !isNaN(this) },
-                isFirst: function(){ return this.current === 1 },
-                isLast: function() { return this.current === this.total },
-                prev: function(){ return this.current - 1 },
-                next: function(){ return this.current + 1 },
-                isCurrent: function() {
-                    return this == parseInt(document.getElementById('current-page').value)
-                }
-            }), window.templates);
-            frag.appendChild(container.firstElementChild);
-        });
-        $(el).find('li:not(.loader):not(.empty),button').remove();
-        $(frag).hide(0);
-        el.appendChild(frag);
-        buttons();
-        $(el).find('button').show(0);
-        $(el).find('.loader').hide(50);
-        $(el).find('.empty').hide(50);
-        $(el).find('li:not(.loader):not(.empty)').show(50);
-        const url = window.location.href;
-        if (url.includes('#')) {
-            const id = getUrlId();
-            $(`li:has(#${id})`).find('.suite--header .test--header-btn').addClass('on');
-            $(`#${id}`).find('.test--header-btn').addClass('on');
-            document.getElementById(url.substring(url.indexOf('#') + 1))?.scrollIntoView();
-            const adjust = parseInt(getCssVar('--navbar-height'))+55;
-            window.scrollBy(0, -adjust); // Adjust scrolling with a negative value here
-        }
-    } else {
-        $(el).find('li:not(.loader):not(.empty),button').remove();
-        $(el).find('.loader').hide(50);
-        $(el).find('.empty').show(50);
-    }
-
-}
-
-/**
- * Creates worker.
- */
-function newWorker() {
-    const blob = new Blob([document.querySelector('#worker').textContent], { type: "text/javascript" });
-    window.worker = new Worker((window.URL || window.webkitURL).createObjectURL(blob));
-    let evs = {};
-    window.worker.addEventListener('message', function(e) {
-        if (!e.data.uuid) {
-            // console.log("Call " + JSON.stringify(e.data));
-            return;
-        }
-        // console.log("Call elem " + e.data.uuid);
-        if (!evs.hasOwnProperty(e.data.uuid)) {
-            evs[e.data.uuid] = [];
-        }
-        evs[e.data.uuid].push(() => generateContent(e));
-        setTimeout(function() {
-            for (const [key, value] of Object.entries(evs)) {
-                if (evs[key].length > 0) {
-                    evs[key] = evs[key].slice(-1);
-                    evs[key].pop().call();
-                }
-            }
-        }, 100*e.data.value.c?.length);
-    }, false);
-}
-
 $(function () {
-    newWorker();
     Mustache.tags = ['<%', '%>'];
+    buttons();
     load();
 });

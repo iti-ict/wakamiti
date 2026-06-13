@@ -57,7 +57,7 @@ public class HtmlReportGenerator implements Reporter {
     public HtmlReportGenerator() {
         templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_29);
         templateConfiguration.setDefaultEncoding("UTF-8");
-        templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
+        templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         templateConfiguration.setLogTemplateExceptions(true);
         templateConfiguration.setWrapUncheckedExceptions(true);
         templateConfiguration.setFallbackOnNullLoopVariable(false);
@@ -100,25 +100,26 @@ public class HtmlReportGenerator implements Reporter {
                     this.outputFile,
                     "Output file not configured"
             ))));
-            parameters.put("globalStyle", readStyles());
-            parameters.put("globalScript", readJavascript("lib/global.js"));
-            parameters.put("chartsScript", readJavascript("lib/charts.js"));
-            parameters.put("plan", rootNode.withoutChildren());
-            parameters.put("title", title);
-            parameters.put("version", WakamitiAPI.instance().version());
-            parameters.put("plugin_version", version());
-            parameters.put("sum", new SumAllMethod());
-            parameters.put("countSteps", new CountStepsMethod());
-            parameters.put("data", OBJECT_MAPPER.writeValueAsString(FilteredSnapshot.of(rootNode.getChildren()))
-                    .replace("\\", "\\\\").replace("'", "\\'"));
+            Map<String, Object> templateParameters = new HashMap<>(parameters == null ? Map.of() : parameters);
+            templateParameters.put("globalStyle", readStyles());
+            templateParameters.put("globalScript", readJavascript("lib/global.js"));
+            templateParameters.put("chartsScript", readJavascript("lib/charts.js"));
+            templateParameters.put("plan", rootNode.withoutChildren());
+            templateParameters.put("title", title);
+            templateParameters.put("report_lang", Locale.getDefault().toLanguageTag());
+            templateParameters.put("version", WakamitiAPI.instance().version());
+            templateParameters.put("plugin_version", version());
+            templateParameters.put("sum", new SumAllMethod());
+            templateParameters.put("countSteps", new CountStepsMethod());
+            templateParameters.put("data", asSafeEmbeddedJson(Map.of("c", FilteredSnapshot.of(rootNode.getChildren()))));
 
             File parent = output.toFile().getCanonicalFile().getParentFile();
             if (!parent.exists()) {
                 parent.mkdirs();
             }
 
-            try (var writer = new FileWriter(output.toFile(), StandardCharsets.UTF_8)) {
-                template("report.ftl").process(parameters, writer);
+            try (var writer = new BufferedWriter(new FileWriter(output.toFile(), StandardCharsets.UTF_8))) {
+                template("report.ftl").process(templateParameters, writer);
                 WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN, output);
 
             }
@@ -145,7 +146,7 @@ public class HtmlReportGenerator implements Reporter {
             }
         };
         String localCss = readStyle.apply("lib/normalize.css") + readStyle.apply("lib/global.css");
-        if (this.cssFile != null) {
+        if (this.cssFile != null && !this.cssFile.isBlank()) {
             localCss += readStyle.apply(this.cssFile);
         }
         return localCss;
@@ -172,7 +173,16 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     private InputStream resource(String resource) {
-        return classLoader().getResourceAsStream(resource);
+        return Objects.requireNonNull(classLoader().getResourceAsStream(resource), "Resource not found: " + resource);
+    }
+
+    private String asSafeEmbeddedJson(Object value) throws IOException {
+        return OBJECT_MAPPER.writeValueAsString(value)
+                .replace("<", "\\u003C")
+                .replace(">", "\\u003E")
+                .replace("&", "\\u0026")
+                .replace("\u2028", "\\u2028")
+                .replace("\u2029", "\\u2029");
     }
 
 }
