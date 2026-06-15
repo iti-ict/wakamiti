@@ -1,113 +1,67 @@
-Create a new plugin using the Maven archetype
----------------------------------------------
+# Plugin Development Guide
 
-1. Install the Maven archetype in the local repository (since it is an internal 
-development tools, is not available in the Maven central repository)
-```
-./mvnw clean install -pl wakamiti-plugin-maven-archetype -U
+This repository ships a Maven archetype to bootstrap new Wakamiti plugins. The flow below matches the modules and versions currently present in this tree.
+
+## 1. Build the archetype locally
+
+The archetype is not consumed from `plugins/`; it is a dedicated module:
+
+```bash
+./mvnw -pl wakamiti-plugin-maven-archetype install -DskipTests
 ```
 
-2. Create the new Maven module in the `plugins` folder
-```
+That installs `es.iti.wakamiti:wakamiti-plugin-maven-archetype:1.1.0` in your local Maven repository.
+
+## 2. Generate a new plugin module
+
+From the repository root:
+
+```bash
 cd plugins
-../mvnw archetype:generate -DarchetypeGroupId=es.iti.wakamiti -DarchetypeArtifactId=wakamiti-plugin-maven-archetype -U
+../mvnw archetype:generate \
+  -DarchetypeGroupId=es.iti.wakamiti \
+  -DarchetypeArtifactId=wakamiti-plugin-maven-archetype \
+  -DarchetypeVersion=1.1.0
 ```
 
-You will be asked for some properties such as the plugin name and description,
-and the Wakamiti API and Core versions. The only required property is the 
-plugin identifier, the rest of properties can be automatically filled using the 
-default values.
+The only required input is `pluginId`. The archetype derives the usual defaults from it:
 
-```
-[INFO] --- maven-archetype-plugin:3.2.1:generate (default-cli) @ wakamiti-plugin-aggregator ---
-[INFO] Generating project in Interactive mode
-[INFO] Archetype [es.iti.wakamiti:wakamiti-plugin-maven-archetype:1.0.0] found in catalog local
+- `artifactId`: `${pluginId}-wakamiti-plugin`
+- `package`: `es.iti.wakamiti.plugins.${pluginId}`
+- `pluginName` and `pluginDescription`
 
-Define value for property 'pluginId': myplugin
+The archetype also asks for API/Core versions. Treat those defaults as a starting point and align them with the Wakamiti release you actually want to target before publishing the plugin.
 
-[INFO] Using property: defaultWakamitiApiVersion = 2.3.2
-[INFO] Using property: defaultWakamitiCoreVersion = 2.3.2
-[INFO] Using property: groupId = es.iti.wakamiti
+## 3. Register the module in the plugin aggregator
 
-Define value for property 'version' 1.0-SNAPSHOT: : 
-Define value for property 'PluginId' Myplugin: : 
-Define value for property 'package' es.iti.wakamiti.plugins.myplugin: : 
-Define value for property 'pluginName' myplugin: : 
-Define value for property 'pluginDescription' myplugin: : 
-Define value for property 'wakamitiApiVersion' 2.3.2: : 
-Define value for property 'wakamitiCoreVersion' 2.3.2: : 
-Define value for property 'artifactId' myplugin-wakamiti-plugin: :
- 
-Confirm properties configuration:
-pluginId: myplugin
-defaultWakamitiApiVersion: 2.3.2
-defaultWakamitiCoreVersion: 2.3.2
-groupId: es.iti.wakamiti
-version: 1.0-SNAPSHOT
-PluginId: Myplugin
-package: es.iti.wakamiti.plugins.myplugin
-pluginName: myplugin
-pluginDescription: myplugin
-wakamitiApiVersion: 2.3.2
-wakamitiCoreVersion: 2.3.2
-artifactId: myplugin-wakamiti-plugin
- Y: : 
-[INFO] ----------------------------------------------------------------------------
-[INFO] Using following parameters for creating project from Archetype: wakamiti-plugin-maven-archetype:1.0.0
-[INFO] ----------------------------------------------------------------------------
-[INFO] Parameter: groupId, Value: es.iti.wakamiti
-[INFO] Parameter: artifactId, Value: myplugin-wakamiti-plugin
-[INFO] Parameter: version, Value: 1.0-SNAPSHOT
-[INFO] Parameter: package, Value: es.iti.wakamiti.plugins.myplugin
-[INFO] Parameter: packageInPathFormat, Value: es/iti/wakamiti/plugins/myplugin
-[INFO] Parameter: defaultWakamitiApiVersion, Value: 2.3.2
-[INFO] Parameter: package, Value: es.iti.wakamiti.plugins.myplugin
-[INFO] Parameter: pluginId, Value: myplugin
-[INFO] Parameter: groupId, Value: es.iti.wakamiti
-[INFO] Parameter: wakamitiCoreVersion, Value: 2.3.2
-[INFO] Parameter: PluginId, Value: Myplugin
-[INFO] Parameter: version, Value: 1.0-SNAPSHOT
-[INFO] Parameter: wakamitiApiVersion, Value: 2.3.2
-[INFO] Parameter: pluginName, Value: myplugin
-[INFO] Parameter: pluginDescription, Value: myplugin
-[INFO] Parameter: artifactId, Value: myplugin-wakamiti-plugin
-[INFO] Parameter: defaultWakamitiCoreVersion, Value: 2.3.2
-[INFO] Parent element not overwritten in /home/linesta/github/wakamiti/plugins/myplugin-wakamiti-plugin/pom.xml
-[INFO] Project created from Archetype in dir: /home/linesta/github/wakamiti/plugins/myplugin-wakamiti-plugin
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary:
-[INFO] 
-[INFO] [Wakamiti Plugin] AMQP Steps 2.3.2 ................. SKIPPED
-[INFO] [Wakamiti Plugin] Appium Steps 2.2.2 ............... SKIPPED
-[INFO] [Wakamiti Plugin] Azure integration 1.3.2 .......... SKIPPED
-[INFO] [Wakamiti Plugin] Database Steps 2.3.2 ............. SKIPPED
-[INFO] [Wakamiti Plugin] Cucumber Exporter 2.3.2 .......... SKIPPED
-[INFO] [Wakamiti Plugin] Groovy Steps 2.3.2 ............... SKIPPED
-[INFO] [Wakamiti Plugin] HTML Report 2.3.2 ................ SKIPPED
-[INFO] [Wakamiti Plugin] REST Steps 2.3.2 ................. SKIPPED
-[INFO] [Wakamiti Plugin] SpringBoot integration 2.3.2 ..... SKIPPED
-[INFO] [Wakamiti Plugin] Files Steps 2.3.2 ................ SKIPPED
-[INFO] [Wakamiti Plugin] File Uploader 2.4.2 .............. SKIPPED
-[INFO] [Wakamiti Plugin] Email Steps 1.1.2 ................ SKIPPED
-[INFO] Wakamiti Plugin Aggregator 1.0.0 ................... SUCCESS [ 31.470 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  32.647 s
-[INFO] Finished at: 2023-10-03T10:16:57+02:00
-[INFO] ------------------------------------------------------------------------
-```
-
-3. Add the new plugin to the plugin aggregator POM in `plugins/pom.xml`
+Add the generated module to `plugins/pom.xml`:
 
 ```xml
-  ...
-  <name>Wakamiti Plugin Aggregator</name>
-      
-  <modules>
+<modules>
     ...
     <module>myplugin-wakamiti-plugin</module>
-  
-  </modules>
-
+</modules>
 ```
+
+Without this step the new plugin will not be part of the aggregated plugin build.
+
+## 4. Implement the contributor
+
+The generated project already contains the standard scaffold:
+
+- Maven coordinates and starter parent
+- base Java sources
+- test sources
+- `LICENSE.md` and `CHANGELOG.md`
+
+From there, implement the step contributor and any auxiliary services required by the plugin. Reuse the patterns from existing modules under `plugins/` rather than inventing a new registration style.
+
+## 5. Verify the module in isolation
+
+Run its tests directly:
+
+```bash
+./mvnw -pl plugins/myplugin-wakamiti-plugin test
+```
+
+If the plugin depends on additional project classes during execution, wire them explicitly in the plugin module or in the consumer configuration. Do not assume they will appear automatically at runtime.

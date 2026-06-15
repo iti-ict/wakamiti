@@ -1,115 +1,71 @@
-Instalalación
+Instalación y uso
 ---------------------------------------------------------------------------------------------------
-### Descarga e instalación de la extensión empaquetada como VSIX
 
-> Los siguientes pasos requiren que acceso al Gitlab y al servidor Nexus
-> del ITI.
+Esta guía describe el estado actual de la extensión según el `package.json` del módulo.
 
-1. Instalar Visual Studio Code (en caso de no tenerlo) desde su [sitio web](https://code.visualstudio.com/)
-2. Descargar la extensión empaquetada de la siguiente url:
-   https://github.com/iti-ict/wakamiti/raw/main/wakamiti-vscode-extension/wakamiti-vscode-extension-latest.vsix
-3. . Instalar la extensión:
+## Instalar la extensión
 
-    1. Ir a la pestaña *Extensions*
-    1. Pulsar sobre el botón ```...```
-    1. Seleccionar *Install from VSIX...*
-    1. Seleccionar el fichero descargado en el paso anterior
+La forma soportada en este repositorio es empaquetar una VSIX e instalarla manualmente en VS Code.
 
-![image](install_extension.gif)
+1. Desde `wakamiti-vscode-extension/`, compilar y empaquetar:
 
-### Configurando la extensión
-
-Una vez instalada, hay ciertos parametros de configuración que pueda ser queramos
-ajustar. Para ello, pulsar el icono de rueda dentada en la parte inferior izquierda y
-seleccionar *Settings* (o pulsar *Ctrl+coma* si usamos los atajos de teclado estándar).
-A continuación escribir ```wakamiti``` en los filtros.
-
-![image](preferences.png)
-
-La configuración por defecto está preparada para funcionar con un servidor de ejecuciones local, pero podemos cambiar las URL de conexión
-si queremos usar un servidor remoto.
-
-### Ajustar el modo de lenguaje al abrir archivos
-
-Es posible que en el momento de instalar la extensión, ya tengamos
-alguna otra extensión para la edición de archivos Gherkin. De ser así, cuando abramos un archivo (```.feature```) no usará la extensión de Wakamiti inicialmente. Podemos detectarlo en la parte derecha de la barra inferior:
-
-![image](gherkin_lang_mode.png)
-
-En esta circunstancia, deberemos pulsar sobre el texto ```Gherkin```
-en la barra, seleccionar la opción *Configure file association...*
-y buscar el modo de lenguaje ```Wakamiti Gherkin```. Tras
-eso, el resto de archivos ```.feature``` ya se cargarán usando Wakamiti.
-
-![image](select_lang_mode.gif)
-
-
-
-### Instalación del servidor de ejecución
-
-Si no se dispone acceso remoto a un servidor de ejecución, podemos
-instalar uno en nuestra propia máquina desde una imagen Docker. Para mayor facilidad usaremos una imagen *all-in-one* que incluye pre-instalados varios plugins.
-
-Para ello:
-
-1. Identficarse en el servidor Nexus del ITI:
-   ```
-   docker login nexus-wakamiti.iti.upv.es
+   ```shell
+   npm install
+   npm run package
    ```
 
-1. Descargar la imagen y ejecutarla en un contenedor:
-   ```
-   docker run -d --rm -p 8880:8080 -p 8890:8090 --name wakamiti-server-demo nexus-wakamiti.iti.upv.es/wakamiti-server-demo:latest
-   ```
-   > Podemos enrutar los puertos a otros diferentes en caso de estar ocupados, pero actualizando la configuración de Wakamiti en VS Code
+2. En VS Code:
 
+   1. Abrir la vista *Extensions*
+   2. Pulsar `...`
+   3. Elegir *Install from VSIX...*
+   4. Seleccionar el fichero `.vsix` generado
 
-![image](install_docker.gif)
+## Modos de conexión del Language Server
 
+La extensión ofrece dos modos de conexión:
 
+### `TCP Connection`
 
-Uso de la extensión VS Code
-----------------------------------------------------------------------------------------------------
+La extensión se conecta a un servidor de lenguaje ya ejecutándose. Configuración relevante:
 
-### Autocompletado de pasos
+- `wakamiti.languageServer.connectionMode = TCP Connection`
+- `wakamiti.languageServer.TCPConnection = localhost:8090`
 
-El principal valor aportado es el autocompletado de *keywords* y pasos.
-Se puede invocar con la combinación de teclas definida en VS Code
-para tal efecto (por defecto Ctrl+Espacio).
+Este modo encaja con un servidor remoto o con `wakamiti-server-quarkus`.
 
-![image](completion_en.gif)
+### `Java Process`
 
-Nótese que el idioma usado para las opciones de autocompletado
-varía en función del idioma definido para el fichero con la propiedad
-```language``` (siendo inglés si no se define):
+La extensión lanza un proceso Java local para el lenguaje. Configuración relevante:
 
-![image](completion_es.gif)
+- `wakamiti.languageServer.connectionMode = Java Process`
+- `wakamiti.languageServer.javaProcessPluginPath = <ruta a directorio de plugins>`
 
-### Marcado de errores
-Si escribimos un paso que no concuerda con nada de lo disponible en las librerías de pasos,
-se nos marcará el error correspondiente.
+Usa este modo cuando no quieres depender de un servidor TCP externo.
 
-![image](error.gif)
+## Configuración del servidor de ejecuciones
 
-### Generación de IDs
-Si un escenario no tiene un ID definido, se muestra un aviso informando de ello. Además,
-ofrece la opción de generar uno nuevo (usando texto aleatorio).
+La vista de ejecución usa un servidor HTTP configurado mediante:
 
-![image](add_id_tag.gif)
+- `wakamiti.executionServer.URL`
+- `wakamiti.executionServer.sharedWorkspace`
 
-### Generación de implementación
-Cuando un escenario está marcado como definición y tiene su ID correspondiente, pero
-no existe ningún escenario a nivel implementación con el mismo ID, se muestra un aviso.
-Además, ofrece la opción de generar un esqueleto de implementación automáticamente.
+Por defecto la URL es `http://localhost:8080`.
 
-![image](generate_implementation.gif)
+Si `sharedWorkspace` está activado, el servidor leerá el workspace directamente desde disco. Si está desactivado, la extensión enviará una copia del contenido por HTTP.
 
+## Qué aporta la extensión
 
-### Navegación entre definición e implementación
+Con el manifiesto actual, la extensión registra:
 
-Cuando tengamos un escenario escrito en dos niveles (y correctamente etiquetados con su ID),
-tendremos la posibilidad de navegar entre uno y otro con el atajo de teclado correspondiente
-definido en VS Code (F12 y Ctrl+F12 por defecto) o con el menú contextual. También podemos
-echar un vistado rápido (*peek*) sin tener que abandonar el fichero.
+- lenguaje `wakamiti-gherkin` para archivos `.feature`
+- reconexión manual al language server
+- vista lateral con:
+  - `Overview`
+  - `Current Execution`
+  - `Execution History`
+- acción `Run Test Plan` tanto en el editor como en la vista lateral
 
-![image](navigation.gif)
+## Asociación del lenguaje
+
+Si otra extensión está capturando los `.feature`, cambia la asociación del archivo a `Wakamiti Gherkin` desde la barra de estado de VS Code o con *Configure File Association*.

@@ -1,44 +1,51 @@
+# Tutorial Docker con JaCoCo
 
+Este ejemplo amplía el tutorial Docker para recoger cobertura JaCoCo de la aplicación desplegada.
 
-## Levantar la aplicación:
+## Levantar la aplicación
 
 ```shell
 docker compose up -d
 ```
 
-- Puedes acceder al swagger en: http://localhost:9966/petclinic
+Servicios útiles:
 
-- Puedes acceder a base de datos en:
-```
+- Swagger: `http://localhost:9966/petclinic`
+- Base de datos:
+
+```text
 url=jdbc:mysql://localhost:3309/petclinic?useUnicode=true
 username=root
 password=petclinic
 ```
 
-- Puedes seguir el log de la app petclinic ejecutando:
+Log de la aplicación:
+
 ```shell
 docker logs -f app-petclinic
 ```
 
-## Crear imagen extendida de Wakamiti
+## Crear la imagen extendida de Wakamiti
 
 ```shell
 docker build -t wakamiti-jacoco wakamiti
 ```
 
-## Lanzar Wakamiti:
+## Lanzar Wakamiti
 
-* Windows:
-```Shell
+### Windows
+
+```shell
 docker run --rm -v "%cd%/wakamiti:/wakamiti" -v "tutorial-jacoco_app-data:/app/classes" --network wakamiti-net wakamiti-jacoco
 ```
 
-* Linux:
-```Shell
-docker run --rm -v "$(pwd):/wakamiti" --network wakamiti-net wakamiti/wakamiti
+### Linux
+
+```shell
+docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --network wakamiti-net wakamiti-jacoco
 ```
 
-## Eliminar contenedores:
+## Limpiar contenedores del ejemplo
 
 ```shell
 docker rm -f app-petclinic mysql-petclinic

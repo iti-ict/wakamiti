@@ -1,97 +1,48 @@
-## Interesting parts
+# Spring verify example
 
-### pom.xml
+This example shows how to run Wakamiti from the Maven lifecycle while a Spring Boot application is started for the integration-test phase.
 
-Since we want to attach Wakamiti to the verify goal, we need to declare the `build` section 
-including the `wakamiti-maven-plugin` plugin. Also, we use `spring-boot-maven-plugin` that allows 
-to start the application prior to running the tests, and stop it afterwards.
+## What the project demonstrates
 
-```xml
-<build>
-    <plugins>
+- `spring-boot-maven-plugin` starts and stops the sample application
+- `wakamiti-maven-plugin:verify` runs during `integration-test`
+- Wakamiti plugins are attached as dependencies of the Maven plugin
+- the HTML report is generated from the same Maven execution
 
-        <!-- Start Spring Boot application prior to integration tests and stop it afterwards -->
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>pre-integration-test</id>
-                    <goals>
-                        <goal>start</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>post-integration-test</id>
-                    <goals>
-                        <goal>stop</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+## Relevant files
 
+- `pom.xml`: Maven lifecycle wiring
+- `src/test/resources/wakamiti.yaml`: Wakamiti configuration
+- `src/test/resources/UserService.feature`: sample feature file
 
-        <!-- Attach Wakamiti to the verify phase of the project -->
-        <plugin>
-            <groupId>es.iti.wakamiti</groupId>
-            <artifactId>wakamiti-maven-plugin</artifactId>
-            <version>1.0.0</version>
-            <executions>
-                <!-- Executed at verify phase -->
-                <execution>
-                    <goals>
-                        <goal>verify</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <!-- Enable/disable tests execution (enabled by default) -->
-                <skipTests>${skipExampleTests}</skipTests>
-                <!-- Wakamiti configuration -->
-                <properties>
-                    <resourceTypes>gherkin</resourceTypes>
-                    <resourcePath>src/test/resources</resourcePath>
-                    <outputFilePath>target/wakamiti/wakamiti.json</outputFilePath>
-                    <logs.showStepSource>false</logs.showStepSource>
-                    <!-- more configuration required -->
-                </properties>
-            </configuration>
-            <dependencies>
-                <!-- Wakamiti plugins -->
-                <dependency>
-                    <groupId>es.iti.wakamiti</groupId>
-                    <artifactId>wakamiti-rest</artifactId>
-                    <version>1.0.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>es.iti.wakamiti</groupId>
-                    <artifactId>wakamiti-db</artifactId>
-                    <version>1.0.0</version>
-                </dependency>
-            </dependencies>
-        </plugin>
+## Key Maven configuration
 
-    </plugins>
-</build>
-```    
+The current project uses these artifact names:
 
-Also notice:
+- `es.iti.wakamiti:wakamiti-maven-plugin`
+- `es.iti.wakamiti:rest-wakamiti-plugin`
+- `es.iti.wakamiti:db-wakamiti-plugin`
+- `es.iti.wakamiti:html-report-wakamiti-plugin`
 
-- Wakamiti is configured in the `properties` tag inside the general `configuration` tag 
-allowed for any Maven plugin. Properties used by other Wakamiti plugins are declared here 
-as well. 
+The example binds `wakamiti-maven-plugin:verify` to `integration-test` and points it to `src/test/resources/wakamiti.yaml` through `configurationFiles`.
 
-- The required Wakamiti plugins are included as dependencies of `wakamiti-maven-plugin`, 
-not as dependencies of the project.
+## Run
 
-### .mvn/jvm.config
+From this directory:
 
-Currently, there is no user-friendly method to configure the logging level of a Maven plugin. The 
-workaround to get this done is create a file named `jvm.config` inside a folder `.mvn` at the 
-root folder of the project. In this file, you can add custom MAVEN_OPTS parameters in order to 
-configure the logger (that is by default SLF4J Simple Logger).
-
-This way, to enable debug logs for Wakamiti as a Maven plugin, this file should contain:
+```bash
+mvn verify
 ```
--Dorg.slf4j.simpleLogger.log.iti.wakamiti=debug
-```  
+
+To skip the example tests:
+
+```bash
+mvn verify -DskipExampleTests=true
+```
+
+## Output
+
+The example writes its Wakamiti outputs under `target/wakamiti/`, including:
+
+- `wakamiti.json`
+- `wakamiti.html`
