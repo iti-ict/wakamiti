@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [2.9.0] - 2026-06-16
 
 ### Added
 - Step responses are now rendered in the HTML report body.
