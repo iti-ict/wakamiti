@@ -131,7 +131,25 @@ Open issues and pull requests in the main repository:
 
 For plugin work, start from [plugin-development-guide.md](plugin-development-guide.md).
 
+## Acknowledgements
+
+This software has been developed as a part of the Plan of Non-Economical Activities of
+**Instituto Tecnológico de Informática (ITI)** for the year 2021, funded by
+**Institut Valencià de Competitivitat Empresarial (IVACE)** and **Generalitat Valenciana**,
+by means of the colaboration agreement between IVACE and ITI aimed to enhance their activity
+and capabilities of developing excellence in the matter of independant R&D, spreading
+the results of conducted researches, and driving knowledge transfer among companies from the
+*Comunitat Valenciana*.
+
+
+<img src="images/iti.png" align="right">
+<img src="images/gva-ivace.png">
+
 ## License
+
+Wakamiti is licensed under the Mozilla Public License 2.0.
+
+Copyright © 2022 Instituto Tecnológico de Informática (ITI).
 
 ```text
 Mozilla Public License 2.0
@@ -140,3 +158,11 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
+
+See the [LICENSE](LICENSE.md) file for the full license text.
+
+
+## Maintainers
+
+- **María Galbis Calomarde** - mgalbis@iti.es
+
