@@ -1,4 +1,9 @@
-![](images/logo_wakamiti_bright.svg)
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/logo_wakamiti_dark.svg">
+  <img alt="Wakamiti" src="./images/logo_wakamiti_bright.svg">
+</picture>
+</p>
 
 ---
 
@@ -141,9 +146,12 @@ and capabilities of developing excellence in the matter of independant R&D, spre
 the results of conducted researches, and driving knowledge transfer among companies from the
 *Comunitat Valenciana*.
 
-
-<img src="images/iti.png" align="right">
-<img src="images/gva-ivace.png">
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/footer-dark.png">
+  <img alt="Footer" src="./images/footer-bright.png">
+</picture>
+</p>
 
 ## License
 
