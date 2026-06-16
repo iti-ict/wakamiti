@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.8.0] - 2026-06-16
+
+### Changed
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-core`
+
+
 ## [2.7.0] - 2024-12-11
 
 ### Changed

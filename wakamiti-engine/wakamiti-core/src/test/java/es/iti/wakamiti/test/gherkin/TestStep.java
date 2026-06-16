@@ -83,5 +83,43 @@ public class TestStep {
         }
     }
 
+    @Test
+    public void testReturnedValueIsIncludedInJsonReport() throws IOException {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
+        properties.put(
+                RESOURCE_PATH,
+                "src/test/resources/features/test1_simpleScenario.feature"
+        );
+        properties.put(
+                NON_REGISTERED_STEP_PROVIDERS,
+                "es.iti.wakamiti.test.gherkin.WakamitiSteps"
+        );
+
+        Configuration configuration = Wakamiti.defaultConfiguration()
+                .appendFromMap(properties);
+        PlanNode plan = Wakamiti.instance().createPlanFromConfiguration(configuration);
+        PlanNode executed = Wakamiti.instance().executePlan(plan, configuration);
+
+        PlanNodeSnapshot snapshot = new PlanNodeSnapshot(executed);
+        PlanNodeSnapshot returnedStep = snapshot.flatten(node ->
+                        node.getNodeType() == NodeType.STEP && "both numbers are multiplied".equals(node.getName()))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(returnedStep.getResponse()).startsWith("72.18");
+
+        PlanSerializer serializer = new JsonPlanSerializer();
+        String serial = serializer.serialize(snapshot);
+        assertThat(serial).contains("\"response\"");
+
+        PlanNodeSnapshot deserialized = serializer.deserialize(serial);
+        PlanNodeSnapshot deserializedStep = deserialized.flatten(node ->
+                        node.getNodeType() == NodeType.STEP && "both numbers are multiplied".equals(node.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(deserializedStep.getResponse()).isEqualTo(returnedStep.getResponse());
+    }
+
 
 }

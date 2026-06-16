@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.11.0] - 2026-06-16
+
+### Added
+- Step executions now include their returned value in the JSON report snapshots as `response`.
+- `wakamiti-launcher` now publishes a binary ZIP distribution as `wakamiti-bin-{version}.zip`.
+
+### Changed
+- Core step execution marking now propagates returned values when finishing successful executions.
+- `wakamiti-launcher` packaging now targets the `staging` directory and ZIP distribution with JDK 17 as the
+  recommended runtime baseline.
+
+
 ## [2.10.0] - 2026-03-30
 
 ### Added

@@ -1,37 +1,56 @@
-# Wakamiti::CORE
+# Wakamiti Core
 
-## Overview
+`wakamiti-core` is the execution engine behind the launchers. It is the module that turns configuration plus test resources into a plan, executes that plan and coordinates contributors.
 
-## Test Plan
+## Responsibilities
 
-The test plan is the main piece of an execution. It is built according to a set of test definition sources 
-(e.g., Gherkin files) and a configuration (e.i. a set of valued properties). From a topological view, 
-a test plan is just a tree of nodes of different categories:
+- build `PlanNode` trees from configured resource types
+- load contributors and step providers
+- execute plans and collect `Result` plus serialized snapshots
+- resolve external modules for launcher-driven runs
+- invoke report contributors after execution
 
-| Node type       | Description                                                   | Children node types                 | Rearrange | Walk order |
-|-----------------|---------------------------------------------------------------|-------------------------------------|-----------|------------|
-| Aggregator      | Node that aggregates other nodes                              | Aggregator, Test Case               | yes       | free       |
-| Test Case       | Node representing an atomic test case                         | Step Aggregator, Step, Virtual Step | no        | strict     |
-| Step Aggregator | Node representing a subset of steps within a test case        | Step Aggregator, Step, Virtual Step | no        | strict     |
-| Step            | Node representing an executable step within a test case       | --                                  | --        | --         |
-| Virtual Step    | Node representing an _non_-executable step within a test case | --                                  | --        | --         |
+## When to use it directly
 
-For example, for a traditional Gherkin feature file, the built test plan would correspond 
-to the following diagram:
+Most users should enter Wakamiti through one of these modules instead:
 
-<p align="center"><img src="images/topology.png"/></p>
+- `wakamiti-junit`
+- `wakamiti-maven-plugin`
+- `wakamiti-launcher`
 
-The idea of representing the test plan as a tree of nodes allows adapting the original resulting plan 
-prior to execution, by applying regular graph transformations during a `plan redefinition` stage.
+Use `wakamiti-core` directly only when you need to embed the engine in a custom host application.
 
-## Usage
+## Main concepts
 
-The regular use of Wakamiti is via one of the launchers available: the Wakamiti JUnit Runner,
-the Wakamiti Maven plugin, and the Wakamiti stand-alone launcher. This document focus on the 
-first one, if you require information about any of the other two check their corresponding
-documentation page.
+### Plan model
 
-  
-### Launching Wakamiti programmatically
+Wakamiti represents a test plan as a tree of nodes:
 
-## Plugin development
+- `Aggregator`
+- `Test Case`
+- `Step Aggregator`
+- `Step`
+- `Virtual Step`
+
+This model allows the engine to transform or redefine the plan before execution while preserving the semantics of the original resources.
+
+### Configuration
+
+Core configuration is expressed through the `wakamiti.*` namespace, typically in `wakamiti.yaml`. Examples include:
+
+- `resourceTypes`
+- `resourcePath`
+- `outputFilePath`
+- `launcher.modules`
+- plugin-specific namespaces such as `rest.*`, `database.*`, `htmlReport.*`
+
+## Programmatic entry point
+
+At the engine level the usual flow is:
+
+1. build or read a `Configuration`
+2. create the plan through `Wakamiti.instance().createPlanFromConfiguration(...)`
+3. execute it through `Wakamiti.instance().executePlan(...)`
+4. optionally call `generateReports(...)`
+
+If you need a supported integration surface rather than a custom embed, use the launcher-specific modules instead of binding to `wakamiti-core` directly.

@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.0] - 2026-06-16
+
+### Added
+- Step responses are now rendered in the HTML report body.
+- Structured step responses can now be toggled to a pretty-formatted view for JSON and XML content.
+
+### Changed
+- Improved HTML accessibility for the response formatting controls.
+
+
 ## [2.8.0] - 2024-12-11
 
 ### Changed

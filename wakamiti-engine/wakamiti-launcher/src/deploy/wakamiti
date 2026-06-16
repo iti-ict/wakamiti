@@ -10,17 +10,34 @@ if test -z "${WAKAMITI_HOME}"
 then
   export WAKAMITI_HOME="/usr/local/share/wakamiti"
 fi
-export CLASSPATH="${WAKAMITI_HOME}/wakamiti-launcher.jar:${WAKAMITI_HOME}/lib/*:${WAKAMITI_HOME}/lib-ext/*"
+APP_HOME="${WAKAMITI_HOME}"
+JAVA_CMD="java"
+USES_BUNDLED_JAVA=false
+
+if test -f "${WAKAMITI_HOME}/app/wakamiti-launcher.jar"
+then
+  APP_HOME="${WAKAMITI_HOME}/app"
+  if test -x "${WAKAMITI_HOME}/runtime/bin/java"
+  then
+    JAVA_CMD="${WAKAMITI_HOME}/runtime/bin/java"
+    USES_BUNDLED_JAVA=true
+  fi
+fi
+
+export CLASSPATH="${APP_HOME}/wakamiti-launcher.jar:${APP_HOME}/lib/*:${APP_HOME}/lib-ext/*"
 
 if test "$ADD_CLASSPATH"
 then
   export CLASSPATH="$CLASSPATH:$ADD_CLASSPATH"
 fi
 
-java -jar "${WAKAMITI_HOME}/java-version-checker.jar" 11
-if test $? -ne 0
+if test "$USES_BUNDLED_JAVA" = "false"
 then
-  exit -2
+  "$JAVA_CMD" -jar "${APP_HOME}/java-version-checker.jar" 11
+  if test $? -ne 0
+  then
+    exit -2
+  fi
 fi
 
 #java -javaagent:${WAKAMITI_HOME}/wakamiti-launcher.jar \
@@ -28,7 +45,7 @@ fi
 #   -cp "${WAKAMITI_HOME}/lib-ext/*"  \
 #   -XX:+EnableDynamicAgentLoading -Dfile.encoding=UTF-8 \
 #   -m wakamiti.launcher/iti.wakamiti.launcher.WakamitiLauncher "$@"
-java -javaagent:${WAKAMITI_HOME}/wakamiti-launcher.jar \
+"$JAVA_CMD" -javaagent:${APP_HOME}/wakamiti-launcher.jar \
   -classpath "$CLASSPATH" \
   -XX:+EnableDynamicAgentLoading -Dfile.encoding=UTF-8 \
   es.iti.wakamiti.launcher.WakamitiLauncher "$@"

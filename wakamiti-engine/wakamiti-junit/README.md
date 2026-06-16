@@ -1,127 +1,84 @@
-# Wakamiti::JUNIT
+# Wakamiti JUnit
 
-## Overview
-
-Wakamiti provides, as a part of the core component, a JUnit 4.x runner that can be used to execute a 
-test plan built according to the received configuration. In order to do this, create a regular 
-Java class annotated with `@RunWith` in order to use the Wakamiti runner instead of the by-default 
-JUnit runner.
-
-Also, you should provide a configuration using the annotation `@AnnotatedConfiguration`.   
-  
-```java
-@AnnotatedConfiguration({
-   @Property(key="resourceTypes",value="gherkin"),
-   @Property(key="resourcePath", value="src/test/resources/features"),
-   @Property(key="outputFilePath", value="target/wakamiti.json"),
-   @Property(key="junit.treatStepsAsTests",value="false")
-})
-@RunWith(WakamitiJUnitRunner.class)
-public class WakamitiTestPlan {
-    
-}
-``` 
-An alternative (or complementary) way to define the configuration is use an external file. The following
-example would be equivalent to the one shown above.
-
-### WakamitiTestPlan.java
-```java
-@AnnotatedConfiguration(path = "classpath:wakamiti.yaml", pathPrefix = "wakamiti")
-@RunWith(WakamitiJUnitRunner.class)
-public class WakamitiTestPlan {
-    
-}
-```
-### wakamiti.yaml
-```yaml
-wakamiti:
-  resourceTypes:
-    - gherkin
-  resourcePath: src/test/resources/features 
-  outputFilePath: target/wakamiti.json
-  junit:
-    treatStepsAsTests: false
-```
-
-Notice that, in both cases, the test class is empty; since the test cases are discovered via the 
-configuration, no code is required. In actuality, if you write methods annotated with `@Test`, `@Before` 
-and `@After`, the runner will complain at execution time and abort the run in order to avoid misleading 
-dead test code.
-
-You _can_, however, annotate static methods with `@BeforeClass` and `@AfterClass`, if you require 
-some code to be executed prior to or following the Wakamiti execution.
-
-
-## Test case notification _vs_ step notification
-
-The regular behaviour of the Wakamiti JUnit runner is notified to JUnit each test case result but not 
-individual step results. It means that, for example, if your testing inside an IDE with JUnit integration, 
-the graphical view will not mark a specific step has failed but the whole test case.
-
-In order to provide more descriptive info, you can force Wakamiti to notify each step as a test case, 
-so they will be shown in the graphical tools and reports. One drawback is that the number of tests 
-would be no longer accurate since it will represent the total number of steps instead of the real 
-number of test cases. Thus, you may use this option as a debugging feature when a test case has failed, 
-but keep it disabled for normal executions.  
-
-
-
-## Configuration
-| Key | Accepted values | Default value | Comments
-|---|---|---|---
-|`junit.treatStepsAsTests`|`true`,`false`|`false`| When enabled, any step will be notified to JUnit as an individual test case 
-
-## Profile-based execution
-
-You can associate a JUnit class with one or more execution profiles:
-
-```java
-@Profile("A")
-@RunWith(WakamitiJUnitRunner.class)
-@AnnotatedConfiguration(path = "classpath:wakamiti-a.yaml", pathPrefix = "wakamiti")
-public class WakamitiProfileATest {}
-```
-
-```java
-@Profile({"B", "B-legacy"})
-@RunWith(WakamitiJUnitRunner.class)
-@AnnotatedConfiguration(path = "classpath:wakamiti-b.yaml", pathPrefix = "wakamiti")
-public class WakamitiProfileBTest {}
-```
-
-Active profile system properties:
-
-- `wakamiti.junit.profile` (preferred)
-- `wakamiti.profile` (fallback)
-
-You can pass one or more values separated by comma, for example:
-`-Dwakamiti.junit.profile=A,B`
-
-Default mode:
-
-- Tests with `@Profile` run only when they match the active profile.
-- Tests without `@Profile` always run.
-
-Strict mode:
-
-- Enable with `-Dwakamiti.junit.profile.strict=true`
-  (or fallback `-Dwakamiti.profile.strict=true`).
-- When strict is enabled and there is an active profile, tests without `@Profile` are skipped.
-- When strict is enabled and no profile is active, tests with `@Profile` are skipped.
-
----
+`wakamiti-junit` integrates Wakamiti plans with JUnit 4 by exposing `es.iti.wakamiti.junit.WakamitiJUnitRunner`.
 
 ## Maven dependency
 
 ```xml
 <dependency>
     <groupId>es.iti.wakamiti</groupId>
-    <artifactId>wakamiti-core</artifactId>
-    <version>2.5.0</version>
+    <artifactId>wakamiti-junit</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
 </dependency>
 ```
 
-  
-### Launching Wakamiti programmatically
+## Basic runner
 
-## Plugin development
+```java
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
+import org.junit.runner.RunWith;
+
+@RunWith(WakamitiJUnitRunner.class)
+@AnnotatedConfiguration(path = "classpath:wakamiti.yaml", pathPrefix = "wakamiti")
+public class WakamitiTestPlan {
+}
+```
+
+The runner class must stay empty. Wakamiti discovers the plan from the supplied configuration rather than from `@Test` methods.
+
+## Inline configuration
+
+You can also define the configuration directly on the class:
+
+```java
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.core.gherkin.parser.GherkinResourceType;
+
+@RunWith(WakamitiJUnitRunner.class)
+@AnnotatedConfiguration({
+    @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
+    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
+    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti/wakamiti.json"),
+    @Property(key = "junit.treatStepsAsTests", value = "false")
+})
+public class WakamitiInlineConfigurationTestPlan {
+}
+```
+
+## Example `wakamiti.yaml`
+
+```yaml
+wakamiti:
+  resourceTypes:
+    - gherkin
+  resourcePath: src/test/resources/features
+  outputFilePath: target/wakamiti/wakamiti.json
+  junit:
+    treatStepsAsTests: false
+```
+
+## JUnit-specific behaviour
+
+- instance methods annotated with `@Test`, `@Before` or `@After` are not supported on the runner class
+- static `@BeforeClass` and `@AfterClass` hooks are allowed
+- `junit.treatStepsAsTests=true` makes each step visible to JUnit as an individual test node, which is useful for debugging but changes the reported test count
+
+## Profile-based execution
+
+`@Profile` can be used to activate or skip runner classes depending on system properties:
+
+- `wakamiti.junit.profile` preferred
+- `wakamiti.profile` fallback
+
+Strict mode is controlled by:
+
+- `wakamiti.junit.profile.strict=true`
+- `wakamiti.profile.strict=true`
+
+## Example module
+
+See [examples/junit-launcher-example/README.md](../../examples/junit-launcher-example/README.md) and [examples/spring-junit-example/README.md](../../examples/spring-junit-example/README.md).

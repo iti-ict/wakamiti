@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.8.0] - 2026-06-16
+
+### Added
+- `ExecutionState` now stores the returned value of the execution as `response`.
+- `PlanNodeSnapshot` now includes `response` so it is preserved in serialized plan snapshots.
+
+
 ## [2.7.0] - 2026-03-30
 
 ### Added

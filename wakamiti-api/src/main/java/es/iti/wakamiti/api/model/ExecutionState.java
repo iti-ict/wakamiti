@@ -24,6 +24,7 @@ public class ExecutionState<R> {
     private Optional<R> result = Optional.empty();
     private Optional<Throwable> error = Optional.empty();
     private Optional<String> errorClassifier = Optional.empty();
+    private Optional<String> response = Optional.empty();
 
     /**
      * Get the start instant of this node, if executed.
@@ -96,6 +97,15 @@ public class ExecutionState<R> {
     }
 
     /**
+     * Get the returned value of this node, if any.
+     *
+     * @return The nullable optional returned value
+     */
+    public Optional<String> response() {
+        return response;
+    }
+
+    /**
      * Mark the current execution as started at the given instant.
      *
      * @param instant The start instant
@@ -118,7 +128,7 @@ public class ExecutionState<R> {
      *                               marked as finished
      */
     public void markFinished(Instant instant, R result) {
-        markFinished(instant, result, null, null);
+        markFinished(instant, result, null, null, null);
     }
 
     /**
@@ -135,6 +145,31 @@ public class ExecutionState<R> {
      *                               as finished
      */
     public void markFinished(Instant instant, R result, Throwable error, String errorClassifier) {
+        markFinished(instant, result, error, errorClassifier, null);
+    }
+
+    /**
+     * Mark the current execution as finished with the given result,
+     * error and returned value.
+     *
+     * @param instant         The finish instant
+     * @param result          The finish result
+     * @param error           The exception that caused the failure.
+     *                        Can be null.
+     * @param errorClassifier The error classifier associated with the
+     *                        error
+     * @param response   The returned value associated with the
+     *                        execution. Can be null.
+     * @throws IllegalStateException If the execution was already marked
+     *                               as finished
+     */
+    public void markFinished(
+            Instant instant,
+            R result,
+            Throwable error,
+            String errorClassifier,
+            String response
+    ) {
         if (finishInstant.isPresent()) {
             throw new IllegalStateException("Node execution already finished");
         }
@@ -142,7 +177,7 @@ public class ExecutionState<R> {
         this.result = Optional.of(result);
         this.error = Optional.ofNullable(error);
         this.errorClassifier = Optional.ofNullable(errorClassifier);
-
+        this.response = Optional.ofNullable(response);
     }
 
     /**

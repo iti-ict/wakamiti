@@ -1,4 +1,4 @@
-applicationName: Wakamiti 2.6.0
+applicationName: Wakamiti ${project.version}
 distributions:
   - os: linux
     fileSet:

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="${report_lang!'en'}">
 <head>
     <meta charset="utf-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
@@ -15,14 +15,13 @@
     <#if plan.testCaseResults?has_content>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     </#if>
-    <script id="worker" type="javascript/worker">self.onmessage=function(e){postMessage(e.data);};</script>
-    <script>const data='{"c":${data}}';</script>
+    <script id="report-data" type="application/json">${data}</script>
     <script>${globalScript};</script>
     <#if plan.testCaseResults?has_content>
         <script>${chartsScript};</script>
     </#if>
 
-    <title>Report</title>
+    <title>${title!plan.name!plan.displayName!"Report"}</title>
 
 </head>
 <body>
@@ -194,8 +193,8 @@
         </script>
         <script id="pages" type="x-tmpl-mustache">
             <button class="simple-pagination__button <%#isCurrent%>selected<%/isCurrent%>" type="button"
-            <%#isNum%>data-page="<%.%>"<%/isNum%><%^isNum%>disabled<%/isNum%><%#isCurrent%>disabled<%/isCurrent%>>
-                <%.%>
+            <%#isNum%>data-page="<%value%>"<%/isNum%><%^isNum%>disabled<%/isNum%><%#isCurrent%>disabled<%/isCurrent%>>
+                <%value%>
             </button>
         </script>
         <script id="feature" type="x-tmpl-mustache">
@@ -282,7 +281,7 @@
             <div class="step--body ">
                 <table class="panel-body-datatable step--code-snippet hljs">
                     <thead>
-                        <tr><%#getHeader%><td><%.%></td><%/getHeader%></tr>
+                        <tr><%#getHeader%><th scope="col"><%.%></th><%/getHeader%></tr>
                     </thead>
                     <tbody>
                         <%#getBody%>
@@ -292,14 +291,28 @@
                 </table>
             </div>
             <%/hasDataTable%>
+            <%#response%>
+            <div class="step--body-heading-wrap">
+                <div class="step--body-heading">Response</div>
+                <%#prettyResponse%>
+                <button class="step--format-button" data-action="toggle-response-format" data-mode="raw" title="Pretty format" type="button">{ }</button>
+                <%/prettyResponse%>
+            </div>
+            <div class="step--body">
+                <pre class="step--code-snippet text hljs"><code class="step--response"><%response%></code></pre>
+            </div>
+            <%/response%>
             <%#m%>
+            <div class="step--body-heading-wrap">
+                <div class="step--body-heading">Response</div>
+            </div>
             <div class="step--body">
                 <pre class="step--code-snippet text hljs"><code class="step--<#if plan.testCaseResults?has_content><%#r%><%toHTML%><%/r%>-</#if>message"><%#e%><%e%><%/e%><%^e%><%m%><%/e%></code></pre>
-                        </div>
-                        <%/m%>
-                    </div>
-                <%/hasDoc%>
-            </li>
+            </div>
+            <%/m%>
+        </div>
+        <%/hasDoc%>
+    </li>
         </script>
         <script id="scenario" type="x-tmpl-mustache">
             <li id="<%i%>">

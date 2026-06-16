@@ -99,7 +99,8 @@
                   "name": "Paso de implementacion A3_1",
                   "keyword": "Cuando",
                   "duration": 57,
-                  "result": "PASSED"
+                  "result": "PASSED",
+                  "response": "{\"alpha\":1,\"nested\":{\"beta\":2}}"
                 },
                 {
                   "nodeType": "STEP",
@@ -125,7 +126,8 @@
                   "name": "Paso de implementacion A4_1",
                   "duration": 58,
                   "keyword": "Entonces",
-                  "result": "PASSED"
+                  "result": "PASSED",
+                  "response": "41.2"
                 }
               ]
             }

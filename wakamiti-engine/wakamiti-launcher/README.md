@@ -1,133 +1,189 @@
-# Wakamiti::Launcher
+# Wakamiti Launcher
 
-This project is a stand-alone, command-line tool to execute Wakamiti test plans. It does not require Maven present to be 
-launched, although a Maven repository is still required in order to obtain libraries dependencies. 
+`wakamiti-launcher` is the standalone command-line entry point for running Wakamiti without Maven installed on the
+target machine. The launcher resolves the requested modules from Maven repositories, updates the runtime classpath and
+executes the resulting plan.
 
+## Runtime requirements
 
-
-## Requirements
-
-- Java 8 or newer installed in the O.S.
+- Java 11 or newer
 - Access to a Maven repository
 
-## Usage
+The distributed binaries do not bundle a JRE. You need a local Java installation available in `PATH`, or reachable
+through your usual shell setup.
 
-### Installation
-#### Linux
-1. Download the `wakamiti-launcher-x.x.x.zip` file and extract it in a folder of your choice
-2. Add execution permissions to the file `wakamiti.sh` (in case they were not set)
-```
-chmod +x wakamiti.sh
-```
-3. Add a environment variable to your OS named `WAKAMITI_PATH` and valued with the absolute path to the folder.
-```
-export WAKAMITI_HOME=path_to_wakamiti_folder
-```
-Also, you may want to include it in every boot. In the case of using `bash`, for example:
-```
-echo export WAKAMITI_HOME=path_to_wakamiti_folder >> ~/.profile
-```
-4. Create a symbolic link to the executable
-```
-sudo ln -s $WAKAMITI_HOME/wakamiti.sh /usr/local/bin/wakamiti ; sudo chmod +x /usr/local/bin/wakamiti
-```
-5. Optionally, modify the `launcher.properties` file from the installation folder with custom values
-#### Windows 
-1. Download the `wakamiti-launcher-x.x.x.zip` file and extract it in a folder of your choice
-2. Add a environment variable to your OS named `WAKAMITI_PATH` and valued with the absolute path to the folder.
-```
-setx WAKAMITI_HOME "path_to_wakamiti_folder" /M
-```
-3. Add `WAKAMITI_HOME\wakamiti.bat` to the `PATH` environment variable
-```
-setx PATH "%PATH%;%WAKAMITI_HOME\wakamiti.bat%"
-```
-4. Optionally, modify the `launcher.properties` file from the installation folder with custom values
+## Distribution artifacts
 
+The module produces two distribution outputs:
 
+- `target/staging/`: unpacked launcher distribution
+- `target/wakamiti-bin-{version}.zip`: ZIP distribution for releases
 
+Build them with:
 
-
-> **INFO**  
-> By default, a ready-to-use public Maven repository is configured. You can add more repositories editing 
-> the `mavenFetcher.remoteRepositories` line, each repository separated with `;` . For further explanation of 
-> any possible repository configuration please check the _Maven Fetcher_ project.
-
-> **TIP**  
-> At this current stage of the project, it is possible that the own Wakamiti libraries are not published yet.  
-> However, you can clone or download the entire project and install it in your local repository by typing 
-> `mvn install` (Maven must be installed to do that). The compiled libraries will be located at `{HOME}/.m2/repository`,
-> so simple add that folder as a repository using the `file:///` protocol instead of `https://`.
-
-### Command line
-
-The more basic usage of the launcher is simply typing the following in your terminal:
-
+```bash
+./mvnw -pl wakamiti-engine/wakamiti-launcher -am package -DskipTests
 ```
+
+## Installed layout
+
+The ZIP contains the following layout:
+
+```text
 wakamiti
+wakamiti.bat
+launcher.properties
+java-version-checker.jar
+wakamiti-launcher.jar
+lib/
 ```
 
-The launcher will search for any suitable test according the attached plugins and will proceed to execute the resulting 
-test es.iti.wakamiti.test.gherkin.plan. However, bear in mind that Wakamiti do nothing by itself, so we need to, at least, provide a test discovery 
-plugin and a step library plugin in order to get a successful execution.
+## Installation
 
-A proper example would be the following:
+### Linux
+
+1. Extract `wakamiti-bin-{version}.zip` to a target directory, for example `/opt/wakamiti`.
+2. Ensure the launcher script is executable:
+
+```bash
+chmod +x /opt/wakamiti/wakamiti
 ```
-wakamiti -modules es.iti.wakamiti:wakamiti-gherkin:1.0.0 es.iti.wakamiti:wakamiti-rest:1.0.0
+
+3. Define `WAKAMITI_HOME`:
+
+```bash
+export WAKAMITI_HOME=/opt/wakamiti
 ```
-This way, Wakamiti will search for any Gherkin (`.feature`) file in the current folder and sub-folders, and it will try to
-build and execute a test es.iti.wakamiti.test.gherkin.plan with REST-related steps.
 
-> **INFO**  
-> The Wakamiti Launcher will create a folder named `.wakamiti` in the current folder in order to store libraries and pass 
-> them to the Java classpath. You can delete this folder safely, but it will be recreated every time the launcher is 
-> executed.
+4. Add the installation directory to `PATH`:
 
-There is an alternative to typing the required modules every time: use a local configuration file. If you create a file 
-in the current folder using the default name `wakamiti.yaml`, you can configure every Wakamiti property inside instead of 
-passing them as command-line arguments:
+```bash
+export PATH="$PATH:$WAKAMITI_HOME"
+```
 
-###### wakamiti.yaml
+5. Optionally persist both variables in your shell profile.
+
+### Windows
+
+1. Extract `wakamiti-bin-{version}.zip` to a target directory, for example `C:\Tools\Wakamiti`.
+2. Define `WAKAMITI_HOME`:
+
+```powershell
+setx WAKAMITI_HOME "C:\Tools\Wakamiti"
+```
+
+3. Add the installation directory to `PATH`:
+
+```powershell
+setx PATH "$($env:Path);C:\Tools\Wakamiti"
+```
+
+4. Open a new terminal.
+
+The Windows entry point is `wakamiti.bat`.
+
+## Configuration
+
+The launcher reads configuration from three sources, in this order:
+
+1. `launcher.properties` next to `wakamiti-launcher.jar`
+2. project configuration file, `wakamiti.yaml` by default
+3. command-line overrides
+
+The bundled `launcher.properties` enables the default remote Maven repository:
+
+```properties
+mavenFetcher.useDefaultRemoteRepository=true
+```
+
+You can override Maven Fetcher settings there, for example custom repositories, local repository path or proxy
+configuration.
+
+The launcher caches downloaded artifacts in a platform-specific user data directory managed by `appdirs`. It no longer
+uses a `.wakamiti` folder in the current working directory.
+
+## Basic usage
+
+Show help:
+
+```bash
+wakamiti -h
+```
+
+Run using modules passed on the command line:
+
+```bash
+wakamiti --modules es.iti.wakamiti:wakamiti-gherkin:{version},es.iti.wakamiti:rest-wakamiti-plugin:{version}
+```
+
+`--modules` expects a comma-separated list.
+
+Run using a project configuration file:
+
 ```yaml
 wakamiti:
   launcher:
-     modules:
-       - es.iti.wakamiti:wakamiti-gherkin:1.0.0
-       - es.iti.wakamiti:wakamiti-rest:1.0.0
-```  
+    modules:
+      - es.iti.wakamiti:wakamiti-gherkin:{version}
+      - es.iti.wakamiti:rest-wakamiti-plugin:{version}
+```
 
-> **IMPORTANT**  
-> The `modules` property accepts not only the plugins used directly by Wakamiti but any other Maven artifact.  
-> For example, if you use the database steps plugin, you will require as well a library with the proper JDBC driver. 
-> Just declare the corresponding Maven artifact as a regular module and it will be obtained and attached to the 
-> execution.
+By default the launcher reads `./wakamiti.yaml`. Use `--file` to point to a different file:
 
-### Arguments
-The following is a list of accepted arguments:
+```bash
+wakamiti --file config/my-wakamiti.yaml
+```
 
-| Command line argument  | Configuration file property | Definition |
-| --------------------- | --------------------------- | ---------- |
-|`-modules <module1> [module2 ...]` | `wakamiti.modules` | Set a list of required artifacts |
-|`-conf <filename>` | *not applicable* | Set a custom file to be used as configuration file |
-|`-M<argument>` | `mavenFetcher.<property>` | Set a custom *Maven Fetcher* property |
-|`-K<argument>` | `wakamiti.<property>` | Set a custom *Wakamiti* property |
+## Command-line options
 
+The current CLI options are:
 
+| Option | Description |
+| --- | --- |
+| `-h`, `--help` | Show help |
+| `-d`, `--debug` | Enable debug logging |
+| `-c`, `--clean` | Force downloaded modules to be re-fetched |
+| `-f`, `--file <path>` | Use a custom configuration file |
+| `-m`, `--modules <g:a:v,...>` | Comma-separated module coordinates |
+| `-n`, `--dry-run` | Generate the report without executing the plan |
+| `-l`, `--list` | Show available contributions after module resolution |
+| `-K key=value` | Override a `wakamiti.*` property |
+| `-M key=value` | Override a `mavenFetcher.*` property |
+| `-a`, `--ai` | Activate feature generator mode |
+| `-D`, `--apiDocs <path-or-url>` | API docs input for feature generation |
+| `-t`, `--token <token>` | Token used by feature generation |
+| `-p`, `--path <path>` | Output path for generated features |
+| `-L`, `--language <code>` | ISO 639-1 language code for feature generation |
 
+## Examples
+
+List contributions exposed by the resolved modules:
+
+```bash
+wakamiti --modules es.iti.wakamiti:wakamiti-gherkin:{version} --list
+```
+
+Force a fresh resolution of modules:
+
+```bash
+wakamiti --clean --modules es.iti.wakamiti:wakamiti-gherkin:{version}
+```
+
+Run with explicit property overrides:
+
+```bash
+wakamiti \
+  --modules es.iti.wakamiti:wakamiti-gherkin:{version} \
+  -KoutputFilePath=build/reports/wakamiti.json \
+  -MmavenFetcher.remoteRepositories=internal=https://repo.example.com/maven2/
+```
 
 ## License
+
+```text
+Mozilla Public License 2.0
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ```
-    Mozilla Public License 2.0
-
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at https://mozilla.org/MPL/2.0/.
-```
-
-
-## Contributing
-Currently the project is closed to external contributions but this may change in the future.
-
-
-## Authors
-- Luis Iñesta Gelabert  |  :email: <linesta@iti.es> | :email: <luiinge@gmail.com>

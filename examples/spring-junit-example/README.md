@@ -1,156 +1,32 @@
-Spring Sample App
-=================
+# Spring JUnit example
 
-This project is used as a REST application meant to be run locally as 
-a testing infrastructure for all the Wakamiti examples provided. It
-is built using SpringBoot and an in-memory H2 database.
+This module is a Spring Boot sample application exercised through `wakamiti-junit`.
 
-[Features](#sample-application-features) |
-[Installation and running](#installation-and-running)
+## What it includes
 
+- REST API over `User`
+- embedded H2 database
+- custom runner `WakamitiSpringJUnitRunner` that bootstraps Spring before Wakamiti
+- Wakamiti configuration in `src/test/resources/application-test.yaml`
 
-Sample Application Features
----------------------------
+## Default endpoints used by the example
 
-### REST operations
+- HTTP base URL: `http://localhost:9191/`
+- H2 TCP URL: `jdbc:h2:tcp://localhost:9092/mem:test`
 
-The API only provides one service with the following CRUD operations on
-the entity User:
+The ports come from `application-test.yaml`, which is the configuration actually used by the tests.
 
----
+## Run
 
-#### Retrieve a list of users
-**GET** `http://localhost:9091/users` 
-##### returns 200
-```json
-[
-   { 
-     "id":  "1" , 
-     "firstName": "John", 
-     "lastName":  "Doe"
-   },
-   { 
-     "id":  "2" , 
-     "firstName": "Sarah", 
-     "lastName":  "Connor"
-    }
-]
+From this directory:
+
+```bash
+mvn test
 ```
 
----
+## Relevant files
 
-#### Retrieve a user
-**GET** `http://localhost:9091/users/1` 
-##### returns 200
-```json
-{ 
- "id":  "1" , 
- "firstName": "John", 
- "lastName":  "Doe"
-}
-```
-
----
-
-#### Create a new user
-**POST** `http://localhost:9091/users`
-```json
-{ 
- "id":  "3" , 
- "firstName": "April", 
- "lastName":  "O'Neill"
-}
-```
-##### returns 201
-```json
-{ 
- "id":  "3" , 
- "firstName": "April", 
- "lastName":  "O'Neill"
-}
-```
-
----
-
-#### Modify a user
-**PUT** `http://localhost:9091/users/1`
-```json
-{ 
- "id":  "1" , 
- "firstName": "John", 
- "lastName":  "Dawn"
-}
-```
-##### returns 200
-```json
-{ 
- "id":  "1" , 
- "firstName": "John", 
- "lastName":  "Dawn"
-}
-```
-
----
-    
-#### Delete a user
-**DELETE** `http://localhost:9091/users/1` 
-##### return 200
-
----
-
-> **NOTE**  
-> By default the application port is `9191`, although this can
-> be changed editing the `application.yaml` file.
-
-
-### Database
-
-The underlying database is formed by a single schema with
-the following table:
-
-**USER** 
-
-| column name | data type | primary key | 
-| ----------- | --------- | :---------: |
-| ID | BIGINT | x |
-|FIRST_NAME | VARCHAR | |
-| LAST_NAME | VARCHAR | |
-
-The database is created from scratch when the application is launched, 
-adding one user.
-
-The client connection URL is `jdbc:h2:tcp://localhost:9092/mem:test` using the 
-username `sa` and an empty password. 
-
-> **NOTE**  
-> By default the database port is `9092` and the schema name `test`, 
-> although this can be changed editing the `application.yaml` file.  
-> Also, you can modify the initial data editing the `initial-data.sql` file.
-
-
-
-
-
-Installation and running
-------------------------
-
-### Ready-to-use file
-If you are OK with the default behaviour, just use the provided jar file 
-from [dist/spring-sample-app-1.0.jar]; it contains all the dependencies required. In 
-order to launch the application, type:
-```
-java -jar spring-sample-app-1.0.jar 
-``` 
-> **NOTE**  
-> Ensure that ports 9091 and 9092 are available, otherwise the application
-> will failed to start.
-
-### Custom application
-If you need to modify some settings, or alter any other aspect of this 
-sample application, simply clone or download the entire Maven project, 
-do the modifications, and compile it using the Maven command:
-```
-mvn install
-```
-You will have your custom version jar file in the `target` folder, which
-you can launch using the command above.
+- `src/test/java/.../WakamitiTest.java`
+- `src/test/java/.../WakamitiSpringJUnitRunner.java`
+- `src/test/resources/application-test.yaml`
+- `src/test/resources/UserService.feature`
