@@ -78,6 +78,19 @@ wakamiti:
 ```
 
 
+### `wakamiti.generateOutputFile`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Indica si se genera el fichero JSON de salida.
+
+Ejemplo:
+```yaml
+wakamiti:
+  generateOutputFile: false
+```
+
+
 ### `wakamiti.outputFilePerTestCase`
 - Tipo: `boolean`
 - Por defecto: `false`
@@ -90,6 +103,19 @@ Ejemplo:
 ```yaml
 wakamiti:
   outputFilePerTestCase: true
+```
+
+
+### `wakamiti.outputFilePerTestCasePath`
+- Tipo: `file`
+
+Establece el directorio de salida cuando `wakamiti.outputFilePerTestCase` está activado.
+
+Ejemplo:
+```yaml
+wakamiti:
+  outputFilePerTestCase: true
+  outputFilePerTestCasePath: result/by-test-case
 ```
 
 
@@ -149,6 +175,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.includeFilteredTestCases`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Indica si los escenarios filtrados por `wakamiti.tagFilter` se incluyen igualmente en el plan como `SKIPPED`.
+
+Ejemplo:
+```yaml
+wakamiti:
+  tagFilter: not Ignore
+  includeFilteredTestCases: true
+```
+
+
 ### `wakamiti.launcher.modules`
 - Tipo: `string[]`
 
@@ -181,11 +221,38 @@ wakamiti:
 ```
 
 
+### `wakamiti.report.source`
+- Tipo: `file`
+
+Establece el fichero JSON de origen que se usa como entrada para generar informes.
+
+Ejemplo:
+```yaml
+wakamiti:
+  report:
+    source: result/wakamiti.json
+```
+
+
+### `wakamiti.redefinition.enabled`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Activa o desactiva el mecanismo de dos niveles de abstracción (definición e implementación).
+
+Ejemplo:
+```yaml
+wakamiti:
+  redefinition:
+    enabled: false
+```
+
+
 ### `wakamiti.redefinition.definitionTag`
 - Tipo: `string`
 - Por defecto: `definition`
 
-Establece la etiqueta para indicar que la **caracteristica** es una [definición]().
+Establece la etiqueta para indicar que la **caracteristica** es una [definición](#nivel-0-definición).
 
 Ejemplo:
 ```yaml
@@ -199,7 +266,7 @@ wakamiti:
 - Tipo: `string`
 - Por defecto: `implementation`
 
-Establece la etiqueta para indicar que la **caracteristica** es una [implementación]().
+Establece la etiqueta para indicar que la **caracteristica** es una [implementación](#nivel-1-implementación).
 
 Ejemplo:
 ```yaml
@@ -269,6 +336,24 @@ wakamiti:
 ```
 
 
+### `wakamiti.logs.ansi.styles.*`
+- Tipo: `string`
+
+Permite sobrescribir los estilos ANSI de la consola. Es una opción avanzada para personalizar colores y estilos del log.
+
+Ejemplo:
+```yaml
+wakamiti:
+  logs:
+    ansi:
+      styles:
+        keyword: blue
+        source: faint
+        stepResult:
+          FAILED: red,bold
+```
+
+
 ### `wakamiti.logs.showLogo`
 - Tipo: `boolean`
 - por defecto: `true`
@@ -280,6 +365,20 @@ Ejemplo:
 wakamiti:
   logs:
     showLogo: true
+```
+
+
+### `wakamiti.logs.showStepSource`
+- Tipo: `boolean`
+- por defecto: `false`
+
+Indica si se muestra en consola la ubicación origen de cada paso.
+
+Ejemplo:
+```yaml
+wakamiti:
+  logs:
+    showStepSource: true
 ```
 
 
@@ -309,6 +408,31 @@ Ejemplo:
 wakamiti:
   junit:
     treatStepsAsTests: true
+```
+
+
+### `wakamiti.executionID`
+- Tipo: `string`
+
+Define un identificador fijo de ejecución. Si no se indica, Wakamiti genera uno único automáticamente.
+
+Ejemplo:
+```yaml
+wakamiti:
+  executionID: CI-20260618-001
+```
+
+
+### `wakamiti.workingDir`
+- Tipo: `file`
+- Por defecto: `.`
+
+Establece el directorio de trabajo usado para resolver rutas relativas.
+
+Ejemplo:
+```yaml
+wakamiti:
+  workingDir: /workspace/tests
 ```
 
 

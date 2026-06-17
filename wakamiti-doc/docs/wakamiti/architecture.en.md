@@ -78,6 +78,19 @@ wakamiti:
 ```
 
 
+### `wakamiti.generateOutputFile`
+- Type: `boolean`
+- Default: `true`
+
+Specifies whether the output JSON file is generated.
+
+Example:
+```yaml
+wakamiti:
+  generateOutputFile: false
+```
+
+
 ### `wakamiti.outputFilePerTestCase`
 - Type: `boolean`
 - Default: `false`
@@ -89,6 +102,19 @@ Example:
 ```yaml
 wakamiti:
   outputFilePerTestCase: true
+```
+
+
+### `wakamiti.outputFilePerTestCasePath`
+- Type: `file`
+
+Sets the output directory used when `wakamiti.outputFilePerTestCase` is enabled.
+
+Example:
+```yaml
+wakamiti:
+  outputFilePerTestCase: true
+  outputFilePerTestCasePath: result/by-test-case
 ```
 
 
@@ -148,6 +174,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.includeFilteredTestCases`
+- Type: `boolean`
+- Default: `false`
+
+Specifies whether scenarios filtered out by `wakamiti.tagFilter` are still included in the execution plan as `SKIPPED`.
+
+Example:
+```yaml
+wakamiti:
+  tagFilter: not Ignore
+  includeFilteredTestCases: true
+```
+
+
 ### `wakamiti.launcher.modules`
 - Type: `string[]`
 
@@ -179,11 +219,38 @@ wakamiti:
     generation: "false"
 ```
 
+
+### `wakamiti.report.source`
+- Type: `file`
+
+Sets the source JSON file used as input to generate reports.
+
+Example:
+```yaml
+wakamiti:
+  report:
+    source: result/wakamiti.json
+```
+
+
+### `wakamiti.redefinition.enabled`
+- Type: `boolean`
+- Default: `true`
+
+Enables or disables the two-level abstraction mechanism (definition and implementation).
+
+Example:
+```yaml
+wakamiti:
+  redefinition:
+    enabled: false
+```
+
 ### `wakamiti.redefinition.definitionTag`
 - Type: `string`
 - Default: `definition`
 
-Sets the tag to indicated that the **feature** is a [definition]().
+Sets the tag to indicated that the **feature** is a [definition](#level-0-definition).
 
 Example:
 ```yaml
@@ -197,7 +264,7 @@ wakamiti:
 - Type: `string`
 - Default: `implementation`
 
-Sets the tag to indicated that the **feature** is a [implementation]().
+Sets the tag to indicated that the **feature** is a [implementation](#level-1-implementation).
 
 Example:
 ```yaml
@@ -267,6 +334,24 @@ wakamiti:
 ```
 
 
+### `wakamiti.logs.ansi.styles.*`
+- Type: `string`
+
+Overrides ANSI style mappings used in console logs. This is an advanced option for customizing log colors/styles.
+
+Example:
+```yaml
+wakamiti:
+  logs:
+    ansi:
+      styles:
+        keyword: blue
+        source: faint
+        stepResult:
+          FAILED: red,bold
+```
+
+
 ### `wakamiti.logs.showLogo`
 - Type: `boolean`
 - Default: `true`
@@ -278,6 +363,20 @@ Example:
 wakamiti:
   logs:
     showLogo: true
+```
+
+
+### `wakamiti.logs.showStepSource`
+- Type: `boolean`
+- Default: `false`
+
+Specifies whether the source location of each step is displayed in console logs.
+
+Example:
+```yaml
+wakamiti:
+  logs:
+    showStepSource: true
 ```
 
 
@@ -307,6 +406,31 @@ Example:
 wakamiti:
   junit:
     treatStepsAsTests: true
+```
+
+
+### `wakamiti.executionID`
+- Type: `string`
+
+Sets a fixed execution identifier. If not set, Wakamiti generates a unique ID automatically.
+
+Example:
+```yaml
+wakamiti:
+  executionID: CI-20260618-001
+```
+
+
+### `wakamiti.workingDir`
+- Type: `file`
+- Default: `.`
+
+Sets the working directory used to resolve relative paths.
+
+Example:
+```yaml
+wakamiti:
+  workingDir: /workspace/tests
 ```
 
 
