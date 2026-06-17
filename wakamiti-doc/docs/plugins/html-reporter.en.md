@@ -20,13 +20,13 @@ A report generator in `HTML` format with the tests results.
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:html-reporter-wakamiti-plugin:2.6.0
+es.iti.wakamiti:html-report-wakamiti-plugin:2.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
-  <artifactId>html-reporter-wakamiti-plugin</artifactId>
+  <artifactId>html-report-wakamiti-plugin</artifactId>
   <version>2.6.0</version>
 </dependency>
 ```
