@@ -15,7 +15,7 @@ function addStyleResource (rule) {
     })
 }
 
-const absolutePath = process.env.CI_PAGES_URL
+const absolutePath = process.env.CI_PAGES_URL || 'http://localhost:8080'
 const pathPrefix = new URL(absolutePath).pathname
 const siteUrl = absolutePath.replace(pathPrefix, '')
 
