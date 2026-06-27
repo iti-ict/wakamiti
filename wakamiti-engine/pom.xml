@@ -20,7 +20,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>2.11.0</revision>
+        <revision>2.12.0-SNAPSHOT</revision>
     </properties>
 
 
@@ -31,6 +31,7 @@
     <modules>
         <module>wakamiti-core</module>
         <module>wakamiti-junit</module>
+        <module>wakamiti-junit5</module>
         <module>wakamiti-lsp</module>
         <module>wakamiti-maven-plugin</module>
         <module>wakamiti-launcher</module>
