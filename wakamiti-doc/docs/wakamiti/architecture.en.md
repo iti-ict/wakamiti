@@ -1068,6 +1068,7 @@ And level 0 step 4
 
 #### Mapping rules (`stepMap`)
 
+* The **Background** block of a **level 0 (definition)** feature is ignored during redefinition.
 * Steps defined in the **Background** block must not be considered when building `stepMap`.
 * If you define `stepMap`, the number of elements must match the total number of steps in the level 0 scenario,
   excluding **Background** steps.
