@@ -16,6 +16,7 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
 import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.UniqueId;
 
@@ -69,7 +70,7 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
                     classUniqueId.append("node", getNodePath()),
                     displayName(),
                     WakamitiTestSources.from(getNode(), resourceRoots).orElse(null),
-                    WakamitiNodeDescriptor.Type.CONTAINER
+                    TestDescriptor.Type.CONTAINER
             );
             getChildren().stream()
                     .map(NodeExecution.class::cast)

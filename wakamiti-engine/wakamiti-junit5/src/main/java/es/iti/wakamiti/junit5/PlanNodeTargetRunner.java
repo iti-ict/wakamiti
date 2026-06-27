@@ -15,6 +15,7 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
+import org.junit.platform.engine.TestDescriptor;
 import org.opentest4j.TestAbortedException;
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestExecutionResult;
@@ -58,7 +59,7 @@ class PlanNodeTargetRunner extends PlanNodeRunner implements NodeExecution {
                     classUniqueId.append("test", getNodePath()),
                     displayName(),
                     WakamitiTestSources.from(getNode(), resourceRoots).orElse(null),
-                    WakamitiNodeDescriptor.Type.TEST
+                    TestDescriptor.Type.TEST
             );
         }
         return descriptor;
