@@ -1,0 +1,213 @@
+---
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+
+const { locale, switchLocalePath, showMenuToggle = true } = Astro.props;
+const switchText = locale === "es" ? "EN" : "ES";
+const nextSwitchText = locale === "es" ? "ES" : "EN";
+---
+
+<header class="header" data-header>
+  <Logo />
+  <nav class="nav">
+    <button
+      id="languageSwitch"
+      class="language-switch"
+      type="button"
+      data-language-switch={switchLocalePath}
+      data-language-next-text={nextSwitchText}
+      aria-label="Switch language between spanish and english"
+    >
+      <span class="language-icon" aria-hidden="true">
+        <Icon name="globe" class="globe globe-current" />
+        <Icon name="globe" class="globe globe-next" />
+      </span>
+      <span class="language-text">{switchText}</span>
+    </button>
+    <button id="themeSwitch" class="theme-switch" type="button" data-theme-toggle aria-label="Switch theme between light and dark">
+      <Icon name="moon" class="moon" />
+      <Icon name="sun" class="sun" />
+    </button>
+    {
+      showMenuToggle && (
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Toggle the sidebar">
+          <Icon name="menu" class="menu-open" />
+          <Icon name="x" class="menu-close" />
+        </button>
+      )
+    }
+  </nav>
+</header>
+
+<style lang="scss">
+:root {
+  --language-switch-duration: .25s;
+}
+
+@mixin toggle-part-hidden($transform) {
+  opacity: 0;
+  visibility: hidden;
+  transform: $transform;
+  transition:
+    transform .25s ease-in-out,
+    opacity .25s ease-in-out,
+    visibility 0s linear .25s;
+}
+
+@mixin toggle-part-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: -12px;
+  left: 0;
+  z-index: 10;
+  padding: 15px 30px;
+  transition: padding .15s linear, background .0s linear, border-color .0s linear;
+  border-bottom: 1px solid transparent;
+
+  @include respond-above(sm) {
+    padding: 30px;
+  }
+}
+
+.header--scrolled {
+  @include respond-below(sm) {
+    padding: 15px 30px;
+
+    html.dark & {
+      background: $sidebarDark;
+      border-color: shade($sidebarDark, 40%);
+    }
+
+    html.bright & {
+      background: $sidebarBright;
+      border-color: shade($sidebarBright, 10%);
+    }
+  }
+}
+
+.nav {
+  display: flex;
+}
+
+.language-switch,
+.theme-switch,
+.menu-toggle {
+  background: none;
+  border: 0;
+  padding: 0 10px;
+  transition: color .15s ease-in-out;
+  cursor: pointer;
+  height: 48px;
+  font: inherit;
+  text-decoration: none;
+
+  html.dark & {
+    color: $textDark;
+  }
+
+  html.bright & {
+    color: $textBright;
+  }
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 70px;
+}
+
+.language-switch .language-text {
+  display: inline-block;
+  line-height: 1;
+}
+
+.language-switch .language-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+}
+
+.theme-switch,
+.menu-toggle {
+  width: 48px;
+  position: relative;
+  text-align: right;
+}
+
+.menu-toggle {
+  @include respond-above(sm) {
+    display: none;
+  }
+}
+
+.theme-switch :global(svg),
+.menu-toggle :global(svg) {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+}
+
+.language-switch :global(.globe) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  transition:
+    transform var(--language-switch-duration) ease-in-out,
+    opacity var(--language-switch-duration) ease-in-out,
+    visibility 0s linear var(--language-switch-duration);
+}
+
+.language-switch :global(svg),
+.theme-switch :global(svg) {
+  @include toggle-part-hidden(translateY(20px) scale(.5));
+}
+
+.language-switch :global(.globe-current) {
+  @include toggle-part-visible;
+}
+
+html.bright .theme-switch :global(.moon),
+html.dark .theme-switch :global(.sun) {
+  @include toggle-part-visible;
+}
+
+.language-switch[data-transitioning="true"] :global(.globe-current) {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(.5);
+}
+
+.language-switch[data-transitioning="true"] :global(.globe-next) {
+  @include toggle-part-visible;
+}
+
+.menu-toggle :global(svg) {
+  @include toggle-part-hidden(rotateZ(-180deg));
+}
+
+body:not(.sidebar-open) .menu-toggle :global(.menu-open),
+body.sidebar-open .menu-toggle :global(.menu-close) {
+  @include toggle-part-visible;
+}
+
+.language-switch[data-transitioning="true"] :global(.globe-next) {
+  transition-delay: 0s;
+}
+</style>

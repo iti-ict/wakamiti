@@ -1,0 +1,94 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@fontsource/source-sans-pro";
+import "../assets/scss/asciinema-player.css";
+import "../assets/scss/globals.scss";
+
+import siteScript from "../scripts/site.js?url";
+import Header from "../ui/Header.astro";
+import Sidebar from "../ui/Sidebar.astro";
+import { localizePath, withBase } from "../lib/site.js";
+
+const {
+  locale = "es",
+  title = "Wakamiti",
+  description = "",
+  sidebar = true,
+  currentSlug = "/"
+} = Astro.props;
+
+const switchLocalePath = withBase(localizePath(currentSlug, locale === "es" ? "en" : "es"));
+const gaId = import.meta.env.GA_ID;
+const gsvMeta = import.meta.env.GSV_META;
+---
+
+<!doctype html>
+<html lang={locale} class="bright" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="theme-color" content="#10c186" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    {gsvMeta && <meta name="google-site-verification" content={gsvMeta} />}
+    <link rel="manifest" href={withBase("/manifest.json")} />
+    <ClientRouter fallback="swap" />
+    <script is:inline>
+      const storedTheme = localStorage.getItem("theme") || "bright";
+      document.documentElement.classList.remove("bright", "dark");
+      document.documentElement.classList.add(storedTheme);
+    </script>
+    {
+      gaId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+          <script is:inline>{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${gaId}');`}</script>
+        </>
+      )
+    }
+  </head>
+  <body>
+    <div class="site">
+      <Header locale={locale} switchLocalePath={switchLocalePath} showMenuToggle={sidebar} />
+      {sidebar && <Sidebar locale={locale} currentSlug={currentSlug} />}
+      <main class={`main ${sidebar ? "" : "main--no-sidebar"}`}>
+        <slot />
+      </main>
+    </div>
+    <script type="module" src={siteScript}></script>
+  </body>
+</html>
+
+<style lang="scss">
+.site {
+  overflow: hidden;
+}
+
+.main {
+  padding: 100px 30px 30px 30px;
+  max-width: 800px;
+  transition: transform .15s ease-in-out;
+
+  @include respond-above(sm) {
+    padding: 100px 30px 30px;
+    transform: translateX(300px);
+    width: calc(100% - 300px);
+  }
+
+  @include respond-above(md) {
+    padding: 100px 80px 30px;
+  }
+
+  body.sidebar-open & {
+    transform: translate(300px);
+  }
+}
+
+.main--no-sidebar {
+  transform: translate(0);
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1400px;
+}
+</style>

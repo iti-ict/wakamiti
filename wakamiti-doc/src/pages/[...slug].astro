@@ -1,0 +1,78 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getDocRecords, loadDocModule } from "../lib/docs.js";
+
+export async function getStaticPaths() {
+  const docs = await getDocRecords();
+
+  return docs.map((doc) => ({
+    params: {
+      slug: doc.slugParam
+    },
+    props: {
+      file: doc.file,
+      doc
+    }
+  }));
+}
+
+const { file, doc } = Astro.props;
+const module = await loadDocModule(file);
+const Content = module.Content;
+---
+
+<SiteLayout locale={doc.locale} title={`${doc.title} | Wakamiti`} description={doc.description} sidebar={true} currentSlug={doc.slug}>
+  <h1>{doc.title}</h1>
+  <div class="markdown">
+    <Content />
+  </div>
+</SiteLayout>
+
+<style lang="scss">
+.markdown {
+  padding-bottom: 50px;
+  text-align: justify;
+}
+
+:global(.markdown > p) {
+  opacity: .8;
+}
+
+:global(.markdown > h2),
+:global(.markdown > h3),
+:global(.markdown > h4),
+:global(.markdown > h5),
+:global(.markdown > h6) {
+  margin-top: 40px;
+}
+
+:global(.markdown > h2) {
+  padding-bottom: 15px;
+  border-bottom: 1px solid;
+}
+
+:global(html.bright .markdown > h2) {
+  border-color: $textBright;
+}
+
+:global(html.dark .markdown > h2) {
+  border-color: $textDark;
+}
+
+:global(.markdown > :not(h2) + h3) {
+  padding-top: 25px;
+  border-top: 1px solid;
+}
+
+:global(html.bright .markdown > :not(h2) + h3) {
+  border-color: $textBright;
+}
+
+:global(html.dark .markdown > :not(h2) + h3) {
+  border-color: $textDark;
+}
+
+:global(.markdown > p > img) {
+  max-width: 100%;
+}
+</style>

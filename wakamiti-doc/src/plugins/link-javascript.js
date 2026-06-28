@@ -1,13 +1,15 @@
+import { visit } from "unist-util-visit";
 
-const visit = require('unist-util-visit')
+export default function linkJavascript() {
+  return (tree) => {
+    visit(tree, "link", (node) => {
+      if (node.url == null || !node.url.startsWith("javascript:")) {
+        return;
+      }
 
-module.exports = (options) => {
-
-    return (tree) => {
-        visit(tree, "link", (node, index, parent) => {
-            if (node.url == null || !node.url.startsWith('javascript:')) return;
-            delete node.data.hProperties.target
-            parent.children[index] = node
-        });
-    }
+      if (node.data?.hProperties) {
+        delete node.data.hProperties.target;
+      }
+    });
+  };
 }

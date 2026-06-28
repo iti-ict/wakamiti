@@ -1,75 +1,70 @@
+import querystring from "node:querystring";
+import { visit } from "unist-util-visit";
 
-const querystring = require('querystring')
-const visit = require('unist-util-visit')
+function createTabs(tabs) {
+  return {
+    type: "wrapper",
+    data: {
+      hName: "div",
+      hProperties: {
+        id: tabs,
+        className: "remark-code-tabs"
+      }
+    },
+    children: []
+  };
+}
 
+function createTab(node, meta, index) {
+  const tabGroup = meta.tabs;
+  const tabId = `${tabGroup}-${index}`;
+  const tabName = meta.name;
 
-module.exports = (options) => {
-
-    function createTabs(tabs) {
-        return {
-            type: "wrapper",
-            data: {
-                hName: "div",
-                hProperties: {
-                    id: tabs,
-                    className: "remark-code-tabs",
-                },
-            },
-            children: [],
-        };
+  return [
+    {
+      type: "html",
+      value: `<label for="${tabId}" class="remark-code-tab"><input type="radio" id="${tabId}" name="${tabGroup}" ${index === 0 ? "checked" : ""}/> ${tabName}</label>`
+    },
+    {
+      type: "wrapper",
+      data: {
+        hName: "div",
+        hProperties: {
+          className: "remark-code-content"
+        }
+      },
+      children: [node]
     }
+  ];
+}
 
-    function createTab(node, meta, index) {
-        const tabGroup = meta.tabs;
-        const tabId = `${tabGroup}#${index}`;
-        const tabName = meta.name;
+function createPlaceholder({ tabs, name }) {
+  return {
+    type: "html",
+    value: `<hr class="remark-code-tabs-x" rel="${tabs}#${name}" />`
+  };
+}
 
-        return [
-            {
-                type: "html",
-                value: `<label for="${tabId}" class="remark-code-tab">
-                        <input type="radio" id=${tabId} name="${tabGroup}" ${index === 0 ? "checked" : ""}/> ${tabName}
-                    </label>`,
-            },
-            {
-                type: "wrapper",
-                data: {
-                    hName: "div",
-                    hProperties: {
-                        className: "remark-code-content",
-                    },
-                },
-                children: [node],
-            },
-        ];
-    }
+export default function codeTabs() {
+  function transform(tree) {
+    const queue = {};
 
-    function createPlaceholder({ tabs, name }) {
-        return {
-            type: "html",
-            value: `<hr class="remark-code-tabs-x" rel="${tabs}#${name}" />`,
-        };
-    }
+    visit(tree, "code", (node, index, parent) => {
+      const meta = querystring.parse(node.meta == null ? "" : node.meta, " ");
+      if (!meta.tabs) {
+        return;
+      }
 
-    function transform(tree) {
-        const queue = {};
+      const newNode = !queue[meta.tabs] ? createTabs(meta.tabs) : createPlaceholder(meta);
 
-        visit(tree, "code", function (node, index, parent) {
-            const meta = querystring.parse(node.meta == null ? "" : node.meta, " ");
-            if (!meta.tabs) return;
+      parent.children[index] = newNode;
+      if (queue[meta.tabs] == null) {
+        queue[meta.tabs] = newNode;
+      }
 
-            const newNode = !queue[meta.tabs]
-                ? createTabs(meta.tabs)
-                : createPlaceholder(meta);
+      queue[meta.tabs].children.push(...createTab(node, meta, queue[meta.tabs].children.length));
+    });
+  }
 
-            parent.children[index] = newNode;
-            if (queue[meta.tabs] == null) queue[meta.tabs] = newNode;
-
-            queue[meta.tabs].children.push(
-                ...createTab(node, meta, queue[meta.tabs].children.length)
-            );
-        });
-    }
-
-    return transform;
-};
+  return transform;
+}

@@ -1,0 +1,23 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { withBase } from "../../lib/site.js";
+---
+
+<SiteLayout locale="en" title="404 | Wakamiti" description="Page not found" sidebar={false} currentSlug="/">
+  <div class="not-found">
+    <h1>404</h1>
+    <p>The requested page does not exist.</p>
+    <p><a href={withBase("/en/")}>Back to home</a></p>
+  </div>
+</SiteLayout>
+
+<style lang="scss">
+.not-found {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.not-found p {
+  opacity: .8;
+}
+</style>

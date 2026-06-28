@@ -1,0 +1,52 @@
+---
+import generalitatBright from "../assets/img/generalitat-bright.svg";
+import generalitatDark from "../assets/img/generalitat-dark.svg";
+import itiBright from "../assets/img/ITI-logo-bright.svg";
+import itiDark from "../assets/img/ITI-logo-dark.svg";
+import ivaceBright from "../assets/img/ivace-bright.svg";
+import ivaceDark from "../assets/img/ivace-dark.svg";
+---
+
+<div class="footer-marks">
+  <div class="theme-bright">
+    <img src={generalitatBright.src} alt="Generalitat Valenciana" />
+    <img src={ivaceBright.src} alt="IVACE" />
+    <img src={itiBright.src} alt="ITI" />
+  </div>
+  <div class="theme-dark">
+    <img src={generalitatDark.src} alt="Generalitat Valenciana" />
+    <img src={ivaceDark.src} alt="IVACE" />
+    <img src={itiDark.src} alt="ITI" />
+  </div>
+</div>
+
+<style lang="scss">
+.footer-marks {
+  margin: 3em 0 0;
+  height: 50px;
+  display: block;
+  position: relative;
+  perspective: 200px;
+}
+
+.footer-marks > div {
+  height: 50px;
+  width: 100%;
+  align-items: stretch;
+  justify-content: space-around;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+.footer-marks img {
+  height: 100%;
+  width: 244px;
+}
+
+html.bright .footer-marks :global(.theme-bright),
+html.dark .footer-marks :global(.theme-dark) {
+  display: flex;
+}
+</style>
