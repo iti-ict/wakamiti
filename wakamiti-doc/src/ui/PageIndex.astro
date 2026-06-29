@@ -1,6 +1,4 @@
 ---
-import { withBase } from "../lib/site.js";
-
 const { currentSlug, headings = [] } = Astro.props;
 
 const sections = [];
@@ -26,7 +24,7 @@ for (const heading of headings) {
 }
 
 function headingHref(anchor) {
-  return withBase(`${currentSlug}${anchor}`);
+  return anchor;
 }
 
 const initialSectionAnchor = sections[0]?.heading.anchor;
