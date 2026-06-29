@@ -28,6 +28,7 @@ jobs:
         with:
           node-version: 26
           cache: pnpm
+          cache-dependency-path: wakamiti-doc/pnpm-lock.yaml
 
       - name: Set environment variables
         run: |
