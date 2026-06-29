@@ -187,7 +187,7 @@ async function ensureAsciinemaPlayer() {
 
   await new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = `${baseUrl}asciinema-player.min.js`;
+    script.src = `${baseUrl.replace(/\/?$/, "/")}asciinema-player.min.js`;
     script.onload = resolve;
     script.onerror = reject;
     document.head.appendChild(script);
