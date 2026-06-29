@@ -20,7 +20,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>2.12.0-SNAPSHOT</revision>
+        <revision>2.12.0</revision>
     </properties>
 
 
