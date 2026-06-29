@@ -1,0 +1,43 @@
+---
+import logoBright from "../assets/img/logo-bright.svg";
+import logoDark from "../assets/img/logo-dark.svg";
+import { withBase } from "../lib/site.js";
+---
+
+<a href={withBase("/")} class="logo" title="Back to home" aria-label="Back to home">
+  <div class="theme-bright">
+    <img src={logoDark.src} alt="Wakamiti" />
+  </div>
+  <div class="theme-dark">
+    <img src={logoBright.src} alt="Wakamiti" />
+  </div>
+</a>
+
+<style lang="scss">
+.logo {
+  height: 50px;
+  display: block;
+  position: relative;
+  transition: color .15s ease-in-out;
+  color: $textBright;
+  perspective: 200px;
+
+  div {
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+  }
+
+  img {
+    height: 100%;
+    width: auto;
+  }
+}
+
+html.bright .logo .theme-bright,
+html.dark .logo .theme-dark {
+  display: block;
+}
+</style>

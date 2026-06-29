@@ -44,7 +44,7 @@ The published documentation site lives at <https://iti-ict.github.io/wakamiti/>.
 ## Repository layout
 
 - `wakamiti-api`: public API and shared configuration model.
-- `wakamiti-engine`: engine modules such as `wakamiti-core`, `wakamiti-junit`, `wakamiti-maven-plugin`, `wakamiti-launcher`, `wakamiti-lsp` and `wakamiti-docker`.
+- `wakamiti-engine`: engine modules such as `wakamiti-core`, `wakamiti-junit`, `wakamiti-junit5`, `wakamiti-maven-plugin`, `wakamiti-launcher`, `wakamiti-lsp` and `wakamiti-docker`.
 - `plugins`: built-in Wakamiti plugins.
 - `examples`: runnable sample projects and Docker-based tutorials.
 - `wakamiti-vscode-extension`: editor integration built on the Wakamiti language server.
@@ -82,6 +82,7 @@ Once configured, you can execute the plan with one of the supported launchers:
 
 - the standalone CLI: see [wakamiti-engine/wakamiti-launcher/README.md](wakamiti-engine/wakamiti-launcher/README.md)
 - the JUnit runner: see [wakamiti-engine/wakamiti-junit/README.md](wakamiti-engine/wakamiti-junit/README.md)
+- the JUnit Jupiter launcher: see [wakamiti-engine/wakamiti-junit5/README.md](wakamiti-engine/wakamiti-junit5/README.md)
 - the Maven plugin: see [wakamiti-engine/wakamiti-maven-plugin/README.md](wakamiti-engine/wakamiti-maven-plugin/README.md)
 
 ## Launchers
@@ -89,6 +90,7 @@ Once configured, you can execute the plan with one of the supported launchers:
 Wakamiti currently exposes three execution surfaces in this repository:
 
 - `wakamiti-junit`: runs plans as JUnit 4 suites inside a Java test project.
+- `wakamiti-junit5`: runs plans as JUnit Jupiter dynamic tests.
 - `wakamiti-maven-plugin`: integrates plan execution and report generation into the Maven lifecycle.
 - `wakamiti-launcher`: standalone CLI that resolves external modules from Maven repositories at runtime.
 
@@ -173,4 +175,3 @@ See the [LICENSE](LICENSE.md) file for the full license text.
 ## Maintainers
 
 - **María Galbis Calomarde** - mgalbis@iti.es
-

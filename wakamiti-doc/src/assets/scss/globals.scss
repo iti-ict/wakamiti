@@ -1,4 +1,4 @@
-@import 'prism';
+@use 'prism';
 
 html {
   scroll-behavior: smooth;
@@ -21,12 +21,12 @@ body {
     }
   }
 
-  &.bright {
+  html.bright & {
     background: $backgroundBright;
     color: $textBright;
   }
 
-  &.dark {
+  html.dark & {
     background: $backgroundDark;
     color: $textDark;
   }

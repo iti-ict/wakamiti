@@ -90,6 +90,97 @@ mvn test -Dwakamiti.junit.profile=smoke -Dwakamiti.junit.profile.strict=true
 ```
 
 
+## JUnit 5 launcher
+
+Este launcher integra Wakamiti con JUnit Platform mediante un `TestEngine` propio. Los planes de prueba se declaran
+como clases anotadas y el platform launcher, los IDE y los entornos surefire/failsafe preparados para JUnit 5 los
+descubren automáticamente.
+
+Es la opción adecuada cuando necesitas integración nativa con JUnit 5, descubrimiento sobre JUnit Platform o
+navegación desde el árbol de ejecución hasta el fichero `.feature` de origen.
+
+### Configuración mínima
+
+```java
+@WakamitiPlan
+@AnnotatedConfiguration(path = "classpath:wakamiti.yaml", pathPrefix = "wakamiti")
+public class WakamitiAcceptanceTestPlan {
+}
+```
+
+También puedes declarar propiedades inline:
+
+```java
+@WakamitiPlan
+@AnnotatedConfiguration({
+    @Property(key = "resourceTypes", value = "gherkin"),
+    @Property(key = "resourcePath", value = "src/test/resources/features"),
+    @Property(key = "junit.treatStepsAsTests", value = "true")
+})
+public class WakamitiAcceptanceTestPlan {
+}
+```
+
+
+### Modelo de ejecución
+
+- Cualquier clase concreta anotada con `@WakamitiPlan` se descubre como plan de pruebas.
+- Wakamiti publica nodos de feature, escenario y paso como descriptores de JUnit Platform.
+- Cada nodo publicado conserva una localización real hacia el fichero `.feature` y línea de origen.
+- Los métodos estáticos `@BeforeAll` y `@AfterAll` declarados en la clase del plan se ejecutan antes y después del plan.
+- Las clases de plan no deben declarar métodos Jupiter `@Test`, `@TestFactory` ni `@TestTemplate`.
+
+
+### `wakamiti.junit.treatStepsAsTests`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Cuando se activa, cada paso se notifica a JUnit Platform como test individual. En caso contrario, los nodos hoja que
+se publican como tests son los casos de prueba.
+
+Ejemplo:
+```yaml
+wakamiti:
+  junit:
+    treatStepsAsTests: true
+```
+
+
+### Perfiles de ejecución en JUnit 5
+
+Anotación:
+```java
+@Profile("smoke")
+@WakamitiPlan
+public class WakamitiSmokeTestPlan {
+}
+```
+
+Propiedades JVM de activación:
+
+- `wakamiti.junit5.profile`
+- fallback `wakamiti.profile`
+
+Modo estricto:
+
+- `wakamiti.junit5.profile.strict`
+- fallback `wakamiti.profile.strict`
+
+Comportamiento del modo estricto:
+
+| `strict` | Perfil activo | Clase con `@Profile` | Clase sin `@Profile` |
+|---|---|---|---|
+| `false` | no | se ejecuta | se ejecuta |
+| `false` | sí | solo si coincide | se ejecuta |
+| `true` | no | no se ejecuta | se ejecuta |
+| `true` | sí | solo si coincide | no se ejecuta |
+
+Ejemplo:
+```shell copy=true
+mvn test -Dwakamiti.junit5.profile=smoke -Dwakamiti.junit5.profile.strict=true
+```
+
+
 ## Maven launcher
 
 Este launcher ejecuta Wakamiti como parte del ciclo de vida de Maven. La configuración se controla desde el `pom.xml`

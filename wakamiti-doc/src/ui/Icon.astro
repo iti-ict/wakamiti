@@ -1,0 +1,17 @@
+---
+import feather from "feather-icons";
+
+const { name, class: className = "" } = Astro.props;
+const icon = feather.icons[name];
+
+if (!icon) {
+  throw new Error(`Unknown Feather icon: ${name}`);
+}
+
+const markup = icon.toSvg({
+  class: className,
+  "aria-hidden": "true"
+});
+---
+
+<Fragment set:html={markup} />

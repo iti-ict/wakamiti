@@ -1,0 +1,165 @@
+---
+import { withBase } from "../lib/site.js";
+
+const { currentSlug, headings = [] } = Astro.props;
+
+const sections = [];
+let currentSection = null;
+
+for (const heading of headings) {
+  if (!heading?.anchor || !heading?.value) {
+    continue;
+  }
+
+  if (heading.depth === 2) {
+    currentSection = {
+      heading,
+      children: []
+    };
+    sections.push(currentSection);
+    continue;
+  }
+
+  if (heading.depth === 3 && currentSection) {
+    currentSection.children.push(heading);
+  }
+}
+
+function headingHref(anchor) {
+  return withBase(`${currentSlug}${anchor}`);
+}
+---
+
+{
+  sections.length > 0 && (
+    <nav class="page-index" aria-label="Page index">
+      <ul class="page-index-sections">
+        {
+          sections.map((section) => (
+            <li class="page-index-section" data-page-index-section={section.heading.anchor}>
+              <a
+                class="page-index-link page-index-link--section"
+                data-page-index-link
+                data-page-index-depth="2"
+                data-page-index-anchor={section.heading.anchor}
+                href={headingHref(section.heading.anchor)}
+              >
+                {section.heading.value}
+              </a>
+              {
+                section.children.length > 0 && (
+                  <ul class="page-index-children">
+                    {
+                      section.children.map((child) => (
+                        <li class="page-index-child">
+                          <a
+                            class="page-index-link page-index-link--child"
+                            data-page-index-link
+                            data-page-index-depth="3"
+                            data-page-index-anchor={child.anchor}
+                            data-page-index-parent={section.heading.anchor}
+                            href={headingHref(child.anchor)}
+                          >
+                            {child.value}
+                          </a>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                )
+              }
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  )
+}
+
+<style lang="scss">
+.page-index {
+  display: none;
+
+  @include respond-above(xl) {
+    display: block;
+  }
+}
+
+.page-index-sections,
+.page-index-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.page-index-section + .page-index-section {
+  margin-top: 10px;
+}
+
+.page-index-children {
+  display: none;
+  margin-top: 8px;
+  padding-left: 16px;
+}
+
+.page-index-section.current-section .page-index-children {
+  display: block;
+}
+
+.page-index-child + .page-index-child {
+  margin-top: 7px;
+}
+
+.page-index-link {
+  position: relative;
+  display: block;
+  padding-left: 18px;
+  text-decoration: none;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  transition: color .15s ease-in-out, opacity .15s ease-in-out;
+
+  html.dark & {
+    color: $textDark;
+  }
+
+  html.bright & {
+    color: $textBright;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: .5em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    opacity: 0;
+    background: $brandPrimary;
+    transition: opacity .15s ease-in-out;
+  }
+
+  &.current {
+    color: $brandPrimary;
+    opacity: 1;
+  }
+
+  &.current::before {
+    opacity: 1;
+  }
+}
+
+.page-index-link--section {
+  font-size: .95rem;
+  font-weight: 700;
+  opacity: .86;
+}
+
+.page-index-link--child {
+  font-size: .9rem;
+  opacity: .72;
+}
+</style>

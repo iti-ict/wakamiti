@@ -1,0 +1,70 @@
+---
+import Icon from "./Icon.astro";
+
+const { link, text, icon } = Astro.props;
+
+const icons = {
+  play: "play",
+  file: "file-text",
+  sliders: "sliders"
+};
+---
+
+<article class="shortcut-card">
+  <h2>
+    <a href={link}>
+      <span class="shortcut-icon">
+        <Icon name={icons[icon]} />
+      </span>
+      {text}
+    </a>
+  </h2>
+</article>
+
+<style lang="scss">
+.shortcut-card {
+  flex: 1 0;
+  border: 1px solid shade($sidebarBright, 10%);
+  margin: 0 0 1em;
+  background: $sidebarBright;
+  padding: 2rem;
+  border-radius: 3px;
+  transition: background .15s ease-in-out, border-color .15s ease-in-out;
+
+  @include respond-above(sm) {
+    margin: 0 1em 0;
+  }
+
+  html.dark & {
+    border-color: shade($sidebarDark, 10%);
+    background: $sidebarDark;
+  }
+}
+
+a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  html.dark & {
+    color: $textDark;
+  }
+
+  html.bright & {
+    color: $textBright;
+  }
+}
+
+.shortcut-icon :global(svg) {
+  width: 2em;
+  height: 2em;
+  margin-bottom: 1em;
+
+  @include respond-above(md) {
+    width: 3em;
+    height: 3em;
+  }
+}
+</style>

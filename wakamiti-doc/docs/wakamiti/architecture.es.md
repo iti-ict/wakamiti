@@ -1078,6 +1078,7 @@ Y paso 4 nivel 0
 
 #### Reglas de mapeo (`stepMap`)
 
+* El bloque **Antecedentes** de una característica de **nivel 0 (definición)** se ignora durante la redefinition.
 * Los pasos definidos en el bloque **Antecedentes** NO deben tenerse en cuenta al construir `stepMap`.
 * Si defines `stepMap`, el número de elementos debe coincidir con el número total de pasos del escenario de nivel 0,
   sin incluir pasos de **Antecedentes**.
