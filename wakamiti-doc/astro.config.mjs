@@ -12,7 +12,7 @@ import tableOfContent from "./src/plugins/table-of-content.js";
 
 const absoluteUrl = process.env.CI_PAGES_URL || "http://localhost:4321/";
 const site = new URL(absoluteUrl);
-const base = site.pathname === "/" ? "/" : `${site.pathname.replace(/\/$/, "")}/`;
+const base = site.pathname === "/" ? "/" : site.pathname.replace(/\/$/, "");
 
 export default defineConfig({
   site: `${site.protocol}//${site.host}`,
