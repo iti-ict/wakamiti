@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -33,11 +33,12 @@ jobs:
       - name: Generate site
         run: |
           cd wakamiti-doc
-          pnpm install --frozen-lockfile
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm rebuild
           pnpm run build
 
       - name: Deploy site
-        uses: s0/git-publish-subdir-action@develop
+        uses: s0/git-publish-subdir-action@92faf786f11dfa44fc366ac3eb274d193ca1af7e # v2.6.0
         env:
           REPO: self
           BRANCH: docs
