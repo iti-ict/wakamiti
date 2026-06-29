@@ -196,6 +196,13 @@ async function ensureAsciinemaPlayer() {
   createAsciinemaPlayers();
 }
 
+function refreshDynamicPageState() {
+  updateHeaderState();
+  updateCurrentSidebarLink();
+  updateCurrentPageIndex();
+  void ensureAsciinemaPlayer();
+}
+
 function registerHandlers() {
   if (handlersRegistered) {
     return;
@@ -258,20 +265,18 @@ function registerHandlers() {
       closeSidebar();
     }
   });
+
+  window.addEventListener("load", () => {
+    refreshDynamicPageState();
+  });
 }
 
 window.downloadTutorial = downloadTutorial;
 initializeTheme();
 registerHandlers();
-updateHeaderState();
-updateCurrentSidebarLink();
-updateCurrentPageIndex();
-ensureAsciinemaPlayer();
+refreshDynamicPageState();
 
 document.addEventListener("astro:after-swap", syncTheme);
 document.addEventListener("astro:page-load", () => {
-  updateHeaderState();
-  updateCurrentSidebarLink();
-  updateCurrentPageIndex();
-  ensureAsciinemaPlayer();
+  refreshDynamicPageState();
 });
