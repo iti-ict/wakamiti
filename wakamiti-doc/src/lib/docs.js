@@ -46,7 +46,9 @@ export async function getDocRecords() {
           locale: getLocaleFromSlug(slug),
           title: mod.frontmatter.title,
           description: mod.frontmatter.description || "",
-          headings: headingsSource.map(normalizeHeading).filter((heading) => heading?.depth < 3),
+          headings: headingsSource
+            .map(normalizeHeading)
+            .filter((heading) => heading?.depth >= 2 && heading?.depth <= 3),
           frontmatter: mod.frontmatter
         };
       })
@@ -61,20 +63,17 @@ export async function loadDocModule(file) {
 }
 
 export async function getSidebar(locale) {
-  const docs = await getDocRecords();
-  const headingMap = new Map(docs.map((doc) => [doc.slug.replace(/^\/+|\/+$/g, ""), doc.headings]));
   const settings = menuSettings[locale];
 
   return settings.sidebar.map((section) => ({
     section: section.section,
     topics: section.topics.map((topic) => {
       const normalizedSlug = normalizeSlug(topic.slug);
-      const fallbackHeadings = headingMap.get(normalizedSlug.replace(/^\/+|\/+$/g, "")) || [];
 
       return {
         title: topic.title,
         slug: normalizedSlug,
-        headings: Array.isArray(topic.headings) && topic.headings.length > 0 ? topic.headings : fallbackHeadings
+        headings: Array.isArray(topic.headings) ? topic.headings : []
       };
     })
   }));

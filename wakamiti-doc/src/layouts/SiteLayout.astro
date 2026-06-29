@@ -14,12 +14,15 @@ const {
   title = "Wakamiti",
   description = "",
   sidebar = true,
-  currentSlug = "/"
+  currentSlug = "/",
+  wide = false
 } = Astro.props;
 
 const switchLocalePath = withBase(localizePath(currentSlug, locale === "es" ? "en" : "es"));
 const gaId = import.meta.env.GA_ID;
 const gsvMeta = import.meta.env.GSV_META;
+const hasPageRail = Astro.slots.has("page-rail");
+const hasPageFloat = Astro.slots.has("page-float");
 ---
 
 <!doctype html>
@@ -52,9 +55,17 @@ const gsvMeta = import.meta.env.GSV_META;
     <div class="site">
       <Header locale={locale} switchLocalePath={switchLocalePath} showMenuToggle={sidebar} />
       {sidebar && <Sidebar locale={locale} currentSlug={currentSlug} />}
-      <main class={`main ${sidebar ? "" : "main--no-sidebar"}`}>
+      <main class={`main ${sidebar ? "" : "main--no-sidebar"} ${wide ? "main--wide" : ""} ${hasPageRail ? "main--with-rail" : ""}`}>
         <slot />
       </main>
+      {
+        hasPageRail && (
+          <aside class="page-rail">
+            <slot name="page-rail" />
+          </aside>
+        )
+      }
+      {hasPageFloat && <slot name="page-float" />}
     </div>
     <script type="module" src={siteScript}></script>
   </body>
@@ -63,6 +74,10 @@ const gsvMeta = import.meta.env.GSV_META;
 <style lang="scss">
 .site {
   overflow: hidden;
+
+  @include respond-above(xl) {
+    overflow: visible;
+  }
 }
 
 .main {
@@ -90,5 +105,33 @@ const gsvMeta = import.meta.env.GSV_META;
   margin: 0 auto;
   width: 100%;
   max-width: 1400px;
+}
+
+.main--wide {
+  @include respond-above(lg) {
+    max-width: 1120px;
+  }
+}
+
+.main--with-rail {
+  @media (min-width: 1440px) {
+    max-width: 860px;
+  }
+}
+
+.page-rail {
+  display: none;
+
+  @media (min-width: 1440px) {
+    display: block;
+    position: fixed;
+    top: 120px;
+    right: 30px;
+    width: 300px;
+    max-height: calc(100vh - 140px);
+    overflow: auto;
+    overflow-x: hidden;
+    z-index: 8;
+  }
 }
 </style>

@@ -30,6 +30,15 @@ function toggleSidebar() {
   document.body.classList.toggle("sidebar-open");
 }
 
+function getHashTarget(hash) {
+  if (!hash) {
+    return null;
+  }
+
+  const id = decodeURIComponent(hash).replace(/^#/, "");
+  return id ? document.getElementById(id) : null;
+}
+
 function updateHeaderState() {
   const header = document.querySelector("[data-header]");
   if (!header) {
@@ -50,7 +59,7 @@ function updateCurrentSidebarLink() {
 
   for (const link of links) {
     if (link.hash) {
-      const section = document.querySelector(decodeURIComponent(link.hash));
+      const section = getHashTarget(link.hash);
       if (section && section.offsetTop <= fromTop) {
         current = link;
       }
@@ -64,6 +73,41 @@ function updateCurrentSidebarLink() {
 
   for (const link of links) {
     link.classList.toggle("current", link === current);
+  }
+}
+
+function updateCurrentPageIndex() {
+  const links = Array.from(document.querySelectorAll("[data-page-index-link]"));
+  const sections = Array.from(document.querySelectorAll("[data-page-index-section]"));
+  if (links.length === 0) {
+    return;
+  }
+
+  const fromTop = window.scrollY + 140;
+  let current = links[0];
+
+  for (const link of links) {
+    if (!link.hash) {
+      continue;
+    }
+
+    const section = getHashTarget(link.hash);
+    if (section && section.offsetTop <= fromTop) {
+      current = link;
+    }
+  }
+
+  for (const link of links) {
+    link.classList.toggle("current", link === current);
+  }
+
+  const currentSectionAnchor =
+    current.getAttribute("data-page-index-depth") === "2"
+      ? current.getAttribute("data-page-index-anchor")
+      : current.getAttribute("data-page-index-parent");
+
+  for (const section of sections) {
+    section.classList.toggle("current-section", section.getAttribute("data-page-index-section") === currentSectionAnchor);
   }
 }
 
@@ -206,6 +250,7 @@ function registerHandlers() {
   window.addEventListener("scroll", () => {
     updateHeaderState();
     updateCurrentSidebarLink();
+    updateCurrentPageIndex();
   });
 
   window.addEventListener("resize", () => {
@@ -220,11 +265,13 @@ initializeTheme();
 registerHandlers();
 updateHeaderState();
 updateCurrentSidebarLink();
+updateCurrentPageIndex();
 ensureAsciinemaPlayer();
 
 document.addEventListener("astro:after-swap", syncTheme);
 document.addEventListener("astro:page-load", () => {
   updateHeaderState();
   updateCurrentSidebarLink();
+  updateCurrentPageIndex();
   ensureAsciinemaPlayer();
 });

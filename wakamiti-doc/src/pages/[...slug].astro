@@ -1,6 +1,8 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getDocRecords, loadDocModule } from "../lib/docs.js";
+import Icon from "../ui/Icon.astro";
+import PageIndex from "../ui/PageIndex.astro";
 
 export async function getStaticPaths() {
   const docs = await getDocRecords();
@@ -21,14 +23,81 @@ const module = await loadDocModule(file);
 const Content = module.Content;
 ---
 
-<SiteLayout locale={doc.locale} title={`${doc.title} | Wakamiti`} description={doc.description} sidebar={true} currentSlug={doc.slug}>
-  <h1>{doc.title}</h1>
-  <div class="markdown">
-    <Content />
+<SiteLayout
+  locale={doc.locale}
+  title={`${doc.title} | Wakamiti`}
+  description={doc.description}
+  sidebar={true}
+  currentSlug={doc.slug}
+  wide={doc.headings.length > 0}
+>
+  <div class="doc-page-content" id="page-top">
+    <h1>{doc.title}</h1>
+    <div class="markdown">
+      <Content />
+    </div>
   </div>
+  <Fragment slot="page-rail">
+    <PageIndex currentSlug={doc.slug} headings={doc.headings} />
+  </Fragment>
+  <a class="back-to-top" slot="page-float" href="#page-top" aria-label="Back to top">
+    <Icon name="arrow-up" class="back-to-top-icon" />
+  </a>
 </SiteLayout>
 
 <style lang="scss">
+.doc-page-content {
+  min-width: 0;
+}
+
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border-style: solid;
+  border-width: 2px;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+  transition: transform .15s ease-in-out, background .15s ease-in-out, color .15s ease-in-out;
+  z-index: 7;
+
+  html.dark & {
+    background: $backgroundDark;
+    border-color: $textDark;
+    color: $textDark;
+  }
+
+  html.bright & {
+    background: $backgroundBright;
+    border-color: $textBright;
+    color: $textBright;
+  }
+
+  @include respond-above(sm) {
+    right: 36px;
+    bottom: 30px;
+  }
+
+  @media (min-width: 1440px) {
+    right: 360px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.back-to-top :global(.back-to-top-icon) {
+  width: 20px;
+  height: 20px;
+}
+
 .markdown {
   padding-bottom: 50px;
   text-align: justify;

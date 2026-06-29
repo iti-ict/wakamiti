@@ -24,14 +24,14 @@ Optionally:
 - Install an IDE, such as [IntelliJ IDEA](https://www.jetbrains.com/idea/) or [VS Code](https://code.visualstudio.com/). 
   It's not essential, but it will make scenario development much easier.
 
-### 0. Start the sample application
+## 0. Start the sample application
 Unzip the downloaded zip file containing the tutorial source code, open a terminal in that directory and launch the 
 application with the following command:
 ```shell copy=true
 docker compose up -d
 ```
 
-### 1. Wakamiti configuration
+## 1. Wakamiti configuration
 Wakamiti configuration is set up with a `yaml` file placed in the same directory where the tests are located (for
 example, where the tutorial source code is located):
 ```diff
@@ -68,7 +68,7 @@ wakamiti:
 > You can also check other options in [global configuration](en/wakamiti/architecture#global-configuration).
 
 
-### 2. Scenario definition
+## 2. Scenario definition
 When we do *Behaviour-Driven Development*, we specify what we want the software to do using concrete examples.
 Scenarios are written before production code. They start their life as an executable specification. As the 
 production code emerges, scenarios take on a role as living documentation and automated tests.
@@ -110,7 +110,7 @@ will execute.
 
 See [the `gherkin` syntax reference](https://cucumber.io/docs/gherkin/) for more details.
 
-### 3. Run Wakamiti
+## 3. Run Wakamiti
 Tests are executed with the terminal, from the working directory (the one containing the Wakamiti features and the 
 `.feature` file we have created), with the following command:
 
@@ -127,7 +127,7 @@ specified in the Docker command as follows: `wakamiti/wakamiti:version`. The ava
 [Wakamiti Docker Hub](https://hub.docker.com/r/wakamiti/wakamiti/tags) repository.
 
 
-### 4. Reports
+## 4. Reports
 Once the tests are executed, the results are generated in two formats: `wakamiti.json` and `wakamiti.html`.
 
 The current states available in Wakamiti are:

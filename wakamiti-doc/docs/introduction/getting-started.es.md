@@ -25,14 +25,14 @@ De forma opcional:
   es necesario tenerlo pero facilitará mucho el desarrollo de escenarios.
 
 
-### 0. Poner en marcha la aplicación de ejemplo
+## 0. Poner en marcha la aplicación de ejemplo
 Descomprime el zip descargado con el código fuente del tutorial, abre un terminal en ese directorio y levanta la 
 aplicación con el siguiente comando:
 ```shell copy=true
 docker compose up -d
 ```
 
-### 1. Configurar Wakamiti
+## 1. Configurar Wakamiti
 La configuración de Wakamiti se realiza mediante un fichero `yaml` que se situará en el directorio donde se ubiquen las
 pruebas (por ejemplo, el mismo directorio en el que está el código fuente del tutorial):
 ```diff
@@ -69,7 +69,7 @@ wakamiti:
 > También puedes consultar otras opciones de [configuración global](wakamiti/architecture#configuración-global).
 
 
-### 2. Definir un escenario
+## 2. Definir un escenario
 Cuando hacemos *Behaviour-Driven Development* utilizamos ejemplos concretos para especificar lo que queremos que haga el 
 software. Los escenarios se escriben antes que el código de producción. Comienzan su vida como una especificación 
 ejecutable. Cuando llega el código a producción, los escenarios adquieren un papel como documentación viva y pruebas 
@@ -114,7 +114,7 @@ Wakamiti ejecutará.
 [Ver más](https://cucumber.io/docs/gherkin/) en detalle la sintaxis de `gherkin`.
 
 
-### 3. Lanzar Wakamiti
+## 3. Lanzar Wakamiti
 Las pruebas se ejecutan con el terminal, desde el directorio de trabajo (el que contiene las características de Wakamiti y
 el fichero `.feature` que hemos creado), con el siguiente comando:
 
@@ -133,7 +133,7 @@ Las versiones disponibles se pueden consultar en el repositorio de
 [Docker Hub de Wakamiti](https://hub.docker.com/r/wakamiti/wakamiti/tags).
 
 
-### 4. Informes
+## 4. Informes
 Una vez ejecutadas las pruebas, se generarán los resultados en dos formatos: `wakamiti.json` y `wakamiti.html`.
 
 Los estados que existen actualmente en Wakamiti son:
