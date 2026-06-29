@@ -28,6 +28,8 @@ for (const heading of headings) {
 function headingHref(anchor) {
   return withBase(`${currentSlug}${anchor}`);
 }
+
+const initialSectionAnchor = sections[0]?.heading.anchor;
 ---
 
 {
@@ -36,9 +38,12 @@ function headingHref(anchor) {
       <ul class="page-index-sections">
         {
           sections.map((section) => (
-            <li class="page-index-section" data-page-index-section={section.heading.anchor}>
+            <li
+              class={`page-index-section ${section.heading.anchor === initialSectionAnchor ? "current-section" : ""}`}
+              data-page-index-section={section.heading.anchor}
+            >
               <a
-                class="page-index-link page-index-link--section"
+                class={`page-index-link page-index-link--section ${section.heading.anchor === initialSectionAnchor ? "current" : ""}`}
                 data-page-index-link
                 data-page-index-depth="2"
                 data-page-index-anchor={section.heading.anchor}

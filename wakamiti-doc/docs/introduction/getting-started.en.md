@@ -142,6 +142,6 @@ The current states available in Wakamiti are:
 - <span style="color:#ff0000">**ERROR**</span>: there is an unexpected system error (connection error, database error,
   timeout error...).
 
-### Here's the demo!
+## Here's the demo!
 
 ![demo](asciinema:/wakamiti_en.cast?poster=npt:2:25&cols=86&fit=width)
