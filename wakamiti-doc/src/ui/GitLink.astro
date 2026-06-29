@@ -1,0 +1,55 @@
+---
+import Icon from "./Icon.astro";
+
+const { class: className = "", size = "small", text = "Fork me on Github" } = Astro.props;
+---
+
+<a href="https://github.com/iti-ict/wakamiti" class={`git-link ${size} ${className}`.trim()} title="Git-repository" aria-label="Wakamiti on Github">
+  <Icon name="github" class="icon" />
+  {text}
+</a>
+
+<style lang="scss">
+.git-link {
+  display: inline-block;
+  padding: 6px 10px;
+  text-decoration: none;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 700;
+  transition: color .15s ease-in-out, background .15s ease-in-out;
+
+  html.dark & {
+    color: $textBright;
+    background: $backgroundBright;
+  }
+
+  html.bright & {
+    color: $textDark;
+    background: $backgroundDark;
+  }
+
+  &.large {
+    @include respond-above(sm) {
+      font-size: 18px;
+      padding: 12px 20px;
+      line-height: 24px;
+    }
+  }
+}
+
+:global(.icon) {
+  width: 18px;
+  height: 18px;
+  vertical-align: -6px;
+  margin-right: 4px;
+}
+
+.large :global(.icon) {
+  @include respond-above(sm) {
+    width: 24px;
+    height: 24px;
+  }
+}
+</style>

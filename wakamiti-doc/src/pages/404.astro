@@ -1,0 +1,71 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { withBase } from "../lib/site.js";
+
+const esHome = withBase("/");
+const enHome = withBase("/en/");
+const basePath = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+---
+
+<SiteLayout locale="es" title="404 | Wakamiti" description="Page not found" sidebar={false} currentSlug="/">
+  <div
+    class="not-found"
+    data-not-found
+    data-base-path={basePath}
+    data-es-home={esHome}
+    data-en-home={enHome}
+  >
+    <h1>404</h1>
+    <p data-not-found-message>La pagina solicitada no existe.</p>
+    <p><a href={esHome} data-not-found-link>Volver al inicio</a></p>
+  </div>
+</SiteLayout>
+
+<script is:inline>
+  const container = document.querySelector("[data-not-found]");
+
+  if (container) {
+    const basePath = container.getAttribute("data-base-path") || "";
+    const pathname = window.location.pathname;
+    const enPrefix = `${basePath}/en`;
+    const locale = pathname === enPrefix || pathname.startsWith(`${enPrefix}/`) ? "en" : "es";
+
+    if (locale === "en") {
+      document.documentElement.lang = "en";
+
+      const message = container.querySelector("[data-not-found-message]");
+      const link = container.querySelector("[data-not-found-link]");
+      const languageSwitch = document.getElementById("languageSwitch");
+
+      if (message) {
+        message.textContent = "The requested page does not exist.";
+      }
+
+      if (link) {
+        link.textContent = "Back to home";
+        link.setAttribute("href", container.getAttribute("data-en-home") || "/en/");
+      }
+
+      if (languageSwitch) {
+        languageSwitch.setAttribute("data-language-switch", container.getAttribute("data-es-home") || "/");
+        languageSwitch.setAttribute("data-language-next-text", "EN");
+
+        const label = languageSwitch.querySelector(".language-text");
+        if (label) {
+          label.textContent = "ES";
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+.not-found {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.not-found p {
+  opacity: .8;
+}
+</style>
