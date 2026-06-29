@@ -1,5 +1,6 @@
 name: Generate documentation site
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
