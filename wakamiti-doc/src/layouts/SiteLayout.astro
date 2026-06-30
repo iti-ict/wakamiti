@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import "@fontsource/source-sans-pro";
 import "../assets/scss/asciinema-player.css";
 import "../assets/scss/globals.scss";
+import favicon from "../assets/img/logo.svg";
 import Header from "../ui/Header.astro";
 import Sidebar from "../ui/Sidebar.astro";
 import { localizePath, withBase } from "../lib/site.js";
@@ -33,6 +34,7 @@ const hasPageFloat = Astro.slots.has("page-float");
     <meta name="theme-color" content="#10c186" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     {gsvMeta && <meta name="google-site-verification" content={gsvMeta} />}
+    <link rel="icon" type="image/svg+xml" href={favicon.src} />
     <link rel="manifest" href={withBase("/manifest.json")} />
     <ClientRouter fallback="swap" />
     <script is:inline>
