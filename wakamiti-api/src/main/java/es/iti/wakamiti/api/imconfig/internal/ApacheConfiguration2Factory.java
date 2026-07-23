@@ -364,10 +364,15 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     private URL adaptURI(URI uri, ClassLoader classLoader) throws MalformedURLException {
         if ("classpath".equals(uri.getScheme())) {
-            return new URL("classpath",null, -1, uri.getPath(), new ClasspathURLStreamHandler(classLoader));
-        } else {
-            return uri.toURL();
+            String resource = uri.getPath().replaceFirst("^/+", "");
+            ClassLoader loader = classLoader != null ? classLoader : getClass().getClassLoader();
+            URL resolved = loader.getResource(resource);
+            if (resolved == null) {
+                throw new ConfigurationException("Resource not found in classpath: " + resource);
+            }
+            return resolved;
         }
+        return uri.toURL();
     }
 
 }
