@@ -23,7 +23,7 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -50,9 +50,9 @@ public class HttpClientTest {
     @BeforeClass
     public static void setup() {
         ConfigurationProperties.logLevel("OFF");
-        HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
+        SSLContext.setDefault(new KeyStoreFactory(
                 Configuration.configuration(),
-                new MockServerLogger()).sslContext().getSocketFactory());
+                new MockServerLogger()).sslContext());
     }
 
     @AfterClass

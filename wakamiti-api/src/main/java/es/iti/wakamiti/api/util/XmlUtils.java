@@ -310,7 +310,7 @@ public class XmlUtils {
         @Override
         public XmlObject deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
             parser.getCodec().readTree(parser); // The result is ignored
-            JsonLocation end = parser.getCurrentLocation();
+            JsonLocation end = parser.currentLocation();
             StringWriter writer = new StringWriter();
             if (end.contentReference().getRawContent() instanceof StringReader) {
                 ((StringReader) end.contentReference().getRawContent()).reset();

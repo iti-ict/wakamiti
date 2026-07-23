@@ -37,6 +37,7 @@ module es.iti.wakamiti.api {
     requires org.apache.httpcomponents.httpcore;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.dataformat.xml;
+//    requires static com.fasterxml.jackson.dataformat.yaml;
     requires org.apache.groovy.xml;
     requires org.apache.commons.codec;
     requires org.apache.commons.text;

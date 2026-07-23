@@ -7,8 +7,6 @@ package es.iti.wakamiti.api.util.http.oauth;
 
 
 import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -277,8 +275,8 @@ public class DefaultAccessTokenRetrieverTest {
         } catch (WakamitiException e) {
             // check
             assertThat(e).hasMessage("Error retrieving oauth2 authentication")
-                    .getCause().isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("404");
+                    .hasRootCauseInstanceOf(IllegalStateException.class)
+                    .hasRootCauseMessage("404");
             throw e;
         }
     }
@@ -318,8 +316,8 @@ public class DefaultAccessTokenRetrieverTest {
         } catch (WakamitiException e) {
             // check
             assertThat(e).hasMessage("Error retrieving oauth2 authentication")
-                    .getCause().isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("400. A text message");
+                    .hasRootCauseInstanceOf(IllegalStateException.class)
+                    .hasRootCauseMessage("400. A text message");
             throw e;
         }
     }

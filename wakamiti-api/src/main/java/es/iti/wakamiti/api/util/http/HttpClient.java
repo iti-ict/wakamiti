@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
@@ -44,6 +45,7 @@ import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {
 
+    @Serial
     private static final long serialVersionUID = 674371982367L;
 
     private static final Logger LOGGER = WakamitiLogger.forClass(WakamitiAPI.class);
