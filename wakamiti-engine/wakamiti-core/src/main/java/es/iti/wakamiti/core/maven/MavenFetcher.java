@@ -6,24 +6,34 @@ package es.iti.wakamiti.core.maven;
 
 import es.iti.wakamiti.core.maven.internal.MavenArtifactFetcher;
 import es.iti.wakamiti.core.maven.internal.MavenTransferListener;
-import org.apache.maven.repository.internal.DefaultModelCacheFactory;
-import org.apache.maven.repository.internal.DefaultVersionResolver;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
-import org.apache.maven.repository.internal.ModelCacheFactory;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.DefaultArtifactType;
+import org.eclipse.aether.collection.DependencyGraphTransformer;
+import org.eclipse.aether.collection.DependencyManager;
+import org.eclipse.aether.collection.DependencySelector;
+import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.impl.VersionResolver;
 import org.eclipse.aether.repository.*;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.eclipse.aether.supplier.RepositorySystemSupplier;
+import org.eclipse.aether.util.artifact.DefaultArtifactTypeRegistry;
+import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
+import org.eclipse.aether.util.graph.selector.AndDependencySelector;
+import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
+import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
+import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
+import org.eclipse.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+import org.eclipse.aether.util.graph.transformer.ConflictResolver;
+import org.eclipse.aether.util.graph.transformer.JavaDependencyContextRefiner;
+import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
+import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
+import org.eclipse.aether.util.graph.transformer.NearestVersionSelector;
+import org.eclipse.aether.util.graph.transformer.SimpleOptionalitySelector;
+import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
+import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import slf4jansi.AnsiLogger;
@@ -258,7 +268,7 @@ public class MavenFetcher {
 
     private RepositorySystem system() {
         if (system == null) {
-            system = newRepositorySystem(MavenRepositorySystemUtils.newServiceLocator());
+            system = new RepositorySystemSupplier().get();
             if (system == null) {
                 throw new NullPointerException("Cannot instantiate system");
             }
@@ -269,7 +279,7 @@ public class MavenFetcher {
 
 
     private DefaultRepositorySystemSession newSession(MavenTransferListener listener) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        DefaultRepositorySystemSession session = newRepositorySystemSession();
         session
             .setLocalRepositoryManager(system().newLocalRepositoryManager(session, localRepository));
         session.setTransferListener(listener);
@@ -306,19 +316,51 @@ public class MavenFetcher {
     }
 
 
-    private RepositorySystem newRepositorySystem(DefaultServiceLocator locator) {
-        locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
-            @Override
-            public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
-                logger.error("Cannot create instance of {} for service {}",impl,type,exception);
-            }
-        });
-//        locator.addService(ModelCacheFactory.class, DefaultModelCacheFactory.class);
-        locator.addService(VersionResolver.class, DefaultVersionResolver.class);
-        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
+    private static DefaultRepositorySystemSession newRepositorySystemSession() {
+        DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
+
+        DependencyTraverser dependencyTraverser = new FatArtifactTraverser();
+        session.setDependencyTraverser(dependencyTraverser);
+
+        DependencyManager dependencyManager = new ClassicDependencyManager();
+        session.setDependencyManager(dependencyManager);
+
+        DependencySelector dependencySelector = new AndDependencySelector(
+                new ScopeDependencySelector("test", "provided"),
+                new OptionalDependencySelector(),
+                new ExclusionDependencySelector()
+        );
+        session.setDependencySelector(dependencySelector);
+
+        DependencyGraphTransformer dependencyGraphTransformer = new ConflictResolver(
+                new NearestVersionSelector(),
+                new JavaScopeSelector(),
+                new SimpleOptionalitySelector(),
+                new JavaScopeDeriver()
+        );
+        dependencyGraphTransformer = new ChainedDependencyGraphTransformer(
+                dependencyGraphTransformer,
+                new JavaDependencyContextRefiner()
+        );
+        session.setDependencyGraphTransformer(dependencyGraphTransformer);
+
+        DefaultArtifactTypeRegistry artifactTypeRegistry = new DefaultArtifactTypeRegistry();
+        artifactTypeRegistry.add(new DefaultArtifactType("pom"));
+        artifactTypeRegistry.add(new DefaultArtifactType("maven-plugin", "jar", "", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("jar", "jar", "", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("ejb", "jar", "", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("ejb-client", "jar", "client", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("test-jar", "jar", "tests", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("javadoc", "jar", "javadoc", "java"));
+        artifactTypeRegistry.add(new DefaultArtifactType("java-source", "jar", "sources", "java", false, false));
+        artifactTypeRegistry.add(new DefaultArtifactType("war", "war", "", "java", false, true));
+        artifactTypeRegistry.add(new DefaultArtifactType("ear", "ear", "", "java", false, true));
+        artifactTypeRegistry.add(new DefaultArtifactType("rar", "rar", "", "java", false, true));
+        artifactTypeRegistry.add(new DefaultArtifactType("par", "par", "", "java", false, true));
+        session.setArtifactTypeRegistry(artifactTypeRegistry);
+
+        session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(true, true));
+        return session;
     }
 
 
