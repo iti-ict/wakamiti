@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
-    private final ConversionHandler conversionHandler = new ApacheConfiguration2ConversionHandler();
     private final PropertyDefinitionParser parser = new PropertyDefinitionParser();
 
     private char separator = 0;
@@ -59,8 +58,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration merge(Configuration base, Configuration delta) {
-
-        AbstractConfiguration result = new BaseConfiguration();
+        AbstractConfiguration result = newBaseConfiguration();
         for (String property : delta.keys()) {
             var existing = base.getList(property,String.class);
             var added = delta.getList(property,String.class);
@@ -88,7 +86,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration empty() {
-        return new ApacheConfiguration2(this, new BaseConfiguration());
+        return new ApacheConfiguration2(this, newBaseConfiguration());
     }
 
 
@@ -122,7 +120,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
 
     private Configuration fromAnnotationProperties(AnnotatedConfiguration annotation) {
-        BaseConfiguration configuration = configure(new BaseConfiguration());
+        BaseConfiguration configuration = newBaseConfiguration();
         for (Property property : annotation.value()) {
             String[] value = property.value();
             if (value.length == 1) {
@@ -166,13 +164,13 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration fromEnvironment() {
-        return new ApacheConfiguration2(this, new EnvironmentConfiguration());
+        return new ApacheConfiguration2(this, configure(new EnvironmentConfiguration()));
     }
 
 
     @Override
     public Configuration fromSystem() {
-        return new ApacheConfiguration2(this, new SystemConfiguration());
+        return new ApacheConfiguration2(this, configure(new SystemConfiguration()));
     }
 
 
@@ -183,10 +181,10 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
 
 
-    @SuppressWarnings("CollectionDeclaredAsConcreteClass")
+//    @SuppressWarnings("CollectionDeclaredAsConcreteClass")
     @Override
     public Configuration fromProperties(Properties properties) {
-        final BaseConfiguration configuration = configure(new BaseConfiguration());
+        final BaseConfiguration configuration = newBaseConfiguration();
         for (final Entry<Object, Object> property : properties.entrySet()) {
             configuration.addProperty(property.getKey().toString(), property.getValue());
         }
@@ -196,7 +194,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     @Override
     public Configuration fromMap(Map<String, ?> properties) {
-        final BaseConfiguration configuration = configure(new BaseConfiguration());
+        final BaseConfiguration configuration = newBaseConfiguration();
         for (final Entry<String, ?> property : properties.entrySet()) {
             configuration.addProperty(property.getKey(), property.getValue());
         }
@@ -206,7 +204,7 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
 
     private Configuration fromMap(Map<String, ?> properties, Collection<PropertyDefinition> definitions) {
-        final BaseConfiguration configuration = configure(new BaseConfiguration());
+        final BaseConfiguration configuration = newBaseConfiguration();
         for (final Entry<String, ?> property : properties.entrySet()) {
             configuration.addProperty(property.getKey(), property.getValue());
         }
@@ -350,14 +348,34 @@ public class ApacheConfiguration2Factory implements ConfigurationFactory {
     }
 
 
-
-
-    private <T extends AbstractConfiguration> T configure(T configuration) {
-        configuration.setConversionHandler(conversionHandler);
+    /**
+     * Applies the Commons Configuration customization required by this module.
+     *
+     * <p>When a multi-value separator is enabled, both the configuration instance and its
+     * conversion handler must share the same {@link PatchedListDelimiterHandler}. This is a
+     * temporary workaround related to Apache Commons Configuration issue {@code CONFIGURATION-857},
+     * and should remain in place only until the upstream behavior is clarified and fixed.</p>
+     *
+     * @param configuration configuration instance to initialize
+     * @param <T> concrete configuration type
+     * @return the initialized configuration
+     */
+    private <T extends AbstractConfiguration> T configure(
+            T configuration
+    ) {
+        DefaultConversionHandler conversionHandler = new DefaultConversionHandler();
         if (hasMultiValueSeparator()) {
-            configuration.setListDelimiterHandler(new DefaultListDelimiterHandler(multiValueSeparator()));
+            PatchedListDelimiterHandler listDelimiterHandler = new PatchedListDelimiterHandler(multiValueSeparator());
+            configuration.setListDelimiterHandler(listDelimiterHandler);
+            conversionHandler.setListDelimiterHandler(listDelimiterHandler);
         }
+        configuration.setConversionHandler(conversionHandler);
         return configuration;
+    }
+
+
+    BaseConfiguration newBaseConfiguration() {
+        return configure(new BaseConfiguration());
     }
 
 
