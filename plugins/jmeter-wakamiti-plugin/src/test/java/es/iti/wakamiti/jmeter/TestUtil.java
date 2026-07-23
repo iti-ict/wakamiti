@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.codehaus.plexus.util.FileUtils;
 import org.mockserver.client.MockServerClient;
+import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.mock.Expectation;
 import org.mockserver.model.HttpStatusCode;
 import org.mockserver.model.MediaType;
@@ -112,6 +113,7 @@ public class TestUtil {
     }
 
     public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
+        ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(false);
         Expectation[] expectations = prepare(rootPath, filter);
         for (Expectation expectation : expectations) {
             client.when(expectation.getHttpRequest()).respond(expectation.getHttpResponse());

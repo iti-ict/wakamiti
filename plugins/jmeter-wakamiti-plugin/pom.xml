@@ -18,7 +18,7 @@
 
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
 
     <name>[Wakamiti Plugin] jmeter</name>
@@ -26,10 +26,9 @@
     <inceptionYear>2024</inceptionYear>
 
     <properties>
-        <mockserver.version>5.15.0</mockserver.version>
-        <jackson.version>2.15.2</jackson.version>
+        <mockserver.version>7.4.0</mockserver.version>
 
-        <wakamiti-engine.version>2.11.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.13.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
 
@@ -48,13 +47,29 @@
         <dependency>
             <groupId>us.abstracta.jmeter</groupId>
             <artifactId>jmeter-java-dsl</artifactId>
-            <version>1.29</version>
+            <version>2.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.groovy</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>dnsjava</groupId>
+                    <artifactId>dnsjava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.jtidy</groupId>
+                    <artifactId>jtidy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-parsers</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers-standard-package</artifactId>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -75,19 +90,24 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.8.1</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
-            <version>5.15.0</version>
+            <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-client-java</artifactId>
-            <version>5.14.0</version>
+            <version>${mockserver.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -98,32 +118,32 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.3</version>
+                <version>9.10.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.jmeter</groupId>
                 <artifactId>ApacheJMeter_core</artifactId>
-                <version>5.5</version>
+                <version>5.6.3</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-common</artifactId>
-                <version>1.6.21</version>
+                <version>1.9.10</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.jmeter</groupId>
                 <artifactId>jorphan</artifactId>
-                <version>5.5</version>
+                <version>5.6.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>svgSalamander</artifactId>
+                <version>1.1.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>4.4.16</version>
-            </dependency>
-            <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>1.4.01</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -133,52 +153,120 @@
             <dependency>
                 <groupId>kg.apc</groupId>
                 <artifactId>jmeter-plugins-cmn-jmeter</artifactId>
-                <version>0.6</version>
+                <version>0.9</version>
             </dependency>
             <dependency>
                 <groupId>net.minidev</groupId>
                 <artifactId>json-smart</artifactId>
-                <version>2.5.0</version>
+                <version>2.6.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore-nio</artifactId>
+                <version>4.4.16</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>1.6.21</version>
+                <version>1.9.10</version>
+            </dependency>
+            <dependency>
+                <groupId>com.helger.commons</groupId>
+                <artifactId>ph-commons</artifactId>
+                <version>12.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.26.1</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
-                <version>1.6.21</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.15</version>
+                <version>1.9.10</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
+                <version>1.4.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.jmeter</groupId>
                 <artifactId>ApacheJMeter_components</artifactId>
-                <version>5.5</version>
+                <version>5.6.3</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>16.0.2</version>
+                <version>26.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>xmlgraphics-commons</artifactId>
-                <version>2.7</version>
+                <version>2.11</version>
             </dependency>
             <dependency>
                 <groupId>net.minidev</groupId>
                 <artifactId>accessors-smart</artifactId>
-                <version>2.5.0</version>
+                <version>2.6.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.21</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mozilla</groupId>
+                <artifactId>rhino</artifactId>
+                <version>1.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-bom</artifactId>
+                <version>3.3.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-transcoder</artifactId>
+                <version>1.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-bridge</artifactId>
+                <version>1.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-util</artifactId>
+                <version>1.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-awt-util</artifactId>
+                <version>1.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-shared-resources</artifactId>
+                <version>1.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.22.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>2.0.18</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -230,7 +318,7 @@
                     <plugin>
                         <groupId>org.mock-server</groupId>
                         <artifactId>mockserver-maven-plugin</artifactId>
-                        <version>5.15.0</version>
+                        <version>${mockserver.version}</version>
                         <configuration>
                             <serverPort>${rest.port}</serverPort>
                             <logLevel>OFF</logLevel>
@@ -256,7 +344,7 @@
                             <dependency>
                                 <groupId>com.fasterxml.jackson.core</groupId>
                                 <artifactId>jackson-core</artifactId>
-                                <version>${jackson.version}</version>
+                                <version>2.22.1</version>
                             </dependency>
                         </dependencies>
                     </plugin>
