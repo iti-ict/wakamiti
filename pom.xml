@@ -43,7 +43,7 @@
             <id>tests</id>
             <activation>
                 <property>
-                    <name>!skipExampleTests</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <modules>
