@@ -2,7 +2,7 @@ package ${package}.test;
 
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Property;
