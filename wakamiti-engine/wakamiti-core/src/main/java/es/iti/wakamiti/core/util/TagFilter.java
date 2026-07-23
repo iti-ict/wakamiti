@@ -31,8 +31,7 @@ public class TagFilter {
      * @param tagExpression The tag expression to be parsed and used for filtering.
      */
     public TagFilter(String tagExpression) {
-        TagExpressionParser tagExpressionParser = new TagExpressionParser();
-        this.tagParsedExpression = tagExpressionParser.parse(
+        this.tagParsedExpression = TagExpressionParser.parse(
                 tagExpression.replace("@", "").toLowerCase());
     }
 
