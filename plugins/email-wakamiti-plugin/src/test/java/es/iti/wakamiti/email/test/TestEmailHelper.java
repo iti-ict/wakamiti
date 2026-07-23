@@ -7,12 +7,13 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import es.iti.wakamiti.email.EmailHelper;
+import jakarta.mail.Flags;
+import jakarta.mail.internet.MimeMessage;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.*;
 import java.time.Duration;
 
-import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -140,10 +141,10 @@ public class TestEmailHelper {
 
 
 
-    private boolean hasFlagDeleted(Message message) {
+    private boolean hasFlagDeleted(MimeMessage message) {
         try {
             return message.getFlags().contains(Flags.Flag.DELETED);
-        } catch (MessagingException e) {
+        } catch (jakarta.mail.MessagingException e) {
             throw new RuntimeException(e);
         }
     }
