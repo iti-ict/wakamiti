@@ -30,8 +30,7 @@ public class JsonPlanSerializer implements PlanSerializer {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     /**
