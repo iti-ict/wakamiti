@@ -184,7 +184,7 @@ public class Wakamiti {
         }
         List<PlanNode> plans = new ArrayList<>();
         for (String resourceTypeName : resourceTypeNames) {
-            LOGGER.debug("Creating plan for resource type {resourceType}..., resourceTypeName");
+            LOGGER.debug("Creating plan for resource type {resourceType}...", resourceTypeName);
             Optional<PlanNode> plan = createPlanForResourceType(
                     resourceTypeName,
                     discoveryPaths,

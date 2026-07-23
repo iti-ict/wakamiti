@@ -74,14 +74,16 @@ public class PlanNodeLogger {
             int numTestCasesPassed = plan.numDescendants(NodeType.TEST_CASE, Result.PASSED);
             String resultStyle = "stepResult." + plan.result().orElse(null);
             logger.info("{!" + resultStyle + "}=========================");
-            logger
-                    .info(
-                            "{!" + resultStyle + "}Test Plan {}" + (result.isPassed() ? ""
-                                    : "  ({} of {} test cases not passed)"),
-                            result,
-                            numTestCases - numTestCasesPassed,
-                            numTestCases
-                    );
+            if (result.isPassed()) {
+                logger.info("{!" + resultStyle + "}Test Plan {}", result);
+            } else {
+                logger.info(
+                        "{!" + resultStyle + "}Test Plan {}  ({} of {} test cases not passed)",
+                        result,
+                        numTestCases - numTestCasesPassed,
+                        numTestCases
+                );
+            }
             logger.info("{!" + resultStyle + "}=========================");
         }
     }
