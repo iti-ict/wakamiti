@@ -1007,7 +1007,8 @@ public class DatabaseStepContributorTest {
         createContext(config);
 
         // Act
-        String script = "WITH a AS (SELECT 47 num) DELETE FROM other WHERE something IN (SELECT num FROM a)";
+        String script = "DELETE FROM other WHERE something IN " +
+                "(WITH a AS (SELECT 47 num) SELECT num FROM a)";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
 
