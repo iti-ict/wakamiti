@@ -244,11 +244,13 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
             String nodePath = String.format("0/%d", index);
             if (treatStepsAsTests) {
                 return new PlanNodeStepJUnitRunner(
-                        node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+                        node, featureConfiguration, backendFactory, planNodeLogger, nodePath,
+                        getTestClass().getName()
                 );
             }
             return new PlanNodeJUnitRunner(
-                    node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+                    node, featureConfiguration, backendFactory, planNodeLogger, nodePath,
+                    getTestClass().getName()
             );
         }).collect(Collectors.toList());
     }

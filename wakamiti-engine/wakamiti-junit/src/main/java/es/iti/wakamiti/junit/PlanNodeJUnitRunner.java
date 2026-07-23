@@ -48,6 +48,7 @@ import java.util.stream.Stream;
  */
 public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 
+    private final String testClassName;
     private Description description;
     private RunNotifier notifier;
 
@@ -57,9 +58,11 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, backend, logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     PlanNodeJUnitRunner(
@@ -67,9 +70,11 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             Configuration configuration,
             BackendFactory backendFactory,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, Optional.empty(), logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     /**
@@ -145,7 +150,8 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
                                     backendFactory(),
                                     getBackend(),
                                     getLogger(),
-                                    childPath
+                                    childPath,
+                                    testClassName
                             )
                             : new PlanNodeJUnitRunner(
                                     child,
@@ -153,7 +159,8 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
                                     backendFactory(),
                                     getBackend(),
                                     getLogger(),
-                                    childPath
+                                    childPath,
+                                    testClassName
                             );
                 })
                 .collect(Collectors.toList());
@@ -181,6 +188,10 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      */
     protected Description describeChild(Describable child) {
         return child.getDescription();
+    }
+
+    protected String testClassName() {
+        return testClassName;
     }
 
 }

@@ -39,6 +39,7 @@ import java.util.Optional;
  */
 public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 
+    private final String testClassName;
     private Description description;
 
     PlanNodeTargetRunner(
@@ -47,9 +48,11 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, backend, logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     /**
@@ -117,7 +120,7 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
     @Override
     public Description getDescription() {
         if (description == null) {
-            description = Description.createTestDescription("", junitDisplayName());
+            description = Description.createTestDescription(testClassName, junitDisplayName());
         }
         return description;
     }

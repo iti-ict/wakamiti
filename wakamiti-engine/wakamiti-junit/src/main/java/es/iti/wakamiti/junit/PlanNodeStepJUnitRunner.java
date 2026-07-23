@@ -36,9 +36,10 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
-        super(node, configuration, backendFactory, backend, logger, nodePath);
+        super(node, configuration, backendFactory, backend, logger, nodePath, testClassName);
     }
 
     PlanNodeStepJUnitRunner(
@@ -46,9 +47,10 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
             Configuration configuration,
             BackendFactory backendFactory,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
-        super(node, configuration, backendFactory, logger, nodePath);
+        super(node, configuration, backendFactory, logger, nodePath, testClassName);
     }
 
     /**
@@ -80,7 +82,8 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
                                     backendFactory(),
                                     getBackend(),
                                     getLogger(),
-                                    childPath
+                                    childPath,
+                                    testClassName()
                             )
                             : new PlanNodeStepJUnitRunner(
                                     child,
@@ -88,7 +91,8 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
                                     backendFactory(),
                                     getBackend(),
                                     getLogger(),
-                                    childPath
+                                    childPath,
+                                    testClassName()
                             );
                 })
                 .collect(Collectors.toList());
