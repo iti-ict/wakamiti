@@ -31,9 +31,6 @@ import java.util.stream.Stream;
 public class CliArguments {
 
     public static final String ARG_LIST = "l";
-    public static final String ARG_API_DOCS = "D";
-    public static final String ARG_AI_TOKEN = "t";
-    public static final String ARG_FEATURE_GENERATION_PATH = "p";
     public static final String ARG_LANGUAGE = "L";
 
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
@@ -45,7 +42,6 @@ public class CliArguments {
     private static final String ARG_NO_EXECUTION = "n";
     private static final String ARG_WAKAMITI_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
-    private static final String ARG_AI = "a";
     private final Options cliOptions;
     private CommandLine cliCommand;
 
@@ -57,11 +53,6 @@ public class CliArguments {
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
         cliOptions.addOption(ARG_NO_EXECUTION, "dry-run", false, "Generates report without execution");
-
-        cliOptions.addOption(ARG_AI, "ai", false, "Activate feature generator mode");
-        cliOptions.addOption(ARG_API_DOCS, "apiDocs", true, "Api docs url or json file");
-        cliOptions.addOption(ARG_AI_TOKEN, "token", true, "Token for chat-gpt");
-        cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", true, "Feature Generator path");
         cliOptions.addOption(ARG_LANGUAGE, "language", true, "ISO 639-1 language code");
 
         cliOptions.addOption(
@@ -70,7 +61,7 @@ public class CliArguments {
                         .numberOfArgs(2)
                         .valueSeparator('=')
                         .desc("Set a Wakamiti-specific property")
-                        .build()
+                        .get()
         );
         cliOptions.addOption(
                 Option.builder(ARG_MAVEN_PROPERTY)
@@ -78,7 +69,7 @@ public class CliArguments {
                         .numberOfArgs(2)
                         .valueSeparator('=')
                         .desc("Set a MavenFetcher-specific property")
-                        .build()
+                        .get()
         );
         cliOptions.addOption(ARG_LIST, "list", false, "Show all available modules");
     }
@@ -172,18 +163,6 @@ public class CliArguments {
      */
     public boolean isNoExecution() {
         return cliCommand.hasOption(ARG_NO_EXECUTION);
-    }
-
-    /**
-     * Checks if the feature generator options are specified in the command-line arguments.
-     *
-     * @return {@code true} if the feature generator options are specified, {@code false} otherwise.
-     */
-    public boolean isFeatureGeneratorEnabled() {
-        return cliCommand.hasOption(ARG_AI)
-                && cliCommand.hasOption(ARG_API_DOCS)
-                && cliCommand.hasOption(ARG_AI_TOKEN)
-                && cliCommand.hasOption(ARG_FEATURE_GENERATION_PATH);
     }
 
     /**
