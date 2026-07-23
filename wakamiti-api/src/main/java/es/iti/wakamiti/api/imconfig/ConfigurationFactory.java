@@ -34,16 +34,9 @@ public interface ConfigurationFactory {
      *                                default instance.
      */
     static ConfigurationFactory instance() {
-        try {
-            return ServiceLoader.load(ConfigurationFactory.class).stream()
-                    .findFirst()
-                    .orElseThrow()
-                    .type()
-                    .getConstructor()
-                    .newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new ConfigurationException(e);
-        }
+        return ServiceLoader.load(ConfigurationFactory.class)
+                .findFirst()
+                .orElseThrow();
     }
 
     /**
