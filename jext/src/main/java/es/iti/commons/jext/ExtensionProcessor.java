@@ -35,7 +35,6 @@ import java.util.Map.Entry;
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @SupportedAnnotationTypes("es.iti.commons.jext.Extension")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class ExtensionProcessor extends AbstractProcessor {
 
     /**
@@ -56,6 +55,11 @@ public class ExtensionProcessor extends AbstractProcessor {
         }
         writeOutputFiles(serviceImplementations);
         return false;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
     }
 
     private void validateExtensionPoint(Element element) {
