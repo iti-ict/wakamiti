@@ -185,7 +185,7 @@ public class RabbitMqAmqp091Client implements AmqpClient {
         }
         try {
             connectionFactory.setUri(connectionParams.uri());
-        } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new WakamitiException("Invalid AMQP 0-9-1 connection URL: {}", connectionParams.uri(), e);
         }
 

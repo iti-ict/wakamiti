@@ -18,7 +18,7 @@
 
 
     <artifactId>amqp-wakamiti-plugin</artifactId>
-    <version>2.9.1</version>
+    <version>2.10.0-SNAPSHOT</version>
 
     <!-- additional information -->
     <name>[Wakamiti Plugin] AMQP Steps</name>
@@ -26,10 +26,10 @@
     <inceptionYear>2021</inceptionYear>
 
     <properties>
-        <qpid-broker.version>9.2.0</qpid-broker.version>
-        <rabbitmq-client.version>5.28.0</rabbitmq-client.version>
+        <qpid-broker.version>10.0.1</qpid-broker.version>
+        <rabbitmq-client.version>5.34.0</rabbitmq-client.version>
 
-        <wakamiti-engine.version>2.11.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.13.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -55,12 +55,17 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.0.0-jre</version>
+            <version>33.6.0-jre</version>
         </dependency>
 
 
 
         <!-- test -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>es.iti.wakamiti</groupId>
             <artifactId>wakamiti-junit</artifactId>
@@ -92,6 +97,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
@@ -99,7 +109,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.11.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -109,9 +119,25 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
-                <version>4.2.7.Final</version>
+                <version>4.2.16.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>3.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.84</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.84</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
