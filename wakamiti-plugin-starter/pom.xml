@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -6,7 +10,7 @@
     <parent>
         <artifactId>wakamiti-starter</artifactId>
         <groupId>es.iti.wakamiti</groupId>
-        <version>1.2.0</version>
+        <version>1.3.0-SNAPSHOT</version>
         <relativePath>../wakamiti-starter</relativePath>
     </parent>
 
@@ -23,7 +27,7 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.8.0</revision>
+        <revision>2.9.0-SNAPSHOT</revision>
     </properties>
 
     <dependencies>
@@ -48,11 +52,11 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.version}</version>
+                    <version>${maven.compiler.plugin}</version>
                     <configuration>
                         <release>${maven.compiler.release}</release>
                         <compilerArgs>
-                            <arg>-Xlint:all</arg>
+                            <arg>-Xlint:-missing-explicit-ctor</arg>
                         </compilerArgs>
                         <annotationProcessorPaths>
                             <annotationProcessorPath>
@@ -124,21 +128,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>3.5.5</version>
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
@@ -151,6 +142,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.11.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -160,7 +152,26 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
                             <includeScope>runtime</includeScope>
-                            <silent>true</silent>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>derive-automatic-module-name</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>automatic.module.artifact-prefix</name>
+                            <value>${project.artifactId}</value>
+                            <regex>-.*$</regex>
+                            <replacement />
+                            <failIfNoMatch>false</failIfNoMatch>
                         </configuration>
                     </execution>
                 </executions>
@@ -168,13 +179,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${project.groupId}.${automatic.module.artifact-prefix}</Automatic-Module-Name>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
