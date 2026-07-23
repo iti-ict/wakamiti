@@ -10,6 +10,7 @@
 package es.iti.wakamiti.spring.junit;
 
 
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -18,7 +19,6 @@ import org.slf4j.Logger;
 import org.springframework.test.context.TestContextManager;
 
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.junit.WakamitiJUnitRunner;
 
 
 public class WakamitiSpringJUnitRunner extends Runner {
