@@ -6,10 +6,16 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
-    data: classpath:initial-data.sql
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:initial-data.sql
 
 server:
   port: 9191
@@ -19,5 +25,4 @@ logging:
   level:
     root: INFO
     org.h2: DEBUG
-
 

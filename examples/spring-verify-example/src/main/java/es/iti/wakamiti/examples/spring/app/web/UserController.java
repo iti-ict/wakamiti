@@ -12,7 +12,7 @@ package es.iti.wakamiti.examples.spring.app.web;
 
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 import es.iti.wakamiti.examples.spring.app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +45,8 @@ public class UserController {
     }
 
 
-    @GetMapping("{id}")
-    public User getUser(@PathVariable int id) {
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable("id") int id) {
         return userDAO.getUserById(id);
     }
 
@@ -58,14 +58,14 @@ public class UserController {
     }
 
 
-    @PutMapping
-    public User modifyUser(@PathVariable int id, @RequestBody User user) {
+    @PutMapping("/{id}")
+    public User modifyUser(@PathVariable("id") int id, @RequestBody User user) {
         return userDAO.modifyUser(id, user);
     }
 
 
-    @DeleteMapping
-    public void deleteUser(@PathVariable int id) {
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable("id") int id) {
         userDAO.deleteUser(id);
     }
 
