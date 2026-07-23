@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.text.MessageFormat;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -49,19 +48,21 @@ public class TestPlanApiTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(TestPlanApiTest.class);
 
-    private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", PORT.toString());
-
-    private static final ClientAndServer mock = startClientAndServer(PORT);
+    private static ClientAndServer mock;
+    private static String BASE_URL;
 
     @BeforeClass
-    public static void beforeEach() {
+    public static void beforeAll() {
         ConfigurationProperties.logLevel("TRACE");
+        mock = startClientAndServer();
+        BASE_URL = "http://localhost:" + mock.getLocalPort();
     }
 
     @AfterClass
     public static void shutdown() {
-        mock.close();
+        if (mock != null) {
+            mock.close();
+        }
     }
 
     @Test
