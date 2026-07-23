@@ -22,6 +22,8 @@
 
         <jacoco.wakamiti.execution.data.file>${project.build.directory}/coverage-reports/jacoco-wakamiti.exec
         </jacoco.wakamiti.execution.data.file>
+
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
 
@@ -83,38 +85,12 @@
             <id>verify-profile</id>
             <activation>
                 <property>
-                    <name>!skipExampleTests</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <build>
                 <plugins>
                     <!-- Start H2 before integration tests, accepting tcp connections on the randomly selected port -->
-<!--                    <plugin>-->
-<!--                        <groupId>com.edugility</groupId>-->
-<!--                        <artifactId>h2-maven-plugin</artifactId>-->
-<!--                        <version>1.0</version>-->
-<!--                        &lt;!&ndash; default url: jdbc:h2:tcp://localhost:9092/./target/db &ndash;&gt;-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--                                <id>pre-integration-test</id>-->
-<!--                                <goals>-->
-<!--                                    <goal>spawn</goal>-->
-<!--                                </goals>-->
-<!--                            </execution>-->
-<!--                            <execution>-->
-<!--                                <id>post-integration-test</id>-->
-<!--                                <goals>-->
-<!--                                    <goal>stop</goal>-->
-<!--                                </goals>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                        <dependencies>-->
-<!--                            <dependency>-->
-<!--                                <groupId>com.h2database</groupId>-->
-<!--                                <artifactId>h2</artifactId>-->
-<!--                            </dependency>-->
-<!--                        </dependencies>-->
-<!--                    </plugin>-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
