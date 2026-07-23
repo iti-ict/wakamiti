@@ -80,19 +80,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.version}</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
+                    <proc>none</proc>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <annotationProcessorPath>
-                            <groupId>es.iti.commons</groupId>
-                            <artifactId>jext</artifactId>
-                            <version>${jext.version}</version>
-                        </annotationProcessorPath>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

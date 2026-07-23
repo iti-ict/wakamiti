@@ -9,7 +9,7 @@ module es.iti.wakamiti.launcher {
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
     requires net.harawata.appdirs;
-    requires commons.cli;
+    requires org.apache.commons.cli;
     requires es.iti.wakamiti.api;
     requires org.apache.commons.lang3;
 

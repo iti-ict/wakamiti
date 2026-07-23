@@ -78,7 +78,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
-                        <version>${maven.resources.version}</version>
 
                         <configuration>
                             <encoding>UTF-8</encoding>
@@ -98,7 +97,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>${maven.compiler.version}</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
